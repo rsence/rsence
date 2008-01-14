@@ -1,0 +1,17 @@
+.simple-windowbar 
+{
+  cursor: move;
+  position: absolute;
+  left: 1px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: 0;
+  border: solid 1px #eee;
+}
+
+.active .simple-windowbar {
+    border-color: #eee;
+    background-color: #7282b4;
+}

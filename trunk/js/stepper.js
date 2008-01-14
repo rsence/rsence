@@ -1,0 +1,7 @@
+
+HStepper=HButton.extend({componentName:"stepper",constructor:function(H0,H4,H1){if(!H1){H1={};}
+H1.events={mouseDown:true,keyDown:true,mouseWheel:true};var HJ=Base.extend({minValue:0,value:0,interval:500});HJ=HJ.extend(H1);H1=new HJ();if(this.isinherited){this.base(H0,H4,H1);}
+else{this.isinherited=true;this.base(H0,H4,H1);this.isinherited=false;}
+this.interval=H1.interval;this.type='[HStepper]';this.H1a="stepperlabel";this.border=((H0.bottom-H0.top)/2+H0.top);if(!this.isinherited){this.draw();}},stepUp:function(H3){H3--;H3=(H3<this.minValue)?this.maxValue:H3;this.setValue(H3);},stepDown:function(H3){H3++;H3=(H3>this.maxValue)?this.minValue:H3;this.setValue(H3);},mouseDown:function(H8,H9,H03){this.setMouseUp(true);var temp=this;if(H9<this.border){this.stepUp(this.value);this.counter=setInterval(function(){temp.stepUp(temp.value);},this.interval);}else{this.stepDown(this.value);this.counter=setInterval(function(){temp.stepDown(temp.value);},this.interval);}},mouseUp:function(H8,H9,H03){clearInterval(this.counter);},blur:function(){clearInterval(this.counter);},keyDown:function(Hx){this.setKeyUp(true);var temp=this;if(Hx==Event.KEY_UP){this.stepUp(this.value);this.counter=setInterval(function(){temp.stepUp(temp.value);},this.interval);}
+else if(Hx==Event.KEY_DOWN){this.stepDown(this.value);this.counter=setInterval(function(){temp.stepUp(temp.value);},this.interval);}},keyUp:function(Hx){clearInterval(this.counter);},mouseWheel:function(H0a){if(H0a>0){this.stepUp(this.value);}
+else{this.stepDown(this.value);}}});

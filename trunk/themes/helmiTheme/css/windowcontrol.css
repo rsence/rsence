@@ -1,0 +1,211 @@
+.helmiTheme-windowcontrol {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.helmiTheme-windowcontrol .decorations {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: visible;
+}
+.helmiTheme-windowcontrol .decorations .active {
+  position: absolute;
+  visibility: visible;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: hidden;
+}
+.helmiTheme-windowcontrol .decorations .inactive {
+  position: absolute;
+  visibility: hidden;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  overflow: hidden;
+}
+
+.border_n {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+}
+.border_s {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+}
+.border_w {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  overflow: hidden;
+}
+.border_e {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  overflow: hidden;
+}
+
+.corner_nw {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+.corner_ne {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+.corner_sw {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+.corner_se {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+
+.border_n, .border_s {
+  background-image: url('#{this.getThemeGfxPath()}shadow_horiz.png');
+}
+.border_e, .border_w, .corner_nw, .corner_ne, .corner_sw, .corner_se {
+  background-image: url('#{this.getThemeGfxPath()}shadow_vert.png');
+}
+
+.helmiTheme-windowcontrol .decorations .active .border_n {
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  background-position: 0px 0px;
+  background-repeat: repeat-x;
+  cursor: n-resize;
+}
+.helmiTheme-windowcontrol .decorations .active .border_s {
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  background-position: 0px -4px;
+  background-repeat: repeat-x;
+  cursor: s-resize;
+}
+.helmiTheme-windowcontrol .decorations .active .border_e {
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  background-position: -4px 0px;
+  background-repeat: repeat-y;
+  cursor: e-resize;
+}
+.helmiTheme-windowcontrol .decorations .active .border_w {
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  background-position: 0px 0px;
+  background-repeat: repeat-y;
+  cursor: w-resize;
+}
+
+.helmiTheme-windowcontrol .decorations .active .corner_nw {
+  width: 4px;
+  height: 4px;
+  background-position: -12px 0px;
+  cursor: nw-resize;
+}
+.helmiTheme-windowcontrol .decorations .active .corner_ne {
+  width: 4px;
+  height: 4px;
+  background-position: -12px -4px;
+  cursor: ne-resize;
+}
+.helmiTheme-windowcontrol .decorations .active .corner_se {
+  width: 4px;
+  height: 4px;
+  background-position: -12px -8px;
+  cursor: se-resize;
+}
+.helmiTheme-windowcontrol .decorations .active .corner_sw {
+  width: 4px;
+  height: 4px;
+  background-position: -12px -12px;
+  cursor: sw-resize;
+}
+
+
+
+.helmiTheme-windowcontrol .decorations .inactive .border_n {
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background-position: 0px -8px;
+  background-repeat: repeat-x;
+}
+.helmiTheme-windowcontrol .decorations .inactive .border_s {
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  background-position: 0px -10px;
+  background-repeat: repeat-x;
+}
+.helmiTheme-windowcontrol .decorations .inactive .border_e {
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  background-position: -10px 0px;
+  background-repeat: repeat-y;
+}
+.helmiTheme-windowcontrol .decorations .inactive .border_w {
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  background-position: -8px 0px;
+  background-repeat: repeat-y;
+}
+
+.helmiTheme-windowcontrol .decorations .inactive .corner_nw {
+  width: 2px;
+  height: 2px;
+  background-position: -12px -16px;
+}
+.helmiTheme-windowcontrol .decorations .inactive .corner_ne {
+  width: 2px;
+  height: 2px;
+  background-position: -14px -16px;
+}
+.helmiTheme-windowcontrol .decorations .inactive .corner_se {
+  width: 2px;
+  height: 2px;
+  background-position: -14px -18px;
+}
+.helmiTheme-windowcontrol .decorations .inactive .corner_sw {
+  width: 2px;
+  height: 2px;
+  background-position: -12px -18px;
+}
+

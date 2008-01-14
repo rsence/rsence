@@ -1,0 +1,21 @@
+
+.bordered {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    border: 1px solid #000;
+}
+.enabled .bordered {
+    border-color: #333;
+    background-color: #ccc;
+    color: #333;
+}
+.active > .bordered {
+    border-color: #000;
+    background-color: #fff;
+    color: #000;
+}
+.disabled .bordered {
+    border-color: #666;
+    background-color: #999;
+    color: #666;
+}

@@ -1,0 +1,30 @@
+.helmiTheme .menubar {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  width: auto;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.helmiTheme .menubar .border {
+  position: absolute;
+  background-color: #ccc;
+  line-height: 1px;
+}
+
+.helmiTheme .menubar .border-n {
+  right: 1px; height: 1px;
+  left: 1px; top: 0px;
+}
+.helmiTheme .menubar .border-s {
+  right: 1px; bottom: 0px;
+  left: 1px; height: 1px;
+}
+.helmiTheme .menubar .border-e {
+  width: 1px; bottom: 1px;
+  left: 0px; top: 1px;
+}
+.helmiTheme .menubar .border-w {
+  right: 0px; bottom: 1px;
+  width: 1px; top: 1px;
+}

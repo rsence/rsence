@@ -1,0 +1,17 @@
+.simple .simple-windowcontrol 
+{
+    position: absolute;
+    left: 0px; right: 0px; top: 0px; bottom: 0px;
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
+    padding: 0;
+    border: 1px solid #000;
+}
+
+.active .bordered {
+    border-color: #000;
+    background-color: #ccc;
+    color: #000;
+}
+

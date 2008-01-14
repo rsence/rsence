@@ -1,0 +1,5 @@
+<PUBLIC:COMPONENT lightWeight="true">
+<script type="text/javascript">
+element.attachEvent("onpropertychange", ie_namespace.ieinlineStyleChanged);
+</script>
+</PUBLIC:COMPONENT>
