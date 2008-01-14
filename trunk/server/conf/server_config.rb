@@ -14,7 +14,7 @@
   ###
 
 if not $config.has_key?(:dir_root)
-  $config[:dir_root]    = File.split($0)[0]
+  $config[:dir_root]    = File.join(File.split($0)[0], '..')
 end
 if not $config.has_key?(:client_root)
   $config[:client_root] = File.join( $config[:dir_root], '..' )
