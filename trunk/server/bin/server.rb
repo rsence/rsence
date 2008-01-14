@@ -33,7 +33,7 @@ if ARGV.include?('-h')
 end
 
 $config = {}
-server_conf_path = File.join(Dir.pwd, 'conf', 'server_config')
+server_conf_path = File.join(File.split($0)[0], 'conf', 'server_config')
 
 if ARGV.include?('-c')
   server_conf_path = ARGV[ARGV.index('-c')+1]
