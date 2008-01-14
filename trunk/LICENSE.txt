@@ -1,4 +1,5 @@
-Helmi RIA Platform
+HIMLE RIA Framework
+Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
 Copyright (C) 2006-2007 Helmi Technologies Inc.
 
 This program is free software; you can redistribute it and/or modify it under the terms
