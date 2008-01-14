@@ -142,10 +142,13 @@ def init
   
   yield server if block_given?
   
-  ['INT', 'TERM', 'KILL', 'HUP'].each do |signal|
-    trap(signal) {
-      server.shutdown
-    }
+  
+  unless RUBY_PLATFORM.include? "mswin32"
+    ['INT', 'TERM', 'KILL', 'HUP'].each do |signal|
+      trap(signal) {
+        server.shutdown
+      }
+    end
   end
   
   # should be daemonized, also should redirect the stdout to log files.
