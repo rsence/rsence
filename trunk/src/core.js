@@ -1,3 +1,4 @@
+/****
 HIMLE RIA Framework
 Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
 Copyright (C) 2006-2007 Helmi Technologies Inc.
@@ -12,6 +13,7 @@ You should have received a copy of the GNU General Public License along with thi
 if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 
+****/
 
 
 // all properties should be installed in constructor because otherwise those

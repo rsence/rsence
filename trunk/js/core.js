@@ -1,7 +1,4 @@
 
-HIMLE RIA Framework
-Copyright(C)2008 HIMLE GROUP http:Copyright(C)2006-2007 Helmi Technologies Inc.This program is free software;you can redistribute it and/or modify it under the terms
-of the GNU General Public License as published by the Free Software Foundation;either version 2 of the License,or(at your option)any later version.This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY;without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU General Public License for more details.You should have received a copy of the GNU General Public License along with this program;if not,write to the Free Software Foundation,Inc.,59 Temple Place,Suite 330,Boston,MA 02111-1307 USA
 var HClass=function(){if(arguments.length){var _2G=arguments[0];if(this==window){HClass.prototype.extend.call(_2G,arguments.callee.prototype);}else{this.extend(_2G);}}};HClass.prototype={extend:function(_0y,_6){var _0Y=HClass.prototype.extend;if(arguments.length==2){var _1V=this[_0y];if((_1V instanceof Function)&&(_6 instanceof Function)&&_1V.valueOf()!=_6.valueOf()&&/\bbase\b/.test(_6)){var _2e=_6;_6=function(){var _T=this.base;this.base=_1V;var _56=_2e.apply(this,arguments);this.base=_T;return _56;};_6.valueOf=function(){return _2e;};_6.toString=function(){return String(_2e);};}
 return this[_0y]=_6;}else if(_0y){var _0d={toSource:null};var _3C=["toString","valueOf"];if(HClass._2m){_3C.push("constructor");}
 for(var i=0;(_e=_3C[i]);i++){if(_0y[_e]!=_0d[_e]){_0Y.call(this,_e,_0y[_e]);}}
