@@ -1,4 +1,4 @@
-.helmiTheme .button {
+.default .button {
   cursor: pointer;
   position: absolute;
   left: 0px; right: 0px; top: 0px; bottom: 0px;
@@ -8,13 +8,13 @@
   width: auto;
   padding: 0;
 }
-.helmiTheme .button #border {
+.default .button #border {
   position: absolute;
   background-color: #ccc;
   line-height: 1px;
   overflow: hidden;
 }
-.helmiTheme .button .state {
+.default .button .state {
   position: absolute;
   left: 1px; right: 1px; top: 1px; bottom: 1px;
   border: 1px solid #fff;
@@ -27,7 +27,7 @@
 .active > .button .state {
   background-color: #eee;
 }
-.helmiTheme .button .bg {
+.default .button .bg {
   position: absolute;
   left: 1px; right: 1px; top: 1px; bottom: 1px;
   padding: 1px;
@@ -38,23 +38,23 @@
 .active > .button #border {
   background-color: #fb9;
 }
-.helmiTheme .button .border-n {
+.default .button .border-n {
   right: 1px; height: 1px;
   left: 1px; top: 0px;
 }
-.helmiTheme .button .border-s {
+.default .button .border-s {
   right: 1px; bottom: 0px;
   left: 1px; height: 1px;
 }
-.helmiTheme .button .border-e {
+.default .button .border-e {
   width: 1px; bottom: 1px;
   left: 0px; top: 1px;
 }
-.helmiTheme .button .border-w {
+.default .button .border-w {
   right: 0px; bottom: 1px;
   width: 1px; top: 1px;
 }
-.helmiTheme .button .label {
+.default .button .label {
   position: absolute;
   left: 1px; right: 1px;
   vertical-align: middle;

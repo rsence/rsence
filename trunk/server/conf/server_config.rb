@@ -21,7 +21,7 @@ if not $config.has_key?(:client_root)
 end
 
 $config[:httpserver] = {
-  :Port => 8888,
+  :Port => 8001,
 }
 
 $config[:cache_maximize] = (not $config[:debug_mode])

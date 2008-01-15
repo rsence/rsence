@@ -1,4 +1,4 @@
-HTransporter.syncDelay = 100;
+HTransporter.syncDelay = 500;
 
 HThemeManager.setThemePath('/gz?themes=');
 
