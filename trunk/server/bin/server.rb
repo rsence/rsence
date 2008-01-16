@@ -76,7 +76,7 @@ if ARGV.include?('-p')
   $config[:httpserver][:Port] = ARGV[ARGV.index('-p')+1].to_i
 end
 if ARGV.include?('-a')
-  $config[:app_path] = ARGV[ARGV.index('-p')+1]
+  $config[:app_path] = ARGV[ARGV.index('-a')+1]
 end
 
 require 'webrick'

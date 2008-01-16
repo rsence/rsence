@@ -1758,7 +1758,7 @@ HEventManager = HClass.extend({
   },
   
 /*** method: changeActiveControl
-  **
+  ** 
   ** Changes the active control. The control that is currently active, is
   ** informed of this change by calling its <HControl.lostActiveStatus> method.
   ** The new element's <HControl.gainedActiveStatus> is called. You can also
@@ -1767,7 +1767,7 @@ HEventManager = HClass.extend({
   ** 
   ** Parameters:
   **  _newActiveControl - The control that should be made the active control.
-  **
+  ** 
   ** See Also:
   **  <HControl.gainedActiveStatus> <HControl.lostActiveStatus> <mouseDown>
   ***/
@@ -7309,6 +7309,7 @@ HControl = HView.extend({
     
   },
   // A low-level handler, don't extend this.
+  
   _lostActiveStatus: function(_newActiveControl) {
     if(this.enabled) {
       this.toggleCSSClass(elem_get(this.elemId), HControl.CSS_ACTIVE, false);
@@ -7602,6 +7603,8 @@ HControl = HView.extend({
   
   
 },{
+  
+  
   // Class methods and properties
   
   stopPropagation: function(event) {
@@ -7612,7 +7615,7 @@ HControl = HView.extend({
     }
   },
   
-  H_CONTROL_ON: 1,
+  H_CONTROL_ON:  1,
   H_CONTROL_OFF: 0,
   
   // CSS class names for different statuses.
