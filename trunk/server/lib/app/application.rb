@@ -49,10 +49,10 @@ class HApplication
     return file_read( fullpath )
   end
   
-  # Helmi RIA dependency reader, just supply
+  # Himle dependency reader, just supply
   # with everything you need, it keeps track of
   # what's loaded.
-  def deps_loader(msg, dependencies=[])
+  def include_js(msg, dependencies=[])
     
     ses = msg.session
     
@@ -62,24 +62,16 @@ class HApplication
       ses[:deps] = []
     end
     
+    dependencies = [dependencies] if dependencies.class == String
+    
     # Check the required dependencies until everything is loaded.
     # It returns them one-at-a time to make segmented loading easy.
     dependencies.each do |dependency|
       unless ses[:deps].include?( dependency )
         ses[:deps].push( dependency )
-        return [false, file_read( dependency )]
+        msg.reply(%{<script type="text/javascript" src="/gz/?js=#{dependency}"></script>})
       end
     end
-    
-    # If everything is done, it returns:
-    return [true, '']
-  end
-  
-  # Uses deps_loader to load everything you need.
-  def init_deps(msg, dependencies)
-    (everything_loaded,outp) = deps_loader( msg, dependencies )
-    msg.reply outp
-    return everything_loaded
   end
   
   
