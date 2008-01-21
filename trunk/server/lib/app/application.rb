@@ -69,7 +69,7 @@ class HApplication
     dependencies.each do |dependency|
       unless ses[:deps].include?( dependency )
         ses[:deps].push( dependency )
-        msg.reply(%{<script type="text/javascript" src="/gz/?js=#{dependency}"></script>})
+        msg.reply(%{document.write('<script type="text/javascript" src="/gz/?js=#{dependency}"></script>');})
       end
     end
   end
