@@ -38,6 +38,8 @@ class Main < HApplication
     lses = ses[:main]
     if lses[:boot] == 0
       lses[:boot] = 1
+      include_js( msg, 'basic' )
+      include_js( msg, 'window' )
       msg.reply require_js('start')
     elsif lses[:boot] == 1
       lses[:boot] = 2

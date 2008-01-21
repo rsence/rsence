@@ -3696,6 +3696,38 @@ HValue = HClass.extend({
 });
 
 
+
+JSLoader = Base.extend({
+  
+  constructor: function(_basePath){
+    this._loaded_js = [];
+    this._basePath  = _basePath;
+    this._req = null;
+    this._currJS = null;
+  },
+  _okay: function(_resp){
+    eval(_resp.responseText);
+    jsLoader._loaded_js.push(jsLoader._currJS);
+    jsLoader._currJS = null;
+  },
+  load: function(_jsName){
+    if(this._loaded_js.indexOf(_jsName)!=-1){return;}
+    this._currJS = _jsName;
+    req_args = {
+      onSuccess: function(resp){jsLoader._okay(resp);},
+      onFailure: function(resp){console.log("failed to load js: "+jsLoader._currJS);},
+      method:    'get',
+      asyncronous: false
+    };
+    this._req = new Ajax.Request( this._basePath+_jsName, req_args );
+  }
+  
+});
+
+onloader("jsLoader = new JSLoader('/gz/?js=');");
+
+
+
 /** class: HPoint
   *
   * Point objects represent points on a two-dimensional coordinate grid. The
