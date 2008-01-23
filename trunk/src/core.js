@@ -3724,10 +3724,10 @@ JSLoader = Base.extend({
   
   _okay: function(_resp){
     var _loadedJS = jsLoader._currJS.shift();
-    console.log('resp: ',_resp);
-    console.log('loadedJS: ',_loadedJS);
-    console.log('jsLoader.loadedJS: ',jsLoader._loadedJS);
-    console.log('jsLoader.currJS: ',jsLoader._currJS);
+    //console.log('resp: ',_resp);
+    //console.log('loadedJS: ',_loadedJS);
+    //console.log('jsLoader.loadedJS: ',jsLoader._loadedJS);
+    //console.log('jsLoader.currJS: ',jsLoader._currJS);
     jsLoader._loadedJS.push(_loadedJS);
     eval(_resp.responseText);
   }, 
