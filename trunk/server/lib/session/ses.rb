@@ -104,7 +104,11 @@ class HSessionManager
       ses_data = @sessions[ ses_id ]
       time_now = Time.now.to_i
       if ses_data[:timeout] < time_now
-        msg.reply "HTransporter.stop();alert('Session timed out. STOP.');"
+        #msg.reply "HTransporter.stop();alert('Session timed out. STOP.');"
+        msg.reply "jsLoader.load('basic');"
+        msg.reply "jsLoader.load('window');"
+        msg.reply "jsLoader.load('servermessage');"
+        msg.reply "reloadApp = new ReloadApp( 'Session Timeout', 'Your session has timed out. Please reload the page to continue.', '/'  );"
         @session_keys.delete( ses_key )
         @sessions.delete( ses_id )
         return false
@@ -125,7 +129,11 @@ class HSessionManager
       
       return true
     else
-      msg.reply "HTransporter.stop();alert('Invalid session key. STOP.');"
+      msg.reply "jsLoader.load('basic');"
+      msg.reply "jsLoader.load('window');"
+      msg.reply "jsLoader.load('servermessage');"
+      msg.reply "reloadApp = new ReloadApp( 'Invalid Session', 'Your session is invalid. Please reload the page to continue.', '/'  );"
+      #msg.reply "HTransporter.stop();alert('Invalid session key. STOP.');"
       return false
     end
   end
@@ -165,12 +173,8 @@ class HSessionManager
       else
         ## Check the session by key (check_ses returns the session data)
         ses_status = check_ses( msg, ses_key )
-      
       end # /ses_id
-      
-      ## If the session was invalid, return false
-      return false if not ses_status
-      
+      msg.ses_valid = ses_status
       return msg
     end # /ses_key
   end # /init_msg

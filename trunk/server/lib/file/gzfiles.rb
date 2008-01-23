@@ -6,6 +6,11 @@
 
 class GZFileServe < HTTPServlet::AbstractServlet
   
+  def initialize(*args)
+    scan_dirs
+    super(*args)
+  end
+  
   def suffix(file_path)
     return '.'+file_path.split('.')[-1]
   end

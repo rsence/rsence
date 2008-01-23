@@ -67,10 +67,14 @@ class HTransporter
       puts "CLIENT ERROR:"
       pp request.query['err_msg']
       puts
-      msg.reply( "HTransporter.stop(); console.log(#{request.query['err_msg'].inspect}); alert('Client Error. STOP.');" )
+      msg.reply "jsLoader.load('basic');"
+      msg.reply "jsLoader.load('window');"
+      msg.reply "jsLoader.load('servermessage');"
+      msg.reply "reloadApp = new ReloadApp( 'Session Timeout', 'Your session has timed out. Please reload the page to continue.', '/'  );"
+      #msg.reply( "HTransporter.stop(); console.log(#{request.query['err_msg'].inspect}); alert('Client Error. STOP.');" )
     end
     
-    if msg
+    if msg.ses_valid
       
       if msg.new_session and $config[:debug_mode]
         puts
@@ -92,22 +96,20 @@ class HTransporter
       
       ### Process outgoing values to client
       @valuemanager.to_client( msg )
-      msg.new_session = false if msg.new_session
       
-      ## return the output
-      if do_gzip
-        outp = GZString.new('')
-        gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-        gzwriter.write( msg.output.join("\n") )
-        gzwriter.close
-      else
-        outp = msg.output.join("\n")
-      end
-      response['Content-Size'] = outp.size
-      return outp
-    else
-      return "alert('session failure.');"
     end
+    
+    ## return the output
+    if do_gzip
+      outp = GZString.new('')
+      gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
+      gzwriter.write( msg.output.join("\n") )
+      gzwriter.close
+    else
+      outp = msg.output.join("\n")
+    end
+    response['Content-Size'] = outp.size
+    return outp
   end
   
 end

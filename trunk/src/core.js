@@ -1,4 +1,20 @@
-// all properties should be installed in constructor because otherwise those
+/*
+
+HIMLE RIA Framework
+
+Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+Copyright (C) 2006-2007 Helmi Technologies Inc.
+
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version. 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details. 
+You should have received a copy of the GNU General Public License along with this program;
+if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+*/// all properties should be installed in constructor because otherwise those
 // are iterated unnecessary
 
 // super keyword conflicts for example with Safari
@@ -3700,26 +3716,34 @@ HValue = HClass.extend({
 JSLoader = Base.extend({
   
   constructor: function(_basePath){
-    this._loaded_js = [];
+    this._loadedJS = [];
     this._basePath  = _basePath;
     this._req = null;
-    this._currJS = null;
+    this._currJS = [];
   },
+  
   _okay: function(_resp){
+    var _loadedJS = jsLoader._currJS.shift();
+    console.log('resp: ',_resp);
+    console.log('loadedJS: ',_loadedJS);
+    console.log('jsLoader.loadedJS: ',jsLoader._loadedJS);
+    console.log('jsLoader.currJS: ',jsLoader._currJS);
+    jsLoader._loadedJS.push(_loadedJS);
     eval(_resp.responseText);
-    jsLoader._loaded_js.push(jsLoader._currJS);
-    jsLoader._currJS = null;
-  },
+  }, 
+  
   load: function(_jsName){
-    if(this._loaded_js.indexOf(_jsName)!=-1){return;}
-    this._currJS = _jsName;
+    if((jsLoader._currJS.indexOf(_jsName)!=-1)&&(jsLoader._loadedJS.indexOf(_jsName)!=-1)){return;}
+    this._currJS.push(_jsName);
     req_args = {
       onSuccess: function(resp){jsLoader._okay(resp);},
       onFailure: function(resp){console.log("failed to load js: "+jsLoader._currJS);},
       method:    'get',
-      asyncronous: false
+      asynchronous: false
     };
     this._req = new Ajax.Request( this._basePath+_jsName, req_args );
+    //document.write('<script type="text/javascript" src="'+this._basePath+_jsName+'"><'+'/script>');
+    //this._loaded_js.push(_jsName);
   }
   
 });
@@ -7739,3 +7763,52 @@ HComponentDefaults = HClass.extend({
   
 });
 
+/*
+
+HIMLE RIA Framework
+
+Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+Copyright (C) 2006-2007 Helmi Technologies Inc.
+
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version. 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details. 
+You should have received a copy of the GNU General Public License along with this program;
+if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+*//*
+
+HIMLE RIA Framework
+
+Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+Copyright (C) 2006-2007 Helmi Technologies Inc.
+
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version. 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details. 
+You should have received a copy of the GNU General Public License along with this program;
+if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+*//*
+
+HIMLE RIA Framework
+
+Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+Copyright (C) 2006-2007 Helmi Technologies Inc.
+
+This program is free software; you can redistribute it and/or modify it under the terms
+of the GNU General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later version. 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details. 
+You should have received a copy of the GNU General Public License along with this program;
+if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+*/
