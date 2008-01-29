@@ -77,7 +77,7 @@ class GZFileServe < HTTPServlet::AbstractServlet
     response['Expires'] = (Time.now+$config[:cache_expire]).gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z') if $config[:cache_maximize]
     if not defined? @@gz_cache
       do_scan = true
-    elsif not @@scan_time == File.stat($config[:ria_paths][:ui_path][1]).mtime
+    elsif not @@scan_time == File.stat(File.join($config[:ria_paths][:ui_path][1],'built')).mtime
       do_scan = true
     else
       do_scan = false
