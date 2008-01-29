@@ -51,25 +51,19 @@ class HSystem
         d.sort.each do |appname|
           next if(appname =~ /^\./)
           
-          @@curr_app_path = "#{appdir}/#{appname}"
+          @@curr_app_path = File.join(appdir,appname)
           
           next unless(FileTest.directory?(@@curr_app_path))
           
-          filename = "#{@@curr_app_path}/#{appname}.rb"
+          filename = File.join(@@curr_app_path,"#{appname}.rb")
+          
+          next if File.exist?(File.join(@@curr_app_path,'disabled'))
           
           # Create a new, anonymous module as the application namespace.
           app_module = Module.new
           
           begin
             app_as_string = IO.readlines( filename ).join
-            #puts
-            #puts '-'*40
-            #puts "Loading #{filename.inspect}"
-            #puts
-            #puts app_as_string
-            #puts
-            #puts '-'*40
-            #puts
             app_module.module_eval( app_as_string )
           rescue
             puts "WARN: Application #{appname} failed to initialize (#{@@curr_app_path.inspect})."
