@@ -3355,7 +3355,7 @@ HTransporter = Base.extend({
         else {
           this.isBusy = false;
         }
-
+        
       }
       this.req_timeout = setTimeout('HTransporter.sync();',this.syncDelay);
     }

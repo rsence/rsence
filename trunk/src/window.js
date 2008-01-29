@@ -349,6 +349,8 @@ HWindowView = HView.extend({
 },{
   _tmplElementPrefix: "windowview"
 });
+
+
 /** class: HWindowControl
   *
   * HWindowControl (with alias HWindow) is the main component of the HWindow classes.

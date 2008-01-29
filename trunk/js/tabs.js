@@ -1,26 +1,26 @@
 
-HTabBar=HView.extend({packageName:"tab",componentName:"tabbar",constructor:function(_1,_7){if(this.isinherited){this.base(_1,_7);}
-else{this.isinherited=true;this.base(_1,_7);this.isinherited=false;}
+HTabBar=HView.extend({packageName:"tab",componentName:"tabbar",constructor:function(_1,_5){if(this.isinherited){this.base(_1,_5);}
+else{this.isinherited=true;this.base(_1,_5);this.isinherited=false;}
 this.type='[HTabBar]';this.preserveTheme=true;if(!this.isinherited){this.draw();}},draw:function(){if(!this.drawn){this.drawRect();this.drawMarkup();this.drawn=true;}
-this.drawRect();}});HTabLabel=HButton.extend({packageName:"tab",componentName:"tablabel",constructor:function(_F,_p,_7,_2){if(!_2){var _2={};}
+this.drawRect();}});HTabLabel=HButton.extend({packageName:"tab",componentName:"tablabel",constructor:function(_F,_p,_5,_2){if(!_2){var _2={};}
 if(!_2.label){throw("HTabLabelConstructionError: No label specified!");}
 if(null===_2.tabId||undefined===_2.tabId){throw("HTabLabelConstructionError: No id specified!");}
 if(!_2.tabControl){throw("HTabLabelConstructionError: No control specified!");}
 if(!_2.highlight){_2.highlight=false;}
 if(!_2.events){_2.events={mouseDown:true};}
-var _1=new HRect(_F,0,_F+5,_p);if(this.isinherited){this.base(_1,_7,_2);}
-else{this.isinherited=true;this.base(_1,_7,_2);this.isinherited=false;}
-this.type='[HTabLabel]';this._6f="tabhighlight";this.tabControl=_2.tabControl;this.tabId=_2.tabId;this.setHighlight(_2.highlight);if(!this.isinherited){this.draw();}},setHighlight:function(_5){this.highlight=_5;if(_5){this.tabControl.selectTab(this.tabId);}
+var _1=new HRect(_F,0,_F+5,_p);if(this.isinherited){this.base(_1,_5,_2);}
+else{this.isinherited=true;this.base(_1,_5,_2);this.isinherited=false;}
+this.type='[HTabLabel]';this._6f="tabhighlight";this.tabControl=_2.tabControl;this.tabId=_2.tabId;this.setHighlight(_2.highlight);if(!this.isinherited){this.draw();}},setHighlight:function(_6){this.highlight=_6;if(_6){this.tabControl.selectTab(this.tabId);}
 this.refresh();},mouseDown:function(_8,_a,_6w){if(this.tabControl&&!this.highlight){this.setHighlight(true);}},setValue:function(_4){this.base(_4);if(this.value&&this.tabControl){this.tabControl.selectTab(this.tabId);}},refresh:function(){if(this.drawn){if(this.markupElemIds['label']){var _2M=this.stringWidth(this.label,null,this.markupElemIds['label']);this.rect.setWidth(_2M+16);}
 this.base();if(!this._1r){this._1r=this.bindDomElement(this._6f+this.elemId);}
 if(this._1r){var _3Z=(prop_get(this._1r,'visibility')=='hidden');if(_3Z&&this.highlight){prop_set(this._1r,'visibility','',true);}
-else if(!_3Z&&!this.highlight){prop_set(this._1r,'visibility','hidden',true);}}}}});HTabView=HView.extend({packageName:"tab",componentName:"tabview",constructor:function(_1,_7,_2){if(!_2){_2={};}
-if(this.isinherited){this.base(_1,_7,_2);}
-else{this.isinherited=true;this.base(_1,_7,_2);this.isinherited=false;}
+else if(!_3Z&&!this.highlight){prop_set(this._1r,'visibility','hidden',true);}}}}});HTabView=HView.extend({packageName:"tab",componentName:"tabview",constructor:function(_1,_5,_2){if(!_2){_2={};}
+if(this.isinherited){this.base(_1,_5,_2);}
+else{this.isinherited=true;this.base(_1,_5,_2);this.isinherited=false;}
 this.type='[HTabView]';this.preserveTheme=true;if(!this.isinherited){this.draw();}},draw:function(){if(!this.drawn){this.drawMarkup();var _0R=this.bindDomElement(HTabView._1F+this.elemId);if(!_0R){throw("HTabView: The HTML template must have an element with "+"the ID '"+HTabView._1F+" + this.elemId'.");}
 elem_append(this.parent.elemId,_0R);elem_append(0,this.elemId);elem_del(this.elemId);elem_replace(this.elemId,elem_get(_0R));}
-this.drawRect();}},{_1F:"tabview"});HTabControl=HControl.extend({packageName:"tab",componentName:"tabcontrol",constructor:function(_1,_7,_2){if(this.isinherited){this.base(_1,_7,_2);}
-else{this.isinherited=true;this.base(_1,_7,_2);this.isinherited=false;}
+this.drawRect();}},{_1F:"tabview"});HTabControl=HControl.extend({packageName:"tab",componentName:"tabcontrol",constructor:function(_1,_5,_2){if(this.isinherited){this.base(_1,_5,_2);}
+else{this.isinherited=true;this.base(_1,_5,_2);this.isinherited=false;}
 this.tabDefaults=new(Base.extend({label:'Untitled',labelHeight:21,labelWidth:192}).extend(_2));this.type='[HTabControl]';this.preserveTheme=true;this.tabs={};this._M=[];this._5J=true;if(!this.isinherited){this.draw();}},draw:function(){if(!this.drawn){var _1=this.rect;var _5A=new HRect(0,0,_1.width,this.tabDefaults.labelHeight);this.labelViews=new HTabBar(_5A,this);this.labelViews.draw();this._0c=0;var _6m=0;var _6p=this.tabDefaults.labelHeight;var _6n=_1.width;var _6o=(_1.height-this.tabDefaults.labelHeight);var _3i=new HRect(_6m,_6p,_6n,_6o);this.tabDefaults.rect=new HRect(0,0,_3i.width,_3i.height);this.tabViews=new HView(_3i,this);this.tabViews.draw();this.activeTab=-1;this.drawn=true;}
 this.drawRect();},addTab:function(_0y,_36,_u,_2M){if(this._5J){this.draw();}
 if(!_0y){var _6c=this.tabDefaults.rect;_0y=new HTabView(_6c,this.tabViews);_0y.draw();}
