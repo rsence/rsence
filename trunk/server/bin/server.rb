@@ -112,12 +112,12 @@ end
 def init
   
   # This is the main http server instance:
-  server = HTTPServer.new(
+  $server = HTTPServer.new(
     $config[:httpserver]
   )
   
   # The initialization code lives in the root directory servlet
-  server.mount(
+  $server.mount(
     '/',
     HInitialPage
   )
@@ -132,27 +132,27 @@ def init
   #    puts "WARN: Mount of #{mount_path} failed, pointing to #{filesys_path}."
   #  end
   #end
-  server.mount( $config[:ria_paths][:rsrc_path][0], HTTPServlet::FileHandler, $config[:ria_paths][:rsrc_path][1] )
+  $server.mount( $config[:ria_paths][:rsrc_path][0], HTTPServlet::FileHandler, $config[:ria_paths][:rsrc_path][1] )
   
   # The server front-end is directed here:
-  server.mount( '/ui', Broker )
+  $server.mount( '/ui', Broker )
   
   # Pre-Compressed JS File handler:
-  server.mount( '/gz', GZFileServe )
+  $server.mount( '/gz', GZFileServe )
   
-  yield server if block_given?
+  yield $server if block_given?
   
   
   unless RUBY_PLATFORM.include? "mswin32"
     ['INT', 'TERM', 'KILL', 'HUP'].each do |signal|
       trap(signal) {
-        server.shutdown
+        $server.shutdown
       }
     end
   end
   
   # should be daemonized, also should redirect the stdout to log files.
-  server.start
+  $server.start
 end
 init
 
