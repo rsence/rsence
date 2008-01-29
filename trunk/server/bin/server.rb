@@ -93,7 +93,7 @@ require 'lib/http/frontend'
 $config[:httpserver][:MaxClients]     = 999   # maximum number of the concurrent connections
 #$config[:httpserver][:ServerType]     = nil   # default: WEBrick::SimpleServer
 #$config[:httpserver][:Logger]         = TinyLog.new
-$config[:httpserver][:ServerSoftware] = "AppSpace UI Server"
+$config[:httpserver][:ServerSoftware] = "HIMLE Server"
 #$config[:httpserver][:TempDir]        = ENV['TMPDIR']||ENV['TMP']||ENV['TEMP']||'/tmp'
 #$config[:httpserver][:DoNotListen]    = false
 #$config[:httpserver][:StartCallback]  = nil
