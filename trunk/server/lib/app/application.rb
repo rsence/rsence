@@ -133,4 +133,18 @@ class HApplication
     @inited = true
   end
   
+  # extend this method to invoke actions
+  # whenever a new session is created.
+  # (reload or other page load without the ses_key
+  # cookie set for an valid and active session)
+  def init_ses( msg )
+  end
+  
+  # extend this method to invoke actions
+  # whenever a user restores an active session.
+  # (reload or other page load with the ses_key
+  # cookie set for an valid and active session)
+  def restore_ses( msg )
+  end
+  
 end

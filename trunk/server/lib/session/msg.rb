@@ -30,8 +30,8 @@
 ##
 class Message
   
-  attr_reader :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :ses_valid
-  attr_writer :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :ses_valid
+  attr_reader :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid
+  attr_writer :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid
   
   def initialize( request, response )
     
@@ -49,6 +49,7 @@ class Message
     @output      = []
     
     @new_session = false
+    @restored_session = false
     
     @valuemanager = nil
     

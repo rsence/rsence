@@ -44,19 +44,41 @@ class HValueManager
     @value_parsers = {}
     
     @value_parsers['hvalue'] = HValueParser.new
-    @value_parsers['color']  = HColorValueParser.new
+    #@value_parsers['color']  = HColorValueParser.new
     
+=begin
+## Example @values instance
+
+@values = {
+  1 => {
+    :sync  => [],
+    :check => [],
+    "0tXHU_Qf9mucNcuB1u8mPAAHlWfqRmRF5209" => #<HValue:0x357870
+          @members = [],
+          @sync    = false,
+          @val_id  = "0tXHU_Qf9mucNcuB1u8mPAAHlWfqRmRF5209",
+          @data    = "18:16:54",
+          @type    = "hvalue",
+          @jstype  = "string",
+          @valid   = true
+    >,
+    "YLVZ3Ew0H_eTP02YwjTPKINiKGzZI9KQ0YOx" => #<HValue:0x35785c
+          @members = [ #<Method: #<Module:0x3627e8>::Main#clicker> ],
+          @sync    = false,
+          @val_id  = "YLVZ3Ew0H_eTP02YwjTPKINiKGzZI9KQ0YOx",
+          @data    = 0,
+          @type    = "hvalue",
+          @jstype  = "number",
+          @valid   = true
+    >
+  }
+}
+=end
+
     ## local / global value storage
     @values = {
-      
       ## session-specific values, by session id, see init_session_values
       :session => {
-      },
-      
-      ## global values, shared by all sessions, by id.
-      :global  => {
-        # use names as a secondary reference to get the id.
-        :names => {}
       }
     }
     
@@ -75,10 +97,9 @@ class HValueManager
   
   ## make the session-specific value collection, if not found
   def init_session_values( msg )
-    @values[ :session ][ msg.ses_id ] = {
+    @values[:session][msg.ses_id] = {
       :sync  => [], # value id's to sync to client
-      :check => [], # value id's to validate in server (from client)
-      :names => {}  # map value names to value id's (both global and local)
+      :check => []  # value id's to validate in server (from client)
     }
   end
   
@@ -87,8 +108,57 @@ class HValueManager
   #  - creates a new structure for the session.
   ##
   def init_ses( msg )
-    init_session_values( msg ) if not @values[ :session ].has_key?( msg.ses_id )
+    # puts "Init session"
+    # puts
+    # puts @values[:session].inspect
+    # puts
+    unless @values[:session].has_key?(msg.ses_id)
+      init_session_values( msg )
+    end
+    resend_session_values( msg ) if msg.restored_session
   end
+  
+=begin
+## Example session instance
+@values[:session][1] => {
+  :deps    => [],
+  :timeout => 1201710246,
+  :main    => {
+    :clicker_val  =>  #<HValue:0x357c58
+            @sync    = false,
+            @val_id  = "MGlLQd3HMEJBORHTF08hNpYljT1xGuvEZh07",
+            @type    = "hvalue",
+            @jstype  = "number",
+            @valid   = true,
+            @data    = 0,
+            @members = [#<Method: #<Module:0x3641ec>::Main#clicker>]
+    >,
+    :server_time  =>  #<HValue:0x357c6c
+            @sync    = false,
+            @val_id  = "ZsWdAdZE8T6qeut94FXuHkH_BG3i0YKPs76T",
+            @type    = "hvalue",
+            @jstype  = "string",
+            @valid   = true,
+            @data    = "18:09:04",
+            @members = []
+    >,
+    :boot => 0
+  },
+  :ses_id => 1
+}
+=end
+  def resend_session_values( msg )
+    # puts "Resend session: #{msg.ses_id}"
+    # puts
+    # puts @values[:session][msg.ses_id].inspect
+    # puts
+    @values[:session][msg.ses_id].each_key do |val_id|
+      unless [:sync,:check].include?(val_id)
+        @values[:session][msg.ses_id][val_id].restore( msg )
+      end
+    end
+  end
+  
   
   ###
   ## Builds the msg.hsyncvalues hash of data from the client request.

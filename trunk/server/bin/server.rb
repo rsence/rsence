@@ -134,6 +134,9 @@ def init
   #end
   $server.mount( $config[:ria_paths][:rsrc_path][0], HTTPServlet::FileHandler, $config[:ria_paths][:rsrc_path][1] )
   
+  # The server cookie-aware front-end is directed here:
+  $server.mount( '/hello', Broker )
+  
   # The server front-end is directed here:
   $server.mount( '/ui', Broker )
   

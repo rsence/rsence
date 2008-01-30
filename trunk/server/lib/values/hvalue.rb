@@ -41,13 +41,18 @@ class HValue
     ## Store the object here
     session_values[ @val_id  ]  = self
     
-    ## Initialize a new client value
-    init_str = "new HValue(#{@val_id.inspect}, #{@data.inspect});"
-    msg.reply init_str
+    restore( msg )
     
     ## Set the valid flag, so we know that the value is initially in sync
     @valid = true
     
+  end
+  
+  ## re-send client-size representation
+  def restore( msg )
+    ## Initialize a new client value
+    init_str = "new HValue(#{@val_id.inspect}, #{@data.inspect});"
+    msg.reply init_str
   end
   
   def initialize( msg, data )

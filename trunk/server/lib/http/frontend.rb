@@ -25,7 +25,11 @@ class Broker < HTTPServlet::AbstractServlet
   
   ## Forwards the POST/GET request to the HTransporter instance transporter
   def do_GET( request, response )
-    response.body = $config[:transporter].from_client( request, response )
+    if request.unparsed_uri[0..2] == '/ui'
+      response.body = $config[:transporter].from_client( request, response, false )
+    elsif request.unparsed_uri[0..5] == '/hello'
+      response.body = $config[:transporter].from_client( request, response, true )
+    end
   end
   
   alias do_POST do_GET

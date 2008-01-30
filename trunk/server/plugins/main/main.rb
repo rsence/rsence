@@ -20,13 +20,11 @@ class Main < HApplication
     server_time.set(msg,Time.now.strftime("%H:%M:%S"))
   end
   
-  
-  # this gets called on every request performed with an active session
-  def idle(msg)
-    
-    # assigns the active session to ses
+  # new session initialization, called only once per session.
+  # do your initial settings here.
+  def init_ses(msg)
     ses = msg.session
-    if not ses.has_key?(:main) or msg.new_session
+    if not ses.has_key?(:main)
       ses[:main] = {
         :boot => 0,
         :server_time  => HValue.new(msg,Time.now.strftime("%H:%M:%S")),
@@ -34,20 +32,33 @@ class Main < HApplication
       }
       ses[:main][:clicker_val].bind(self.method('clicker'))
     end
-    
-    lses = ses[:main]
-    if lses[:boot] == 0
-      lses[:boot] = 1
+  end
+  
+  # called when a session is restored from cookie
+  def restore_ses(msg)
+    ses = msg.session
+    if ses.has_key?(:main)
+      ses[:main][:boot] = 0
+    end
+  end
+  
+  # this gets called on every request performed with an active session
+  def idle(msg)
+    mses = msg.session[:main]
+    if msg.restored_session
+      puts "Restored session: "
+      puts msg.session.inspect
+    end
+    if mses[:boot] == 0
       include_js( msg, 'basic' )
       include_js( msg, 'window' )
       msg.reply require_js('start')
-    elsif lses[:boot] == 1
-      lses[:boot] = 2
+    elsif mses[:boot] == 1
       msg.reply require_js('clicker')
-      msg.reply "clickerApp = new ClickerApp('#{lses[:clicker_val].val_id}','#{lses[:server_time].val_id}');"
+      msg.reply "clickerApp = new ClickerApp('#{mses[:clicker_val].val_id}','#{mses[:server_time].val_id}');"
       msg.reply "HTransporter.setPollMode(false);"
     end
-    
+    mses[:boot] += 1
   end
   
 end

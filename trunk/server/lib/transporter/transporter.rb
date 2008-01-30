@@ -44,7 +44,7 @@ class HTransporter
   end
   
   ## 
-  def from_client(request, response)
+  def from_client(request, response, cookies=false)
     
     ## The response status should always be 200 (OK)
     response.status = 200
@@ -52,7 +52,7 @@ class HTransporter
     # It's better to evaluate plain text than to respond with js.
     response.content_type = 'text/javascript; charset=utf-8'
     response['Cache-Control'] = 'no-cache'
-    if request['Accept-Encoding'].include?('gzip')
+    if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip')
       response.chunked = true
       response['Content-Encoding'] = 'gzip'
       do_gzip = true
@@ -60,7 +60,7 @@ class HTransporter
       do_gzip = false
     end
     
-    msg = @session.init_msg( request, response )
+    msg = @session.init_msg( request, response, cookies )
     
     if request.query.has_key?('err_msg')
       puts
@@ -70,12 +70,15 @@ class HTransporter
       msg.reply "jsLoader.load('basic');"
       msg.reply "jsLoader.load('window');"
       msg.reply "jsLoader.load('servermessage');"
-      msg.reply "reloadApp = new ReloadApp( 'Session Timeout', 'Your session has timed out. Please reload the page to continue.', '/'  );"
+      msg.reply "reloadApp = new ReloadApp( 'Client Error', 'Your web browser has encountered an javascript error. Please reload the page to continue.', '/'  );"
       #msg.reply( "HTransporter.stop(); console.log(#{request.query['err_msg'].inspect}); alert('Client Error. STOP.');" )
     end
     
     if msg.ses_valid
       
+      if cookies
+        msg.reply('HTransporter.url_base="/ui";')
+      end
       if msg.new_session and $config[:debug_mode]
         puts
         puts "new session. rescanning apps."
@@ -91,6 +94,13 @@ class HTransporter
       
       @valuemanager.validate( msg )
       
+      if msg.restored_session
+        msg.session[:deps] = []
+        @system.delegate( 'restore_ses', msg )
+      elsif msg.new_session
+        @system.delegate( 'init_ses', msg )
+      end
+      
       ### Allows every application to respond to the idle call
       @system.idle( msg )
       
@@ -103,10 +113,10 @@ class HTransporter
     if do_gzip
       outp = GZString.new('')
       gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-      gzwriter.write( msg.output.join("\n") )
+      gzwriter.write( msg.output.join("\r\n") )
       gzwriter.close
     else
-      outp = msg.output.join("\n")
+      outp = msg.output.join("\r\n")
     end
     response['Content-Size'] = outp.size
     return outp

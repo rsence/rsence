@@ -32,6 +32,12 @@ class HSessionManager
     ## Session id by key
     @session_keys = {}
     
+    ## Session id by cookie key
+    @session_cookie_keys = {}
+    
+    ## Session key by id
+    @session_ids = {}
+   
     ## 'Unique' Random String generator
     str_len    = 64   # the length of the string (actually returns 12 chars more)
     min_buffer = 600  # the minimum size the random generated buffer is allowed to be
@@ -48,6 +54,8 @@ class HSessionManager
     @valuemanager = valuemanager
     @system       = system
     
+    # regex to match ipv4 addresses
+    @ipv4_reg = /^([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[1-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])$/
   end
   
   ## Returns an unique session identifier
@@ -80,7 +88,14 @@ class HSessionManager
     # map the key back to the id
     @session_keys[ ses_key ] = ses_id
     
-    ### Tell the client what the new key is
+    # map the id back to the key
+    @session_ids[ ses_id ] = ses_key
+    
+      # map the ses_id to cookie key
+    cookie_key = new_ses_key+new_ses_key+new_ses_key
+    @session_cookie_keys[ cookie_key ] = ses_id
+    
+  ### Tell the client what the new key is
     msg.reply "HTransporter.ses_id='#{ses_key}';"
     
     ### Make a common storage object in the client, we'll add value objects to it by name.
@@ -92,7 +107,7 @@ class HSessionManager
     
     msg.new_session = true
     
-    return true
+    return cookie_key
     
   end
   
@@ -120,6 +135,7 @@ class HSessionManager
       @session_keys.delete( ses_key )
       ses_key = new_ses_key
       @session_keys[ ses_key ] = ses_id
+      @session_ids[ ses_id] = ses_key
       msg.reply "HTransporter.ses_id='#{ses_key}';"
       ## /extra security
       
@@ -139,37 +155,74 @@ class HSessionManager
   end
   
   ### Creates a message and checks the session
-  def init_msg( request, response )
-    
+  def init_msg( request, response, cookies=false )
     ## The 'ses_id' request key is required (the client defaults to '0')
     if not request.query.has_key?( 'ses_id' )
-      
       return false
-      
     else
-      
       ses_key = request.query[ 'ses_id' ]
-      
       ## Use a message object to pass arguments to plugin methods
       msg = Message.new( request, response )
       
       msg.valuemanager = @valuemanager
       msg.system       = @system
       
-      ## The client tells that its ses_id is '0', until the server tells it otherwise.
+      ## The client tells that its ses_key is '0', until the server tells it otherwise.
       if ses_key == '0'
-        
-        ##
-        #
-        #  USER / COOKIE MANAGEMENT GOES HERE
-        #
-        ##
-        
-        ## Initialize a new session
-        ses_status = init_ses( msg )
-        
-        ## Makes sure we have value storage for the session
-        @valuemanager.init_ses( msg )
+        if cookies
+          cookie_key = false
+          request.cookies.each do |cookie|
+            if cookie.name == 'ses_key'
+              cookie_key = cookie.value
+              break
+            end
+          end
+          if cookie_key
+            cookie_key_exist = @session_cookie_keys.has_key?( cookie_key )
+          end
+          if cookie_key and cookie_key_exist
+            ses_id = @session_cookie_keys[ cookie_key ]
+            ses_key = @session_ids[ ses_id ]
+            ses_status = check_ses( msg, ses_key )
+            @session_cookie_keys.delete( cookie_key )
+            if ses_status
+              cookie_key = new_ses_key+new_ses_key+new_ses_key
+              @session_cookie_keys[ cookie_key ] = ses_id
+              msg.restored_session = true
+              @valuemanager.init_ses( msg )
+              msg.new_session = false
+            else
+              cookie_key = false
+            end
+          else
+            cookie_key = false
+          end
+          unless cookie_key
+            cookie_key = init_ses( msg )
+            ses_status = true
+            ## Makes sure we have value storage for the session
+            @valuemanager.init_ses( msg )
+          end
+          ses_cookie = WEBrick::Cookie.new('ses_key',cookie_key)
+          ses_cookie.comment = 'Himle session key (just for your convenience)'
+          domain = request.host
+          if @ipv4_reg.match(domain)
+            ses_cookie.domain  = domain
+          elsif domain.include?('.')
+            ses_cookie.domain  = ".#{domain}"
+          end
+          ses_cookie.max_age = @timeout_secs
+          ses_cookie.path    = '/hello'
+          #ses_cookie.secure  = false
+          ses_cookie_str = ses_cookie.to_s
+          response['Set-Cookie'] = ses_cookie_str
+        else
+          ## Initialize a new session
+          init_ses( msg )
+          ses_status = true
+          ## Makes sure we have value storage for the session
+          @valuemanager.init_ses( msg )
+        end
       else
         ## Check the session by key (check_ses returns the session data)
         ses_status = check_ses( msg, ses_key )
@@ -179,3 +232,6 @@ class HSessionManager
     end # /ses_key
   end # /init_msg
 end
+
+
+
