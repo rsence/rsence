@@ -223,6 +223,14 @@ class HValueParser
     ## get the value data
     val_data = hvalue_xml.text
     
+    if val_jstype == 'string'
+      val_data = val_data.unpack('m*')[0]
+      while val_data[-1..-1] == "\000"
+        val_data.chop!
+      end
+      #puts val_data.inspect
+    end
+    
     ## format the value data
     val_data = val_data.to_i if val_jstype == 'number'
     

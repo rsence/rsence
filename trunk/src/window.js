@@ -906,6 +906,12 @@ HWindowControl = HControl.extend({
     }
     
     this.calcWindowPartRects();
+  },
+  
+  stopAnimation: function() {
+    this.base();
+    this.calcWindowPartRects();
+    this.refresh();
   }
   
 });

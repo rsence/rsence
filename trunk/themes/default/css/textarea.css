@@ -1,4 +1,4 @@
-.helmiTheme .textarea {
+.default .textarea {
   cursor: pointer;
   position: absolute;
   left: 0px; right: 0px; top: 0px; bottom: 0px;
@@ -8,18 +8,18 @@
   width: auto;
   padding: 0;
 }
-.helmiTheme .textarea .state {
+.default .textarea .state {
   position: absolute;
   left: 1px; right: 1px; top: 1px; bottom: 1px;
   border: 1px solid #fff;
   line-height: 0px;
   background-color: #f0f0f0;
 }
-.helmiTheme .textarea #corner {
+.default .textarea #corner {
   position: absolute; background-color: #fff;
   line-height: 1px; width:1px; height: 1px;
 }
-.helmiTheme .textarea .bg {
+.default .textarea .bg {
   position: absolute;
   left: 0px; right: 0px; top: 0px; bottom: 0px;
   padding: 1px;
@@ -31,27 +31,27 @@
 .active > .textarea #border {
   background-color: #fb9;
 }
-.helmiTheme .textarea .corner {
+.default .textarea .corner {
   position: absolute; background-color: #fff;
   line-height: 1px; width:1px; height: 1px;
 }
-.helmiTheme .textarea .corner-nw {
+.default .textarea .corner-nw {
   left: 0px; top: 0px;
 }
-.helmiTheme .textarea .corner-ne {
+.default .textarea .corner-ne {
   right: 0px; top: 0px;
 }
-.helmiTheme .textarea .corner-sw {
+.default .textarea .corner-sw {
   left: 0px; bottom: 0px;
 }
-.helmiTheme .textarea .corner-se {
+.default .textarea .corner-se {
   right: 0px; bottom: 0px;
 }
-.helmiTheme .textarea .vertical-middle {
+.default .textarea .vertical-middle {
   position:absolute;
   left:0px;top:50%;right:0px;
 }
-.helmiTheme .textarea textarea {
+.default .textarea textarea {
   position: absolute;
   left: 1px; right: 1px; top: 1px; bottom: 1px;
   border: 0;

@@ -82,7 +82,7 @@ class HValueManager
       }
     }
     
-    @value_implementation_version = 2240
+    @value_implementation_version = 8114 # 8000+revision
     
     @value_id_generator = HRandgen.new(16,600)
     #@last_value_id = 0
@@ -170,6 +170,8 @@ class HValueManager
   ## <hsyncvalues version="1700" length="1"><hvalue id="launch:load_something" order="0" jstype="boolean" length="4">true</hvalue></hsyncvalues>
   ###
   def from_client( msg, syncdata_str )
+    
+    #puts syncdata_str.inspect
     
     # makes an xml parser object 'syncdata_xml' of the xml string 'syncdata_str'
     syncdata_xml = Document.new( syncdata_str )
