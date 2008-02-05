@@ -15,7 +15,7 @@ ReloadApp = HApplication.extend({
       this
     );
     
-    this._backgroundView.setStyle('opacity','0.75');
+    this._backgroundView.setStyle('opacity',0.75);
     this._backgroundView.setStyle('background-color','#666');
     
     var _alertWidth  = 400;
@@ -30,16 +30,15 @@ ReloadApp = HApplication.extend({
     
     this._alertWindow = new HWindowControl(
       _alertRect,
-      this._backgroundView, {
+      this, {
         label: _windowTitle,
         minSize: [_alertWidth,_alertHeight],
         maxSize: [_alertWidth,_alertHeight],
-        enabled: false
+        enabled: true
       }
     );
     
     var _alertMessageView = this._alertWindow.windowView;
-    _alertMessageView.setStyle('opacity','1.0');
     
     var _alertMessageTitleBox = new HView( new HRect( 10, 10, 350, 32 ), _alertMessageView );
     _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
@@ -60,6 +59,7 @@ ReloadApp = HApplication.extend({
       _alertMessageView,
       { label: 'Reload', action: this._clicked }
     );
+    HTransporter.stop();
   },
   _clicked: function(){
     location.href = reloadApp._destinationUrl;
