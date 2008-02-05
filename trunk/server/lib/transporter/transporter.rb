@@ -63,10 +63,12 @@ class HTransporter
     msg = @session.init_msg( request, response, cookies )
     
     if request.query.has_key?('err_msg')
-      puts
-      puts "CLIENT ERROR:"
-      pp request.query['err_msg']
-      puts
+      if $config[:debug_mode]
+        puts
+        puts "CLIENT ERROR:"
+        pp request.query['err_msg']
+        puts
+      end
       msg.reply "jsLoader.load('basic');"
       msg.reply "jsLoader.load('window');"
       msg.reply "jsLoader.load('servermessage');"

@@ -118,6 +118,22 @@ class HValueManager
     resend_session_values( msg ) if msg.restored_session
   end
   
+  ##
+  # Cleans up session-related structures
+  ##
+  def expire_ses( ses_id )
+    #puts "ValueManager.expire_ses( #{ses_id} )"
+    @values[:session][ses_id].each_key do |val_id|
+      unless [:sync,:check].include?(val_id)
+        @values[:session][ses_id][val_id].die()
+        @values[:session][ses_id].delete( val_id )
+      end
+    end
+    @values[:session][ses_id].delete( :sync )
+    @values[:session][ses_id].delete( :check )
+    @values[:session].delete(ses_id)
+  end
+  
 =begin
 ## Example session instance
 @values[:session][1] => {

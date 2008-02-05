@@ -30,8 +30,7 @@
 ##
 class Message
   
-  attr_reader :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid
-  attr_writer :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid
+  attr_accessor :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid, :request, :response
   
   def initialize( request, response )
     

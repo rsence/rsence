@@ -83,11 +83,11 @@ class HValue
   ## bind the value to the object
   def bind( obj_ref )
     if @members.include?( obj_ref )
-      puts "HValue; duplicate object binding of the value! (#{obj_ref.inspect})"
+      #puts "HValue; duplicate object binding of the value! (#{obj_ref.inspect})"
       return
     end
     @members.push( obj_ref )
-    puts "value bound"
+    #puts "value bound"
   end
   
   ## release the binding of the value
@@ -145,7 +145,7 @@ class HValue
       @data = data
       
       #puts "-"*80
-      puts "#{msg.ses_id}.#{@val_id} = #{@data}"
+      puts "#{msg.ses_id}.#{@val_id} = #{@data}" if $config[:debug_mode]
       #puts "-"*80
       #puts
       
@@ -190,6 +190,10 @@ class HValue
   ## tell the client that the value changed
   def to_client( msg )
     msg.reply "HVM.set( #{@val_id.inspect}, #{@data.inspect} );" 
+  end
+  
+  ## clean up self
+  def die
   end
   
 end
