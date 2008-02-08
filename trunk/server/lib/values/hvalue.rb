@@ -119,33 +119,15 @@ class HValue
   end
   
   ## handle client updates
-  def from_client( msg, data, jstype )
-    
-    ## if the reported type mis-matches, we need the server code to know that
-    if @jstype != jstype
-      str_to_num = (jstype == 'string' and @jstype == 'number')
-      str_match_int = (data.to_i.to_s == data)
-      str_match_float = (data.to_f.to_s == data)
-      if str_to_num and str_match_int
-        data = data.to_i
-      elsif str_to_num and str_match_float
-        data = data.to_f
-      else
-        ## otherwise, revert
-        set( msg, @data )
-        #raise "HValue; the client changed the value type! (@jstype: #{@jstype} != jstype: #{jstype})"
-      end
-    end
+  def from_client( msg, data )
     
     if @data != data
-      
-      data = '' if jstype == 'string' and data == nil
       
       ## set takes care of the setting..
       @data = data
       
       #puts "-"*80
-      puts "#{msg.ses_id}.#{@val_id} = #{@data}" if $config[:debug_mode]
+      puts "#{msg.ses_id}.#{@val_id}: #{data.inspect} != #{@data.inspect}" if $config[:debug_mode]
       #puts "-"*80
       #puts
       
@@ -157,6 +139,8 @@ class HValue
       unless check_ids.include?( @val_id )
         check_ids.push( @val_id )
       end
+    else
+      puts "#{msg.ses_id}.#{@val_id}: #{@data.inspect} == #{data.inspect}" if $config[:debug_mode]
     end
     
   end
@@ -199,11 +183,15 @@ class HValue
 end
 
 
-##
-#  HValueParser sets client data in <hvalue> type xml blocks to HValue instances with matching id's.
-##
-class HValueParser
-  
+class ValueParser
+  def initialize( default_value=nil )
+    @default_value = default_value
+  end
+  # please replace the process_data -method.
+  def process_data( msg, hvalue_xml )
+    puts "Warning: process_data not implemented for #{self.class.inspect}"
+    return @defalut_value
+  end
   def parse_xml( msg, hvalue_xml )
     
     ## get the value id from xml
@@ -214,52 +202,78 @@ class HValueParser
       val_id = val_id.to_i
     end
     
-    ## get the value type
-    val_jstype = hvalue_xml.attributes['jstype']
-    
-    ## check the value type
-    supported_jstypes = ['boolean','string','number']
-    if not supported_jstypes.include? val_jstype
-      raise "HValue; unknown jstype! (#{val_jstype.inspect})"
-    end
-    
-    
-    ## get the value data
-    val_data = hvalue_xml.text
-    
-    if val_jstype == 'string'
-      val_data = val_data.unpack('m*')[0]
-      while val_data[-1..-1] == "\000"
-        val_data.chop!
-      end
-      #puts val_data.inspect
-    end
-    
-    ## format the value data
-    val_data = val_data.to_i if val_jstype == 'number'
-    
-    if val_jstype == 'boolean'
-      if val_data == 'true'
-        val_data = true
-      elsif val_data == 'false'
-        val_data = false
-      else
-        raise "HValue; unknown boolean value! (#{val_data.inspect})"
-      end
-    end
+    ## get the parsed value data
+    val_data = process_data( msg, hvalue_xml )
     
     ## store the value
     session_values = msg.valuemanager.values[:session][msg.ses_id]
     if session_values.has_key?( val_id )
       value_obj = session_values[ val_id ]
-      value_obj.from_client( msg, val_data, val_jstype )
+      value_obj.from_client( msg, val_data )
     else
       raise "HValue; unassigned value id! (#{val_id.inspect})"
     end
   end
 end
 
+class BoolValueParser < ValueParser
+  def initialize( default_value=false )
+    super
+  end
+  def process_data( msg, hvalue_xml )
+    val_data = hvalue_xml.text
+    if val_data != nil
+      return true  if val_data == '1'
+      return false if val_data == '0'
+    end
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    return @default_value
+  end
+end
 
+class FloatValueParser < ValueParser
+  def initialize( default_value=0.0 )
+    super
+  end
+  def process_data( msg, hvalue_xml )
+    val_data = hvalue_xml.text
+    if val_data != nil
+      return val_data.to_f
+    end
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    return @default_value
+  end
+end
 
+class IntValueParser < ValueParser
+  def initialize( default_value=0 )
+    super
+  end
+  def process_data( msg, hvalue_xml )
+    val_data = hvalue_xml.text
+    if val_data != nil
+      return val_data.to_i
+    end
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    return @default_value
+  end
+end
 
+class StringValueParser < ValueParser
+  def initialize( default_value='' )
+    super
+  end
+  def process_data( msg, hvalue_xml )
+    val_data = hvalue_xml.text
+    if val_data != nil
+      val_data = val_data.unpack('m*')[0] # base64
+      while val_data[-1..-1] == "\000"
+        val_data.chop!
+      end
+      return val_data
+    end
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    return @default_value
+  end
+end
 

@@ -13,18 +13,10 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
   
-  
 require 'rexml/document'
 include REXML
 
-require 'pp'
-
 require 'lib/values/hvalue'
-require 'lib/values/hcolorvalue'
-require 'lib/values/hcontrolvalue'
-require 'lib/values/hdatevalue'
-require 'lib/values/hrectvalue'
-require 'lib/values/htablevalue'
 
 require 'lib/session/randgen'
 
@@ -43,8 +35,10 @@ class HValueManager
     ## The value type parsers by string
     @value_parsers = {}
     
-    @value_parsers['hvalue'] = HValueParser.new
-    #@value_parsers['color']  = HColorValueParser.new
+    @value_parsers['b'] = BoolValueParser.new
+    @value_parsers['f'] = FloatValueParser.new
+    @value_parsers['i'] = IntValueParser.new
+    @value_parsers['s'] = StringValueParser.new
     
 =begin
 ## Example @values instance
@@ -82,7 +76,7 @@ class HValueManager
       }
     }
     
-    @value_implementation_version = 8114 # 8000+revision
+    @value_implementation_version = 8118 # 8000+revision
     
     @value_id_generator = HRandgen.new(16,600)
     #@last_value_id = 0
@@ -199,7 +193,16 @@ class HValueManager
       syncvalversion = syncvalues_xml.attributes['version'].to_i
       
       # the client xml generator should match the server parser's version.
-      raise "HSyncValues; wrong version!" if syncvalversion != @value_implementation_version
+      if syncvalversion != @value_implementation_version
+        if $config[:debug_mode]
+          puts
+          puts "CLIENT/SERVER hsyncvalues version mismatch: #{syncvalversion} vs #{@value_implementation_version}"
+          puts
+        end
+        msg.reply "jsLoader.load('basic');jsLoader.load('window');jsLoader.load('servermessage');"
+        msg.reply "reloadApp = new ReloadApp( 'Client/Server Mismatch Error', 'Server version does not match the client version. Contact your system administrator.', '/'  );"
+        return
+      end
       
       # loop through available parsers and..
       @value_parsers.each_key do |value_type|
