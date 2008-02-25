@@ -28,6 +28,9 @@
 #  valuemanager: The value management system
 #
 ##
+
+require 'lib/img/imgserve'
+
 class Message
   
   attr_accessor :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid, :request, :response
@@ -53,6 +56,7 @@ class Message
     @valuemanager = nil
     
     @ses_valid = false
+    
   end
   
   def reply(data)
@@ -61,6 +65,10 @@ class Message
   
   def run(*args)
     @system.run(*args)
+  end
+  
+  def serve_img( img_obj, img_format='PNG' )
+    return IMGSERVE.serve( self, img_obj, img_format )
   end
 end
 

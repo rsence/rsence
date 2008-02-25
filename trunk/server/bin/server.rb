@@ -82,12 +82,6 @@ end
 require 'webrick'
 include WEBrick
 
-# Require the inital web-page handler
-require 'lib/page/initial'
-
-# Require the server front-end data handling system
-require 'lib/http/frontend'
-
 #$config[:httpserver][:ServerName] = Utils::getservername
 #$config[:httpserver][:BindAddress]    = nil   # "0.0.0.0" or "::" or nil
 $config[:httpserver][:MaxClients]     = 999   # maximum number of the concurrent connections
@@ -99,8 +93,6 @@ $config[:httpserver][:ServerSoftware] = "HIMLE Server"
 #$config[:httpserver][:StartCallback]  = nil
 #$config[:httpserver][:StopCallback]   = nil
 #$config[:httpserver][:AcceptCallback] = nil
-
-require 'lib/file/gzfiles'
 
 if not $config[:debug_mode]
   require 'lib/log/nullogger'
@@ -115,6 +107,15 @@ def init
   $server = HTTPServer.new(
     $config[:httpserver]
   )
+  
+  # Require the inital web-page handler
+  require 'lib/page/initial'
+  
+  # Require the server front-end data handling system
+  require 'lib/http/frontend'
+  
+  # Require handler of pre-compressed js support files
+  require 'lib/file/gzfiles'
   
   # The initialization code lives in the root directory servlet
   $server.mount(
