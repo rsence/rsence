@@ -30,7 +30,7 @@ class Main < HApplication
         :server_time  => HValue.new(msg,Time.now.strftime("%H:%M:%S")),
         :clicker_val  => HValue.new(msg,0)
       }
-      ses[:main][:clicker_val].bind(self.method('clicker'))
+      ses[:main][:clicker_val].bind('main','clicker')
     end
   end
   

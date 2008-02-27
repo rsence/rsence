@@ -103,6 +103,12 @@ class HSystem
     open
   end
   
+  # Called when everything is going down
+  def shutdown
+    flush
+    close
+  end
+  
   # Check if each application handles +method+, and if so, call it, passing +args+ as a parameter
   def delegate(method, *args)
     @@apps.values.uniq.each do |app|
@@ -123,4 +129,13 @@ class HSystem
     end
     return false
   end
+  
+  def run_app( app_name, method_name, *args )
+    if @@apps.has_key?( app_name )
+      if @@apps[app_name].respond_to?( method_name )
+        return @@apps[app_name].method( method_name ).call(*args)
+      end
+    end
+  end
+  
 end

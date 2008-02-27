@@ -69,29 +69,29 @@ class MySQLAbstractor
     (@host,@user,@pass,@debe) = [conf[:host],conf[:user],conf[:pass],db_name]
     @conn = false
   end
-  def open_conn
+  def open
     begin
       if not @conn and @debe
         @conn = DBI.connect("DBI:Mysql:#{@debe}:#{@host}",@user,@pass)
         return true
       end
     rescue DBI::DatabaseError
-      $stderr.write("Warn: DBConn.open_conn; unable to connect (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
+      $stderr.write("Warn: DBConn.open; unable to connect (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
       @conn = DBI.connect("DBI:Mysql:mysql:#{@host}",@user,@pass)
       db(@debe)
       return true
     end
   end
-  def close_conn
+  def close
     begin
       @conn.disconnect if @conn # Close only when a connection is open
     rescue DBI::DatabaseError
-      $stderr.write("Note: DBConn.close_conn; unable to close connection (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
+      $stderr.write("Note: DBConn.close; unable to close connection (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
     end
     @conn = false
   end
   def dbs
-    open_conn if not @conn
+    open unless @conn
     if @conn
       databases = []
       q("show databases").each do |database|
@@ -103,7 +103,7 @@ class MySQLAbstractor
     end
   end
   def tables
-    open_conn if not @conn
+    open if not @conn
     table_names = []
     q("show tables").each do |table_name_hsh|
       table_names.push(table_name_hsh[table_name_hsh.keys[0]])
@@ -111,22 +111,23 @@ class MySQLAbstractor
     return table_names.sort
   end
   def db(db_name=false)
+    open unless @conn
     if db_name
       unless dbs.include?(db_name)
         $stderr.write("Note: creating database #{db_name.inspect}\n")
         #@conn.func(:createdb,db_name)
         @conn.execute("create database #{db_name}")
       end
-      close_conn
+      close
       @debe = db_name
-      open_conn
+      open
       return true
     else
       return false
     end
   end
   def status
-    open_conn if not @conn
+    open if not @conn
     quo = @conn.execute("show table status")
     status_tbl = {}
     total_bytes = 0
@@ -145,16 +146,16 @@ class MySQLAbstractor
   def q(qu)
     action = qu.split(' ')[0].downcase
     inserters = ['insert']
-    updaters  = ['update','delete','replace','create','grant','drop']
+    updaters  = ['update','delete','replace','create','grant','drop','flush']
     get_id = inserters.include?(action)
     get_count = updaters.include?(action)
-    open_conn() if not @conn
+    open() if not @conn
     if get_id
       begin
         @conn.do(qu)
       rescue
-        close_conn
-        open_conn
+        close
+        open
         @conn.do(qu)
       end
       return @conn.func(:insert_id)
@@ -162,8 +163,8 @@ class MySQLAbstractor
       begin
         return @conn.do(qu) # matched row count
       rescue
-        close_conn
-        open_conn
+        close
+        open
         return @conn.do(qu)
       end
     elsif @debe
@@ -173,8 +174,8 @@ class MySQLAbstractor
           quo = @conn.execute(qu)
         rescue
           $stderr.write("Warning: DBConn.q; query error, trying to reopen connection (qu.inspect)\n")
-          close_conn
-          open_conn
+          close
+          open
           quo = @conn.execute(qu)
         end
         quo.fetch_hash() do |row|

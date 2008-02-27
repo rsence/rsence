@@ -32,7 +32,8 @@ class HValue
   ## method for adding the value to the value manager
   def add( msg )
     
-    session_values = msg.valuemanager.values[:session][msg.ses_id]
+    #session_values = msg.valuemanager.values[:session][msg.ses_id]
+    session_values = msg.session[:values][:by_id]
     
     if session_values.has_key?( @val_id )
       raise "HValue; Duplicate ID when adding! (#{@val_id.inspect})"
@@ -76,27 +77,33 @@ class HValue
     add( msg )
     
     ## store value bindings here
-    @members = []
+    @members = {}
     
   end
   
-  ## bind the value to the object
-  def bind( obj_ref )
-    if @members.include?( obj_ref )
-      #puts "HValue; duplicate object binding of the value! (#{obj_ref.inspect})"
-      return
-    end
-    @members.push( obj_ref )
-    #puts "value bound"
+  ## bind the value to the app method (both as strings; app as the name registered in HSystem)
+  def bind( app_name, method_name )
+    @members[app_name] = [] unless @members.has_key?( app_name )
+    @members[app_name].push( method_name ) unless @members[app_name].include?( method_name )
+    return true
   end
   
-  ## release the binding of the value
-  def release( obj_ref )
-    if @members.include?( obj_ref )
-      @members.slice!( @members.index(obj_ref) )
-    else
-      raise "HValue; object was not bound to the value! (#{obj_ref.inspect}:#{@val_id})"
+  ## release the binding of the value, both params as in bind, but optional (wildcards as false)
+  def release( app_name=false, method_name=false )
+    return release_all if not app_name and not method_name
+    return false unless @members.has_key?( app_name )
+    if not method_name
+      @members.delete( app_name )
+    else 
+      @members[app_name].slice!(@members[app_name].index( method_name )) if @members[app_name].include?(method_name)
     end
+    return true
+  end
+  
+  ## release all members
+  def release_all
+    @members = {}
+    return true
   end
   
   # the unbind method can be used as an alias to release (as in the client)
@@ -104,17 +111,16 @@ class HValue
   
   ## tell all bound instances that the value is changed
   def tell( msg )
-    check_ids = msg.valuemanager.values[:session][msg.ses_id][:check]
-    valid_count = 0
-    @members.each do |member|
-      status_ok = member.call( msg, self )
-      if status_ok
-        valid_count += 1
+    invalid_count = 0
+    @members.each_key do |app_name|
+      @members[app_name].each do |method_name|
+        invalid_count += 1 unless msg.system.run_app( app_name, method_name, msg, self ) 
       end
     end
-    if valid_count == @members.size
+    if invalid_count == 0
       @valid = true
-      check_ids.delete( @val_id )
+      #msg.valuemanager.values[:session][msg.ses_id][:check].delete( @val_id )
+      msg.session[:values][:check].delete( @val_id )
     end
   end
   
@@ -135,7 +141,8 @@ class HValue
       @valid = false
       
       ## add the id to the values to be checked
-      check_ids = msg.valuemanager.values[:session][msg.ses_id][:check]
+      #check_ids = msg.valuemanager.values[:session][msg.ses_id][:check]
+      check_ids = msg.session[:values][:check]
       unless check_ids.include?( @val_id )
         check_ids.push( @val_id )
       end
@@ -164,7 +171,8 @@ class HValue
       @valid = true
       
       ## add the id to the values to be syncronized (to client)
-      sync_ids = msg.valuemanager.values[:session][msg.ses_id][:sync]
+      #sync_ids = msg.valuemanager.values[:session][msg.ses_id][:sync]
+      sync_ids = msg.session[:values][:sync]
       unless sync_ids.include?( @val_id )
         sync_ids.push( @val_id )
       end
@@ -206,7 +214,8 @@ class ValueParser
     val_data = process_data( msg, hvalue_xml )
     
     ## store the value
-    session_values = msg.valuemanager.values[:session][msg.ses_id]
+    #session_values = msg.valuemanager.values[:session][msg.ses_id]
+    session_values = msg.session[:values][:by_id]
     if session_values.has_key?( val_id )
       value_obj = session_values[ val_id ]
       value_obj.from_client( msg, val_data )

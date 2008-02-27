@@ -38,9 +38,15 @@ class HTransporter
   
   ## build the essential structures
   def initialize
-    @valuemanager = HValueManager.new
     @system       = HSystem.new( $config[:app_path] )
+    @valuemanager = HValueManager.new
     @session      = HSessionManager.new( @valuemanager, @system )
+  end
+  
+  def shutdown
+    @system.shutdown
+    @valuemanager.shutdown
+    @session.shutdown
   end
   
   ## 

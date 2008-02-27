@@ -16,8 +16,9 @@
   
 require 'lib/session/msg'
 require 'lib/session/randgen'
+require 'lib/db/mysql'
 
-
+require 'pp'
 
 class HSessionManager
   
@@ -56,15 +57,100 @@ class HSessionManager
     
     # regex to match ipv4 addresses
     @ipv4_reg = /^([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[1-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])$/
+    
+    db_init_mysql
+    
+  end
+  
+  def db_init_mysql
+    ## check/create himle database
+    root_setup = $config[:database][:root_setup]
+    auth_setup = $config[:database][:auth_setup]
+    
+    db_root = MySQLAbstractor.new(root_setup, root_setup[:db])
+    unless db_root.dbs.include?( auth_setup[:db] )
+      puts "Creating himle session database #{auth_setup[:db].inspect}..." if $config[:debug_mode]
+      db_root.q( "create database #{auth_setup[:db]}" )
+    end
+    db_auth = MySQLAbstractor.new(auth_setup, auth_setup[:db])
+    has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
+    has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
+    has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
+    unless has_privileges
+      puts "Granting privileges..." if $config[:debug_mode]
+      db_root.q( "grant all privileges on #{auth_setup[:db]}.* to #{auth_setup[:user]}@localhost identified by '#{auth_setup[:pass]}'" )
+      db_root.q( "flush privileges" )
+      db_auth.close
+      db_auth.open
+    end
+    @db = db_auth
+    db_root.close
+    
+    unless @db.tables.include?('himle_session')
+      puts "Creating session table..." if $config[:debug_mode]
+      @db.q( "create table himle_session (id int primary key auto_increment, cookie_key char(252) null, ses_key char(84), ses_timeout int not null default 0, user_id int not null default 0, ses_active tinyint not null default 0, ses_stored int not null default 0, ses_data mediumblob)" )
+    end
+    
+    unless @db.tables.include?('himle_version')
+      puts "Creating version info table..." if $config[:debug_mode]
+      @db.q( "create table himle_version ( version int primary key not null default 0)" )
+      @db.q( "insert into himle_version ( version ) values (37)" )
+    end
+    
+    puts "Note: himle session database ok!" if $config[:debug_mode]
+    
+    puts "Restoring old sessions..." if $config[:debug_mode]
+    restore_sessions
+  end
+  
+  def restore_sessions
+    puts "Restoring sessions..." if $config[:debug_mode]
+    @db.q("select * from himle_session where ses_timeout > #{Time.now.to_i}").each do |ses_row|
+      ses_id = ses_row['id']
+      ses_data_dump = ses_row['ses_data']
+      if ses_data_dump != nil
+        pp ses_data_dump
+        ses_data = Marshal.restore( ses_data_dump )
+        @sessions[ses_id] = ses_data
+        @session_keys[ ses_data[:ses_key] ] = ses_id
+        @session_cookie_keys[ ses_data[:cookie_key] ] = ses_id
+      end
+    end
+  end
+  
+  def store_sessions
+    puts "Storing sessions..." if $config[:debug_mode]
+    @sessions.each_key do |ses_id|
+      ses_data = @sessions[ ses_id ]
+      pp ses_data
+      ses_data_dump = Marshal.dump( ses_data )
+      @db.q("update himle_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}")
+      @db.q("update himle_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}")
+      @db.q("update himle_session set user_id = #{ses_data[:user_id]} where id=#{ses_id}")
+      @db.q("update himle_session set ses_data = #{hexlify(ses_data_dump)} where id=#{ses_id}")
+      @db.q("update himle_session set ses_timeout = #{ses_data[:timeout]}")
+      @db.q("update himle_session set ses_stored = #{Time.now.to_i} where id=#{ses_id}")
+    end
+  end
+  
+  def shutdown
+    puts "Session shutdown in progress..." if $config[:debug_mode]
+    store_sessions
+    puts "Session shutdown complete." if $config[:debug_mode]
+  end
+  
+  def hexlify( str )
+    "0x#{str.unpack('H*')[0]}"
   end
   
   ## Returns an unique session identifier
-  def new_ses_id
-    @last_ses_id += 1
-    return @last_ses_id
+  def new_ses_id( cookie_key, ses_key, timeout_secs, user_id=0 )
+    return @db.q( "insert into himle_session (cookie_key, ses_key, ses_timeout, user_id) values (#{hexlify(cookie_key)},#{hexlify(ses_key)}, #{timeout_secs},#{user_id})" )
+    #@last_ses_id += 1
+    #return @last_ses_id
   end
   
-  def expire_old_sessions
+  def expire_sessions
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
       if ses_data[:timeout] < Time.now.to_i
@@ -72,6 +158,9 @@ class HSessionManager
         @session_keys.delete( ses_data[:ses_key] )
         @session_cookie_keys.delete( ses_data[:cookie_key] )
         @sessions.delete( ses_id )
+        
+        @db.q( "delete from himle_session where id = #{ses_id}" )
+        
       end
     end
   end
@@ -87,14 +176,22 @@ class HSessionManager
     time_now = Time.now.to_i # seconds since epoch
     timeout  = time_now + @timeout_secs
     
-    ses_id   = new_ses_id
-    ses_key  = new_ses_key
-    cookie_key = new_ses_key+new_ses_key+new_ses_key
+    ses_key    = new_ses_key()
+    cookie_key = new_ses_key()+new_ses_key()+new_ses_key()
+    
+    ses_id     = new_ses_id(cookie_key, ses_key, timeout)
+    
     ses_data = {
       :timeout    =>  timeout,
       :ses_id     =>  ses_id,
       :ses_key    =>  ses_key,
-      :cookie_key =>  cookie_key
+      :cookie_key =>  cookie_key,
+      :user_id    =>  0,
+      :values     => {
+        :sync  => [],  # value id's to sync to client
+        :check => [],  # value id's to validate in server (from client)
+        :by_id => {}   # values by id
+      }
     }
     
     # add the session data to @sessions
@@ -209,7 +306,7 @@ class HSessionManager
   ### Creates a message and checks the session
   def init_msg( request, response, cookies=false )
     
-    expire_old_sessions
+    expire_sessions
     
     ## The 'ses_id' request key is required (the client defaults to '0')
     if not request.query.has_key?( 'ses_id' )

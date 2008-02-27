@@ -70,16 +70,27 @@ class HValueManager
 =end
 
     ## local / global value storage
-    @values = {
-      ## session-specific values, by session id, see init_session_values
-      :session => {
-      }
-    }
+    #@values = {
+    #  ## session-specific values, by session id, see init_session_values
+    #  :session => {
+    #  }
+    #}
     
     @value_implementation_version = 8118 # 8000+revision
     
     @value_id_generator = HRandgen.new(16,600)
     #@last_value_id = 0
+    
+  end
+  
+  def shutdown
+    #@values[:session].each_key do |ses_id|
+    #  @values[:session][ses_id].each_key do |val_id|
+    #    unless [:sync,:check].include?(val_id)
+    #      @values[:session][ses_id][val_id].release_all
+    #    end
+    #  end
+    #end
   end
   
   ## counter for new value id's (returns an unique integer)
@@ -91,10 +102,12 @@ class HValueManager
   
   ## make the session-specific value collection, if not found
   def init_session_values( msg )
-    @values[:session][msg.ses_id] = {
-      :sync  => [], # value id's to sync to client
-      :check => []  # value id's to validate in server (from client)
-    }
+    ##moved to: msg.session[:values]
+    
+    #@values[:session][msg.ses_id] = {
+    #  :sync  => [], # value id's to sync to client
+    #  :check => []  # value id's to validate in server (from client)
+    #}
   end
   
   ##
@@ -106,9 +119,9 @@ class HValueManager
     # puts
     # puts @values[:session].inspect
     # puts
-    unless @values[:session].has_key?(msg.ses_id)
-      init_session_values( msg )
-    end
+    #unless @values[:session].has_key?(msg.ses_id)
+    #  init_session_values( msg )
+    #end
     resend_session_values( msg ) if msg.restored_session
   end
   
@@ -116,16 +129,15 @@ class HValueManager
   # Cleans up session-related structures
   ##
   def expire_ses( ses_id )
-    #puts "ValueManager.expire_ses( #{ses_id} )"
-    @values[:session][ses_id].each_key do |val_id|
-      unless [:sync,:check].include?(val_id)
-        @values[:session][ses_id][val_id].die()
-        @values[:session][ses_id].delete( val_id )
-      end
-    end
-    @values[:session][ses_id].delete( :sync )
-    @values[:session][ses_id].delete( :check )
-    @values[:session].delete(ses_id)
+    #@values[:session][ses_id].each_key do |val_id|
+    #  unless [:sync,:check].include?(val_id)
+    #    @values[:session][ses_id][val_id].die()
+    #    @values[:session][ses_id].delete( val_id )
+    #  end
+    #end
+    #@values[:session][ses_id].delete( :sync )
+    #@values[:session][ses_id].delete( :check )
+    #@values[:session].delete(ses_id)
   end
   
 =begin
@@ -162,10 +174,13 @@ class HValueManager
     # puts
     # puts @values[:session][msg.ses_id].inspect
     # puts
-    @values[:session][msg.ses_id].each_key do |val_id|
-      unless [:sync,:check].include?(val_id)
-        @values[:session][msg.ses_id][val_id].restore( msg )
-      end
+    #@values[:session][msg.ses_id].each_key do |val_id|
+    #  unless [:sync,:check].include?(val_id)
+    #    @values[:session][msg.ses_id][val_id].restore( msg )
+    #  end
+    #end
+    msg.session[:values][:by_id].keys.sort.each do |val_id|
+      msg.session[:values][:by_id][val_id].restore( msg )
     end
   end
   
@@ -228,7 +243,9 @@ class HValueManager
   def set( msg, val_id, val_data )
     
     # get the session data of this session
-    session_values = @values[:session][msg.ses_id]
+    #session_values = @values[:session][msg.ses_id]
+    
+    session_values = msg.session[:values][:by_id]
     
     # tell the value of that id that it has new data
     val_obj = session_values[ val_id ]
@@ -239,10 +256,13 @@ class HValueManager
   ## Validates user entered entries
   ###
   def validate( msg )
-    session_values = @values[:session][msg.ses_id]
+    #session_values = @values[:session][msg.ses_id]
+    
+    session_values = msg.session[:values]
+    
     check_ids = session_values[:check]
     check_ids.each do |check_id|
-      session_values[check_id].tell( msg )
+      session_values[:by_id][check_id].tell( msg )
     end
   end
   
@@ -252,7 +272,9 @@ class HValueManager
   def to_client( msg )
     
     # get the session data of this session
-    session_values = @values[:session][msg.ses_id]
+    #session_values = @values[:session][msg.ses_id]
+    
+    session_values = msg.session[:values]
     
     # go through the currently un-synced values
     # (no each, because we don't want to spend a possible eternity here, if code is synced faster than processed)
@@ -262,7 +284,7 @@ class HValueManager
       val_id = session_values[:sync].shift
       
       # tell the value of that id to report its state to the client
-      session_values[ val_id ].to_client( msg )
+      session_values[:by_id][ val_id ].to_client( msg )
       
     end
     
