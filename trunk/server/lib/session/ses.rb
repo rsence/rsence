@@ -73,9 +73,13 @@ class HSessionManager
       db_root.q( "create database #{auth_setup[:db]}" )
     end
     db_auth = MySQLAbstractor.new(auth_setup, auth_setup[:db])
-    has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
-    has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
-    has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
+    begin
+      has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
+      has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
+      has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
+    rescue
+      has_privileges = false
+    end
     unless has_privileges
       puts "Granting privileges..." if $config[:debug_mode]
       db_root.q( "grant all privileges on #{auth_setup[:db]}.* to #{auth_setup[:user]}@localhost identified by '#{auth_setup[:pass]}'" )
