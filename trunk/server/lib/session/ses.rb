@@ -101,19 +101,17 @@ class HSessionManager
       @db.q( "insert into himle_version ( version ) values (37)" )
     end
     
-    puts "Note: himle session database ok!" if $config[:debug_mode]
-    
     puts "Restoring old sessions..." if $config[:debug_mode]
     restore_sessions
   end
   
   def restore_sessions
     puts "Restoring sessions..." if $config[:debug_mode]
-    @db.q("select * from himle_session where ses_timeout > #{Time.now.to_i}").each do |ses_row|
+    @db.q("select * from himle_session").each do |ses_row|
       ses_id = ses_row['id']
       ses_data_dump = ses_row['ses_data']
       if ses_data_dump != nil
-        pp ses_data_dump
+        #pp ses_data_dump
         ses_data = Marshal.restore( ses_data_dump )
         @sessions[ses_id] = ses_data
         @session_keys[ ses_data[:ses_key] ] = ses_id
@@ -126,7 +124,7 @@ class HSessionManager
     puts "Storing sessions..." if $config[:debug_mode]
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
-      pp ses_data
+      #pp ses_data
       ses_data_dump = Marshal.dump( ses_data )
       @db.q("update himle_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}")
       @db.q("update himle_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}")
@@ -162,6 +160,8 @@ class HSessionManager
         @session_keys.delete( ses_data[:ses_key] )
         @session_cookie_keys.delete( ses_data[:cookie_key] )
         @sessions.delete( ses_id )
+        
+        IMGSERVE.expire_ses( ses_id )
         
         @db.q( "delete from himle_session where id = #{ses_id}" )
         

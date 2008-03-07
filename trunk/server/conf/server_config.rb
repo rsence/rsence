@@ -87,6 +87,11 @@ $config[:database] = {
   
 }
 
+$config[:default_html_page_title] = 'Himle RIA System'
+if ARGV.include?('--html-title')
+  $config[:default_html_page_title] = ARGV[ARGV.index('--html-title')+1]
+end
+
 if ARGV.include?('-p')
   $config[:httpserver][:Port] = ARGV[ARGV.index('-p')+1].to_i
 end

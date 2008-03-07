@@ -98,9 +98,23 @@ class GZFileServe < HTTPServlet::AbstractServlet
       do_scan = false
     end
     scan_dirs if do_scan
+    support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
+    is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
+    is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
     if not request.query.has_key?('js') and not request.query.has_key?('themes')
-      response.status = 503
-      response.body   = '503 - Invalid Request'
+      puts "request.path: #{request.path.inspect}"
+      if request.path == '/gz/ie_css_element.htc'
+        response.status = 200
+        response['Content-Type'] = 'text/x-component'
+        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\nelement.attachEvent("onpropertychange",iefix.htcElementEntry);\r\n</script>\r\n</PUBLIC:COMPONENT>}
+      elsif request.path == '/gz/ie_css_style.htc'
+        response.status = 200
+        response['Content-Type'] = 'text/x-component'
+        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\nelement.attachEvent("onreadystatechange",iefix.htcStyleEntry);\r\n</script>\r\n</PUBLIC:COMPONENT>}
+      else
+        response.status = 503
+        response.body   = '503 - Invalid Request'
+      end
     elsif request.query.has_key?('js')
       if not @@gz_cache.has_key?( request.query['js'] )
         response.status = 404
@@ -108,7 +122,7 @@ class GZFileServe < HTTPServlet::AbstractServlet
       else
         response.status = 200
         response.content_type = 'text/javascript; charset=utf-8'
-        if request['Accept-Encoding'].include?('gzip')
+        if support_gzip and not is_safari and not is_msie
           response.chunked = true
           response['Content-Encoding'] = 'gzip'
           response['Last-Modified'] = @@gz_cache[ request.query['js'] ][1]
@@ -135,16 +149,17 @@ class GZFileServe < HTTPServlet::AbstractServlet
           'jpg'  => 'image/jpeg',
           'gif'  => 'image/gif'
         }[file_ext]
-        if not request['Accept-Encoding'].include?('gzip') or req_key.include?('/gfx/')
-          response['Last-Modified'] = @@theme_cache[ req_key ][1]
-          response['Content-Size'] = @@theme_cache[ req_key ][2]
-          response.body   = @@theme_cache[ req_key ][0]
-        else
+        support_gzip = false if req_key.include?('/gfx/')
+        if support_gzip and not is_safari and not is_msie
           response.chunked = true
           response['Last-Modified'] = @@theme_cache[ req_key+'.gz' ][1]
           response['Content-Size'] = @@theme_cache[ req_key+'.gz' ][2]
           response['Content-Encoding'] = 'gzip'
           response.body   = @@theme_cache[ req_key+'.gz' ][0]
+        else
+          response['Last-Modified'] = @@theme_cache[ req_key ][1]
+          response['Content-Size'] = @@theme_cache[ req_key ][2]
+          response.body   = @@theme_cache[ req_key ][0]
         end
       end
     end

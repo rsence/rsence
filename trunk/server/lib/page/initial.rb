@@ -24,6 +24,7 @@ class HInitialPage < WEBrick::HTTPServlet::AbstractServlet
     index_html_file = open($config[:sys_path]+'/lib/page/initial.html')
     @index_html = index_html_file.read
     index_html_file.close
+    @index_html.gsub!('__DEFAULT_TITLE__',$config[:default_html_page_title])
     super
   end
   

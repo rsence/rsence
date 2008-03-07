@@ -14,10 +14,10 @@
 
 class Main < HApplication
   
-  # this gets called whenever an user changes the clicker_val
-  def clicker(msg,clicker_val)
-    server_time = msg.session[:main][:server_time]
-    server_time.set(msg,Time.now.strftime("%H:%M:%S"))
+  # this gets called whenever the page location.href changes
+  def url_responder(msg,location_href)
+    puts "location.href = #{location_href.data.inspect}"
+    return true # urls always validate true
   end
   
   # new session initialization, called only once per session.
@@ -27,10 +27,10 @@ class Main < HApplication
     if not ses.has_key?(:main)
       ses[:main] = {
         :boot => 0,
-        :server_time  => HValue.new(msg,Time.now.strftime("%H:%M:%S")),
-        :clicker_val  => HValue.new(msg,0)
+        :client_time => HValue.new( msg, 0 ),
+        :location_href => HValue.new(msg,'')
       }
-      ses[:main][:clicker_val].bind('main','clicker')
+      ses[:main][:location_href].bind( 'main', 'url_responder')
     end
   end
   
@@ -40,22 +40,26 @@ class Main < HApplication
     if ses.has_key?(:main)
       ses[:main][:boot] = 0
     end
+    if $config[:debug_mode]
+      puts "Restored session: "
+      puts msg.session.inspect
+    end
   end
   
   # this gets called on every request performed with an active session
   def idle(msg)
     mses = msg.session[:main]
-    if msg.restored_session
-      puts "Restored session: "
-      puts msg.session.inspect
-    end
     if mses[:boot] == 0
-      include_js( msg, 'basic' )
-      include_js( msg, 'window' )
+      if $config[:debug_mode]
+        include_js( msg, ['basic','window'] )
+        # debug window goes here
+      end
       msg.reply require_js('start')
+      msg.reply require_js('url_responder')
+      msg.reply "urlResponder = new URLResponder('#{mses[:location_href].val_id}');"
     elsif mses[:boot] == 1
-      msg.reply require_js('clicker')
-      msg.reply "clickerApp = new ClickerApp('#{mses[:clicker_val].val_id}','#{mses[:server_time].val_id}');"
+      msg.reply "sesWatcher = new SesWatcher(60000,'#{mses[:client_time].val_id}');" # 60000 = 60 seconds
+    elsif mses[:boot] == 2
       msg.reply "HTransporter.setPollMode(false);"
     end
     mses[:boot] += 1
@@ -66,7 +70,4 @@ end
 # register the app
 app = Main.new
 app.register( "main" )
-
-
-
 
