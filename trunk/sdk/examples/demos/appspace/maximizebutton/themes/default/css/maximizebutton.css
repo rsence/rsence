@@ -1,0 +1,12 @@
+.maximizebutton {
+  position: absolute;
+  left: 0px; top: 0px; width: 16px; height: 16px;
+  background-image: url('#{this.getThemeGfxPath()}mini-icons.png');
+  background-repeat: no-repeat;
+  background-position: -16px 0px;
+  cursor: pointer;
+}
+.maximizebutton:hover {
+  background-image: url('#{this.getThemeGfxPath()}mini-icons.png');
+  background-position: -16px -16px;
+}

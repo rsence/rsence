@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Tutorial.app</title>
+
+<link rel="stylesheet" type="text/css" href="./css/tutorial.css" />
+
+<script type="text/javascript" src="../../release/latest/js/allinone.js"></script>
+
+<script type="text/javascript" src="./step3.js"></script>
+
+</head> 
+
+<body>
+<pre id="source">
+<span class="comment">/** Basic Extension of the HApplication class
+  *
+  * It's a good place to bind your application objects to. You are free 
+  * to name your objects as long as there is no namespace clashes. See
+  * The API reference for HApplication to find out what's reserved.
+  *
+  * It will be extended further in the next steps.
+  **/</span>
+<span class="new_obj">HelloWorldApplication</span> = <a href="#" class="api_ref">HApplication</a>.<span class="obj">extend</span>({
+  
+  <span class="comment">// The constructor is called when the class is constructed</span>
+  <span class="new_obj">constructor</span>: <span class="keyword">function</span>(<span class="str">_applicationWindowTitle</span>){
+    <span class="comment">// Our simple application's instances will always be
+    // running with a 100ms poll rate. We should call the super-class like this.</span>
+    <span class="keyword">this</span>.<span class="obj">base</span>(<span class="int">100</span>);
+    
+    <span class="comment">// We define what size of window we are constructing</span>
+    <span class="keyword">this</span>.<span class="new_obj">windowRect</span> = <span class="keyword">new</span> <a href="#" class="api_ref">HRect</a>(
+      <span class="int">100</span>, <span class="comment">// HWindow position (in pixels) from the left side of the browser window</span>
+      <span class="int">100</span>, <span class="comment">// HWindow position (in pixels) from the top side of the browser window</span>
+      <span class="int">420</span>, <span class="comment">// The position with width added (the coordinate of the HWindow's right side)</span>
+      <span class="int">300</span>  <span class="comment">// The position with height added (the coordinate of the HWindow's bottom side)</span>
+    );
+    
+    <span class="comment">// Construct the new HWindow instance and bind it to the application namespace</span>
+    <span class="keyword">this</span>.<span class="new_obj">mainWindow</span> = <span class="keyword">new</span> <a href="#" class="api_ref">HWindow</a>(
+      <span class="keyword">this</span>.<span class="obj">windowRect</span>,  <span class="comment">// The first construction parameter of HComponents is always the geometry rectangle</span>
+      <span class="keyword">this</span>,             <span class="comment">// The second construction parameter of HComponents is always the parent class instance. In this case, our application.</span>
+      <span class="str">{label:_applicationWindowTitle}</span> <span class="comment">// The third construction parameter of HComponents is always an options object that holds all the other parameters.</span>
+                                      <span class="comment">// The window title (label) is the only one used here. In this case, it's the first parameter of our application.</span>
+    );
+    
+    <span class="comment">// Let's draw the window, so it will show up on the screen:</span>
+    <span class="keyword">this</span>.<span class="obj">mainWindow</span>.<a href="#" class="api_ref">draw()</a>;
+    
+    <span class="comment">// Let's bind a shortcut for our single window's default view:</span>
+    <span class="keyword">this</span>.<span class="new_obj">windowView</span> = <span class="keyword">this</span>.<span class="obj">mainWindow</span>.<a href="#" class="api_ref">windowView</a>;
+    
+    <span class="comment">// Make a helper HRect to be used to calculate the button positions
+    // Very useful, if the the content view changes or is unknown.</span>
+    <span class="keyword">var</span> <span class="new_obj">_contentRect</span> = <span class="keyword">new</span> <a href="#" class="api_ref">HRect</a>(<span class="keyword">this</span>.<span class="obj">windowView</span>.<a href="#" class="api_ref">rect</a>);
+    <span class="obj">_contentRect</span>.<a href="#" class="api_ref">offsetTo</a>(<span class="int">0</span>,<span class="int">0</span>);
+    
+    <span class="comment">// A rectangle for the button, that will be 96px wide, 18px high and 
+    // positioned 8px from the right and bottom sides of the window content view rectangle:</span>
+    <span class="keyword">this</span>.<span class="new_obj">closeButtonRect</span> = <span class="keyword">new</span> <a href="#" class="api_ref">HRect</a>(
+      <span class="obj">_contentRect</span>.<a href="#" class="api_ref">rightBottom</a>.<a href="#" class="api_ref">subtract</a>(<span class="int">104</span>, <span class="int">24</span>),
+      <span class="obj">_contentRect</span>.<a href="#" class="api_ref">rightBottom</a>.<a href="#" class="api_ref">subtract</a>(  <span class="int">8</span>,  <span class="int">8</span>)
+    ),
+    
+    <span class="keyword">this</span>.<span class="new_obj">closeButton</span> = <span class="keyword">new</span> <span class="new_part"><span class="obj">CloseTheAppButton</span></span>(
+      <span class="keyword">this</span>.<span class="obj">closeButtonRect</span>,
+      <span class="keyword">this</span>.<span class="obj">windowView</span>,      <span class="comment">// The parent class; in this case we want the button to display in the window</span>
+      <span class="str">{label:"Close"}</span>       <span class="comment">// The label of the button</span>
+    );
+    <span class="keyword">this</span>.<span class="obj">closeButton</span>.<a href="#" class="api_ref">draw()</a>;
+    
+  }
+});<span class="new_part">
+
+<span class="comment">/** A Simple HClickButton extension.
+  *
+  * Causes the HApplication instance of the button to terminate itself.
+  *
+  **/
+
+// The HClickButton is like the normal HButton, except it has already a click 
+// method call implemented. To benefit from this, the click method has to be
+// extended like this:</span>
+<span class="new_obj">CloseTheAppButton</span> = <a href="#" class="api_ref">HClickButton</a>.<span class="obj">extend</span>({
+  
+  <span class="comment">// The click method is called with the x/y coordinates of the click location
+  // and the information about which button was clicked.</span>
+  <span class="new_obj">click</span>: <span class="keyword">function</span>(<span class="int">x</span>,<span class="int">y</span>,<span class="bool">whichButton</span>){
+    
+    <span class="comment">// Just tell the application instance of the button to terminate itself:</span>
+    <span class="keyword">this</span>.<a href="#" class="api_ref">app</a>.<a href="#" class="api_ref">die</a>();
+  }
+});</span>
+
+<span class="comment">// A Launcher function to bring the app up</span>
+<span class="keyword">function</span> <span class="new_obj">launchHelloWorld</span>() {
+  
+  <span class="comment">// The theme path should always be the one with the css, html and gfx directories.</span>
+  <a href="#" class="api_ref">HThemeManager</a>.<a href="#" class="api_ref">setThemePath</a>(<span class="str">"../.."</span>);
+  
+  <span class="comment">// Construct an application instance</span>
+  <span class="keyword">var</span> <span class="new_obj">myApplicationInstance</span> = <span class="keyword">new</span> <span class="obj">HelloWorldApplication</span>(<span class="str">"Hello, World!"</span>);
+}
+
+<span class="comment">// Call the launcher when the web page is really-really loaded.</span>
+<a href="#" class="api_ref">onloader</a>(<span class="str">"launchHelloWorld()"</span>);
+</pre>
+
+<div id="intro_txt">
+<p>This step makes the application close button work</p>
+<p>Our application now:</p>
+<ul>
+  <li>Defines a CloseTheAppButton HButton extension.</li>
+  <li>Uses the CloseTheAppButton instead of HButton as the close button.</li>
+</ul>
+<p>View the source to understand more.</p>
+<a id="prev_step" href="step2.html">Prev Step</a>
+<a id="next_step" href="step4.html">Next Step</a>
+</div>
+</body>
+</html>

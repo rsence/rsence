@@ -1,0 +1,351 @@
+Abstract
+
+This document describes some JavaScript programming guidelines for working with
+Helmi RIA Platform. The purpose of these guidelines is to make the source code
+of the platform and applications built on it more readable and maintainable.
+
+
+Table of Contents
+
+1. General JavaScript guidelines
+  1.1 Naming conventions
+    1.1.1 Classes
+    1.1.2 Variables
+    1.1.3 Methods
+    1.1.4 Constants
+  1.2 Code layout
+    1.2.1 Indentation and white space
+    1.2.2 Code blocks
+  1.3 Character encoding and line separator
+2. Defining classes
+  2.1 Base class
+  2.2 Class declaration
+  2.3 Constructor
+  2.4 Methods and member variables
+  2.5 Example of inheritance
+  2.6 Private variables and methods
+3. Commenting your code
+4. Class documentation
+
+
+1. General JavaScript guidelines
+
+The single most important thing is to use a consistent programming style within
+a program or a module. The recommendations listed below should help you preserve
+a good coding style while developing the product or writing applications for it.
+
+
+  1.1 Naming conventions
+  
+  The naming mostly follows the general Java naming conventions.
+  
+  * Write all names except constants in mixed case.
+  * All names should be written in English.
+  * Avoid the use of abbreviations unless the abbreviation is a well known and
+    commonly used.
+  * Capitalize the first letter of standard acronyms when used as a part of an
+    identifier name, don't write them in all caps (parseXmlDocument, not
+    parseXMLDocument; executeSqlStatement, not executeSQLStatement etc.).
+  * Use names that clearly describe the purpose of the identifiers.
+  
+  Please note that Helmi RIA Platform's JavaScript compression tool converts
+  private variable names to shorter names that begin with a capital H. Avoid
+  using capital H prefix in your own identifier to prevent possible conflicts.
+  
+  Use an underscore character as a prefix for those identifiers that should be
+  considered as private or local. This way the compression tool knows which
+  variables are to be compressed.
+  
+    1.1.1 Classes
+      
+    Class names are written in mixed case with the first letter capitalized.
+    Classes provided by the platform are prefixed with a capital H.
+    
+    Examples of class names:
+    HButton, HComboBox, User, CalculatorApplication 
+    
+    1.1.2 Variables
+    
+    Variable names are written in mixed case starting with lower case. Variable
+    names should be descriptive and whole words should be used for variables
+    with a large scope. Single character variable names should only be used in
+    a very small scope unless the character has a clear meaning, such as x and y
+    for coordinate values. Letters i and j are commonly used as loop indices for
+    simple small scope index loops.
+    
+    Examples of variable names:
+    button, comboBox, dataBufferLength
+    
+    1.1.3 Methods
+    
+    Method names are written in mixed case starting with lower case. See section
+    2 about defining classes for more information.
+    
+    Examples of method names:
+    draw, selectAllNodes, optimizeWidth
+    
+    1.1.4 Constants
+    
+    Even though most JavaScript implementations don't currently support
+    constants at all, we use a notation to separate variables that are not meant
+    to be changed from common variables. These constants are all uppercase.
+    Separate words with underscores.
+    
+    Examples of constant variable names:
+    KEY_PAGEDOWN, CSS_CLASS_NAME
+    
+    
+  1.2 Code layout
+  
+    Avoid using lines longer than 80 characters in your source code.
+  
+    1.2.1 Indentation and white space
+    
+    Indent blocks using two spaces. Do not use tab characters.
+    Use spaces between operators. Always add a space before the starting curly
+    brace of a block. For example:
+    
+     // These are good, spaces around operators.
+    var i = 0;
+    var j = 1 + 1;
+    var data = [1, 2, 3, 4];
+    
+    // These are bad.
+    var i=0;
+    var j = 1+1;
+    var data = [1,2,3,4];
+    
+    // Write block statements like this, a space before the curly brace.
+    if (someThing) {
+      doAnotherThing();
+    }
+    
+    // Avoid this.
+    if (someThing){
+      doAnotherThing();
+    }
+    
+    Comments should be indented relative to their position in the code. Always
+    add a space after the comment identifier. For example:
+    
+    // This is a properly formatted comment
+    if (something) {
+      // This is a properly indented comment
+      doSomething();
+    }
+    
+    //This is a badly formatted comment
+    if (something) {
+    // This is a badly indented comment
+      doSomething();
+    }
+    
+    Use blank lines between methods and to separate logical sections of code.
+    
+    1.2.2 Code blocks
+    
+    Always place the starting curly brace of a block on the same line as the 
+    opening statement. Start a new line after the starting curly brace. For
+    example:
+    
+    // This is correct.
+    while(i > 0) {
+      doSomething();
+      i--;
+    }
+    
+    // This is not.
+    while(i > 0)
+    {
+      doSomething();
+      i--;
+    }
+    
+    
+  1.3 Character encoding and line separator
+  
+  Save the source files encoded in ASCII or UTF-8.
+  Use Unix-style line separator (\n).
+
+
+2. Defining classes
+
+  2.1 Base class
+  
+  Writing object oriented code in JavaScript is not trivial and usually makes
+  the code hard to read. To make things easier, all classes in Helmi RIA
+  Platform are created by using the Base class (by Dean Edwards). The Base class
+  defines two instance methods, extend and base. The extend method is used to
+  create a new class or to extend an existing object. The base method provides
+  access to an overridden method.
+    
+  2.2 Class declaration
+  
+  Here is an example of a minimal class declaration:
+  
+  var MyClass = Base.extend({
+  
+  });
+  
+  This snippet defines the class MyClass which doesn't have any member
+  variables or methods. The extend method of the Base class takes an object as
+  a parameter. This object defines the properties and operations of the class.
+  
+  The object consists of key-value pairs where the key is the name of the
+  method or a property and the value is the method's function or the
+  property's value. The key and value are separated by a colon and the
+  key-value pairs are separated by commas. This notation is known as JSON.
+  See the rest of this section for more details.
+  
+  2.3 Constructor
+  
+  Constructor is added as a function that has the name 'constructor', for
+  example:
+  
+  var MyClass = Base.extend({
+  
+    constructor: function(possible, parameters, here) {
+      // Implementation of the constructor
+    }
+  
+  });
+  
+  2.4 Methods and member variables
+  
+  Methods are added the same way the constructor was added. Member variables
+  are added using the same syntax, but the initial value is used on the right
+  hand side rather than a function definition. For example:
+  
+  var MyClass = Base.extend({
+  
+    constructor: function() {
+      // Implementation of the constructor
+    },
+    
+    someString: "Hey, I'm a member",
+    someNumber: 132,
+    
+    doSomething: function(parameter, anotherParameter) {
+      // doing something here...
+    }
+  
+  });
+  
+  2.5 Example of inheritance
+  
+  // Declaration of Animal class
+  var Animal = Base.extend({
+    
+    constructor: function(name) {
+      this.name = name;
+    },
+    
+    sound: '',
+    
+    makeSound: function() {
+      return this.name + " says: " + this.sound;
+    }
+    
+  });
+  
+  // Cat class inherits Animal class
+  var Cat = Animal.extend({
+    sound: 'meow'
+  });
+  
+  // Try it out
+  var cat = new Cat('Burbank');
+  alert(cat.makeSound());
+  // alerts: "Burbank says meow"
+
+
+  2.6 Private variables and methods
+  
+  Use an underscore character as a prefix for those identifiers that should be
+  considered as private. These identifiers are not to be accessed from outside
+  of the class even though the JavaScript interpreter doesn't keep you from
+  doing that.
+  
+  Private methods and variables will not be a part of the public API.
+  
+  An example on using private members:
+  
+  var MyClass = Base.extend({
+  
+    constructor: function() {
+      // Implementation of the constructor
+      this._doSomething();
+    },
+    
+    _someString: "Hey, I'm a private member",
+    
+    _doSomething: function() {
+      alert(this._someString);
+    }
+  
+  });
+  
+  
+3. Commenting your code
+
+All comments should be written in English. Make sure that comments are kept up
+to date with the code. When writing comments, don't try to explain what the code
+does. Explain why it does it.
+
+If the code is so complicated that it looks like it desperately needs comments,
+don't add comments, rewrite the code.
+
+Prefer // to /* */ on regular comments. Avoid using inline comments. Inline
+comment is a comment on the same line as a statement.
+
+
+4. Class documentation
+
+Classes and methods are documented by adding a comment block before the code in
+question. Multiline comments are to be used with documentation comments. Use
+asterisks to make a left edge for the comment block. This way the documentation
+comments are easier to spot when browsing the code.
+
+Follow the guide at http://www.naturaldocs.org/ for instructions about the
+format of the code documentation.
+
+An example of the documentation syntax:
+
+/** class: Animal
+  * 
+  * General description of the class here...
+  * 
+  * vars: Instance variables
+  *  sound - A string representation of the sound that this animal makes.
+  * 
+  **/
+var Animal = Base.extend({
+  
+/** constructor: constructor
+  *
+  * General description of the constructor...
+  *
+  * Parameters:
+  *  name - The name that is given to animal instance.
+  *
+  **/
+  constructor: function(name) {
+    this.name = name;
+  },
+  
+  sound: '',
+  
+/** method: makeSound
+  *
+  * General description of the method...
+  *
+  * Returns:
+  *  A string where the animal makes a sound.
+  *
+  **/
+  makeSound: function() {
+    return this.name + " says: " + this.sound;
+  }
+  
+});
+

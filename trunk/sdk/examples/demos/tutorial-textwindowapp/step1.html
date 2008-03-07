@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Tutorial.app</title>
+
+<link rel="stylesheet" type="text/css" href="./css/tutorial.css" />
+
+<script type="text/javascript" src="../../release/latest/js/allinone.js"></script>
+
+<script type="text/javascript" src="./step1.js"></script>
+
+</head> 
+
+<body>
+<pre id="source">
+<span class="comment">/** Basic Extension of the HApplication class
+  *
+  * It's a good place to bind your application objects to. You are free 
+  * to name your objects as long as there is no namespace clashes. See
+  * The API reference for HApplication to find out what's reserved.
+  *
+  * It will be extended further in the next steps.
+  **/</span>
+<span class="new_obj">HelloWorldApplication</span> = <a href="#" class="api_ref">HApplication</a>.<span class="obj">extend</span>({
+  
+  <span class="comment">// The constructor is called when the class is constructed</span>
+  <span class="new_obj">constructor</span>: <span class="keyword">function</span>(<span class="new_part"><span class="str">_applicationWindowTitle</span></span>){
+    <span class="comment">// Our simple application's instances will always be
+    // running with a 100ms poll rate. We should call the super-class like this.</span>
+    <span class="keyword">this</span>.<span class="obj">base</span>(<span class="int">100</span>);
+    
+    <span class="comment">// We define what size of window we are constructing</span>
+    <span class="keyword">this</span>.<span class="new_obj">windowRect</span> = <span class="keyword">new</span> <a href="#" class="api_ref">HRect</a>(
+      <span class="int">100</span>, <span class="comment">// HWindow position (in pixels) from the left side of the browser window</span>
+      <span class="int">100</span>, <span class="comment">// HWindow position (in pixels) from the top side of the browser window</span>
+      <span class="int">420</span>, <span class="comment">// The position with width added (the coordinate of the HWindow's right side)</span>
+      <span class="int">300</span>  <span class="comment">// The position with height added (the coordinate of the HWindow's bottom side)</span>
+    );<span class="new_part">
+    
+    <span class="comment">// Construct the new HWindow instance and bind it to the application namespace</span>
+    <span class="keyword">this</span>.<span class="new_obj">mainWindow</span> = <span class="keyword">new</span> <a href="#" class="api_ref">HWindow</a>(
+      <span class="keyword">this</span>.<span class="obj">windowRect</span>,  <span class="comment">// The first construction parameter of HComponents is always the geometry rectangle</span>
+      <span class="keyword">this</span>,             <span class="comment">// The second construction parameter of HComponents is always the parent class instance. In this case, our application.</span>
+      <span class="str">{label:_applicationWindowTitle}</span> <span class="comment">// The third construction parameter of HComponents is always an options object that holds all the other parameters.</span>
+                                      <span class="comment">// The window title (label) is the only one used here. In this case, it's the first parameter of our application.</span>
+    );
+    
+    <span class="comment">// Let's draw the window, so it will show up on the screen:</span>
+    <span class="keyword">this</span>.<span class="obj">mainWindow</span>.<span class="obj">draw()</span>;</span>
+  }
+});
+
+<span class="comment">// A Launcher function to bring the app up</span>
+<span class="keyword">function</span> <span class="new_obj">launchHelloWorld</span>() {
+  
+  <span class="comment">// The theme path should always be the one with the css, html and gfx directories.</span>
+  <a href="#" class="api_ref">HThemeManager</a>.<a href="#" class="api_ref">setThemePath</a>(<span class="str">"../.."</span>);
+  
+  <span class="comment">// Construct an application instance</span>
+  <span class="keyword">var</span> <span class="new_obj">myApplicationInstance</span> = <span class="keyword">new</span> <span class="obj">HelloWorldApplication</span>(<span class="new_part"><span class="str">"Hello, World!"</span></span>);
+}
+
+<span class="comment">// Call the launcher when the web page is really-really loaded.</span>
+<a href="#" class="api_ref">onloader</a>(<span class="str">"launchHelloWorld()"</span>);
+</pre>
+
+<div id="intro_txt">
+<p>This step makes the application display a window. The following things are added:</p>
+<p>We now make the following new js inclusions:</p>
+<ul>
+  <li>The HWindow component</li>
+  <li>The HButton component (HWindow depends on in)</li>
+</ul>
+<p>Our application now:</p>
+<ul>
+  <li>Takes an argument to be used as the window title</li>
+  <li>Constructs a blank window using the rect defined in the previous step</li>
+</ul>
+<p><a href="step1.js">View the source</a> to understand more.</p>
+<a id="prev_step" href="step0.html">Prev Step</a>
+<a id="next_step" href="step2.html">Next Step</a>
+</div>
+</body>
+</html>

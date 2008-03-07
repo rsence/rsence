@@ -1,0 +1,74 @@
+.helmiTheme .popupbutton {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: none;
+}
+.helmiTheme .popupbutton #border {
+  position: absolute;
+  background-color: #ccc;
+  line-height: 1px;
+}
+.helmiTheme .popupbutton .state {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+  border: 1px solid #fff;
+  line-height: 0px;
+  background-color: #f0f0f0;
+}
+.helmiTheme .popupbutton:hover .state {
+  background-color: #fff;
+}
+.helmiTheme .popupbutton:active .state {
+  background-color: #eee;
+}
+.helmiTheme .popupbutton .bg {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+  padding: 1px;
+}
+.enabled .popupbutton #border {
+  background-color: #aaa;
+}
+.active .popupbutton #border {
+  background-color: #fb9;
+}
+.helmiTheme .popupbutton .border-n {
+  right: 1px; height: 1px;
+  left: 1px; top: 0px;
+}
+.helmiTheme .popupbutton .border-s {
+  right: 1px; bottom: 0px;
+  left: 1px; height: 1px;
+}
+.helmiTheme .popupbutton .border-e {
+  width: 1px; bottom: 1px;
+  left: 0px; top: 1px;
+}
+.helmiTheme .popupbutton .border-w {
+  right: 0px; bottom: 1px;
+  width: 1px; top: 1px;
+}
+.helmiTheme .popupbutton .label {
+  position: absolute;
+  left: 1px; right: 1px;
+  vertical-align: middle;
+  border: 0;
+  background-color: transparent;
+  font-size: 11px;
+  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+  color: #666;
+}
+.enabled .popupbutton .label {
+  color: #444;
+}
+.active .popupbutton .label {
+  color: #000;
+}
+.disabled .popupbutton {
+  opacity: 0.75;
+}

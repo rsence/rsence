@@ -1,0 +1,39 @@
+.helmiTheme-itextcontrol {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: left;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: none;
+}
+.helmiTheme-itextcontrol .state {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+  border: 1px solid #fff;
+  line-height: 0px;
+  background-color: #f0f0f0;
+}
+.helmiTheme-itextcontrol:hover .state {
+  background-color: #fff;
+}
+.helmiTheme-itextcontrol:active .state {
+  background-color: #eee;
+}
+.helmiTheme-itextcontrol .label {
+  position: absolute;
+  left: 1px; right: 1px;
+  vertical-align: middle;
+  border: 0;
+  background-color: transparent;
+  font-size: 11px;
+  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+  color: #666;
+}
+.helmiTheme-itextcontrol:hover .label {
+  color: #444;
+}
+.helmiTheme-itextcontrol:active .label {
+  color: #000;
+}

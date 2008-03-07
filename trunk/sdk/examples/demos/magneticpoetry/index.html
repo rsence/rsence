@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" version="-//W3C//DTD XHTML 1.1//EN" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Magnetic Poetry Demo</title>
+
+  <script type="text/javascript" src="../../release/latest/src/allinone.js"></script>
+  
+  <script type="text/javascript">
+  HTransportURL = '/demo/tp';
+  onloader('HTransporter.syncDelay=500;');
+  
+  
+  HRectValue = HRectValue.extend({
+    toString: function() {
+      return "[" + this.left + "," + this.top + "," + this.right + "," + this.bottom + "]";
+    }
+  });
+  
+  function bedug() {
+    var v = HValueManager.values;
+    
+    for (var i in v) {
+      
+      if (isNumeric(i)) {
+        log(i + " : " + v[i] + " :: " + v[i].views[0].value);
+      }
+    }
+  }
+  
+  function isNumeric(txt) {
+    var validChars = "0123456789.";
+    
+    for (var i = 0; i < txt.length; i++) {
+      if (validChars.indexOf(txt.charAt(i)) == -1) {
+        return false;
+       }
+    }
+    return true;
+  }
+  
+  
+  function moveAllToLeftTop() {
+    
+    var v = HValueManager.values;
+    
+    for (var i in v) {
+      if (isNumeric(i)) {
+        v[i].views[0].moveTo(0,0);
+      }
+    }
+    
+  }
+  
+  function moveAllBy(x,y) {
+    
+    var v = HValueManager.values;
+    
+    for (var i in v) {
+      if (isNumeric(i)) {
+        v[i].views[0].moveBy(x,y);
+      }
+    }
+    
+  }
+  </script>
+
+</head>
+<body style="background-color: gainsboro;"></body>
+</html>

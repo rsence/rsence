@@ -1,0 +1,38 @@
+.helmiTheme .calendarheaderbutton {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: none;
+  font-size: 11px;
+  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+  background-color:#EDEFEF;
+  color: #6D6F71;
+  
+  border-left:1px solid #C0C1C1;
+  border-top:1px solid #C0C1C1;
+  
+  
+}
+.helmiTheme .calendarheaderbutton .state {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+}
+.helmiTheme .calendarheaderbutton .bg {
+  position: absolute;
+  left: 1px; top: 2px; bottom: 0px;
+  padding: 0px;
+}
+
+.helmiTheme .calendarheaderbutton .on {
+    
+}
+
+.helmiTheme .calendarheaderbutton .off {
+    
+}
+
+

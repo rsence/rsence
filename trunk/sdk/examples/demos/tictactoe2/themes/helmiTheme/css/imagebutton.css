@@ -1,0 +1,14 @@
+.helmiTheme .imageButton {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.disabled .imageButton {
+	opacity: 0.5;
+}
+.enabled .imageButton {
+	opacity: 1.0;
+}
+.active .imageButton {
+	opacity: 1.0;
+}

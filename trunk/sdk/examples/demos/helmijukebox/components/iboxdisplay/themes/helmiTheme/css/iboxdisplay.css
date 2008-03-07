@@ -1,0 +1,87 @@
+.helmiTheme-iboxdisplay {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: none;
+}
+.helmiTheme-iboxdisplay #border {
+  position: absolute;
+  line-height: 1px;
+}
+.helmiTheme-iboxdisplay .border-nw 
+{
+  left: 0px; top: 0px;
+  width: 7px; height: 8px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_nw.png');
+  background-repeat: no-repeat;
+}
+.helmiTheme-iboxdisplay .border-ne 
+{
+  right: 0px; top: 0px;
+  width: 7px; height: 8px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_ne.png');
+  background-repeat: no-repeat;
+}
+.helmiTheme-iboxdisplay .border-se 
+{
+  right: 0px; top: 39px;
+  width: 7px; height: 7px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_se.png');
+  background-repeat: no-repeat;
+}
+.helmiTheme-iboxdisplay .border-sw 
+{
+  left: 0px; top: 39px;
+  width: 7px; height: 7px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_sw.png');
+  background-repeat: no-repeat;
+}
+.helmiTheme-iboxdisplay .border-w 
+{
+  left: 0px; top: 8px;
+  width: 7px; height: 31px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_w.png');
+  background-repeat: no-repeat;
+}
+.helmiTheme-iboxdisplay .border-n 
+{
+  left: 7px; top: 0px;
+  right: 7px; height: 8px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_n.png');
+  background-repeat: repeat-x;
+}
+.helmiTheme-iboxdisplay .border-e 
+{
+  right: 0px; top: 8px;
+  width: 7px; height: 31px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_e.png');
+  background-repeat: no-repeat;
+}
+.helmiTheme-iboxdisplay .border-s 
+{
+  left: 7px; top: 39px;
+  right: 7px; height: 7px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_s.png');
+  background-repeat: repeat-x;
+}
+.helmiTheme-iboxdisplay .border-c 
+{
+  left: 7px; top: 8px;
+  right: 7px; bottom: 7px;
+  background-image: url('#{this.getThemeGfxPath()}box_display_c.png');
+  background-repeat: repeat-x;
+}
+.helmiTheme-iboxdisplay .label {
+  position: absolute;
+  left: 1px; right: 1px;
+  vertical-align: middle;
+  border: 0;
+  background-color: transparent;
+  font-size: 11px;
+  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+  color: #666;
+}

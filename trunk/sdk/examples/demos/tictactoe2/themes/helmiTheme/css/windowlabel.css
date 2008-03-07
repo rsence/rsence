@@ -1,0 +1,19 @@
+.helmiTheme-windowlabel {
+  cursor: move;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: none;
+}
+.helmiTheme-windowlabel .label {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px;
+  line-height: 19px; vertical-align: middle; height: 21px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+  color: #666;
+}

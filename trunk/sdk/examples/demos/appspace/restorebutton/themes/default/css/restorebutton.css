@@ -1,0 +1,12 @@
+.restorebutton {
+  position: absolute;
+  left: 0px; top: 0px; width: 16px; height: 16px;
+  background-image: url('#{this.getThemeGfxPath()}mini-icons.png');
+  background-repeat: no-repeat;
+  background-position: -32px 0px;
+  cursor: pointer;
+}
+.restorebutton:hover {
+  background-image: url('#{this.getThemeGfxPath()}mini-icons.png');
+  background-position: -32px -16px;
+}

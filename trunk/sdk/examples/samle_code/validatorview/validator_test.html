@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+
+
+<script type="text/javascript" src="core.js"></script>
+<script type="text/javascript" src="validator.js"></script>
+
+<script type="text/javascript">
+
+function test() {
+  application = new HApplication(100);
+  HThemeManager.setThemePath('./themes');
+  HThemeManager.setTheme("default");
+  
+  var win = new HWindowControl( new HRect(10,10,500,500), application, {label:'Validator test'} );
+  
+  var textfield = new HTextControl( new HRect(50,50,250,70), win.windowView );
+  
+  var validator1 = new HValidatorView(
+    new HRect(120,120,140,140), // left, top, right, bottom
+    textfield,                // parent
+    {value: false}
+  );
+ 
+}
+
+onloader("test()");
+
+</script>
+
+</head>
+
+<body>
+</body>
+</html>

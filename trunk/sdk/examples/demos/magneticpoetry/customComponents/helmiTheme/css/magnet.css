@@ -1,0 +1,16 @@
+.helmiTheme-magnet {
+  background-color: white;
+  color: black;
+  
+  padding: 2px;
+  border: 1px solid gray;
+
+  font-size: 13px;
+  font-weight: bold;
+  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
+  
+  white-space: nowrap;
+  cursor: move;
+}
+
+

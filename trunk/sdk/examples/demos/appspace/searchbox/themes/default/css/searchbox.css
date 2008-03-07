@@ -1,0 +1,36 @@
+.searchbox {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px; width: auto;
+  padding-left: 20px; line-height: 17px; vertical-align: middle;
+  padding-top: 0px;
+  background-repeat: no-repeat;
+  border: 0px; background: transparent; color: #000;
+}
+.searchbox_bg_left {
+  position: absolute;
+  left: 0px; width: 4px; top: 0px; bottom: 0px;
+  background-image: url('#{this.getThemeGfxPath()}smallbutton.png');
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+.searchbox_bg_center {
+  position: absolute;
+  left: 4px; right: 4px; top: 0px; bottom: 0px;
+  background-image: url('#{this.getThemeGfxPath()}smallbutton.png');
+  background-position: 0px -21px;
+  background-repeat: repeat-x;
+}
+.searchbox_bg_right {
+  position: absolute;
+  right: 0px; width: 4px; top: 0px; bottom: 0px;
+  background-image: url('#{this.getThemeGfxPath()}smallbutton.png');
+  background-position: -16px 0px;
+  background-repeat: no-repeat;
+}
+.searchbox_icon {
+  position: absolute;
+  left: 3px; top: 3px; width: 16px; height: 16px;
+  background-image: url('#{this.getThemeGfxPath()}mini-icons.png');
+  background-position: -48px 0px;
+  background-repeat: no-repeat;
+}

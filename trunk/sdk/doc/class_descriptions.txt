@@ -1,0 +1,52 @@
+BASE CLASS
+
+Base class is a simple JavaScript class that eases the pain of JavaScript OO. It is intended for the following main purposes: 
+-	to easily create classes without the MyClass.prototype cruft,
+-	method overriding with intuitive access to the overridden method (like Java's super),
+-	to avoid calling a class constructor function during the prototyping phase,
+-	to easily add static (class) properties and methods,
+-	to achieve the above without resorting to global functions to build prototype chains,
+-	to achieve the above without affecting Object.prototype. 
+
+The Base class extends the 'Object' object by adding two instance methods and one class method. 
+
+extend: Call this method to extend an object with another interface.
+
+Example: 
+
+var object = new Base;
+object.extend({
+  value: "some data",
+  method: function() {
+    alert("Hello World!");
+  }
+});
+object.method();
+// ==> Hello World!
+
+base: If a method has been overridden then the base method provides access to the overridden method. Call this method from any other method to invoke that method's ancestor. 
+It is also possible to call the base method from within a constructor function.
+
+Example:
+
+var object = new Base;
+object.method = function() {  
+  alert("Hello World!"); 
+};
+
+object.extend({
+  method: function() {
+    // call the "super" method
+    this.base();
+    // add some code
+    alert("Hello again!");
+  }
+});
+
+object.method();
+
+// ==> Hello World!
+// ==> Hello again!
+
+
+More information about the Base class can be found to the following address: http://dean.edwards.name/weblog/2006/03/base/

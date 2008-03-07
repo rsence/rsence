@@ -1,0 +1,47 @@
+.smallpasswdfield {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px; width: auto;
+}
+.smallpasswdfield_input {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px; width: auto;
+  padding-left: 6px; padding-right: 6px;
+  padding-top: 2px;
+  font-size: 11px;
+  height: 21px; line-height: 17px; vertical-align: middle;
+  border: 0px; background: transparent; color: #333;
+  font-family: Futura, Trebuchet MS, Arial, sans-serif;
+}
+.smallpasswdfield:active .smallpasswdfield_bg_left {
+  color: #000;
+}
+.smallpasswdfield_bg_left {
+  position: absolute;
+  left: 0px; width: 4px; top: 0px; bottom: 0px;
+  background-image: url('#{this.getThemeGfxPath()}smalltextfield.png');
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+.smallpasswdfield:hover .smallpasswdfield_bg_left {
+  background-position: 0px -42px;
+}
+.smallpasswdfield_bg_center {
+  position: absolute;
+  left: 4px; right: 4px; top: 0px; bottom: 0px;
+  background-image: url('#{this.getThemeGfxPath()}smalltextfield.png');
+  background-position: 0px -21px;
+  background-repeat: repeat-x;
+}
+.smallpasswdfield:hover .smallpasswdfield_bg_center {
+  background-position: 0px -63px;
+}
+.smallpasswdfield_bg_right {
+  position: absolute;
+  right: 0px; width: 4px; top: 0px; bottom: 0px;
+  background-image: url('#{this.getThemeGfxPath()}smalltextfield.png');
+  background-position: -16px 0px;
+  background-repeat: no-repeat;
+}
+.smallpasswdfield:hover .smallpasswdfield_bg_right {
+  background-position: -16px -42px;
+}

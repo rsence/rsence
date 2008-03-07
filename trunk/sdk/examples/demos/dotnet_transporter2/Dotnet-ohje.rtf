@@ -1,0 +1,76 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf420
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww13580\viewh17820\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 .NET\
+\
+Microsoft IIS has to be installed first\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 Installing Microsoft IIS
+\f1\b0 \
+\
+In Windows XP Professional click Start > Settings > Control Panel. Then click Add or Remove Programs. Click Add/Remove Windows Components and choose Internet Information Services (IIS) and click Next and follow instructions.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\f0\b \cf0 Installing .NET\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+Go to the address
+\f1\b0 \
+\
+http://msdn.microsoft.com/vstudio/express/vwd/download/\
+\
+Before installing, you must uninstall any previous Beta, CTP or Tech Preview versions of SQL Server 2005, Visual Studio 2005, and the .NET Framework 2.0.\
+\
+Click the Download-link. Download the file named vwdsetup.exe.\
+\
+Double-click the downloaded file and choose to install both Microsoft Visual Web Developer 2005 Express Edition and SQL Server Express.\
+\
+
+\f0\b Copy files to right locations:
+\f1\b0 \
+\
+Copy "v2" (version 2 Helmi Technologies development) directory including the "demos" and "src" directories to c:
+\fs26 \\v2\\\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\fs24 \cf0 Unzip the "mp3bak.zip" including the demo mp3 files to c:
+\fs26 \\mp3s\\
+\fs24 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\f0\b \cf0 Create virtual directories:
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+\cf0 \
+Click Start > Settings > Control Panel. Then click Administrative Tools. Click Internet Information Tools. Open the <your_computer>(local computer) plus mark. Open the Web Sites plus mark and also the Default Web Site plus mark.\
+\
+Right click Default Web Site and choose New > Virtual Directory... from the menu. Click Next. Write the name "dotnet_transporter" to the Alias textfield. Click Next and Browse... . Choose c:\\v2\\demos\\dot_transporter\\ and click OK. Click Next and leave the settings as is they are. Click Next and Finish.\
+\
+Create also another Virtual Directory "v2" in the Alias textfield and choose c:\\v2\\ in the Directory.\
+\
+
+\f0\b Configure security settings:
+\f1\b0 \
+\
+In the Internet Information Services window right click the dotnet_transporter and choose Properties. Choose the ASP.NET tab and click the Edit Configuration... . Choose the Application tab and check the Local inpersonation and white your user name and password in the User name and Password textfields. Click OK.\
+\
+In the dotnet_transporter Properties window choose the Directory Security and click the Edit... . Check the Intergrated Windows Authentication and choose the OK.\
+\
+\
+
+\f0\b Now you area ready to go!\
+
+\f1\b0 \
+Open your favorite browser and choose:\
+\
+http://localhost/v2/demos/helmijukebox/index.html}

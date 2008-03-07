@@ -1,0 +1,49 @@
+<div class="helmiTheme-windowbar" 
+  ><div class="state"
+     
+     #{is_ie6?'style="width:'+(this.rect.width-4)+'px;height:'+(this.rect.height-4)+'px"':''}
+     
+  ></div
+  ><img class="bg" id="windowBgImg#{this.elemId}" width="#{this.rect.width-4}" height="#{this.rect.height-3}" alt=""
+     src="#{is_ie6?this.getThemeGfxPath()+'blank.gif':this.getThemeGfxPath()+'scaledbg-gradient.png'}"
+     
+     #{is_ie6?'style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\n(src='+apos+this.getThemeGfxPath()+'scaledbg-gradient.png'+apos+',sizingMethod='+apos+'scale'+apos+')"':''}
+     
+ /><div id="border" class="border-w"
+     
+     #{is_ie6?'style="font-size:0px;left:'+(this.rect.width-1)+'px;height:'+(this.rect.height-2)+'px"':''}
+     
+  >&nbsp;</div
+  ><div id="border" class="border-e"
+     
+     #{is_ie6?'style="font-size:0px;height:'+(this.rect.height-2)+'px"':''}
+     
+  >&nbsp;</div
+  ><div id="border" class="border-n"
+     
+     #{is_ie6?'style="font-size:0px;width:'+(this.rect.width-2)+'px"':''}
+     
+  >&nbsp;</div
+  ><div id="border" class="border-s"
+     
+     #{is_ie6?'style="font-size:0px;width:'+(this.rect.width-2)+'px;top:'+(this.rect.height-1)+'px"':''}
+     
+  >&nbsp;</div
+  ><div id="windowhilight#{this.elemId}" class="hilight" style="visibility:hidden"
+     
+     #{is_ie6?'style="font-size:0px;width:'+(this.rect.width-2)+'px;top:0px;height:'+(this.rect.height)+'px"':''}
+     
+    ><div class="border_top"
+       
+       #{is_ie6?'style="font-size:0px;width:'+(this.rect.width-2)+'px;overflow:hidden;"':''}
+       
+    ></div
+    ><div class="px_bottomleft"
+       
+       #{is_ie6?'style="font-size:0px;left:'+(this.rect.width-2)+'px;top:'+(this.rect.height-1)+'px;overflow:hidden;"':''}
+       
+    ></div
+  ></div
+></div>
+
+#{this.addResizeableElement(["windowBgImg"+this.elemId,-4,-3])}

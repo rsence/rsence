@@ -1,0 +1,6 @@
+<div class="helmiTheme-windowView" id="windowview#{this.elemId}"
+
+  #{is_ie6?'style="font-size:0px;width:'+(this.rect.width-2)+'px;height:'+(this.rect.height-2)+'px;"':''}
+
+></div>
+#{this.addResizeableElement(["windowview"+this.elemId,-2,-1])}

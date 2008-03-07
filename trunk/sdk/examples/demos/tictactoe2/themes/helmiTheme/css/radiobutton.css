@@ -1,0 +1,30 @@
+.helmiTheme-radiobutton {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: none;
+}
+.helmiTheme-radiobutton .state {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+  border: 1px solid #fff;
+}
+.helmiTheme-radiobutton .bg {
+  position: absolute;
+  left: 1px; top: 2px; bottom: 0px;
+  padding: 0px;
+}
+
+.helmiTheme-radiobutton .on {
+  background-image: url('#{this.getThemeGfxPath()}radiobutton_on.gif');
+  background-repeat: no-repeat;
+}
+
+.helmiTheme-radiobutton .off {
+  background-image: url('#{this.getThemeGfxPath()}radiobutton_off.gif');
+  background-repeat: no-repeat;
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Mem</title>
+
+<script type="text/javascript" src="../../src/abstraction/class/js/class.js"></script>
+<script type="text/javascript" src="../../src/abstraction/events/js/events.js"></script>
+<script type="text/javascript" src="../../src/abstraction/ajax/js/ajax.js"></script>
+
+<script type="text/javascript" src="../../src/abstraction/dom_elements/js/dom_elements.js"></script>
+<script type="text/javascript" src="../../src/abstraction/dom_events/js/dom_events.js"></script>
+
+<script type="text/javascript" src="../../src/virtualbrowser/early_vb_init/js/early_vb_init.js"></script>
+<script type="text/javascript" src="../../src/virtualbrowser/virtualbrowser/js/virtualbrowser.js"></script>
+
+<script type="text/javascript" src="../../src/interface/foundation/sys/js/system.js"></script>
+<script type="text/javascript" src="../../src/interface/foundation/app/js/application.js"></script>
+
+<script type="text/javascript" src="../../src/interface/foundation/geom/point/js/point.js"></script>
+<script type="text/javascript" src="../../src/interface/foundation/geom/rect/js/rect.js"></script>
+<script type="text/javascript" src="../../src/interface/thememanager/js/thememanager.js"></script>
+<script type="text/javascript" src="../../src/interface/foundation/markupview/js/markupview.js"></script>
+
+<script type="text/javascript" src="../../src/interface/foundation/view/js/view.js"></script>
+<script type="text/javascript" src="../../src/interface/foundation/control/js/control.js"></script>
+
+<script type="text/javascript" src="../../src/interface/components/button/js/button.js"></script>
+
+<script type="text/javascript">
+
+var application;
+var views = [];
+var colors = ["blueviolet", "chartreuse", "crimson", "darkseagreen",
+  "fuchsia", "indigo", "mediumslateblue", "tomato"];
+var number_of_views = 30;
+
+
+function init() {
+  
+  HThemeManager.setThemePath("../../src/interface/components");
+  HThemeManager.setTheme("helmiTheme");
+  
+  
+  application = new HApplication(20);
+  
+  createViews();
+  
+}
+
+onloader('init();');
+
+
+function killViews() {
+  
+  // Destroy all views.
+  for (var i = 0; i < views.length; i++) {
+    views[i].die();
+  }
+  views = [];
+  
+  window.setTimeout(createViews, 100);
+}
+  
+  
+function createViews() {
+
+  // Create n views
+  for (var i = 0; i < number_of_views; i++) {
+    var color = Math.round(colors.length * Math.random());
+    
+    var view = new HButton(new HRect(0, 0, 0, 0), application, {
+      label:colors[color]
+    });
+    
+    // Place the views in random positions with random size and color.
+    var size = (Math.round(10 * Math.random()) + 1) * 20;
+    var x = Math.round(640 * Math.random());
+    var y = Math.round(480 * Math.random());
+    
+    // view.setStyleForPart('label', 'background-color', colors[color]);
+    
+    view.setRect(new HRect(x, y, x + size, y + size));
+    
+    
+    views.push(view);
+    
+  }
+  
+  window.setTimeout(killViews, 100);
+  
+}
+
+</script>
+
+<style type="text/css">
+body {
+  color: black;
+  background-color: lightyellow;
+}
+</style>
+
+</head>
+
+<body></body>
+</html>
+

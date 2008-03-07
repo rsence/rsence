@@ -1,0 +1,40 @@
+  
+.helmiTheme-vslider {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; bottom: 0px; top: 0px; width: 15px; height: 100%;
+  display: block;
+  padding: 0;
+} 
+.helmiTheme-vslider .bg {
+  position: absolute;
+  top: 7px; bottom: 7px;
+  left: 0px;
+  width: 15px;
+  background-image: url('#{this.getThemeGfxPath()}vslider.gif');
+  background-position: 15px 0px;
+} 
+.helmiTheme-vslider .bgBottom {
+  position: absolute;
+  left: 0px;
+  bottom: 0px; height:7px;
+  width: 15px;
+  background-image: url('#{this.getThemeGfxPath()}vslider.gif');
+  background-position: 0px 7px;
+} 
+.helmiTheme-vslider .bgTop {
+  position: absolute;
+  left: 0px;
+  top: 0px; height:7px;
+  width: 15px;
+  background-image: url('#{this.getThemeGfxPath()}vslider.gif');
+  background-position: 0px 15px;
+} 
+.helmiTheme-vslider .knob {
+  position: absolute;
+  top: 33%; left: 0px;
+  width: 15px; height: 15px;
+  background-image: url('#{this.getThemeGfxPath()}vslider.gif');
+  background-position: 0px 0px;
+} 
+  

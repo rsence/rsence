@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script type="text/javascript" src="/v2/src/allinone.js"></script>
+<script type="text/javascript" src="mytest.js"></script>
+<script type="text/javascript">
+
+HTransportURL = 'server.php';
+//HTransport
+
+
+_HTransporter = _HTransporter.extend({
+	jsfailure: function(jserr, resp) {
+		alert('JS EVAL ERR! STOP.');
+		elem_set(0,resp); /* overwrites document.body with the error msg */
+		clearTimeout(this.req_timeout);
+		this.isBusy = true;
+	},
+	
+	respond: function(resp) {
+		var t = HTransporter;
+		try {
+		  eval(resp.responseText); 
+		  t.isBusy = false;
+		} catch(e) {
+		  t.jsfailure(e, resp.responseText);
+		}
+	}
+});
+
+defaultStatus = '';
+myTest = function() {
+
+	// teemat
+	HThemeManager.setThemePath( '/v2' );
+
+	//myAppInstance = new MyFormHandlingApp( 'Hello World', 640, 480, {windowTitle: 'HelloWorld' , sliderValue: 'asdf' } );
+
+
+	
+}
+
+onloader( 'myTest()' );
+
+</script>
+
+<title>test</title>
+
+
+
+</head>
+
+<body>
+</body>
+</html>
