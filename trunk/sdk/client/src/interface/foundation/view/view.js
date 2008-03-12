@@ -1033,7 +1033,7 @@ HView = HClass.extend({
     elem_set(_stringElem, _string);
     var _width;
     var _height;
-    if (is_ie || is.opera) {
+    if (ELEM._is_ie6 || ELEM._is_ie7 || ELEM._opera) {
       _width = elem_get(_stringElem).offsetWidth;
       if (arguments[3]) {
         _height = elem_get(_stringElem).offsetHeight;

@@ -84,7 +84,7 @@ HButton = HControl.extend({
         if( this.markupElemIds.label ) {
           var _heightDiff = parseInt( _height+this._labelHeightDiff, 10);
           prop_set( this.markupElemIds.label, 'line-height', _heightDiff+'px');
-          if(is.ie6){
+          if(ELEM._is_ie6){
             var _widthDiff  = parseInt(_width + this._labelWidthDiff,  10);
             prop_set( this.markupElemIds.label, 'height', _heightDiff+'px');
             prop_set( this.markupElemIds.label, 'width', _widthDiff+'px');

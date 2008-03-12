@@ -128,8 +128,6 @@ ELEM = {
     _this   = ELEM;
     _source = _this._elements[_sourceId];
     _target = _this._elements[_targetId];
-    console.log('_target',_target);
-    console.log('_source',_source);
     _target.appendChild(_source);
   },
   
@@ -598,6 +596,7 @@ ELEM = {
     _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1);
     _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1);
     _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1);
+    _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1);
     _this._domWaiter();
   },
   // pre-init queue
