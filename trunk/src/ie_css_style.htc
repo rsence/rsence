@@ -1,5 +1,0 @@
-<PUBLIC:COMPONENT lightWeight="true">
-<script type="text/javascript">
-  element.attachEvent("onreadystatechange", ie_namespace.iestyleSheetLoaded);
-</script>
-</PUBLIC:COMPONENT>
