@@ -67,17 +67,22 @@ end
 class MySQLAbstractor
   def initialize(conf,db_name)
     (@host,@user,@pass,@debe) = [conf[:host],conf[:user],conf[:pass],db_name]
+    if conf.has_key?(:port)
+      @port = conf[:port]
+    else
+      @port = 3306
+    end
     @conn = false
   end
   def open
     begin
       if not @conn and @debe
-        @conn = DBI.connect("DBI:Mysql:#{@debe}:#{@host}",@user,@pass)
+        @conn = DBI.connect("DBI:Mysql:database=#{@debe}:host=#{@host},port=#{@port}",@user,@pass)
         return true
       end
     rescue DBI::DatabaseError
       $stderr.write("Warn: DBConn.open; unable to connect (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
-      @conn = DBI.connect("DBI:Mysql:mysql:#{@host}",@user,@pass)
+      @conn = DBI.connect("DBI:Mysql:database=#{@debe}:host=#{@host},port=#{@port}",@user,@pass)
       db(@debe)
       return true
     end
@@ -142,6 +147,19 @@ class MySQLAbstractor
     end
     status_db = Status_DB.new(total_bytes,modified_db,created_db,@debe)
     return [status_db,status_tbl]
+  end
+  def trans(qu_a)
+    @conn['AutoCommit'] = false
+    begin
+      qu_a.each do |qu|
+        @conn.do( qu )
+      end
+      @conn.commit
+    rescue
+      puts "query failure: #{qu_a.inspect}"
+      @conn.rollback
+    end
+    @conn['AutoCommit'] = true
   end
   def q(qu)
     action = qu.split(' ')[0].downcase
