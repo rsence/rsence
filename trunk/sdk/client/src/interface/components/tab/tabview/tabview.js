@@ -77,26 +77,25 @@ HTabView = HView.extend({
     if(!this.drawn){
       this.drawMarkup();
       // Bind the element from the HTML template.
-      var _temp_id = this.bindDomElement(
-        HTabView._tmplElementPrefix + this.elemId);
+      var _temp_id = this.bindDomElement( HTabView._tmplElementPrefix + this.elemId);
       
       if (!_temp_id) {
-        throw("HTabView: The HTML template must have an element with " +
-          "the ID '" + HTabView._tmplElementPrefix + " + this.elemId'.");
+        throw("HTabView: The HTML template must have an element with " + "the ID '" + HTabView._tmplElementPrefix + " + this.elemId'.");
       }
       
       // Place the new element as this element's sibling.
-      elem_append(this.parent.elemId, _temp_id);
+      ELEM.append( _temp_id, this.parent.elemId );
       
       // Move the original element into the document body.
-      elem_append(0, this.elemId);
+      ELEM.append(this.elemId, 0);
       
       // Delete the original element.
-      elem_del(this.elemId);
+      ELEM.del(this.elemId);
       
       // Place the new element into the element cache in the same position as
       // the original element was in.
-      elem_replace(this.elemId, elem_get(_temp_id));
+      //elem_replace(this.elemId, elem_get(_temp_id));
+      this.elemId = _temp_id;
     }
     this.drawRect();
   }

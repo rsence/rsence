@@ -165,17 +165,16 @@ HTabLabel = HButton.extend({
           this._tmplHighlightPrefix + this.elemId);
       }
       if (this._highlightElementId) {
-        var _isInVisible = (prop_get(this._highlightElementId,
-          'visibility') == 'hidden');
+        var _isInVisible = (prop_get(this._highlightElementId,'visibility') == 'hidden');
           
         // hide highlight-element:
         if(_isInVisible && this.highlight) {
-          prop_set(this._highlightElementId, 'visibility', '', true);
+          ELEM.setStyle(this._highlightElementId, 'visibility', '', true);
         }
         
         // show highlight-element:
         else if (!_isInVisible && !this.highlight) {
-          prop_set(this._highlightElementId, 'visibility', 'hidden', true);
+          ELEM.setStyle(this._highlightElementId, 'visibility', 'hidden', true);
         }
       }
     }

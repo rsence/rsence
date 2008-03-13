@@ -77,12 +77,24 @@ class MySQLAbstractor
   def open
     begin
       if not @conn and @debe
-        @conn = DBI.connect("DBI:Mysql:database=#{@debe}:host=#{@host},port=#{@port}",@user,@pass)
+        @conn = DBI.connect("DBI:Mysql:database=#{@debe};host=#{@host};port=#{@port}",@user,@pass)
         return true
       end
-    rescue DBI::DatabaseError
-      $stderr.write("Warn: DBConn.open; unable to connect (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
-      @conn = DBI.connect("DBI:Mysql:database=#{@debe}:host=#{@host},port=#{@port}",@user,@pass)
+    rescue DBI::DatabaseError => e
+      puts "=="*40 if $config[:debug_mode]
+      puts "WARN: MySQLAbstractor:open; failed to connect, retrying..."
+      if $config[:debug_mode]
+        puts "--"*40
+        puts "hostname: #{@host.inspect}"
+        puts "username: #{@user.inspect}"
+        puts "password: #{@pass.inspect}"
+        puts "database: #{@debe.inspect}"
+        puts " portnum: #{@port.inspect}"
+        puts e.message
+        puts "  #{e.backtrace.join("\n  ")}"
+        puts "=="*40
+      end
+      @conn = DBI.connect("DBI:Mysql:database=#{@debe};host=#{@host};port=#{@port}",@user,@pass)
       db(@debe)
       return true
     end
@@ -91,7 +103,7 @@ class MySQLAbstractor
     begin
       @conn.disconnect if @conn # Close only when a connection is open
     rescue DBI::DatabaseError
-      $stderr.write("Note: DBConn.close; unable to close connection (@debe:#{@debe.inspect},@host:#{@host.inspect})\n")
+      puts "WARN: DBConn.close; unable to close connection (@debe:#{@debe.inspect},@host:#{@host.inspect})"
     end
     @conn = false
   end
@@ -172,29 +184,75 @@ class MySQLAbstractor
       begin
         @conn.do(qu)
       rescue
-        close
-        open
-        @conn.do(qu)
+        puts "=="*40 if $config[:debug_mode]
+        puts "WARN: MySQLAbstractor:q; failed query, retrying..."
+        begin
+          close
+          open
+          @conn.do(qu)
+        rescue => e
+          if $config[:debug_mode]
+            puts "--"*40
+            puts "query: #{qu.inspect}"
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+          else
+            puts "...retry failed!"
+            raise
+          end
+        end
       end
       return @conn.func(:insert_id)
     elsif get_count
       begin
         return @conn.do(qu) # matched row count
-      rescue
-        close
-        open
-        return @conn.do(qu)
+      rescue => e
+        puts "=="*40 if $config[:debug_mode]
+        puts "WARN: MySQLAbstractor:q; failed query, retrying..."
+        begin
+          close
+          open
+          return @conn.do(qu)
+        rescue => e
+          if $config[:debug_mode]
+            puts "--"*40
+            puts "query: #{qu.inspect}"
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+            raise
+          else
+            puts "...retry failed!"
+            raise
+          end
+        end
       end
     elsif @debe
       begin
         rows = []
         begin
           quo = @conn.execute(qu)
-        rescue
-          $stderr.write("Warning: DBConn.q; query error, trying to reopen connection (qu.inspect)\n")
-          close
-          open
-          quo = @conn.execute(qu)
+        rescue => e
+          puts "=="*40 if $config[:debug_mode]
+          puts "WARN: MySQLAbstractor:q; failed query, retrying..."
+          begin
+            close
+            open
+            quo = @conn.execute(qu)
+          rescue => e
+            if $config[:debug_mode]
+              puts "--"*40
+              puts "query: #{qu.inspect}"
+              puts e.message
+              puts "  #{e.backtrace.join("\n  ")}"
+              puts "=="*40
+              raise
+            else
+              puts "...retry failed!"
+              raise
+            end
+          end
         end
         quo.fetch_hash() do |row|
           rows.push( row ) if row != nil

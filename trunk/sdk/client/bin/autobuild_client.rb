@@ -18,6 +18,7 @@
 BINPATH  = File.split( File.expand_path( __FILE__ ) )[0]
 BASEPATH = File.split(BINPATH)[0]
 CONFPATH = File.join(BASEPATH,'conf')
+$LOAD_PATH << CONFPATH
 $LOAD_PATH << File.join(BASEPATH,'lib')
 Dir.chdir(BASEPATH)
 

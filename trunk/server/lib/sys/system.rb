@@ -13,8 +13,9 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
   
-  
+
 require 'lib/app/application'
+
 
 # HSystem manages applications and delegates messages to and 
 # between them to respond to messages.
@@ -65,8 +66,15 @@ class HSystem
           begin
             app_as_string = IO.readlines( filename ).join
             app_module.module_eval( app_as_string )
-          rescue
-            puts "WARN: Application #{appname} failed to initialize (#{@@curr_app_path.inspect})."
+          rescue => e
+            puts "=="*40 if $config[:debug_mode]
+            puts "WARN: Application #{appname} failed to initialize."
+            if $config[:debug_mode]
+              puts "--"*40
+              puts e.message.gsub('(eval):',%{#{File.join(@@curr_app_path,"#{appname}.rb")}:})
+              puts "  #{e.backtrace.join("\n  ")}"
+              puts "=="*40
+            end
           end
         end
       end

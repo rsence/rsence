@@ -95,7 +95,6 @@ HTabControl = HControl.extend({
     
     // Flag, switches to false after draw is called.
     this._notDone = true;
-    
     if(!this.isinherited) {
       this.draw();
     }
@@ -114,8 +113,7 @@ HTabControl = HControl.extend({
     if(!this.drawn) {
       var _rect = this.rect;
       // Tab selection/label buttons here
-      var _labelsRect = new HRect(0, 0, _rect.width,
-        this.tabDefaults.labelHeight);
+      var _labelsRect = new HRect(0, 0, _rect.width, this.tabDefaults.labelHeight);
       this.labelViews = new HTabBar(_labelsRect, this);
       this.labelViews.draw();
       this._labelsRightMostPx = 0;
@@ -124,10 +122,8 @@ HTabControl = HControl.extend({
       var _viewYTop  = this.tabDefaults.labelHeight;
       var _viewXRight = _rect.width;
       var _viewYBottom = (_rect.height - this.tabDefaults.labelHeight);
-      var _viewRect = new HRect(_viewXLeft, _viewYTop, _viewXRight,
-        _viewYBottom);
-      this.tabDefaults.rect = new HRect(0, 0, _viewRect.width,
-        _viewRect.height);
+      var _viewRect = new HRect(_viewXLeft, _viewYTop, _viewXRight, _viewYBottom);
+      this.tabDefaults.rect = new HRect(0, 0, _viewRect.width, _viewRect.height);
       this.tabViews = new HView(_viewRect, this);
       this.tabViews.draw();
       // Mark the currently selected item here (-1 means N/A)
