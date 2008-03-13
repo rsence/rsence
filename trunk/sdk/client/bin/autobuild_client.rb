@@ -15,7 +15,7 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
 
-BINPATH  = File.split($0)[0]
+BINPATH  = File.split( File.expand_path( __FILE__ ) )[0]
 BASEPATH = File.split(BINPATH)[0]
 CONFPATH = File.join(BASEPATH,'conf')
 $LOAD_PATH << File.join(BASEPATH,'lib')
