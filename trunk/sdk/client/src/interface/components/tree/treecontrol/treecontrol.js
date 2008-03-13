@@ -183,7 +183,7 @@ HTreeControl = HControl.extend({
       // not invalidated during scrolling, only when the scrolling stops
       // completely, or pauses for a while.
       var _that = this;
-      Event.observe(elem_get(this.childContainerId), 'scroll',
+      Event.observe(ELEM.get(this.childContainerId), 'scroll',
         function(e) {
           if (_that._invalidateTimeout) {
             // Restart the timeout if we are currently scrolling.

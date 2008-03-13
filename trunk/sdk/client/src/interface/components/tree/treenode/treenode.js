@@ -158,8 +158,8 @@ HTreeNode = HControl.extend({
           
           if (this.actuallyDragging) {
             // We are currently dragging, follow the mouse with the object.
-            prop_set(this.dragElemId, 'left', (_x - this.originX) + 'px');
-            prop_set(this.dragElemId, 'top', (_y - this.originY) + 'px');
+            ELEM.setStyle(this.dragElemId, 'left', (_x - this.originX) + 'px');
+            ELEM.setStyle(this.dragElemId, 'top', (_y - this.originY) + 'px');
           }
           else {
             // Not yet dragging, see if mouse has moved enough to drag.
@@ -204,35 +204,35 @@ HTreeNode = HControl.extend({
       
       // This creates the drag clone when the dragging starts.
       this.content.createDragClone = function(_x, _y) {
-        var _element = elem_get(this.ownerNode.elemId);
+        var _element = ELEM.get(this.ownerNode.elemId);
         
         // Get the node's original position
         var _originalPosition = helmi.Element.getPageLocation(_element, true);
         
         // Duplicate the node element, but hide it first so the raw markup
         // doesn't scare the user.
-        this.dragElemId = elem_mk(this.appId);
-        prop_set(this.dragElemId, 'visibility', 'hidden', true);
+        this.dragElemId = ELEM.make(0);
+        ELEM.setStyle(this.dragElemId, 'visibility', 'hidden', true);
         var _dragClone = _element.cloneNode(true);
         
         // Anonymize the clone by removing all the id attributes in its markup.
         _dragClone.removeAttribute("id");
         _dragClone.innerHTML =
           _dragClone.innerHTML.replace(/\s+id="[^"]*"/g, "");
-        this.dragContentElemId = elem_add(_dragClone);
+        this.dragContentElemId = ELEM.bind(_dragClone);
         
         // Ghosting effect
-        prop_set(this.dragElemId, 'opacity', 0.50);
+        ELEM.setStyle(this.dragElemId, 'opacity', 0.50);
         
         // Place the clone on the screen
-        prop_set(this.dragElemId, 'position', 'absolute', true);
-        prop_set(this.dragElemId, 'left', _originalPosition[0] + 'px', true);
-        prop_set(this.dragElemId, 'top', _originalPosition[1] + 'px', true);
-        elem_append(this.dragElemId, this.dragContentElemId);
+        ELEM.setStyle(this.dragElemId, 'position', 'absolute', true);
+        ELEM.setStyle(this.dragElemId, 'left', _originalPosition[0] + 'px', true);
+        ELEM.setStyle(this.dragElemId, 'top', _originalPosition[1] + 'px', true);
+        ELEM.append(this.dragContentElemId, this.dragElemId);
         
         // Bring to temporary front
-        prop_set(this.dragElemId, 'z-index', this.app.viewsZOrder.length);
-        prop_set(this.dragElemId, 'visibility', 'visible', true);
+        ELEM.setStyle(this.dragElemId, 'z-index', this.app.viewsZOrder.length);
+        ELEM.setStyle(this.dragElemId, 'visibility', 'visible', true);
 
         
         // Store the original position, used in doDrag()
@@ -243,11 +243,11 @@ HTreeNode = HControl.extend({
       // Removes the drag clone from the screen.
       this.content.deleteDragClone = function() {
         if(this.dragContentElemId) {
-          elem_del(this.dragContentElemId);
+          ELEM.del(this.dragContentElemId);
           this.dragContentElemId = null;
         }
         if(this.dragElemId) {
-          elem_del(this.dragElemId);
+          ELEM.del(this.dragElemId);
           this.dragElemId = null;
         }
       };
@@ -387,15 +387,15 @@ HTreeNode = HControl.extend({
       // Kludge to keep MSIE happy. Move the element to document body before
       // drawing the markup with innerHTML, and then move it to the parent
       // element's child container.
-      var _element = elem_get(this.elemId);
-      elem_get(this.appId).appendChild(_element);
+      var _element = ELEM.get(this.elemId);
+      ELEM.get(0).appendChild(_element);
       
       this.draw();
       this.postDrawBindings();
       
-      var _parentElem = elem_get(this.parent.childContainerId);
+      var _parentElem = ELEM.get(this.parent.childContainerId);
       // Element has changed after calling postDrawBindings
-      _element = elem_get(this.elemId);
+      _element = ELEM.get(this.elemId);
       _parentElem.appendChild(_element);
       
       this.tree.invalidatePositionCache();
@@ -474,7 +474,7 @@ HTreeNode = HControl.extend({
     */
   removeDomNode: function() {
     if (this.drawn) {
-      var _elem = elem_get(this.elemId);
+      var _elem = ELEM.get(this.elemId);
       _elem.parentNode.removeChild(_elem);
       
       this.tree.invalidatePositionCache();
@@ -516,10 +516,10 @@ HTreeNode = HControl.extend({
   _updateExpansionStatus: function() {
     if (this.drawn) {
       if(this.expanded) {
-        prop_set(this.childContainerId, 'display', 'block');
+        ELEM.setStyle(this.childContainerId, 'display', 'block');
       }
       else {
-        prop_set(this.childContainerId, 'display', 'none');
+        ELEM.setStyle(this.childContainerId, 'display', 'none');
       }
       this._refreshToggler();
       
@@ -735,7 +735,7 @@ HTreeNode = HControl.extend({
     _newParent.addChildNode(this);
     
     if (_newParent.drawn) {
-      elem_append(_newParent.childContainerId, this.elemId);
+      ELEM.append(this.elemId, _newParent.childContainerId);
     }
     
     if (_newParent._refreshToggler) {
@@ -762,7 +762,11 @@ HTreeNode = HControl.extend({
     */
   postDrawBindings: function() {
     
-    elem_replace(this.elemId, $(HTreeNode._tmplElementPrefix + this.elemId));
+    //ELEM.replace(this.elemId, $(HTreeNode._tmplElementPrefix + this.elemId));
+    var _oldId = this.elemId;
+    ELEM.del( this.elemId );
+    this.elemId = ELEM.bindId( HTreeNode._tmplElementPrefix + _oldId );
+    
     this.childContainerId =
       this.bindDomElement(HTreeNode._tmplChildrenPrefix + this.elemId);
     
@@ -786,8 +790,8 @@ HTreeNode = HControl.extend({
         this.content.draw();
       }
       
-      prop_set(this.content.elemId, 'position', 'relative', true);
-      elem_append(this.contentId, this.content.elemId);
+      ELEM.setStyle(this.content.elemId, 'position', 'relative', true);
+      ELEM.append(this.content.elemId, this.contentId);
       
       
       if (!this.tree.staticNodeWidth) {
@@ -800,8 +804,8 @@ HTreeNode = HControl.extend({
     
     // Toggler button
     this.toggleControl.draw();
-    prop_set(this.toggleControl.elemId, 'position', 'relative', true);
-    elem_append(this.togglerId, this.toggleControl.elemId);
+    ELEM.setStyle(this.toggleControl.elemId, 'position', 'relative', true);
+    ELEM.append(this.toggleControl.elemId, this.togglerId);
     this._updateExpansionStatus();
     this.refreshSelectionStatus();
 
@@ -850,7 +854,7 @@ HTreeNode = HControl.extend({
   *
   **/
   mouseUp: function(_x, _y) {
-    var _toggleSelect = HEventManager.events[HEventManager.HStatusCtrlKey];
+    var _toggleSelect = EVENT.status[EVENT.ctrlKeyDown];
     var _extendSelection = (this.tree.treeType ==
       HTreeControl.H_MULTIPLE_SELECTION_TREE) && _toggleSelect;
     

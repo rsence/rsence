@@ -88,10 +88,10 @@ HImageButton = HControl.extend({
   },
   _updateImageState: function() {
 	if (!this.value) {
-	  elem_get(this._imgElementId).src = this._image;
+	  ELEM.get(this._imgElementId).src = this._image;
 	} else {
 	  if (this._alternateImage) {
-	    elem_get(this._imgElementId).src = this._alternateImage;
+	    ELEM.get(this._imgElementId).src = this._alternateImage;
 	  }
 	}
   },

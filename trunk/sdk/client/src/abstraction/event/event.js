@@ -543,6 +543,3 @@ EVENT = {
   */
 LOAD('EVENT.start();');
 
-// backwards-compatibility;
-HEventManager = EVENT;
-

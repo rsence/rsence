@@ -165,7 +165,7 @@ HTabLabel = HButton.extend({
           this._tmplHighlightPrefix + this.elemId);
       }
       if (this._highlightElementId) {
-        var _isInVisible = (prop_get(this._highlightElementId,'visibility') == 'hidden');
+        var _isInVisible = (ELEM.getStyle(this._highlightElementId,'visibility') == 'hidden');
           
         // hide highlight-element:
         if(_isInVisible && this.highlight) {

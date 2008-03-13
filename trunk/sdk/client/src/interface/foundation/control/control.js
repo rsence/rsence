@@ -202,8 +202,8 @@ HControl = HView.extend({
     }
     
     // Toggle the CSS class: enabled/disabled
-    this.toggleCSSClass(elem_get(this.elemId), HControl.CSS_ENABLED, this.enabled);
-    this.toggleCSSClass(elem_get(this.elemId), HControl.CSS_DISABLED, !this.enabled);
+    this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_ENABLED, this.enabled);
+    this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_DISABLED, !this.enabled);
   },
   
 /** method: setValue
@@ -533,7 +533,7 @@ HControl = HView.extend({
   // A low-level handler, don't extend this.
   _gainedActiveStatus: function(_lastActiveControl) {
     if(this.enabled) {
-      this.toggleCSSClass(elem_get(this.elemId), HControl.CSS_ACTIVE, true);
+      this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_ACTIVE, true);
     }
     this.gainedActiveStatus(_lastActiveControl);
   },
@@ -559,7 +559,7 @@ HControl = HView.extend({
   
   _lostActiveStatus: function(_newActiveControl) {
     if(this.enabled) {
-      this.toggleCSSClass(elem_get(this.elemId), HControl.CSS_ACTIVE, false);
+      this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_ACTIVE, false);
     }
     this.lostActiveStatus(_newActiveControl);
   },

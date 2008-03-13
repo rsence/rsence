@@ -99,7 +99,7 @@ HImageView = HControl.extend({
       }
   
       if(this._imgElementId) {
-        elem_get(this._imgElementId).src = this.value;
+        ELEM.setAttr(this._imgElementId,'src',this.value);
       }
     }
   },
@@ -115,8 +115,10 @@ HImageView = HControl.extend({
   **/
   scaleToFit: function() {
     if(this._imgElementId) {
-      prop_set(this._imgElementId, 'width', this.rect.width + 'px');
-      prop_set(this._imgElementId, 'height', this.rect.height + 'px');
+      ELEM.setStyle(this._imgElementId, 'width', this.rect.width + 'px');
+      ELEM.setStyle(this._imgElementId, 'height', this.rect.height + 'px');
+      ELEM.setAttr(this._imgElementId,'width',this.rect.width);
+      ELEM.setAttr(this._imgElementId,'height',this.rect.height);
     }
   },
   
@@ -131,8 +133,8 @@ HImageView = HControl.extend({
   **/
   scaleToOriginal: function() {
     if(this._imgElementId) {
-      prop_set(this._imgElementId, 'width', 'auto');
-      prop_set(this._imgElementId, 'height', 'auto');
+      ELEM.setStyle(this._imgElementId, 'width', 'auto');
+      ELEM.setStyle(this._imgElementId, 'height', 'auto');
     }
   }
 

@@ -581,7 +581,7 @@ HTableControl = HControl.extend({
     return this._scrollRect.top;
   },
   _buffer: function() {
-    var _tableElem = elem_get(this.tableView.elemId);
+    var _tableElem = ELEM.get(this.tableView.elemId);
     if (!_tableElem) {
       throw("Error: HTableControl element not found");
     }

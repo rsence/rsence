@@ -146,7 +146,7 @@ HSlider = HControl.extend({
   *  <HControl.startDrag>
   **/
   startDrag: function(_x,_y){
-    var _element = elem_get(this.elemId);
+    var _element = ELEM.get(this.elemId);
     var _originalPosition = helmi.Element.getPageLocation(_element, true);
     this._originX = _originalPosition[0];
     this._originY = _originalPosition[1];
@@ -318,7 +318,7 @@ HSlider = HControl.extend({
   
   // private method
   _value2px: function() {
-    var _elem = elem_get(this._knobElemId);
+    var _elem = ELEM.get(this._knobElemId);
     if(this._isVertical){
       _pxrange  = this.rect.height - parseInt( _elem.offsetHeight, 10 );
     } else {
@@ -354,7 +354,7 @@ HSlider = HControl.extend({
   drawKnobPos: function() {
     _whichprop = this._isVertical?'top':'left';
     _propval   = this._value2px();
-    prop_set(this._knobElemId,_whichprop,_propval);
+    ELEM.setStyle(this._knobElemId,_whichprop,_propval);
   }
   
 });

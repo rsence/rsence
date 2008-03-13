@@ -559,7 +559,7 @@ HWindowControl = HControl.extend({
       // Move the menu bar from its original location into the window control.
       this.menuBar.remove();
       this.addView(this.menuBar);
-      elem_append(this.elemId, this.menuBar.elemId);
+      ELEM.append(this.menuBar.elemId, this.elemId);
       
       // Align the menu bar with the window view.
       this.menuBar.moveTo(this.windowView.rect.left,

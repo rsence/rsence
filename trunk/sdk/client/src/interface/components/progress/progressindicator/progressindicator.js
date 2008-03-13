@@ -158,7 +158,7 @@ HProgressIndicator = HControl.extend({
     }
     
     if (this._progressbarElemId) {
-      prop_set(this._progressbarElemId, 'background-position', '0px -' +
+      ELEM.setStyle(this._progressbarElemId, 'background-position', '0px -' +
         (this.progressPosition * this.rect.height) + 'px');
     }
     

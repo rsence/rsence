@@ -99,7 +99,7 @@ HStringView = HControl.extend({
         this._stringElemId = this.bindDomElement("stringview" + this.elemId);
       }
       if(this._stringElemId) {
-        elem_set(this._stringElemId, this.value);
+        ELEM.setHTML(this._stringElemId, this.value);
       }
     }
   },
@@ -132,20 +132,20 @@ HStringView = HControl.extend({
       // tree node and it is not certain that the string view is yet displayed.
       // NOTE: This makes the method a bit slower, but for now it seems to be
       // necessary to make it work properly.
-      var _tempElement = elem_get(this._stringElemId).cloneNode(true);
-      var _tempElemId = elem_add(_tempElement);
-      prop_set(_tempElemId, "visibility", "hidden", true);
-      elem_append(0, _tempElemId);
+      var _tempElement = ELEM.setHTML(this._stringElemId).cloneNode(true);
+      var _tempElemId = ELEM.bind(_tempElement);
+      ELEM.setStyle(_tempElemId, "visibility", "hidden", true);
+      ELEM.append(_tempElemId, 0);
       
       var _width = this.stringWidth(this.value, null, _tempElemId);
       
       if (!isNaN(_width)) {
-        var _additionalWidth = prop_get_extra_width(this._stringElemId);
+        var _additionalWidth = ELEM.getExtraWidth(this._stringElemId);
         this.resizeTo(_width + _additionalWidth, this.rect.height);
       }
       
       // Delete the temporary clone.
-      elem_del(_tempElemId);
+      ELEM.del(_tempElemId);
 
     }
   }

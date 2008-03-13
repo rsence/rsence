@@ -135,13 +135,6 @@ HView = HClass.extend({
     
     // Keep the view (and its subviews) hidden until its drawn.
     this._createElement();
-    prop_set(this.elemId, 'display', 'none', true);
-    if(this.isAbsolute){
-      prop_set(this.elemId, 'position', 'absolute', true);
-    } else {
-      prop_set(this.elemId, 'position', 'relative', true);
-    }
-    prop_set(this.elemId, 'overflow', 'hidden', true);
     
     // Set the geometry
     this.setRect(_rect);
@@ -269,10 +262,10 @@ HView = HClass.extend({
       
       // Don't pass negative values to width or height.
       var _value = Math.max(this.rect.width + _ritem[1], 0);
-      prop_set(_ritem[0], 'width', _value + 'px');
+      ELEM.setStyle(_ritem[0], 'width', _value + 'px');
       
       _value = Math.max(this.rect.height + _ritem[2], 0);
-      prop_set(_ritem[0], 'height', _value + 'px');
+      ELEM.setStyle(_ritem[0], 'height', _value + 'px');
     }
   },
   // create the dom element
@@ -285,9 +278,15 @@ HView = HClass.extend({
       else {
         _parentElemId = this.parent.elemId;
       }
-      this.elemId = elem_mk(_parentElemId);
+      this.elemId = ELEM.make(_parentElemId,'div');
       
-      this.setStyle('visibility', 'hidden', true);
+      var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;'
+      if(this.isAbsolute){
+        _cssStyle += 'position:absolute;';
+      } else {
+        _cssStyle += 'position:relative;';
+      }
+      ELEM.setCSS(this.elemId,_cssStyle);
       
       // Theme name == CSS class name
       ELEM.addClassName( this.elemId, HThemeManager.currentTheme )
@@ -320,44 +319,20 @@ HView = HClass.extend({
     var _elemId = this.elemId;
     var _rect = this.rect;
     
-    if(this.flexLeft){
-      prop_set( _elemId, 'left',   _rect.left   + 'px', true);
-    } else {
-      prop_set( _elemId, 'left', 'auto', true );
-    }
-    if(this.flexTop){
-      prop_set( _elemId, 'top',    _rect.top    + 'px', true);
-    } else {
-      prop_set( _elemId, 'top', 'auto', true );
-    }
-    if(this.flexRight){
-      prop_set( _elemId, 'right', this.flexRightOffset + 'px', true);
-    } else {
-      prop_set( _elemId, 'right', 'auto', true );
-    }
-    if(this.flexBottom){
-      prop_set( _elemId, 'bottom',  this.flexBottomOffset + 'px', true);
-    } else {
-      prop_set( _elemId, 'bottom', 'auto', true );
-    }
-    if(this.flexLeft && this.flexRight){
-      prop_set( _elemId, 'width', 'auto', true );
-    } else {
-      prop_set( _elemId, 'width',  _rect.width  + 'px', true);
-    }
-    if(this.flexTop && this.flexBottom){
-      prop_set( _elemId, 'height', 'auto', true );
-    } else {
-      prop_set( _elemId, 'height', _rect.height + 'px', true);
-    }
+    ELEM.setStyle( _elemId, 'left', this.flexLeft?(_rect.left+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'top', this.flexTop?(_rect.top+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'right', this.flexRight?(this.flexRightOffset+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'bottom', this.flexBottom?(this.flexBottomOffset+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'width', (this.flexLeft&&this.flexRight)?'auto':(_rect.width+'px'), true);
+    ELEM.setStyle( _elemId, 'height', (this.flexTop&&this.flexBottom)?'auto':(_rect.height+'px'), true);
     
     // Show the rectangle once it gets created, unless visibility was set to
     // hidden in the constructor.
     if (undefined === this.isHidden || this.isHidden == false) {
-      prop_set( _elemId, 'visibility', 'inherit', true);
+      ELEM.setStyle( _elemId, 'visibility', 'inherit', true);
     }
     
-    prop_set( _elemId, 'display', 'block', true);
+    ELEM.setStyle( _elemId, 'display', 'block', true);
     
     this._updateZIndex();
     
@@ -369,7 +344,7 @@ HView = HClass.extend({
     
     // right, bottom, opacity and png-transparency
     if (ELEM._is_ie6 && !this.ie_resizefixadded) {
-      _traverseTree(elem_get(this.elemId));
+      _traverseTree(ELEM.get(this.elemId));
       this.ie_resizefixadded = true;
       //HSystem.fix_ie = true;
     }
@@ -383,14 +358,13 @@ HView = HClass.extend({
     * other elements too.
     */
   _updateZIndex: function() {
-    prop_set(this.elemId, 'z-index',
-      this.parent.viewsZOrder.indexOf(this), true);
+    ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this));
   },
   _updateZIndexAllSiblings: function() {
     var _views = this.parent.viewsZOrder;
     for (var i = 0; i < _views.length; i++) {
       if(_views[i].elemId) {
-        prop_set(_views[i].elemId, 'z-index', i, true);
+        ELEM.setStyle(_views[i].elemId, 'z-index', i);
       }
     }
   },
@@ -430,12 +404,12 @@ HView = HClass.extend({
   *  <HThemeManager> <bindMarkupVariables> <drawRect> <draw> <refresh>
   **/
   drawMarkup: function() {
-    prop_set(this.elemId, 'display', 'none', true);
+    ELEM.setStyle(this.elemId, 'display', 'none', true);
     
     this._loadMarkup();
     
     this.bindMarkupVariables();
-    elem_set(this.elemId, this.markup);
+    ELEM.setHTML(this.elemId, this.markup);
     
     this.markupElemIds = {};
     var _predefinedPartNames = ['bg', 'label', 'state', 'control', 'value', 'subview'];
@@ -448,13 +422,13 @@ HView = HClass.extend({
       }
     }
     
-    prop_set(this.elemId, 'display', 'block', true);
+    ELEM.setStyle(this.elemId, 'display', 'block', true);
     // right, bottom, opacity and png-transparency
-    if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
-      _traverseTree(elem_get(this.elemId));
-      this.ie_htmlresizefixadded = true;
-      //HSystem.fix_ie = true;
-    }
+    //if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
+    //  _traverseTree(ELEM.get(this.elemId));
+    //  this.ie_htmlresizefixadded = true;
+    //  //HSystem.fix_ie = true;
+    //}
   },
   
 /** method: setHTML
@@ -465,7 +439,7 @@ HView = HClass.extend({
   *  _html - The HTML (string-formatted) to replace the content with.
   **/
   setHTML: function( _html ) {
-    elem_set( this.elemId, _html );
+    ELEM.setHTML( this.elemId, _html );
   },
   
 /** method: refresh
@@ -522,7 +496,7 @@ HView = HClass.extend({
     if (!this.elemId) {
       return;
     }
-    prop_set(this.elemId, _name, _value, _cacheOverride);
+    ELEM.setStyle(this.elemId, _name, _value, _cacheOverride);
   },
 
 /** method: style
@@ -544,7 +518,7 @@ HView = HClass.extend({
     if (!this.elemId) {
       return;
     }
-    return prop_get(this.elemId, _name);
+    return ELEM.getStyle(this.elemId, _name);
   },
   
 /** method: setStyleForPart
@@ -564,7 +538,7 @@ HView = HClass.extend({
     if (!this.markupElemIds[_partName]) {
       return;
     }
-    prop_set(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+    ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
   },
   
 /** method: styleForPart
@@ -583,7 +557,7 @@ HView = HClass.extend({
     if (!this.markupElemIds[_partName]) {
       return;
     }
-    prop_get(this.markupElemIds[_partName], _name);
+    ELEM.getStyle(this.markupElemIds[_partName], _name);
   },
 
 /** method: hide
@@ -685,11 +659,11 @@ HView = HClass.extend({
     
     // Remove the additional DOM element bindings.
     for (var i = 0; i < this._domElementBindings.length; i++) {
-      elem_del(this._domElementBindings[i]);
+      ELEM.del(this._domElementBindings[i]);
     }
     this._domElementBindings = [];
     
-    elem_del(this.elemId);
+    ELEM.del(this.elemId);
     this.elemId = null;
     this.drawn = false;
     
@@ -1026,25 +1000,22 @@ HView = HClass.extend({
       _elemId = this.elemId;
     }
     
-    var _stringElem = elem_mk(_elemId);
-    prop_set(_stringElem, "visibility", "hidden", true);
-    prop_set(_stringElem, "position", "absolute", true);
-    prop_set(_stringElem, "white-space", "nowrap", true);
-    elem_set(_stringElem, _string);
-    var _width;
-    var _height;
-    if (ELEM._is_ie6 || ELEM._is_ie7 || ELEM._opera) {
-      _width = elem_get(_stringElem).offsetWidth;
+    var _stringElem = ELEM.make(_elemId);
+    ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;white-space:nowrap;");
+    ELEM.setHTML(_stringElem, _string);
+    var _width=0,_height=0;
+    if (ELEM._is_ie6 || ELEM._is_ie7 || ELEM._is_opera) {
+      _width = parseInt( ELEM.get(_stringElem).offsetWidth, 10 );
       if (arguments[3]) {
-        _height = elem_get(_stringElem).offsetHeight;
+        _height = parseInt( ELEM.get(_stringElem).offsetHeight, 10 );
       }
     } else {
-      _width = prop_get(_stringElem, "width");
+      _width = ELEM.getIntStyle(_stringElem, "width", true);
       if (arguments[3]) {
-        _height = prop_get(_stringElem, "height");
+        _height = ELEM.getIntStyle(_stringElem, "height", true);
       }
     }
-    elem_del(_stringElem);
+    ELEM.del(_stringElem);
     if (arguments[3]) {
       return new HPoint(parseInt(_width, 10), parseInt(_height, 10));
     } else {
@@ -1062,8 +1033,8 @@ HView = HClass.extend({
     var _elem = this;
     while(_elem) {
       if(_elem.elemId && _elem.rect) {
-        _x += elem_get(_elem.elemId).offsetLeft;
-        _x -= elem_get(_elem.elemId).scrollLeft;
+        _x += ELEM.get(_elem.elemId).offsetLeft;
+        _x -= ELEM.get(_elem.elemId).scrollLeft;
       }
       _elem = _elem.parent;
     }
@@ -1080,8 +1051,8 @@ HView = HClass.extend({
     var _elem = this;
     while(_elem) {
       if(_elem.elemId && _elem.rect) {
-        _y += elem_get(_elem.elemId).offsetTop;
-        _y -= elem_get(_elem.elemId).scrollTop;
+        _y += ELEM.get(_elem.elemId).offsetTop;
+        _y -= ELEM.get(_elem.elemId).scrollTop;
       }
       _elem = _elem.parent;
     }
@@ -1144,7 +1115,7 @@ HView = HClass.extend({
   *   <unbindDomElement> <Element Manager.elem_bind>
   */
   bindDomElement: function(_domElementId) {
-    var _cacheId = elem_bind(_domElementId);
+    var _cacheId = ELEM.bindId(_domElementId);
     if (_cacheId) {
       this._domElementBindings.push(_cacheId);
     }
@@ -1168,7 +1139,7 @@ HView = HClass.extend({
   unbindDomElement: function(_elementId) {
     var _indexOfElementId = this._domElementBindings.indexOf(_elementId);
     if (_indexOfElementId > -1) {
-      elem_del(_elementId);
+      ELEM.del(_elementId);
       this._domElementBindings.splice(_indexOfElementId, 1);
     }
   },

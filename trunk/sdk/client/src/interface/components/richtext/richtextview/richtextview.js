@@ -88,7 +88,7 @@ HRichTextView = HControl.extend({
   **/
   onIdle: function() {
     if (this.drawn) {
-      var _iFrame = elem_get( this.markupElemIds.control );
+      var _iFrame = ELEM.get( this.markupElemIds.control );
       if (!this._designMode && _iFrame.contentWindow && _iFrame.contentWindow.document) {
         _iFrame.contentWindow.document.designMode = "on";
         this._designMode = true;
@@ -118,7 +118,7 @@ HRichTextView = HControl.extend({
   setValue: function(_value) {
     if (!this._editingValue) {
       if (this._designMode) {
-        var _iFrame = elem_get( this.markupElemIds.control );
+        var _iFrame = ELEM.get( this.markupElemIds.control );
 		if (_iFrame.contentWindow.document.body) {
           _iFrame.contentWindow.document.body.innerHTML = _value;
 		}
@@ -127,6 +127,6 @@ HRichTextView = HControl.extend({
     this.base(_value);
   },
   iframe: function() {
-	return elem_get( this.markupElemIds.control );
+	return ELEM.get( this.markupElemIds.control );
   }
 });

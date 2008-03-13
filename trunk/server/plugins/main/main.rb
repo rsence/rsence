@@ -50,6 +50,7 @@ class Main < HApplication
   def idle(msg)
     mses = msg.session[:main]
     if mses[:boot] == 0
+      msg.reply('ELEM.setFPS(0.25);')
       if $config[:debug_mode]
         include_js( msg, ['basic','window'] )
         # debug window goes here
@@ -61,6 +62,7 @@ class Main < HApplication
       msg.reply "sesWatcher = new SesWatcher(60000,'#{mses[:client_time].val_id}');" # 60000 = 60 seconds
     elsif mses[:boot] == 2
       msg.reply "HTransporter.setPollMode(false);"
+      msg.reply('ELEM.setFPS(25);')
     end
     mses[:boot] += 1
   end

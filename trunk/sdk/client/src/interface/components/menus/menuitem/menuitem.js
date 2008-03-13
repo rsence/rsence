@@ -117,15 +117,15 @@ HMenuItem = HControl.extend({
   _updateMenuItemLeftImage: function() {
     // Sets the leftimage background image
     if(this.value) {
-      this.toggleCSSClass(elem_get(this._leftImageElementId),
+      this.toggleCSSClass(ELEM.get(this._leftImageElementId),
         this.cssOn, true);
-      this.toggleCSSClass(elem_get(this._leftImageElementId),
+      this.toggleCSSClass(ELEM.get(this._leftImageElementId),
         this.cssOff, false);
 
     } else {
-      this.toggleCSSClass(elem_get(this._leftImageElementId),
+      this.toggleCSSClass(ELEM.get(this._leftImageElementId),
         this.cssOn, false);
-      this.toggleCSSClass(elem_get(this._leftImageElementId),
+      this.toggleCSSClass(ELEM.get(this._leftImageElementId),
         this.cssOff, true);
     }
   },
@@ -134,15 +134,15 @@ HMenuItem = HControl.extend({
   _updateMenuItemRightImage: function() {
     // Sets the leftimage background image
     if(this.leaf) {
-      this.toggleCSSClass(elem_get(this._rightImageElementId),
+      this.toggleCSSClass(ELEM.get(this._rightImageElementId),
         this.cssRightOn, true);
-      this.toggleCSSClass(elem_get(this._rightImageElementId),
+      this.toggleCSSClass(ELEM.get(this._rightImageElementId),
         this.cssRightOff, false);
 
     } else {
-      this.toggleCSSClass(elem_get(this._rightImageElementId),
+      this.toggleCSSClass(ELEM.get(this._rightImageElementId),
         this.cssRightOn, false);
-      this.toggleCSSClass(elem_get(this._rightImageElementId),
+      this.toggleCSSClass(ELEM.get(this._rightImageElementId),
         this.cssRightOff, true);
     }
   },
@@ -169,7 +169,7 @@ HMenuItem = HControl.extend({
       // Checks if we have a label element:
       if(this.markupElemIds.label) {
         // Sets the label's innerHTML:
-        elem_set(this.markupElemIds.label, this.label);
+        ELEM.setHTML(this.markupElemIds.label, this.label);
       }
       
       // Checks if this is the first refresh call:
@@ -211,7 +211,7 @@ HMenuItem = HControl.extend({
   */
   stringWidth: function(_string, _length) {
     return this.base(_string, _length) +
-      prop_get_extra_width(this.markupElemIds.label);
+      ELEM.getExtraWidth(this.markupElemIds.label);
   },
   
 /** method: setMarked

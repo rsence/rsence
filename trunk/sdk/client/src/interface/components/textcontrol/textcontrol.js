@@ -96,7 +96,7 @@ HTextControl = HControl.extend({
   setEnabled: function(_flag) {
     this.base(_flag);
     if(this._inputElementId) {
-      elem_get(this._inputElementId).disabled = (!this.enabled);
+      ELEM.setAttr(this._inputElementId,'disabled',!this.enabled);
     }
   },
   
@@ -119,7 +119,7 @@ HTextControl = HControl.extend({
       
       if(this._inputElementId) {
         // Prevents errors in FF when setting the value programmatically.
-        elem_get(this._inputElementId).setAttribute("autocomplete", "off");
+        ELEM.setAttr(this._inputElementId,"autocomplete", "off");
         this.setEnabled(this.enabled);
       }
       
@@ -158,7 +158,7 @@ HTextControl = HControl.extend({
     var _that = this;
     this._activateControl = function(event) {
       // When the text field gets focus, make this control active.
-      HEventManager.changeActiveControl(_that);
+      EVENT.changeActiveControl(_that);
     };
     Event.observe(_domElementId, 'focus', this._activateControl, false);
     
@@ -168,7 +168,7 @@ HTextControl = HControl.extend({
     this._deactivateControl = function(event) {
       // Explicitly update the value when the field loses focus.
       _that._updateValue();
-      HEventManager.changeActiveControl(null);
+      EVENT.changeActiveControl(null);
     };
     Event.observe(_domElementId, 'blur', this._deactivateControl, false);
   },
@@ -184,8 +184,8 @@ HTextControl = HControl.extend({
   refresh: function() {
     this.base();
     if (this._inputElementId) {
-      if (elem_get(this._inputElementId).value != this.value) {
-        elem_get(this._inputElementId).value = this.value;
+      if (ELEM.getAttr(this._inputElementId,'value',true) != this.value) {
+        ELEM.setAttr(this._inputElementId,'value',this.value,true);
       }
     }
   },
@@ -211,8 +211,8 @@ HTextControl = HControl.extend({
   _updateValue: function() {
     if (this.drawn) {
       
-      if (elem_get(this._inputElementId).value != this.value) {
-        this.setValue(elem_get(this._inputElementId).value);
+      if (ELEM.getAttr(this._inputElementId,'value',true) != this.value) {
+        this.setValue(ELEM.getAttr(this._inputElementId,'value',true));
       }
       
     }
@@ -229,7 +229,7 @@ HTextControl = HControl.extend({
   **/
   lostActiveStatus: function(_newActiveControl) {
     if (this._inputElementId) {
-      elem_get(this._inputElementId).blur();
+      ELEM.get(this._inputElementId).blur();
     }
   }
   

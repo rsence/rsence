@@ -71,11 +71,11 @@ HCalendarHeaderButton = HControl.extend({
       // Checks if this is the first refresh call:
       if(!this._labelElementId){
         // Gets the label element based on the id specified in constructor and template:
-        this._labelElementId = elem_bind(this._tmplLabelPrefix+this.elemId);
+        this._labelElementId = ELEM.bindId(this._tmplLabelPrefix+this.elemId);
       }
       // Checks if we have a label element:
       if(this._labelElementId) {
-        elem_set(this._labelElementId,this.label);
+        ELEM.setHTML(this._labelElementId,this.label);
       }
       this.drawRect();
     }

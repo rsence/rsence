@@ -49,25 +49,25 @@ HCalendarButton = HControl.extend({
   _updateCheckBoxImage: function(){
     // Sets the checkbox background image
     if (this.value == 0) {
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         "shaded", false);
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         HCalendarButton.cssOn, false);
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         HCalendarButton.cssOff, true);
     } else if (this.value == 1) {
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         "shaded", false);
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         HCalendarButton.cssOn, true);
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         HCalendarButton.cssOff, false);
     } else if (this.value == 2) {
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         "shaded", true);
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         HCalendarButton.cssOn, false);
-      this.toggleCSSClass(elem_get(this._labelElementId),
+      this.toggleCSSClass(ELEM.get(this._labelElementId),
         HCalendarButton.cssOff, false);
     }
     /*if(this.value){
@@ -114,11 +114,11 @@ HCalendarButton = HControl.extend({
       // Checks if this is the first refresh call:
       if(!this._labelElementId){
         // Gets the label element based on the id specified in constructor and template:
-        this._labelElementId = elem_bind(this._tmplLabelPrefix+this.elemId);
+        this._labelElementId = ELEM.bindId(this._tmplLabelPrefix+this.elemId);
       }
       // Checks if we have a label element:
       if(this._labelElementId) {
-        elem_set(this._labelElementId,this.label);
+        ELEM.setHTML(this._labelElementId,this.label);
         this._updateCheckBoxImage();
       }
       this.drawRect();

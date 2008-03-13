@@ -114,7 +114,7 @@ HProgressBar = HControl.extend({
       this.currProgressFrame++;
       if(this.currProgressFrame>=this.progressFrames){this.currProgressFrame=0;}
       var _px = this.currProgressFrame*this.progressFrameHeight;
-      prop_set(this.progressbarElemId,'background-position','0px -'+_px+'px');
+      ELEM.setStyle(this.progressbarElemId,'background-position','0px -'+_px+'px');
     }
   },
   
@@ -151,7 +151,7 @@ HProgressBar = HControl.extend({
   drawProgress: function() {
     if (this.progressbarElemId) {
       var _propval   = this._value2px();
-      prop_set(this.progressbarElemId, 'width', _propval);
+      ELEM.setStyle(this.progressbarElemId, 'width', _propval);
     }
   }
 });

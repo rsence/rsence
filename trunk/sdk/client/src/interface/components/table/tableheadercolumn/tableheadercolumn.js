@@ -81,36 +81,36 @@ HTableHeaderColumn = HControl.extend({
     // Checks if this is the first refresh call:
     if(!this._labelElementId){
       // Gets the label element based on the id specified in constructor and template:
-      this._labelElementId = elem_bind(this._tmplLabelPrefix+this.elemId);
-      this._selectedElementId = elem_bind(this._tmplSelectedPrefix+this.elemId);
-      this._orderArrowElementId = elem_bind(this._tmplOrderArrowPrefix+this.elemId);
+      this._labelElementId = ELEM.bindId(this._tmplLabelPrefix+this.elemId);
+      this._selectedElementId = ELEM.bindId(this._tmplSelectedPrefix+this.elemId);
+      this._orderArrowElementId = ELEM.bindId(this._tmplOrderArrowPrefix+this.elemId);
     }
     // Checks if we have a label element:
     if(this._labelElementId) {
       // Sets the label's innerHTML:
-      elem_set(this._labelElementId,this.label);
+      ELEM.setHTML(this._labelElementId,this.label);
     }
   },
   
   _sort: function() {
     _demo_sort.direction = !_demo_sort.direction;
-    this.toggleCSSClass(elem_get(this._orderArrowElementId),'order-dn',!_demo_sort.direction);
-    this.toggleCSSClass(elem_get(this._orderArrowElementId),'order-up',_demo_sort.direction);
+    this.toggleCSSClass(ELEM.get(this._orderArrowElementId),'order-dn',!_demo_sort.direction);
+    this.toggleCSSClass(ELEM.get(this._orderArrowElementId),'order-up',_demo_sort.direction);
     for(var _otherColId=0; _otherColId < this.parent.parent.tableHeaderColumns.length; _otherColId++){
       var _otherColSelectedElementId = this.parent.parent.tableHeaderColumns[_otherColId]._selectedElementId;
       if(_otherColSelectedElementId && (_otherColSelectedElementId != this._selectElementId)){
-        prop_set(_otherColSelectedElementId,'visibility','hidden');
+        ELEM.setStyle(_otherColSelectedElementId,'visibility','hidden');
       }
       var _otherOrderArrowElementId = this.parent.parent.tableHeaderColumns[_otherColId]._orderArrowElementId;
       if(_otherOrderArrowElementId && (_otherOrderArrowElementId != this._orderArrowElementId)){
-        prop_set(_otherOrderArrowElementId,'visibility','hidden');
+        ELEM.setStyle(_otherOrderArrowElementId,'visibility','hidden');
       }
     }
     if(this._selectedElementId){
-      prop_set(this._selectedElementId,'visibility','inherit');
+      ELEM.setStyle(this._selectedElementId,'visibility','inherit');
     }
     if(this._orderArrowElementId){
-      prop_set(this._orderArrowElementId,'visibility','inherit');
+      ELEM.setStyle(this._orderArrowElementId,'visibility','inherit');
     }
     var _index = this.parent.parent.tableHeaderColumns.indexOf(this);
     _demo_sort.column = _index;

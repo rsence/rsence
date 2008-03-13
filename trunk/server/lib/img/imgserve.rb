@@ -59,8 +59,11 @@ class ImgServe
   
   def del_img( img_id, ses_id )
     #puts "deleting img_id: #{img_id.inspect} of ses_id: #{ses_id.inspect}"
-    @imgs[:by_id].delete( img_id )
-    @imgs[:ses_ids][ses_id].delete( img_id )
+    if @imgs[:ses_ids].has_key?( ses_id )
+      @imgs[:ses_ids][ses_id].delete( img_id ) if @imgs[:ses_ids][ses_id].include?( img_id )
+    end
+    
+    @imgs[:by_id].delete( img_id ) if @imgs[:by_id].has_key?( img_id )
   end
   
   def push_keepalive( img_id, keep_alive )

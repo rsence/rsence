@@ -83,11 +83,11 @@ HButton = HControl.extend({
         this._drawnSize[1] = _height;
         if( this.markupElemIds.label ) {
           var _heightDiff = parseInt( _height+this._labelHeightDiff, 10);
-          prop_set( this.markupElemIds.label, 'line-height', _heightDiff+'px');
+          ELEM.setStyle( this.markupElemIds.label, 'line-height', _heightDiff+'px');
           if(ELEM._is_ie6){
             var _widthDiff  = parseInt(_width + this._labelWidthDiff,  10);
-            prop_set( this.markupElemIds.label, 'height', _heightDiff+'px');
-            prop_set( this.markupElemIds.label, 'width', _widthDiff+'px');
+            ELEM.setStyle( this.markupElemIds.label, 'height', _heightDiff+'px');
+            ELEM.setStyle( this.markupElemIds.label, 'width', _widthDiff+'px');
           }
         }
       }
@@ -125,7 +125,7 @@ HButton = HControl.extend({
       this.base();
       if( this.markupElemIds.label ) {
         // Sets the label's innerHTML:
-        elem_set( this.markupElemIds.label, this.label );
+        ELEM.setHTML( this.markupElemIds.label, this.label );
       }
     }
   }
@@ -284,7 +284,7 @@ HToggleButton = HClickButton.extend({
   // Private method. Toggles the button status.
   _updateToggleState: function() {
     if (this.markupElemIds.control) {
-      var _elem = elem_get(this.markupElemIds.control);
+      var _elem = ELEM.get(this.markupElemIds.control);
       this.toggleCSSClass(_elem, HToggleButton.cssOn, this.value);
       this.toggleCSSClass(_elem, HToggleButton.cssOff, !this.value);
     }
@@ -304,7 +304,7 @@ HToggleButton = HClickButton.extend({
 
       // Label
       if(this.markupElemIds.label) {
-        elem_set(this.markupElemIds.label, this.label);
+        ELEM.setHTML(this.markupElemIds.label, this.label);
       }
 
       // Button's toggle element
