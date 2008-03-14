@@ -26,7 +26,7 @@ class JSBuilder
       percent2 = (100*(gz_size/dst_size.to_f)).to_i.to_s + '%'
     end
     jsc_name = jsc_path.split('/')[-1]
-    STDERR.write "#{jsc_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(3)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(3)}\n"
+    puts  "#{jsc_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(3)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(3)}"
   end
   def pre_convert(jsc_data)
     # replace names in conv in the most common -> least common order of conv_ids
@@ -38,7 +38,7 @@ class JSBuilder
     return jsc_data
   end
   def minimize_data
-    STDERR.write "Package.......................:   Size | Compressed | GZIPed\n"
+    puts  "Package.......................:   Size | Compressed | GZIPed"
     @destination_sort.each do |dst_path|
       jsc_path = dst_path.gsub( $_BUILD_PATH, $_DESTINATION_PATH )
       if DEBUG_MODE
@@ -175,18 +175,21 @@ class JSBuilder
       tgt_file_html = File.join($_THEME_PATH,theme_name,'html',component_name+'.html')
       src_file_html = File.join(src_name,'themes',theme_name,'html',component_name+'.html')
       if File.exist?( src_file_css )
-        STDERR.write "\r#{' '*80}\r#{theme_name}::#{component_name}::CSS"
+        print  "\r#{' '*80}\r#{theme_name}::#{component_name}::CSS"
+        STDOUT.flush
         cp_css_tidy_file(src_file_css,tgt_file_css)
       end
       if File.exist?( src_file_html )
-        STDERR.write "\r#{' '*80}\r#{theme_name}::#{component_name}::HTML"
+        print  "\r#{' '*80}\r#{theme_name}::#{component_name}::HTML"
+        STDOUT.flush
         cp_html_tidy_file(src_file_html,tgt_file_html)
       end
       
       src_files_gfx = File.join(src_name,'themes',theme_name,'gfx')
       
       if File.exist?(src_files_gfx)
-        STDERR.write "\r#{' '*80}\r#{theme_name}::#{component_name}::GFX"
+        print  "\r#{' '*80}\r#{theme_name}::#{component_name}::GFX"
+        STDOUT.flush
         Dir.new(src_files_gfx).each do |src_gfx_filename|
           src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
           if ['.jpg','.gif','.png'].include?(src_file_gfx[-4..-1])
@@ -205,44 +208,58 @@ class JSBuilder
         end
       end
     end
-    STDERR.write("\r#{' '*80}\r")
+    print "\r#{' '*80}\r"
   end
   
   def build_destination_info
     release_files = `#{FIND} "#{$_SRC_PATH}" -type f -name #{$_INC_NAME}`
-    release_files.split("\n").each do |releasefilepath|
+    release_files.split("\n").sort.each do |releasefilepath|
+      
       src_name  = File.split(releasefilepath)[0]
-      component_name = File.split(src_name)[1]
-      unless @release_order.include?(component_name)
-        STDERR.write "no order defined: #{component_name}\n"
-        @release_order.push(component_name)
+      item_name = File.split(src_name)[1]
+      
+      unless @release_order.include?(item_name)
+        puts  "no order defined: #{item_name}"
+        pkg_name = read_file( releasefilepath ).strip
+        #puts "pkg_name: #{pkg_name.inspect}"
+        if pkg_name == ''
+          #puts "is component"
+          pkg_name = item_name
+        else
+          puts  "packagae name: #{pkg_name.inspect}, adding #{item_name.inspect}"
+        end
+        
+        $_PACKAGE_NAMES.push(pkg_name) unless $_PACKAGE_NAMES.include?(pkg_name)
+        $_PACKAGES[pkg_name] = [] unless $_PACKAGES.has_key?(pkg_name)
+        $_PACKAGES[pkg_name].push(item_name) unless $_PACKAGES[pkg_name].include?(item_name)
+        
+        @packages.push(pkg_name) unless @packages.include?(pkg_name)
+        @release_order.push(item_name) unless @release_order.include?(item_name)
+        @destinations[item_name] = [] unless @destinations.has_key?(item_name)
+        @destinations[item_name].push( pkg_name ) unless @destinations[item_name].include?(pkg_name)
+        
       end
       
-      #begin
-        src_file_js = File.join( src_name, component_name+'.js' )
+      src_file_js = File.join( src_name, item_name+'.js' )
+      raise "file #{src_file_js.inspect} does not exist!" unless File.exist?(src_file_js)
+      
+      cp_theme( src_name, item_name )
+      
+      add_hints( src_file_js )
+      
+      @destinations[item_name].each do |destination_name|
         
-        cp_theme( src_name, component_name )
+        tgt_file_js = File.join( $_BUILD_PATH, destination_name+'.js' )
         
-        add_hints( src_file_js )
-        
-        @destinations[component_name].each do |destination_name|
+        @destination_info[item_name] = {
+          :src_name  => src_name,
+          :item_name => item_name,
           
-          tgt_file_js = File.join( $_BUILD_PATH, destination_name+'.js' )
-          
-          @destination_info[component_name] = {
-            :src_name       => src_name,
-            :component_name => component_name,
-            
-            :src_file_js    => src_file_js,
-            :tgt_files_js   => []
-          } unless @destination_info.has_key?( component_name )
-          @destination_info[component_name][:tgt_files_js].push( tgt_file_js )
-        end
-      #rescue
-      #  STDERR.write "not configured: #{component_name.inspect} (#{releasefilepath})\n"
-      #  STDERR.write "exit.\n"
-      #  exit
-      #end
+          :src_file_js    => src_file_js,
+          :tgt_files_js   => []
+        } unless @destination_info.has_key?( item_name )
+        @destination_info[item_name][:tgt_files_js].push( tgt_file_js )
+      end
       
     end
   end
@@ -280,7 +297,7 @@ class JSBuilder
     # /compression
     
     if not File.exist?("#{$_CLIENT_PATH}")
-      STDERR.write "Release path (#{$_CLIENT_PATH} does not exist, making it...\n"
+      puts  "Release path (#{$_CLIENT_PATH} does not exist, making it..."
       `mkdir -p "#{$_CLIENT_PATH}"`
     end
     
@@ -297,15 +314,16 @@ class JSBuilder
           @destinations[ item_name ].push( pkg_name )
         end
       rescue
-        STDERR.write "ERROR: package definition of #{pkg_name} not found\n"
+        puts  "ERROR: package definition of #{pkg_name} not found"
         exit
       end
     end
     
     @destination_info = {}
+    build_destination_info()
+    
     @conversion_stats = {}
     
-    build_destination_info()
     build_destination_files()
     
     do_compress() # do the actual saving and compression
