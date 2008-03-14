@@ -73,7 +73,7 @@ $config[:database] = {
   :root_setup => {
     :host => 'localhost', # try '127.0.0.1' if this fails with your mysql configuration
     :user => 'root',
-    :pass => '',
+    :pass => 'kantakala',
     :db   => 'mysql'
   },
   
