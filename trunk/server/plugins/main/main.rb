@@ -50,7 +50,7 @@ class Main < HApplication
   def idle(msg)
     mses = msg.session[:main]
     if mses[:boot] == 0
-      msg.reply('ELEM.setFPS(0.25);')
+      msg.reply('ELEM.setFPS(1);')
       if $config[:debug_mode]
         include_js( msg, ['basic','window'] )
         # debug window goes here
