@@ -290,6 +290,40 @@ class JSBuilder
   
   def run
     
+
+    unless File.exist?($_REL_PATH)
+      Dir.mkdir($_REL_PATH)
+    end
+
+    # THE CLIENT'S ROOT DIR:
+    $_CLIENT_PATH = $_REL_PATH
+    unless File.exist?($_CLIENT_PATH)
+      Dir.mkdir($_CLIENT_PATH)
+    end
+
+    # THE CLIENT'S BUILD DIR (TEMP):
+    $_BUILD_PATH  = File.join( $_REL_PATH, 'build-tmp' )
+    unless File.exist?($_BUILD_PATH)
+      Dir.mkdir($_BUILD_PATH)
+    end
+
+    # WHERE TO SAVE THE OUTPUT JS FILES:
+    $_DESTINATION_PATH = File.join( $_REL_PATH, 'js' )
+    unless File.exist?($_DESTINATION_PATH)
+      Dir.mkdir($_DESTINATION_PATH)
+    end
+
+    $_THEME_PATH = File.join( $_REL_PATH, 'themes' )
+    unless File.exist?($_THEME_PATH)
+      Dir.mkdir($_THEME_PATH)
+      $_THEMES.each do |theme|
+        Dir.mkdir(File.join($_THEME_PATH,theme))
+        Dir.mkdir(File.join($_THEME_PATH,theme,'css'))
+        Dir.mkdir(File.join($_THEME_PATH,theme,'gfx'))
+        Dir.mkdir(File.join($_THEME_PATH,theme,'html'))
+      end
+    end
+
     # compression:
     @hints             = []
     @destination_files = {}
@@ -320,15 +354,17 @@ class JSBuilder
     end
     
     @destination_info = {}
-    build_destination_info()
-    
     @conversion_stats = {}
+    
+    build_destination_info()
     
     build_destination_files()
     
     do_compress() # do the actual saving and compression
     
     save_file( File.join( $_DESTINATION_PATH, 'built' ), Time.now.strftime("%Y-%d-%d %H:%M:%S") )
+    
+    system( %{rm -rf "#{$_BUILD_PATH}"} )
     
     ## let the uiserver know there is a new version built
     #if RUBY_PLATFORM.include? "mswin32"

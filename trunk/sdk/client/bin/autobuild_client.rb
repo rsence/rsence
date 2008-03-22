@@ -23,8 +23,8 @@ $LOAD_PATH << File.join(BASEPATH,'lib')
 Dir.chdir(BASEPATH)
 
 require 'platform_bins'
+require File.join(CONFPATH,'client-build-config')
 require 'js_builder'
-load File.join(CONFPATH,'client-build-config.rb')
 
 CHECKPATH_JS = File.join(BASEPATH,'src')
 

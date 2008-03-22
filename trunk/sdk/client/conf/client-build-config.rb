@@ -56,51 +56,17 @@ $_PACKAGES = {
   ]
 }
 
+$_THEMES = ['default']
+
 # BASEPATH COMES FROM THE .sh FILE
 $_SRC_PATH = File.join(BASEPATH,'..')
 $_REL_PATH = ARGV[0]
-unless File.exist?($_REL_PATH)
-  Dir.mkdir($_REL_PATH)
-end
-
-# THE CLIENT'S ROOT DIR:
-$_CLIENT_PATH = $_REL_PATH
-unless File.exist?($_CLIENT_PATH)
-  Dir.mkdir($_CLIENT_PATH)
-end
-
-# THE CLIENT'S BUILD DIR (TEMP):
-$_BUILD_PATH  = File.join( $_REL_PATH, 'build-tmp' )
-unless File.exist?($_BUILD_PATH)
-  Dir.mkdir($_BUILD_PATH)
-end
-
-# WHERE TO SAVE THE OUTPUT JS FILES:
-$_DESTINATION_PATH = File.join( $_REL_PATH, 'js' )
-unless File.exist?($_DESTINATION_PATH)
-  Dir.mkdir($_DESTINATION_PATH)
-end
-
-$_THEME_PATH = File.join( $_REL_PATH, 'themes' )
-$_THEMES = ['default']
-unless File.exist?($_THEME_PATH)
-  Dir.mkdir($_THEME_PATH)
-  $_THEMES.each do |theme|
-    Dir.mkdir(File.join($_THEME_PATH,theme))
-    Dir.mkdir(File.join($_THEME_PATH,theme,'css'))
-    Dir.mkdir(File.join($_THEME_PATH,theme,'gfx'))
-    Dir.mkdir(File.join($_THEME_PATH,theme,'html'))
-  end
-end
 
 $_HTMLTIDY_CONF_PATH= File.join(BASEPATH,'conf','htmltidy.config')
 
 # REPLACEMENT ("COMPRESSION") PREFIX
 #REPL_PREFIX = '_'
 $_REPL_PREFIX= '_'
-
-# HTML FILE TO TEST WHEN BUILD COMPLETES
-$_TEST_FILE= File.join($_CLIENT_PATH,'test','test_src.html')
 
 
 # DON'T COMPRESS THESE WORDS IN THE SOURCE:
