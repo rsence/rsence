@@ -212,7 +212,10 @@ class JSBuilder
   end
   
   def build_destination_info
-    release_files = `#{FIND} "#{$_SRC_PATH}" -type f -name #{$_INC_NAME}`
+    release_files = ''
+    $_SRC_PATH.each do |src_path|
+      release_files += `#{FIND} "#{src_path}" -type f -name #{$_INC_NAME}`
+    end
     release_files.split("\n").sort.each do |releasefilepath|
       
       src_name  = File.split(releasefilepath)[0]
@@ -316,7 +319,9 @@ class JSBuilder
     $_THEME_PATH = File.join( $_REL_PATH, 'themes' )
     unless File.exist?($_THEME_PATH)
       Dir.mkdir($_THEME_PATH)
-      $_THEMES.each do |theme|
+    end
+    $_THEMES.each do |theme|
+      unless File.exist?(File.join($_THEME_PATH,theme))
         Dir.mkdir(File.join($_THEME_PATH,theme))
         Dir.mkdir(File.join($_THEME_PATH,theme,'css'))
         Dir.mkdir(File.join($_THEME_PATH,theme,'gfx'))

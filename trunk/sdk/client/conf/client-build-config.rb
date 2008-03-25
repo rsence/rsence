@@ -59,7 +59,7 @@ $_PACKAGES = {
 $_THEMES = ['default']
 
 # BASEPATH COMES FROM THE .sh FILE
-$_SRC_PATH = File.join(BASEPATH,'..')
+$_SRC_PATH = [ File.join(BASEPATH,'..') ]
 $_REL_PATH = ARGV[0]
 
 $_HTMLTIDY_CONF_PATH= File.join(BASEPATH,'conf','htmltidy.config')
