@@ -101,8 +101,17 @@ class HSessionManager
       @db.q( "insert into himle_version ( version ) values (37)" )
     end
     
-    puts "Restoring old sessions..." if $config[:debug_mode]
-    restore_sessions
+    if ARGV.include?('--reset-sessions=true')
+      puts "Resetting all sessions..."
+      reset_sessions
+    else
+      puts "Restoring old sessions..." if $config[:debug_mode]
+      restore_sessions
+    end
+  end
+  
+  def reset_sessions
+    @db.q("delete from himle_session")
   end
   
   def restore_sessions

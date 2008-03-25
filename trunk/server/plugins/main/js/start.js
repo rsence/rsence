@@ -2,9 +2,7 @@ HTransporter.syncDelay = 10;
 
 HThemeManager.setThemePath('/gz?themes=');
 
-var _load_elem = elem_bind('loading');
-elem_del(_load_elem);
-delete _load_elem;
+ELEM.del(ELEM.bindId('loading'));
 
 SesWatcher = HApplication.extend({
   constructor: function( _timeoutSecs, _sesTimeoutValueId ){

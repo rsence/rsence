@@ -44,44 +44,49 @@ class GZFileServe < HTTPServlet::AbstractServlet
   
   def scan_dirs
     ui_path = $config[:ria_paths][:ui_path][1]
-    theme_path = File.join( $config[:ria_paths][:theme_path][1], 'default' )
-    gfx_path   = File.join(theme_path,'gfx')
-    css_path   = File.join(theme_path,'css')
-    html_path  = File.join(theme_path,'html')
     @@gz_cache = {}
     @@js_cache = {}
     @@theme_cache = {}
-    Dir.entries( ui_path ).each do |path_item|
-      file_path = File.join( ui_path, path_item )
-      suf = suffix( file_path )
-      file_key = path_item[0..-4]
-      if suf == '.gz'
-        @@gz_cache[file_key] = getfile(file_path)
-      elsif suf == '.js'
-        @@js_cache[file_key] = getfile(file_path)
-      end
-    end
-    Dir.entries( css_path ).each do |path_item|
-      file_path = File.join( css_path, path_item )
-      suf = suffix( file_path )
-      if suf == '.gz' || suf == '.css'
-        file_key = File.join('/default/css',path_item)
-        @@theme_cache[file_key] = getfile(file_path)
-      end
-    end
-    Dir.entries( html_path ).each do |path_item|
-      file_path = File.join( html_path, path_item )
-      suf = suffix( file_path )
-      if suf == '.gz' || suf == '.html'
-        file_key = File.join('/default/html',path_item)
-        @@theme_cache[file_key] = getfile(file_path)
-      end
-    end
-    Dir.entries( gfx_path ).each do |path_item|
-      if path_item[0].chr != '.'
-        file_path = File.join( gfx_path, path_item )
-        file_key = File.join('/default/gfx',path_item)
-        @@theme_cache[file_key] = getfile(file_path)
+    Dir.entries( $config[:ria_paths][:theme_path][1] ).each do |theme_name|
+      is_dir = File.stat(File.join($config[:ria_paths][:theme_path][1],theme_name)).directory?
+      if theme_name[0].chr != '.' and is_dir
+        theme_path = File.join( $config[:ria_paths][:theme_path][1], theme_name )
+        gfx_path   = File.join(theme_path,'gfx')
+        css_path   = File.join(theme_path,'css')
+        html_path  = File.join(theme_path,'html')
+        Dir.entries( ui_path ).each do |path_item|
+          file_path = File.join( ui_path, path_item )
+          suf = suffix( file_path )
+          file_key = path_item[0..-4]
+          if suf == '.gz'
+            @@gz_cache[file_key] = getfile(file_path)
+          elsif suf == '.js'
+            @@js_cache[file_key] = getfile(file_path)
+          end
+        end
+        Dir.entries( css_path ).each do |path_item|
+          file_path = File.join( css_path, path_item )
+          suf = suffix( file_path )
+          if suf == '.gz' || suf == '.css'
+            file_key = File.join("/#{theme_name}/css",path_item)
+            @@theme_cache[file_key] = getfile(file_path)
+          end
+        end
+        Dir.entries( html_path ).each do |path_item|
+          file_path = File.join( html_path, path_item )
+          suf = suffix( file_path )
+          if suf == '.gz' || suf == '.html'
+            file_key = File.join("/#{theme_name}/html",path_item)
+            @@theme_cache[file_key] = getfile(file_path)
+          end
+        end
+        Dir.entries( gfx_path ).each do |path_item|
+          if path_item[0].chr != '.'
+            file_path = File.join( gfx_path, path_item )
+            file_key = File.join("/#{theme_name}/gfx",path_item)
+            @@theme_cache[file_key] = getfile(file_path)
+          end
+        end
       end
     end
     @@scan_time = File.stat(ui_path).mtime
