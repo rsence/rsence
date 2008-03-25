@@ -16,7 +16,7 @@
 $_INC_NAME = 'js.inc'
 
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','basic','tabs','window','servermessage','playground','iefix']
+$_PACKAGE_NAMES = ['core','basic','tabs','window','servermessage','iefix']
 $_PACKAGES = {
   'core' => [
     'class',
@@ -43,12 +43,6 @@ $_PACKAGES = {
   
   'servermessage' => [
     'reloadapp'
-  ],
-  
-  'playground' => [
-    'validatorview',
-    'uvnavigator',
-    'uhnavigator'
   ],
   
   'iefix' => [
