@@ -133,5 +133,5 @@ HTransporter = Base.extend({
   
 });
 
-onloader("HTransporter.start(HTransportURL);");
+LOAD("HTransporter.start(HTransportURL);");
 

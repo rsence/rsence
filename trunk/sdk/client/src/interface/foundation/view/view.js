@@ -102,8 +102,14 @@ HView = HClass.extend({
   **/
   constructor: function(_rect, _parentClass) {
     // Moved these to the top to ensure safe themeing operation
-    this.theme = HThemeManager.currentTheme;
-    this.preserveTheme = false;
+    if(this.theme===undefined){
+      this.theme = HThemeManager.currentTheme;
+      this.preserveTheme = false;
+    }
+    else {
+      this.preserveTheme = true;
+    }
+    
     
     // Used for smart template elements (resizing)
     // Use by making a call inside the template like this:
@@ -289,8 +295,12 @@ HView = HClass.extend({
       ELEM.setCSS(this.elemId,_cssStyle);
       
       // Theme name == CSS class name
-      ELEM.addClassName( this.elemId, HThemeManager.currentTheme )
-      
+      if(this.preserveTheme){
+        ELEM.addClassName( this.elemId, this.theme );
+      }
+      else {
+        ELEM.addClassName( this.elemId, HThemeManager.currentTheme );
+      }
     }
   },
   

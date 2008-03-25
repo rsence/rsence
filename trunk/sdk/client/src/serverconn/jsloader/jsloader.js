@@ -52,7 +52,7 @@ JSLoader = Base.extend({
   
 });
 
-onloader("jsLoader = new JSLoader('/gz/?js=');");
+LOAD("jsLoader = new JSLoader('/gz/?js=');");
 
 
 

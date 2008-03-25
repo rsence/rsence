@@ -110,16 +110,21 @@ ELEM = {
     _trashId=_this._initRecycler(_tagName);
     _this.append(_id,_trashId);
     
-    try{_elem.innerHTML='';}catch(e){}
-    _this.setCSS(_id,'display:none;');
-    
     var _elemTodoIdx=_this._elemTodo.indexOf(_id),_recycler=_this._recycler[_tagName];
     if(_elemTodoIdx!=-1){
       _this._elemTodo.splice(_elemTodoIdx,1);
     }
+    
+    try{_elem.innerHTML='';}catch(e){}
+    _this.setCSS(_id,'display:none;');
+    //_this.setAttr(_id,'id','',true);
+    _this.delAttr(_id,'id');
+    _this.delAttr(_id,'ctrl');
+    
     _this._initCache(_id);
     _recycler._countIn++;
     _recycler.push(_id);
+    
   },
   
   // places element inside another
@@ -337,6 +342,17 @@ ELEM = {
           _this._checkNeedFlush();
         }
       }
+    }
+  },
+  delAttr: function(_id,_key){
+    var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
+    delete _attrCache[_key];
+    _this._elements[_id].removeAttribute(_key);
+    if(_attrTodo.indexOf(_key)!=-1){_attrTodo.splice(_attrTodo.indexOf(_key,1));}
+    if(_this._elemTodoH[_id]){
+      _this._elemTodo.splice(_this._elemTodo.indexOf(_id,1));
+      _this._elemTodoH[_id]=false;
+      _this._checkNeedFlush();
     }
   },
   

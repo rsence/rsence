@@ -246,4 +246,4 @@ HSystem = HClass.extend({
 });
 
 // Starts the ticking:
-onloader('HSystem.ticker();');
+LOAD('HSystem.ticker();');
