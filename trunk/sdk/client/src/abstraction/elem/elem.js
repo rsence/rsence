@@ -666,53 +666,68 @@ ELEM._warmup();
 
 // backwards-compatibility
 onloader = function( _cmdStr ){
+  console.log('WARN: the onloader(..) call is deprecated');
   ELEM._domLoader( _cmdStr );
 };
 elem_bind = function( _elemId ){
+  console.log('WARN: the elem_bind(..) call is deprecated');
   return ELEM.bindId( _elemId );
 };
 elem_add = function( _elem ){
+  console.log('WARN: the elem_add(..) call is deprecated');
   return ELEM.bind( _elem );
 };
 elem_get = function( _elemId){
+  console.log('WARN: the elem_get(..) call is deprecated');
   return ELEM.get( _elemId );
 };
 elem_set = function( _elemId, _html ){
+  console.log('WARN: the elem_set(..) call is deprecated');
   return ELEM.setHTML( _elemId, _html );
 };
 elem_del = function( _elemId ){
+  console.log('WARN: the elem_del(..) call is deprecated');
   return ELEM.del( _elemId );
 };
 
 // deprecated, please don't use
 elem_replace = function( _elemId, _elem ){
+  console.log('WARN: the elem_replace(..) call is deprecated');
   return ELEM._replace( _elemId, _elem );
 };
 
 elem_append = function( _pid, _id ){
+  console.log('WARN: the elem_append(..) call is deprecated');
   return ELEM.append( _id, _pid );
 };
 elem_mk = function(_pid,_type){
+  console.log('WARN: the elem_mk(..) call is deprecated');
   return ELEM.make( _pid, _type );
 };
 
 styl_get = function(_id, _name){
+  console.log('WARN: the styl_get(..) call is deprecated');
   return ELEM.getStyle( _id, _name );
 };
 prop_get = function(_id, _name, _direct){
+  console.log('WARN: the prop_get(..) call is deprecated');
   return ELEM.getStyle( _id, _name, _direct );
 };
 
 styl_set = function(_id,_name,_value){
+  console.log('WARN: the styl_get(..) call is deprecated');
   return ELEM.setStyle( _id, _name, _value );
 };
 prop_set = function(_id,_name,_value,_direct){
+  console.log('WARN: the prop_set(..) call is deprecated');
   return ELEM.setStyle( _id, _name, _value, _direct );
 };
 prop_get_extra_width = function(_id) {
+  console.log('WARN: the prop_get_extra_width(..) call is deprecated');
   return ELEM.getExtraWidth(_id);
 };
 prop_get_extra_height = function(_id) {
+  console.log('WARN: the prop_get_extra_height(..) call is deprecated');
   return ELEM.getExtraHeight(_id);
 };
 
