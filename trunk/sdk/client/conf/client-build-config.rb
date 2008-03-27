@@ -28,6 +28,7 @@ $_PACKAGES = {
     'transporter','valuemanager','value','jsloader',
     'point','rect',
     'system','application','thememanager','markupview','view','control',
+    'dyncontrol'
   ],
   'basic' => [
     'button','stringview','textcontrol','textarea','slider','vslider',
