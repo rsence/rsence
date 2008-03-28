@@ -142,7 +142,7 @@ HThemeManager = HClass.extend({
   *
   */
   getCssFilePath: function( _fileName ){
-    return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName );+"')";
+    return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName )+"')";
   },
   
 /** method: loadCSS
