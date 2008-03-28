@@ -1020,16 +1020,16 @@ HView = HClass.extend({
         _height = parseInt( ELEM.get(_stringElem).offsetHeight, 10 );
       }
     } else {
-      _width = ELEM.getIntStyle(_stringElem, "width", true);
+      _width = parseInt( ELEM.get(_stringElem).clientWidth, 10 );
       if (arguments[3]) {
-        _height = ELEM.getIntStyle(_stringElem, "height", true);
+        _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 )
       }
     }
     ELEM.del(_stringElem);
     if (arguments[3]) {
-      return new HPoint(parseInt(_width, 10), parseInt(_height, 10));
+      return [_width, _height];
     } else {
-      return parseInt(_width, 10);
+      return _width;
     }
   },
   
