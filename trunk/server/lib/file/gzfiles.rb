@@ -111,11 +111,11 @@ class GZFileServe < HTTPServlet::AbstractServlet
       if request.path == '/gz/ie_css_element.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
-        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\nelement.attachEvent("onpropertychange",iefix.htcElementEntry);\r\n</script>\r\n</PUBLIC:COMPONENT>}
+        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onpropertychange",iefix.htcElementEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
       elsif request.path == '/gz/ie_css_style.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
-        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\nelement.attachEvent("onreadystatechange",iefix.htcStyleEntry);\r\n</script>\r\n</PUBLIC:COMPONENT>}
+        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onreadystatechange",iefix.htcStyleEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
       else
         response.status = 503
         response.body   = '503 - Invalid Request'

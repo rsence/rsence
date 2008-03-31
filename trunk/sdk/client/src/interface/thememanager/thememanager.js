@@ -129,7 +129,7 @@ HThemeManager = HClass.extend({
     var _themePath      = this._cssEvalParams[2];
     var _pkgName        = this._cssEvalParams[3];
     var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    return this._joinPath( _urlPrefix, 'gfx/' );
+    return this._joinPath( _urlPrefix, 'gfx' );
   },
   
 /** method: getCssFilePath
@@ -339,7 +339,7 @@ HThemeManager = HClass.extend({
   **/
   _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
     var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _url = this._joinPath( _urlPrefix, 'gfx/' );
+    var _url = this._joinPath( _urlPrefix, 'gfx' );
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){

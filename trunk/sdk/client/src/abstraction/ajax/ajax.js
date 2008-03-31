@@ -134,12 +134,12 @@ Ajax.Request = HClass.extend({
   },
   respondToReadyState: function(_readyState) {
     if (_readyState == 4) { // Completed(Loaded in IE 7)
-      try {
+      //try {
         (this.options["on" + (this.success() ? "Success" : "Failure")] ||
           (function() {}))(this.transport);
-      } catch (e) {
+      //} catch (e) {
         //console.log(e);
-      }
+      //}
     }
     
     if (_readyState == 4) { // Completed(Loaded in IE 7)

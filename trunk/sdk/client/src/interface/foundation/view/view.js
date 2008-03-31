@@ -354,7 +354,7 @@ HView = HClass.extend({
     
     // right, bottom, opacity and png-transparency
     if (ELEM._is_ie6 && !this.ie_resizefixadded) {
-      _traverseTree(ELEM.get(this.elemId));
+      iefix._traverseTree(ELEM.get(this.elemId));
       this.ie_resizefixadded = true;
       //HSystem.fix_ie = true;
     }
@@ -433,12 +433,13 @@ HView = HClass.extend({
     }
     
     ELEM.setStyle(this.elemId, 'display', 'block', true);
+    
     // right, bottom, opacity and png-transparency
-    //if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
-    //  _traverseTree(ELEM.get(this.elemId));
-    //  this.ie_htmlresizefixadded = true;
-    //  //HSystem.fix_ie = true;
-    //}
+    if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
+      iefix._traverseTree(ELEM.get(this.elemId));
+      this.ie_htmlresizefixadded = true;
+      HSystem.fix_ie = true;
+    }
   },
   
 /** method: setHTML

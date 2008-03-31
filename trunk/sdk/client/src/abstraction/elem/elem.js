@@ -16,15 +16,50 @@
 
 ELEM = {
   
-  _elements:   [],
-  _recycler:   {_tagNames:[]},
-  _styleCache: {},
-  _styleTodo:  {},
-  _attrTodo:   {},
-  _attrCache:  {},
-  _elemTodo:   [],
-  _elemTodoH:  {},
-  _blockElems: ",ADDRESS,BLOCKQUOTE,CENTER,DIR,DIV,DL,FIELDSET,FORM,H1,H2,H3,H4,H5,H6,HR,ISINDEX,MENU,NOFRAMES,NOSCRIPT,OL,P,PRE,TABLE,UL,",
+  // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
+  _constructor: function(){
+    var _this=ELEM;
+    
+    // pre-init queue
+    _this._domLoadQueue = [];
+    _this._domLoadTimer = null;
+    
+    // turns true when document is actually loaded:
+    _this._domLoadStatus = false;
+    
+    // initial tasks
+    _this._initDone = false;
+    
+    _this._makeCount = 0;
+    
+    _this._setStyleCount = 0; _this._setStyleDiffCount = 0;
+    _this._getStyleCount = 0; _this._getStyleMissCount = 0;
+    
+    _this._flushLoopCount = 0;
+    _this._flushLoopFlushedCount = 0;
+    _this._flushStylCount = 0;
+    
+    _this._flushTime = 0;
+    _this._flushCounter = 0;
+    _this._idleDelay = 500;
+    
+    _this._timer = null;
+    _this._minDelay = 40;
+    _this._flushing = false;
+    _this._needFlush = false;
+    _this._slowness = 1;
+    
+    _this._elements =   [];
+    _this._recycler =   {_tagNames:[]};
+    _this._styleCache = {};
+    _this._styleTodo =  {};
+    _this._attrTodo =   {};
+    _this._attrCache =  {};
+    _this._elemTodo =   [];
+    _this._elemTodoH =  {};
+    _this._blockElems = ",ADDRESS,BLOCKQUOTE,CENTER,DIR,DIV,DL,FIELDSET,FORM,H1,H2,H3,H4,H5,H6,HR,ISINDEX,MENU,NOFRAMES,NOSCRIPT,OL,P,PRE,TABLE,UL,";
+  },
+  
   
   _fillTrash: function(_count,_tagName){
     var _this=ELEM,i=0,_toDel=[],_recycler=_this._initRecycler(_tagName),_trashId=_recycler._trashId;
@@ -240,25 +275,14 @@ ELEM = {
   setFPS: function(_fps){
     ELEM._minDelay = 1000/_fps;
   },
-  _timer: null,
-  _minDelay: 40,
-  _flushing: false,
-  _needFlush: false,
-  _slowness: 1,
   setSlowness: function(_slowness){
     // we should replace this with an
     // actual browser speed benchmark
     ELEM._slowness = _slowness;
   },
-  _flushTime: 0,
-  _flushCounter: 0,
-  _idleDelay: 500,
   setIdleDelay: function(_idleDelay){
     ELEM._idleDelay = _idleDelay;
   },
-  _flushLoopCount: 0,
-  _flushLoopFlushedCount: 0,
-  _flushStylCount: 0,
   
   flushLoop: function(_delay){
     //console.log('flushLoop('+_delay+')');
@@ -412,8 +436,6 @@ ELEM = {
     }
   },
   // sets style key to value of id, bypass sets immediately
-  _setStyleCount: 0, _setStyleDiffCount: 0,
-  _getStyleCount: 0, _getStyleMissCount: 0,
   printStats: function(){
     var _this=ELEM,_recycler=_this._recycler,i=0,_tagName,_tagLen,_countIn,_countOut;
     console.log('Recycler efficiency:');
@@ -483,7 +505,6 @@ ELEM = {
   // returns id
   // _target defaults to document.body's id: 0
   // _tagName defaults to 'div'
-  _makeCount: 0,
   make: function(_targetId,_tagName){
     if( _targetId === undefined ){
       _targetId = 0;
@@ -523,12 +544,8 @@ ELEM = {
     return _id;
   },
   
-  
-  // initial tasks
-  _initDone: false,
   _init: function(){
-    var _this,_cmdStr, _cmdResult;
-    _this = ELEM;
+    var _this=ELEM,_cmdStr, _cmdResult;
     var _getStyleTmpl = [
       // idx   source
       /*  0 */ "ELEM.getStyle=function(_id,_key,_bypass){",
@@ -593,6 +610,8 @@ ELEM = {
     
     _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+')',_this._minDelay);
     
+    if(!_this._domLoadQueue){return;}
+    
     while(_this._domLoadQueue.length!=0){
       _cmdStr = _this._domLoadQueue.shift();
       if(typeof _cmdStr == 'string'){
@@ -615,11 +634,6 @@ ELEM = {
     _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1);
     _this._domWaiter();
   },
-  // pre-init queue
-  _domLoadQueue: [],
-  _domLoadTimer: null,
-  // turns true when document is actually loaded:
-  _domLoadStatus: false,
   // adds items to eval after the dom is done:
   _domLoader: function(_cmdStr){
     var _this = ELEM;
@@ -677,6 +691,7 @@ ELEM = {
     }
   }
 };
+ELEM._constructor();
 LOAD = ELEM._domLoader;
 ELEM._warmup();
 

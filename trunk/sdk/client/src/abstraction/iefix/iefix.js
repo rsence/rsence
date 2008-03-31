@@ -20,6 +20,11 @@ function ie_early_fixes() {
   var _script = document.scripts[document.scripts.length - 1];
   var _src = _script.src;
   ie_htc_path = _src.substring(0, _src.lastIndexOf("/") + 1);
+  console = {
+    log: function(){
+      
+    }
+  }
 }
 if( (document.all&&navigator.userAgent.indexOf("Opera")==-1) && 
     (navigator.userAgent.indexOf("MSIE 6")!=-1)
@@ -120,6 +125,7 @@ iefix = {
   // NOTICE: .init() makes _resizeBottom() from this by replacing left/width with top/height
   _resizeRight: function(_element){
     var _this=iefix,_left,_width;
+    if(_element.currentStyle===null){return;}
     _left=parseInt(_element.currentStyle.left,10);
     _width=_this._layoutWidth(_element)-parseInt(_element.currentStyle.right,10)-_left;
     if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
