@@ -251,3 +251,25 @@ HClass.implement = function(_interface) {
 }
 
 var Base = HClass;
+
+
+if ([].indexOf===undefined) {
+  Object.extend = function(destination, source) {
+    for (property in source) {
+      destination[property] = source[property];
+    }
+    return destination;
+  };
+  Object.extend(Array.prototype, {
+    indexOf: function(_anObject){
+      var i = 0, l = this.length;
+      for (; i < l; i++) {
+        if (this[i] == _anObject) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  });
+}
+

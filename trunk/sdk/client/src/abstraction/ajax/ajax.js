@@ -138,7 +138,7 @@ Ajax.Request = HClass.extend({
         (this.options["on" + (this.success() ? "Success" : "Failure")] ||
           (function() {}))(this.transport);
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
     }
     
