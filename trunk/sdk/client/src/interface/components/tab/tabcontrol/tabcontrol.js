@@ -237,7 +237,7 @@ HTabControl = HControl.extend({
     var _labelRectXLeft = 0;
     for (var i = 0; i < this._tabsInOrder.length; i++) {
       // The tab label object.
-      var _label = this.labelViews.views[this._tabsInOrder[i]];
+      var _label = HSystem.views[this.labelViews.views[this._tabsInOrder[i]]];
       
       // Figure out the left and right edges of the rectangle and use the
       // existing top and bottom edges.
@@ -246,7 +246,7 @@ HTabControl = HControl.extend({
       var _tabLabelRect = new HRect(_labelRectXLeft, _label.rect.top,
         this._labelsRightMostPx, _label.rect.bottom);
         
-      this.labelViews.views[this._tabsInOrder[i]].setRect(_tabLabelRect);
+      HSystem.views[this.labelViews.views[this._tabsInOrder[i]]].setRect(_tabLabelRect);
       
       // TODO: Don't assume that the border width of the label is one pixel.
       this._labelsRightMostPx--;
@@ -362,14 +362,14 @@ HTabControl = HControl.extend({
       if (_tabIndex > -1) {
         
         if(this.activeTab != -1) {
-          this.tabViews.views[this.activeTab].setStyle('display', 'none');
-          this.tabViews.views[this.activeTab].hide();
-          this.labelViews.views[this.activeTab].setHighlight(false);
+          HSystem.views[this.tabViews.views[this.activeTab]].setStyle('display', 'none');
+          HSystem.views[this.tabViews.views[this.activeTab]].hide();
+          HSystem.views[this.labelViews.views[this.activeTab]].setHighlight(false);
         }
         this.activeTab = _tabId;
-        this.tabViews.views[this.activeTab].setStyle('display', 'block');
-        this.tabViews.views[this.activeTab].show();
-        this.labelViews.views[this.activeTab].setHighlight(true);
+        HSystem.views[this.tabViews.views[this.activeTab]].setStyle('display', 'block');
+        HSystem.views[this.tabViews.views[this.activeTab]].show();
+        HSystem.views[this.labelViews.views[this.activeTab]].setHighlight(true);
         
         return true;
         
