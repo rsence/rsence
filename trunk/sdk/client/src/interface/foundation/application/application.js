@@ -52,8 +52,6 @@ HApplication = HClass.extend({
     
     // storage for views
     this.views = [];
-    // store views array gaps here, used for recycling when removing/adding views constantly 
-    this.recycleableViewIds = [];
     
     // Views in Z order. The actual Z data is stored in HSystem, this is just a
     // reference to that array.
@@ -67,13 +65,14 @@ HApplication = HClass.extend({
   * Used by addView to build a parents array of parent classes.
   *
   **/
-  buildParents: function(_viewClass){
-    _viewClass.parent = this;
-    _viewClass.parents = [];
+  buildParents: function(_viewId){
+    var _view = HSystem.views[_viewId];
+    _view.parent = this;
+    _view.parents = [];
     for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
-      _viewClass.parents.push(this.parents[_parentNum]);
+      _view.parents.push(this.parents[_parentNum]);
     }
-    _viewClass.parents.push(this);
+    _view.parents.push(this);
   },
   
 /** method: addView
@@ -85,7 +84,7 @@ HApplication = HClass.extend({
   * after the <HRect>.
   *
   * Parameter:
-  *  _viewClass - Usually *this* inside <HView>-derivate components.
+  *  _view - Usually *this* inside <HView>-derivate components.
   *
   * Returns:
   *  The parent view specific view id.
@@ -93,16 +92,14 @@ HApplication = HClass.extend({
   * See also:
   *  <HView.addView> <removeView> <destroyView> <die>
   **/
-  addView: function(_viewClass) {
-    this.buildParents(_viewClass);
-    this.viewsZOrder.push(_viewClass);
-    if(this.recycleableViewIds.length > 100){
-      var _viewId = this.recycleableViewIds.shift();
-      this.views[_viewId] = _viewClass;
-    } else {
-      this.views.push(_viewClass);
-      var _viewId = this.views.length - 1;
-    }
+  addView: function(_view) {
+
+    var _viewId = HSystem.addView(_view);
+    this.views.push(_viewId);
+    
+    this.buildParents(_viewId);
+    this.viewsZOrder.push(_viewId);
+    
     return _viewId;
   },
   
@@ -119,9 +116,7 @@ HApplication = HClass.extend({
   *  <addView> <HView.addView> <destroyView> <die>
   **/
   removeView: function(_viewId){
-    if(this.views[_viewId]) {
-      this.views[_viewId].remove();
-    }
+    HSystem.views[_viewId].remove();
   },
 
 /** method: destroyView
@@ -136,9 +131,7 @@ HApplication = HClass.extend({
   *  <addView> <HView.addView> <removeView> <die>
   **/
   destroyView: function(_viewId){
-    if(this.views[_viewId]) {
-      this.views[_viewId].die();
-    }
+    HSystem.views[_viewId].die();
   },
   
 /** method: die
@@ -163,21 +156,20 @@ HApplication = HClass.extend({
   *  <addView> <HView.addView> <removeView> <destroyView> <die>
   **/
   destroyAllViews: function(){
-    for (var i = 0; i < this.views.length; i++) {
-      if (this.views[i]) {
-        this.views[i].die();
-      }
+    var i, _viewId;
+    for (i = 0; i < this.views.length; i++) {
+      _viewId = this.views[i];
+      HSystem.views[_viewId].die();
     }
   },
   
   
   // calls the idle method of each view
   _pollViews: function(){
-    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
-      // Don't poll dead views.
-      if (this.views[_viewNum]) {
-        this.views[_viewNum].onIdle();
-      }
+    var i, _viewId;
+    for(i=0;i<this.views.length;i++){
+      _viewId = this.views[i];
+      HSystem.views[i].onIdle();
     }
   },
   

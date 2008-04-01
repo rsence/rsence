@@ -147,7 +147,7 @@ HSystem = HClass.extend({
   ***/
   addApp: function(_appClass,_refreshInterval){
     
-    if(this.freeAppIds.length > 200){
+    if(this.freeAppIds.length > 1024){
       var _appId = this.freeAppIds.shift();
       this.apps[_appId] = _appClass;
     } else {
@@ -241,6 +241,25 @@ HSystem = HClass.extend({
     this.apps[ _appId ] = null;
     
     this.freeAppIds.push( _appId );
+  },
+  
+  views: [],
+  _freeViewIds: [],
+  addView: function(_view){
+    var _newId;
+    if(this._freeViewIds.length==0){
+      _newId = this.views.length;
+      this.views.push(_view);
+    }
+    else {
+      _newId = this._freeViewIds.pop();
+      this.views[_newId] = _view;
+    }
+    return _newId;
+  },
+  delView: function(_viewId){
+    this.views[_viewId] = null;
+    this._freeViewIds.push(_viewId);
   }
   
 });

@@ -183,17 +183,16 @@ HControl = HView.extend({
     
     // Enable/disable the children first.
     for (var i = 0; i < this.views.length; i++) {
-      if (this.views[i]) {
-        this.views[i].setEnabled(_flag);
-      }
+      HSystem.views[this.views[i]].setEnabled(_flag);
     }
     
-    if (this.enabled == _flag) {
+    if (this.enabled === _flag) {
       // No change in enabled status, do nothing.
       return;
     }
     
     this.enabled = _flag;
+    
     if(_flag) {
       EVENT.reg(this, this.events);
     }
@@ -202,8 +201,8 @@ HControl = HView.extend({
     }
     
     // Toggle the CSS class: enabled/disabled
-    this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_ENABLED, this.enabled);
-    this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_DISABLED, !this.enabled);
+    this.toggleCSSClass(this.elemId, HControl.CSS_ENABLED, this.enabled);
+    this.toggleCSSClass(this.elemId, HControl.CSS_DISABLED, !this.enabled);
   },
   
 /** method: setValue
@@ -220,7 +219,7 @@ HControl = HView.extend({
   *
   **/
   setValue: function(_value) {
-    if(_value == undefined){return;}
+    if(_value === undefined){return;}
     if(!this.valueObj){return;}
     if(_value !== this.value) {
       this.value = _value;
@@ -533,7 +532,7 @@ HControl = HView.extend({
   // A low-level handler, don't extend this.
   _gainedActiveStatus: function(_lastActiveControl) {
     if(this.enabled) {
-      this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_ACTIVE, true);
+      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, true);
     }
     this.gainedActiveStatus(_lastActiveControl);
   },
@@ -559,7 +558,7 @@ HControl = HView.extend({
   
   _lostActiveStatus: function(_newActiveControl) {
     if(this.enabled) {
-      this.toggleCSSClass(ELEM.get(this.elemId), HControl.CSS_ACTIVE, false);
+      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, false);
     }
     this.lostActiveStatus(_newActiveControl);
   },

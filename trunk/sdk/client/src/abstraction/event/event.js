@@ -77,7 +77,6 @@ _defaultFocusOptions = {
   keyDown:    false,
   keyUp:      false,
   mouseWheel: false,
-  enabled:    true,
   isDragged:  false,
   textEnter:  false
 };
@@ -140,9 +139,7 @@ EVENT = {
     for(var _propIn in _defaultFocusOptions){
       if(_focusOptions[_propIn]===undefined){
         _focusOptions[_propIn] = _defaultFocusOptions[_propIn];
-      } /* else {
-        //console.log(_elemId+':'+_propIn)
-      }*/
+      }
     }
     _this.focusOptions[_elemId]=_focusOptions;
     var _coordListenIdx=_this.coordListeners.indexOf(_elemId);
@@ -154,11 +151,10 @@ EVENT = {
       _this.coordListeners.splice(_coordListenIdx,1);
     }
     if(_focusOptions.textEnter){
-      if(_this.textEnterCtrls.indexOf(_ctrl.ID)==-1){
-        _this.textEnterCtrls.push(_ctrl.ID);
+      if(_this.textEnterCtrls.indexOf(_ctrl.viewId)==-1){
+        _this.textEnterCtrls.push(_ctrl.viewId);
       }
     }
-    ////console.log(_this.focusOptions[_elemId]);
     Event.observe(_elem,'mouseover',_this._mouseOver);
   },
   // unregisters the View instance _ctrl event listeners
@@ -169,7 +165,7 @@ EVENT = {
     this.listeners[_elemId]=false;
     this.focused[_elemId]=false;
     this._coordCache[_elemId]=null;
-    var _textEnterIndex=_this.textEnterCtrls.indexOf(_ctrl.ID);
+    var _textEnterIndex=_this.textEnterCtrls.indexOf(_ctrl.viewId);
     if(_textEnterIndex!=-1){
       _this.textEnterCtrls.splice(_textEnterIndex,1);
     }
@@ -336,13 +332,13 @@ EVENT = {
     for(i=0;i!=_this.focused.length;i++){
       if(_this.focused[i]==true){
         // Set the active control to the currently focused item.
-        if(_this.focusOptions[i].enabled||_this.focusOptions[i].ctrl.enabled){_newActiveControl=_this.focusOptions[i].ctrl;}
+        if(_this.focusOptions[i].ctrl.enabled){_newActiveControl=_this.focusOptions[i].ctrl;}
         if((_this.focusOptions[i].draggable==true)&&_this.dragItems.indexOf(i)==-1){_startDragElementIds.push(i);}
         else if(_this.focusOptions[i].mouseDown==true){_mouseDownElementIds.push(i);}
     } }
     // Handle the active control selection.
-    //console.log('EVENT.mouseDown, newActiveControl:',_newActiveControl);
-    _this.changeActiveControl(_newActiveControl);
+    //console.log('EVENT.mouseDown, newActiveControl:',_newActiveControl.type,_newActiveControl.enabled);
+    if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
     // Call the mouseDown and startDrag events after the active control change has been handled.
     for(i=0;i!=_startDragElementIds.length;i++){
       _this.dragItems.push(_startDragElementIds[i]);
@@ -360,8 +356,8 @@ EVENT = {
       _this._storedOnSelectStart=document.onselectstart;
       document.onselectstart=function(){return false;};
     }
-    // Stop the event only when we are hovering over some control, allows normal DOM events can co-exist.
-    if((_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId==false))){Event.stop(e);}
+    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
+    if((_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
     return true;
   },
   
@@ -387,10 +383,11 @@ EVENT = {
         else if(_this.focusOptions[i].click==true){_clickElementIds.push(i);}
     } }
     // Handle the active control selection.
-    _this.changeActiveControl(_newActiveControl);
+    if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
     for(i=0;i!=_clickElementIds.length;i++){_this.focusOptions[_clickElementIds[i]].ctrl.click(x,y,_isLeftButton);}
-    // Stop the event only when we are hovering over some control, allows normal DOM events can co-exist.
-    if(_this.hovered.length!=0){Event.stop(e);}
+    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
+    if((_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    //if(_this.hovered.length!=0){Event.stop(e);}
     return true;
   },
   
@@ -485,7 +482,7 @@ EVENT = {
     _this._lastKeyDown=null;
     //console.log('EVENT.keyUp: ',_this.textEnterCtrls);
     for(var i=0;i!=_this.textEnterCtrls.length;i++){
-      var _ctrlID=_this.textEnterCtrls[i], _ctrl=Syncer.ctls[_ctrlID];
+      var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
       if(_ctrl.textEnter){_ctrl.textEnter();}
     }
     if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyUp==true){

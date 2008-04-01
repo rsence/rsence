@@ -95,12 +95,12 @@ HView = HClass.extend({
   *
   * Parameters:
   *  _rect - An instance of <HRect>, defines the position and size of views.
-  *  _parentClass - Another <HView> -compatible instance, like <HApplication>, <HControl> and derived component classes.
+  *  _parent - Another <HView> -compatible instance, like <HApplication>, <HControl> and derived component classes.
   *
   * See also:
   *  <HApplication.addView> <draw> <drawRect> <refresh> <setRect> <drawMarkup> <HControl.draw>
   **/
-  constructor: function(_rect, _parentClass) {
+  constructor: function(_rect, _parent) {
     // Moved these to the top to ensure safe themeing operation
     if(this.theme===undefined){
       this.theme = HThemeManager.currentTheme;
@@ -122,7 +122,7 @@ HView = HClass.extend({
     this.optimizeWidthOnRefresh = true;
     
     // adds the parentClass as a "super" object
-    this.parent = _parentClass;
+    this.parent = _parent;
     
     this.viewId = this.parent.addView(this);
     // the parent addView method adds this.parents
@@ -130,11 +130,8 @@ HView = HClass.extend({
     this.appId = this.parent.appId;
     this.app = HSystem.apps[this.appId];
     
-    // subviews
+    // subview-ids, index of HView-derived objects that are found in HSystem.views[viewId]
     this.views = [];
-    
-    // store views array gaps here, used for recycling when removing/adding views constantly 
-    this.recycleableViewIds = [];
     
     // Subviews in Z order.
     this.viewsZOrder = [];
@@ -356,7 +353,7 @@ HView = HClass.extend({
     if (ELEM._is_ie6 && !this.ie_resizefixadded) {
       iefix._traverseTree(ELEM.get(this.elemId));
       this.ie_resizefixadded = true;
-      //HSystem.fix_ie = true;
+      HSystem.fix_ie = true;
     }
   },
   
@@ -368,14 +365,12 @@ HView = HClass.extend({
     * other elements too.
     */
   _updateZIndex: function() {
-    ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this));
+    ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
   },
   _updateZIndexAllSiblings: function() {
     var _views = this.parent.viewsZOrder;
     for (var i = 0; i < _views.length; i++) {
-      if(_views[i].elemId) {
-        ELEM.setStyle(_views[i].elemId, 'z-index', i);
-      }
+      ELEM.setStyle(HSystem.views[_views[i]].elemId, 'z-index', i);
     }
   },
   
@@ -627,23 +622,22 @@ HView = HClass.extend({
   **/
   remove: function() {
     if( this.parent ) {
+      
+      var _viewZIdx = this.parent.viewsZOrder.indexOf(this.viewId),
+          _viewPIdx = this.parent.views.indexOf(this.viewId);
+      
+      this.parent.views.splice(_viewIdx,1);
+      HSystem.delView(_viewId);
+      
       // Drop the z-order from the parent's array
-      this.parent.viewsZOrder.splice( this.parent.viewsZOrder.indexOf(this), 1 );
-        
-      // Remove this object from the parent's views.
-      // NOTE: The array isn't spliced here because it would mess up the view
-      // structure, as the view's ID is the index of the parent's views array.
-      var _parentIndexOfMe = this.parent.views.indexOf(this);
-    
-      this.parent.views[_parentIndexOfMe] = null;
-      this.parent.recycleableViewIds.push(_parentIndexOfMe);
-
+      this.parent.viewsZOrder.splice( _viewZIdx, 1 );
+      
       // Make sure the z-order array stays solid.
       this._updateZIndexAllSiblings();
-    
+      
       // Since were not in the parent's array anymore, we don't need a reference
       // to that object.
-      this.parent = null;
+      this.parent  = null;
       this.parents = [];
     }
   },
@@ -660,21 +654,21 @@ HView = HClass.extend({
     
     // Delete the children first.
     for (var i = 0; i < this.views.length; i++) {
-      if (this.views[i]) {
-        this.views[i].die();
-      }
+      HSystem.views[this.views[i]].die();
     }
     
-    // Remove this object's DOM element.
+    // Remove this object's bindings, except the DOM element.
     this.remove();
     
-    // Remove the additional DOM element bindings.
+    // Remove the DOM element bindings.
     for (var i = 0; i < this._domElementBindings.length; i++) {
       ELEM.del(this._domElementBindings[i]);
     }
     this._domElementBindings = [];
     
+    // Remove the DOM object itself
     ELEM.del(this.elemId);
+    
     this.elemId = null;
     this.drawn = false;
     
@@ -684,11 +678,8 @@ HView = HClass.extend({
   
   // Idle poller (recursive)
   onIdle: function() {
-    for(var _viewNum = 0; _viewNum < this.views.length; _viewNum++) {
-      // Don't poll dead views.
-      if (this.views[_viewNum]) {
-        this.views[_viewNum].onIdle();
-      }
+    for(var i = 0; i < this.views.length; i++) {
+      HSystem.views[this.views[i]].onIdle();
     }
   },
   
@@ -697,13 +688,14 @@ HView = HClass.extend({
   * Used by addView to build a parents array of parent classes.
   *
   **/
-  buildParents: function(_viewClass){
-    _viewClass.parent = this;
-    _viewClass.parents = [];
+  buildParents: function(_viewId){
+    var _view = HSystem.views[_viewId];
+    _view.parent = this;
+    _view.parents = [];
     for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
-      _viewClass.parents.push(this.parents[_parentNum]);
+      _view.parents.push(this.parents[_parentNum]);
     }
-    _viewClass.parents.push(this);
+    _view.parents.push(this);
   },
   
 /** method: addView
@@ -718,7 +710,7 @@ HView = HClass.extend({
   * to another component.
   *
   * Parameter:
-  *  _viewClass - Usually *this* inside <HView>-derivate components.
+  *  _view - Usually *this* inside <HView>-derivate components.
   *
   * Returns:
   *  The view id.
@@ -726,16 +718,13 @@ HView = HClass.extend({
   * See also:
   *  <HApplication.addView> <remove> <die>
   **/
-  addView: function(_viewClass) {
-    this.buildParents(_viewClass);
-    this.viewsZOrder.push(_viewClass);
-    if(this.recycleableViewIds.length > 100){
-      var _viewId = this.recycleableViewIds.shift();
-      this.views[_viewId] = _viewClass;
-    } else {
-      this.views.push(_viewClass);
-      var _viewId = this.views.length - 1;
-    }
+  addView: function(_view) {
+    var _viewId = HSystem.addView(_view);
+    this.views.push(_viewId);
+    
+    this.buildParents(_viewId);
+    this.viewsZOrder.push(_viewId);
+    
     return _viewId;
   },
   
@@ -752,9 +741,7 @@ HView = HClass.extend({
   *  <remove> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
   **/
   removeView: function(_viewId) {
-    if(this.views[_viewId]) {
-      this.views[_viewId].remove();
-    }
+    HSystem.views[_viewId].remove();
   },
   
 /** method: destroyView
@@ -769,9 +756,7 @@ HView = HClass.extend({
   *  <remove> <removeView> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
   **/
   destroyView: function(_viewId) {
-    if(this.views[_viewId]) {
-      this.views[_viewId].die();
-    }
+    HSystem.views[_viewId].die();
   },
   
 /** method: bounds
@@ -946,7 +931,7 @@ HView = HClass.extend({
     }
     var _index = this.zIndex();
     this.parent.viewsZOrder.splice(_index, 1);
-    this.parent.viewsZOrder.push(this);
+    this.parent.viewsZOrder.push(this.viewId);
     this._updateZIndexAllSiblings();
   },
 
@@ -963,7 +948,7 @@ HView = HClass.extend({
     }
     var _index = this.zIndex();
     this.parent.viewsZOrder.splice(_index, 1);
-    this.parent.viewsZOrder.splice(0, 0, this);
+    this.parent.viewsZOrder.splice(0, 0, this.viewId); // Hmmm?
     this._updateZIndexAllSiblings();
   },
 
@@ -982,7 +967,7 @@ HView = HClass.extend({
       return;
     }
     // Returns the z-order of this item as seen by the parent.
-    return this.parent.viewsZOrder.indexOf(this);
+    return this.parent.viewsZOrder.indexOf(this.viewId);
   },
   
 /** method: stringWidth
@@ -1100,11 +1085,8 @@ HView = HClass.extend({
   * 
   */
   invalidatePositionCache: function() {
-    for(var i = 0; i < this.views.length; i++) {
-      if (this.views[i]) {
-        // Don't invalidate dead views.
-        this.views[i].invalidatePositionCache();
-      }
+    for(var i=0; i<this.views.length; i++) {
+      HSystem.views[this.views[i]].invalidatePositionCache();
     }
   },
   
