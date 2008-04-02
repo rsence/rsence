@@ -39,17 +39,36 @@ HMarkupView = HClass.extend({
     
     var _markup = this.markup;
     
-    var _ID     = this.elemId.toString();
-    var _WIDTH  = this.rect.width;
-    var _HEIGHT = this.rect.height;
-    
+    while ( HMarkupView._assignment_match.test(_markup) ) {  
+      _markup = _markup.replace( HMarkupView._assignment_match, this.evalMarkupVariable(RegExp.$1,true) );
+    }
     while ( HMarkupView._variable_match.test(_markup) ) {  
-      _markup = _markup.replace( HMarkupView._variable_match, eval(RegExp.$1) );
+      _markup = _markup.replace( HMarkupView._variable_match, this.evalMarkupVariable(RegExp.$1) );
     }
     
     this.markup = _markup;
   },
   
+  evalMarkupVariable: function(_strToEval,_isAssignment){
+    try {
+      var _ID     = this.elemId.toString(),
+          _WIDTH  = this.rect.width,
+          _HEIGHT = this.rect.height,
+          _result = eval(_strToEval);
+      if(_isAssignment){
+        return '';
+      }
+      if(_result===undefined){
+        return '';
+      }
+      else {
+        return _result;
+      }
+    }
+    catch(e) {
+      return '';
+    }
+  },
   
 /** method: toggleCSSClass
   * 
@@ -83,6 +102,7 @@ HMarkupView = HClass.extend({
   }
 
 },{
-  _variable_match: new RegExp(/#\{([^\}]*)\}/)
+  _variable_match: new RegExp(/#\{([^\}]*)\}/),
+  _assignment_match: new RegExp(/\$\{([^\}]*)\}/)
 });
 
