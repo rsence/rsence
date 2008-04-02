@@ -36,7 +36,7 @@ $_PACKAGES = {
     'passwordcontrol','divider','checkbox'
   ],
   'tabs' => [
-    'tabbar','tablabel','tabview','tabcontrol'
+    'tab'
   ],
   'window' => [
     'windowbar','windowlabel','windowview','windowcontrol'
