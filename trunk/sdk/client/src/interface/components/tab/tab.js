@@ -17,14 +17,6 @@ HTabView = HView.extend({
       }
       this.hide();
     }
-  },
-  show: function(){
-    console.log('show: ',this.viewId);
-    this.base();
-  },
-  hide: function(){
-    console.log('hide: ',this.viewId);
-    this.base();
   }
 });
 
@@ -112,7 +104,6 @@ HTab = HControl.extend({
         var i=0,_labelBounds;
         for(i;i<this.tabLabelBounds.length;i++){
           _labelBounds = this.tabLabelBounds[i];
-          console.log('_labelBounds: ',_labelBounds);
           if(_x<_labelBounds[1] && _x>=_labelBounds[0]){
             this.selectTab(i);
             return;
