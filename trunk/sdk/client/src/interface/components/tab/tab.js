@@ -40,7 +40,7 @@ HTab = HControl.extend({
   },
   stringWidth: function(_string,_elemId){
     var _html = '<span style="font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;">'+_string+'</span>',
-        _width = this.base( _html );
+        _width = this.base( _html, _elemId );
     return _width;
   }, 
   tabInit: function(){
@@ -161,3 +161,5 @@ HTabControl = HTab.extend({
     this.base(_rect,_parent,_options);
   }
 });
+
+

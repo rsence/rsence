@@ -181,9 +181,9 @@ ELEM = {
   
   // returns element's size from the part that is not hidden by its parent elements with overflow property
   getVisibleSize: function(_id){
-    var _this,_elem,w,h,_parent,_parentOverflow;
-    _this=ELEM;_elem=_this._elements[_id];
-    w=_elem.offsetWidth;h=_elem.offsetHeight;
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.offsetWidth,h=_elem.offsetHeight,
     _parent=_elem.parentNode;
     while(_parent&&_parent.nodeName.toLowerCase()!='body'){
       if(!_this._is_ie){_parentOverflow=document.defaultView.getComputedStyle(_parent,null).getPropertyValue('overflow');}
@@ -196,9 +196,25 @@ ELEM = {
     return [w,h];
   },
 
+  // returns element's full size
+  getSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.offsetWidth,h=_elem.offsetHeight;
+    return [w,h];
+  },
+
+  // returns element's full size
+  getScrollSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.scrollWidth,h=_elem.scrollHeight;
+    return [w,h];
+  },
+
   getVisiblePosition: function(_id){
-    var x,y,_elem,_this;_this=ELEM;
-    x=0;y=0;_elem=_this._elements[_id];
+    var x,y,_elem,_this,_this=ELEM,
+    x=0,y=0,_elem=_this._elements[_id];
     while(_elem!==document){
       x+=_elem.offsetLeft;y+=_elem.offsetTop;
       x-=_elem.scrollLeft;y-=_elem.scrollTop;
@@ -544,6 +560,13 @@ ELEM = {
     return _id;
   },
   
+  windowSize: function(){
+    var _w, _h;
+    _w = (window.innerWidth) ? window.innerWidth : document.documentElement.clientWidth;
+    _h = (window.innerHeight) ? window.innerHeight : document.documentElement.clientHeight;
+    return [_w,_h];
+  },
+  
   _init: function(){
     var _this=ELEM,_cmdStr, _cmdResult;
     var _getStyleTmpl = [
@@ -601,7 +624,7 @@ ELEM = {
     }
     eval(_flushStyleCacheTmpl.join(''));
     
-    _this._add(document.body);
+    _this.bind(document.body);
     
     // creates an 'trash' for div elements
     _this._trashId = _this.make(0,'div');
@@ -694,80 +717,4 @@ ELEM = {
 ELEM._constructor();
 LOAD = ELEM._domLoader;
 ELEM._warmup();
-
-// backwards-compatibility
-onloader = function( _cmdStr ){
-  console.log('WARN: the onloader(..) call is deprecated');
-  ELEM._domLoader( _cmdStr );
-};
-elem_bind = function( _elemId ){
-  console.log('WARN: the elem_bind(..) call is deprecated');
-  return ELEM.bindId( _elemId );
-};
-elem_add = function( _elem ){
-  console.log('WARN: the elem_add(..) call is deprecated');
-  return ELEM.bind( _elem );
-};
-elem_get = function( _elemId){
-  console.log('WARN: the elem_get(..) call is deprecated');
-  return ELEM.get( _elemId );
-};
-elem_set = function( _elemId, _html ){
-  console.log('WARN: the elem_set(..) call is deprecated');
-  return ELEM.setHTML( _elemId, _html );
-};
-elem_del = function( _elemId ){
-  console.log('WARN: the elem_del(..) call is deprecated');
-  return ELEM.del( _elemId );
-};
-
-// deprecated, please don't use
-elem_replace = function( _elemId, _elem ){
-  console.log('WARN: the elem_replace(..) call is deprecated');
-  return ELEM._replace( _elemId, _elem );
-};
-
-elem_append = function( _pid, _id ){
-  console.log('WARN: the elem_append(..) call is deprecated');
-  return ELEM.append( _id, _pid );
-};
-elem_mk = function(_pid,_type){
-  console.log('WARN: the elem_mk(..) call is deprecated');
-  return ELEM.make( _pid, _type );
-};
-
-styl_get = function(_id, _name){
-  console.log('WARN: the styl_get(..) call is deprecated');
-  return ELEM.getStyle( _id, _name );
-};
-prop_get = function(_id, _name, _direct){
-  console.log('WARN: the prop_get(..) call is deprecated');
-  return ELEM.getStyle( _id, _name, _direct );
-};
-
-styl_set = function(_id,_name,_value){
-  console.log('WARN: the styl_get(..) call is deprecated');
-  return ELEM.setStyle( _id, _name, _value );
-};
-prop_set = function(_id,_name,_value,_direct){
-  console.log('WARN: the prop_set(..) call is deprecated');
-  return ELEM.setStyle( _id, _name, _value, _direct );
-};
-prop_get_extra_width = function(_id) {
-  console.log('WARN: the prop_get_extra_width(..) call is deprecated');
-  return ELEM.getExtraWidth(_id);
-};
-prop_get_extra_height = function(_id) {
-  console.log('WARN: the prop_get_extra_height(..) call is deprecated');
-  return ELEM.getExtraHeight(_id);
-};
-
-
-
-
-
-
-
-
-
 
