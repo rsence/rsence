@@ -89,6 +89,7 @@ class HTransporter
         puts
         puts "new session. rescanning apps."
         puts
+        $config[:gzfilecache].check_scan
         @system.rescan()
       end
       

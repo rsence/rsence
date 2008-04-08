@@ -43,7 +43,7 @@ JSLoader = Base.extend({
       method:    'get',
       asynchronous: false
     };
-    this._req = new Ajax.Request( this._basePath+_jsName, req_args );
+    this._req = new Ajax.Request( this._basePath+_jsName+'.js', req_args );
     this._loadedJS.push(_jsName);
     
     //document.write('<script type="text/javascript" src="'+this._basePath+_jsName+'"><'+'/script>');
@@ -52,7 +52,7 @@ JSLoader = Base.extend({
   
 });
 
-LOAD("jsLoader = new JSLoader('/gz/?js=');");
+LOAD("jsLoader = new JSLoader('/gz/js/');");
 
 
 

@@ -19,11 +19,11 @@
 ## (c) 2007-2008 Juha-Jarmo Heinonen, All Rights Reserved
 ###
 
-class GZFileServe < HTTPServlet::AbstractServlet
-  
-  def initialize(*args)
+class GZFileCache
+  attr_reader :busy_scanning, :scan_time, :gz_cache, :js_cache, :theme_cache
+  @busy_scanning = false
+  def initialize
     scan_dirs
-    super(*args)
   end
   
   def suffix(file_path)
@@ -43,13 +43,19 @@ class GZFileServe < HTTPServlet::AbstractServlet
   end
   
   def scan_dirs
+    return if @busy_scanning == true
+    puts '-'*80
+    @busy_scanning = true
     ui_path = $config[:ria_paths][:ui_path][1]
-    @@gz_cache = {}
-    @@js_cache = {}
-    @@theme_cache = {}
+    @gz_cache = {}
+    @js_cache = {}
+    @theme_cache = {}
     Dir.entries( $config[:ria_paths][:theme_path][1] ).each do |theme_name|
       is_dir = File.stat(File.join($config[:ria_paths][:theme_path][1],theme_name)).directory?
       if theme_name[0].chr != '.' and is_dir
+        unless @theme_cache.has_key?(theme_name)
+          @theme_cache[theme_name] = {'css'=>{},'html'=>{},'gfx'=>{}}
+        end
         theme_path = File.join( $config[:ria_paths][:theme_path][1], theme_name )
         gfx_path   = File.join(theme_path,'gfx')
         css_path   = File.join(theme_path,'css')
@@ -59,60 +65,64 @@ class GZFileServe < HTTPServlet::AbstractServlet
           suf = suffix( file_path )
           file_key = path_item[0..-4]
           if suf == '.gz'
-            @@gz_cache[file_key] = getfile(file_path)
+            @gz_cache[file_key] = getfile(file_path)
           elsif suf == '.js'
-            @@js_cache[file_key] = getfile(file_path)
+            @js_cache[file_key] = getfile(file_path)
           end
         end
         Dir.entries( css_path ).each do |path_item|
           file_path = File.join( css_path, path_item )
           suf = suffix( file_path )
           if suf == '.gz' || suf == '.css'
-            file_key = File.join("/#{theme_name}/css",path_item)
-            @@theme_cache[file_key] = getfile(file_path)
+            @theme_cache[theme_name]['css'][path_item] = getfile(file_path)
           end
         end
         Dir.entries( html_path ).each do |path_item|
           file_path = File.join( html_path, path_item )
           suf = suffix( file_path )
           if suf == '.gz' || suf == '.html'
-            file_key = File.join("/#{theme_name}/html",path_item)
-            @@theme_cache[file_key] = getfile(file_path)
+            @theme_cache[theme_name]['html'][path_item] = getfile(file_path)
           end
         end
         Dir.entries( gfx_path ).each do |path_item|
           if path_item[0].chr != '.'
             file_path = File.join( gfx_path, path_item )
-            file_key = File.join("/#{theme_name}/gfx",path_item)
-            @@theme_cache[file_key] = getfile(file_path)
+            @theme_cache[theme_name]['gfx'][path_item] = getfile(file_path)
           end
         end
       end
     end
-    @@scan_time = File.stat(ui_path).mtime
+    @scan_time = Time.now
+    @busy_scanning = false
   end
+  def check_scan
+    build_time = File.stat(File.join($config[:ria_paths][:ui_path][1],'built')).mtime
+    if @scan_time < build_time and not @busy_scanning
+      scan_dirs
+    end
+  end
+end
+$config[:gzfilecache] = GZFileCache.new
+
+class GZFileServe < HTTPServlet::AbstractServlet
   def do_GET( request, response )
     response['Date'] = Time.now.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
     response['Cache-Control'] = 'no-cache' if not $config[:cache_maximize]
     response['Expires'] = (Time.now+$config[:cache_expire]).gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z') if $config[:cache_maximize]
-    if not defined? @@gz_cache
-      do_scan = true
-    elsif not @@scan_time == File.stat(File.join($config[:ria_paths][:ui_path][1],'built')).mtime
-      do_scan = true
-    else
-      do_scan = false
-    end
-    scan_dirs if do_scan
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
     is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
     is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
-    if not request.query.has_key?('js') and not request.query.has_key?('themes')
-      puts "request.path: #{request.path.inspect}"
-      if request.path == '/gz/ie_css_element.htc'
+    request_path = request.path.split('/')
+    #puts "request_path: #{request_path.inspect}"
+    #request_path: ["", "gz", "js", "core.js"]
+    req_type = request_path[2]
+    if not ['js','themes'].include?(req_type)
+      req_file = request_path[2]
+      if req_file == 'ie_css_element.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
         response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onpropertychange",iefix.htcElementEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
-      elsif request.path == '/gz/ie_css_style.htc'
+      elsif req_file == 'ie_css_style.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
         response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onreadystatechange",iefix.htcStyleEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
@@ -120,8 +130,9 @@ class GZFileServe < HTTPServlet::AbstractServlet
         response.status = 503
         response.body   = '503 - Invalid Request'
       end
-    elsif request.query.has_key?('js')
-      if not @@gz_cache.has_key?( request.query['js'] )
+    elsif req_type == 'js'
+      req_file = request_path[3][0..-4]
+      if not $config[:gzfilecache].gz_cache.has_key?( req_file )
         response.status = 404
         response.body   = '404 - Not Found'
       else
@@ -130,23 +141,36 @@ class GZFileServe < HTTPServlet::AbstractServlet
         if support_gzip and not is_safari and not is_msie
           response.chunked = true
           response['Content-Encoding'] = 'gzip'
-          response['Last-Modified'] = @@gz_cache[ request.query['js'] ][1]
-          response['Content-Size'] = @@gz_cache[ request.query['js'] ][2]
-          response.body   = @@gz_cache[ request.query['js'] ][0]
+          response['Last-Modified'] = $config[:gzfilecache].gz_cache[ req_file ][1]
+          response['Content-Size'] = $config[:gzfilecache].gz_cache[ req_file ][2]
+          response.body   = $config[:gzfilecache].gz_cache[ req_file ][0]
         else
-          response['Last-Modified'] = @@js_cache[ request.query['js'] ][1]
-          response['Content-Size'] = @@js_cache[ request.query['js'] ][2]
-          response.body   = @@js_cache[ request.query['js'] ][0]
+          response['Last-Modified'] = $config[:gzfilecache].js_cache[ req_file ][1]
+          response['Content-Size'] = $config[:gzfilecache].js_cache[ req_file ][2]
+          response.body   = $config[:gzfilecache].js_cache[ req_file ][0]
         end
       end
-    elsif request.query.has_key?('themes')
-      if not @@theme_cache.has_key?( request.query['themes'] )
+    elsif req_type == 'themes'
+      theme_name = request_path[3]
+      theme_part = request_path[4]
+      req_file  = request_path[5]
+      puts "theme_name: #{theme_name.inspect}, theme_part: #{theme_part.inspect}, req_file: #{req_file.inspect}"
+      if not $config[:gzfilecache].theme_cache.has_key?( theme_name )
         response.status = 404
-        response.body   = '404 - Not Found'
+        response.body   = '404 - Theme Not Found'
+        puts "Theme not found, avail: #{$config[:gzfilecache].theme_cache.inspect}"
+      elsif not $config[:gzfilecache].theme_cache[theme_name].has_key?( theme_part )
+        response.status = 503
+        response.body   = '503 - Invalid Theme Part Request'
+      elsif not $config[:gzfilecache].theme_cache[theme_name][theme_part].has_key?( req_file )
+        response.status = 404
+        response.body   = '404 - Theme Resource Not Found'
+        puts "File not found, avail: #{$config[:gzfilecache].theme_cache[theme_name][theme_part].keys.inspect}"
       else
         response.status = 200
-        req_key = request.query['themes']
-        file_ext = req_key.split('.')[-1]
+        #req_key = request.query['themes']
+        #file_ext = req_key.split('.')[-1]
+        file_ext = req_file.split('.')[-1]
         response.content_type = {
           'html' => 'text/html; charset=utf-8',
           'css'  => 'text/css; charset=utf-8',
@@ -154,17 +178,17 @@ class GZFileServe < HTTPServlet::AbstractServlet
           'jpg'  => 'image/jpeg',
           'gif'  => 'image/gif'
         }[file_ext]
-        support_gzip = false if req_key.include?('/gfx/')
+        support_gzip = false if theme_part == 'gfx'
         if support_gzip and not is_safari and not is_msie
           response.chunked = true
-          response['Last-Modified'] = @@theme_cache[ req_key+'.gz' ][1]
-          response['Content-Size'] = @@theme_cache[ req_key+'.gz' ][2]
+          response['Last-Modified'] = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
+          response['Content-Size'] = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
           response['Content-Encoding'] = 'gzip'
-          response.body   = @@theme_cache[ req_key+'.gz' ][0]
+          response.body   = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
         else
-          response['Last-Modified'] = @@theme_cache[ req_key ][1]
-          response['Content-Size'] = @@theme_cache[ req_key ][2]
-          response.body   = @@theme_cache[ req_key ][0]
+          response['Last-Modified'] = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file ][1]
+          response['Content-Size'] = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file ][2]
+          response.body   = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file ][0]
         end
       end
     end
