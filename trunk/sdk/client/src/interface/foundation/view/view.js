@@ -112,12 +112,6 @@ HView = HClass.extend({
     
     
     // Used for smart template elements (resizing)
-    // Use by making a call inside the template like this:
-    //   #{this.addResizeableElement(["windowBgImg"+this.elemId,-4,-3])}
-    this.resizeElements = [];
-    this._resizeElementsInitialized = false;
-    this._resizeElementIds = [];
-    this.hasResizeElements = false;
     
     this.optimizeWidthOnRefresh = true;
     
@@ -224,60 +218,19 @@ HView = HClass.extend({
     return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, this.packageName, _fileName );
   },
   
-/** method: addResizeableElement
-  *
-  * Used mostly from html theme files to set a DOM element, such as a <img> to 
-  * be resized at will when the component is resized.
-  *
-  * Parameter:
-  *  _resizeElement - An array with three parts. First, the DOM id of the element, then the width and height offsets.
-  *
-  * Usage example (in a html template):
-  *  > <img id="myImg#{this.elemId}" width="#{this.rect.width-4}" height="#{this.rect.height-3}" alt="" src="#{this.getThemeGfxPath()}groovy.gif" />
-  *  > #{this.addResizeableElement(['myImg'+this.elemId,-4,-3])} 
-  **/
-  addResizeableElement: function(_resizeElement) {
-    var _resizeElementId = _resizeElement[0];
-    if(this._resizeElementIds.indexOf(_resizeElementId) == -1) {
-      this._resizeElementIds.push(_resizeElementId);
-      this.resizeElements.push(_resizeElement);
-    }
-    this.addResizeableElementCalled = true;
-    // Returns an empty string to prevent 'undefined' eval results
-    return '';
-  },
-  // Initializes the resize elements
-  initResizeElements: function() {
-    for(var _resizeElemNum = 0; _resizeElemNum < this.resizeElements.length; _resizeElemNum++) {
-      
-      var _elemId = this.bindDomElement(this._resizeElementIds[_resizeElemNum]);
-      this.resizeElements[_resizeElemNum][0] = _elemId;
-    }
-    this._resizeElementsInitialized = true;
-    if(this.resizeElements.length != 0) {
-      this.hasResizeElements = true;
-    }
-  },
-  // Resizes resize elements
-  doResizeElements: function() {
-    for(var _resizeElemNum = 0; _resizeElemNum < this.resizeElements.length; _resizeElemNum++) {
-      var _ritem = this.resizeElements[_resizeElemNum];
-      
-      // Don't pass negative values to width or height.
-      var _value = Math.max(this.rect.width + _ritem[1], 0);
-      ELEM.setStyle(_ritem[0], 'width', _value + 'px');
-      
-      _value = Math.max(this.rect.height + _ritem[2], 0);
-      ELEM.setStyle(_ritem[0], 'height', _value + 'px');
-    }
-  },
   // create the dom element
   _createElement: function() {
     if(!this.elemId) {
       var _parentElemId;
+      // if the parent does not have an element (usually HApplication instance):
       if(this.parent.elemId === undefined) {
         _parentElemId = 0;
       }
+      // if a subview element is defined in the template, use it:
+      else if(this.parent.markupElemIds['subview']){
+        _parentElemId = this.parent.markupElemIds['subview'];
+      }
+      // otherwise, use main elemId
       else {
         _parentElemId = this.parent.elemId;
       }
@@ -312,13 +265,6 @@ HView = HClass.extend({
   drawRect: function() {
     if (!this.parent || !this.rect.isValid) {
       return;
-    }
-    
-    if(!this._resizeElementsInitialized && this.addResizeableElementCalled) {
-      this.initResizeElements();
-    }
-    if(this.hasResizeElements) {
-      this.doResizeElements();
     }
     
     this.drawn = true;
