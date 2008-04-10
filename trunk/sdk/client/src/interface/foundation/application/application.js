@@ -53,6 +53,9 @@ HApplication = HClass.extend({
     // storage for views
     this.views = [];
     
+    // storage for dom element id's in view, not utilized in HApplication by default
+    this.markupElemIds = [];
+    
     // Views in Z order. The actual Z data is stored in HSystem, this is just a
     // reference to that array.
     this.viewsZOrder = HSystem.viewsZOrder;

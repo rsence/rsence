@@ -222,12 +222,12 @@ HView = HClass.extend({
   _createElement: function() {
     if(!this.elemId) {
       var _parentElemId;
-      // if the parent does not have an element (usually HApplication instance):
+      // if the parent does not have an element:
       if(this.parent.elemId === undefined) {
         _parentElemId = 0;
       }
       // if a subview element is defined in the template, use it:
-      else if(this.parent.markupElemIds['subview']){
+      else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){
         _parentElemId = this.parent.markupElemIds['subview'];
       }
       // otherwise, use main elemId
