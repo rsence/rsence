@@ -116,8 +116,8 @@ class GZFileServe < HTTPServlet::AbstractServlet
     #puts "request_path: #{request_path.inspect}"
     #request_path: ["", "gz", "js", "core.js"]
     req_type = request_path[2]
-    if not ['js','themes'].include?(req_type)
-      req_file = request_path[2]
+    if request.path.include?('.htc')
+      req_file = request_path[3]
       if req_file == 'ie_css_element.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
