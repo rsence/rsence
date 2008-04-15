@@ -85,12 +85,15 @@ class HTransporter
       if cookies
         msg.reply('HTransporter.url_base="/ui";')
       end
-      if msg.new_session and $config[:debug_mode]
+      if (msg.new_session or msg.restored_session) and $config[:debug_mode]
         puts
         puts "new session. rescanning apps."
         puts
         $config[:gzfilecache].check_scan
         @system.rescan()
+        puts
+        puts "rescan done"
+        puts
       end
       
       ## Pass the client XML to @valuemanager

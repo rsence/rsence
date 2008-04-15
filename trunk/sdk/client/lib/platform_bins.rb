@@ -34,7 +34,7 @@ elsif RUBY_PLATFORM.include? "powerpc-darwin"
   HTMLTIDY = "#{File.join(BINPATH,'htmltidy.macppc')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
 elsif RUBY_PLATFORM.include? "darwin"
   JSMIN = File.join(BINPATH,'jsmin.macintel')
-  HTMLTIDY = "#{File.join(BINPATH,'htmltidy.macppc')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
+  HTMLTIDY = "#{File.join(BINPATH,'htmltidy.macintel')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
 end
 if RUBY_PLATFORM.include? "mswin32"
   FIND = File.join(BINPATH,'find.exe').gsub('/',"\\")
