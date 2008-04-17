@@ -348,7 +348,11 @@ EVENT = {
       _this.focusOptions[_startDragElementIds[i]].ctrl.startDrag(x,y);
       _didStartDrag=true;
     }
-    for(i=0;i!=_mouseDownElementIds.length;i++){_this.focusOptions[_mouseDownElementIds[i]].ctrl.mouseDown(x,y,_isLeftButton);}
+    
+    var _stopEvent=_mouseDownElementIds.length;
+    for(i=0;i!=_mouseDownElementIds.length;i++){
+      if(_this.focusOptions[_mouseDownElementIds[i]].ctrl.mouseDown(x,y,_isLeftButton)){_stopEvent--;}
+    }
     if(_didStartDrag){
       // Remove possible selections.
       document.body.focus();
@@ -357,11 +361,10 @@ EVENT = {
       document.onselectstart=function(){return false;};
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
-    if((_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
     return true;
   },
   
-  // sends mouseDown and startDrag pseudo-events
   click: function(e,_isLeftButton){
     var _this=EVENT,x,y,i,_newActiveControl,_clickElementIds;
     _this._modifiers(e);
@@ -384,9 +387,12 @@ EVENT = {
     } }
     // Handle the active control selection.
     if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
-    for(i=0;i!=_clickElementIds.length;i++){_this.focusOptions[_clickElementIds[i]].ctrl.click(x,y,_isLeftButton);}
+    var _stopEvent=_clickElementIds.length;
+    for(i=0;i!=_clickElementIds.length;i++){
+      if(_this.focusOptions[_clickElementIds[i]].ctrl.click(x,y,_isLeftButton)){_stopEvent--;}
+    }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
-    if((_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
     //if(_this.hovered.length!=0){Event.stop(e);}
     return true;
   },
