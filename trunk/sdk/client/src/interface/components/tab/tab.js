@@ -39,7 +39,7 @@ HTab = HControl.extend({
     }
   },
   stringWidth: function(_string,_elemId){
-    var _html = '<span style="font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;">'+_string+'</span>',
+    var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
         _width = this.base( _html, _elemId );
     return _width;
   }, 
@@ -53,6 +53,7 @@ HTab = HControl.extend({
     this.tabLabelHeight    = 20; // overridden in the template
     this.tabLabelLeftEdge  = 4;  // overridden in the template
     this.tabLabelRightEdge = 4;  // overridden in the template
+    this.fontStyle = 'font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;'; // overridden in the template
   },
   selectTab: function(_tabIdx){
     if(_tabIdx instanceof HTabView){
@@ -77,7 +78,7 @@ HTab = HControl.extend({
   addTab: function(_tabLabel,_doSelect){
     var _tabIdx=this.tabs.length,
         _labelWidth=this.stringWidth(_tabLabel)+this.tabLabelLeftEdge+this.tabLabelRightEdge,
-        _tab = new HTabView(new HRect(0,20,this.rect.width,this.rect.height),this),
+        _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
         _tabIdx = this.tabs.length;
         _tabLabelElemId = ELEM.make(this.markupElemIds.label),
         _tabLabelHTML = '<div class="edge-left"></div><div class="tablabel">'+_tabLabel+'</div><div class="edge-right"></div>';
