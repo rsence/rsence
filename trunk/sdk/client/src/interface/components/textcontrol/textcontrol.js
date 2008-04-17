@@ -41,7 +41,8 @@ HTextControl = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect, _parentClass, _options) {
-    this._textElemNamePrefix = "textcontrol";
+    
+    this.markupElemIds = {};
     
     if(this.isinherited) {
       this.base(_rect, _parentClass, _options);
@@ -72,7 +73,7 @@ HTextControl = HControl.extend({
   **/
   die: function() {
     if(this.drawn) {
-      var _domElementId = this._textElemNamePrefix + this.elemId;
+      var _domElementId = 'value' + this.elemId;
       Event.stopObserving(_domElementId, 'mousedown', this._stopPropagation);
       Event.stopObserving(_domElementId, 'mousemove', this._stopPropagation);
       Event.stopObserving(_domElementId, 'focus', this._activateControl);
@@ -95,8 +96,8 @@ HTextControl = HControl.extend({
   **/
   setEnabled: function(_flag) {
     this.base(_flag);
-    if(this._inputElementId) {
-      ELEM.setAttr(this._inputElementId,'disabled',!this.enabled);
+    if(this.markupElemIds.value) {
+      ELEM.setAttr(this.markupElemIds.value,'disabled',!this.enabled);
     }
   },
   
@@ -114,12 +115,9 @@ HTextControl = HControl.extend({
       this.drawRect();
       this.drawMarkup();
       
-      this._inputElementId = this.bindDomElement(
-        this._textElemNamePrefix + this.elemId);
-      
-      if(this._inputElementId) {
+      if(this.markupElemIds.value) {
         // Prevents errors in FF when setting the value programmatically.
-        ELEM.setAttr(this._inputElementId,"autocomplete", "off");
+        ELEM.setAttr(this.markupElemIds.value,"autocomplete", "off");
         this.setEnabled(this.enabled);
       }
       
@@ -141,7 +139,7 @@ HTextControl = HControl.extend({
   // The methods are set as member variables so that we can get rid of them when
   // the text control is destroyed.
   _setLowLevelEventListeners: function() {
-    var _domElementId = this._textElemNamePrefix + this.elemId;
+    var _domElementId = 'value'+this.elemId;
     // Allow focusing by mouse click. Only do this once per control. This is
     // handled by the draw method with the this.drawn boolean.
     this._stopPropagation = function(_event) {
@@ -183,9 +181,9 @@ HTextControl = HControl.extend({
   **/
   refresh: function() {
     this.base();
-    if (this._inputElementId) {
-      if (ELEM.getAttr(this._inputElementId,'value',true) != this.value) {
-        ELEM.setAttr(this._inputElementId,'value',this.value,true);
+    if (this.markupElemIds.value) {
+      if (ELEM.getAttr(this.markupElemIds.value,'value',true) != this.value) {
+        ELEM.setAttr(this.markupElemIds.value,'value',this.value,true);
       }
     }
   },
@@ -211,8 +209,8 @@ HTextControl = HControl.extend({
   _updateValue: function() {
     if (this.drawn) {
       
-      if (ELEM.getAttr(this._inputElementId,'value',true) != this.value) {
-        this.setValue(ELEM.getAttr(this._inputElementId,'value',true));
+      if (ELEM.getAttr(this.markupElemIds.value,'value',true) != this.value) {
+        this.setValue(ELEM.getAttr(this.markupElemIds.value,'value',true));
       }
       
     }
@@ -228,8 +226,8 @@ HTextControl = HControl.extend({
   *  <HControl.lostActiveStatus>
   **/
   lostActiveStatus: function(_newActiveControl) {
-    if (this._inputElementId) {
-      ELEM.get(this._inputElementId).blur();
+    if (this.markupElemIds.value) {
+      ELEM.get(this.markupElemIds.value).blur();
     }
   }
   

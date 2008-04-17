@@ -150,6 +150,8 @@ EVENT = {
     else if(_coordListenIdx!=-1){
       _this.coordListeners.splice(_coordListenIdx,1);
     }
+    console.log('focusOptions:',_focusOptions);
+    console.log('focusOptions.textEnter: ',_focusOptions.textEnter);
     if(_focusOptions.textEnter){
       if(_this.textEnterCtrls.indexOf(_ctrl.viewId)==-1){
         _this.textEnterCtrls.push(_ctrl.viewId);
@@ -487,6 +489,7 @@ EVENT = {
     _theKeyCode=e.keyCode;
     _this._lastKeyDown=null;
     //console.log('EVENT.keyUp: ',_this.textEnterCtrls);
+    console.log(_this.textEnterCtrls);
     for(var i=0;i!=_this.textEnterCtrls.length;i++){
       var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
       if(_ctrl.textEnter){_ctrl.textEnter();}

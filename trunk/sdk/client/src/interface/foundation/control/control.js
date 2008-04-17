@@ -318,7 +318,8 @@ HControl = HView.extend({
         droppable:  false,
         keyDown:    false,
         keyUp:      false,
-        mouseWheel: false
+        mouseWheel: false,
+        textEnter:  false
       });
       this.events = new _eventsClass;
     }
@@ -334,6 +335,9 @@ HControl = HView.extend({
     } else if ((!_mmoveStatus) && (_mmoveIndex!=-1)){
       EVENT.coordListeners.splice(_mmoveIndex,1);
     }
+    //if(this.events.textEnter){
+    //  EVENT.
+    //}
     
     /// The following boolean must be set:
     this.isDragged = false;
@@ -479,6 +483,14 @@ HControl = HView.extend({
     this.setEvents();
   },
   
+  
+  setTextEnter: function(_flag) {
+    this.events.textEnter = _flag;
+    this.setEvents();
+  },
+  textEnter: function() {
+    
+  },
   
 /** event: focus
   *
