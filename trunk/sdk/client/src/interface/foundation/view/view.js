@@ -1290,3 +1290,4 @@ HView = HClass.extend({
 });
 
 HView.implement(HMarkupView);
+
