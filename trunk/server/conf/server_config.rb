@@ -87,6 +87,10 @@ $config[:database] = {
   
 }
 
+if ARGV.include?('--mysql-root-password')
+  $config[:database][:root_setup][:pass] = ARGV[ARGV.index('--mysql-root-password')+1]
+end
+
 $config[:default_html_page_title] = 'Himle RIA System'
 if ARGV.include?('--html-title')
   $config[:default_html_page_title] = ARGV[ARGV.index('--html-title')+1]
