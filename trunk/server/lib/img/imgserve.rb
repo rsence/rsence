@@ -113,10 +113,14 @@ class ImgServe
     curr_time = Time.now.to_i
     @expires.keys.sort.each do |exp_time|
       if exp_time < curr_time
-        @expires[exp_time].each do |img_id|
-          ses_id = @imgs[:by_id][img_id][3]
-          del_img( img_id, ses_id )
+        @expires[exp_time].size.times do |incr|
+          img_id = @expires[exp_time].shift
+          if @imgs[:by_id].has_key?(img_id)
+            ses_id = @imgs[:by_id][img_id][3]
+            del_img( img_id, ses_id )
+          end
         end
+        @expires.delete(exp_time)
       end
     end
   end
@@ -125,9 +129,12 @@ class ImgServe
     curr_time = Time.now.to_i
     @expire_files.keys.sort.each do |exp_time|
       if exp_time < curr_time
-        @expire_files[exp_time].each do |img_id|
-          ses_id = @files[:by_id][file_id][3]
-          del_file( file_id, ses_id )
+        @expire_files[exp_time].size.times do |incr|
+          file_id = @expire_files[exp_time].shift
+          if @files[:by_id].has_key?(file_id)
+            ses_id = @files[:by_id][file_id][3]
+            del_file( file_id, ses_id )
+          end
         end
       end
     end
