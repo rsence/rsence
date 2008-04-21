@@ -33,8 +33,6 @@
   ***/
 HImageView = HControl.extend({
   
-  componentName: "imageview",
-
 /** constructor: constructor
   *
   * Parameters:
@@ -52,9 +50,10 @@ HImageView = HControl.extend({
       this.base(_rect, _parentClass, _options);
       this.isinherited = false;
     }
-    if (!this.value) {
+    
+    if(!this.value) {
       // default to a blank image
-      this.value = this.getThemeGfxPath() + "blank.gif";
+      this.value = this.getThemeGfxPath() + "/blank.gif";
     }
     
     this.type = '[HImageView]';
@@ -64,46 +63,21 @@ HImageView = HControl.extend({
     }
   },
   
-  
-/** method: draw
-  * 
-  * Draws the rectangle and the markup of this object on the screen.
-  *
-  * See also:
-  *  <HView.draw>
-  **/
-  draw: function() {
-    if (!this.drawn) {
-      this.drawRect();
-      this.drawMarkup();
-      this.drawn = true;
-    }
-    this.refresh();    
+  _makeElem: function(_parentId){
+    this.elemId = ELEM.make(_parentId,'img');
+    ELEM.setAttr(this.elemId,'src',this.value);
+    ELEM.setAttr(this.elemId,'alt',this.label);
   },
   
-  
-/** method: refresh
-  * 
-  * Redraws only the image, not the whole markup.
-  *
-  * See also:
-  *  <HView.refresh>
-  **/
-  refresh: function() {
-    if (this.drawn) {
-      this.base();
-      // Checks if this is the first refresh call:
-      if(!this._imgElementId) {
-        this._imgElementId = this.bindDomElement(
-          HImageView._tmplImgPrefix + this.elemId);
-      }
-  
-      if(this._imgElementId) {
-        ELEM.setAttr(this._imgElementId,'src',this.value);
-      }
-    }
+  setValue: function(_value){
+    this.base(_value);
+    ELEM.setAttr(this.elemId,'src',_value);
   },
   
+  setLabel: function(_label){
+    this.base(_label);
+    ELEM.setAttr(this.elemId,'alt',_label);
+  },
   
 /** method: scaleToFit
   * 
@@ -114,12 +88,8 @@ HImageView = HControl.extend({
   *  <scaleToOriginal>
   **/
   scaleToFit: function() {
-    if(this._imgElementId) {
-      ELEM.setStyle(this._imgElementId, 'width', this.rect.width + 'px');
-      ELEM.setStyle(this._imgElementId, 'height', this.rect.height + 'px');
-      ELEM.setAttr(this._imgElementId,'width',this.rect.width);
-      ELEM.setAttr(this._imgElementId,'height',this.rect.height);
-    }
+    ELEM.setStyle(this.elemId,'right','0px');
+    ELEM.setStyle(this.elemId,'bottom','0px');
   },
   
   
@@ -132,14 +102,10 @@ HImageView = HControl.extend({
   *  <scaleToFit>
   **/
   scaleToOriginal: function() {
-    if(this._imgElementId) {
-      ELEM.setStyle(this._imgElementId, 'width', 'auto');
-      ELEM.setStyle(this._imgElementId, 'height', 'auto');
-    }
+    ELEM.setStyle(this.elemId, 'right', 'auto');
+    ELEM.setStyle(this.elemId, 'bottom', 'auto');
   }
 
 
   
-},{
-  _tmplImgPrefix: "imageview"
 });
