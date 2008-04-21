@@ -142,25 +142,25 @@ SHA = {
         _c = -1732584194,
         _d =  271733878,
         _e = -1009589776,
-        _i, _olda, _oldb, _oldc, _oldd, _olde,
-        _j, _t;
+        i, _olda, _oldb, _oldc, _oldd, _olde,
+        j, _t;
 
-    for(_i = 0; _i < _x.length; _i += 16){
+    for(i = 0; i < _x.length; i += 16){
       _olda = _a;
       _oldb = _b;
       _oldc = _c;
       _oldd = _d;
       _olde = _e;
 
-      for(_j = 0; _j < 80; _j++){
-        if(_j < 16){
-          _w[_j] = _x[_i + _j];
+      for(j = 0; j < 80; j++){
+        if(j < 16){
+          _w[j] = _x[i + j];
         }
         else {
-          _w[_j] = _this._rol(_w[_j-3] ^ _w[_j-8] ^ _w[_j-14] ^ _w[_j-16], 1);
+          _w[j] = _this._rol(_w[j-3] ^ _w[j-8] ^ _w[j-14] ^ _w[j-16], 1);
         }
-        _t = _this._safeAdd(_this._safeAdd(_this._rol(_a, 5), _this._sha1FT(_j, _b, _c, _d)),
-             _this._safeAdd(_this._safeAdd(_e, _w[_j]), _this._sha1KT(_j)));
+        _t = _this._safeAdd(_this._safeAdd(_this._rol(_a, 5), _this._sha1FT(j, _b, _c, _d)),
+             _this._safeAdd(_this._safeAdd(_e, _w[j]), _this._sha1KT(j)));
         _e = _d;
         _d = _c;
         _c = _this._rol(_b, 30);
@@ -211,13 +211,13 @@ SHA = {
         _bkey = _this._str2binb(_key),
         _ipad = new Array(16),
         _opad = new Array(16),
-        _i, _hash;
+        i, _hash;
     if(_bkey.length > 16){
       _bkey = _this._coreSHA1(_bkey, _key.length * _this._chrsz);
     }
-    for(_i = 0; _i < 16; _i++){
-      _ipad[_i] = _bkey[_i] ^ 0x36363636;
-      _opad[_i] = _bkey[_i] ^ 0x5C5C5C5C;
+    for(i = 0; i  < 16; i++){
+      _ipad[i] = _bkey[i] ^ 0x36363636;
+      _opad[i] = _bkey[i] ^ 0x5C5C5C5C;
     }
     
     _hash = _this._coreSHA1(_ipad.concat(_this._str2binb(_data)), 512 + _data.length * _this._chrsz);
@@ -250,9 +250,9 @@ SHA = {
         _bin = [],
         _mask = (1 << _this._chrsz) - 1,
         _strLenChrSZ = _str.length * _this._chrsz,
-        _i;
-    for(_i = 0; _i < _strLenChrSZ; _i += _this._chrsz){
-      _bin[_i>>5] |= (_str.charCodeAt(_i / _this._chrsz) & _mask) << (32 - _this._chrsz - _i%32);
+        i;
+    for(i = 0; i < _strLenChrSZ; i += _this._chrsz){
+      _bin[i>>5] |= (_str.charCodeAt(i / _this._chrsz) & _mask) << (32 - _this._chrsz - i%32);
     }
     return _bin;
   },
@@ -264,11 +264,11 @@ SHA = {
     var _this=SHA,
         _str = "",
         _mask = (1 << _this._chrsz) - 1,
-        _i,
+        i,
         _binLen32 = _bin.length * 32,
         _32chrsz = 32 - _this._chrsz;
-    for(_i = 0; _i < _binLen32; _i += _this._chrsz){
-      _str += String.fromCharCode((_bin[_i>>5] >>> (_32chrsz - _i%32)) & _mask);
+    for(i = 0; i < _binLen32; i += _this._chrsz){
+      _str += String.fromCharCode((_bin[i>>5] >>> (_32chrsz - i%32)) & _mask);
     }
     return _str;
   },
@@ -280,11 +280,11 @@ SHA = {
     var _this=SHA,
         _hexTab = _this._hexcase ? "0123456789ABCDEF" : "0123456789abcdef",
         _str = "",
-        _i,
+        i,
         _binLen = _binarray.length * 4;
-    for(_i = 0; _i < _binLen; _i++){
-      _str += _hexTab.charAt((_binarray[_i>>2] >> ((3 - _i%4)*8+4)) & 0xF) +
-              _hexTab.charAt((_binarray[_i>>2] >> ((3 - _i%4)*8  )) & 0xF);
+    for(i = 0; i < _binLen; i++){
+      _str += _hexTab.charAt((_binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+              _hexTab.charAt((_binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
     }
     return _str;
   },
@@ -296,21 +296,23 @@ SHA = {
     var _this=SHA,
         _tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
         _str = "",
-        _i,
+        i,
         _binLen = _binarray.length * 4,
+        _t1, _t2, _3,
         _triplet,
-        _j,
+        j,
         _binLen32 = _binarray.length * 32;
-    for(var _i = 0; _i < _binLen; _i += 3){
-      _triplet = (((_binarray[_i   >> 2] >> 8 * (3 -  _i   %4)) & 0xFF) << 16)
-               | (((_binarray[_i+1 >> 2] >> 8 * (3 - (_i+1)%4)) & 0xFF) << 8 )
-               |  ((_binarray[_i+2 >> 2] >> 8 * (3 - (_i+2)%4)) & 0xFF);
-      for(_j = 0; _j < 4; _j++){
-        if(_i * 8 + _j * 6 > _binLen32){
+    for(i = 0; i < _binLen; i += 3){
+      _t1 = (((_binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16);
+      _t2 = (((_binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 );
+      _t3 = ((_binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
+      _triplet = (_t1 | _t2 | _t3);
+      for(j = 0; j < 4; j++){
+        if(i * 8 + j * 6 > _binLen32){
           _str += _this._b64pad;
         }
         else {
-          _str += _tab.charAt((_triplet >> 6*(3-_j)) & 0x3F);
+          _str += _tab.charAt((_triplet >> 6*(3-j)) & 0x3F);
         }
       }
     }

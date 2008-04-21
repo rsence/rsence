@@ -147,8 +147,8 @@ HValueManager = HClass.extend({
         this.isSending = false;
         return '';
       }
-      var _syncvalueArr = [];
-      for(var _i=0;_i<_synclen;_i++){
+      var _syncvalueArr = [],_i;
+      for(_i=0;_i<_synclen;_i++){
         var _syncid = this.tosync.shift();
         var _syncobj = this.values[_syncid];
         _syncvalueArr.push( _syncobj.toXML(_i) );
