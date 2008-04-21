@@ -63,6 +63,8 @@ $_HTMLTIDY_CONF_PATH= File.join(BASEPATH,'conf','htmltidy.config')
 #REPL_PREFIX = '_'
 $_REPL_PREFIX= '_'
 
+$_NO_OBFUSCATION = ARGV.include?('-noo')
+$_NO_WHITESPACE_REMOVAL = ARGV.include?('-nwr')
 
 # DON'T COMPRESS THESE WORDS IN THE SOURCE:
 $_RESERVED_NAMES= [
