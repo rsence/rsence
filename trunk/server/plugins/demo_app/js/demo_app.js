@@ -104,7 +104,6 @@ ClockApp = HApplication.extend({
     //
     // This HImageView displays the clock
     // background.
-    console.log('clockBgImgUrl',clockBgImgUrl);
     this.clockBg = new HImageView(
       new HRect(_clockRect),
       this.view, {
