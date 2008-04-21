@@ -41,7 +41,13 @@ HImageView = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect, _parentClass, _options) {
-    
+    if(!_options) {
+      _options={};
+    }
+    var _defaults = HClass.extend({
+      scaleToFit: true
+    });
+    _options = new (_defaults.extend(_options))();
     if(this.isinherited) {
       this.base(_rect, _parentClass, _options);
     }
@@ -50,7 +56,6 @@ HImageView = HControl.extend({
       this.base(_rect, _parentClass, _options);
       this.isinherited = false;
     }
-    
     if(!this.value) {
       // default to a blank image
       this.value = this.getThemeGfxPath() + "/blank.gif";
@@ -63,10 +68,22 @@ HImageView = HControl.extend({
     }
   },
   
-  _makeElem: function(_parentId){
+  _makeScaleToFit: function(_parentId){
     this.elemId = ELEM.make(_parentId,'img');
     ELEM.setAttr(this.elemId,'src',this.value);
     ELEM.setAttr(this.elemId,'alt',this.label);
+  },
+  _makeScaleToOriginal: function(_parentId){
+    this.elemId = ELEM.make(_parentId,'div');
+    ELEM.setStyle(this.elemId,'background-image','url('+this.value+')');
+  },
+  _makeElem: function(_parentId){
+    if(this.options.scaleToFit){
+      this._makeScaleToFit(_parentId);
+    }
+    else {
+      this._makeScaleToOriginal(_parentId);
+    }
   },
   
   setValue: function(_value){
@@ -88,8 +105,11 @@ HImageView = HControl.extend({
   *  <scaleToOriginal>
   **/
   scaleToFit: function() {
-    ELEM.setStyle(this.elemId,'right','0px');
-    ELEM.setStyle(this.elemId,'bottom','0px');
+    if(!this.options.scaleToFit){
+      ELEM.del(this.elemId);
+      this._makeScaleToFit(this._getParentElemId());
+      this.options.scaleToFit=true;
+    }
   },
   
   
@@ -102,8 +122,11 @@ HImageView = HControl.extend({
   *  <scaleToFit>
   **/
   scaleToOriginal: function() {
-    ELEM.setStyle(this.elemId, 'right', 'auto');
-    ELEM.setStyle(this.elemId, 'bottom', 'auto');
+    if(this.options.scaleToFit){
+      ELEM.del(this.elemId);
+      this._makeScaleToOriginal(this._getParentElemId());
+      this.options.scaleToFit=false;
+    }
   }
 
 
