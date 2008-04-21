@@ -234,24 +234,28 @@ HView = HClass.extend({
       ELEM.setCSS(this.elemId,_cssStyle);
   },
   
+  _getParentElemId: function(){
+    var _parentElemId;
+    // if the parent does not have an element:
+    if(this.parent.elemId === undefined) {
+      _parentElemId = 0;
+    }
+    // if a subview element is defined in the template, use it:
+    else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){
+      _parentElemId = this.parent.markupElemIds['subview'];
+    }
+    // otherwise, use main elemId
+    else {
+      _parentElemId = this.parent.elemId;
+    }
+    return _parentElemId;
+  },
+  
   // create the dom element
   _createElement: function() {
     if(!this.elemId) {
-      var _parentElemId;
-      // if the parent does not have an element:
-      if(this.parent.elemId === undefined) {
-        _parentElemId = 0;
-      }
-      // if a subview element is defined in the template, use it:
-      else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){
-        _parentElemId = this.parent.markupElemIds['subview'];
-      }
-      // otherwise, use main elemId
-      else {
-        _parentElemId = this.parent.elemId;
-      }
       
-      this._makeElem(_parentElemId);
+      this._makeElem(this._getParentElemId());
       this._setCSS('');
       
       // Theme name == CSS class name
