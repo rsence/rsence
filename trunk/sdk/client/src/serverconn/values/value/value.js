@@ -185,11 +185,11 @@ HValue = HClass.extend({
     }
     else if (_syncjstype == 'n'){ // number
       if (Math.ceil(_syncvalue) === Math.floor(_syncvalue) === _syncvalue) {
-        _syncjstype = 'i' // integer
+        _syncjstype = 'i'; // integer
         _syncescvalue = parseInt(_syncvalue,10).toString();
       }
       else {
-        _syncjstype = 'f' // float
+        _syncjstype = 'f'; // float
         _syncescvalue = parseFloat(_syncvalue).toString();
       }
     }

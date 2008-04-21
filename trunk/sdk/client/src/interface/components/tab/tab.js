@@ -80,7 +80,7 @@ HTab = HControl.extend({
         _labelWidth=this.stringWidth(_tabLabel)+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
         _tabIdx = this.tabs.length;
-        _tabLabelElemId = ELEM.make(this.markupElemIds.label),
+        _tabLabelElemId = ELEM.make(this.markupElemIds.label);
         _tabLabelHTML = '<div class="edge-left"></div><div class="tablabel">'+_tabLabel+'</div><div class="edge-right"></div>';
     ELEM.addClassName(_tabLabelElemId,'item-bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');
@@ -127,7 +127,7 @@ HTab = HControl.extend({
         this.selectTab(-1);
       }
       else if(_tabIdx==(this.tabs.length-1)){
-        this.selectTab(_tabIdx-1)
+        this.selectTab(_tabIdx-1);
       }
       else{
         this.selectTab(_tabIdx);

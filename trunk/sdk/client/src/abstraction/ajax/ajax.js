@@ -24,7 +24,7 @@ Array.prototype.toQueryString = function() {
       encodeURIComponent(this[i].value) );
   }
   return _array.join("&");
-}
+};
 
 
 
@@ -83,7 +83,9 @@ Ajax.Request = HClass.extend({
         this.options.password
       );
       var _obj = this;
-      this.transport.onreadystatechange = function() {_obj.onStateChange()};
+      this.transport.onreadystatechange = function(){
+        _obj.onStateChange();
+      };
       this.setRequestHeaders();
       var _body = this.options.method == "post" ?
         (this.options.postBody || this.options.parameters.toQueryString()) : null;

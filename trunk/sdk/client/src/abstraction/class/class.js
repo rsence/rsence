@@ -58,7 +58,7 @@ HClass.prototype = {
       var _ancestor = this[_source];
       // only methods are inherited
       if ((_ancestor instanceof Function) && (_value instanceof Function) &&
-          _ancestor.valueOf() != _value.valueOf() && /\bbase\b/.test(_value)) {
+          _ancestor.valueOf() != _value.valueOf() && (/\bbase\b/).test(_value)) {
         var _method = _value;
         _value = function() {
           // saves the this.base that is the this.base method of this child
@@ -191,7 +191,7 @@ HClass.extend = function(_instance, _static) {
   _klass.implement = this.implement;
   _klass.toString = function() {
     return String(_constructor);
-  }
+  };
   // copies properties and methods from _static directly to statc methods (class methods)
   // of new class
   _extend.call(_klass, _static);
@@ -248,7 +248,7 @@ HClass.implement = function(_interface) {
     _interface = _interface.prototype;
   }
   this.prototype.extend(_interface);
-}
+};
 
 var Base = HClass;
 

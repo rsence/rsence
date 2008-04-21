@@ -24,7 +24,7 @@ function ie_early_fixes() {
     log: function(){
       
     }
-  }
+  };
 }
 if( (document.all&&navigator.userAgent.indexOf("Opera")==-1) && 
     (navigator.userAgent.indexOf("MSIE 6")!=-1)
