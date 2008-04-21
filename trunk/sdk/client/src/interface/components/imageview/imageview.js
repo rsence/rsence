@@ -76,6 +76,8 @@ HImageView = HControl.extend({
   _makeScaleToOriginal: function(_parentId){
     this.elemId = ELEM.make(_parentId,'div');
     ELEM.setStyle(this.elemId,'background-image','url('+this.value+')');
+    ELEM.setStyle(this.elemId,'background-position','0px 0px');
+    ELEM.setStyle(this.elemId,'background-repeat','no-repeat');
   },
   _makeElem: function(_parentId){
     if(this.options.scaleToFit){
