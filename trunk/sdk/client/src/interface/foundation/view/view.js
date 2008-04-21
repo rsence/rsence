@@ -187,7 +187,7 @@ HView = HClass.extend({
     this.isAbsolute = _flag;
   },
   setRelative: function(_flag){
-    if(_flag===undefined){_flag=true}
+    if(_flag===undefined){_flag=true;}
     this.isAbsolute = (!_flag);
   },
   
@@ -218,6 +218,22 @@ HView = HClass.extend({
     return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, this.packageName, _fileName );
   },
   
+  // provided solely for component extendability:
+  _makeElem: function(_parentElemId){
+    this.elemId = ELEM.make(_parentElemId,'div');
+  },
+  // provided solely for component extendability:
+  _setCSS: function(_additional){
+      var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
+      if(this.isAbsolute){
+        _cssStyle += 'position:absolute;';
+      } else {
+        _cssStyle += 'position:relative;';
+      }
+      _cssStyle += _additional;
+      ELEM.setCSS(this.elemId,_cssStyle);
+  },
+  
   // create the dom element
   _createElement: function() {
     if(!this.elemId) {
@@ -234,15 +250,9 @@ HView = HClass.extend({
       else {
         _parentElemId = this.parent.elemId;
       }
-      this.elemId = ELEM.make(_parentElemId,'div');
       
-      var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;'
-      if(this.isAbsolute){
-        _cssStyle += 'position:absolute;';
-      } else {
-        _cssStyle += 'position:relative;';
-      }
-      ELEM.setCSS(this.elemId,_cssStyle);
+      this._makeElem(_parentElemId);
+      this._setCSS('');
       
       // Theme name == CSS class name
       if(this.preserveTheme){
@@ -954,7 +964,7 @@ HView = HClass.extend({
     } else {
       _width = parseInt( ELEM.get(_stringElem).clientWidth, 10 );
       if (arguments[3]) {
-        _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 )
+        _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 );
       }
     }
     ELEM.del(_stringElem);
