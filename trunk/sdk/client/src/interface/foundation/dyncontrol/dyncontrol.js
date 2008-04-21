@@ -1,3 +1,16 @@
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
 
 HDynControl = HControl.extend({
   componentName: 'dyncontrol',
@@ -15,9 +28,22 @@ HDynControl = HControl.extend({
       resizeNW:  [ 1, 1 ],
       resizeNE:  [ 1, 1 ],
       resizeSW:  [ 1, 1 ],
-      resizeSE:  [ 1, 1 ]
+      resizeSE:  [ 1, 1 ],
+      noResize:  false
     });
     _options = new (_defaults.extend(_options))();
+    if(_options.noResize){
+      _options.minSize = [_rect.width,_rect.height];
+      _options.maxSize = [_rect.width,_rect.height];
+      _options.resizeW = 0;
+      resizeE = 0;
+      resizeN = 0;
+      resizeS = 0;
+      resizeNW = [0,0];
+      resizeNE = [0,0];
+      resizeSW = [0,0];
+      resizeSE = [0,0];
+    }
     if(this.isinherited) {
       this.base(_rect, _parentClass, _options);
     }
