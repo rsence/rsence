@@ -54,6 +54,15 @@ HControl = HView.extend({
   **/
   constructor: function(_rect, _parentClass, _options) {
     
+    // Use empty options if none supplied. Change this within components.
+    if(!_options) {
+      _options = {};
+    }
+    
+    // Construct and extend the options object on the fly.
+    var options = new (HComponentDefaults.extend(_options));
+    this.options = options;
+    
     // HView.constructor:
     if(this.isinherited) {
       this.base(_rect, _parentClass);
@@ -63,15 +72,6 @@ HControl = HView.extend({
       this.base(_rect, _parentClass);
       this.isinherited = false;
     }
-    
-    // Use empty options if none supplied. Change this within components.
-    if(!_options) {
-      _options = {};
-    }
-    
-    // Construct and extend the options object on the fly.
-    var options = new (HComponentDefaults.extend(_options));
-    this.options = options;
     
     // Assign these variables from options.
     // (Partially just for backwards compability)
