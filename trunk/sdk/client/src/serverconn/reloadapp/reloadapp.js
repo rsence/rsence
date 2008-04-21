@@ -19,8 +19,8 @@ ReloadApp = HApplication.extend({
     
     this._destinationUrl = _destinationUrl;
     
-    var _winWidth  = helmi.Window.getInnerWidth();
-    var _winHeight = helmi.Window.getInnerHeight();
+    var _winWidth  = ELEM.windowSize()[0];
+    var _winHeight = ELEM.windowSize()[1];
     var _halfWidth = parseInt(_winWidth/2,10);
     var _halfHeight = parseInt(_winHeight/2,10);
     
