@@ -43,11 +43,17 @@ class JSBuilder
       jsc_path = dst_path.gsub( $_BUILD_PATH, $_DESTINATION_PATH )
       if DEBUG_MODE
         jsc_data = read_file( dst_path )
+      elsif $_NO_OBFUSCATION and not $_NO_WHITESPACE_REMOVAL
+        jsc_data = `#{CAT} #{dst_path} | #{JSMIN}`
       else
         if RUBY_PLATFORM.include? "mswin32"
           jsc_data = pre_convert( `#{CAT} #{dst_path.gsub('/',"\\")} | #{JSMIN}` )
         else
-          jsc_data = pre_convert( `#{CAT} #{dst_path} | #{JSMIN}` )
+          if $_NO_WHITESPACE_REMOVAL
+            jsc_data = pre_convert( read_file(dst_path) )
+          else
+            jsc_data = pre_convert( `#{CAT} #{dst_path} | #{JSMIN}` )
+          end
         end
       end
       
@@ -94,7 +100,7 @@ class JSBuilder
   end
   
   def add_hints(hints_path)
-    return if DEBUG_MODE
+    return if DEBUG_MODE or $_NO_OBFUSCATION
     hints_js = read_file(hints_path)
     #hints_js = `cat #{hints_path} | #{JSMIN}`
     hints_js.gsub(/[^a-zA-Z0-9_](_[a-zA-Z0-9_]+?)[^a-zA-Z0-9_]/) do
