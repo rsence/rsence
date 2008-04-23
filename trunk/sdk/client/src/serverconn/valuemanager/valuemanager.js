@@ -50,7 +50,7 @@ HValueManager = HClass.extend({
   * isSending - flag, is set to true when <HTransporter> is busy.
   *
   **/
-  values: [],
+  values: {},
   tosync: [],
   isSending: false,
   isGetting: false,
