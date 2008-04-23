@@ -70,6 +70,16 @@ HValue = HClass.extend({
     }
   },
   
+/** method: s
+  * 
+  * Just as <set>, but doesn't re-notify the server about the change.
+  *
+  **/
+  s: function(_value){
+    this.value = _value;
+    this.refresh();
+  },
+  
 /** method: get
   *
   * Return the data, synonymous to the <value> instance variable

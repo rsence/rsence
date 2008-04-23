@@ -1,10 +1,18 @@
 
-HTabView = HView.extend({
+HTabView = HControl.extend({
   tabIndex: 0,
   flexRight: true,
   flexRightOffset: 0,
   flexBottom: true,
   flexBottomOffset: 0,
+  setLabel: function(_label){
+    this.parent.setLabel(_label);
+    this.base(_label);
+  },
+  setValue: function(_value){
+    this.parent.setValue(_value);
+    this.base(_value);
+  },
   draw: function(){
     var _isDrawn = this.drawn;
     this.base();

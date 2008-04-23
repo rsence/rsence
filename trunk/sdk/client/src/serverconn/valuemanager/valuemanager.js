@@ -88,6 +88,10 @@ HValueManager = HClass.extend({
     this.values[_id].set(_value);
   },
   
+  s: function(_id,_value){
+    this.values[_id].s(_value);
+  },
+  
 /*** method: del
   **
   ** Deletes the <HValue> by id from the value management system.

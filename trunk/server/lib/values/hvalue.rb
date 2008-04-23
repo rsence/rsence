@@ -15,7 +15,7 @@
 
 class HValue
   
-  attr_reader :valid, :sync, :val_id, :data, :type
+  attr_reader :valid, :sync, :val_id, :data, :type, :jstype, :members
   attr_writer :valid
   
   ## value conversion table between js and ruby
@@ -181,7 +181,7 @@ class HValue
   
   ## tell the client that the value changed
   def to_client( msg )
-    msg.reply "HVM.set( #{@val_id.inspect}, #{@data.inspect} );" 
+    msg.reply "HVM.s( #{@val_id.inspect}, #{@data.inspect} );" 
   end
   
   ## clean up self
