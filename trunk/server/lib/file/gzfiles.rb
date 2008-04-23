@@ -44,7 +44,7 @@ class GZFileCache
   
   def scan_dirs
     return if @busy_scanning == true
-    puts '-'*80
+    #puts '-'*80
     @busy_scanning = true
     ui_path = $config[:ria_paths][:ui_path][1]
     @gz_cache = {}
@@ -154,7 +154,7 @@ class GZFileServe < HTTPServlet::AbstractServlet
       theme_name = request_path[3]
       theme_part = request_path[4]
       req_file  = request_path[5]
-      puts "theme_name: #{theme_name.inspect}, theme_part: #{theme_part.inspect}, req_file: #{req_file.inspect}"
+      #puts "theme_name: #{theme_name.inspect}, theme_part: #{theme_part.inspect}, req_file: #{req_file.inspect}"
       if not $config[:gzfilecache].theme_cache.has_key?( theme_name )
         response.status = 404
         response.body   = '404 - Theme Not Found'

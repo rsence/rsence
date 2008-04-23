@@ -120,7 +120,7 @@ class ImgServe
             del_img( img_id, ses_id )
           end
         end
-        @expires.delete(exp_time)
+        @expires.delete(exp_time) if @expires[exp_time].size == 0
       end
     end
   end
@@ -136,6 +136,7 @@ class ImgServe
             del_file( file_id, ses_id )
           end
         end
+        @expires_files.delete(exp_time) if @expires_files[exp_time].size == 0
       end
     end
   end
@@ -217,7 +218,7 @@ class ImgServe
     elsif @imgs[:by_id].include?(img_id)
       (content_type,content_size,content,ses_id) = @imgs[:by_id][img_id]
       #puts "="*80
-      puts "ImgServe.fetch: found img_id = #{img_id.inspect}, ses_id = #{ses_id.inspect}"
+      #puts "ImgServe.fetch: found img_id = #{img_id.inspect}, ses_id = #{ses_id.inspect}"
       #puts "="*80
       if req.header.has_key?('keep-alive') and req.header['keep-alive'].size > 0
         keep_alive = req.header['keep-alive'][0].to_i
@@ -271,7 +272,7 @@ class ImgServe
       (content_type,content_size,content) = @raw_uris[file_id]
     elsif @files[:by_id].include?(file_id)
       (content_type,content_size,content,ses_id) = @files[:by_id][file_id]
-      puts "fileServe.fetch: found file_id = #{file_id.inspect}, ses_id = #{ses_id.inspect}"
+      #puts "fileServe.fetch: found file_id = #{file_id.inspect}, ses_id = #{ses_id.inspect}"
       if req.header.has_key?('keep-alive') and req.header['keep-alive'].size > 0
         keep_alive = req.header['keep-alive'][0].to_i
         keep_alive = 10  if keep_alive < 10

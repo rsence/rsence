@@ -133,7 +133,7 @@ class HValue
       @data = data
       
       #puts "-"*80
-      puts "#{msg.ses_id}.#{@val_id}: #{data.inspect} != #{@data.inspect}" if $config[:debug_mode]
+      ##puts "#{msg.ses_id}.#{@val_id}: #{data.inspect} != #{@data.inspect}" if $config[:debug_mode]
       #puts "-"*80
       #puts
       
@@ -146,8 +146,8 @@ class HValue
       unless check_ids.include?( @val_id )
         check_ids.push( @val_id )
       end
-    else
-      puts "#{msg.ses_id}.#{@val_id}: #{@data.inspect} == #{data.inspect}" if $config[:debug_mode]
+    ##else
+      ##puts "#{msg.ses_id}.#{@val_id}: #{@data.inspect} == #{data.inspect}" if $config[:debug_mode]
     end
     
   end
