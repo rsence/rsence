@@ -170,7 +170,7 @@ class HSessionManager
     
     ses_data = @sessions[ ses_id ]
     
-    @valuemanager.expire_ses( ses_id )
+    #@valuemanager.expire_ses( ses_id )
     @session_keys.delete( ses_data[:ses_key] )
     @session_cookie_keys.delete( ses_data[:cookie_key] )
     @sessions.delete( ses_id )
