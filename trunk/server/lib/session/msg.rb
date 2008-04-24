@@ -59,6 +59,10 @@ class Message
     
   end
   
+  def expire_session
+    $config[:transporter].expire_session( @ses_id )
+  end
+  
   def reply(data)
     @output.push(data)
   end

@@ -43,6 +43,11 @@ class HTransporter
     @session      = HSessionManager.new( @valuemanager, @system )
   end
   
+  ## expires session: ses_id
+  def expire_session( ses_id )
+    @session.expire_session( ses_id )
+  end
+  
   def shutdown
     @system.shutdown
     @valuemanager.shutdown

@@ -125,6 +125,7 @@ class HValueManager
     resend_session_values( msg ) if msg.restored_session
   end
   
+  
   ##
   # Cleans up session-related structures
   ##
