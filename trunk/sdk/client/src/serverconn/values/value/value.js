@@ -186,7 +186,7 @@ HValue = HClass.extend({
     var _syncid = this.id.toString();
     //var _synctype = this.type.slice(1,-1).toLowerCase();
     var _syncvalue = this.value;
-    var _syncjstype = (typeof _syncvalue)[0];
+    var _syncjstype = (typeof _syncvalue).slice(0,1);
     var _syncescvalue;
     
     if (_syncjstype == 's'){ // string
@@ -208,12 +208,17 @@ HValue = HClass.extend({
       else{_syncescvalue='0';}
     }
     else {
-      if(console&&console.log){
-        console.log('syncvalue type error');
-        console.log('  syncid:',_syncid);
-        console.log('  syncjstype:',_syncjstype);
-        console.log('  typeof:',(typeof _syncvalue));
-        console.log('  syncvalue:',_syncvalue);
+      try{
+        if(console&&console.log){
+          console.log('syncvalue type error');
+          console.log('  syncid:',_syncid);
+          console.log('  syncjstype:',_syncjstype);
+          console.log('  typeof:',(typeof _syncvalue));
+          console.log('  syncvalue:',_syncvalue);
+        }
+      }
+      catch(e){
+        alert('value error, syncid:'+_syncid+' syncjstype:'+_syncjstype+' typeof:'+(typeof _syncvalue)+' syncvalue:'+_syncvalue);
       }
       return '';
     }
