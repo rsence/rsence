@@ -146,7 +146,7 @@ HControl = HView.extend({
       this.valueObj.unbind(this);
       delete this.valueObj;
     }
-    EVENT.unregister(this);
+    EVENT.unreg(this);
     this.base();
   },
   
@@ -176,7 +176,7 @@ HControl = HView.extend({
   *  _flag - Boolean; true enables, false disables.
   *
   * See also:
-  *  <events> <HEventManager.register> <HEventManager.unregister>
+  *  <events> <HEventManager.register> <HEventManager.unreg>
   *
   **/
   setEnabled: function(_flag) {

@@ -586,8 +586,8 @@ HView = HClass.extend({
       var _viewZIdx = this.parent.viewsZOrder.indexOf(this.viewId),
           _viewPIdx = this.parent.views.indexOf(this.viewId);
       
-      this.parent.views.splice(_viewIdx,1);
-      HSystem.delView(_viewId);
+      this.parent.views.splice(_viewPIdx,1);
+      HSystem.delView(this.viewId);
       
       // Drop the z-order from the parent's array
       this.parent.viewsZOrder.splice( _viewZIdx, 1 );

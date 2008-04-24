@@ -219,6 +219,7 @@ ELEM = {
       x+=_elem.offsetLeft;y+=_elem.offsetTop;
       x-=_elem.scrollLeft;y-=_elem.scrollTop;
       _elem=_elem.parentNode;
+      if(!_elem){break;}
     }
     return [x,y];
   },
