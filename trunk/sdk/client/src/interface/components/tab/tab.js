@@ -31,6 +31,7 @@ HTabView = HControl.extend({
 HTab = HControl.extend({
   componentName: "tab",
   constructor: function(_rect,_parent,_options){
+    this.tabInit();
     if(this.isinherited) {
       this.base(_rect, _parent, _options);
     }
@@ -40,7 +41,6 @@ HTab = HControl.extend({
       this.isinherited = false;
     }
     this.type = '[HTab]';
-    this.tabInit();
     this.setMouseDown(true);
     if(!this.isinherited) {
       this.draw();
@@ -48,7 +48,7 @@ HTab = HControl.extend({
   },
   stringWidth: function(_string,_elemId){
     var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
-        _width = this.base( _html,null, _elemId );
+        _width = this.base( _html, null, _elemId );
     return _width;
   }, 
   tabInit: function(){
@@ -168,22 +168,10 @@ HTab = HControl.extend({
     if(!_isDrawn){
       this.drawMarkup();
     }
+    this.refresh();
   }
 });
 
 
-
-
-
-
-
-
-
-HTabControl = HTab.extend({
-  constructor: function(_rect,_parent,_options){
-    console.log('Warning: HTabControl is deprecated, please use HTab instead.');
-    this.base(_rect,_parent,_options);
-  }
-});
 
 
