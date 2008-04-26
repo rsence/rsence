@@ -45,9 +45,9 @@ class HTransporter
   
   ## expires session: ses_id
   def expire_session( ses_id )
-    puts "HTransporter.expire_session( #{ses_id.inspect} )"
+    #puts "HTransporter.expire_session( #{ses_id.inspect} )"
     @session.expire_session( ses_id )
-    puts "/HTransporter.expire_session"
+    #puts "/HTransporter.expire_session"
   end
   
   def shutdown
