@@ -70,11 +70,20 @@ class ImgServe
   end
   
   def expire_ses( ses_id )
-    while @imgs[:ses_ids][ses_id]
-      img_id = @imgs[:ses_ids][ses_id].shift
-      @imgs[:by_id].delete( img_id )
+    if @imgs[:ses_ids].has_key?(ses_id)
+      until @imgs[:ses_ids][ses_id].empty?
+        img_id = @imgs[:ses_ids][ses_id].shift
+        @imgs[:by_id].delete( img_id )
+      end
+      @imgs[:ses_ids].delete( ses_id )
     end
-    @imgs[:ses_ids].delete( img_id )
+    if @files[:ses_ids].has_key?(ses_id)
+      until @files[:ses_ids][ses_id].empty?
+        file_id = @files[:ses_ids][ses_id].shift
+        @files[:by_id].delete( file_id )
+      end
+      @files[:ses_ids].delete( ses_id )
+    end
   end
   
   def del_img( img_id, ses_id )

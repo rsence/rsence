@@ -107,7 +107,9 @@ HTab = HControl.extend({
       this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
     }
     this.rightmostPx+=_labelWidth;
-    ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');
+    if(this.tabLabelAlign == 'right'){
+      ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');
+    }
     this.tabs.push(_tab.viewId);
     this.tabLabels.push(_tabLabelElemId);
     _tab.tabIndex = _tabIdx;

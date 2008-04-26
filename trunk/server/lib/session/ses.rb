@@ -162,23 +162,25 @@ class HSessionManager
   end
   
   def expire_session( ses_id )
-    
-    puts '-' * 80
-    puts "expiring session: #{ses_id.inspect}"
-    puts '-' * 80
-    
+    puts "HSessionManager.expire_session( #{ses_id.inspect} )"
     
     ses_data = @sessions[ ses_id ]
     
     #@valuemanager.expire_ses( ses_id )
+    
+    puts "@session_keys.delete( #{ses_data[:ses_key].inspect} )"
     @session_keys.delete( ses_data[:ses_key] )
+    puts "@session_cookie_keys.delete( #{ses_data[:cookie_key].inspect} )"
     @session_cookie_keys.delete( ses_data[:cookie_key] )
+    puts "@sessions.delete( #{ses_id.inspect} )"
     @sessions.delete( ses_id )
     
+    puts "IMGSERVE.expire_ses( #{ses_id.inspect} )"
     IMGSERVE.expire_ses( ses_id )
     
     @db.q( "delete from himle_session where id = #{ses_id}" )
     
+    puts "/HSessionManager.expire_session"
   end
   
   def expire_sessions
