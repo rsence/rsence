@@ -62,6 +62,9 @@ HTab = HControl.extend({
     this.tabLabelLeftEdge  = 4;  // overridden in the template
     this.tabLabelRightEdge = 4;  // overridden in the template
     this.fontStyle = 'font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;'; // overridden in the template
+    this.tabLabelHTMLPrefix = '<div class="edge-left"></div><div class="tablabel">';
+    this.tabLabelHTMLSuffix = '</div><div class="edge-right"></div>';
+    
   },
   selectTab: function(_tabIdx){
     if(_tabIdx instanceof HTabView){
@@ -89,7 +92,7 @@ HTab = HControl.extend({
         _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
         _tabIdx = this.tabs.length;
         _tabLabelElemId = ELEM.make(this.markupElemIds.label);
-        _tabLabelHTML = '<div class="edge-left"></div><div class="tablabel">'+_tabLabel+'</div><div class="edge-right"></div>';
+        _tabLabelHTML = this.tabLabelHTMLPrefix+_tabLabel+this.tabLabelHTMLSuffix;
     ELEM.addClassName(_tabLabelElemId,'item-bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');
     ELEM.setStyle(_tabLabelElemId,'left',this.rightmostPx+'px');
