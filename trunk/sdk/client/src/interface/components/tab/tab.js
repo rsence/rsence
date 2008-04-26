@@ -64,7 +64,9 @@ HTab = HControl.extend({
     this.fontStyle = 'font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;'; // overridden in the template
     this.tabLabelHTMLPrefix = '<div class="edge-left"></div><div class="tablabel">';
     this.tabLabelHTMLSuffix = '</div><div class="edge-right"></div>';
-    
+    this.tabLabelParentElem = 'label';
+    this.tabLabelAlign = 'left';
+    this.tabTriggerLink = false;
   },
   selectTab: function(_tabIdx){
     if(_tabIdx instanceof HTabView){
@@ -91,15 +93,21 @@ HTab = HControl.extend({
         _labelWidth=this.stringWidth(_tabLabel,0)+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
         _tabIdx = this.tabs.length;
-        _tabLabelElemId = ELEM.make(this.markupElemIds.label);
+        _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem]);
         _tabLabelHTML = this.tabLabelHTMLPrefix+_tabLabel+this.tabLabelHTMLSuffix;
     ELEM.addClassName(_tabLabelElemId,'item-bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');
-    ELEM.setStyle(_tabLabelElemId,'left',this.rightmostPx+'px');
+    ELEM.setStyle(_tabLabelElemId,this.tabLabelAlign,this.rightmostPx+'px');
     ELEM.setHTML(_tabLabelElemId,_tabLabelHTML);
     this.tabLabelStrings.push(_tabLabel);
-    this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
+    if(this.tabTriggerLink){
+      ELEM.setAttr(_tabLabelElemId,'onmousedown','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');',true);
+    }
+    else {
+      this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
+    }
     this.rightmostPx+=_labelWidth;
+    ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');
     this.tabs.push(_tab.viewId);
     this.tabLabels.push(_tabLabelElemId);
     _tab.tabIndex = _tabIdx;
@@ -109,6 +117,10 @@ HTab = HControl.extend({
     return _tab;
   },
   mouseDown: function(_x,_y){
+    if(this.tabTriggerLink){
+      this.setMouseDown(false);
+      return;
+    }
     _x -= this.pageX();
     _y -= this.pageY();
     if(_x<=this.rightmostPx){
