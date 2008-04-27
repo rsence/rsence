@@ -74,7 +74,6 @@ HControl = HView.extend({
     }
     
     // Assign these variables from options.
-    // (Partially just for backwards compability)
     var _label = options.label;
     this.setLabel(_label);
     

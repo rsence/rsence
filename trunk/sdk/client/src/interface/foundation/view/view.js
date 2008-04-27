@@ -293,6 +293,13 @@ HView = HClass.extend({
     ELEM.setStyle( _elemId, 'width', (this.flexLeft&&this.flexRight)?'auto':(_rect.width+'px'), true);
     ELEM.setStyle( _elemId, 'height', (this.flexTop&&this.flexBottom)?'auto':(_rect.height+'px'), true);
     
+    if(this.flexLeft&&this.flexRight){
+      ELEM.setStyle( _elemId, 'min-width', _rect.width+'px', true);
+    }
+    if(this.flexTop&&this.flexBottom){
+      ELEM.setStyle( _elemId, 'min-height', _rect.height+'px', true);
+    }
+    
     // Show the rectangle once it gets created, unless visibility was set to
     // hidden in the constructor.
     if (undefined === this.isHidden || this.isHidden == false) {
