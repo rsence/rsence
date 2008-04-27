@@ -98,13 +98,16 @@ EVENT = {
       ['keyup',       EVENT.keyUp],
       ['keydown',     EVENT.keyDown],
       ['keypress',    EVENT.keyPress],
-      ['contextmenu', EVENT.contextMenu]
+      ['contextmenu', EVENT.contextMenu],
+      ['resize',      EVENT.resize],
+      ['mousewheel',  EVENT.mouseWheel]
     ];
     for(i=0;i!=_eventMap.length;i++){Event.observe(_globalEventTargetElement,_eventMap[i][0],_eventMap[i][1]);}
     if(window.addEventListener){window.addEventListener('DOMMouseScroll',EVENT.mouseWheel,false);}
-    window.onmousewheel=document.onmousewheel=EVENT.mouseWheel;
+    //window.onmousewheel=document.onmousewheel=EVENT.mouseWheel;
     _this.listeners=[];      // keep elemId buffer of all listeners
     _this.focused=[];        // keep elemId buffer of all focused listeners
+    _this.resizeListeners=[]; // list of resize-event listeners
     _this.coordListeners=[]; // global mouse movement listeners
     _this.focusOptions={};   // keep property lists by elemId
     _this.dragItems=[];      // elemId of currently dragged items
@@ -157,6 +160,11 @@ EVENT = {
         _this.textEnterCtrls.push(_ctrl.viewId);
       }
     }
+    if(_focusOptions.resize){
+      if(_this.resizeListeners.indexOf(_ctrl.viewId)==-1){
+        _this.resizeListeners.push(_ctrl.viewId);
+      }
+    }
     Event.observe(_elem,'mouseover',_this._mouseOver);
   },
   // unregisters the View instance _ctrl event listeners
@@ -171,7 +179,21 @@ EVENT = {
     if(_textEnterIndex!=-1){
       _this.textEnterCtrls.splice(_textEnterIndex,1);
     }
+    
+    var _resizeIndex=_this.resizeListeners.indexOf(_ctrl.viewId);
+    if(_resizeIndex!=-1){
+      _this.resizeListeners.splice(_resizeIndex,1);
+    }
     Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+  },
+  
+  resize: function(e){
+    var i=0,_this=EVENT,_ctrlID,_ctrl;
+    for(;i<_this.resizeListeners.length;i++){
+      _ctrlID=_this.resizeListeners[i];
+      _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.onResize){_ctrl.onResize();}
+    }
   },
   
   // element-specific over/out handler
