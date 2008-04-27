@@ -46,6 +46,17 @@ HTab = HControl.extend({
       this.draw();
     }
   },
+  setValue: function(_value){
+    this.base(_value);
+    if(typeof _value == 'number'){
+      var _index = parseInt(_value,10);
+      if(_index<this.tabs.length){
+        if(_index!=this.selectIdx){
+          this.selectTab(_index);
+        }
+      }
+    }
+  },
   stringWidth: function(_string,_elemId){
     var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
         _width = this.base( _html, null, _elemId );
@@ -65,6 +76,7 @@ HTab = HControl.extend({
     this.tabLabelHTMLPrefix = '<div class="edge-left"></div><div class="tablabel">';
     this.tabLabelHTMLSuffix = '</div><div class="edge-right"></div>';
     this.tabLabelParentElem = 'label';
+    this.tabLabelElementTagName = 'div';
     this.tabLabelAlign = 'left';
     this.tabTriggerLink = false;
   },
@@ -87,21 +99,25 @@ HTab = HControl.extend({
       HSystem.views[_tabViewId].show();
     }
     this.selectIdx = _tabIdx;
+    this.setValue(_tabIdx);
   },
   addTab: function(_tabLabel,_doSelect){
     var _tabIdx=this.tabs.length,
         _labelWidth=this.stringWidth(_tabLabel,0)+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
         _tabIdx = this.tabs.length;
-        _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem]);
+        _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
         _tabLabelHTML = this.tabLabelHTMLPrefix+_tabLabel+this.tabLabelHTMLSuffix;
     ELEM.addClassName(_tabLabelElemId,'item-bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');
     ELEM.setStyle(_tabLabelElemId,this.tabLabelAlign,this.rightmostPx+'px');
     ELEM.setHTML(_tabLabelElemId,_tabLabelHTML);
     this.tabLabelStrings.push(_tabLabel);
-    if(this.tabTriggerLink){
-      ELEM.setAttr(_tabLabelElemId,'onmousedown','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');',true);
+    if(this.tabTriggerLink&&this.tabLabelElementTagName=='a'){
+      ELEM.setAttr(_tabLabelElemId,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
+    }
+    else if (this.tabTriggerLink){
+      ELEM.setAttr(_tabLabelElemId,'mouseup','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
     else {
       this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
