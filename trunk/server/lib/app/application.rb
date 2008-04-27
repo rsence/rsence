@@ -49,6 +49,21 @@ class HApplication
     return file_read( fullpath )
   end
   
+  # Javascript inclusion utility.
+  # Reads js sources from your plugin's dir, but only once
+  def require_js_once(msg,name)
+    if not ses.has_key?(:deps)
+      ses[:deps] = []
+    end
+    fullpath = @path+'/js/'+name+'.js'
+    unless ses[:deps].include?( fullpath )
+      ses[:deps].push( fullpath )
+      return file_read( fullpath )
+    else
+      return ''
+    end
+  end
+  
   # Himle dependency reader, just supply
   # with everything you need, it keeps track of
   # what's loaded.
