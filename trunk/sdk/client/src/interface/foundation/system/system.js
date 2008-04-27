@@ -51,6 +51,7 @@
 
 
 HDefaultApplicationInterval=20;
+HSystemTickerInterval=10;
 HSystem = HClass.extend({
   
   // Single instance; has no constructor
@@ -126,7 +127,7 @@ HSystem = HClass.extend({
     // Increment the tick counter:
     this.ticks++;
     this.scheduler();
-    this._tickTimeout = setTimeout('HSystem.ticker();',10);
+    this._tickTimeout = setTimeout('HSystem.ticker();',HSystemTickerInterval);
   },
   
   
