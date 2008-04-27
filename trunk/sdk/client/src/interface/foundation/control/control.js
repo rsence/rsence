@@ -103,13 +103,11 @@ HControl = HView.extend({
     this.action = options.action;
     
     // Initial visibility.
-    if (null !== options.visible && undefined !== options.visible) {
-      if (options.visible) {
-        this.show();
-      }
-      else {
-        this.hide();
-      }
+    if(options.visible) {
+      this.show();
+    }
+    else {
+      this.hide();
     }
     
     if(!this.isinherited) {
@@ -948,6 +946,7 @@ HComponentDefaults = HClass.extend({
   
   // The visual value of a component:
   label:    "Untitled",
+  visible:  true,
   
   // A structure that tells what events to bind.
   /*

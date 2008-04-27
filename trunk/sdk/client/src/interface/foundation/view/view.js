@@ -135,7 +135,7 @@ HView = HClass.extend({
     
     // Set the geometry
     this.setRect(_rect);
-    this.isHidden = false;
+    this.isHidden = true;
     if(this.parent.type == '[HView]') {
       this.type = '[HSubview]';
     } else {
@@ -153,6 +153,7 @@ HView = HClass.extend({
     
     if(!this.isinherited) {
       this.draw();
+      this.show();
     }
   },
   
@@ -302,7 +303,7 @@ HView = HClass.extend({
     
     // Show the rectangle once it gets created, unless visibility was set to
     // hidden in the constructor.
-    if (undefined === this.isHidden || this.isHidden == false) {
+    if(undefined === this.isHidden || this.isHidden == false) {
       ELEM.setStyle( _elemId, 'visibility', 'inherit', true);
     }
     
