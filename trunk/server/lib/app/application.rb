@@ -52,6 +52,7 @@ class HApplication
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir, but only once
   def require_js_once(msg,name)
+    ses = msg.session
     if not ses.has_key?(:deps)
       ses[:deps] = []
     end
