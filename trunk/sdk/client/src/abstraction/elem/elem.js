@@ -13,7 +13,7 @@
   **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ***/
 
-
+ELEMTickerInterval = 10;
 ELEM = {
   
   // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
@@ -44,7 +44,7 @@ ELEM = {
     _this._idleDelay = 500;
     
     _this._timer = null;
-    _this._minDelay = 40;
+    _this._minDelay = ELEMTickerInterval;
     _this._flushing = false;
     _this._needFlush = false;
     _this._slowness = 1;
@@ -291,6 +291,9 @@ ELEM = {
   
   setFPS: function(_fps){
     ELEM._minDelay = 1000/_fps;
+    if(ELEM._minDelay<ELEMTickerInterval){
+      ELEM._minDelay=ELEMTickerInterval;
+    }
   },
   setSlowness: function(_slowness){
     // we should replace this with an
@@ -315,7 +318,7 @@ ELEM = {
         _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_this._idleDelay);
         return;
       }
-      _delay = parseInt(_this._slowness*(_this._flushTime/_this._flushCounter), 10);
+      _delay = parseInt(_this._slowness*(_this._flushTime/_this._flushCounter), ELEMTickerInterval);
       if(_delay<_this._minDelay||!_delay){_delay=_this._minDelay;}
       _this._flushing = true;
       _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_delay);
@@ -706,7 +709,7 @@ ELEM = {
     }
     
     if(!_this._domLoadStatus){
-      _this._domLoadTimer = setTimeout('ELEM._domWaiter()',100);
+      _this._domLoadTimer = setTimeout('ELEM._domWaiter()',ELEMTickerInterval*10);
     } else {
       _this._init();
       delete _this._domLoadQueue;
