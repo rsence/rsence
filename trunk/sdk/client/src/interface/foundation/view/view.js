@@ -1158,12 +1158,12 @@ HView = HClass.extend({
       this._animateInterval = null;
       
       // Update the rect after the new position and size have been reached.
-      var _left = parseInt(this.style('left'), 10);
-      var _top = parseInt(this.style('top'), 10);
-      var _width = parseInt(this.style('width'), 10);
-      var _height = parseInt(this.style('height'), 10);
+      var _left   = parseInt(this.style('left'), 10),
+          _top    = parseInt(this.style('top'), 10),
+          _width  = parseInt(this.style('width'), 10),
+          _height = parseInt(this.style('height'), 10);
       this.rect.set(_left, _top, _left + _width, _top + _height);
-      
+      this.drawRect();
       
       if (this._animationDone) {
         this.onAnimationEnd();
