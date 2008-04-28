@@ -35,6 +35,7 @@
 
 HDefaultThemePath = '../../';
 HDefaultThemeName = 'default';
+HNoComponentCSS = [];
 
 /** HDefaultThemeMode:
   *
@@ -316,11 +317,14 @@ HThemeManager = HClass.extend({
       this.loadCSS( _commonCssUrl );
     }
     
-    /* Load Component-Specific CSS: */
-    if (!this._cssCache[_themeName][_componentName]){
-      var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
-      this._cssCache[_themeName][_componentName] = true;
-      this.loadCSS( _componentCssUrl );
+    /* Load Component-Specific CSS, unless configured to only load the common css: */
+    if(HNoComponentCSS.indexOf(_themeName)==-1){
+      //console.log('HNoComponentCSS:',HNoComponentCSS,',  indexOf:',HNoComponentCSS.indexOf(_themeName),',  themeName:',_themeName, ',  componentName:', _componentName, ',  themePath:',_themePath,',  pkgName:',_pkgName);
+      if (!this._cssCache[_themeName][_componentName]){
+        var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
+        this._cssCache[_themeName][_componentName] = true;
+        this.loadCSS( _componentCssUrl );
+      }
     }
     
     /* Load/Return Component-Specific HTML: */
