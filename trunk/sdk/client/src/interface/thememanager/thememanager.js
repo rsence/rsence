@@ -354,6 +354,9 @@ HThemeManager = HClass.extend({
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+      return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName.replace('.png','-ie6.gif') );
+    }
     return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName );
   },
   
