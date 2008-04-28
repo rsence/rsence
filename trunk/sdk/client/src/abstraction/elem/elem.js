@@ -294,6 +294,14 @@ ELEM = {
     if(ELEM._minDelay<ELEMTickerInterval){
       ELEM._minDelay=ELEMTickerInterval;
     }
+    if(ELEM._is_ie6){
+      if(ELEM._minDelay<200){
+        ELEM._minDelay=200;
+      }
+      if(ELEMTickerInterval<200){
+        ELEMTickerInterval=200;
+      }
+    }
   },
   setSlowness: function(_slowness){
     // we should replace this with an
@@ -304,7 +312,7 @@ ELEM = {
     ELEM._idleDelay = _idleDelay;
   },
   
-  _ieFixesBuffer: [],
+  _ieFixesNeeded: false,
   flushLoop: function(_delay){
     //console.log('flushLoop('+_delay+')');
     var _this=ELEM; _this._flushLoopCount++;
@@ -316,12 +324,9 @@ ELEM = {
     } else {
       if(!_this._needFlush){
         // goto sleep mode
-        if(_this._is_ie6){
-          var _id;
-          while(_this._ieFixesBuffer.length!=0){
-            _id = _this._ieFixesBuffer.pop();
-            iefix._traverseTree(_this._elements[_id]);
-          }
+        if(_this._is_ie6&&_this._ieFixesNeeded){
+          iefix._traverseTree();
+          _this._ieFixesNeeded=false;
         }
         _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_this._idleDelay);
         return;
@@ -344,11 +349,10 @@ ELEM = {
       _this._elemTodoH[_id]=false;
       _this._flushStyleCache(_id);
       _this._flushAttrCache(_id);
-      if(_this._is_ie6){
-        if(_this._ieFixesBuffer.indexOf(_id)==-1){
-          _this._ieFixesBuffer.push(_id);
-        }
-      }
+    }
+    if(_this._is_ie6&&_this._ieFixesNeeded){
+      iefix._traverseTree(_this._elements[_id]);
+      _this._ieFixesNeeded=false;
     }
     _this._flushCounter++;
     _this._flushTime += new Date().getTime();
@@ -520,6 +524,7 @@ ELEM = {
       if(_bypass){
         if(_key=='opacity'){_this.setOpacity(_id,_value);}
         else{_this._is_ie?(_elems[_id].style.setAttribute(_key.replace(/((-)([a-z])(\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4;}),_cached[_key])):(_elems[_id].style.setProperty(_key,_cached[_key],''));}
+        if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}
       } else {
         _elemTodoH=_this._elemTodoH;
         _styleTodo=_this._styleTodo[_id];
@@ -629,7 +634,7 @@ ELEM = {
                      //"alert(_cached[_key]);eval('_elemS.'+_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4})+'=\"'+_cached[_key]+'\";');}}};",
                      //"_elemS.cssText+=_key+':'+_cached[_key]+';';}}};",
                      //"var _keyIE=_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4});\nalert(_keyIE);\n_elemS[_keyIE]=_cached[_key];}}};",
-      /*  9 */       "try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
+      /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
 
             /*  idx: 10 for non-ie */
       /* 10 */       "_elemS.setProperty(_key,_cached[_key],'');}}};"

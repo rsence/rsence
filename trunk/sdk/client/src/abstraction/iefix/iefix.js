@@ -215,13 +215,14 @@ iefix = {
     if(_element.currentStyle.opacity){_this._fixOpacity(_element);}
     
     // check if background image needs to be fixed:
-    if(_element.currentStyle.backgroundImage){_this._fixBackgroundImage(_element);}
+    //if(_element.currentStyle.backgroundImage){_this._fixBackgroundImage(_element);}
     
     // check if png needs to be fixed:
-    if(_element.tagName=="IMG"||(_element.tagName=="INPUT"&&_element.type=="image")){_this._fixImg(_element);}
+    //if(_element.tagName=="IMG"||(_element.tagName=="INPUT"&&_element.type=="image")){_this._fixImg(_element);}
     
     // anti-click-through fix:
-    else if(_element.style.backgroundColor=='transparent'&&(_element.style.backgroundImage=='none'||!_element.style.backgroundImage)){
+    //else 
+    if(_element.style.backgroundColor=='transparent'&&(_element.style.backgroundImage=='none'||!_element.style.backgroundImage)){
       _element.style.backgroundImage="url("+ie_htc_path+"128.gif)"; // transparent gif, 128x128
     }
   },
@@ -234,7 +235,9 @@ iefix = {
     //window.status = 'traversecount: '+_this._traverseCount;
     _element=_element||document.documentElement;
     while(_element){
-      if(_element.nodeType==1){_this._inlineStyleChanged(_element);}
+      if(_element.nodeType==1){
+        _this._inlineStyleChanged(_element);
+      }
       var _next=_element.firstChild;
       if(!_next){ _next=_element.nextSibling;}
       while(!_next&&_element.parentNode) {
@@ -277,8 +280,8 @@ iefix = {
     }
   },
   
-  //_traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
-  _traverseStyleProperties: ['right','bottom','width','height'],
+  _traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
+  //_traverseStyleProperties: ['right','bottom','width','height'],
   
   _elemEntryCount: 0,
   
