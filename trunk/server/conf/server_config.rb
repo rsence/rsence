@@ -13,7 +13,9 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
 
-$config = {}
+$config = {
+  :no_gzip => true
+}
 
 if ARGV.include?('-r')
   $config[:dir_root] = ARGV[ARGV.index('-r')+1]

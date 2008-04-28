@@ -110,6 +110,7 @@ class GZFileServe < HTTPServlet::AbstractServlet
     response['Cache-Control'] = 'no-cache' if not $config[:cache_maximize]
     response['Expires'] = (Time.now+$config[:cache_expire]).gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z') if $config[:cache_maximize]
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
+    support_gzip = false if $config[:no_gzip]
     is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('WebKit'))
     is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('MSIE'))
     is_msie6  = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('MSIE 6.0'))

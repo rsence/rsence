@@ -65,7 +65,8 @@ class HTransporter
     # It's better to evaluate plain text than to respond with js.
     response.content_type = 'text/javascript; charset=utf-8'
     response['Cache-Control'] = 'no-cache'
-    if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip')
+    
+    if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
       response.chunked = true
       response['Content-Encoding'] = 'gzip'
       do_gzip = true
