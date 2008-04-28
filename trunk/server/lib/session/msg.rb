@@ -33,7 +33,7 @@ require 'lib/img/imgserve'
 
 class Message
   
-  attr_accessor :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid, :request, :response
+  attr_accessor :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid, :request, :response, :ie6
   
   def initialize( request, response )
     
@@ -47,6 +47,8 @@ class Message
     @data        = nil
     @session     = {}
     @ses_id      = 0
+    @ie6         = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('MSIE 6.0'))
+    #puts "ie6: #{@ie6.inspect}, agent: #{request.header['user-agent'].inspect}"
     
     @output      = []
     

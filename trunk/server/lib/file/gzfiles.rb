@@ -110,9 +110,9 @@ class GZFileServe < HTTPServlet::AbstractServlet
     response['Cache-Control'] = 'no-cache' if not $config[:cache_maximize]
     response['Expires'] = (Time.now+$config[:cache_expire]).gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z') if $config[:cache_maximize]
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
-    is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
-    is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
-    is_msie6  = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
+    is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('WebKit'))
+    is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('MSIE'))
+    is_msie6  = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('MSIE 6.0'))
     request_path = request.path.split('/')
     #puts "request_path: #{request_path.inspect}"
     #request_path: ["", "gz", "js", "core.js"]
@@ -122,11 +122,13 @@ class GZFileServe < HTTPServlet::AbstractServlet
       if req_file == 'ie_css_element.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
-        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onpropertychange",iefix.htcElementEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
+        response.body = %{<PUBLIC:COMPONENT lightWeight="true"></PUBLIC:COMPONENT>}
+        #response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onpropertychange",iefix.htcElementEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
       elsif req_file == 'ie_css_style.htc'
         response.status = 200
         response['Content-Type'] = 'text/x-component'
-        response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onreadystatechange",iefix.htcStyleEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
+        response.body = %{<PUBLIC:COMPONENT lightWeight="true"></PUBLIC:COMPONENT>}
+        #response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onreadystatechange",iefix.htcStyleEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
       else
         response.status = 503
         response.body   = '503 - Invalid Request'

@@ -168,6 +168,8 @@ class ImgServe
     
     @imgs[:ses_ids][msg.ses_id].push( img_id )
     
+    format = 'GIF' if msg.ie6 and format == 'PNG'
+    
     content = img_data.to_blob {
       self.format = format
     }
