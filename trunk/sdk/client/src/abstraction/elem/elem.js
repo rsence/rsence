@@ -316,6 +316,11 @@ ELEM = {
   flushLoop: function(_delay){
     //console.log('flushLoop('+_delay+')');
     var _this=ELEM; _this._flushLoopCount++;
+    if(_this._is_ie6&&(_this._flushLoopCount%5==0)&&_this._ieFixesNeeded){
+      //window.status = 'traversetree0:'+_this._flushLoopCount;
+      iefix._traverseTree();
+      _this._ieFixesNeeded=false;
+    }
     clearTimeout(_this._timer);
     if(_this._flushing){
       _delay *= 2;
@@ -325,6 +330,7 @@ ELEM = {
       if(!_this._needFlush){
         // goto sleep mode
         if(_this._is_ie6&&_this._ieFixesNeeded){
+          //window.status = 'traversetree1:'+_this._flushLoopCount;
           iefix._traverseTree();
           _this._ieFixesNeeded=false;
         }
@@ -350,10 +356,12 @@ ELEM = {
       _this._flushStyleCache(_id);
       _this._flushAttrCache(_id);
     }
+    /*
     if(_this._is_ie6&&_this._ieFixesNeeded){
-      iefix._traverseTree(_this._elements[_id]);
+      window.status = 'traversetree2:'+_this._flushLoopCount;
+      iefix._traverseTree();
       _this._ieFixesNeeded=false;
-    }
+    }*/
     _this._flushCounter++;
     _this._flushTime += new Date().getTime();
     if(_this._elemTodo.length==0&&_this._needFlush){
