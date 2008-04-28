@@ -132,7 +132,7 @@ iefix = {
     if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
     _element.runtimeStyle.width="";
     if(_element.offsetWidth<_width){
-      //if(_width<0){_width=0;}
+      if(_width<0){_width=0;}
       _width-=_this._getBorderWidth(_element)+_this._getPaddingWidth(_element);
       _element.runtimeStyle.width=_width;
     }
@@ -226,9 +226,12 @@ iefix = {
     }
   },
   
+  _traverseCount: 0,
   // traverses from the _element node from the bottom to fix right|bottom positioning
   _traverseTree: function(_element){
     var _this=iefix;
+    _this._traverseCount++;
+    //window.status = 'traversecount: '+_this._traverseCount;
     _element=_element||document.documentElement;
     while(_element){
       if(_element.nodeType==1){_this._inlineStyleChanged(_element);}
@@ -268,27 +271,36 @@ iefix = {
   
   // entry point from ie_css_style.htc
   htcStyleEntry: function(){
+    //window.status = 'htcStyleEntry';
     if(document.readyState=="complete"&&window.event.srcElement.readyState=="complete"){
       iefix._traverseTree();
     }
   },
   
-  _traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
+  //_traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
+  _traverseStyleProperties: ['right','bottom','width','height'],
+  
+  _elemEntryCount: 0,
   
   // entry point from ie_css_element.htc
   htcElementEntry: function(){
+    iefix._elemEntryCount++;
     var _element=window.event.srcElement, _propName=window.event.propertyName;
     if (_propName=="style.opacity"){
+      //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' opacity';
       iefix._fixOpacity(_element);
     }
     else if((_propName=="src"&&_element.tagName=="IMG")||(_element.tagName=="INPUT"&&_element.type=="image")){
+      //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' img';
       iefix._fixImg(_element);
     }
-    else if(_propName=='style.cssText'){
-      iefix._traverseTree();
-    }
+    //else if(_propName=='style.cssText'){
+    //  window.status = 'htcElementEntry: '+iefix._elemEntryCount+' cssText';
+    //  iefix._traverseTree();
+    //}
     else if(_propName.substring(0,6)=='style.'){
       if(iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])!=-1){
+        //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' style';
         iefix._traverseTree();
       }
       /*
@@ -328,3 +340,6 @@ ie_fixes=function(){
 };
 ie_fixes();
 window.onresize=function(){iefix.setWinSize();iefix._traverseTree();};
+
+
+

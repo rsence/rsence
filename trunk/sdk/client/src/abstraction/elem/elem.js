@@ -304,6 +304,7 @@ ELEM = {
     ELEM._idleDelay = _idleDelay;
   },
   
+  _ieFixesBuffer: [],
   flushLoop: function(_delay){
     //console.log('flushLoop('+_delay+')');
     var _this=ELEM; _this._flushLoopCount++;
@@ -315,6 +316,13 @@ ELEM = {
     } else {
       if(!_this._needFlush){
         // goto sleep mode
+        if(_this._is_ie6){
+          var _id;
+          while(_this._ieFixesBuffer.length!=0){
+            _id = _this._ieFixesBuffer.pop();
+            iefix._traverseTree(_this._elements[_id]);
+          }
+        }
         _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_this._idleDelay);
         return;
       }
@@ -336,6 +344,11 @@ ELEM = {
       _this._elemTodoH[_id]=false;
       _this._flushStyleCache(_id);
       _this._flushAttrCache(_id);
+      if(_this._is_ie6){
+        if(_this._ieFixesBuffer.indexOf(_id)==-1){
+          _this._ieFixesBuffer.push(_id);
+        }
+      }
     }
     _this._flushCounter++;
     _this._flushTime += new Date().getTime();
