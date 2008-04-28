@@ -112,6 +112,7 @@ class GZFileServe < HTTPServlet::AbstractServlet
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
     is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
     is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
+    is_msie6  = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
     request_path = request.path.split('/')
     #puts "request_path: #{request_path.inspect}"
     #request_path: ["", "gz", "js", "core.js"]
@@ -186,6 +187,10 @@ class GZFileServe < HTTPServlet::AbstractServlet
           response['Content-Encoding'] = 'gzip'
           response.body   = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
         else
+          if is_msie6 and req_file[-4..-1] == '.png'
+            ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
+            req_file = ie6_req_png2gif if $config[:gzfilecache].theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
+          end
           response['Last-Modified'] = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file ][1]
           response['Content-Size'] = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file ][2]
           response.body   = $config[:gzfilecache].theme_cache[theme_name][theme_part][ req_file ][0]

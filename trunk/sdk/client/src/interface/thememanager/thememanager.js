@@ -36,6 +36,7 @@
 HDefaultThemePath = '../../';
 HDefaultThemeName = 'default';
 HNoComponentCSS = [];
+HThemeHasIE6GifsInsteadOfPng = [];
 
 /** HDefaultThemeMode:
   *
@@ -125,11 +126,11 @@ HThemeManager = HClass.extend({
   * themes, a bit kludgy approach to tell the theme grapics file paths. 
   */
   getThemeGfxPath: function() {
-    var _themeName      = this._cssEvalParams[0];
-    var _componentName  = this._cssEvalParams[1];
-    var _themePath      = this._cssEvalParams[2];
-    var _pkgName        = this._cssEvalParams[3];
-    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _themeName      = this._cssEvalParams[0],
+        _componentName  = this._cssEvalParams[1],
+        _themePath      = this._cssEvalParams[2],
+        _pkgName        = this._cssEvalParams[3],
+        _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
     return this._joinPath( _urlPrefix, 'gfx' );
   },
   
@@ -143,7 +144,13 @@ HThemeManager = HClass.extend({
   *
   */
   getCssFilePath: function( _fileName ){
-    return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName )+"')";
+    var _themeName      = this._cssEvalParams[0];
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+      return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
+    }
+    else {
+      return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName )+"')";
+    }
   },
   
 /** method: loadCSS
