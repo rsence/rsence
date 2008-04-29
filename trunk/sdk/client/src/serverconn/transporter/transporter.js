@@ -52,6 +52,12 @@ HTransportURL = false;
  */
 HTransportPoll = true;
 
+/* str: HFailPageUrl
+ *
+ * Url or uri where the the client goes, if a communication error is encountered.
+ */
+HFailPageUrl = '/';
+
 /* vars: Instance variables
  *  url_base  - The URL (or path) that the requests are sent to
  *  ses_id    - A value that is the reported in each request by the key 'ses_id'
@@ -78,7 +84,8 @@ HTransporter = Base.extend({
   },
   
   failure: function(resp){
-    alert('HTTP ERROR! STOP.');
+    // If the connection fails, automatically try to reload the page.
+    location.href = HFailPageUrl;
     clearTimeout(this.req_timeout);
     this.isBusy = true;
   },
