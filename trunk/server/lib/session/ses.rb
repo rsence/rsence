@@ -342,7 +342,16 @@ class HSessionManager
     end
     ses_cookie = WEBrick::Cookie.new('ses_key',cookie_key)
     ses_cookie.comment = 'Himle session key (just for your convenience)'
-    domain = msg.request.host
+    
+    ## mod_rewrite:
+    if msg.request.header.has_key?('x-forwarded-host')
+      domain = msg.request.header['x-forwarded-host'][0]
+      
+    ## direct access:
+    else
+      domain = msg.request.host
+    end
+    
     if @ipv4_reg.match(domain)
       ses_cookie.domain  = domain
     elsif domain.include?('.')
