@@ -94,7 +94,7 @@ Ajax.Request = HClass.extend({
         this.onStateChange();
       }
     //} catch (e) {
-    
+    //  console.log('error:',e);
     //}
   },
   setRequestHeaders: function() {
@@ -137,19 +137,18 @@ Ajax.Request = HClass.extend({
   respondToReadyState: function(_readyState) {
     if (_readyState == 4) { // Completed(Loaded in IE 7)
       //try {
-        (this.options["on" + (this.success() ? "Success" : "Failure")] ||
-          (function() {}))(this.transport);
+        (this.options["on"+(this.success()?"Success":"Failure")]||(function(){console.log('aa');}))(this.transport);
       //} catch (e) {
-        //console.log(e);
+        //console.log('error:',e);
       //}
     }
     
     if (_readyState == 4) { // Completed(Loaded in IE 7)
-      this.transport.onreadystatechange = function() {};
+      this.transport.onreadystatechange = function(){};
     }
   },
   success: function() {
-    return !this.transport.status ||
-      (this.transport.status >= 200 && this.transport.status < 300);
+    //return !this.transport.status || (this.transport.status >= 200 && this.transport.status < 300);
+    return (this.transport.status >= 200 && this.transport.status < 300);
   }
 });

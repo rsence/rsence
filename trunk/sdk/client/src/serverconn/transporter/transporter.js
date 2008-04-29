@@ -26,9 +26,9 @@
   *  - you may refer to 't' as the HTransporter's namespace.
   *
   * Sample initialization sequence:
-  * > t.ses_id = 'nhHOZ8Zo64Wfo';
-  * > t.syncDelay = 400;
-  * > t.url_base = '/phase2';
+  * > HTransporter.ses_id    = 'nhHOZ8Zo64Wfo';
+  * > HTransporter.syncDelay = 400;
+  * > HTransporter.url_base = '/ui';
   *
   * See Also:
   *  <HValueManager.toXML>
@@ -57,85 +57,131 @@ HTransportPoll = true;
  * Url or uri where the the client goes, if a communication error is encountered.
  */
 HFailPageUrl = '/';
+HTransporterMaxRetryCount = 60;     // 60 retries
+HTransporterMaxRetryTime  = 60000; // 60 seconds
+HTransporterRetryDelay    = 1000; // 1 second
 
 /* vars: Instance variables
  *  url_base  - The URL (or path) that the requests are sent to
  *  ses_id    - A value that is the reported in each request by the key 'ses_id'
  *  syncDelay - An integer value (in ms) that the client waits before starting the next request
  */
-
 HTransporter = Base.extend({
   
   constructor: null,
   
   start: function(_url_base){
-    this.url_base  = _url_base;
-    this.ses_id    = 0;
-    this.err_msg   = '';
-    this.isBusy    = false;
-    this.syncNum   = 0;
-    this.syncDelay = 0;
-    this.pollMode  = HTransportPoll;
-    this.req_timeout = setTimeout('HTransporter.sync();',this.syncDelay);
+    var _this = HTransporter;
+    _this.url_base  = _url_base;
+    _this.ses_id    = 0;
+    _this.err_msg   = '';
+    _this.isBusy    = false;
+    _this.syncNum   = 0;
+    _this.syncDelay = 100;
+    
+    _this.prevData  = '';
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    
+    _this.pollMode  = HTransportPoll;
+    _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
   },
   
   setPollMode: function(_flag) {
-    this.pollMode = _flag;
+    HTransporter.pollMode = _flag;
   },
   
   failure: function(resp){
-    // If the connection fails, automatically try to reload the page.
-    location.href = HFailPageUrl;
-    clearTimeout(this.req_timeout);
-    this.isBusy = true;
+    //console.log('failure');
+    var _currFailAge = HTransporterMaxRetryTime+(new Date().getTime()),
+        _this = HTransporter;
+    clearTimeout(_this.req_timeout);
+    if(_this.firstFail==0){
+      _this.isBusy = false;
+      _this.firstFail=(new Date().getTime());
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else if((_this.failCount<HTransporterMaxRetryCount)&&(_this.firstFail<_currFailAge)){
+      _this.isBusy = false;
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else {
+      // If the connection fails, automatically try to reload the page.
+      window.status = 'Communications error, reloading page...';
+      location.href = HFailPageUrl;
+      _this.isBusy = true;
+    }
+    //console.log('fail..retry');
+    _this.req_timeout = setTimeout('HTransporter.sync();',HTransporterRetryDelay);
   },
   
   respond: function(resp){
-    var _respText = resp.responseText;
-    //console.log( _respText );
-    //var t = HTransporter;
-    //try {
-      //t.err_msg = '';
+    var _respText = resp.responseText,
+        _this = HTransporter;
+    try {
+      _this.err_msg = '';
       eval(_respText); 
-    //} catch(e) {
-    //  t.err_msg = '&err_msg='+e;
-    //}
-    HTransporter.isBusy = false;
-    //HTransporter.isBusy = true;
+    }
+    catch(e) {
+      _this.err_msg = '&err_msg='+e;
+      _this.failure(resp);
+    }
+    _this.prevData  = '';
+    if(_this.failCount!=0){window.status='';}
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    _this.isBusy = false;
+    if(_this.pollMode){
+      _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+    }
   },
   
   sync: function(){
-    var valid_delay = ((this.syncDelay&&this.syncDelay>0)||this.syncDelay==0);
+    var _this = HTransporter,
+        _valid_delay = ((_this.syncDelay>0)||(_this.syncDelay==0));
     // Negative syncDelay stops transporter.
-    if(valid_delay && this.url_base){
-      if(!this.isBusy){
-        this.isBusy = true;
-        var _syncData = HValueManager.toXML();
-        
-        if ("" != _syncData || this.pollMode) {
-          
-          this.syncNum++;
-          HVM.isGetting=true;
-          req_args = {
-            onSuccess: function(resp){HTransporter.respond(resp);},
-            onFailure: function(resp){HTransporter.failure(resp);},
-            method:    'post',
-            postBody:  'ses_id='+HTransporter.ses_id+_syncData
-          };
-          this.req  = new Ajax.Request( this.url_base, req_args );
-          HVM.isGetting=false;
+    if(_valid_delay && _this.url_base){
+      if(!_this.isBusy){
+        _this.isBusy = true;
+        if(_this.prevData!=''){
+          _syncData = _this.prevData;
+          //console.log('syncData0:',_syncData);
         }
         else {
-          this.isBusy = false;
+          _syncData = HValueManager.toXML();
+          _this.prevData = _syncData;
+          //console.log('syncData1:',_syncData);
         }
-        
+        if(""!=_syncData || _this.pollMode) {
+          _this.syncNum++;
+          HVM.isGetting=true;
+          req_args = {
+            onSuccess: function(resp){_this.respond(resp);},
+            onFailure: function(resp){_this.failure(resp);},
+            method:    'post',
+            postBody:  'ses_id='+_this.ses_id+_this.err_msg+_syncData
+          };
+          try{
+            _this.req  = new Ajax.Request( _this.url_base, req_args );
+            HVM.isGetting=false;
+          }
+          catch(e){
+            window.status = 'conn error:'+e;
+            HVM.isGetting=false;
+            _this.failure(null);
+          }
+        }
+        else {
+          _this.isBusy = false;
+        }
       }
-      this.req_timeout = setTimeout('HTransporter.sync();',this.syncDelay);
     }
   },
   
   stop: function() {
-    clearTimeout(this.req_timeout);
+    clearTimeout(_this.req_timeout);
   }
   
 });

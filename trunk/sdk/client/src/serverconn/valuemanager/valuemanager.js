@@ -132,6 +132,11 @@ HValueManager = HClass.extend({
       if(this.tosync.indexOf(_theObj.id)==-1){
         this.tosync.push(_theObj.id);
       }
+      var _t=HTransporter;
+      if(!_t.pollMode){
+        clearTimeout(_t.req_timeout);
+        _t.req_timeout = setTimeout('HTransporter.sync();',_t.syncDelay);
+      }
     }
   },
   
