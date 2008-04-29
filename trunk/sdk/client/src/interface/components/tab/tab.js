@@ -1,18 +1,18 @@
 
-HTabView = HControl.extend({
+HTabView = HView.extend({
   tabIndex: 0,
   flexRight: true,
   flexRightOffset: 0,
   flexBottom: true,
   flexBottomOffset: 0,
-  setLabel: function(_label){
+  /*setLabel: function(_label){
     this.parent.setLabel(_label);
     this.base(_label);
   },
   setValue: function(_value){
     this.parent.setValue(_value);
     this.base(_value);
-  },
+  },*/
   draw: function(){
     var _isDrawn = this.drawn;
     this.base();
@@ -30,6 +30,8 @@ HTabView = HControl.extend({
 
 HTab = HControl.extend({
   componentName: "tab",
+  refreshOnValueChange: false,
+  refreshOnLabelChange: false,
   constructor: function(_rect,_parent,_options){
     this.tabInit();
     if(this.isinherited) {
@@ -80,6 +82,9 @@ HTab = HControl.extend({
     this.tabLabelAlign = 'left';
     this.tabTriggerLink = false;
   },
+  setLabel: function(_label){
+    this.label = _label;
+  },
   selectTab: function(_tabIdx){
     if(_tabIdx instanceof HTabView){
       _tabIdx = _tabIdx.tabIndex;
@@ -108,6 +113,7 @@ HTab = HControl.extend({
         _tabIdx = this.tabs.length;
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
         _tabLabelHTML = this.tabLabelHTMLPrefix+_tabLabel+this.tabLabelHTMLSuffix;
+    _tab.hide();
     ELEM.addClassName(_tabLabelElemId,'item-bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');
     ELEM.setStyle(_tabLabelElemId,this.tabLabelAlign,this.rightmostPx+'px');
