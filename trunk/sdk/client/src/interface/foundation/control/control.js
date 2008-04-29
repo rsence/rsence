@@ -26,7 +26,6 @@
   *  events - A structure that tells what events to bind.
   *  enabled - The enabled/disabled flag. See <setEnabled>.
   *  value - The current value of a component. See <setValue>.
-  *  refreshOnValueChange - A flag that tells components to call <refresh> automatically whenever the value changes, if true.
   *  valueObj - The current <HValue>-compatible object. Do not set directly. Holds reference to the bound <HValue> instance. Set with <HValue.bind>.
   *  minValue - The minimum allowed value, when the component utilizes value ranges. See <setValueRange>.
   *  maxValue - The maximum allowed value, when the component utilizes value ranges. See <setValueRange>.
@@ -52,6 +51,8 @@ HControl = HView.extend({
   *  _options - (optional) All other parameters. See <HComponentDefaults>.
   *
   **/
+  refreshOnValueChange: true,
+  refreshOnLabelChange: true,
   constructor: function(_rect, _parentClass, _options) {
     
     // Use empty options if none supplied. Change this within components.
@@ -81,7 +82,6 @@ HControl = HView.extend({
     this.setEvents(_events);
     
     this.type = '[HControl]';
-    this.refreshOnValueChange = true;
     
     // These are checked, because these might be overridden before the base is called.
     if(!this.valueObj) {
@@ -159,6 +159,7 @@ HControl = HView.extend({
   **/
   setLabel: function(_label) {
     this.label = _label;
+    this.options.label = _label;
     this.refresh();
   },
   
@@ -221,9 +222,7 @@ HControl = HView.extend({
     if(_value !== this.value) {
       this.value = _value;
       this.valueObj.set(this.value);
-      if(this.refreshOnValueChange) {
-        this.refresh();
-      }
+      this.refresh();
     }
   },
   
@@ -264,6 +263,33 @@ HControl = HView.extend({
     this.setValue(_value);
     this.refresh();
   },
+  
+  refreshValue: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.value){
+        ELEM.setHTML(this.markupElemIds.value,this.value);
+      }
+    }
+  },
+  refreshLabel: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.label){
+        ELEM.setHTML(this.markupElemIds.label,this.label);
+      }
+    }
+  },
+  refresh: function(){
+    this.base();
+    if(this.drawn){
+      if(this.refreshOnValueChange){
+        this.refreshValue();
+      }
+      if(this.refreshOnLabelChange){
+        this.refreshLabel();
+      }
+    }
+  },
+  
   
 /** method: setEvents
   *

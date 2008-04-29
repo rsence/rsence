@@ -430,12 +430,12 @@ HView = HClass.extend({
   *  <HThemeManager> <drawRect> <drawMarkup> <draw>
   **/
   refresh: function() {
-    if (this.drawn) {
+    if(this.drawn) {
       // this.drawn is checked here so the rectangle doesn't get drawn by the
       // constructor when setRect() is initially called.
       this.drawRect();
     }
-    if (this.optimizeWidthOnRefresh) {
+    if(this.optimizeWidthOnRefresh) {
       this.optimizeWidth();
     }
   },
