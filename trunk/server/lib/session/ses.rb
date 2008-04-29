@@ -300,6 +300,7 @@ class HSessionManager
       msg.reply "jsLoader.load('window');"
       msg.reply "jsLoader.load('servermessage');"
       msg.reply "reloadApp = new ReloadApp( 'Invalid Session', 'Your session is invalid. Please reload the page to continue.', '/'  );"
+      msg.reply "HTransporter.syncDelay=-1;"
       return false
     end
   end

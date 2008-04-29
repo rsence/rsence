@@ -85,7 +85,9 @@ class HTransporter
       end
       msg.reply "jsLoader.load('basic');jsLoader.load('window');jsLoader.load('servermessage');"
       msg.reply "reloadApp = new ReloadApp( 'Client Error', 'Your web browser has encountered an javascript error. Please reload the page to continue.', '/'  );"
-      #msg.reply( "HTransporter.stop(); console.log(#{request.query['err_msg'].inspect}); alert('Client Error. STOP.');" )
+      
+      msg.reply( "HTransporter.syncDelay=-1;" )
+      #console.log(#{request.query['err_msg'].inspect});alert('Client Error. STOP.');" )
     end
     
     if msg.ses_valid
