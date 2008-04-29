@@ -67,11 +67,18 @@ class HSessionManager
     root_setup = $config[:database][:root_setup]
     auth_setup = $config[:database][:auth_setup]
     
-    db_root = MySQLAbstractor.new(root_setup, root_setup[:db])
-    unless db_root.dbs.include?( auth_setup[:db] )
-      puts "Creating himle session database #{auth_setup[:db].inspect}..." if $config[:debug_mode]
-      db_root.q( "create database #{auth_setup[:db]}" )
+    begin
+      db_root = MySQLAbstractor.new(root_setup, root_setup[:db])
+      db_root.open
+      unless db_root.dbs.include?( auth_setup[:db] )
+        puts "Creating himle session database #{auth_setup[:db].inspect}..." if $config[:debug_mode]
+        db_root.q( "create database #{auth_setup[:db]}" )
+      end
+    rescue
+      puts "root_setup failed, using auth_setup"
+      db_root = false
     end
+    
     db_auth = MySQLAbstractor.new(auth_setup, auth_setup[:db])
     begin
       has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
@@ -80,7 +87,18 @@ class HSessionManager
     rescue
       has_privileges = false
     end
-    unless has_privileges
+    
+    if not has_privileges
+      if not db_root
+        puts "no db_root, please grant permissions manually for:"
+        puts "  user: #{auth_setup[:user]}"
+        puts "  pass: #{auth_setup[:pass]}"
+        puts "  host: #{auth_setup[:host]}"
+        puts "    db: #{auth_setup[:db]}"
+        puts
+        puts "exit."
+        exit
+      end
       puts "Granting privileges..." if $config[:debug_mode]
       db_root.q( "grant all privileges on #{auth_setup[:db]}.* to #{auth_setup[:user]}@localhost identified by '#{auth_setup[:pass]}'" )
       db_root.q( "flush privileges" )
@@ -88,7 +106,7 @@ class HSessionManager
       db_auth.open
     end
     @db = db_auth
-    db_root.close
+    db_root.close if db_root
     
     unless @db.tables.include?('himle_session')
       puts "Creating session table..." if $config[:debug_mode]
