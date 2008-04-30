@@ -122,10 +122,10 @@ ELEM = {
   
   // sets inner html of element
   setHTML: function(_id,_html){
-    try {
+    //try {
       var _this=ELEM;
       _this._elements[_id].innerHTML = _html;
-    } catch(e) {}
+    //} catch(e) {}
     //_this._initCache(_id);
   },
   
@@ -296,6 +296,7 @@ ELEM = {
     if(ELEM._minDelay<ELEMTickerInterval){
       ELEM._minDelay=ELEMTickerInterval;
     }
+    /*
     if(ELEM._is_ie6){
       if(ELEM._minDelay<200){
         ELEM._minDelay=200;
@@ -304,6 +305,7 @@ ELEM = {
         ELEMTickerInterval=200;
       }
     }
+    */
   },
   setSlowness: function(_slowness){
     // we should replace this with an
@@ -660,7 +662,8 @@ ELEM = {
     
     // creates an 'trash' for div elements
     _this._trashId = _this.make(0,'div');
-    _this.setCSS(_this._trashId,"display:none;");
+    
+    _this.setCSS(_this._trashId,"display:none;visibility:hidden;");
     _this.setAttr(_this._trashId,'id','trashcan_'+_this._trashId);
     
     _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+')',_this._minDelay);

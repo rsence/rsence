@@ -132,8 +132,8 @@ iefix = {
     if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
     _element.runtimeStyle.width="";
     if(_element.offsetWidth<_width){
-      if(_width<0){_width=0;}
       _width-=_this._getBorderWidth(_element)+_this._getPaddingWidth(_element);
+      if(_width<0){_width=0;}
       _element.runtimeStyle.width=_width;
     }
   },
@@ -201,18 +201,24 @@ iefix = {
     _currentStyle=_element.currentStyle;
     
     // check if element needs to be positioned from the right
-    if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.left!="auto"&&_currentStyle.right!="auto"&&_currentStyle.width=="auto"){
-      _this._resizeRight(_element);
-    }
+    try{
+      if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.left!="auto"&&_currentStyle.right!="auto"&&_currentStyle.width=="auto"){
+        _this._resizeRight(_element);
+      }
+    } catch(e) {}
     
     // check if element needs to be positioned from the bottom
-    if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.top!="auto"&&_currentStyle.bottom!="auto"&&_currentStyle.height=="auto"){
-      _this._resizeBottom(_element);
-      // TODO: needs line height calculation here too for elements smaller than the line height or font size
-    }
+    try{
+      if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.top!="auto"&&_currentStyle.bottom!="auto"&&_currentStyle.height=="auto"){
+        _this._resizeBottom(_element);
+        // TODO: needs line height calculation here too for elements smaller than the line height or font size
+      }
+    } catch(e) {}
     
     // check if opacity needs to be fixed:
-    if(_element.currentStyle.opacity){_this._fixOpacity(_element);}
+    try{
+      if(_element.currentStyle.opacity){_this._fixOpacity(_element);}
+    } catch(e) {}
     
     // check if background image needs to be fixed:
     //if(_element.currentStyle.backgroundImage){_this._fixBackgroundImage(_element);}

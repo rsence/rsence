@@ -75,12 +75,14 @@ HTab = HControl.extend({
     this.tabLabelLeftEdge  = 4;  // overridden in the template
     this.tabLabelRightEdge = 4;  // overridden in the template
     this.fontStyle = 'font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;'; // overridden in the template
-    this.tabLabelHTMLPrefix = '<div class="edge-left"></div><div class="tablabel">';
+    this.tabLabelHTMLPrefix1 = '<div class="edge-left"></div><div class="tablabel" style="width:';
+    this.tabLabelHTMLPrefix2 = 'px">';
     this.tabLabelHTMLSuffix = '</div><div class="edge-right"></div>';
     this.tabLabelParentElem = 'label';
     this.tabLabelElementTagName = 'div';
     this.tabLabelAlign = 'left';
     this.tabTriggerLink = false;
+    this.tabLabelNoHTMLPrefix = false;
   },
   setLabel: function(_label){
     this.label = _label;
@@ -107,12 +109,18 @@ HTab = HControl.extend({
     this.setValue(_tabIdx);
   },
   addTab: function(_tabLabel,_doSelect){
-    var _tabIdx=this.tabs.length,
-        _labelWidth=this.stringWidth(_tabLabel,0)+this.tabLabelLeftEdge+this.tabLabelRightEdge,
+    var _tabIdx=this.tabs.length,_tabLabelHTML='',
+        _labelTextWidth=this.stringWidth(_tabLabel,0),
+        _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
-        _tabIdx = this.tabs.length;
+        _tabIdx = this.tabs.length,
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
-        _tabLabelHTML = this.tabLabelHTMLPrefix+_tabLabel+this.tabLabelHTMLSuffix;
+    if(this.tabLabelNoHTMLPrefix){
+      _tabLabelHTML = _tabLabel;
+    }
+    else {
+      _tabLabelHTML = this.tabLabelHTMLPrefix1+_labelTextWidth+this.tabLabelHTMLPrefix2+_tabLabel+this.tabLabelHTMLSuffix;
+    }
     _tab.hide();
     ELEM.addClassName(_tabLabelElemId,'item-bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');

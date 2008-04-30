@@ -38,9 +38,9 @@ JSLoader = Base.extend({
     }
     //this._currJS.push(_jsName);
     req_args = {
-      onSuccess: function(resp){jsLoader._okay(resp);},
-      onFailure: function(resp){console.log("failed to load js: "+jsLoader._currJS);},
-      method:    'get',
+      onSuccess:    function(resp){jsLoader._okay(resp);},
+      onFailure:    function(resp){window.status="failed to load js: "+jsLoader._currJS;},
+      method:       'get',
       asynchronous: false
     };
     this._req = new Ajax.Request( this._basePath+_jsName+'.js', req_args );

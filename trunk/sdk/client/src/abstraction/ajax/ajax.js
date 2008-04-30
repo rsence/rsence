@@ -17,8 +17,8 @@ is_ie = !(navigator.userAgent.toLowerCase().indexOf("opera") > -1) && navigator.
 
 
 Array.prototype.toQueryString = function() {
-  var i, l = this.length;
-  var _array = [];
+  var i, l = this.length,
+      _array = [];
   for (i = 0; i < l; i++) {
     _array.push( encodeURIComponent(this[i].key) + "=" +
       encodeURIComponent(this[i].value) );
