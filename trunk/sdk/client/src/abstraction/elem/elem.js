@@ -122,8 +122,10 @@ ELEM = {
   
   // sets inner html of element
   setHTML: function(_id,_html){
-    var _this=ELEM;
-    _this._elements[_id].innerHTML = _html;
+    try {
+      var _this=ELEM;
+      _this._elements[_id].innerHTML = _html;
+    } catch(e) {}
     //_this._initCache(_id);
   },
   

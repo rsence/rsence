@@ -66,6 +66,7 @@ class Message
   end
   
   def reply(data)
+    puts data.inspect if $config[:trace]
     @output.push(data)
   end
   

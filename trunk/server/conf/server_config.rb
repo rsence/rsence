@@ -14,7 +14,8 @@
   ###
 
 $config = {
-  :no_gzip => true
+  :no_gzip => true, # disabled gzip compression everywhere
+  :trace   => false # echoes all data going to the client to stdout
 }
 
 if ARGV.include?('-r')
