@@ -38,7 +38,7 @@ class HTransporter
   
   ## build the essential structures
   def initialize
-    @system       = HSystem.new( $config[:app_path] )
+    @system       = HSystem.new( $config[:app_paths] )
     @valuemanager = HValueManager.new
     @session      = HSessionManager.new( @valuemanager, @system )
   end
@@ -66,15 +66,15 @@ class HTransporter
     response.content_type = 'text/javascript; charset=utf-8'
     response['Cache-Control'] = 'no-cache'
     
-    if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
-      response.chunked = true
-      response['Content-Encoding'] = 'gzip'
-      do_gzip = true
-    else
-      do_gzip = false
-    end
+    #if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
+    #  response.chunked = true
+    #  response['Content-Encoding'] = 'gzip'
+    #  do_gzip = true
+    #else
+    #  do_gzip = false
+    #end
     
-    msg = @session.init_msg( request, response, cookies )
+    msg = @session.init_msg( request, response )#, cookies )
     
     if request.query.has_key?('err_msg')
       if $config[:debug_mode]
@@ -89,6 +89,8 @@ class HTransporter
       msg.reply( "HTransporter.syncDelay=-1;" )
       #console.log(#{request.query['err_msg'].inspect});alert('Client Error. STOP.');" )
     end
+    
+    #puts "----- valid session: #{msg.inspect} -----"
     
     if msg.ses_valid
       
@@ -130,16 +132,17 @@ class HTransporter
     end
     
     ## return the output
-    if do_gzip
-      outp = GZString.new('')
-      gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-      gzwriter.write( msg.output.join("\r\n") )
-      gzwriter.close
-    else
-      outp = msg.output.join("\r\n")
-    end
-    response['Content-Size'] = outp.size
-    return outp
+    #if do_gzip
+    #  outp = GZString.new('')
+    #  gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
+    #  gzwriter.write( msg.output.join("\r\n") )
+    #  gzwriter.close
+    #else
+    #outp = msg.output.join("\r\n")
+    #end
+    response['Content-Size'] = response.body.size
+    #return outp
+    #response.body = outp
   end
   
 end

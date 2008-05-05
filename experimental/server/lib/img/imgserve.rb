@@ -17,24 +17,6 @@ require 'RMagick'
 
 require 'lib/session/randgen'
 
-class ImgServlet < WEBrick::HTTPServlet::AbstractServlet
-  def do_GET( req, res )
-    IMGSERVE.fetch_img( req, res )
-  end
-end
-
-class FileServlet < WEBrick::HTTPServlet::AbstractServlet
-  def do_GET( req, res )
-    IMGSERVE.fetch_file( req, res )
-  end
-end
-
-class RsrcServlet < WEBrick::HTTPServlet::AbstractServlet
-  def do_GET( req, res )
-    IMGSERVE.fetch_rsrc( req, res )
-  end
-end
-
 class ImgServe
   
   attr_accessor :raw_uris, :imgs, :content_types
@@ -47,9 +29,9 @@ class ImgServe
     @expires = {}
     @expire_files = {}
     @server = server
-    @server.mount( '/img', ImgServlet )
-    @server.mount( '/file', FileServlet )
-    @server.mount( '/data', RsrcServlet )
+    #@server.mount( '/img', ImgServlet )
+    #@server.mount( '/file', FileServlet )
+    #@server.mount( '/data', RsrcServlet )
     @imgs = {
       :by_id   => {},
       :ses_ids => {}

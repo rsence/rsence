@@ -18,8 +18,6 @@ require 'lib/session/msg'
 require 'lib/session/randgen'
 require 'lib/db/mysql'
 
-require 'pp'
-
 class HSessionManager
   
   def initialize( valuemanager, system, timeout_secs=15*60, disposable_keys=true )
@@ -308,12 +306,19 @@ class HSessionManager
   ### Checks / Sets cookies
   def check_cookie( msg )
     cookie_key = false
-    msg.request.cookies.each do |cookie|
-      if cookie.name == 'ses_key'
-        cookie_key = cookie.value
-        break
-      end
+    #puts msg.request.cookies.inspect
+    #msg.request.cookies.each do |cookie|
+    #  if cookie.name == 'ses_key'
+    #    cookie_key = cookie.value
+    #    break
+    #  end
+    #end
+    
+    cookie_raw = msg.request.cookies
+    if cookie_raw.has_key?('ses_key')
+      cookie_key = cookie_raw['ses_key'].split(':')[0]
     end
+    
     if cookie_key
       cookie_key_exist = @session_cookie_keys.has_key?( cookie_key )
     end
@@ -332,8 +337,6 @@ class HSessionManager
       else
         cookie_key = false
       end
-    else
-      cookie_key = false
     end
     unless cookie_key
       cookie_key = init_ses( msg )
@@ -341,27 +344,34 @@ class HSessionManager
       ## Makes sure we have value storage for the session
       @valuemanager.init_ses( msg )
     end
-    ses_cookie = WEBrick::Cookie.new('ses_key',cookie_key)
-    ses_cookie.comment = 'Himle session key (just for your convenience)'
-    
+    #ses_cookie = WEBrick::Cookie.new('ses_key',cookie_key)
+    ses_cookie_comment = 'Himle session key (just for your convenience)'
     ## mod_rewrite:
     if msg.request.header.has_key?('x-forwarded-host')
-      domain = msg.request.header['x-forwarded-host'][0]
+      domain = msg.request.header['x-forwarded-host']
       
     ## direct access:
     else
       domain = msg.request.host
     end
     
-    if @ipv4_reg.match(domain)
-      ses_cookie.domain  = domain
-    elsif domain.include?('.')
-      ses_cookie.domain  = ".#{domain}"
+    if not @ipv4_reg.match(domain) and domain.include?('.')
+      ses_cookie_domain  = ".#{domain}"
+    else
+      ses_cookie_domain  = domain
     end
-    ses_cookie.max_age = @timeout_secs
-    ses_cookie.path    = '/hello'
+    ses_cookie_max_age = @timeout_secs
+    ses_cookie_path    = '/hello'
     #ses_cookie.secure  = false
-    ses_cookie_str = ses_cookie.to_s
+    ses_cookie_str = [
+      "ses_key=#{cookie_key}",
+      "Domain=#{ses_cookie_domain}",
+      # "Expires=#{ses_cookie_expires}",
+      "Max-Age=#{ses_cookie_max_age}",
+      "Comment=#{ses_cookie_comment}",
+      "Path=#{ses_cookie_path}"
+    ].join(':')
+    #puts ses_cookie_str.inspect
     msg.response['Set-Cookie'] = ses_cookie_str
     return ses_status
   end

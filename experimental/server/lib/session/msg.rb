@@ -33,7 +33,7 @@ require 'lib/img/imgserve'
 
 class Message
   
-  attr_accessor :app, :command, :data, :output, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid, :request, :response, :ie6
+  attr_accessor :app, :command, :data, :session, :ses_id, :system, :hsyncvalues, :valuemanager, :new_session, :restored_session, :ses_valid, :request, :response, :ie6 #, :output
   
   def initialize( request, response )
     
@@ -47,10 +47,10 @@ class Message
     @data        = nil
     @session     = {}
     @ses_id      = 0
-    @ie6         = (request.header.has_key?('user-agent') and request.header['user-agent'][0].include?('MSIE 6.0'))
+    @ie6         = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
     #puts "ie6: #{@ie6.inspect}, agent: #{request.header['user-agent'].inspect}"
     
-    @output      = []
+    #@output      = []
     
     @new_session = false
     @restored_session = false
@@ -67,7 +67,8 @@ class Message
   
   def reply(data)
     puts data.inspect if $config[:trace]
-    @output.push(data)
+    #@output.push(data)
+    @response.body+=data
   end
   
   def run(*args)

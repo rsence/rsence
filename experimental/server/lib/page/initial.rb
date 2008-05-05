@@ -15,29 +15,27 @@
   
   
 ##
-# HelmiInit is the servlet that is responsible for initializing the "boot-strap page".
+# HInitialPage is the servlet that is responsible for initializing the "boot-strap page".
 # Currently, it just loads an html file and displays it.
 ##
-class HInitialPage < WEBrick::HTTPServlet::AbstractServlet
+class HInitialPage
   
-  def initialize(args)
+  def initialize
     index_html_file = open($config[:sys_path]+'/lib/page/initial.html')
     @index_html = index_html_file.read
     index_html_file.close
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:default_html_page_title])
-    super
   end
   
   ## Outputs a static web page. Nothing else.
-  def do_GET(request, response)
+  def get(request, response)
     
     response.status = 200
-    response['Content-Type'] = 'text/html'
+    response.content_type = 'text/html; charset=UTF-8'
     
     response.body = @index_html
     
   end
   
-  alias do_POST do_GET
 end
 
