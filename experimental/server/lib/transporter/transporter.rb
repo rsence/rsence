@@ -74,7 +74,7 @@ class HTransporter
     #  do_gzip = false
     #end
     
-    msg = @session.init_msg( request, response )#, cookies )
+    msg = @session.init_msg( request, response, cookies )
     
     if request.query.has_key?('err_msg')
       if $config[:debug_mode]

@@ -254,6 +254,8 @@ class HSessionManager
     # map the ses_id to cookie key
     @session_cookie_keys[ cookie_key ] = ses_id
     
+    puts "init_ses, cookie_key = #{cookie_key.inspect}"
+    
     ### Tell the client what the new key is
     msg.reply "HTransporter.ses_id='#{ses_key}';"
     
@@ -306,21 +308,13 @@ class HSessionManager
   ### Checks / Sets cookies
   def check_cookie( msg )
     cookie_key = false
-    #puts msg.request.cookies.inspect
-    #msg.request.cookies.each do |cookie|
-    #  if cookie.name == 'ses_key'
-    #    cookie_key = cookie.value
-    #    break
-    #  end
-    #end
-    
     cookie_raw = msg.request.cookies
     if cookie_raw.has_key?('ses_key')
       cookie_key = cookie_raw['ses_key'].split(':')[0]
     end
-    
     if cookie_key
       cookie_key_exist = @session_cookie_keys.has_key?( cookie_key )
+      cookie_key = false unless cookie_key_exist
     end
     if cookie_key and cookie_key_exist
       ses_id = @session_cookie_keys[ cookie_key ]
@@ -345,7 +339,7 @@ class HSessionManager
       @valuemanager.init_ses( msg )
     end
     #ses_cookie = WEBrick::Cookie.new('ses_key',cookie_key)
-    ses_cookie_comment = 'Himle session key (just for your convenience)'
+    ses_cookie_comment = $config[:ses_cookie_comment]}
     ## mod_rewrite:
     if msg.request.header.has_key?('x-forwarded-host')
       domain = msg.request.header['x-forwarded-host']
@@ -371,7 +365,11 @@ class HSessionManager
       "Comment=#{ses_cookie_comment}",
       "Path=#{ses_cookie_path}"
     ].join(':')
-    #puts ses_cookie_str.inspect
+    
+    puts "ses_cookie_str: #{ses_cookie_str.inspect}"
+    puts "@session_cookie_keys: #{@session_cookie_keys.inspect}"
+    
+    
     msg.response['Set-Cookie'] = ses_cookie_str
     return ses_status
   end
