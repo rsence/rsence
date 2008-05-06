@@ -1,0 +1,21 @@
+
+HTabView=HView.extend({tabIndex:0,flexRight:true,flexRightOffset:0,flexBottom:true,flexBottomOffset:0,draw:function(){var _k=this.drawn;this.base();if(!_k){var i=0,_3S=[['overflow','auto']];for(i;i<_3S.length;i++){this.setStyle(_3S[i][0],_3S[i][1]);}
+this.hide();}}});HTab=HControl.extend({componentName:"tab",refreshOnValueChange:false,refreshOnLabelChange:false,constructor:function(_1,_v,_2){this.tabInit();if(this.isinherited){this.base(_1,_v,_2);}
+else{this.isinherited=true;this.base(_1,_v,_2);this.isinherited=false;}
+this.type='[HTab]';this.setMouseDown(true);if(!this.isinherited){this.draw();}},setValue:function(_85){this.base(_85);if(typeof _85=='number'){var _I=parseInt(_85,10);if(_I<this.tabs.length){if(_I!=this.selectIdx){this.selectTab(_I);}}}},stringWidth:function(_L,_b){var _H='<span style="'+this.fontStyle+'">'+_L+'</span>',_h=this.base(_H,null,_b);return _h;},tabInit:function(){this.tabs=[];this.tabLabels=[];this.tabLabelBounds=[];this.tabLabelStrings=[];this.rightmostPx=0;this.selectIdx=-1;this.tabLabelHeight=20;this.tabLabelLeftEdge=4;this.tabLabelRightEdge=4;this.fontStyle='font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;';this.tabLabelHTMLPrefix1='<div class="edge-left"></div><div class="tablabel" style="width:';this.tabLabelHTMLPrefix2='px">';this.tabLabelHTMLSuffix='</div><div class="edge-right"></div>';this.tabLabelParentElem='label';this.tabLabelElementTagName='div';this.tabLabelAlign='left';this.tabTriggerLink=false;this.tabLabelNoHTMLPrefix=false;},setLabel:function(_q){this.label=_q;},selectTab:function(_03){if(_03 instanceof HTabView){_03=_03.tabIndex;}
+if(this.selectIdx!=-1){var _5H=this.tabLabels[this.selectIdx],_7I=this.tabs[this.selectIdx];ELEM.removeClassName(_5H,'item-fg');ELEM.addClassName(_5H,'item-bg');HSystem.views[_7I].hide();}
+if(_03!=-1){var _0c=this.tabLabels[_03],_3T=this.tabs[_03];ELEM.removeClassName(_0c,'item-bg');ELEM.addClassName(_0c,'item-fg');HSystem.views[_3T].show();}
+this.selectIdx=_03;this.setValue(_03);},addTab:function(_2W,_8k){var _03=this.tabs.length,_5G='',_6Z=this.stringWidth(_2W,0),_3z=_6Z+this.tabLabelLeftEdge+this.tabLabelRightEdge,_1y=new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),_03=this.tabs.length,_0c=ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);if(this.tabLabelNoHTMLPrefix){_5G=_2W;}
+else{_5G=this.tabLabelHTMLPrefix1+_6Z+this.tabLabelHTMLPrefix2+_2W+this.tabLabelHTMLSuffix;}
+_1y.hide();ELEM.addClassName(_0c,'item-bg');ELEM.setStyle(_0c,'width',_3z+'px');ELEM.setStyle(_0c,this.tabLabelAlign,this.rightmostPx+'px');ELEM.setHTML(_0c,_5G);this.tabLabelStrings.push(_2W);if(this.tabTriggerLink&&this.tabLabelElementTagName=='a'){ELEM.setAttr(_0c,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_03+');');}
+else if(this.tabTriggerLink){ELEM.setAttr(_0c,'mouseup','HSystem.views['+this.viewId+'].selectTab('+_03+');');}
+else{this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_3z]);}
+this.rightmostPx+=_3z;if(this.tabLabelAlign=='right'){ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');}
+this.tabs.push(_1y.viewId);this.tabLabels.push(_0c);_1y.tabIndex=_03;if(_8k){this.selectTab(_03);}
+return _1y;},mouseDown:function(_4,_c){if(this.tabTriggerLink){this.setMouseDown(false);return;}
+_4-=this.pageX();_c-=this.pageY();if(_4<=this.rightmostPx){if(_c<=this.tabLabelHeight){var i=0,_4R;for(i;i<this.tabLabelBounds.length;i++){_4R=this.tabLabelBounds[i];if(_4<_4R[1]&&_4>=_4R[0]){this.selectTab(i);return;}}}}},removeTab:function(_03){var _7r=this.selectIdx,_3T=this.tabs[_03],_0c=this.tabViews[_03];this.tabs.splice(_03,1);this.tabLabels.splice(_03,1);this.tabLabelBounds.splice(_03,1);this.tabLabelStrings.splice(_03,1);if(_03==_7r){this.selectIdx=-1;if(_03==0&&this.tabs.length==0){this.selectTab(-1);}
+else if(_03==(this.tabs.length-1)){this.selectTab(_03-1);}
+else{this.selectTab(_03);}}
+else if(_03<_7r){this.selectIdx--;}
+ELEM.del(_0c);HSystem.views[_3T].die();},draw:function(){var _k=this.drawn;this.base();if(!_k){this.drawMarkup();}
+this.refresh();}});

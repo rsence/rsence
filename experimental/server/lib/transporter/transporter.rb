@@ -34,7 +34,7 @@ end
 ##   - Initializes HSessionManager, HSystem and HValueManager once, then passes messages to the instances.
 ##   - Initializes new Messages for requests and finally sends its response buffer to the client.
 ##
-class HTransporter
+class Transporter
   
   ## build the essential structures
   def initialize
@@ -66,6 +66,7 @@ class HTransporter
     response.content_type = 'text/javascript; charset=utf-8'
     response['Cache-Control'] = 'no-cache'
     
+    ## Uncomment, when Rack supports chunked transfers:
     #if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
     #  response.chunked = true
     #  response['Content-Encoding'] = 'gzip'

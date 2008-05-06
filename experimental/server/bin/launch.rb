@@ -1,5 +1,32 @@
 #!/usr/bin/env ruby
 
+###
+  # HIMLE RIA Server
+  # Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  #  
+  #  This program is free software; you can redistribute it and/or modify it under the terms
+  #  of the GNU General Public License as published by the Free Software Foundation;
+  #  either version 2 of the License, or (at your option) any later version. 
+  #  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  #  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  #  See the GNU General Public License for more details. 
+  #  You should have received a copy of the GNU General Public License along with this program;
+  #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ###
+
+if ARGV.include?('--help') or ARGV.include?('-h')
+  puts "Usage: #{__FILE__} [params]"
+  puts "Params:"
+  puts " --trace-js          Write content of msg.reply calls to stdout."
+  puts " --root-path /path   Define the path to himle server, defaults to 'bin'"
+  puts " --client-path /path Define the path to himle client, defaults to 'client'"
+  puts " --port 80           Define the http port to use, defaults to '8001'"
+  puts " --addr 127.0.0.1    Define the IPv4 address to bind to, defaults to '0.0.0.0' (all)"
+  puts " --server ebb        Choose http server, valid choices:"
+  puts "                       webrick, mongrel, ebb or thin.  Defaults to 'mongrel'"
+end
+
+
 require 'rubygems'
 require 'rack'
 
@@ -15,16 +42,18 @@ CLIENT_PATH = File.join( SERVER_PATH, 'client' )
 
 ## Global configuration hash
 $config = {
+  
+  ## This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
   :no_gzip => true,
   
   ## Enabling this appends all msg.reply call output to stdout
   :trace   => ARGV.include?('--trace-js'),
   
   ## Path to the server root (containing lib, rsrc etc..)
-  :dir_root    => ARGV.include?('--root-path')?ARGV[ARV.index('--root-path')+1]:SERVER_PATH,
+  :dir_root    => ARGV.include?('--root-path')?ARGV[ARGV.index('--root-path')+1]:SERVER_PATH,
   
   ## Path to the client root (containing js and themes dirs)
-  :client_root => ARGV.include?('--client-path')?ARGV[ARV.index('--client-path')+1]:CLIENT_PATH,
+  :client_root => ARGV.include?('--client-path')?ARGV[ARGV.index('--client-path')+1]:CLIENT_PATH,
   
   ## Switches on debug-mode:
   ##  - Generates more output
@@ -37,29 +66,14 @@ $config = {
   :http_server  => {
     
     ## HTTP Port number:
-    :port           => 8001,
+    :port           => ARGV.include?('--port')?ARGV[ARGV.index('--port')+1].to_i:8001,
     
     ## Bind this ip address ('0.0.0.0' means all)
-    :bind_address   => '127.0.0.1',
+    :bind_address   => ARGV.include?('--addr')?ARGV[ARGV.index('--addr')+1]:'0.0.0.0',
     
-    ## Uncomment ONLY these two lines to use WEBrick as the HTTP server
-    #:rack_require   => 'webrick',
-    #:rack_handler   => Rack::Handler::WEBrick
-    
-    ## Comment out these two lines to use something else than mongrel as the HTTP server
-    :rack_require   => 'mongrel',
-    :rack_handler   => Rack::Handler::Mongrel
-    
-    ## Uncomment ONLY these two lines to use EBB as the HTTP server
-    ## (Doesn't seem to support Rack fully yet)
-    #:rack_require   => 'ebb',
-    #:rack_handler   => Rack::Handler::Ebb
-    
-    ## Uncomment ONLY these two lines to use Thin as the HTTP server
-    ## (Doesn't seem to support Rack fully yet)
-    #:rack_require   => 'thin',
-    #:rack_handler   => Rack::Handler::Thin
-    
+    ## Rack handler to use
+    :rack_require   => ARGV.include?('--server')?ARGV[ARGV.index('--server')+1]:'mongrel',
+    :rack_handler   => nil # automatic
   },
   
   ## When disabled, tries to prevent all request caching
@@ -73,11 +87,11 @@ $config = {
   :ria_paths   => {
     
     ## Resource path of the initial html document (could contain images, css etc)
-    :rsrc_path   => [ '/rsrc',   File.join( SERVER_PATH, 'rsrc'    ) ],
+    #:rsrc_path   => [ '/rsrc',   File.join( SERVER_PATH, 'rsrc'    ) ], # will be replaced with static tickets
     
-    ## The paths GZFiles uses to load client js, css and html templates
-    :ui_path     => [ '/js',     File.join( CLIENT_PATH, 'js'      ) ],
-    :theme_path  => [ '/themes', File.join( CLIENT_PATH, 'themes'  ) ]
+    ## The paths FileServe uses to load client js, css and html templates
+    :ui_path     => File.join( CLIENT_PATH, 'js'      ),
+    :theme_path  => File.join( CLIENT_PATH, 'themes'  )
   },
   
   ## 
@@ -89,19 +103,54 @@ $config = {
     #File.join( PATH_TO_ALT_PLUGINS, 'plugins' )
   ],
   
-  ## Transporter instance will be constructed to this one:
+  ## The global Transporter instance will be bound to:
   :transporter => nil,
   
-  ## The initial html page <title>
-  :default_html_page_title     => 'Himle Loading...',
+  ## The global IndexHtml instance will be bound to:
+  :indexhtml   => nil,
   
-  ## The initialized html page <title>
-  :initialized_html_page_title => 'Himle Ready',
+  ## The global FileCache instance will be bound to:
+  :filecache   => nil,
   
-  ## The comment string in the session cookie
-  :ses_cookie_comment => "Himle session key (just for your convenience)"
+  ## The global FileServe instance will be bound to:
+  :fileserve   => nil,
+  
+  ## The global TicketServe instance will be bound to:
+  :ticketserve => nil,
+  
+  ## The global Broker instance will bo bound to:
+  :broker => nil,
+  
+  ## IndexHtml settings:
+  :indexhtml_conf => {
+    ## The initial index.html page <title>
+    :loading_title  => 'Himle Loading...',
+    
+    ## The initialized html page <title>
+    :loaded_title   => 'Himle',
+  },
+  
+  ## Session-related settings
+  :session_conf => {
+    ## The comment string in the session cookie
+    :ses_cookie_comment => "Himle session key (just for your convenience)"
+  }
   
 }
+
+# methods that return rack handlers
+def rack_webrick_handler; Rack::Handler::WEBrick; end
+def rack_ebb_handler;     Rack::Handler::Ebb;     end
+def rack_thin_handler;    Rack::Handler::Thin;    end
+def rack_mongrel_handler; Rack::Handler::Mongrel; end
+
+# Selects handler for Rack
+$config[:http_server][:rack_handler] = self.method({
+  'webrick' => :rack_webrick_handler,
+  'ebb'     => :rack_ebb_handler,  # unsupported
+  'thin'    => :rack_thin_handler, # unsupported
+  'mongrel' => :rack_mongrel_handler
+}[$config[:http_server][:rack_require]]).call
 
 ## Paths of server libraries
 LIB_PATHS  = [File.join( SERVER_PATH, 'lib' )]
@@ -109,6 +158,10 @@ LIB_PATHS  = [File.join( SERVER_PATH, 'lib' )]
 ## Database configuration
 $config[:database] = {
   
+  # root_setup should ideally have permissions
+  # to create the auth_setup account and database,
+  # but if the access fails, it'll fall back to
+  # auth_setup, if it's created manually
   :root_setup => {
     :host => 'localhost', # try '127.0.0.1' if this fails with your mysql configuration
     :user => 'root',
@@ -116,6 +169,8 @@ $config[:database] = {
     :db   => 'mysql'
   },
   
+  # auth_setup is the mysql connection himle uses
+  # to handle session tables. It's obligatory.
   :auth_setup => {
     :host => 'localhost',
     :user => 'himle',
@@ -136,18 +191,42 @@ LIB_PATHS.each do |lib_path|
 end
 
 
-
 ## Loads the chosen web-server 
 require $config[:http_server][:rack_require]
 
-## Loads the http broker class
-require 'http/broker'
+# Transporter is the top-level handler for xhr
+require 'transporter/transporter'
+$config[:transporter] = Transporter.new
 
-## Initializes the http broker class
-broker = Broker.start(
+# JSServe / JSCache caches and serves js and theme -files
+require 'file/filecache'
+$config[:filecache] = FileCache.new
+$config[:fileserve] = FileServe.new
+
+# TicketServe caches and serves disposable and static resources
+require 'file/ticketserve'
+$config[:ticketserve] = TicketServe.new
+
+# IndexHtml builds the default page at '/'
+require 'page/indexlhtml'
+$config[:indexhtml]  = IndexHtml.new
+
+## Broker routes requests to the correct handler
+require 'http/broker'
+$config[:broker] = Broker.start(
   $config[:http_server][:rack_handler],
   $config[:http_server][:bind_address],
   $config[:http_server][:port]
 )
+
+## CONSTANT aliases for common instances:
+TRANSPORTER = $config[:transporter]
+INDEXHTML   = $config[:indexhtml]
+FILECACHE   = $config[:filecache]
+FILESERVE   = $config[:fileserve]
+TICKETSERVE = $config[:ticketserve]
+BROKER      = $config[:broker]
+
+DEBUG_MODE  = $config[:debug_mode]
 
 

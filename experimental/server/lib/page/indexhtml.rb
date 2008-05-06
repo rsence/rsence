@@ -14,17 +14,29 @@
   ###
   
   
-##
-# HInitialPage is the servlet that is responsible for initializing the "boot-strap page".
-# Currently, it just loads an html file and displays it.
-##
-class HInitialPage
+=begin
+ 
+ IndexHtml is the servlet that is responsible for initializing the "boot-strap page".
+ 
+ It just loads, caches and sends the page for now.
+ 
+=end
+class IndexHtml
   
   def initialize
-    index_html_file = open($config[:sys_path]+'/lib/page/initial.html')
+    
+    index_html_file = open($config[:sys_path]+'/lib/page/index.html','rb')
     @index_html = index_html_file.read
     index_html_file.close
-    @index_html.gsub!('__DEFAULT_TITLE__',$config[:default_html_page_title])
+    
+    loading_gif_file = open($config[:sys_path]+'/lib/page/loading.gif','rb')
+    loading_gif = loading_gif_file.read
+    loading_gif_file.close
+    
+    loading_gif_id = TICKETSERVE.serve_rsrc(loading_gif, 'image/gif' )
+    
+    @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
+    @index_html.gsub!('__LOADING_GIF_ID__',loading_gif_id)
   end
   
   ## Outputs a static web page. Nothing else.

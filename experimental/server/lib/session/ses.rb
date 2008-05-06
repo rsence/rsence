@@ -339,7 +339,7 @@ class HSessionManager
       @valuemanager.init_ses( msg )
     end
     #ses_cookie = WEBrick::Cookie.new('ses_key',cookie_key)
-    ses_cookie_comment = $config[:ses_cookie_comment]}
+    ses_cookie_comment = $config[:ses_cookie_comment]
     ## mod_rewrite:
     if msg.request.header.has_key?('x-forwarded-host')
       domain = msg.request.header['x-forwarded-host']
