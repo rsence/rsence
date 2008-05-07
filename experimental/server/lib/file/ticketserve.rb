@@ -15,7 +15,7 @@
 require 'rubygems'
 require 'RMagick'
 
-require 'lib/session/randgen'
+require 'util/randgen'
 
 =begin
 

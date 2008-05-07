@@ -17,7 +17,7 @@ require 'digest/sha1'
 
 ## HRandgen generates a buffer of random strings and keeps that buffer
 ## Its give method always return a new unique number
-class HRandgen
+class RandomGenerator
   
   ## Initialize with:
   ##  - target_len: the target length of the string
@@ -69,7 +69,7 @@ class HRandgen
   end
   
   ## Returns amount number of random strings packed in an array
-  def give( amount = 1 )
+  def get( amount = 1 )
     make( @buffer_min + amount ) if @buffer.size < amount
     outp = []
     amount.times {
@@ -77,16 +77,13 @@ class HRandgen
     }
     return outp
   end
+  alias give get
   
   ## Returns just one random string as string
-  def give_one
-    return give()[0]
+  def get_one
+    return get(1)[0] # the first item in an array of one items
   end
+  alias give_one get_one
   
 end
 
-=begin
-rand16 = Randgen.new(16)
-rand16.make(1000)
-10.times {puts rand16.give.inspect}
-=end

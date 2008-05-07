@@ -13,10 +13,17 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
 
+
+=begin
+HValue is the server-side representation of the client's HValue object.
+It's the 'messenger' to syncronize server-client data and is smart enough
+to validate and process itself as well as tell the client-side
+representation of itself.
+=end
 class HValue
   
   attr_reader :valid, :sync, :val_id, :data, :type, :jstype, :members
-  attr_writer :valid
+  attr_writer :valid, :val_id
   
   ## value conversion table between js and ruby
   @@jstype_conv = {
@@ -29,37 +36,33 @@ class HValue
     'Array'       => 'object'
   }
   
-  ## method for adding the value to the value manager
+  ## method for binding the value to the session data
   def add( msg )
     
-    #session_values = msg.valuemanager.values[:session][msg.ses_id]
+    # get the value storage from the session data
     session_values = msg.session[:values][:by_id]
     
-    if session_values.has_key?( @val_id )
-      raise "HValue; Duplicate ID when adding! (#{@val_id.inspect})"
-    end
-    
     ## Store the object here
-    session_values[ @val_id  ]  = self
+    session_values[ @val_id ] = self
     
+    ## Sends the client-side description
     restore( msg )
     
     ## Set the valid flag, so we know that the value is initially in sync
     @valid = true
-    
   end
   
-  ## re-send client-size representation
+  ## (Re-)Send the client-size representation
   def restore( msg )
     ## Initialize a new client value
     init_str = "new HValue(#{@val_id.inspect}, #{@data.inspect});"
-    msg.reply init_str
+    msg.reply( init_str )
   end
   
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
-    @val_id   = msg.valuemanager.new_value_id
+    @val_id   = msg.valuemanager.randgen.get_one
     
     ## HValue's type is 'hvalue', just as in js
     @type     = 'hvalue'
@@ -70,32 +73,32 @@ class HValue
     ## the @sync flag is raised, when the client data is older than the server data
     @sync  = false
     
-    ## the @valid flas is lowered, when the client data is newer than the server data
-    @valid = true
+    ## the @is_valid flas is lowered, when the client data is newer than the server data
+    @is_valid = true
     
-    ## Add the value to the value manager and report it to the client
+    ## Bind the value to the value manager and report it to the client
     add( msg )
     
-    ## store value bindings here
+    ## storage for validator bindings
     @members = {}
     
   end
   
   ## bind the value to the app method (both as strings; app as the name registered in HSystem)
-  def bind( app_name, method_name )
-    @members[app_name] = [] unless @members.has_key?( app_name )
-    @members[app_name].push( method_name ) unless @members[app_name].include?( method_name )
+  def bind( plugin_name, method_name )
+    @members[plugin_name] = [] unless @members.has_key?( plugin_name )
+    @members[plugin_name].push( method_name ) unless @members[plugin_name].include?( method_name )
     return true
   end
   
   ## release the binding of the value, both params as in bind, but optional (wildcards as false)
-  def release( app_name=false, method_name=false )
-    return release_all if not app_name and not method_name
-    return false unless @members.has_key?( app_name )
+  def release( plugin_name=false, method_name=false )
+    return release_all if not plugin_name and not method_name
+    return false unless @members.has_key?( plugin_name )
     if not method_name
-      @members.delete( app_name )
+      @members.delete( plugin_name )
     else 
-      @members[app_name].slice!(@members[app_name].index( method_name )) if @members[app_name].include?(method_name)
+      @members[plugin_name].slice!(@members[plugin_name].index( method_name )) if @members[plugin_name].include?(method_name)
     end
     return true
   end
@@ -112,14 +115,13 @@ class HValue
   ## tell all bound instances that the value is changed
   def tell( msg )
     invalid_count = 0
-    @members.each_key do |app_name|
-      @members[app_name].each do |method_name|
-        invalid_count += 1 unless msg.system.run_app( app_name, method_name, msg, self ) 
+    @members.each_key do |plugin_name|
+      @members[plugin_name].each do |method_name|
+        invalid_count += 1 unless msg.system.run_app( plugin_name, method_name, msg, self ) 
       end
     end
     if invalid_count == 0
-      @valid = true
-      #msg.valuemanager.values[:session][msg.ses_id][:check].delete( @val_id )
+      @is_valid = true
       msg.session[:values][:check].delete( @val_id )
     end
   end
@@ -127,27 +129,20 @@ class HValue
   ## handle client updates
   def from_client( msg, data )
     
+    # only process changes, if different from the one already stored.
     if @data != data
       
       ## set takes care of the setting..
       @data = data
       
-      #puts "-"*80
-      ##puts "#{msg.ses_id}.#{@val_id}: #{data.inspect} != #{@data.inspect}" if $config[:debug_mode]
-      #puts "-"*80
-      #puts
-      
       ## change the valid state, because the value was set by the client!
-      @valid = false
+      @is_valid = false
       
       ## add the id to the values to be checked
-      #check_ids = msg.valuemanager.values[:session][msg.ses_id][:check]
       check_ids = msg.session[:values][:check]
       unless check_ids.include?( @val_id )
         check_ids.push( @val_id )
       end
-    ##else
-      ##puts "#{msg.ses_id}.#{@val_id}: #{@data.inspect} == #{data.inspect}" if $config[:debug_mode]
     end
     
   end
@@ -165,13 +160,14 @@ class HValue
       @jstype = 'string'
       @data   = data.inspect
     end
+    
+    # won't tell the client about the change, usually not needed
     unless dont_tell_client
       ## update the flags
       @sync  = false
-      @valid = true
+      @is_valid = true
       
       ## add the id to the values to be syncronized (to client)
-      #sync_ids = msg.valuemanager.values[:session][msg.ses_id][:sync]
       sync_ids = msg.session[:values][:sync]
       unless sync_ids.include?( @val_id )
         sync_ids.push( @val_id )
@@ -190,16 +186,20 @@ class HValue
   
 end
 
-
+## Skeleton HValue parser
 class ValueParser
+  
   def initialize( default_value=nil )
     @default_value = default_value
   end
+  
   # please replace the process_data -method.
   def process_data( msg, hvalue_xml )
-    puts "Warning: process_data not implemented for #{self.class.inspect}"
+    puts "Warning: process_data not implemented for #{self.class.inspect}" if DEBUG_MODE
     return @defalut_value
   end
+  
+  # gets called from valuemanager
   def parse_xml( msg, hvalue_xml )
     
     ## get the value id from xml
@@ -214,7 +214,6 @@ class ValueParser
     val_data = process_data( msg, hvalue_xml )
     
     ## store the value
-    #session_values = msg.valuemanager.values[:session][msg.ses_id]
     session_values = msg.session[:values][:by_id]
     if session_values.has_key?( val_id )
       value_obj = session_values[ val_id ]
@@ -225,53 +224,75 @@ class ValueParser
   end
 end
 
+## HValue parser that understands boolean data
 class BoolValueParser < ValueParser
+  
+  ## defaults to false
   def initialize( default_value=false )
     super
   end
+  
+  ## parses boolean data from client: <b id='xyz'>1</b>
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
     if val_data != nil
       return true  if val_data == '1'
       return false if val_data == '0'
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
     return @default_value
   end
 end
 
+## HValue parser that understands floating-point numbers
 class FloatValueParser < ValueParser
+  
+  ## defaults to 0.0
   def initialize( default_value=0.0 )
     super
   end
+  
+  ## parses floating-point-numeric data from the client: <f id='xyz'>1234.5678</f>
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
     if val_data != nil
       return val_data.to_f
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
     return @default_value
   end
+  
 end
 
+## HValue parser that understands integer numbers
 class IntValueParser < ValueParser
+  
+  ## defaults to 0
   def initialize( default_value=0 )
     super
   end
+  
+  ## parses integer numeric data from the client: <i id='xyz'>1234</i>
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
     if val_data != nil
       return val_data.to_i
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
     return @default_value
   end
+  
 end
 
+## HValue parser that understands base64-encoded strings
 class StringValueParser < ValueParser
+  
+  ## defaults to ''
   def initialize( default_value='' )
     super
   end
+  
+  ## parses base64-encoded string data from the client: <s id='xyz'>d898gD98guadbaxDDgd</s>
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
     if val_data != nil
@@ -281,7 +302,7 @@ class StringValueParser < ValueParser
       end
       return val_data
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}"
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
     return @default_value
   end
 end

@@ -13,17 +13,12 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
 
-require 'zlib'
-
-require 'lib/session/ses'
-
-require 'lib/sys/system'
-
-require 'lib/valuemanager/valuemanager'
-
-class GZString < String
-  alias write <<
-end
+## Uncomment, when Rack supports chunked transfers
+#require 'zlib'
+#
+#class GZString < String
+#  alias write <<
+#end
 
 ###
 ##  HTransporter is the real request/response handler for HFrontEnd.
