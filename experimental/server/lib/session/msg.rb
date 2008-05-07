@@ -27,7 +27,7 @@ Major clean-up in 2008-05-07.
 =end
 class Message
   
-  attr_accessor :data, :session, :ses_id,
+  attr_accessor :session, :ses_id,
                 :new_session, :restored_session,
                 :ses_valid, :request, :response
   
@@ -74,13 +74,13 @@ class Message
   
   ### Expire the session
   def expire_session
-    TRANSPORTER.expire_session( @ses_id )
+    SESSION.expire_session( @ses_id )
   end
   
   ### Sends some data to the client, usually
   ### javascript, but is valid for any data.
   def reply(data)
-    puts data.inspect if $config[:trace]
+    puts data if $config[:trace]
     @response.body+=data
   end
   

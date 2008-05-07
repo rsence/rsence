@@ -20,39 +20,23 @@
 #  alias write <<
 #end
 
-###
-##  HTransporter is the real request/response handler for HFrontEnd.
-##   - It is initialized as a single instance in HFrontEnd.
-##   - It is called by the HFrontEnd::Broker servlet.
-##
-##  HTransporter functionality:
-##   - Initializes HSessionManager, HSystem and HValueManager once, then passes messages to the instances.
-##   - Initializes new Messages for requests and finally sends its response buffer to the client.
-##
+=begin
+  Transporter is the counterpart to the client's HTransporter xhr engine.
+=end
 class Transporter
   
-  ## build the essential structures
   def initialize
-    @system       = HSystem.new( $config[:app_paths] )
-    @valuemanager = HValueManager.new
-    @session      = HSessionManager.new( @valuemanager, @system )
-  end
-  
-  ## expires session: ses_id
-  def expire_session( ses_id )
-    #puts "HTransporter.expire_session( #{ses_id.inspect} )"
-    @session.expire_session( ses_id )
-    #puts "/HTransporter.expire_session"
+    @config = $config[:transporter_conf]
   end
   
   def shutdown
-    @system.shutdown
-    @valuemanager.shutdown
-    @session.shutdown
+    PLUGINS.shutdown
+    VALUES.shutdown
+    SESSION.shutdown
   end
   
   ## 
-  def from_client(request, response, cookies=false)
+  def xhr(request, response, cookies=false)
     
     ## The response status should always be 200 (OK)
     response.status = 200
@@ -70,20 +54,21 @@ class Transporter
     #  do_gzip = false
     #end
     
-    msg = @session.init_msg( request, response, cookies )
+    msg = SESSION.init_msg( request, response, cookies )
     
     if request.query.has_key?('err_msg')
-      if $config[:debug_mode]
+      if DEBUG_MODE
         puts
         puts "CLIENT ERROR:"
         pp request.query['err_msg']
         puts
       end
-      msg.reply "jsLoader.load('basic');jsLoader.load('window');jsLoader.load('servermessage');"
-      msg.reply "reloadApp = new ReloadApp( 'Client Error', 'Your web browser has encountered an javascript error. Please reload the page to continue.', '/'  );"
       
-      msg.reply( "HTransporter.syncDelay=-1;" )
-      #console.log(#{request.query['err_msg'].inspect});alert('Client Error. STOP.');" )
+      SESSION.stop_client_with_message( msg,
+        @config[:messages][:client_error][:title],
+        @config[:messages][:client_error][:descr]+request.query['err_msg'].inspect,
+        @config[:messages][:client_error][:uri]
+      )
     end
     
     #puts "----- valid session: #{msg.inspect} -----"
@@ -91,39 +76,39 @@ class Transporter
     if msg.ses_valid
       
       if cookies
-        msg.reply('HTransporter.url_base="/ui";')
+        msg.reply('HTransporter.url_base="/x";')
       end
-      if (msg.new_session or msg.restored_session) and $config[:debug_mode]
+      if (msg.new_session or msg.restored_session) and DEBUG_MODE
         puts
         puts "new session. rescanning apps."
         puts
-        $config[:gzfilecache].check_scan
-        @system.rescan()
+        FILECACHE.check_scan
+        PLUGINS.rescan()
         puts
         puts "rescan done"
         puts
       end
       
-      ## Pass the client XML to @valuemanager
+      ## Pass the client XML to VALUES
       if request.query.has_key?( 'HSyncData' )
         syncdata_str = request.query[ 'HSyncData' ]
-        @valuemanager.from_client( msg, syncdata_str )
+        VALUES.xhr( msg, syncdata_str )
       end
       
-      @valuemanager.validate( msg )
+      VALUES.validate( msg )
       
       if msg.restored_session
         msg.session[:deps] = []
-        @system.delegate( 'restore_ses', msg )
+        PLUGINS.delegate( 'restore_ses', msg )
       elsif msg.new_session
-        @system.delegate( 'init_ses', msg )
+        PLUGINS.delegate( 'init_ses', msg )
       end
       
       ### Allows every application to respond to the idle call
-      @system.idle( msg )
+      PLUGINS.idle( msg )
       
       ### Process outgoing values to client
-      @valuemanager.to_client( msg )
+      VALUES.sync_client( msg )
       
     end
     

@@ -30,11 +30,13 @@ class Broker
     uri = @request.fullpath
     
     ## /x handles xhr without cookies
-    if uri[0..2] == '/x'
+    if uri[0..1] == '/x'
+      puts "/x: #{uri.inspect}" if DEBUG_MODE
       TRANSPORTER.xhr( @request, @response, false )
     
     ## /hello handles the first xhr (with cookies, for session key)
     elsif uri[0..5] == '/hello'
+      puts "/hello: #{uri.inspect}" if DEBUG_MODE
       TRANSPORTER.xhr( @request, @response, true )
     end
     
@@ -47,23 +49,28 @@ class Broker
     uri = @request.fullpath
     
     ## /j processes client framework files (js & themes)
-    if full_path[0..2] == '/H'
+    if uri[0..1] == '/H'
+      puts "/H: #{uri.inspect}" if DEBUG_MODE
       FILESERVE.get( @request, @response )
     
     ## /i returns disposable RMagick objects rendered to data
-    elsif full_path[0..3] == '/i'
+    elsif uri[0..1] == '/i'
+      puts "/i: #{uri.inspect}" if DEBUG_MODE
       TICKETSERVE.get( @request, @response, :img )
     
     ## /d returns static data resources
-    elsif full_path[0..4] == '/d'
+    elsif uri[0..1] == '/d'
+      puts "/d: #{uri.inspect}" if DEBUG_MODE
       TICKETSERVE.get( @request, @response, :rsrc )
     
     ## /f return disposable data resources
-    elsif full_path[0..4] == '/f'
+    elsif uri[0..1] == '/f'
+      puts "/f: #{uri.inspect}" if DEBUG_MODE
       TICKETSERVE.get( @request, @response, :file )
     
     ## all other get -requests load the index html page 
     else
+      puts "/: #{uri.inspect}" if DEBUG_MODE
       INDEXHTML.get( @request, @response )
     end
     

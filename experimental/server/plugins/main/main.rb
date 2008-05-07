@@ -12,7 +12,7 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
 
-class Main < HApplication
+class Main < Plugin
   
   # this gets called whenever the page location.href changes
   def url_responder(msg,location_href)
@@ -68,6 +68,6 @@ class Main < HApplication
 end
 
 # register the app
-app = Main.new
-app.register( "main" )
+main = Main.new
+main.register( "main" )
 

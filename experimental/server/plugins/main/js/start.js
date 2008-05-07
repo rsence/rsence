@@ -1,6 +1,6 @@
 HTransporter.syncDelay = 10;
 
-HThemeManager.setThemePath('/gz/themes');
+HThemeManager.setThemePath('/H/themes');
 
 ELEM.del(ELEM.bindId('loading'));
 

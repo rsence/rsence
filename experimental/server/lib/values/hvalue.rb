@@ -62,7 +62,7 @@ class HValue
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
-    @val_id   = msg.valuemanager.randgen.get_one
+    @val_id   = VALUES.randgen.get_one
     
     ## HValue's type is 'hvalue', just as in js
     @type     = 'hvalue'

@@ -62,7 +62,7 @@ class FileCache
     @busy_scanning = true
     
     # Root path of the compiled js client framework
-    ui_path = $config[:ria_paths][:ui_path]
+    ui_path = $config[:client_parts][:js]
     
     # Clean hash for js data and properties
     js_cache = {}
@@ -77,7 +77,7 @@ class FileCache
     end
     
     # Root path of the themes
-    themes_path = $config[:ria_paths][:theme_path]
+    themes_path = $config[:client_parts][:themes]
     
     # Clean hash for theme data and properties
     theme_cache = {}
@@ -86,7 +86,7 @@ class FileCache
     Dir.entries( themes_path ).each do |theme_name|
       
       # Checks, if the theme path is a directory
-      theme_path = File.join(theme_path,theme_name)
+      theme_path = File.join(themes_path,theme_name)
       is_dir = File.stat(theme_path).directory?
       
       # Skips dirs starting with a dot
@@ -147,7 +147,7 @@ class FileCache
   def check_scan
     
     # special tag file created by build_client.rb
-    buildfile_path = File.join($config[:ria_paths][:ui_path],'built')
+    buildfile_path = File.join($config[:client_parts][:js],'built')
     
     # checks, if the tag file is newer than last time the cache is loaded
     build_time = File.stat(buildfile_path).mtime

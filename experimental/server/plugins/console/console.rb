@@ -1,7 +1,7 @@
 
 require 'pp'
 
-class HConsole < HApplication
+class HConsole < Plugin
   def hash_to_js( node_hash, node='', indent=0 )
     node += "{ "
     keysize = node_hash.keys.size

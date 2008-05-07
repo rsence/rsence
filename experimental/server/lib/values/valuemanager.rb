@@ -28,10 +28,12 @@ require 'util/randgen'
 =end
 class ValueManager
   
+  attr_accessor :randgen
+  
   ## Initializes the member value handler objects.
   def initialize
     
-    @config = $config[:values]
+    @config = $config[:values_conf]
     
     ## The value type parsers by string
     @value_parsers = {}
@@ -104,7 +106,7 @@ class ValueManager
   end
   
   ### Parses the xml from the client and passes it on to associated parsers
-  def from_client( msg, syncdata_str )
+  def xhr( msg, syncdata_str )
     
     # makes an xml parser object 'syncdata_xml' of the xml string 'syncdata_str'
     syncdata_xml = Document.new( syncdata_str )
@@ -122,7 +124,7 @@ class ValueManager
           puts "CLIENT/SERVER hsyncvalues version mismatch: #{syncvalversion} vs #{@value_implementation_version}"
           puts
         end
-        SESSIONMANAGER.stop_client_with_message( msg,
+        SESSION.stop_client_with_message( msg,
           @config[:messages][:version_mismatch][:title],
           @config[:messages][:version_mismatch][:descr],
           @config[:messages][:version_mismatch][:uri]
@@ -168,7 +170,7 @@ class ValueManager
   end
   
   ### Sends the new data of all server-side-modified session-bound values to the client
-  def to_client( msg )
+  def sync_client( msg )
     
     # get the session data of this session
     session_values = msg.session[:values]

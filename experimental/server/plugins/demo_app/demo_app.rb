@@ -25,7 +25,7 @@ It serves a draggable analog clock that updates automatically.
 
 ## Create Himle Application instances like this.
 ## See lib/app/application.rb for details about the prototype
-class ClockApp < HApplication
+class ClockApp < Plugin
   
   def initialize
     
@@ -124,10 +124,10 @@ class ClockApp < HApplication
     # Convert the raw pixels to png-image data
     clock_img_data = clock_bg.to_blob{ self.format='PNG' }
     
-    # Send the image to the IMGSERVE cache as a 'resource', basically
+    # Send the image to the TICKETSERVE cache as a 'resource', basically
     # meaning that it should be stored forever or until it's manually removed.
     # It returns a generated uri stored as @clock_bg_img_url
-    @clock_bg_img_url = IMGSERVE.serve_rsrc( clock_img_data, 'image/png' )
+    @clock_bg_img_url = TICKETSERVE.serve_rsrc( clock_img_data, 'image/png' )
     
   end
   
@@ -181,7 +181,7 @@ class ClockApp < HApplication
     draw_fg.draw( clock_fg )
     
     # Store the image as a disposable image object, it expires automatically.
-    clock_fg_img_url = IMGSERVE.serve(msg,clock_fg,'PNG')
+    clock_fg_img_url = msg.serve_img(clock_fg,'PNG')
     
     # Return the image uri returned by the image cache
     return clock_fg_img_url
@@ -196,7 +196,7 @@ class ClockApp < HApplication
   # Remove the background image from the cache,
   # when the close event is triggered:
   def close
-    IMGSERVE.del_rsrc( @clock_bg_img_url )
+    TICKETSERVE.del_rsrc( @clock_bg_img_url )
     @clock_bg_img_url = ''
   end
   
@@ -314,8 +314,8 @@ class ClockApp < HApplication
 end
 
 # Initializes the application:
-app = ClockApp.new
+clock_app = ClockApp.new
 
 # Register the app as 'clock_app':
-app.register( "clock_app" )
+clock_app.register( "clock_app" )
 

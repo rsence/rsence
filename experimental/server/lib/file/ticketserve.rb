@@ -63,7 +63,7 @@ class TicketServe
     }
     
     # an randgen instance used for generating ids (64B long)
-    @randgen = HRandgen.new( 64, 600 )
+    @randgen = RandomGenerator.new( 64, 600 )
     
     # supported image content types
     @content_types = {
@@ -180,9 +180,6 @@ class TicketServe
     end
   end
   
-  # serves images
-  alias serve_img serve
-  
   # serves files and images
   def serve( msg, content, format='PNG', type=:img )
     
@@ -209,7 +206,7 @@ class TicketServe
       storage_arr = [format,0,content,msg.ses_id]
       
       # return an uri that will respond to the data
-      uri = "/i/#{img_id}.#{format.downcase}"
+      uri = "/i/#{ticket_id}.#{format.downcase}"
     
     # serve file
     elsif type == :file
@@ -230,12 +227,15 @@ class TicketServe
     storage_hash[:ses_ids][msg.ses_id] = [] unless @imgs[:ses_ids].has_key?(msg.ses_id)
     
     # adds the id to the session-specific storage
-    storage_hash[:ses_ids][msg.ses_id].push( img_id )
+    storage_hash[:ses_ids][msg.ses_id].push( ticket_id )
     
     storage_hash[:by_id][ticket_id] = storage_arr
     
     return uri
   end
+  
+  # serves images
+  alias serve_img serve
   
   # serves files
   def serve_file( msg, content='', content_type='text/plain', filename='' )
