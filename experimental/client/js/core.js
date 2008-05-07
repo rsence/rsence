@@ -173,7 +173,7 @@ else{try{if(console&&console.log){console.log('syncvalue type error');console.lo
 catch(e){alert('value error, syncid:'+_2a+' syncjstype:'+_0F+' typeof:'+(typeof _0b)+' syncvalue:'+_0b);}
 return'';}
 return'<'+_0F+' id="'+_2a+'">'+_0U+'</'+_0F+'>';}});JSLoader=Base.extend({constructor:function(_2n){this._20=[];this._2n=_2n;this._3P=null;},_79:function(_5s){eval(_5s.responseText);},load:function(_2A){if(jsLoader._20.indexOf(_2A)!=-1){return;}
-req_args={onSuccess:function(resp){jsLoader._79(resp);},onFailure:function(resp){window.status="failed to load js: "+jsLoader._2u;},method:'get',asynchronous:false};this._3P=new Ajax.Request(this._2n+_2A+'.js',req_args);this._20.push(_2A);}});LOAD("jsLoader = new JSLoader('/gz/js/');");HPoint=HClass.extend({constructor:function(){this.type='[HPoint]';var _05=arguments;if(_05.length===0){this._1I();}
+req_args={onSuccess:function(resp){jsLoader._79(resp);},onFailure:function(resp){window.status="failed to load js: "+jsLoader._2u;},method:'get',asynchronous:false};this._3P=new Ajax.Request(this._2n+_2A+'.js',req_args);this._20.push(_2A);}});LOAD("jsLoader = new JSLoader('/H/js/');");HPoint=HClass.extend({constructor:function(){this.type='[HPoint]';var _05=arguments;if(_05.length===0){this._1I();}
 else if(_05.length==2){this._4k(_05[0],_05[1]);}
 else if(_05.length==1){this._1J(_05[0]);}
 else{throw"Invalid number of arguments.";}},_1I:function(){this.x=null;this.y=null;},_4k:function(x,y){this.x=x;this.y=y;},_1J:function(_f){this.x=_f.x;this.y=_f.y;},set:function(){var _05=arguments;if(_05.length===0){this._1I();}
