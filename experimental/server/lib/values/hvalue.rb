@@ -84,14 +84,20 @@ class HValue
     
   end
   
-  ## bind the value to the app method (both as strings; app as the name registered in HSystem)
+  ## Binds the value to the plugin method (both as
+  ## strings; plugin as the name registered in PluginManager)
+  ##
+  ## It uses strings instead of '...method(...)' because
+  ## it won't work with marshal. Strings are easier and work
+  ## as well.
   def bind( plugin_name, method_name )
     @members[plugin_name] = [] unless @members.has_key?( plugin_name )
     @members[plugin_name].push( method_name ) unless @members[plugin_name].include?( method_name )
     return true
   end
   
-  ## release the binding of the value, both params as in bind, but optional (wildcards as false)
+  ## Releases the binding of the value, both params as
+  ## in bind, but optional (false = 'wildcard')
   def release( plugin_name=false, method_name=false )
     return release_all if not plugin_name and not method_name
     return false unless @members.has_key?( plugin_name )
@@ -117,7 +123,7 @@ class HValue
     invalid_count = 0
     @members.each_key do |plugin_name|
       @members[plugin_name].each do |method_name|
-        invalid_count += 1 unless msg.system.run_app( plugin_name, method_name, msg, self ) 
+        invalid_count += 1 unless PLUGINS.run_plugin( plugin_name, method_name, msg, self ) 
       end
     end
     if invalid_count == 0

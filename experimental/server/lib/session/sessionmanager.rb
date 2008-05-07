@@ -248,7 +248,7 @@ class SessionManager < SessionStorage
         
         # tells ValueManager to re-send client-side HValue objects
         # with data to the client
-        VALUEMANAGER.init_ses( msg )
+        VALUES.resend_session_values( msg )
       
       # if the session is not valid, make sure to mark the
       # cookie key as invalid (false)
@@ -351,11 +351,12 @@ class SessionManager < SessionStorage
         
         # If Broker encounters a '/hello' request, it
         # sets cookies to true.
+        #
         # It means that a session should have its cookies
         # checked.
+        #
         if cookies
           ses_status = check_cookie( msg )
-        
         # Otherwise, we just create a new session:
         else
           init_ses( msg )
