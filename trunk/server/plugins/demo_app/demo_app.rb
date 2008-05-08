@@ -127,7 +127,7 @@ class ClockApp < Plugin
     # Send the image to the TICKETSERVE cache as a 'resource', basically
     # meaning that it should be stored forever or until it's manually removed.
     # It returns a generated uri stored as @clock_bg_img_url
-    @clock_bg_img_url = TICKETSERVE.serve_rsrc( clock_img_data, 'image/png' )
+    @clock_bg_img_url = $TICKETSERVE.serve_rsrc( clock_img_data, 'image/png' )
     
   end
   
@@ -196,7 +196,7 @@ class ClockApp < Plugin
   # Remove the background image from the cache,
   # when the close event is triggered:
   def close
-    TICKETSERVE.del_rsrc( @clock_bg_img_url )
+    $TICKETSERVE.del_rsrc( @clock_bg_img_url )
     @clock_bg_img_url = ''
   end
   

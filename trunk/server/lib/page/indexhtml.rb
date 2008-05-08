@@ -27,13 +27,14 @@ class IndexHtml
     
     index_html_file = open($config[:sys_path]+'/lib/page/index.html','rb')
     @index_html = index_html_file.read
+    @content_size = @index_html.size
     index_html_file.close
     
     loading_gif_file = open($config[:sys_path]+'/lib/page/loading.gif','rb')
     loading_gif = loading_gif_file.read
     loading_gif_file.close
     
-    loading_gif_id = TICKETSERVE.serve_rsrc(loading_gif, 'image/gif' )
+    loading_gif_id = $TICKETSERVE.serve_rsrc(loading_gif, 'image/gif' )
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',loading_gif_id)
@@ -43,7 +44,8 @@ class IndexHtml
   def get(request, response)
     
     response.status = 200
-    response.content_type = 'text/html; charset=UTF-8'
+    response['content-type'] = 'text/html; charset=UTF-8'
+    response['content-size'] = @content_size
     
     response.body = @index_html
     

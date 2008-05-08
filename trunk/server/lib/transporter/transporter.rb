@@ -29,12 +29,6 @@ class Transporter
     @config = $config[:transporter_conf]
   end
   
-  def shutdown
-    PLUGINS.shutdown
-    VALUES.shutdown
-    SESSION.shutdown
-  end
-  
   ## 
   def xhr(request, response, cookies=false)
     
@@ -54,17 +48,17 @@ class Transporter
     #  do_gzip = false
     #end
     
-    msg = SESSION.init_msg( request, response, cookies )
+    msg = $SESSION.init_msg( request, response, cookies )
     
     if request.query.has_key?('err_msg')
-      if DEBUG_MODE
+      if $DEBUG_MODE
         puts
         puts "CLIENT ERROR:"
         pp request.query['err_msg']
         puts
       end
       
-      SESSION.stop_client_with_message( msg,
+      $SESSION.stop_client_with_message( msg,
         @config[:messages][:client_error][:title],
         @config[:messages][:client_error][:descr]+request.query['err_msg'].inspect,
         @config[:messages][:client_error][:uri]
@@ -78,37 +72,37 @@ class Transporter
       if cookies
         msg.reply('HTransporter.url_base="/x";')
       end
-      if (msg.new_session or msg.restored_session) and DEBUG_MODE
+      if (msg.new_session or msg.restored_session) and $DEBUG_MODE
         puts
         puts "new session. rescanning apps."
         puts
-        FILECACHE.check_scan
-        PLUGINS.rescan()
+        $FILECACHE.check_scan
+        $PLUGINS.rescan()
         puts
         puts "rescan done"
         puts
       end
       
-      ## Pass the client XML to VALUES
+      ## Pass the client XML to $VALUES
       if request.query.has_key?( 'HSyncData' )
         syncdata_str = request.query[ 'HSyncData' ]
-        VALUES.xhr( msg, syncdata_str )
+        $VALUES.xhr( msg, syncdata_str )
       end
       
-      VALUES.validate( msg )
+      $VALUES.validate( msg )
       
       if msg.restored_session
         msg.session[:deps] = []
-        PLUGINS.delegate( 'restore_ses', msg )
+        $PLUGINS.delegate( 'restore_ses', msg )
       elsif msg.new_session
-        PLUGINS.delegate( 'init_ses', msg )
+        $PLUGINS.delegate( 'init_ses', msg )
       end
       
       ### Allows every application to respond to the idle call
-      PLUGINS.idle( msg )
+      $PLUGINS.idle( msg )
       
       ### Process outgoing values to client
-      VALUES.sync_client( msg )
+      $VALUES.sync_client( msg )
       
     end
     

@@ -62,7 +62,7 @@ class HValue
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
-    @val_id   = VALUES.randgen.get_one
+    @val_id   = $VALUES.randgen.get_one
     
     ## HValue's type is 'hvalue', just as in js
     @type     = 'hvalue'
@@ -123,7 +123,7 @@ class HValue
     invalid_count = 0
     @members.each_key do |plugin_name|
       @members[plugin_name].each do |method_name|
-        invalid_count += 1 unless PLUGINS.run_plugin( plugin_name, method_name, msg, self ) 
+        invalid_count += 1 unless $PLUGINS.run_plugin( plugin_name, method_name, msg, self ) 
       end
     end
     if invalid_count == 0
@@ -201,7 +201,7 @@ class ValueParser
   
   # please replace the process_data -method.
   def process_data( msg, hvalue_xml )
-    puts "Warning: process_data not implemented for #{self.class.inspect}" if DEBUG_MODE
+    puts "Warning: process_data not implemented for #{self.class.inspect}" if $DEBUG_MODE
     return @defalut_value
   end
   
@@ -245,7 +245,7 @@ class BoolValueParser < ValueParser
       return true  if val_data == '1'
       return false if val_data == '0'
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
     return @default_value
   end
 end
@@ -264,7 +264,7 @@ class FloatValueParser < ValueParser
     if val_data != nil
       return val_data.to_f
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
     return @default_value
   end
   
@@ -284,7 +284,7 @@ class IntValueParser < ValueParser
     if val_data != nil
       return val_data.to_i
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
     return @default_value
   end
   
@@ -308,7 +308,7 @@ class StringValueParser < ValueParser
       end
       return val_data
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if DEBUG_MODE
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
     return @default_value
   end
 end

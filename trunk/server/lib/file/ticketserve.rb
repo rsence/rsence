@@ -75,7 +75,8 @@ class TicketServe
     # static data, initially for invalid/not found error-gif
     # also all serve_rsrc items
     @raw_uris = {
-      'invalid.gif' => ['image/gif','53',['749464839316700090000800000000004e7ebe129f400000000000c200000000700090000020c0c8f70a9c810e0229ea2da1a000b3'].pack('h*')]
+      'invalid.gif' => ['image/gif','53',['749464839316700090000800000000004e7ebe129f400000000000c200000000700090000020c0c8f70a9c810e0229ea2da1a000b3'].pack('h*')],
+      'favicon.ico' => ['image/x-icon','350',['749464839316010001005d7200000000ffffff73190d7a27006e6fff6e7fffed8a01d85c0f3fcda9be4c8573191dcf7f7eed7a017a3700754acdcf6f6ebe5c855e7fff754addfd7a017bedeffd7af0d84c1f6bddef7bddffed8af0d85c1f755add6a2700c85c0f4fcda9ed7af04fbda97bddefcf6f7e654acd6bddffce5c853fbda9ffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000129f401000007200c200000000010001000060b70c310683c391584408110286a2f8c47e250a01c379555c310217c6ea249c8c1bd385e006047e0a9d25e2894e0924a0d6b04880e5f4020e90b51028384828b530d0d030b830c1a8b8b5603151c0c0602960c0f191b50101522700903ab58080e196028062b5b0f0b096f0220bb468745b1075009b7b5b960605061400b3'].pack('h*')]
     }
     
   end
@@ -194,8 +195,8 @@ class TicketServe
       
       # checks, that the format is a supported image type
       unless @content_types.keys.include?( format )
-        puts "ImgServe.serve: invalid format (#{format.inspect})" if DEBUG_MODE
-        return '/img/invalid.gif'
+        puts "ImgServe.serve: invalid format (#{format.inspect})" if $DEBUG_MODE
+        return '/i/invalid.gif'
       end
       
       # changes the format to GIF for IE6
@@ -254,6 +255,20 @@ class TicketServe
     return "/d/#{rsrc_id}"
   end
   
+  def favicon( req, res )
+    
+    res.status = 200
+    
+    favicon_data = @raw_uris['favicon.ico']
+    
+    res['Content-Type'] = favicon_data[0]
+    res['Content-Size'] = favicon_data[1]
+    
+    res['Date'] = httime( Time.now )
+    res.body = favicon_data[2]
+    
+  end
+  
   # serves stuff from get-request
   def get( req, res, type=:img )
     
@@ -265,18 +280,18 @@ class TicketServe
       img_id = req.unparsed_uri.split('/i/')[1]
       
       if img_id == nil
-        puts "ImgServe.fetch_img: invalid uri#1 (#{req.unparsed_uri.inspect})" if DEBUG_MODE
+        puts "ImgServe.fetch_img: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         img_id = 'invalid.gif'
       end
       
       img_id = img_id.split('.')[0]
       
       if img_id == nil
-        puts "ImgServe.fetch_img: invalid uri#2 (#{req.unparsed_uri.inspect})" if DEBUG_MODE
+        puts "ImgServe.fetch_img: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         img_id = 'invalid.gif'
       
       elsif img_id.size != 84
-        puts "ImgServe.fetch_img: invalid img_id (#{img_id.inspect})" if DEBUG_MODE
+        puts "ImgServe.fetch_img: invalid img_id (#{img_id.inspect})" if $DEBUG_MODE
         img_id = 'invalid.gif'
       end
       
@@ -315,15 +330,15 @@ class TicketServe
     elsif type == :file
       file_id = req.unparsed_uri.split('/f/')[1]
       if file_id == nil
-        puts "fileServe.fetch_file: invalid uri#1 (#{req.unparsed_uri.inspect})" if DEBUG_MODE
+        puts "fileServe.fetch_file: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         file_id = 'invalid.gif'
       end
       file_id = file_id.split('.')[0]
       if file_id == nil
-        puts "fileServe.fetch_file: invalid uri#2 (#{req.unparsed_uri.inspect})" if DEBUG_MODE
+        puts "fileServe.fetch_file: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         file_id = 'invalid.gif'
       elsif file_id.size != 84
-        puts "fileServe.fetch_file: invalid file_id (#{file_id.inspect})" if DEBUG_MODE
+        puts "fileServe.fetch_file: invalid file_id (#{file_id.inspect})" if $DEBUG_MODE
         file_id = 'invalid.gif'
       end
       if @raw_uris.include?(file_id)
@@ -346,15 +361,15 @@ class TicketServe
     elsif type == :rsrc
       rsrc_id = req.unparsed_uri.split('/d/')[1]
       if rsrc_id == nil
-        puts "rsrcServe.fetch_rsrc: invalid uri#1 (#{req.unparsed_uri.inspect})"
+        puts "rsrcServe.fetch_rsrc: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         rsrc_id = 'invalid.gif'
       end
       rsrc_id = rsrc_id.split('.')[0]
       if rsrc_id == nil
-        puts "rsrcServe.fetch_rsrc: invalid uri#2 (#{req.unparsed_uri.inspect})"
+        puts "rsrcServe.fetch_rsrc: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         rsrc_id = 'invalid.gif'
       elsif rsrc_id.size != 84
-        puts "rsrcServe.fetch_rsrc: invalid rsrc_id (#{rsrc_id.inspect})"
+        puts "rsrcServe.fetch_rsrc: invalid rsrc_id (#{rsrc_id.inspect})" if $DEBUG_MODE
         rsrc_id = 'invalid.gif'
       end
       if @raw_uris.include?(rsrc_id)

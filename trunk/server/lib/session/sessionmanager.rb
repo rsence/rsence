@@ -248,7 +248,7 @@ class SessionManager < SessionStorage
         
         # tells ValueManager to re-send client-side HValue objects
         # with data to the client
-        VALUES.resend_session_values( msg )
+        $VALUES.resend_session_values( msg )
       
       # if the session is not valid, make sure to mark the
       # cookie key as invalid (false)

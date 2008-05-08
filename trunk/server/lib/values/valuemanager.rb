@@ -119,12 +119,12 @@ class ValueManager
       
       # the client xml generator should match the server parser's version.
       if syncvalversion != @value_implementation_version
-        if DEBUG_MODE
+        if $DEBUG_MODE
           puts
           puts "CLIENT/SERVER hsyncvalues version mismatch: #{syncvalversion} vs #{@value_implementation_version}"
           puts
         end
-        SESSION.stop_client_with_message( msg,
+        $SESSION.stop_client_with_message( msg,
           @config[:messages][:version_mismatch][:title],
           @config[:messages][:version_mismatch][:descr],
           @config[:messages][:version_mismatch][:uri]

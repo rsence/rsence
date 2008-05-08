@@ -74,7 +74,7 @@ class Message
   
   ### Expire the session
   def expire_session
-    SESSION.expire_session( @ses_id )
+    $SESSION.expire_session( @ses_id )
   end
   
   ### Sends some data to the client, usually
@@ -86,12 +86,12 @@ class Message
   
   ### Sends a Magick::Image object to be served, returns a disposable uri.
   def serve_img( img_obj, img_format='PNG' )
-    return TICKETSERVE.serve_img( self, img_obj, img_format )
+    return $TICKETSERVE.serve_img( self, img_obj, img_format )
   end
   
   ### Sends any binary to be served, returns a disposable uri.
   def serve_file( file_data, content_type='text/plain', filename='untitled.txt' )
-    return TICKETSERVE.serve_file( self, file_data, content_type, filename )
+    return $TICKETSERVE.serve_file( self, file_data, content_type, filename )
   end
   
   ### Sends any binary to be served, returns a static uri.
@@ -104,13 +104,13 @@ class Message
   ### serve_file instead.
   ###
   def serve_rsrc( rsrc_data, content_type='text/plain' )
-    return TICKETSERVE.serve_rsrc( self, rsrc_data, content_type )
+    return $TICKETSERVE.serve_rsrc( self, rsrc_data, content_type )
   end
   
   ### Removes the uri served, you HAVE TO call this manually when
   ### you are done serving something!
   def unserve_rsrc( uri )
-    TICKETSERVE.del_rsrc( uri[3..-1] )
+    $TICKETSERVE.del_rsrc( uri[3..-1] )
   end
   
 end

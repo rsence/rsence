@@ -87,9 +87,9 @@ class PluginManager
             
           ###### If initialization fails, print a nice stack trace
           rescue => e
-            puts "=="*40 if DEBUG_MODE
+            puts "=="*40 if $DEBUG_MODE
             puts "WARN: Plugin #{plugin_name} failed to initialize."
-            if DEBUG_MODE
+            if $DEBUG_MODE
               puts "--"*40
               puts e.message.gsub('(eval):',%{#{File.join(@@curr_plugin_path,"#{plugin_name}.rb")}:})
               puts "  #{e.backtrace.join("\n  ")}"

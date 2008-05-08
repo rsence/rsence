@@ -59,11 +59,11 @@ class SessionStorage
       db_root = MySQLAbstractor.new(root_setup, root_setup[:db])
       db_root.open
       unless db_root.dbs.include?( auth_setup[:db] )
-        puts "Creating himle session database #{auth_setup[:db].inspect}..." if DEBUG_MODE
+        puts "Creating himle session database #{auth_setup[:db].inspect}..." if $DEBUG_MODE
         db_root.q( "create database #{auth_setup[:db]}" )
       end
     rescue
-      puts "root_setup failed, using auth_setup" if DEBUG_MODE
+      puts "root_setup failed, using auth_setup" if $DEBUG_MODE
       db_root = false
     end
     
@@ -90,7 +90,7 @@ class SessionStorage
         puts "exit."
         exit
       end
-      puts "Granting privileges..." if DEBUG_MODE
+      puts "Granting privileges..." if $DEBUG_MODE
       db_root.q( "grant all privileges on #{auth_setup[:db]}.* to #{auth_setup[:user]}@localhost identified by '#{auth_setup[:pass]}'" )
       db_root.q( "flush privileges" )
       db_auth.close()
@@ -106,14 +106,14 @@ class SessionStorage
     ## Creates the 'himle_session' table, if necessary
     ## This table is used to store sessions
     unless @db.tables.include?('himle_session')
-      puts "Creating session table..." if DEBUG_MODE
+      puts "Creating session table..." if $DEBUG_MODE
       @db.q( "create table himle_session (id int primary key auto_increment, cookie_key char(252) null, ses_key char(84), ses_timeout int not null default 0, user_id int not null default 0, ses_active tinyint not null default 0, ses_stored int not null default 0, ses_data mediumblob)" )
     end
     
     ## Creates the 'himle_version' table, if necessary
     ## This table is used to check for the need of future database upgrades
     unless @db.tables.include?('himle_version')
-      puts "Creating version info table..." if DEBUG_MODE
+      puts "Creating version info table..." if $DEBUG_MODE
       @db.q( "create table himle_version ( version int primary key not null default 0)" )
       @db.q( "insert into himle_version ( version ) values (37)" )
     end
@@ -123,7 +123,7 @@ class SessionStorage
       puts "Resetting all sessions..."
       reset_sessions()
     else
-      puts "Restoring old sessions..." if DEBUG_MODE
+      puts "Restoring old sessions..." if $DEBUG_MODE
       restore_sessions()
     end
   end
@@ -136,7 +136,7 @@ class SessionStorage
   
   ## Restores all saved sessions from db to ram
   def restore_sessions
-    puts "Restoring sessions..." if DEBUG_MODE
+    puts "Restoring sessions..." if $DEBUG_MODE
     @db.q("select * from himle_session").each do |ses_row|
       ses_id = ses_row['id']
       ses_data_dump = ses_row['ses_data']
@@ -151,7 +151,7 @@ class SessionStorage
   
   ## Stores all sessions to db from ram
   def store_sessions
-    puts "Storing sessions..." if DEBUG_MODE
+    puts "Storing sessions..." if $DEBUG_MODE
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
       ses_data_dump = Marshal.dump( ses_data )
@@ -166,9 +166,9 @@ class SessionStorage
   
   ## Shut-down signal, triggers store_sessions for now
   def shutdown
-    puts "Session shutdown in progress..." if DEBUG_MODE
+    puts "Session shutdown in progress..." if $DEBUG_MODE
     store_sessions
-    puts "Session shutdown complete." if DEBUG_MODE
+    puts "Session shutdown complete." if $DEBUG_MODE
   end
   
   
@@ -198,7 +198,7 @@ class SessionStorage
     @sessions.delete( ses_id )
     
     # Removes all ticket-based storage bound to the session
-    TICKETSERVE.expire_ses( ses_id )
+    $TICKETSERVE.expire_ses( ses_id )
     
     # Deletes the session's row from the database
     @db.q( "delete from himle_session where id = #{ses_id}" )

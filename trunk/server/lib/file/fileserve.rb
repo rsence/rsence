@@ -93,8 +93,8 @@ class FileServe
       # the file-specific identifier ('core', 'basic' etc)
       req_file = request_path[3][0..-4]
       
-      #if not FILECACHE.gz_cache.has_key?( req_file )
-      if not FILECACHE.js_cache.has_key?( req_file )
+      #if not $FILECACHE.gz_cache.has_key?( req_file )
+      if not $FILECACHE.js_cache.has_key?( req_file )
         response.status = 404
         response.body   = '/* 404 - Not Found */'
       else
@@ -105,14 +105,14 @@ class FileServe
         #if support_gzip and not is_safari and not is_msie
         #  response.chunked = true
         #  response['Content-Encoding'] = 'gzip'
-        #  response['Last-Modified'] = FILECACHE.gz_cache[ req_file ][1]
-        #  response['Content-Size'] = FILECACHE.gz_cache[ req_file ][2]
-        #  response.body   = FILECACHE.gz_cache[ req_file ][0]
+        #  response['Last-Modified'] = $FILECACHE.gz_cache[ req_file ][1]
+        #  response['Content-Size'] = $FILECACHE.gz_cache[ req_file ][2]
+        #  response.body   = $FILECACHE.gz_cache[ req_file ][0]
         #else
         
-        response['Last-Modified'] = FILECACHE.js_cache[ req_file ][1]
-        response['Content-Size'] = FILECACHE.js_cache[ req_file ][2]
-        response.body = FILECACHE.js_cache[ req_file ][0]
+        response['Last-Modified'] = $FILECACHE.js_cache[ req_file ][1]
+        response['Content-Size'] = $FILECACHE.js_cache[ req_file ][2]
+        response.body = $FILECACHE.js_cache[ req_file ][0]
         
         #end
       end
@@ -129,17 +129,17 @@ class FileServe
       # Get the theme resource identifier
       req_file  = request_path[5]
       
-      if not FILECACHE.theme_cache.has_key?( theme_name )
+      if not $FILECACHE.theme_cache.has_key?( theme_name )
         response.status = 404
         response.body   = '404 - Theme Not Found'
-        puts "Theme not found, avail: #{FILECACHE.theme_cache.inspect}" if DEBUG_MODE
-      elsif not FILECACHE.theme_cache[theme_name].has_key?( theme_part )
+        puts "Theme not found, avail: #{$FILECACHE.theme_cache.inspect}" if DEBUG_MODE
+      elsif not $FILECACHE.theme_cache[theme_name].has_key?( theme_part )
         response.status = 503
         response.body   = '503 - Invalid Theme Part Request'
-      elsif not FILECACHE.theme_cache[theme_name][theme_part].has_key?( req_file )
+      elsif not $FILECACHE.theme_cache[theme_name][theme_part].has_key?( req_file )
         response.status = 404
         response.body   = '404 - Theme Resource Not Found'
-        puts "File not found, avail: #{FILECACHE.theme_cache[theme_name][theme_part].keys.inspect}" if DEBUG_MODE
+        puts "File not found, avail: #{$FILECACHE.theme_cache[theme_name][theme_part].keys.inspect}" if DEBUG_MODE
       else
         
         response.status = 200
@@ -157,22 +157,22 @@ class FileServe
         #support_gzip = false if theme_part == 'gfx'
         #if support_gzip and not is_safari and not is_msie
         #  response.chunked = true
-        #  response['Last-Modified'] = FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
-        #  response['Content-Size'] = FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
+        #  response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
+        #  response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
         #  response['Content-Encoding'] = 'gzip'
-        #  response.body   = FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
+        #  response.body   = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
         #else
           
         # Special IE6 condition to serve gifs instead of png's, because it works much better
         # than using the ActiveX alpha filter hack
         if is_msie6 and req_file[-4..-1] == '.png'
           ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
-          req_file = ie6_req_png2gif if FILECACHE.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
+          req_file = ie6_req_png2gif if $FILECACHE.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
         end
         
-        response['Last-Modified'] = FILECACHE.theme_cache[theme_name][theme_part][ req_file ][1]
-        response['Content-Size'] = FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
-        response.body = FILECACHE.theme_cache[theme_name][theme_part][ req_file ][0]
+        response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][1]
+        response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
+        response.body = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][0]
           
         #end
       end
