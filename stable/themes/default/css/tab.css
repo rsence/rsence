@@ -1,0 +1,81 @@
+/* tab bar */
+.default .tab .label {
+  position: absolute;
+  top: 0px; left: 0px right: 0px; height: 20px;
+  background-position: 0px -80px;
+  background-repeat: repeat-x;
+  cursor: pointer;
+}
+
+/* set left and width manually */
+.default .tab .label .item-fg,
+.default .tab .label .item-bg {
+  position: absolute;
+  top: 0px; height: 20px;
+  background-repeat: repeat-x;
+}
+.default .tab .label,
+.default .tab .label .edge-left,
+.default .tab .label .edge-right,
+.default .tab .label .tablabel {
+  background-repeat: no-repeat;
+  background-image: #{this.getCssFilePath('tablabel.gif')};
+}
+.default .tab .label .edge-left {
+  position: absolute;
+  top: 0px; left: 0px; width: 4px; height: 20px;
+  background-position: 0px 0px;
+}
+.default .tab .label .item-bg .edge-left {
+  background-position: 0px -20px;
+}
+
+.default .tab .label .edge-right {
+  position: absolute;
+  top: 0px; right: 0px; width: 4px; height: 20px;
+  background-position: -14px 0px;
+}
+.default .tab .label .item-bg .edge-right {
+  background-position: -14px -20px;
+}
+
+.default .tab .label .tablabel {
+  position: absolute;
+  top: 0px; left: 4px; right: 4px; height: 20px;
+  background-position: 0px -40px;
+  background-repeat: repeat-x;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 13px;
+  font-family: 'Trebuchet MS', Verdana, Arial, Helvetica, sans-serif;
+  color: #000;
+  line-height: 22px;
+}
+.default .tab .label .item-bg .tablabel {
+  background-position: 0px -60px;
+}
+
+
+/*
+<div class="label" id="label1234">
+  <div class="item-fg" style="left:0px;width:128px;">
+    <div class="edge-left"></div>
+    <div class="tablabel"></div>
+    <div class="edge-right"></div>
+  </div>
+  <div class="item-bg" style="left:128px;width:128px;">
+    <div class="edge-left"></div>
+    <div class="tablabel"></div>
+    <div class="edge-right"></div>
+  </div>
+</div>
+*/
+
+.default .tab .bg {
+  position: absolute;
+  top: 20px; left: 0px; right: 0px; bottom: 0px;
+  background-color: #cfcfcf;
+  border: 1px solid #878787;
+  border-top-width: 0px;
+}
+

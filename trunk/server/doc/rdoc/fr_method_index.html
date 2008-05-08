@@ -1,0 +1,200 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--
+
+    Methods
+
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Methods</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="rdoc-style.css" type="text/css" />
+  <base target="docwin" />
+</head>
+<body>
+<div id="index">
+  <h1 class="section-bar">Methods</h1>
+  <div id="index-entries">
+    <a href="classes/ResponseBody.html#M000030">+ (ResponseBody)</a><br />
+    <a href="classes/Response.html#M000088">[]= (Response)</a><br />
+    <a href="classes/HValue.html#M000014">add (HValue)</a><br />
+    <a href="classes/Plugin.html#M000133">any (Plugin)</a><br />
+    <a href="classes/HValue.html#M000017">bind (HValue)</a><br />
+    <a href="classes/Response.html#M000085">body (Response)</a><br />
+    <a href="classes/Response.html#M000084">body= (Response)</a><br />
+    <a href="classes/ClockApp.html#M000111">calc_clock_coords (ClockApp)</a><br />
+    <a href="classes/RestfulDispatcher.html#M000170">call (RestfulDispatcher)</a><br />
+    <a href="classes/SessionManager.html#M000081">check_cookie (SessionManager)</a><br />
+    <a href="classes/FileCache.html#M000099">check_scan (FileCache)</a><br />
+    <a href="classes/SessionManager.html#M000078">check_ses (SessionManager)</a><br />
+    <a href="classes/HConsole.html#M000126">clear_session_to_js (HConsole)</a><br />
+    <a href="classes/PluginManager.html#M000058">close (PluginManager)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000103">close (MySQLAbstractor)</a><br />
+    <a href="classes/Plugin.html#M000136">close (Plugin)</a><br />
+    <a href="classes/ClockApp.html#M000115">close (ClockApp)</a><br />
+    <a href="classes/Response.html#M000087">content_type (Response)</a><br />
+    <a href="classes/Response.html#M000086">content_type= (Response)</a><br />
+    <a href="classes/PluginManager.html#M000053">curr_plugin_path (PluginManager)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000106">db (MySQLAbstractor)</a><br />
+    <a href="classes/SessionStorage.html#M000155">db_init_mysql (SessionStorage)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000104">dbs (MySQLAbstractor)</a><br />
+    <a href="classes/TicketServe.html#M000037">del_file (TicketServe)</a><br />
+    <a href="classes/TicketServe.html#M000036">del_img (TicketServe)</a><br />
+    <a href="classes/TicketServe.html#M000038">del_rsrc (TicketServe)</a><br />
+    <a href="classes/PluginManager.html#M000061">delegate (PluginManager)</a><br />
+    <a href="classes/HValue.html#M000025">die (HValue)</a><br />
+    <a href="classes/RestfulDispatcher.html#M000171">dispatcher_class (RestfulDispatcher)</a><br />
+    <a href="classes/Request.html#M000147">env2header (Request)</a><br />
+    <a href="classes/TicketServe.html#M000042">expire_keepalive_files (TicketServe)</a><br />
+    <a href="classes/TicketServe.html#M000041">expire_keepalives (TicketServe)</a><br />
+    <a href="classes/TicketServe.html#M000035">expire_ses (TicketServe)</a><br />
+    <a href="classes/SessionStorage.html#M000162">expire_session (SessionStorage)</a><br />
+    <a href="classes/Message.html#M000006">expire_session (Message)</a><br />
+    <a href="classes/SessionStorage.html#M000163">expire_sessions (SessionStorage)</a><br />
+    <a href="classes/Plugin.html#M000141">file_read (Plugin)</a><br />
+    <a href="classes/Plugin.html#M000135">flush (Plugin)</a><br />
+    <a href="classes/PluginManager.html#M000057">flush (PluginManager)</a><br />
+    <a href="classes/HValue.html#M000022">from_client (HValue)</a><br />
+    <a href="classes/RandomGenerator.html#M000070">generate (RandomGenerator)</a><br />
+    <a href="classes/TicketServe.html#M000047">get (TicketServe)</a><br />
+    <a href="classes/IndexHtml.html#M000013">get (IndexHtml)</a><br />
+    <a href="classes/RandomGenerator.html#M000072">get (RandomGenerator)</a><br />
+    <a href="classes/Broker.html#M000032">get (Broker)</a><br />
+    <a href="classes/FileServe.html#M000149">get (FileServe)</a><br />
+    <a href="classes/RandomGenerator.html#M000074">get_one (RandomGenerator)</a><br />
+    <a href="classes/FileCache.html#M000097">getfile (FileCache)</a><br />
+    <a href="classes/RandomGenerator.html#M000073">give (RandomGenerator)</a><br />
+    <a href="classes/RandomGenerator.html#M000075">give_one (RandomGenerator)</a><br />
+    <a href="classes/HConsole.html#M000122">hash_to_js (HConsole)</a><br />
+    <a href="classes/Response.html#M000091">header (Response)</a><br />
+    <a href="classes/SessionStorage.html#M000160">hexlify (SessionStorage)</a><br />
+    <a href="classes/FileServe.html#M000148">httime (FileServe)</a><br />
+    <a href="classes/TicketServe.html#M000033">httime (TicketServe)</a><br />
+    <a href="classes/FileCache.html#M000096">httime (FileCache)</a><br />
+    <a href="classes/PluginManager.html#M000056">idle (PluginManager)</a><br />
+    <a href="classes/ClockApp.html#M000120">idle (ClockApp)</a><br />
+    <a href="classes/HConsole.html#M000127">idle (HConsole)</a><br />
+    <a href="classes/Main.html#M000029">idle (Main)</a><br />
+    <a href="classes/Plugin.html#M000132">idle (Plugin)</a><br />
+    <a href="classes/Plugin.html#M000144">include_js (Plugin)</a><br />
+    <a href="classes/RestfulDispatcher.html#M000173">included (RestfulDispatcher)</a><br />
+    <a href="classes/Plugin.html#M000129">init (Plugin)</a><br />
+    <a href="classes/SessionManager.html#M000082">init_msg (SessionManager)</a><br />
+    <a href="classes/HConsole.html#M000123">init_ses (HConsole)</a><br />
+    <a href="classes/Main.html#M000027">init_ses (Main)</a><br />
+    <a href="classes/SessionManager.html#M000077">init_ses (SessionManager)</a><br />
+    <a href="classes/ClockApp.html#M000117">init_ses (ClockApp)</a><br />
+    <a href="classes/Plugin.html#M000137">init_ses (Plugin)</a><br />
+    <a href="classes/ClockApp.html#M000121">init_ui (ClockApp)</a><br />
+    <a href="classes/RandomGenerator.html#M000071">make (RandomGenerator)</a><br />
+    <a href="classes/Plugin.html#M000140">name (Plugin)</a><br />
+    <a href="classes/RestfulDispatcher.html#M000172">new (RestfulDispatcher)</a><br />
+    <a href="classes/Plugin.html#M000128">new (Plugin)</a><br />
+    <a href="classes/SessionManager.html#M000076">new (SessionManager)</a><br />
+    <a href="classes/ValueParser.html#M000066">new (ValueParser)</a><br />
+    <a href="classes/HValue.html#M000016">new (HValue)</a><br />
+    <a href="classes/IntValueParser.html#M000064">new (IntValueParser)</a><br />
+    <a href="classes/Status_DB.html#M000063">new (Status_DB)</a><br />
+    <a href="classes/Message.html#M000005">new (Message)</a><br />
+    <a href="classes/RandomGenerator.html#M000069">new (RandomGenerator)</a><br />
+    <a href="classes/Response.html#M000083">new (Response)</a><br />
+    <a href="classes/ValueManager.html#M000164">new (ValueManager)</a><br />
+    <a href="classes/SessionStorage.html#M000154">new (SessionStorage)</a><br />
+    <a href="classes/PluginManager.html#M000051">new (PluginManager)</a><br />
+    <a href="classes/Request.html#M000145">new (Request)</a><br />
+    <a href="classes/Transporter.html#M000048">new (Transporter)</a><br />
+    <a href="classes/StringValueParser.html#M000150">new (StringValueParser)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000101">new (MySQLAbstractor)</a><br />
+    <a href="classes/TicketServe.html#M000034">new (TicketServe)</a><br />
+    <a href="classes/BoolValueParser.html#M000092">new (BoolValueParser)</a><br />
+    <a href="classes/Status_TBL.html#M000100">new (Status_TBL)</a><br />
+    <a href="classes/FileCache.html#M000094">new (FileCache)</a><br />
+    <a href="classes/FloatValueParser.html#M000152">new (FloatValueParser)</a><br />
+    <a href="classes/IndexHtml.html#M000012">new (IndexHtml)</a><br />
+    <a href="classes/ClockApp.html#M000110">new (ClockApp)</a><br />
+    <a href="classes/SessionStorage.html#M000161">new_ses_id (SessionStorage)</a><br />
+    <a href="classes/ClockApp.html#M000114">open (ClockApp)</a><br />
+    <a href="classes/PluginManager.html#M000055">open (PluginManager)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000102">open (MySQLAbstractor)</a><br />
+    <a href="classes/Plugin.html#M000134">open (Plugin)</a><br />
+    <a href="classes/ValueParser.html#M000068">parse_xml (ValueParser)</a><br />
+    <a href="classes/PluginManager.html#M000052">plugins (PluginManager)</a><br />
+    <a href="classes/Broker.html#M000031">post (Broker)</a><br />
+    <a href="classes/FloatValueParser.html#M000153">process_data (FloatValueParser)</a><br />
+    <a href="classes/IntValueParser.html#M000065">process_data (IntValueParser)</a><br />
+    <a href="classes/ValueParser.html#M000067">process_data (ValueParser)</a><br />
+    <a href="classes/BoolValueParser.html#M000093">process_data (BoolValueParser)</a><br />
+    <a href="classes/StringValueParser.html#M000151">process_data (StringValueParser)</a><br />
+    <a href="classes/TicketServe.html#M000039">push_keepalive (TicketServe)</a><br />
+    <a href="classes/TicketServe.html#M000040">push_keepalive_file (TicketServe)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000109">q (MySQLAbstractor)</a><br />
+    <a href="files/bin/launch_rb.html#M000002">rack_ebb_handler (bin/launch.rb)</a><br />
+    <a href="files/bin/launch_rb.html#M000004">rack_mongrel_handler (bin/launch.rb)</a><br />
+    <a href="files/bin/launch_rb.html#M000003">rack_thin_handler (bin/launch.rb)</a><br />
+    <a href="files/bin/launch_rb.html#M000001">rack_webrick_handler (bin/launch.rb)</a><br />
+    <a href="classes/Plugin.html#M000139">register (Plugin)</a><br />
+    <a href="classes/HValue.html#M000018">release (HValue)</a><br />
+    <a href="classes/Plugin.html#M000131">release (Plugin)</a><br />
+    <a href="classes/HValue.html#M000019">release_all (HValue)</a><br />
+    <a href="classes/HConsole.html#M000125">reload_session_to_js (HConsole)</a><br />
+    <a href="classes/ClockApp.html#M000112">render_clock_bg (ClockApp)</a><br />
+    <a href="classes/ClockApp.html#M000113">render_clock_fg (ClockApp)</a><br />
+    <a href="classes/Message.html#M000007">reply (Message)</a><br />
+    <a href="classes/Plugin.html#M000142">require_js (Plugin)</a><br />
+    <a href="classes/Plugin.html#M000143">require_js_once (Plugin)</a><br />
+    <a href="classes/PluginManager.html#M000059">rescan (PluginManager)</a><br />
+    <a href="classes/ValueManager.html#M000165">resend_session_values (ValueManager)</a><br />
+    <a href="classes/SessionStorage.html#M000156">reset_sessions (SessionStorage)</a><br />
+    <a href="classes/HValue.html#M000015">restore (HValue)</a><br />
+    <a href="classes/ClockApp.html#M000118">restore_ses (ClockApp)</a><br />
+    <a href="classes/HConsole.html#M000124">restore_ses (HConsole)</a><br />
+    <a href="classes/Main.html#M000028">restore_ses (Main)</a><br />
+    <a href="classes/Plugin.html#M000138">restore_ses (Plugin)</a><br />
+    <a href="classes/SessionStorage.html#M000157">restore_sessions (SessionStorage)</a><br />
+    <a href="classes/Plugin.html#M000130">run (Plugin)</a><br />
+    <a href="classes/PluginManager.html#M000062">run_plugin (PluginManager)</a><br />
+    <a href="classes/PluginManager.html#M000054">scan (PluginManager)</a><br />
+    <a href="classes/FileCache.html#M000098">scan_dirs (FileCache)</a><br />
+    <a href="classes/TicketServe.html#M000043">serve (TicketServe)</a><br />
+    <a href="classes/TicketServe.html#M000045">serve_file (TicketServe)</a><br />
+    <a href="classes/Message.html#M000009">serve_file (Message)</a><br />
+    <a href="classes/Message.html#M000008">serve_img (Message)</a><br />
+    <a href="classes/TicketServe.html#M000044">serve_img (TicketServe)</a><br />
+    <a href="classes/Message.html#M000010">serve_rsrc (Message)</a><br />
+    <a href="classes/TicketServe.html#M000046">serve_rsrc (TicketServe)</a><br />
+    <a href="classes/HValue.html#M000023">set (HValue)</a><br />
+    <a href="classes/ValueManager.html#M000167">set (ValueManager)</a><br />
+    <a href="classes/PluginManager.html#M000060">shutdown (PluginManager)</a><br />
+    <a href="classes/Transporter.html#M000049">shutdown (Transporter)</a><br />
+    <a href="classes/SessionStorage.html#M000159">shutdown (SessionStorage)</a><br />
+    <a href="classes/RestfulDispatcher/SingletonMethods.html#M000174">start (RestfulDispatcher::SingletonMethods)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000107">status (MySQLAbstractor)</a><br />
+    <a href="classes/Response.html#M000090">status (Response)</a><br />
+    <a href="classes/Response.html#M000089">status= (Response)</a><br />
+    <a href="classes/SessionManager.html#M000079">stop_client (SessionManager)</a><br />
+    <a href="classes/SessionManager.html#M000080">stop_client_with_message (SessionManager)</a><br />
+    <a href="classes/SessionStorage.html#M000158">store_sessions (SessionStorage)</a><br />
+    <a href="classes/FileCache.html#M000095">suffix (FileCache)</a><br />
+    <a href="classes/ValueManager.html#M000169">sync_client (ValueManager)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000105">tables (MySQLAbstractor)</a><br />
+    <a href="classes/HValue.html#M000021">tell (HValue)</a><br />
+    <a href="classes/ClockApp.html#M000116">tick_responder (ClockApp)</a><br />
+    <a href="classes/HValue.html#M000024">to_client (HValue)</a><br />
+    <a href="classes/MySQLAbstractor.html#M000108">trans (MySQLAbstractor)</a><br />
+    <a href="classes/HValue.html#M000020">unbind (HValue)</a><br />
+    <a href="classes/Request.html#M000146">unparsed_uri (Request)</a><br />
+    <a href="classes/Message.html#M000011">unserve_rsrc (Message)</a><br />
+    <a href="classes/ClockApp.html#M000119">update_clock (ClockApp)</a><br />
+    <a href="classes/Main.html#M000026">url_responder (Main)</a><br />
+    <a href="classes/ValueManager.html#M000168">validate (ValueManager)</a><br />
+    <a href="classes/ValueManager.html#M000166">xhr (ValueManager)</a><br />
+    <a href="classes/Transporter.html#M000050">xhr (Transporter)</a><br />
+  </div>
+</div>
+</body>
+</html>
