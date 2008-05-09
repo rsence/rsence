@@ -183,6 +183,9 @@ class Main < Plugin
       
       ## Sets the client into poll mode, unless the :delayed_calls -array is empty
       if mses[:boot] > 3
+        if mses[:delayed_calls].empty?
+          msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};" )
+        end
         msg.reply( "HTransporter.setPollMode(#{(not mses[:delayed_calls].empty?).inspect});" )
       end
       
@@ -191,7 +194,7 @@ class Main < Plugin
     ## changes trigger new requests.
     elsif mses[:boot] > 3
       msg.reply "HTransporter.setPollMode(false);"
-      msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].inspect});")
+      msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};")
     end
     
     ## Increment the counter forever.
