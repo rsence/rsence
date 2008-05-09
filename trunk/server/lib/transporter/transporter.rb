@@ -54,7 +54,7 @@ class Transporter
       if $DEBUG_MODE
         puts
         puts "CLIENT ERROR:"
-        pp request.query['err_msg']
+        puts request.query['err_msg'].inspect
         puts
       end
       
