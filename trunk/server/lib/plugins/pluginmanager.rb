@@ -103,6 +103,8 @@ class PluginManager
       
     end
     
+    open()
+    
     @@curr_plugin_path = nil
     
   end

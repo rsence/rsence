@@ -70,7 +70,7 @@ class ClockApp < Plugin
     @minute_arm_width   = 4
     
     ## Render the clock background
-    render_clock_bg
+    # render_clock_bg  # will be called by open() now
   end
   
   # Trigonometric utility to calculate coordinates
