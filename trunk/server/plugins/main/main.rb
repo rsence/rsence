@@ -61,6 +61,7 @@ class Main < Plugin
       msg.reply "sesWatcher = new SesWatcher(60000,'#{mses[:client_time].val_id}');" # 60000 = 60 seconds
     elsif mses[:boot] == 2
       msg.reply "HTransporter.setPollMode(false);"
+      msg.reply "document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};"
     end
     mses[:boot] += 1
   end
