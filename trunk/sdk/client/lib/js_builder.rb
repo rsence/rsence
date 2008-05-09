@@ -19,7 +19,11 @@ class JSBuilder
     #jsc_size = @jsc_files[jsc_path].size
     dst_size = File.stat(dst_path).size
     jsc_size = File.stat(jsc_path).size
-    gz_size  = File.stat( gz_path).size
+    if $_NO_GZIP
+      gz_size  = -1
+    else
+      gz_size  = File.stat( gz_path).size
+    end
     percent = 'n/a'
     if dst_size > 0
       percent1 = (100*(jsc_size/dst_size.to_f)).to_i.to_s + '%'
@@ -59,8 +63,10 @@ class JSBuilder
       
       save_file(jsc_path,jsc_data)
       
-      gz_path = jsc_path.gsub('.js','.gz')
-      gzip_file(jsc_path,gz_path)
+      unless $_NO_GZIP
+        gz_path = jsc_path.gsub('.js','.gz')
+        gzip_file(jsc_path,gz_path)
+      end
       
       print_stat(dst_path,jsc_path,gz_path)
     end
@@ -160,7 +166,7 @@ class JSBuilder
   end
   def cp_css_tidy_file(src_path,dst_path)
     cp_file(src_path,dst_path)
-    gzip_file(dst_path,dst_path+'.gz')
+    gzip_file(dst_path,dst_path+'.gz') unless $_NO_GZIP
   end
   def cp_html_tidy_file(src_path,dst_path)
     if RUBY_PLATFORM.include? "mswin32"
@@ -168,7 +174,7 @@ class JSBuilder
     else
       save_file(dst_path,`#{HTMLTIDY} "#{src_path}"`.gsub("\n",""))
     end
-    gzip_file(dst_path,dst_path+'.gz')
+    gzip_file(dst_path,dst_path+'.gz') unless $_NO_GZIP
   end
 
 
