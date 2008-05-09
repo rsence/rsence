@@ -68,6 +68,9 @@ class ClockApp < Plugin
     
     @minute_arm_color   = '#999' # medium-light gray
     @minute_arm_width   = 4
+    
+    ## Render the clock background
+    render_clock_bg
   end
   
   # Trigonometric utility to calculate coordinates
