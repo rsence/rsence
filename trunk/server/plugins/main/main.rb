@@ -191,7 +191,7 @@ class Main < Plugin
     ## changes trigger new requests.
     elsif mses[:boot] > 3
       msg.reply "HTransporter.setPollMode(false);"
-      msg.reply("ELEM.setAttr(0,'title',#{$config[:indexhtml_conf][:loaded_title].inspect});")
+      msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].inspect});")
     end
     
     ## Increment the counter forever.
