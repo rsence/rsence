@@ -132,14 +132,14 @@ class FileServe
       if not $FILECACHE.theme_cache.has_key?( theme_name )
         response.status = 404
         response.body   = '404 - Theme Not Found'
-        puts "Theme not found, avail: #{$FILECACHE.theme_cache.inspect}" if DEBUG_MODE
+        puts "Theme not found, avail: #{$FILECACHE.theme_cache.inspect}" if $DEBUG_MODE
       elsif not $FILECACHE.theme_cache[theme_name].has_key?( theme_part )
         response.status = 503
         response.body   = '503 - Invalid Theme Part Request'
       elsif not $FILECACHE.theme_cache[theme_name][theme_part].has_key?( req_file )
         response.status = 404
         response.body   = '404 - Theme Resource Not Found'
-        puts "File not found, avail: #{$FILECACHE.theme_cache[theme_name][theme_part].keys.inspect}" if DEBUG_MODE
+        puts "File not found, avail: #{$FILECACHE.theme_cache[theme_name][theme_part].keys.inspect}" if $DEBUG_MODE
       else
         
         response.status = 200
