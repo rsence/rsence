@@ -269,6 +269,11 @@ class TicketServe
     
   end
   
+  def set_favicon( ico_data )
+    @raw_uris['favicon.ico'][1] = ico_data.size.to_s
+    @raw_uris['favicon.ico'][2] = ico_data
+  end
+  
   # serves stuff from get-request
   def get( req, res, type=:img )
     
