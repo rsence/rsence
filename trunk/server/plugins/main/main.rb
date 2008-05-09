@@ -164,13 +164,13 @@ class Main < Plugin
           # ['plugin_name', 'method_name'] pairs call the named plugin:method with just msg
           if delayed_call.size == 2
             (plugin_name,method_name) = delayed_call
-            msg.system.run_app(plugin_name,method_name,msg)
+            msg.run(plugin_name,method_name,msg)
           
           # if the array contains more items, they are used as additional method params
           else
             (plugin_name,method_name) = delayed_call[0..1]
             method_params = delayed_call[2..-1]
-            msg.system.run_app(plugin_name,method_name,msg,*method_params)
+            msg.run(plugin_name,method_name,msg,*method_params)
           end
           
         end

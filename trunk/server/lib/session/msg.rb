@@ -113,5 +113,11 @@ class Message
     $TICKETSERVE.del_rsrc( uri[3..-1] )
   end
   
+  ### Calls registered plugin +plugin+ method +plugin_method+ with any +args+
+  def run( plugin_name, plug_method, *args )
+    $PLUGINS.run_plugin( plugin_name, plug_method, *args)
+  end
+  
+  
 end
 
