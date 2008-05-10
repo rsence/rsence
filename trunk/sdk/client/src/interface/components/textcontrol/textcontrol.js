@@ -42,8 +42,6 @@ HTextControl = HControl.extend({
   **/
   constructor: function(_rect, _parentClass, _options) {
     
-    this.markupElemIds = {};
-    
     if(this.isinherited) {
       this.base(_rect, _parentClass, _options);
     }
@@ -61,27 +59,19 @@ HTextControl = HControl.extend({
     if(!this.isinherited) {
       this.draw();
     }
+    
+    this.setTextEnter(true);
+    
   },
   
-  
-/** method: die
-  *
-  * Unregisters some text control specific events before destroying the view.
-  *
-  * See also:
-  *  <HView.die> <HControl.die>
-  **/
-  die: function() {
-    if(this.drawn) {
-      var _domElementId = 'value' + this.elemId;
-      Event.stopObserving(_domElementId, 'mousedown', this._stopPropagation);
-      Event.stopObserving(_domElementId, 'mousemove', this._stopPropagation);
-      Event.stopObserving(_domElementId, 'focus', this._activateControl);
-      Event.stopObserving(_domElementId, 'blur', this._deactivateControl);
+  draw: function(){
+    if(!this.drawn){
+      this.base();
+      this.drawMarkup();
+    } else {
+      this.refresh();
     }
-    this.base();
   },
-  
   
 /** method: setEnabled
   * 
@@ -96,138 +86,26 @@ HTextControl = HControl.extend({
   **/
   setEnabled: function(_flag) {
     this.base(_flag);
+    if(this['markupElemIds']===undefined){return;}
     if(this.markupElemIds.value) {
       ELEM.setAttr(this.markupElemIds.value,'disabled',!this.enabled);
     }
   },
   
-  
-/** method: draw
-  * 
-  * Draws the rectangle and the markup of this object on the screen.
-  *
-  * See also:
-  *  <HView.draw>
-  **/
-  draw: function() {
-    if(!this.drawn) {
-      
-      this.drawRect();
-      this.drawMarkup();
-      
-      if(this.markupElemIds.value) {
-        // Prevents errors in FF when setting the value programmatically.
-        ELEM.setAttr(this.markupElemIds.value,"autocomplete", "off");
-        this.setEnabled(this.enabled);
-      }
-      
-      this._setLowLevelEventListeners();
-      
-      this.drawn = true;
-    }
-
-    this.refresh(); // Make sure the value gets drawn.
-  },
-  
-  
-  // Private method.
-  // Overrides the event manager's mouseDown and mouseMove events in order to
-  // get the text field to work in an intuitive way. Also the focus and blur
-  // listeners are added to handle the active control management, which the
-  // event manager cannot do when the mouseDown is overridden.
-  //
-  // The methods are set as member variables so that we can get rid of them when
-  // the text control is destroyed.
-  _setLowLevelEventListeners: function() {
-    var _domElementId = 'value'+this.elemId;
-    // Allow focusing by mouse click. Only do this once per control. This is
-    // handled by the draw method with the this.drawn boolean.
-    this._stopPropagation = function(_event) {
-      HControl.stopPropagation(_event);
-    };
-
-    Event.observe(_domElementId, 'mousedown', this._stopPropagation, false);
-    Event.observe(_domElementId, 'mousemove', this._stopPropagation, false);
-      
-    // Set the focus listener to the text field so the text control can get
-    // informed when it gains the active status. Also the lostActiveStatus
-    // needs this to work so the event manager knows the correct active
-    // control.
-    var _that = this;
-    this._activateControl = function(event) {
-      // When the text field gets focus, make this control active.
-      EVENT.changeActiveControl(_that);
-    };
-    Event.observe(_domElementId, 'focus', this._activateControl, false);
-    
-    // The blur listener unsets the active control. It is used when the user
-    // moves the focus out of the document (clicks on the browser's address bar
-    // for example).
-    this._deactivateControl = function(event) {
-      // Explicitly update the value when the field loses focus.
-      _that._updateValue();
-      EVENT.changeActiveControl(null);
-    };
-    Event.observe(_domElementId, 'blur', this._deactivateControl, false);
-  },
-  
-  
-/** method: refresh
-  * 
-  * Redraws only the value, not the whole markup.
-  *
-  * See also:
-  *  <HView.refresh>
-  **/
-  refresh: function() {
-    this.base();
-    if (this.markupElemIds.value) {
-      if (ELEM.getAttr(this.markupElemIds.value,'value',true) != this.value) {
-        ELEM.setAttr(this.markupElemIds.value,'value',this.value,true);
+  refreshValue: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.value){
+        ELEM.get(this.markupElemIds.value).value = this.value;
       }
     }
   },
   
-  
-/** event: onIdle
-  * 
-  * Save typed in or pasted text into the member variable. This is called
-  * automatically by the application.
-  *
-  * See also:
-  *  <HApplication>
-  **/
-  onIdle: function() {
-    if (this.active) {
-      this._updateValue();
-    }
-  },
-  
-  
-  // Private method.
-  // Updates the component's value from the typed in text.
-  _updateValue: function() {
-    if (this.drawn) {
-      
-      if (ELEM.getAttr(this.markupElemIds.value,'value',true) != this.value) {
-        this.setValue(ELEM.getAttr(this.markupElemIds.value,'value',true));
-      }
-      
-    }
-  },
-  
-  
-/** event: lostActiveStatus
-  * 
-  * Makes sure that the focus is removed from the text field when another
-  * component is activated.
-  *
-  * See also:
-  *  <HControl.lostActiveStatus>
-  **/
-  lostActiveStatus: function(_newActiveControl) {
-    if (this.markupElemIds.value) {
-      ELEM.get(this.markupElemIds.value).blur();
+  textEnter: function(){
+    if(this['markupElemIds']===undefined){return;}
+    var _value = ELEM.get(this.markupElemIds.value).value;
+    //console.log('textEnter, this.value:',this.value,' elem value:',_value);
+    if(_value!=this.value){
+      this.setValue(_value);
     }
   }
   
