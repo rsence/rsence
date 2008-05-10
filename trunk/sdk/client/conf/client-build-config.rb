@@ -33,7 +33,7 @@ $_PACKAGES = {
   'basic' => [
     'button','stringview','textcontrol','textarea','slider','vslider',
     'progressbar','progressindicator','imageview','splitview','stepper','radiobutton',
-    'passwordcontrol','divider','checkbox'
+    'passwordcontrol','divider','checkbox','validatorview'
   ],
   'tabs' => [
     'tab'

@@ -446,7 +446,7 @@ ELEM = {
     
     return _hasClass;
   },
-
+  
   addClassName: function(_elemId, _className) {
     //_element = $(_element);
     var _element = ELEM.get(_elemId);

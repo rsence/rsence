@@ -14,30 +14,31 @@
 
 
 HValidatorView = HControl.extend({
-  
-  componentName: "validatorview",
 
 /** constructor: constructor
   *
   * Parameters:
   *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
+  *   _parent - The parent view that this control is to be inserted in.
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
-  constructor: function(_rect, _parentClass, _options) {
+  constructor: function(_rect, _parent, _options) {
     
-    var _left = _parentClass.rect.right + 5;
-    var _top = _parentClass.rect.top;
-    var _right = _left + _rect.width;
-    var _bottom = _top + _rect.height;
-    _newRect = new HRect(_left,_top,_right,_bottom);
+    if(_options !== undefined){
+      if(_options.valueField !== undefined){
+        _rect.offsetBy(
+          _options.valueField.rect.right,
+          _options.valueField.rect.top
+        );
+      }
+    }
     
     if(this.isinherited) {
-      this.base(_newRect, _parentClass.parent, _options);
+      this.base(_rect, _parent, _options);
     }
     else {
       this.isinherited = true;
-      this.base(_newRect, _parentClass.parent, _options);
+      this.base(_rect, _parent, _options);
       this.isinherited = false;
     }
     
@@ -47,45 +48,6 @@ HValidatorView = HControl.extend({
       this.draw();
     }
   },
-  
-  
-/** method: draw
-  * 
-  * Draws the rectangle and the markup of this object on the screen.
-  *
-  * See also:
-  *  <HView.draw>
-  **/
-  draw: function() {
-    if (!this.drawn) {
-      this.drawRect();
-      this.drawMarkup();
-      this.drawn = true;
-    }
-    this.refresh();    
-  },
-  
-  
-/** method: refresh
-  * 
-  * Redraws only the image, not the whole markup.
-  *
-  * See also:
-  *  <HView.refresh>
-  **/
-  refresh: function() {
-    if (this.drawn) {
-      this.base();
-      
-      // Validator's status
-      if(this.markupElemIds.state) {
-        //console.log(this.markupElemIds.state);
-        this._updateValidatorState();
-      }
-      
-    }
-  },
-  
   
 /** method: setValue
   * 
@@ -101,19 +63,30 @@ HValidatorView = HControl.extend({
     this.base(_flag);
   },
   
+  refresh: function(){
+    this.base();
+    this._updateValidatorState();
+  },
   
   // Private method. Toggles the validator status.
   _updateValidatorState: function() {
-    if (this.markupElemIds.state) {
-      var _elem = elem_get(this.markupElemIds.state);
-      this.toggleCSSClass(_elem, HValidatorView.cssValid, this.value);
-      this.toggleCSSClass(_elem, HValidatorView.cssInvalid, !this.value);
+    var _x=0, _y=0;
+    
+    this.setStyle('background-image',"url('"+this.getThemeGfxFile('validator.png')+"')");
+    this.setStyle('background-repeat','no-repeat');
+    
+    if(this.enabled==false){ _y = -21; }
+    if(this.value==true){
+      _x = -21;
+      _title = '';
+    } else {
+      _title = this.value;
     }
+    
+    ELEM.setAttr(this.elemId,'title',_title);
+    
+    this.setStyle('background-position',_x+'px '+_y+'px');
   }
 
   
-},{
-  cssValid: "validatorview_icon_valid",
-  cssInvalid: "validatorview_icon_invalid",
-  _tmplImgPrefix: "validatorview"
 });
