@@ -81,9 +81,9 @@ class MySQLAbstractor
         return true
       end
     rescue DBI::DatabaseError => e
-      puts "=="*40 if $config[:debug_mode]
+      puts "=="*40 if $DEBUG_MODE
       puts "WARN: MySQLAbstractor:open; failed to connect, retrying..."
-      if $config[:debug_mode]
+      if $DEBUG_MODE
         puts "--"*40
         puts "hostname: #{@host.inspect}"
         puts "username: #{@user.inspect}"
@@ -176,7 +176,7 @@ class MySQLAbstractor
   def q(qu)
     action = qu.split(' ')[0].downcase
     inserters = ['insert']
-    updaters  = ['update','delete','replace','create','grant','drop','flush']
+    updaters  = ['update','delete','replace','create','grant','drop','flush','alter']
     get_id = inserters.include?(action)
     get_count = updaters.include?(action)
     open() if not @conn
@@ -184,14 +184,14 @@ class MySQLAbstractor
       begin
         @conn.do(qu)
       rescue
-        puts "=="*40 if $config[:debug_mode]
+        puts "=="*40 if $DEBUG_MODE
         puts "WARN: MySQLAbstractor:q; failed query, retrying..."
         begin
           close
           open
           @conn.do(qu)
         rescue => e
-          if $config[:debug_mode]
+          if $DEBUG_MODE
             puts "--"*40
             puts "query: #{qu.inspect}"
             puts e.message
@@ -208,14 +208,14 @@ class MySQLAbstractor
       begin
         return @conn.do(qu) # matched row count
       rescue => e
-        puts "=="*40 if $config[:debug_mode]
+        puts "=="*40 if $DEBUG_MODE
         puts "WARN: MySQLAbstractor:q; failed query, retrying..."
         begin
           close
           open
           return @conn.do(qu)
         rescue => e
-          if $config[:debug_mode]
+          if $DEBUG_MODE
             puts "--"*40
             puts "query: #{qu.inspect}"
             puts e.message
@@ -234,14 +234,14 @@ class MySQLAbstractor
         begin
           quo = @conn.execute(qu)
         rescue => e
-          puts "=="*40 if $config[:debug_mode]
+          puts "=="*40 if $DEBUG_MODE
           puts "WARN: MySQLAbstractor:q; failed query, retrying..."
           begin
             close
             open
             quo = @conn.execute(qu)
           rescue => e
-            if $config[:debug_mode]
+            if $DEBUG_MODE
               puts "--"*40
               puts "query: #{qu.inspect}"
               puts e.message
