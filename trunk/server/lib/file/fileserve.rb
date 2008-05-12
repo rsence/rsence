@@ -58,10 +58,9 @@ class FileServe
       # this file is a part of iefix, it injects calls to
       # the ie rendering engine to override stupid behavior
       # when changing element properties
-      if req_file == 'ie_css_element.htc'
+      if request_path.include?('ie_css_element.htc')
         response.status = 200
         response['Content-Type'] = 'text/x-component'
-        
         ## Usually, we don't need it, because the client framework does calls when needed
         response.body = %{<PUBLIC:COMPONENT lightWeight="true"></PUBLIC:COMPONENT>}
         
@@ -71,7 +70,7 @@ class FileServe
       # this file is a part of iefix, it injects calls to
       # the ie rendering engine to override stupid behavior
       # when changing style properties
-      elsif req_file == 'ie_css_style.htc'
+      elsif request_path.include?('ie_css_style.htc')
         response.status = 200
         response['Content-Type'] = 'text/x-component'
         
