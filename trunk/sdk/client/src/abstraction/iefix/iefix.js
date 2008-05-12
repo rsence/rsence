@@ -18,8 +18,8 @@
 ie_htc_path = null;
 function ie_early_fixes() {
   try{document.execCommand("BackgroundImageCache",false,true);}catch(e){}
-  var _script = document.scripts[document.scripts.length - 1];
-  var _src = _script.src;
+  var _script = document.scripts[document.scripts.length - 1],
+      _src = _script.src;
   ie_htc_path = _src.substring(0, _src.lastIndexOf("/") + 1);
   console = {
     log: function(){
