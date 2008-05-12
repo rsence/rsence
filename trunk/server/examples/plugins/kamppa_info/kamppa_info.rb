@@ -10,49 +10,89 @@ class KamppaInfo < Plugin
     msg.reply require_js_once( msg, 'kamppa_info' )
     ses = msg.session[:kamppa]
     rows = @db.q("select k.*, u.urli as url from kamppa_info as k, urli_data as u where k.url_id = u.id order by #{ses[:prev_sort]} #{ses[:asc_desc]}")
-    msg.reply( "kamppaUI = new KamppaUI(#{JSON(rows)},'#{ses[:sorting].val_id}');")
-    row_ids = []
-    rows.each do |row|
-      row_ids.push(row['id'])
+    begin
+      json_rows = rows.to_json
+    rescue JSON::GeneratorError
+      rows2 = []
+      rows.each do |row|
+        hash2 = {}
+        row.each_key do |row_key|
+          row_val = row[row_key]
+          begin
+            hash2[row_key] = row_val.to_json
+          rescue JSON::GeneratorError
+            puts "row_col #{row_key}: #{row_val.inspect}"
+          end
+        end
+      end
     end
+    msg.reply( "kamppaUI = new KamppaUI(#{json_rows},'#{ses[:sorting].val_id}','#{ses[:delete].val_id}','#{ses[:love].val_id}');")
+    row_ids = []
+    rows.each{|row|row_ids.push(row['id'])}
     ses[:prev_arr] = row_ids
   end
   def init_ses(msg)
     msg.session[:kamppa] = {
       :sorting => HValue.new(msg,''),
+      :delete  => HValue.new(msg,0),
+      :love    => HValue.new(msg,0),
       :prev_sort => 'k.vuokra',
       :asc_desc => 'asc',
       :prev_arr => []
     }
     msg.session[:kamppa][:sorting].bind('kamppa','reorder')
+    msg.session[:kamppa][:delete].bind('kamppa','del_row')
+    msg.session[:kamppa][:love].bind('kamppa','love_row')
+  end
+  def del_row(msg,row_id_val)
+    ses = msg.session[:kamppa]
+    row_id = row_id_val.data.to_i
+    puts "delete row: #{row_id_val.data.inspect}?"
+    if row_id != 0
+      puts "deleting #{row_id}"
+      @db.q("delete from kamppa_info where id = #{row_id}")
+      refresh_ui(msg,true)
+    end
+    row_id_val.set(msg,0)
+    return true
+  end
+  def love_row(msg,row_id_val)
+    ses = msg.session[:kamppa]
+    row_id = row_id_val.data.to_i
+    puts "love row: #{row_id_val.data.inspect}?"
+    if row_id != 0
+      curr_val = @db.q("select love from kamppa_info where id = #{row_id}")[0]['love'].to_i
+      onoff = ( (curr_val.to_i == 0) ? 1 : 0 )
+      puts "updating #{row_id}: #{onoff}"
+      @db.q("update kamppa_info set love = #{onoff} where id = #{row_id}")
+    end
+    row_id_val.set(msg,0)
+    return true
+  end
+  def refresh_ui(msg,db_up=false)
+    ses = msg.session[:kamppa]
+    if db_up
+      rows = @db.q("select k.id as id from kamppa_info as k order by #{ses[:prev_sort]} #{ses[:asc_desc]}")
+      row_ids = []
+      rows.each{|row|row_ids.push(row['id'])}
+      ses[:prev_arr] = row_ids
+    else
+      row_ids = ses[:prev_arr]
+    end
+    msg.reply("try{kamppaUI.view.reorder(#{row_ids.to_json});}catch(e){}")
   end
   def reorder(msg,new_order)
     ses = msg.session[:kamppa]
     new_data = new_order.data
-    puts "prev: #{ses[:prev_sort].inspect} vs #{new_data.inspect}"
     if ['k.vuokra','k.kaupunginosa','k.pinta_ala','k.esittelyajat','k.vapautumis_pvm'].include?( new_data )
       if ses[:prev_sort] == new_data
-        if ses[:asc_desc] == 'asc'
-          puts "asc -> desc"
-          ses[:asc_desc] = 'desc'
-        else ses[:asc_desc] == 'desc'
-          puts "desc -> asc"
-          ses[:asc_desc] = 'asc'
-        end
+        (ses[:asc_desc] == 'asc') ? 'desc' : 'asc'
         ses[:prev_arr].reverse!
-        row_ids = ses[:prev_arr]
+        refresh_ui( msg, false )
       else
-        puts "new sel (#{ses[:asc_desc].inspect})"
         ses[:prev_sort] = new_data
-        rows = @db.q("select k.id as id from kamppa_info as k order by #{ses[:prev_sort]} #{ses[:asc_desc]}")
-        row_ids = []
-        rows.each do |row|
-          row_ids.push(row['id'])
-        end
-        ses[:prev_arr] = row_ids
+        refresh_ui( msg, true )
       end
-      puts row_ids.inspect
-      msg.reply("kamppaUI.view.reorder(#{row_ids.to_json});")
     end
     new_order.set(msg,'')
     return true
@@ -62,9 +102,7 @@ class KamppaInfo < Plugin
   end
   def idle(msg)
     return unless msg.session.has_key?(:main)
-    if msg.session[:main][:boot]==3
-      init_ui(msg)
-    end
+    init_ui(msg) if msg.session[:main][:boot]==3
   end
 end
 kamppainfo = KamppaInfo.new

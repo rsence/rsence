@@ -81,6 +81,7 @@ CREATE TABLE `kamppa_info` (
   `isannoitsijan_yhteystiedot` tinytext,
   `lammityskulut` tinytext,
   `palvelun_nimi` tinytext,
+  `love` tinyint default 0,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=739 DEFAULT CHARSET=latin1;
 

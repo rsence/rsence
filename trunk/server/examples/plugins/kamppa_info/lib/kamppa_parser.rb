@@ -125,7 +125,10 @@ class KamppaHaku
       "Pys&auml;k&ouml;intitilat"=>:pysakointitilat,
       "Yhtiön hallinnassa olevat tilat/tuotot"=>:yhtion_tilat_tuotot,
       "Isännöitsijän yhteystiedot"=>:isannoitsijan_yhteystiedot,
-      "L&auml;mmityskulut"=>:lammityskulut
+      "L&auml;mmityskulut"=>:lammityskulut,
+      'Tulevat korjaukset'=>:peruskorjaukset,
+      "Kaavatiedot"=>:kiinteisto,
+      "Uudisasunto varattu"=>false
     }
     data[:kuvaus] = html.split('<!-- Kohteen kuvaus-->'
              )[1].split('<span id="favouriteselect">'
@@ -147,9 +150,10 @@ class KamppaHaku
       #puts map_key[0..32].inspect
       if not data_map.has_key?(map_key)
         puts "invalid key: #{map_key.inspect}"
-        exit
+        next
       end
       data_key = data_map[map_key]
+      next if data_key == false
       row_data = html_row.split('<td')[1].split('>')[1].split('</td')[0]
       if data_key == :kaupunginosa
         row_data = row_data.downcase.capitalize
@@ -229,7 +233,8 @@ class KamppaHaku
       "Sijainti rakennuksessa:"=>:kokoonpano,
       "Omistusmuoto:"=>:tyyppi,
       "Ilmansuunnat:"=>:ilmansuunnat,
-      "Taloyhtiön nimi:"=>:isannoitsijan_yhteystiedot
+      "Taloyhtiön nimi:"=>:isannoitsijan_yhteystiedot,
+      "Seinämateriaalien kuvaus:"=>:seinarakenne
     }
     tilat_varustelu = {
       'hissi' => :hissi
@@ -279,7 +284,7 @@ class KamppaHaku
       elsif map_key == 'Vuokraustyyppi:'
         if row_data != 'Päävuokralainen'
           puts "tuntematon vuokraustyyppi: #{row_data.inspect}"
-          exit
+          next
         else
           next
         end
@@ -287,7 +292,7 @@ class KamppaHaku
         puts "invalid key: #{map_key.inspect}"
         puts html_row[0..96]
         puts
-        exit
+        next
       end
       data_key = data_map[map_key]
       if data.has_key?(data_key)
@@ -306,6 +311,7 @@ class KamppaHaku
   end
   def fix_html(url_id)
     html = @url_data[url_id]
+    html.gsub!("\262",'2')
     html.gsub!("\200",'&euro;')
     html.gsub!("\244",'&euro;')
     html.gsub!(0xe4.chr,'ä')
@@ -387,13 +393,17 @@ class KamppaHaku
     outp_file.close
     system('open kampat_output2.html')
   end
-  def initialize(url_txt)
-    url_file = open(url_txt)
-    @url_list = url_file.read.strip.split("\n")
-    url_file.close
+  def initialize(url_txt=false,url_list=false)
+    if url_txt != false
+      url_file = open(url_txt)
+      @url_list = url_file.read.strip.split("\n")
+      url_file.close
+    else
+      @url_list = url_list
+    end
     @db = MySQLAbstractor.new({:user=>'root',:pass=>'',:host=>'localhost'},'kampat')
-    @db.q("update urli_data set processed = 0")
-    @db.q("delete from kamppa_info")
+    @db.q("update urli_data set processed = 0") if ARGV.include?('--reset')
+    @db.q("delete from kamppa_info") if ARGV.include?('--reset')
     loop_urls
     parse_urls
     #build_table
@@ -401,5 +411,5 @@ class KamppaHaku
   end
 end
 
-KamppaHaku.new('kamppaurlit.txt')
+#KamppaHaku.new('kamppaurlit.txt')
 

@@ -3,7 +3,10 @@ KamppaRow = HControl.extend({
   flexRight: true,
   constructor: function(i,row,parent,options){
     this.base(new HRect(0,i*21+1,200,i*21+21),parent,options);
-    if(i%2==1){this.setStyle('background-color','#999');}
+    var bgcolor;
+    if(i%2==1){bgcolor='#999';}
+    else{bgcolor='#bbb';}
+    this.setStyle('background-color',bgcolor);
     this.setStyle('border-bottom','1px solid #ccc');
     this.renderRow(row);
     this.url = row['url'];
@@ -59,6 +62,57 @@ KamppaRow = HControl.extend({
     this.muuta.setStyle('font-size','10px');
     this.muuta.setStyle('cursor','pointer');
     
+    this.deletebutton = new DelButton(
+      new HRect(0,0,21,21),
+      this, {
+        label: 'X',
+        value: row['id'],
+        events: {mouseDown:true}
+      }
+    );
+    
+    this.loveButton = new LoveButton(
+      new HRect(0,0,21,21),
+      this, {
+        label: '&#10084;',
+        value: row['id'],
+        events: {mouseDown:true}
+      }
+    );
+    if(row['love']==1){
+      this.loveButton.love=true;
+      this.setStyle('background-color','#fcc');
+    }
+    
+  }
+});
+
+DelButton = HButton.extend({
+  flexLeft: false,
+  flexRight: true,
+  mouseDown: function(){
+    try{
+      this.app.delVal.set(this.value);
+      this.parent.die();
+    } catch(e){}
+    //this.app.view.rows.splice(this.app.view.rows.indexOf(this.value),1);
+  }
+});
+
+LoveButton = DelButton.extend({
+  love: false,
+  flexRightOffset: 21,
+  mouseDown: function(){
+    try{
+      this.app.loveVal.set(this.value);
+      this.love = !this.love;
+      if(this.love){
+        this.parent.setStyle('background-color','#fcc');
+      } else {
+        this.parent.setStyle('background-color','#ccc');
+      }
+    } catch(e){}
+    //this.app.view.rows.splice(this.app.view.rows.indexOf(this.value),1);
   }
 });
 
@@ -92,7 +146,8 @@ KamppaList = HView.extend({
   flexRight: true, flexBottom: true,
   constructor: function(rect,parent,kamppa_rows){
     this.base(rect,parent,kamppa_rows);
-    var i=0,row;this.rows=[];
+    this.setStyle('overflow-y','auto');
+    var i=0,row;this.rows={};
     for(;i<kamppa_rows.length;i++){
       row=kamppa_rows[i];
       this.rows[row['id']] = new KamppaRow(i,row,this);
@@ -100,20 +155,29 @@ KamppaList = HView.extend({
     
   },
   reorder: function(row_ids){
-    var i=0,bgcolor;
+    var i=0,bgcolor,errcount=0,j;
     for(;i<row_ids.length;i++){
-      if(i%2==1){bgcolor='#999';}
+      j=i-errcount;
+      if(j%2==1){bgcolor='#999';}
       else{bgcolor='#bbb';}
-      this.rows[row_ids[i]].moveTo(0,i*21);
-      this.rows[row_ids[i]].setStyle('background-color',bgcolor);
+      try{
+        this.rows[row_ids[i]].moveTo(0,j*21);
+        if(!this.rows[row_ids[i]].loveButton.love){
+          this.rows[row_ids[i]].setStyle('background-color',bgcolor);
+        }
+      }catch(e){
+        errcount += 1;
+      }
     }
   }
 });
 
 KamppaUI = HApplication.extend({
-  constructor: function( kamppa_rows, sort_val_id ){
+  constructor: function( kamppa_rows, sort_val_id, del_val_id, love_val_id ){
     this.base(200);
     this.sortVal = HVM.values[sort_val_id];
+    this.delVal  = HVM.values[del_val_id];
+    this.loveVal = HVM.values[love_val_id];
     this.head = new KamppaHead(this);
     this.view = new KamppaList(
       new HRect(0,21,100,100),
