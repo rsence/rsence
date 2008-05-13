@@ -25,8 +25,6 @@ void generate_rand_str( char *cstr, int str_len ){
   // random char index (of CHARS_IN)
   int rand_idx=0;
   
-  srand((unsigned)time(NULL));
-  
   // loop index
   int i=0;
   
@@ -78,6 +76,7 @@ static VALUE cRandomGenerator_initialize( VALUE self, VALUE target_length, VALUE
 // ruby-side 'RandomGenerator' -class
 VALUE cRandomGenerator;
 void Init_randgen() {
+  srand(time(NULL));
   cRandomGenerator = rb_define_class("RandomGenerator", rb_cObject);
   rb_define_method( cRandomGenerator, "initialize", cRandomGenerator_initialize, 2 );
   rb_define_method( cRandomGenerator, "get_one", cRandomGenerator_get_one, 0 );
