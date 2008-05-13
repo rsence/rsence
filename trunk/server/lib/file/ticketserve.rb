@@ -62,8 +62,8 @@ class TicketServe
       :ses_ids => {}
     }
     
-    # an randgen instance used for generating ids (64B long)
-    @randgen = RandomGenerator.new( 64, 600 )
+    # an randgen instance used for generating ids (84B long)
+    @randgen = RandomGenerator.new( 84, 600 )
     
     # supported image content types
     @content_types = {
@@ -185,7 +185,7 @@ class TicketServe
   def serve( msg, content, format='PNG', type=:img )
     
     # gets a new, unique identifier
-    ticket_id = @randgen.give_one
+    ticket_id = @randgen.get_one
     
     # serve image
     if type == :img
@@ -246,7 +246,8 @@ class TicketServe
   # serves static resources
   def serve_rsrc( content, content_type )
     
-    rsrc_id = @randgen.give_one
+    rsrc_id = @randgen.get_one
+    #puts "rsrc_id: #{rsrc_id.inspect}"
     
     content_size = content.size.to_s
     
