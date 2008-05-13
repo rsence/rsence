@@ -12,7 +12,6 @@
   *  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   **/
 
-#include <stdio.h>
 #include <time.h>
 #include "ruby.h"
 
@@ -30,7 +29,6 @@ void generate_rand_str( char *cstr, int str_len ){
   
   // loops len times
   for(;i<str_len;i++){
-    //printf(".");
     // get a random number in the range of 0..62
     rand_idx = rand() % 63;
     // appends a random char from CHARS_IN
