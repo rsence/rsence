@@ -51,7 +51,7 @@ iefix = {
   
   // finds the next parent with fixed or absolute positioning:
   // NOTICE: .init() makes ._layoutHeight() from this by replacing width with height
-  _layoutWidth: function(_element) {
+  layoutWidth: function(_element) {
     var _this=iefix,_parent,i=0,
         // gets the parent from which the width is calculated
         _layoutParent=_element.offsetParent;
@@ -73,7 +73,7 @@ iefix = {
       _layoutParent.attachEvent("onpropertychange", function(){
         if(window.event.propertyName=="style.width"){
           for (;i<_layoutParent._resizewidthElements.length;i++){
-            _this._resizeRight(_layoutParent._resizewidthElements[i]);
+            _this.resizeRight(_layoutParent._resizewidthElements[i]);
           }
         }
       });
@@ -108,31 +108,31 @@ iefix = {
   
   // calculates pixel value from the value given (even percentages)
   // NOTICE: .init() makes ._getPixelHeght() from this by replacing Width with Height
-  _getPixelWidth: function(_element,_value){
+  getPixelWidth: function(_element,_value){
     var _this=iefix;
-    if(_this._PERCENT.test(_value)){return parseInt(parseFloat(_value)/100*_this._layoutWidth(_element),10);}
+    if(_this._PERCENT.test(_value)){return parseInt(parseFloat(_value)/100*_this.layoutWidth(_element),10);}
     return _this.getPixelValue(_element, _value);
   },
   
   // calculates padding width of the _element:
-  // NOTICE: .init() makes ._getPaddingHeight() from this by replacing Left/Right/Width with Top/Bottom/Height
+  // NOTICE: .init() makes .getPaddingHeight() from this by replacing Left/Right/Width with Top/Bottom/Height
   // NOTICE: .init() also makes ._getMarginWidth() and ._getMarginHeight from this.
-  _getPaddingWidth: function(_element) {
+  getPaddingWidth: function(_element) {
     var _this=iefix;
-    return _this._getPixelWidth(_element,_element.currentStyle.paddingLeft)+_this._getPixelWidth(_element,_element.currentStyle.paddingRight);
+    return _this.getPixelWidth(_element,_element.currentStyle.paddingLeft)+_this.getPixelWidth(_element,_element.currentStyle.paddingRight);
   },
   
   // calculates element's position from the right edge of the parent:
   // NOTICE: .init() makes _resizeBottom() from this by replacing left/width with top/height
-  _resizeRight: function(_element){
+  resizeRight: function(_element){
     var _this=iefix,_left,_width;
     if(_element.currentStyle===null){return;}
     _left=parseInt(_element.currentStyle.left,10);
-    _width=_this._layoutWidth(_element)-parseInt(_element.currentStyle.right,10)-_left;
+    _width=_this.layoutWidth(_element)-parseInt(_element.currentStyle.right,10)-_left;
     if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
     _element.runtimeStyle.width="";
     if(_element.offsetWidth<_width){
-      _width-=_this._getBorderWidth(_element)+_this._getPaddingWidth(_element);
+      _width-=_this._getBorderWidth(_element)+_this.getPaddingWidth(_element);
       if(_width<0){_width=0;}
       _element.runtimeStyle.width=_width;
     }
@@ -203,7 +203,7 @@ iefix = {
     // check if element needs to be positioned from the right
     try{
       if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.left!="auto"&&_currentStyle.right!="auto"&&_currentStyle.width=="auto"){
-        _this._resizeRight(_element);
+        _this.resizeRight(_element);
       }
     } catch(e) {}
     
@@ -268,13 +268,13 @@ iefix = {
     //this.pngCheck = new RegExp("((\.gif)|(\.jpg))$", "i"); // needs more work
     // needed for png hack
     this.blankGifPath=ie_htc_path+"0.gif";
-    eval("this._getMarginWidth="+String(this._getPaddingWidth).replace(/padding/g,"margin"));
-    eval("this._getPaddingHeight="+String(this._getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
-    eval("this._getMarginHeight="+String(this._getPaddingHeight).replace(/padding/g,"margin"));
-    eval("this._getBorderHeight="+String(this._getBorderWidth).replace(/Width/g,"Height"));
-    eval("this._layoutHeight="+String(this._layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));
-    eval("this._getPixelHeight="+String(this._getPixelWidth).replace(/Width/g,"Height"));
-    eval("this._resizeBottom="+String(this._resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));
+    eval("this.getMarginWidth="+String(this.getPaddingWidth).replace(/padding/g,"margin"));
+    eval("this.getPaddingHeight="+String(this.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
+    eval("this.getMarginHeight="+String(this.getPaddingHeight).replace(/padding/g,"margin"));
+    eval("this.getBorderHeight="+String(this._getBorderWidth).replace(/Width/g,"Height"));
+    eval("this.layoutHeight="+String(this.layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));
+    eval("this.getPixelHeight="+String(this.getPixelWidth).replace(/Width/g,"Height"));
+    eval("this.resizeBottom="+String(this.resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));
     this.resizing = false;
   },
   
