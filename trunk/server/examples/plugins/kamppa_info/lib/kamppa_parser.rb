@@ -7,15 +7,16 @@ require 'pp'
 
 class KamppaHaku
   
-  def get_url(url)
+  def get_url(url,retry_count=0)
     begin
       url_obj = open(url)
       data = url_obj.read #do |f|
       url_obj.close
       return data
     rescue
-      puts "fail, retrying"
-      return get_url(url)
+      puts "fail, retrying" if ARGV.include?('--verbose')
+      return false if retry_count == 2
+      return get_url(url,retry_count+1)
     end
   end
   def hexlify(str)
@@ -26,10 +27,11 @@ class KamppaHaku
     @url_data  = {} # id -> data
     @id2url    = {} # id -> urli
     @not_processed = [] # id,id,id..
+    @update_urls = []
     @db.q("select id,urli,data,processed from urli_data").each do |row|
       @db_urls[row['urli']]=row['id']
       @url_data[row['id']]=row['data']
-      @not_processed.push(row['id']) unless (row['processed'].to_i == 1)
+      @not_processed.push(row['id']) if (row['processed'].to_i == 0)
       @id2url[row['id']]=row['urli']
     end
     @url_list.each do |urli|
@@ -42,10 +44,9 @@ class KamppaHaku
       if @db_urls.has_key?(urli)
         #puts "skipping: #{urli}"
       else
-        puts "fetching: #{urli}"
-        #puts "-="*40
-        #puts "fetching #{urli.inspect}"
+        puts "fetching: #{urli}" if ARGV.include?('--verbose')
         url_data = get_url(urli)
+        next if url_data == false
         #puts "--"*40
         url_id = @db.q("insert into urli_data (urli,data) values (#{hexlify(urli)},#{hexlify(url_data)})")
         @not_processed.push(url_id)
@@ -56,20 +57,11 @@ class KamppaHaku
       end
     end
   end
-  def save_file(path,data)
-    file = open(path,'w')
-    file.write(data)
-    file.close
-  end
   def parse_oikotie_html(html)
-    #puts '-'*80
-    #puts '#'*80
-    #puts
     html = html.split('<div id="contextBox">'
                 )[1].split('.owncity_border { padding:5px 9px 5px 9px; border-top:1px solid #C2C2C2; border-bottom:1px solid #C2C2C2; ')[0]
     row_num = 0
-    data = {
-    }
+    data = {}
     data_map = {
       'Sijainti'=>:sijainti,
       'Kaupunginosa'=>:kaupunginosa,
@@ -170,36 +162,6 @@ class KamppaHaku
     #pp data
     #puts '-'*80
     return data
-  end
-  def save_data(url_id,data,palvelun_nimi)
-    kamppa_id = @db.q("insert into kamppa_info (url_id,palvelun_nimi) values (#{url_id},#{hexlify(palvelun_nimi)})")
-    @db.q("update urli_data set processed = 1 where id = #{url_id}")
-    @not_processed.delete(url_id)
-    data.each_key do |data_key|
-      data_val = data[data_key]
-      if data_val != nil and data_val.size > 0
-        if data_key == :vuokra
-          data_val = data_val.gsub(',','.').gsub(' ','').to_i.to_s
-          qu = "update kamppa_info set #{data_key.to_s} = #{data_val} where id = #{kamppa_id}"
-        else
-          if data_key == :kokoonpano
-            data_val.gsub!('Kodikas','')
-            data_val.gsub!('Viihtyisä','')
-            data_val.gsub!('Upea','')
-            data_val.gsub!('Viehättävä','')
-            data_val.gsub!(/([0-9]) h/,'\1h')
-            data_val.gsub!(',','+')
-            data_val.squeeze!(' ')
-            data_val.gsub!('+ ','+')
-            data_val.gsub!(' +','+')
-            data_val.strip!
-          end
-          data_val.gsub!(/(<(.*?)>)/,'')
-          qu = "update kamppa_info set #{data_key.to_s} = #{hexlify(data_val)} where id = #{kamppa_id}"
-        end
-        @db.q(qu)
-      end
-    end
   end
   def parse_etuovi_html(html)
     data = {}
@@ -309,6 +271,48 @@ class KamppaHaku
     end
     return data
   end
+  def save_data(url_id,data,palvelun_nimi,is_update=false)
+    if is_update
+      kamppa_data = @db.q("select * from kamppa_info where url_id = #{url_id}")[0]
+      kamppa_id = kamppa_data['id']
+      was_updated = false
+    else
+      kamppa_id = @db.q("insert into kamppa_info (url_id,palvelun_nimi,updated) values (#{url_id},#{hexlify(palvelun_nimi)},#{Time.now.to_i})")
+    end
+    @db.q("update urli_data set processed = 1 where id = #{url_id}")
+    @not_processed.delete(url_id)
+    data.each_key do |data_key|
+      if is_update
+        if kamppa_data[data_key] != data[data_key]
+          puts "#{data_key} updated"
+          @db.q("update kamppa_info set updated = #{Time.now.to_i} where id = #{kamppa_id}")
+        end
+      end
+      data_val = data[data_key]
+      if data_val != nil and data_val.size > 0
+        if data_key == :vuokra
+          data_val = data_val.gsub(',','.').gsub(' ','').to_i.to_s
+          qu = "update kamppa_info set #{data_key.to_s} = #{data_val} where id = #{kamppa_id}"
+        else
+          if data_key == :kokoonpano
+            data_val.gsub!('Kodikas','')
+            data_val.gsub!('Viihtyisä','')
+            data_val.gsub!('Upea','')
+            data_val.gsub!('Viehättävä','')
+            data_val.gsub!(/([0-9]) h/,'\1h')
+            data_val.gsub!(',','+')
+            data_val.squeeze!(' ')
+            data_val.gsub!('+ ','+')
+            data_val.gsub!(' +','+')
+            data_val.strip!
+          end
+          data_val.gsub!(/(<(.*?)>)/,'')
+          qu = "update kamppa_info set #{data_key.to_s} = #{hexlify(data_val)} where id = #{kamppa_id}"
+        end
+        @db.q(qu)
+      end
+    end
+  end
   def fix_html(url_id)
     html = @url_data[url_id]
     html.gsub!("\262",'2')
@@ -348,50 +352,50 @@ class KamppaHaku
       end
     end
   end
-  def render_row(topPx,row)
-    return %{<a class="row" style="top:#{topPx}px" href="#{row["url"]}">
-<div class="vuokra">#{row["vuokra"]}</div>
-<div class="kunto">#{row["kunto"]}</div>
-<div class="kerros">#{row["kerros"]}</div>
-<div class="esittelyajat">#{row["esittelyajat"]}</div>
-<div class="vapautumis_pvm">#{row["vapautumis_pvm"]}</div>
-<div class="paikka">#{row["kaupunginosa"]} #{row["sijainti"]}</div>
-<div class="kokpano">#{row["kokoonpano"]} (#{row["huonemaara"]}h, #{row["rak_vuosi"]} (#{row["rak_vuoden_lisatiedot"]}) ) #{row["nakymat"]} #{row["ilmansuunnat"]} #{row["ikkunoiden_suunnat"]}</div>
-<div class="keittio">#{"Keittiö: "+row["keittio"] if row["keittio"]} #{"Kylppäri: "+row["kylpyhuone"] if row["kylpyhuone"]} #{"Pintamateriaalit: "+ row["pintamateriaalit"] if row["pintamateriaalit"]}</div>
-<div class="lisatiedot">#{row["lisatiedot"]} #{row["erityisehdot"]} #{row["muut_maksut"]} #{row["vuokra_aika"]} #{row["pysakointitilat"]}</div>
-<div class="tilat">#{["Sauna: ",row["sauna"],row["sauna_info"]].join(' ') if row["sauna"] or row["sauna_info"]}
-#{["Parveke: ",row["parveke"],row["parveke_info"]].join(' ') if row["parveke"] or row["parveke_info"]}
-#{row["yhteiset_tilat"]} #{row["varustus_info"]} #{row["muut_tilat"]} #{row["antenni"]}</div>
-</a>}
-  end
-  def build_table
-    #outp_table = []
-    outp_file = open('kampat_output2.html','w')
-    outp_head = '<html><head><title>kampat</title></head><body>'
-    outp_file.write(outp_head)
-    rows = @db.q("select k.*, u.urli as url from kamppa_info as k, urli_data as u where k.url_id = u.id order by esittelyajat asc, vuokra asc")
-    #keys = rows[0].keys
-    #outp_table.push(keys)
-    topPx = 30
-    rows.each do |row|
-      topPx += 100
-      outp_file.write( render_row( topPx, row ) )
-      #table_row = []
-      #keys.each do |key|
-      #  table_row.push(row[key])
-      #end
-      #outp_table.push( table_row )
+  def update_url(row)
+    puts row.inspect if ARGV.include?('--verbose')
+    #exit
+    update_age = Time.now.to_i - row['updated']
+    kamppa_id = row['kamppa_id']
+    urli = row['urli']
+    url_id = row['url_id']
+    if update_age > 60*20 # 20 minutes
+      host = urli.split('http://')[1].split('/')[0]
+      url_data = get_url(urli)
+      if url_data == false
+        puts "checking if #{urli} needs update.."
+        url_id = @db_urls[urli]
+        url_data = get_url(urli)
+        if url_data == false
+          puts "url error, deleting.."
+          @db.q("delete from urli_data where id = #{url_id}")
+          @db.q("delete from kamppa_info where id = #{kamppa_id}")
+          @db_urls.delete(urli)
+          @url_data.delete(url_id)
+          @id2url.delete(url_id)
+        elsif url_data != @url_data[url_id]
+          puts "needs update.." if ARGV.include?('--verbose')
+          @url_data[url_id] = url_data
+          @db.q("update urli_data set data=#{hexlify(url_data)} where id = #{url_id}")
+          html = fix_html(url_id)
+          if host == 'www.oikotie.fi'
+            puts "updating: #{urli}"
+            data = parse_oikotie_html(html)
+            save_data(url_id,data,'oikotie',true)
+          elsif host == 'kuluttaja.etuovi.com'
+            puts "updating: #{urli}"
+            data = parse_etuovi_html(html)
+            save_data(url_id,data,'etuovi',true)
+          end
+        end
+      end
     end
-    #outp_head += '<style type="text/css">td, th {font-family:monaco;font-size:9px;border-right:1px solid black;whitespace:nowrap} th {border-bottom:1px solid black}</style>'
-    outp_foot = '</body></html>'
-    #outp_file.write('<table><tr><th>'+keys.join('</th><th>')+'</th></tr>')
-    #outp_table.each do |row|
-      #outp_file.write('<tr><td>&nbsp;'+row.join('</td><td>&nbsp;')+'</td></tr>')
-    #end
-    #outp_file.write('</table>')
-    outp_file.write(outp_foot)
-    outp_file.close
-    system('open kampat_output2.html')
+  end
+  def update_urls
+    qu = "select k.updated as updated,k.id as kamppa_id,u.urli as urli,u.id as url_id from kamppa_info as k, urli_data as u where u.id = k.url_id"
+    @db.q(qu).each do |row|
+      update_url(row)
+    end
   end
   def initialize(url_txt=false,url_list=false)
     if url_txt != false
@@ -401,12 +405,20 @@ class KamppaHaku
     else
       @url_list = url_list
     end
+    puts "opening db" if ARGV.include?('--verbose')
     @db = MySQLAbstractor.new({:user=>'root',:pass=>'',:host=>'localhost'},'kampat')
     @db.q("update urli_data set processed = 0") if ARGV.include?('--reset')
     @db.q("delete from kamppa_info") if ARGV.include?('--reset')
+    unless @db.q("select * from kamppa_info limit 1")[0].keys.include?('updated')
+      @db.q("alter table kamppa_info add column updated int not null default 0")
+    end
+    puts "loop_urls" if ARGV.include?('--verbose')
     loop_urls
+    puts "parse_urls" if ARGV.include?('--verbose')
     parse_urls
-    #build_table
+    puts "update_urls" if ARGV.include?('--verbose')
+    update_urls
+    puts "close db" if ARGV.include?('--verbose')
     @db.close
   end
 end

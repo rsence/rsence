@@ -32,22 +32,43 @@ KamppaRow = HControl.extend({
     this.kokoonpano = new HStringView(new HRect(163,0,220,21),this,{value:kokoonpano_str});
     this.kokoonpano.setStyle('font-size','10px');
     this.kokoonpano.setStyle('border-right','1px solid #ccc',true);
-    if(this.kokoonpano.stringWidth(kokoonpano_str)>57){
+    if(this.kokoonpano.stringWidth(kokoonpano_str)>(220-163)){
       ELEM.setAttr(this.kokoonpano.elemId,'title',kokoonpano_str);
     }
     
-    this.esittely = new HStringView(new HRect(223,0,320,21),this,{value:row['esittelyajat']});
+    this.esittely = new HStringView(new HRect(223,0,310,21),this,{value:row['esittelyajat']});
     this.esittely.setStyle('font-size','10px');
     this.esittely.setStyle('border-right','1px solid #ccc',true);
-    if(this.esittely.stringWidth(row['esittelyajat'])>97){
+    if(this.esittely.stringWidth(row['esittelyajat'])>(310-223)){
       ELEM.setAttr(this.esittely.elemId,'title',row['esittelyajat']);
     }
     
-    this.vapautuu = new HStringView(new HRect(323,0,420,21),this,{value:row['vapautumis_pvm']});
+    this.vapautuu = new HStringView(new HRect(313,0,370,21),this,{value:row['vapautumis_pvm']});
     this.vapautuu.setStyle('font-size','10px');
     this.vapautuu.setStyle('border-right','1px solid #ccc',true);
-    if(this.vapautuu.stringWidth(row['vapautumis_pvm'])>97){
+    if(this.vapautuu.stringWidth(row['vapautumis_pvm'])>(370-313)){
       ELEM.setAttr(this.vapautuu.elemId,'title',row['vapautumis_pvm']);
+    }
+    
+    var updated_secs = (new Date().getTime()/1000) - row['updated'], updated_human = '';
+    if(updated_secs>(60*60*24*300)){
+      updated_human = '---';
+    } else if(updated_secs>(60*60*24*7)){
+      updated_human = Math.ceil(updated_secs / (60*60*24*7),10) + 'vko';
+    } else if(updated_secs>(60*60*24)){
+      updated_human = Math.ceil(updated_secs / (60*60*24),10) + 'vrk';
+    } else if(updated_secs>(60*60)){
+      updated_human = Math.ceil(updated_secs / (60*60),10) + 'h';
+    } else if(updated_secs>60){
+      updated_human = Math.ceil(updated_secs / 60,10) + 'min';
+    } else {
+      updated_human = updated_secs + 'sek';
+    }
+    this.paivitetty = new HStringView(new HRect(373,0,420,21),this,{value:updated_human});
+    this.paivitetty.setStyle('font-size','10px');
+    this.paivitetty.setStyle('border-right','1px solid #ccc',true);
+    if(this.vapautuu.stringWidth(row['updated_human'])>(420-373)){
+      ELEM.setAttr(this.vapautuu.elemId,'title',row['updated_human']);
     }
     
     var muuta_str = row['kokoonpano']+' ';
@@ -67,7 +88,7 @@ KamppaRow = HControl.extend({
       this, {
         label: 'X',
         value: row['id'],
-        events: {mouseDown:true}
+        events: {mouseUp:true}
       }
     );
     
@@ -76,7 +97,7 @@ KamppaRow = HControl.extend({
       this, {
         label: '&#10084;',
         value: row['id'],
-        events: {mouseDown:true}
+        events: {mouseUp:true}
       }
     );
     if(row['love']==1){
@@ -87,22 +108,45 @@ KamppaRow = HControl.extend({
   }
 });
 
-DelButton = HButton.extend({
+DelButton = HControl.extend({
   flexLeft: false,
   flexRight: true,
-  mouseDown: function(){
+  flexRightOffset: 25,
+  draw: function(){
+    var _isDrawn = this.drawn;
+    this.base();
+    if(!_isDrawn&&this.drawn){
+      this.setStyle('background-color','#ccc');
+      this.setStyle('border','1px solid #999');
+      this.setStyle('text-align','center');
+      this.setStyle('vertical-align','middle');
+      this.setStyle('line-height','21px');
+      this.setStyle('font-size','20px');
+      this.setStyle('cursor','pointer');
+      this.setStyle('font-family','Arial,sans-serif');
+      this.setStyle('color','#000');
+      this.refreshLabel();
+    }
+  },
+  refreshLabel: function(){
+    this.setHTML(this.label);
+  },
+  mouseUp: function(){
     try{
+      this.setMouseUp(false);
+      this.setEnabled(false);
       this.app.delVal.set(this.value);
       this.parent.die();
     } catch(e){}
-    //this.app.view.rows.splice(this.app.view.rows.indexOf(this.value),1);
   }
 });
 
 LoveButton = DelButton.extend({
+  flexLeft: false,
+  flexRight: true,
   love: false,
-  flexRightOffset: 21,
-  mouseDown: function(){
+  flexRightOffset: 3,
+  mouseUp: function(){
     try{
       this.app.loveVal.set(this.value);
       this.love = !this.love;
@@ -135,8 +179,9 @@ KamppaHead = HView.extend({
       this.sijainti   = new KamppaButton(new HRect(0,0,60,21),   this,{label:'Vuokra',events:{mouseDown:true},value:'k.vuokra'});
       this.osoite     = new KamppaButton(new HRect(60,0,160,21), this,{label:'Kaupunginosa',events:{mouseDown:true},value:'k.kaupunginosa'});
       this.kokoonpano = new KamppaButton(new HRect(160,0,220,21),this,{label:'Pinta-ala',events:{mouseDown:true},value:'k.pinta_ala'});
-      this.esittely   = new KamppaButton(new HRect(220,0,320,21),this,{label:'Esittely',events:{mouseDown:true},value:'k.esittelyajat'});
-      this.vapautuu   = new KamppaButton(new HRect(320,0,420,21),this,{label:'Vapautuu',events:{mouseDown:true},value:'k.vapautumis_pvm'});
+      this.esittely   = new KamppaButton(new HRect(220,0,310,21),this,{label:'Esittely',events:{mouseDown:true},value:'k.esittelyajat'});
+      this.vapautuu   = new KamppaButton(new HRect(310,0,370,21),this,{label:'Vapautuu',events:{mouseDown:true},value:'k.vapautumis_pvm'});
+      this.paivitetty = new KamppaButton(new HRect(370,0,420,21),this,{label:'Päivitetty',events:{mouseDown:true},value:'k.updated'});
       this.muuta      = new (HButton.extend({flexRight:true}))(new HRect(420,0,480,21),this,{label:'Muuta',enabled:false});
     }
   }
@@ -184,7 +229,7 @@ KamppaUI = HApplication.extend({
       this, kamppa_rows
     );
   },
-  reload: function( kamppa_rows ){
+  refresh: function( kamppa_rows ){
     this.view.die();
     this.view = new KamppaList(
       new HRect(0,21,100,100),
