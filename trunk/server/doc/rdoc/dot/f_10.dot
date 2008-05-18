@@ -10,13 +10,31 @@ digraph TopLevel {
         color = black
     ]
 
-    Plugin [
+    Status_DB [
         fontcolor = black,
-        URL = "classes/Plugin.html",
+        URL = "classes/Status_DB.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "Plugin"
+        label = "Status_DB"
+    ]
+
+    Status_TBL [
+        fontcolor = black,
+        URL = "classes/Status_TBL.html",
+        shape = ellipse,
+        color = palegoldenrod,
+        style = filled,
+        label = "Status_TBL"
+    ]
+
+    MySQLAbstractor [
+        fontcolor = black,
+        URL = "classes/MySQLAbstractor.html",
+        shape = ellipse,
+        color = palegoldenrod,
+        style = filled,
+        label = "MySQLAbstractor"
     ]
 
 }

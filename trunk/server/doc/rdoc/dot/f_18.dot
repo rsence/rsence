@@ -10,13 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    ValueManager [
+    IndexHtml [
         fontcolor = black,
-        URL = "classes/ValueManager.html",
+        URL = "classes/IndexHtml.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "ValueManager"
+        label = "IndexHtml"
     ]
 
 }

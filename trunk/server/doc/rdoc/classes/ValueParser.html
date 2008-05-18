@@ -86,7 +86,7 @@
   <area shape="rect" coords="269,101,392,149"      href="StringValueParser.html" alt="StringValueParser" />
   <area shape="rect" coords="416,101,533,149"      href="FloatValueParser.html" alt="FloatValueParser" />
 </map>
-<img src="../dot/f_17.gif" usemap="#map" border="0" alt="dot/f_17.gif">
+<img src="../dot/f_31.gif" usemap="#map" border="0" alt="dot/f_31.gif">
     </div>
 
     <div id="description">
@@ -103,9 +103,9 @@ Skeleton <a href="HValue.html">HValue</a> parser
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000066">new</a>&nbsp;&nbsp;
-      <a href="#M000068">parse_xml</a>&nbsp;&nbsp;
-      <a href="#M000067">process_data</a>&nbsp;&nbsp;
+      <a href="#M000080">new</a>&nbsp;&nbsp;
+      <a href="#M000082">parse_xml</a>&nbsp;&nbsp;
+      <a href="#M000081">process_data</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -127,24 +127,24 @@ Skeleton <a href="HValue.html">HValue</a> parser
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000066" class="method-detail">
-        <a name="M000066"></a>
+      <div id="method-M000080" class="method-detail">
+        <a name="M000080"></a>
 
         <div class="method-heading">
-          <a href="#M000066" class="method-signature">
+          <a href="#M000080" class="method-signature">
           <span class="method-name">new</span><span class="method-args">( default_value=nil )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000066-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000066-source">
+            onclick="toggleCode('M000080-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000080-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 198</span>
-198:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">default_value</span>=<span class="ruby-keyword kw">nil</span> )
-199:     <span class="ruby-ivar">@default_value</span> = <span class="ruby-identifier">default_value</span>
-200:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 206</span>
+206:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">default_value</span>=<span class="ruby-keyword kw">nil</span> )
+207:     <span class="ruby-ivar">@default_value</span> = <span class="ruby-identifier">default_value</span>
+208:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -152,11 +152,11 @@ Skeleton <a href="HValue.html">HValue</a> parser
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000068" class="method-detail">
-        <a name="M000068"></a>
+      <div id="method-M000082" class="method-detail">
+        <a name="M000082"></a>
 
         <div class="method-heading">
-          <a href="#M000068" class="method-signature">
+          <a href="#M000082" class="method-signature">
           <span class="method-name">parse_xml</span><span class="method-args">( msg, hvalue_xml )</span>
           </a>
         </div>
@@ -166,60 +166,60 @@ Skeleton <a href="HValue.html">HValue</a> parser
 gets called from valuemanager
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000068-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000068-source">
+            onclick="toggleCode('M000082-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000082-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 209</span>
-209:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_xml</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
-210:     
-211:     <span class="ruby-comment cmt">## get the value id from xml</span>
-212:     <span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">hvalue_xml</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'id'</span>]
-213:     
-214:     <span class="ruby-comment cmt">## parse the value id to integer</span>
-215:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_id</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">val_id</span>.<span class="ruby-identifier">to_i</span>.<span class="ruby-identifier">to_s</span>
-216:       <span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">val_id</span>.<span class="ruby-identifier">to_i</span>
-217:     <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 217</span>
+217:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_xml</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
 218:     
-219:     <span class="ruby-comment cmt">## get the parsed value data</span>
-220:     <span class="ruby-identifier">val_data</span> = <span class="ruby-identifier">process_data</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
+219:     <span class="ruby-comment cmt">## get the value id from xml</span>
+220:     <span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">hvalue_xml</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'id'</span>]
 221:     
-222:     <span class="ruby-comment cmt">## store the value</span>
-223:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>]
-224:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">session_values</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">val_id</span> )
-225:       <span class="ruby-identifier">value_obj</span> = <span class="ruby-identifier">session_values</span>[ <span class="ruby-identifier">val_id</span> ]
-226:       <span class="ruby-identifier">value_obj</span>.<span class="ruby-identifier">from_client</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">val_data</span> )
-227:     <span class="ruby-keyword kw">else</span>
-228:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;HValue; unassigned value id! (#{val_id.inspect})&quot;</span>
-229:     <span class="ruby-keyword kw">end</span>
-230:   <span class="ruby-keyword kw">end</span>
+222:     <span class="ruby-comment cmt">## parse the value id to integer</span>
+223:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_id</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">val_id</span>.<span class="ruby-identifier">to_i</span>.<span class="ruby-identifier">to_s</span>
+224:       <span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">val_id</span>.<span class="ruby-identifier">to_i</span>
+225:     <span class="ruby-keyword kw">end</span>
+226:     
+227:     <span class="ruby-comment cmt">## get the parsed value data</span>
+228:     <span class="ruby-identifier">val_data</span> = <span class="ruby-identifier">process_data</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
+229:     
+230:     <span class="ruby-comment cmt">## store the value</span>
+231:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>]
+232:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">session_values</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">val_id</span> )
+233:       <span class="ruby-identifier">value_obj</span> = <span class="ruby-identifier">session_values</span>[ <span class="ruby-identifier">val_id</span> ]
+234:       <span class="ruby-identifier">value_obj</span>.<span class="ruby-identifier">from_client</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">val_data</span> )
+235:     <span class="ruby-keyword kw">else</span>
+236:       <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;HValue; unassigned value id! (#{val_id.inspect})&quot;</span>
+237:     <span class="ruby-keyword kw">end</span>
+238:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000067" class="method-detail">
-        <a name="M000067"></a>
+      <div id="method-M000081" class="method-detail">
+        <a name="M000081"></a>
 
         <div class="method-heading">
-          <a href="#M000067" class="method-signature">
+          <a href="#M000081" class="method-signature">
           <span class="method-name">process_data</span><span class="method-args">( msg, hvalue_xml )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-please replace the <a href="ValueParser.html#M000067">process_data</a>
+please replace the <a href="ValueParser.html#M000081">process_data</a>
 -method.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000067-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000067-source">
+            onclick="toggleCode('M000081-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000081-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 203</span>
-203:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">process_data</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
-204:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Warning: process_data not implemented for #{self.class.inspect}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-205:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@defalut_value</span>
-206:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 211</span>
+211:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">process_data</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
+212:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Warning: process_data not implemented for #{self.class.inspect}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+213:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@defalut_value</span>
+214:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

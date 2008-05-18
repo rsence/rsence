@@ -88,7 +88,7 @@
   <area shape="rect" coords="269,101,392,149"      href="StringValueParser.html" alt="StringValueParser" />
   <area shape="rect" coords="416,101,533,149"      href="FloatValueParser.html" alt="FloatValueParser" />
 </map>
-<img src="../dot/f_17.gif" usemap="#map" border="0" alt="dot/f_17.gif">
+<img src="../dot/f_31.gif" usemap="#map" border="0" alt="dot/f_31.gif">
     </div>
 
     <div id="description">
@@ -105,8 +105,8 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000092">new</a>&nbsp;&nbsp;
-      <a href="#M000093">process_data</a>&nbsp;&nbsp;
+      <a href="#M000107">new</a>&nbsp;&nbsp;
+      <a href="#M000108">process_data</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -128,11 +128,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000092" class="method-detail">
-        <a name="M000092"></a>
+      <div id="method-M000107" class="method-detail">
+        <a name="M000107"></a>
 
         <div class="method-heading">
-          <a href="#M000092" class="method-signature">
+          <a href="#M000107" class="method-signature">
           <span class="method-name">new</span><span class="method-args">( default_value=false )</span>
           </a>
         </div>
@@ -142,13 +142,13 @@
 defaults to false
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000092-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000092-source">
+            onclick="toggleCode('M000107-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000107-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 237</span>
-237:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">default_value</span>=<span class="ruby-keyword kw">false</span> )
-238:     <span class="ruby-keyword kw">super</span>
-239:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 245</span>
+245:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">default_value</span>=<span class="ruby-keyword kw">false</span> )
+246:     <span class="ruby-keyword kw">super</span>
+247:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -156,11 +156,11 @@ defaults to false
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000093" class="method-detail">
-        <a name="M000093"></a>
+      <div id="method-M000108" class="method-detail">
+        <a name="M000108"></a>
 
         <div class="method-heading">
-          <a href="#M000093" class="method-signature">
+          <a href="#M000108" class="method-signature">
           <span class="method-name">process_data</span><span class="method-args">( msg, hvalue_xml )</span>
           </a>
         </div>
@@ -170,19 +170,19 @@ defaults to false
 parses boolean data from client: &lt;b id=&#8216;xyz&#8217;&gt;1&lt;/b&gt;
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000093-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000093-source">
+            onclick="toggleCode('M000108-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000108-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 242</span>
-242:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">process_data</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
-243:     <span class="ruby-identifier">val_data</span> = <span class="ruby-identifier">hvalue_xml</span>.<span class="ruby-identifier">text</span>
-244:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_data</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
-245:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>  <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_data</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'1'</span>
-246:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_data</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'0'</span>
-247:     <span class="ruby-keyword kw">end</span>
-248:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-249:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@default_value</span>
-250:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 250</span>
+250:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">process_data</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">hvalue_xml</span> )
+251:     <span class="ruby-identifier">val_data</span> = <span class="ruby-identifier">hvalue_xml</span>.<span class="ruby-identifier">text</span>
+252:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_data</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+253:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>  <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_data</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'1'</span>
+254:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">val_data</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'0'</span>
+255:     <span class="ruby-keyword kw">end</span>
+256:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+257:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@default_value</span>
+258:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

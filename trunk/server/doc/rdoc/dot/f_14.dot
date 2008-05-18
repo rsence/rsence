@@ -10,13 +10,23 @@ digraph TopLevel {
         color = black
     ]
 
-    SessionStorage [
+    Broker [
         fontcolor = black,
-        URL = "classes/SessionStorage.html",
+        URL = "classes/Broker.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "SessionStorage"
+        label = "Broker"
+    ]
+
+    RestfulDispatcher [
+        URL = "classes/RestfulDispatcher.html",
+        shape = box,
+        label = "RestfulDispatcher"
+    ]
+
+    RestfulDispatcher -> Broker [
+
     ]
 
 }

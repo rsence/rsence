@@ -83,7 +83,7 @@
   <area shape="rect" coords="112,5,200,53"      href="Status_TBL.html" alt="Status_TBL" />
   <area shape="rect" coords="224,5,344,53"      href="MySQLAbstractor.html" alt="MySQLAbstractor" />
 </map>
-<img src="../dot/f_1.gif" usemap="#map" border="0" alt="dot/f_1.gif">
+<img src="../dot/f_10.gif" usemap="#map" border="0" alt="dot/f_10.gif">
     </div>
 
 
@@ -94,7 +94,7 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000100">new</a>&nbsp;&nbsp;
+      <a href="#M000115">new</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -164,35 +164,35 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000100" class="method-detail">
-        <a name="M000100"></a>
+      <div id="method-M000115" class="method-detail">
+        <a name="M000115"></a>
 
         <div class="method-heading">
-          <a href="#M000100" class="method-signature">
+          <a href="#M000115" class="method-signature">
           <span class="method-name">new</span><span class="method-args">(row)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000100-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000100-source">
+            onclick="toggleCode('M000115-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000115-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/db/mysql.rb, line 41</span>
-41:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">row</span>)
-42:     <span class="ruby-ivar">@name</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Name'</span>]
-43:     <span class="ruby-ivar">@rows</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Rows'</span>]
-44:     <span class="ruby-ivar">@size_avg</span> = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Avg_row_length'</span>]
-45:     <span class="ruby-ivar">@size</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Data_length'</span>]
-46:     <span class="ruby-ivar">@last_id</span>  = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Auto_increment'</span>]
-47:     <span class="ruby-identifier">ct</span> = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Create_time'</span>]
-48:     <span class="ruby-identifier">creat</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">gm</span>(<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">year</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">month</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">day</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">hour</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">minute</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">second</span>)
-49:     <span class="ruby-ivar">@created</span>  = <span class="ruby-identifier">creat</span>.<span class="ruby-identifier">to_i</span>
-50:     <span class="ruby-identifier">mt</span>  = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Update_time'</span>]
-51:     <span class="ruby-identifier">modit</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">gm</span>(<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">year</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">month</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">day</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">hour</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">minute</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">second</span>)
-52:     <span class="ruby-ivar">@modified</span> = <span class="ruby-identifier">modit</span>.<span class="ruby-identifier">to_i</span>
-53:     <span class="ruby-ivar">@comment</span>  = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Comment'</span>]
-54:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/db/mysql.rb, line 30</span>
+30:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">row</span>)
+31:     <span class="ruby-ivar">@name</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Name'</span>]
+32:     <span class="ruby-ivar">@rows</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Rows'</span>]
+33:     <span class="ruby-ivar">@size_avg</span> = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Avg_row_length'</span>]
+34:     <span class="ruby-ivar">@size</span>     = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Data_length'</span>]
+35:     <span class="ruby-ivar">@last_id</span>  = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Auto_increment'</span>]
+36:     <span class="ruby-identifier">ct</span> = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Create_time'</span>]
+37:     <span class="ruby-identifier">creat</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">gm</span>(<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">year</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">month</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">day</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">hour</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">minute</span>,<span class="ruby-identifier">ct</span>.<span class="ruby-identifier">second</span>)
+38:     <span class="ruby-ivar">@created</span>  = <span class="ruby-identifier">creat</span>.<span class="ruby-identifier">to_i</span>
+39:     <span class="ruby-identifier">mt</span>  = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Update_time'</span>]
+40:     <span class="ruby-identifier">modit</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">gm</span>(<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">year</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">month</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">day</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">hour</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">minute</span>,<span class="ruby-identifier">mt</span>.<span class="ruby-identifier">second</span>)
+41:     <span class="ruby-ivar">@modified</span> = <span class="ruby-identifier">modit</span>.<span class="ruby-identifier">to_i</span>
+42:     <span class="ruby-ivar">@comment</span>  = <span class="ruby-identifier">row</span>[<span class="ruby-value str">'Comment'</span>]
+43:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

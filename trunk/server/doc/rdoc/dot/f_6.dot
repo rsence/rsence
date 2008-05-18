@@ -10,22 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    Request [
+    UrlFeed [
         fontcolor = black,
-        URL = "classes/Request.html",
+        URL = "classes/UrlFeed.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "Request"
-    ]
-
-    Rack__Request [
-        URL = "classes/Rack/Request.html",
-        label = "Rack::Request"
-    ]
-
-    Rack__Request -> Request [
-
+        label = "UrlFeed"
     ]
 
 }

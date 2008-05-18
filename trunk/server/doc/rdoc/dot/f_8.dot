@@ -10,37 +10,14 @@ digraph TopLevel {
         color = black
     ]
 
-    subgraph cluster_RestfulDispatcher {
-        fillcolor = palegreen1
-        URL = "classes/RestfulDispatcher.html"
-        fontname = Arial
-        color = blue
-        label = "RestfulDispatcher"
-        style = filled
-        RestfulDispatcher [
-            shape = plaintext,
-            height = 0.01,
-            width = 0.01,
-            label = ""
-        ]
-
-        subgraph cluster_RestfulDispatcher__SingletonMethods {
-            fillcolor = palegreen3
-            URL = "classes/RestfulDispatcher/SingletonMethods.html"
-            fontname = Arial
-            color = blue
-            label = "SingletonMethods"
-            style = filled
-            RestfulDispatcher__SingletonMethods [
-                shape = plaintext,
-                height = 0.01,
-                width = 0.75,
-                label = ""
-            ]
-
-        }
-
-    }
+    ConfigWizard [
+        fontcolor = black,
+        URL = "classes/ConfigWizard.html",
+        shape = ellipse,
+        color = palegoldenrod,
+        style = filled,
+        label = "ConfigWizard"
+    ]
 
 }
 

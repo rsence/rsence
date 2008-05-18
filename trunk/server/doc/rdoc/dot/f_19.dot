@@ -10,22 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    HConsole [
+    Plugin [
         fontcolor = black,
-        URL = "classes/HConsole.html",
+        URL = "classes/Plugin.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "HConsole"
-    ]
-
-    Plugin [
-        URL = "classes/Plugin.html",
         label = "Plugin"
-    ]
-
-    Plugin -> HConsole [
-
     ]
 
 }

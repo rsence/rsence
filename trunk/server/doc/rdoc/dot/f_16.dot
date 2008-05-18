@@ -10,13 +10,31 @@ digraph TopLevel {
         color = black
     ]
 
-    RandomGenerator [
+    ResponseBody [
         fontcolor = black,
-        URL = "classes/RandomGenerator.html",
+        URL = "classes/ResponseBody.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "RandomGenerator"
+        label = "ResponseBody"
+    ]
+
+    Response [
+        fontcolor = black,
+        URL = "classes/Response.html",
+        shape = ellipse,
+        color = palegoldenrod,
+        style = filled,
+        label = "Response"
+    ]
+
+    Array [
+        URL = "classes/Array.html",
+        label = "Array"
+    ]
+
+    Array -> ResponseBody [
+
     ]
 
 }

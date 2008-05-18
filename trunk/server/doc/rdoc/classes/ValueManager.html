@@ -81,7 +81,7 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,107,53"      href="ValueManager.html" alt="ValueManager" />
 </map>
-<img src="../dot/f_18.gif" usemap="#map" border="0" alt="dot/f_18.gif">
+<img src="../dot/f_32.gif" usemap="#map" border="0" alt="dot/f_32.gif">
     </div>
 
 
@@ -92,12 +92,12 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000164">new</a>&nbsp;&nbsp;
-      <a href="#M000165">resend_session_values</a>&nbsp;&nbsp;
-      <a href="#M000167">set</a>&nbsp;&nbsp;
-      <a href="#M000169">sync_client</a>&nbsp;&nbsp;
-      <a href="#M000168">validate</a>&nbsp;&nbsp;
-      <a href="#M000166">xhr</a>&nbsp;&nbsp;
+      <a href="#M000204">new</a>&nbsp;&nbsp;
+      <a href="#M000205">resend_session_values</a>&nbsp;&nbsp;
+      <a href="#M000207">set</a>&nbsp;&nbsp;
+      <a href="#M000209">sync_client</a>&nbsp;&nbsp;
+      <a href="#M000208">validate</a>&nbsp;&nbsp;
+      <a href="#M000206">xhr</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -132,11 +132,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000164" class="method-detail">
-        <a name="M000164"></a>
+      <div id="method-M000204" class="method-detail">
+        <a name="M000204"></a>
 
         <div class="method-heading">
-          <a href="#M000164" class="method-signature">
+          <a href="#M000204" class="method-signature">
           <span class="method-name">new</span><span class="method-args">()</span>
           </a>
         </div>
@@ -146,29 +146,29 @@
 Initializes the member value handler objects.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000164-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000164-source">
+            onclick="toggleCode('M000204-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000204-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 34</span>
-34:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
-35:     
-36:     <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:values_conf</span>]
-37:     
-38:     <span class="ruby-comment cmt">## The value type parsers by string</span>
-39:     <span class="ruby-ivar">@value_parsers</span> = {}
-40:     
-41:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'b'</span>] = <span class="ruby-constant">BoolValueParser</span>.<span class="ruby-identifier">new</span>
-42:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'f'</span>] = <span class="ruby-constant">FloatValueParser</span>.<span class="ruby-identifier">new</span>
-43:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'i'</span>] = <span class="ruby-constant">IntValueParser</span>.<span class="ruby-identifier">new</span>
-44:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'s'</span>] = <span class="ruby-constant">StringValueParser</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 42</span>
+42:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+43:     
+44:     <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:values_conf</span>]
 45:     
-46:     <span class="ruby-comment cmt"># the version is checked to ensure client and server are compatible</span>
-47:     <span class="ruby-ivar">@value_implementation_version</span> = <span class="ruby-value">8118</span> <span class="ruby-comment cmt"># 8000+revision</span>
+46:     <span class="ruby-comment cmt">## The value type parsers by string</span>
+47:     <span class="ruby-ivar">@value_parsers</span> = {}
 48:     
-49:     <span class="ruby-comment cmt">## 'Unique' Random String generator for HValue keys (passed on to the client)</span>
-50:     <span class="ruby-ivar">@randgen</span> = <span class="ruby-constant">RandomGenerator</span>.<span class="ruby-identifier">new</span>( <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:key_length</span>], <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:buffer_size</span>] )
-51:     
-52:   <span class="ruby-keyword kw">end</span>
+49:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'b'</span>] = <span class="ruby-constant">BoolValueParser</span>.<span class="ruby-identifier">new</span>
+50:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'f'</span>] = <span class="ruby-constant">FloatValueParser</span>.<span class="ruby-identifier">new</span>
+51:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'i'</span>] = <span class="ruby-constant">IntValueParser</span>.<span class="ruby-identifier">new</span>
+52:     <span class="ruby-ivar">@value_parsers</span>[<span class="ruby-value str">'s'</span>] = <span class="ruby-constant">StringValueParser</span>.<span class="ruby-identifier">new</span>
+53:     
+54:     <span class="ruby-comment cmt"># the version is checked to ensure client and server are compatible</span>
+55:     <span class="ruby-ivar">@value_implementation_version</span> = <span class="ruby-value">8118</span> <span class="ruby-comment cmt"># 8000+revision</span>
+56:     
+57:     <span class="ruby-comment cmt">## 'Unique' Random String generator for HValue keys (passed on to the client)</span>
+58:     <span class="ruby-ivar">@randgen</span> = <span class="ruby-constant">RandomGenerator</span>.<span class="ruby-identifier">new</span>( <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:key_length</span>], <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:buffer_size</span>] )
+59:     
+60:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -176,11 +176,11 @@ Initializes the member value handler objects.
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000165" class="method-detail">
-        <a name="M000165"></a>
+      <div id="method-M000205" class="method-detail">
+        <a name="M000205"></a>
 
         <div class="method-heading">
-          <a href="#M000165" class="method-signature">
+          <a href="#M000205" class="method-signature">
           <span class="method-name">resend_session_values</span><span class="method-args">( msg )</span>
           </a>
         </div>
@@ -190,72 +190,72 @@ Initializes the member value handler objects.
 Re-constructs all stored values and sends them to the client
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000165-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000165-source">
+            onclick="toggleCode('M000205-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000205-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 55</span>
- 55:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">resend_session_values</span>( <span class="ruby-identifier">msg</span> )
- 56:     
- 57:     <span class="ruby-comment cmt"># with disposable keys enabled,</span>
- 58:     <span class="ruby-comment cmt"># sessions restored from cookie_key replace</span>
- 59:     <span class="ruby-comment cmt"># all val_id:s with new ones</span>
- 60:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:disposable_keys</span>]
- 61:       
- 62:       <span class="ruby-comment cmt"># get the session values</span>
- 63:       <span class="ruby-identifier">ses_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>]
- 64:       
- 65:       <span class="ruby-comment cmt"># loop through the value id:s</span>
- 66:       <span class="ruby-identifier">old_ids</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>].<span class="ruby-identifier">keys</span>
- 67:       <span class="ruby-identifier">old_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">old_id</span><span class="ruby-operator">|</span>
- 68:         
- 69:         <span class="ruby-comment cmt"># make a new id</span>
- 70:         <span class="ruby-identifier">new_id</span> = <span class="ruby-ivar">@randgen</span>.<span class="ruby-identifier">get_one</span>
- 71:         
- 72:         <span class="ruby-comment cmt"># get the hvalue</span>
- 73:         <span class="ruby-identifier">val_obj</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">old_id</span>]
- 74:         
- 75:         <span class="ruby-comment cmt"># replace the old id in the hvalue itself</span>
- 76:         <span class="ruby-identifier">val_obj</span>.<span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">new_id</span>
- 77:         
- 78:         <span class="ruby-comment cmt"># re-associate the value with the new id</span>
- 79:         <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">new_id</span>] = <span class="ruby-identifier">val_obj</span>
- 80:         <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>].<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">old_id</span>)
- 81:         
- 82:         <span class="ruby-comment cmt"># replace the id in the unvalidated values (:check) array</span>
- 83:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:check</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">old_id</span>)
- 84:           <span class="ruby-identifier">old_idx</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:check</span>].<span class="ruby-identifier">index</span>(<span class="ruby-identifier">old_id</span>)
- 85:           <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:check</span>][<span class="ruby-identifier">old_idx</span>] = <span class="ruby-identifier">new_id</span>
- 86:         <span class="ruby-keyword kw">end</span>
- 87:         
- 88:         <span class="ruby-comment cmt"># replace the id in the unsynchronized values (:sync) array</span>
- 89:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">old_id</span>)
- 90:           <span class="ruby-identifier">old_idx</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">index</span>(<span class="ruby-identifier">old_id</span>)
- 91:           <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:sync</span>][<span class="ruby-identifier">old_idx</span>] = <span class="ruby-identifier">new_id</span>
- 92:         <span class="ruby-keyword kw">end</span>
- 93:         
- 94:         <span class="ruby-comment cmt"># tell the hvalue to send its client-side initialization</span>
- 95:         <span class="ruby-identifier">val_obj</span>.<span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
- 96:         
- 97:       <span class="ruby-keyword kw">end</span>
- 98:     
- 99:     <span class="ruby-comment cmt">## keeping the id:s between page reloads is faster, but less tamper-proof</span>
-100:     <span class="ruby-keyword kw">else</span>
-101:       <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>].<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">val_id</span><span class="ruby-operator">|</span>
-102:         <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">val_id</span>].<span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
-103:       <span class="ruby-keyword kw">end</span>
-104:     <span class="ruby-keyword kw">end</span>
-105:     
-106:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 63</span>
+ 63:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">resend_session_values</span>( <span class="ruby-identifier">msg</span> )
+ 64:     
+ 65:     <span class="ruby-comment cmt"># with disposable keys enabled,</span>
+ 66:     <span class="ruby-comment cmt"># sessions restored from cookie_key replace</span>
+ 67:     <span class="ruby-comment cmt"># all val_id:s with new ones</span>
+ 68:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:disposable_keys</span>]
+ 69:       
+ 70:       <span class="ruby-comment cmt"># get the session values</span>
+ 71:       <span class="ruby-identifier">ses_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>]
+ 72:       
+ 73:       <span class="ruby-comment cmt"># loop through the value id:s</span>
+ 74:       <span class="ruby-identifier">old_ids</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>].<span class="ruby-identifier">keys</span>
+ 75:       <span class="ruby-identifier">old_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">old_id</span><span class="ruby-operator">|</span>
+ 76:         
+ 77:         <span class="ruby-comment cmt"># make a new id</span>
+ 78:         <span class="ruby-identifier">new_id</span> = <span class="ruby-ivar">@randgen</span>.<span class="ruby-identifier">get_one</span>
+ 79:         
+ 80:         <span class="ruby-comment cmt"># get the hvalue</span>
+ 81:         <span class="ruby-identifier">val_obj</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">old_id</span>]
+ 82:         
+ 83:         <span class="ruby-comment cmt"># replace the old id in the hvalue itself</span>
+ 84:         <span class="ruby-identifier">val_obj</span>.<span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">new_id</span>
+ 85:         
+ 86:         <span class="ruby-comment cmt"># re-associate the value with the new id</span>
+ 87:         <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">new_id</span>] = <span class="ruby-identifier">val_obj</span>
+ 88:         <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:by_id</span>].<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">old_id</span>)
+ 89:         
+ 90:         <span class="ruby-comment cmt"># replace the id in the unvalidated values (:check) array</span>
+ 91:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:check</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">old_id</span>)
+ 92:           <span class="ruby-identifier">old_idx</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:check</span>].<span class="ruby-identifier">index</span>(<span class="ruby-identifier">old_id</span>)
+ 93:           <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:check</span>][<span class="ruby-identifier">old_idx</span>] = <span class="ruby-identifier">new_id</span>
+ 94:         <span class="ruby-keyword kw">end</span>
+ 95:         
+ 96:         <span class="ruby-comment cmt"># replace the id in the unsynchronized values (:sync) array</span>
+ 97:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">old_id</span>)
+ 98:           <span class="ruby-identifier">old_idx</span> = <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">index</span>(<span class="ruby-identifier">old_id</span>)
+ 99:           <span class="ruby-identifier">ses_values</span>[<span class="ruby-identifier">:sync</span>][<span class="ruby-identifier">old_idx</span>] = <span class="ruby-identifier">new_id</span>
+100:         <span class="ruby-keyword kw">end</span>
+101:         
+102:         <span class="ruby-comment cmt"># tell the hvalue to send its client-side initialization</span>
+103:         <span class="ruby-identifier">val_obj</span>.<span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
+104:         
+105:       <span class="ruby-keyword kw">end</span>
+106:     
+107:     <span class="ruby-comment cmt">## keeping the id:s between page reloads is faster, but less tamper-proof</span>
+108:     <span class="ruby-keyword kw">else</span>
+109:       <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>].<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">val_id</span><span class="ruby-operator">|</span>
+110:         <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">val_id</span>].<span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
+111:       <span class="ruby-keyword kw">end</span>
+112:     <span class="ruby-keyword kw">end</span>
+113:     
+114:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000167" class="method-detail">
-        <a name="M000167"></a>
+      <div id="method-M000207" class="method-detail">
+        <a name="M000207"></a>
 
         <div class="method-heading">
-          <a href="#M000167" class="method-signature">
+          <a href="#M000207" class="method-signature">
           <span class="method-name">set</span><span class="method-args">( msg, val_id, val_data )</span>
           </a>
         </div>
@@ -265,106 +265,106 @@ Re-constructs all stored values and sends them to the client
 Sets a value by id
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000167-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000167-source">
+            onclick="toggleCode('M000207-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000207-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 148</span>
-148:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">val_id</span>, <span class="ruby-identifier">val_data</span> )
-149:     
-150:     <span class="ruby-comment cmt"># get the session data of this session</span>
-151:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>]
-152:     
-153:     <span class="ruby-comment cmt"># tell the value of that id that it has new data</span>
-154:     <span class="ruby-identifier">val_obj</span> = <span class="ruby-identifier">session_values</span>[ <span class="ruby-identifier">val_id</span> ]
-155:     <span class="ruby-identifier">val_obj</span>.<span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">val_data</span> )
-156:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 156</span>
+156:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">val_id</span>, <span class="ruby-identifier">val_data</span> )
+157:     
+158:     <span class="ruby-comment cmt"># get the session data of this session</span>
+159:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>]
+160:     
+161:     <span class="ruby-comment cmt"># tell the value of that id that it has new data</span>
+162:     <span class="ruby-identifier">val_obj</span> = <span class="ruby-identifier">session_values</span>[ <span class="ruby-identifier">val_id</span> ]
+163:     <span class="ruby-identifier">val_obj</span>.<span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">val_data</span> )
+164:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000169" class="method-detail">
-        <a name="M000169"></a>
+      <div id="method-M000209" class="method-detail">
+        <a name="M000209"></a>
 
         <div class="method-heading">
-          <a href="#M000169" class="method-signature">
+          <a href="#M000209" class="method-signature">
           <span class="method-name">sync_client</span><span class="method-args">( msg )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Sends the <a href="ValueManager.html#M000164">new</a> data of all
+Sends the <a href="ValueManager.html#M000204">new</a> data of all
 server-side-modified session-bound values to the client
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000169-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000169-source">
+            onclick="toggleCode('M000209-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000209-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 173</span>
-173:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sync_client</span>( <span class="ruby-identifier">msg</span> )
-174:     
-175:     <span class="ruby-comment cmt"># get the session data of this session</span>
-176:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>]
-177:     
-178:     <span class="ruby-comment cmt"># go through the currently un-synced values</span>
-179:     <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">size</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">count_num</span><span class="ruby-operator">|</span>
-180:       
-181:       <span class="ruby-comment cmt"># the sync-array will return the value id</span>
-182:       <span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">shift</span>
-183:       
-184:       <span class="ruby-comment cmt"># tell the value of that id to report its state to the client</span>
-185:       <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">val_id</span>].<span class="ruby-identifier">to_client</span>( <span class="ruby-identifier">msg</span> )
-186:       
-187:     <span class="ruby-keyword kw">end</span>
-188:     
-189:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 181</span>
+181:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sync_client</span>( <span class="ruby-identifier">msg</span> )
+182:     
+183:     <span class="ruby-comment cmt"># get the session data of this session</span>
+184:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>]
+185:     
+186:     <span class="ruby-comment cmt"># go through the currently un-synced values</span>
+187:     <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">size</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">count_num</span><span class="ruby-operator">|</span>
+188:       
+189:       <span class="ruby-comment cmt"># the sync-array will return the value id</span>
+190:       <span class="ruby-identifier">val_id</span> = <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:sync</span>].<span class="ruby-identifier">shift</span>
+191:       
+192:       <span class="ruby-comment cmt"># tell the value of that id to report its state to the client</span>
+193:       <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">val_id</span>].<span class="ruby-identifier">to_client</span>( <span class="ruby-identifier">msg</span> )
+194:       
+195:     <span class="ruby-keyword kw">end</span>
+196:     
+197:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000168" class="method-detail">
-        <a name="M000168"></a>
+      <div id="method-M000208" class="method-detail">
+        <a name="M000208"></a>
 
         <div class="method-heading">
-          <a href="#M000168" class="method-signature">
+          <a href="#M000208" class="method-signature">
           <span class="method-name">validate</span><span class="method-args">( msg )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Validates the <a href="ValueManager.html#M000164">new</a> data of all
+Validates the <a href="ValueManager.html#M000204">new</a> data of all
 client-side-modified session-bound values
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000168-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000168-source">
+            onclick="toggleCode('M000208-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000208-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 159</span>
-159:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">validate</span>( <span class="ruby-identifier">msg</span> )
-160:     
-161:     <span class="ruby-comment cmt"># get the session data of this session</span>
-162:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>]
-163:     
-164:     <span class="ruby-comment cmt"># loop through un-validated values and validate them</span>
-165:     <span class="ruby-identifier">check_ids</span> = <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:check</span>]
-166:     <span class="ruby-identifier">check_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">check_id</span><span class="ruby-operator">|</span>
-167:       <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">check_id</span>].<span class="ruby-identifier">tell</span>( <span class="ruby-identifier">msg</span> )
-168:     <span class="ruby-keyword kw">end</span>
-169:     
-170:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 167</span>
+167:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">validate</span>( <span class="ruby-identifier">msg</span> )
+168:     
+169:     <span class="ruby-comment cmt"># get the session data of this session</span>
+170:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>]
+171:     
+172:     <span class="ruby-comment cmt"># loop through un-validated values and validate them</span>
+173:     <span class="ruby-identifier">check_ids</span> = <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:check</span>]
+174:     <span class="ruby-identifier">check_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">check_id</span><span class="ruby-operator">|</span>
+175:       <span class="ruby-identifier">session_values</span>[<span class="ruby-identifier">:by_id</span>][<span class="ruby-identifier">check_id</span>].<span class="ruby-identifier">tell</span>( <span class="ruby-identifier">msg</span> )
+176:     <span class="ruby-keyword kw">end</span>
+177:     
+178:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000166" class="method-detail">
-        <a name="M000166"></a>
+      <div id="method-M000206" class="method-detail">
+        <a name="M000206"></a>
 
         <div class="method-heading">
-          <a href="#M000166" class="method-signature">
+          <a href="#M000206" class="method-signature">
           <span class="method-name">xhr</span><span class="method-args">( msg, syncdata_str )</span>
           </a>
         </div>
@@ -374,47 +374,47 @@ client-side-modified session-bound values
 Parses the xml from the client and passes it on to associated parsers
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000166-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000166-source">
+            onclick="toggleCode('M000206-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000206-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 109</span>
-109:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">xhr</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">syncdata_str</span> )
-110:     
-111:     <span class="ruby-comment cmt"># makes an xml parser object 'syncdata_xml' of the xml string 'syncdata_str'</span>
-112:     <span class="ruby-identifier">syncdata_xml</span> = <span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">syncdata_str</span> )
-113:     
-114:     <span class="ruby-comment cmt"># gets the &lt;hsyncvalues.../hsyncvalues&gt; element (should only be one of these)</span>
-115:     <span class="ruby-identifier">syncdata_xml</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>( <span class="ruby-value str">'hsyncvalues'</span> ) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">syncvalues_xml</span><span class="ruby-operator">|</span>
-116:       
-117:       <span class="ruby-comment cmt"># gets the version of the input xml</span>
-118:       <span class="ruby-identifier">syncvalversion</span> = <span class="ruby-identifier">syncvalues_xml</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'version'</span>].<span class="ruby-identifier">to_i</span>
-119:       
-120:       <span class="ruby-comment cmt"># the client xml generator should match the server parser's version.</span>
-121:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">syncvalversion</span> <span class="ruby-operator">!=</span> <span class="ruby-ivar">@value_implementation_version</span>
-122:         <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-123:           <span class="ruby-identifier">puts</span>
-124:           <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;CLIENT/SERVER hsyncvalues version mismatch: #{syncvalversion} vs #{@value_implementation_version}&quot;</span>
-125:           <span class="ruby-identifier">puts</span>
-126:         <span class="ruby-keyword kw">end</span>
-127:         <span class="ruby-constant">SESSION</span>.<span class="ruby-identifier">stop_client_with_message</span>( <span class="ruby-identifier">msg</span>,
-128:           <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:version_mismatch</span>][<span class="ruby-identifier">:title</span>],
-129:           <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:version_mismatch</span>][<span class="ruby-identifier">:descr</span>],
-130:           <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:version_mismatch</span>][<span class="ruby-identifier">:uri</span>]
-131:         )
-132:         <span class="ruby-keyword kw">return</span>
-133:       <span class="ruby-keyword kw">end</span>
-134:       
-135:       <span class="ruby-comment cmt"># loop through available parsers and..</span>
-136:       <span class="ruby-ivar">@value_parsers</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value_type</span><span class="ruby-operator">|</span>
-137:         
-138:         <span class="ruby-comment cmt"># ..pass the xml value items to the associated value parser objects</span>
-139:         <span class="ruby-identifier">syncvalues_xml</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">value_type</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value_xml</span><span class="ruby-operator">|</span>
-140:           <span class="ruby-ivar">@value_parsers</span>[ <span class="ruby-identifier">value_type</span> ].<span class="ruby-identifier">parse_xml</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">value_xml</span> )
-141:         <span class="ruby-keyword kw">end</span>
-142:         
-143:       <span class="ruby-keyword kw">end</span>
-144:     <span class="ruby-keyword kw">end</span>
-145:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/valuemanager.rb, line 117</span>
+117:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">xhr</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">syncdata_str</span> )
+118:     
+119:     <span class="ruby-comment cmt"># makes an xml parser object 'syncdata_xml' of the xml string 'syncdata_str'</span>
+120:     <span class="ruby-identifier">syncdata_xml</span> = <span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">syncdata_str</span> )
+121:     
+122:     <span class="ruby-comment cmt"># gets the &lt;hsyncvalues.../hsyncvalues&gt; element (should only be one of these)</span>
+123:     <span class="ruby-identifier">syncdata_xml</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>( <span class="ruby-value str">'hsyncvalues'</span> ) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">syncvalues_xml</span><span class="ruby-operator">|</span>
+124:       
+125:       <span class="ruby-comment cmt"># gets the version of the input xml</span>
+126:       <span class="ruby-identifier">syncvalversion</span> = <span class="ruby-identifier">syncvalues_xml</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-value str">'version'</span>].<span class="ruby-identifier">to_i</span>
+127:       
+128:       <span class="ruby-comment cmt"># the client xml generator should match the server parser's version.</span>
+129:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">syncvalversion</span> <span class="ruby-operator">!=</span> <span class="ruby-ivar">@value_implementation_version</span>
+130:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+131:           <span class="ruby-identifier">puts</span>
+132:           <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;CLIENT/SERVER hsyncvalues version mismatch: #{syncvalversion} vs #{@value_implementation_version}&quot;</span>
+133:           <span class="ruby-identifier">puts</span>
+134:         <span class="ruby-keyword kw">end</span>
+135:         <span class="ruby-identifier">$SESSION</span>.<span class="ruby-identifier">stop_client_with_message</span>( <span class="ruby-identifier">msg</span>,
+136:           <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:version_mismatch</span>][<span class="ruby-identifier">:title</span>],
+137:           <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:version_mismatch</span>][<span class="ruby-identifier">:descr</span>],
+138:           <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:version_mismatch</span>][<span class="ruby-identifier">:uri</span>]
+139:         )
+140:         <span class="ruby-keyword kw">return</span>
+141:       <span class="ruby-keyword kw">end</span>
+142:       
+143:       <span class="ruby-comment cmt"># loop through available parsers and..</span>
+144:       <span class="ruby-ivar">@value_parsers</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value_type</span><span class="ruby-operator">|</span>
+145:         
+146:         <span class="ruby-comment cmt"># ..pass the xml value items to the associated value parser objects</span>
+147:         <span class="ruby-identifier">syncvalues_xml</span>.<span class="ruby-identifier">elements</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">value_type</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value_xml</span><span class="ruby-operator">|</span>
+148:           <span class="ruby-ivar">@value_parsers</span>[ <span class="ruby-identifier">value_type</span> ].<span class="ruby-identifier">parse_xml</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">value_xml</span> )
+149:         <span class="ruby-keyword kw">end</span>
+150:         
+151:       <span class="ruby-keyword kw">end</span>
+152:     <span class="ruby-keyword kw">end</span>
+153:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

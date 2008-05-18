@@ -81,7 +81,7 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,115,53"      href="SessionStorage.html" alt="SessionStorage" />
 </map>
-<img src="../dot/f_14.gif" usemap="#map" border="0" alt="dot/f_14.gif">
+<img src="../dot/f_23.gif" usemap="#map" border="0" alt="dot/f_23.gif">
     </div>
 
 
@@ -92,16 +92,16 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000155">db_init_mysql</a>&nbsp;&nbsp;
-      <a href="#M000162">expire_session</a>&nbsp;&nbsp;
-      <a href="#M000163">expire_sessions</a>&nbsp;&nbsp;
-      <a href="#M000160">hexlify</a>&nbsp;&nbsp;
-      <a href="#M000154">new</a>&nbsp;&nbsp;
-      <a href="#M000161">new_ses_id</a>&nbsp;&nbsp;
-      <a href="#M000156">reset_sessions</a>&nbsp;&nbsp;
-      <a href="#M000157">restore_sessions</a>&nbsp;&nbsp;
-      <a href="#M000159">shutdown</a>&nbsp;&nbsp;
-      <a href="#M000158">store_sessions</a>&nbsp;&nbsp;
+      <a href="#M000195">db_init_mysql</a>&nbsp;&nbsp;
+      <a href="#M000202">expire_session</a>&nbsp;&nbsp;
+      <a href="#M000203">expire_sessions</a>&nbsp;&nbsp;
+      <a href="#M000200">hexlify</a>&nbsp;&nbsp;
+      <a href="#M000194">new</a>&nbsp;&nbsp;
+      <a href="#M000201">new_ses_id</a>&nbsp;&nbsp;
+      <a href="#M000196">reset_sessions</a>&nbsp;&nbsp;
+      <a href="#M000197">restore_sessions</a>&nbsp;&nbsp;
+      <a href="#M000199">shutdown</a>&nbsp;&nbsp;
+      <a href="#M000198">store_sessions</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -123,37 +123,37 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000154" class="method-detail">
-        <a name="M000154"></a>
+      <div id="method-M000194" class="method-detail">
+        <a name="M000194"></a>
 
         <div class="method-heading">
-          <a href="#M000154" class="method-signature">
+          <a href="#M000194" class="method-signature">
           <span class="method-name">new</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000154-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000154-source">
+            onclick="toggleCode('M000194-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000194-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 33</span>
-33:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
-34:     <span class="ruby-comment cmt">## Session data storage (by ses_id)</span>
-35:     <span class="ruby-ivar">@sessions</span>     = {}
-36:     
-37:     <span class="ruby-comment cmt">## Session id by key</span>
-38:     <span class="ruby-ivar">@session_keys</span> = {}
-39:     
-40:     <span class="ruby-comment cmt">## Session id by cookie key</span>
-41:     <span class="ruby-ivar">@session_cookie_keys</span> = {}
-42:     
-43:     <span class="ruby-comment cmt">## Disposable keys (new ses_key each request)</span>
-44:     <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:session_conf</span>]
-45:     
-46:     <span class="ruby-comment cmt"># Check database connectivity and load stored sessions from the database</span>
-47:     <span class="ruby-identifier">db_init_mysql</span>()
-48:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 41</span>
+41:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+42:     <span class="ruby-comment cmt">## Session data storage (by ses_id)</span>
+43:     <span class="ruby-ivar">@sessions</span>     = {}
+44:     
+45:     <span class="ruby-comment cmt">## Session id by key</span>
+46:     <span class="ruby-ivar">@session_keys</span> = {}
+47:     
+48:     <span class="ruby-comment cmt">## Session id by cookie key</span>
+49:     <span class="ruby-ivar">@session_cookie_keys</span> = {}
+50:     
+51:     <span class="ruby-comment cmt">## Disposable keys (new ses_key each request)</span>
+52:     <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:session_conf</span>]
+53:     
+54:     <span class="ruby-comment cmt"># Check database connectivity and load stored sessions from the database</span>
+55:     <span class="ruby-identifier">db_init_mysql</span>()
+56:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -161,11 +161,11 @@
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000155" class="method-detail">
-        <a name="M000155"></a>
+      <div id="method-M000195" class="method-detail">
+        <a name="M000195"></a>
 
         <div class="method-heading">
-          <a href="#M000155" class="method-signature">
+          <a href="#M000195" class="method-signature">
           <span class="method-name">db_init_mysql</span><span class="method-args">()</span>
           </a>
         </div>
@@ -175,99 +175,99 @@
 Checks database connectivity and loads stored sessions from the database
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000155-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000155-source">
+            onclick="toggleCode('M000195-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000195-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 51</span>
- 51:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">db_init_mysql</span>
- 52:     
- 53:     <span class="ruby-comment cmt">## modify these settings in the config to match your system:</span>
- 54:     <span class="ruby-identifier">root_setup</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>] <span class="ruby-comment cmt"># 'root' access account of mysql</span>
- 55:     <span class="ruby-identifier">auth_setup</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>] <span class="ruby-comment cmt"># himle-isolated account of mysql</span>
- 56:     
- 57:     <span class="ruby-comment cmt">## checks/creates himle database or fails (in that case you have to set up the database manually)</span>
- 58:     <span class="ruby-keyword kw">begin</span>
- 59:       <span class="ruby-identifier">db_root</span> = <span class="ruby-constant">MySQLAbstractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root_setup</span>, <span class="ruby-identifier">root_setup</span>[<span class="ruby-identifier">:db</span>])
- 60:       <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">open</span>
- 61:       <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">dbs</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-identifier">auth_setup</span>[<span class="ruby-identifier">:db</span>] )
- 62:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Creating himle session database #{auth_setup[:db].inspect}...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
- 63:         <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;create database #{auth_setup[:db]}&quot;</span> )
- 64:       <span class="ruby-keyword kw">end</span>
- 65:     <span class="ruby-keyword kw">rescue</span>
- 66:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;root_setup failed, using auth_setup&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
- 67:       <span class="ruby-identifier">db_root</span> = <span class="ruby-keyword kw">false</span>
- 68:     <span class="ruby-keyword kw">end</span>
- 69:     
- 70:     <span class="ruby-comment cmt">## tests auth_setup permissions by creating and dropping himle_test</span>
- 71:     <span class="ruby-identifier">db_auth</span> = <span class="ruby-constant">MySQLAbstractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">auth_setup</span>, <span class="ruby-identifier">auth_setup</span>[<span class="ruby-identifier">:db</span>])
- 72:     <span class="ruby-keyword kw">begin</span>
- 73:       <span class="ruby-identifier">has_privileges</span> = (<span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;drop table if exists himle_test&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
- 74:       <span class="ruby-identifier">has_privileges</span> = (<span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;create table himle_test (id int primary key auto_increment)&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">has_privileges</span>
- 75:       <span class="ruby-identifier">has_privileges</span> = (<span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;drop table if exists himle_test&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
- 76:     <span class="ruby-keyword kw">rescue</span>
- 77:       <span class="ruby-identifier">has_privileges</span> = <span class="ruby-keyword kw">false</span>
- 78:     <span class="ruby-keyword kw">end</span>
- 79:     
- 80:     <span class="ruby-comment cmt">## Tries creating necessary permissions for auth_setup</span>
- 81:     <span class="ruby-comment cmt">## It will fail, if there is no mysql 'root' permissions</span>
- 82:     <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">has_privileges</span>
- 83:       <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">db_root</span>
- 84:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;no db_root, please grant permissions manually for:&quot;</span>
- 85:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  user: #{auth_setup[:user]}&quot;</span>
- 86:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  pass: #{auth_setup[:pass]}&quot;</span>
- 87:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  host: #{auth_setup[:host]}&quot;</span>
- 88:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;    db: #{auth_setup[:db]}&quot;</span>
- 89:         <span class="ruby-identifier">puts</span>
- 90:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;exit.&quot;</span>
- 91:         <span class="ruby-identifier">exit</span>
- 92:       <span class="ruby-keyword kw">end</span>
- 93:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Granting privileges...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
- 94:       <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;grant all privileges on #{auth_setup[:db]}.* to #{auth_setup[:user]}@localhost identified by '#{auth_setup[:pass]}'&quot;</span> )
- 95:       <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;flush privileges&quot;</span> )
- 96:       <span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">close</span>()
- 97:       <span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">open</span>()
- 98:     <span class="ruby-keyword kw">end</span>
- 99:     
-100:     <span class="ruby-comment cmt"># use db_auth for session management</span>
-101:     <span class="ruby-ivar">@db</span> = <span class="ruby-identifier">db_auth</span>
-102:     
-103:     <span class="ruby-comment cmt"># closes the root db connection, if necessary</span>
-104:     <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">close</span>() <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">db_root</span>
-105:     
-106:     <span class="ruby-comment cmt">## Creates the 'himle_session' table, if necessary</span>
-107:     <span class="ruby-comment cmt">## This table is used to store sessions</span>
-108:     <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">tables</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'himle_session'</span>)
-109:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Creating session table...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-110:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;create table himle_session (id int primary key auto_increment, cookie_key char(252) null, ses_key char(84), ses_timeout int not null default 0, user_id int not null default 0, ses_active tinyint not null default 0, ses_stored int not null default 0, ses_data mediumblob)&quot;</span> )
-111:     <span class="ruby-keyword kw">end</span>
-112:     
-113:     <span class="ruby-comment cmt">## Creates the 'himle_version' table, if necessary</span>
-114:     <span class="ruby-comment cmt">## This table is used to check for the need of future database upgrades</span>
-115:     <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">tables</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'himle_version'</span>)
-116:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Creating version info table...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-117:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;create table himle_version ( version int primary key not null default 0)&quot;</span> )
-118:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;insert into himle_version ( version ) values (37)&quot;</span> )
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 59</span>
+ 59:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">db_init_mysql</span>
+ 60:     
+ 61:     <span class="ruby-comment cmt">## modify these settings in the config to match your system:</span>
+ 62:     <span class="ruby-identifier">root_setup</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>] <span class="ruby-comment cmt"># 'root' access account of mysql</span>
+ 63:     <span class="ruby-identifier">auth_setup</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>] <span class="ruby-comment cmt"># himle-isolated account of mysql</span>
+ 64:     
+ 65:     <span class="ruby-comment cmt">## checks/creates himle database or fails (in that case you have to set up the database manually)</span>
+ 66:     <span class="ruby-keyword kw">begin</span>
+ 67:       <span class="ruby-identifier">db_root</span> = <span class="ruby-constant">MySQLAbstractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root_setup</span>, <span class="ruby-identifier">root_setup</span>[<span class="ruby-identifier">:db</span>])
+ 68:       <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">open</span>
+ 69:       <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">dbs</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-identifier">auth_setup</span>[<span class="ruby-identifier">:db</span>] )
+ 70:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Creating himle session database #{auth_setup[:db].inspect}...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+ 71:         <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;create database #{auth_setup[:db]}&quot;</span> )
+ 72:       <span class="ruby-keyword kw">end</span>
+ 73:     <span class="ruby-keyword kw">rescue</span>
+ 74:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;root_setup failed, using auth_setup&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+ 75:       <span class="ruby-identifier">db_root</span> = <span class="ruby-keyword kw">false</span>
+ 76:     <span class="ruby-keyword kw">end</span>
+ 77:     
+ 78:     <span class="ruby-comment cmt">## tests auth_setup permissions by creating and dropping himle_test</span>
+ 79:     <span class="ruby-identifier">db_auth</span> = <span class="ruby-constant">MySQLAbstractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">auth_setup</span>, <span class="ruby-identifier">auth_setup</span>[<span class="ruby-identifier">:db</span>])
+ 80:     <span class="ruby-keyword kw">begin</span>
+ 81:       <span class="ruby-identifier">has_privileges</span> = (<span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;drop table if exists himle_test&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+ 82:       <span class="ruby-identifier">has_privileges</span> = (<span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;create table himle_test (id int primary key auto_increment)&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">has_privileges</span>
+ 83:       <span class="ruby-identifier">has_privileges</span> = (<span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;drop table if exists himle_test&quot;</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span>)
+ 84:     <span class="ruby-keyword kw">rescue</span>
+ 85:       <span class="ruby-identifier">has_privileges</span> = <span class="ruby-keyword kw">false</span>
+ 86:     <span class="ruby-keyword kw">end</span>
+ 87:     
+ 88:     <span class="ruby-comment cmt">## Tries creating necessary permissions for auth_setup</span>
+ 89:     <span class="ruby-comment cmt">## It will fail, if there is no mysql 'root' permissions</span>
+ 90:     <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">has_privileges</span>
+ 91:       <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">db_root</span>
+ 92:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;no db_root, please grant permissions manually for:&quot;</span>
+ 93:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  user: #{auth_setup[:user]}&quot;</span>
+ 94:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  pass: #{auth_setup[:pass]}&quot;</span>
+ 95:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  host: #{auth_setup[:host]}&quot;</span>
+ 96:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;    db: #{auth_setup[:db]}&quot;</span>
+ 97:         <span class="ruby-identifier">puts</span>
+ 98:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;exit.&quot;</span>
+ 99:         <span class="ruby-identifier">exit</span>
+100:       <span class="ruby-keyword kw">end</span>
+101:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Granting privileges...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+102:       <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;grant all privileges on #{auth_setup[:db]}.* to #{auth_setup[:user]}@localhost identified by '#{auth_setup[:pass]}'&quot;</span> )
+103:       <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;flush privileges&quot;</span> )
+104:       <span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">close</span>()
+105:       <span class="ruby-identifier">db_auth</span>.<span class="ruby-identifier">open</span>()
+106:     <span class="ruby-keyword kw">end</span>
+107:     
+108:     <span class="ruby-comment cmt"># use db_auth for session management</span>
+109:     <span class="ruby-ivar">@db</span> = <span class="ruby-identifier">db_auth</span>
+110:     
+111:     <span class="ruby-comment cmt"># closes the root db connection, if necessary</span>
+112:     <span class="ruby-identifier">db_root</span>.<span class="ruby-identifier">close</span>() <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">db_root</span>
+113:     
+114:     <span class="ruby-comment cmt">## Creates the 'himle_session' table, if necessary</span>
+115:     <span class="ruby-comment cmt">## This table is used to store sessions</span>
+116:     <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">tables</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'himle_session'</span>)
+117:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Creating session table...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+118:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;create table himle_session (id int primary key auto_increment, cookie_key char(252) null, ses_key char(84), ses_timeout int not null default 0, user_id int not null default 0, ses_active tinyint not null default 0, ses_stored int not null default 0, ses_data mediumblob)&quot;</span> )
 119:     <span class="ruby-keyword kw">end</span>
 120:     
-121:     <span class="ruby-comment cmt">## </span>
-122:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:reset_sessions</span>]
-123:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Resetting all sessions...&quot;</span>
-124:       <span class="ruby-identifier">reset_sessions</span>()
-125:     <span class="ruby-keyword kw">else</span>
-126:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Restoring old sessions...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-127:       <span class="ruby-identifier">restore_sessions</span>()
-128:     <span class="ruby-keyword kw">end</span>
-129:   <span class="ruby-keyword kw">end</span>
+121:     <span class="ruby-comment cmt">## Creates the 'himle_version' table, if necessary</span>
+122:     <span class="ruby-comment cmt">## This table is used to check for the need of future database upgrades</span>
+123:     <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">tables</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'himle_version'</span>)
+124:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Creating version info table...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+125:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;create table himle_version ( version int primary key not null default 0)&quot;</span> )
+126:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-value str">&quot;insert into himle_version ( version ) values (37)&quot;</span> )
+127:     <span class="ruby-keyword kw">end</span>
+128:     
+129:     <span class="ruby-comment cmt">## </span>
+130:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:reset_sessions</span>]
+131:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Resetting all sessions...&quot;</span>
+132:       <span class="ruby-identifier">reset_sessions</span>()
+133:     <span class="ruby-keyword kw">else</span>
+134:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Restoring old sessions...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+135:       <span class="ruby-identifier">restore_sessions</span>()
+136:     <span class="ruby-keyword kw">end</span>
+137:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000162" class="method-detail">
-        <a name="M000162"></a>
+      <div id="method-M000202" class="method-detail">
+        <a name="M000202"></a>
 
         <div class="method-heading">
-          <a href="#M000162" class="method-signature">
+          <a href="#M000202" class="method-signature">
           <span class="method-name">expire_session</span><span class="method-args">( ses_id )</span>
           </a>
         </div>
@@ -277,41 +277,41 @@ Checks database connectivity and loads stored sessions from the database
 Expires a session by its identifier
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000162-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000162-source">
+            onclick="toggleCode('M000202-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000202-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 186</span>
-186:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expire_session</span>( <span class="ruby-identifier">ses_id</span> )
-187:     
-188:     
-189:     <span class="ruby-identifier">ses_data</span> = <span class="ruby-ivar">@sessions</span>[ <span class="ruby-identifier">ses_id</span> ]
-190:     
-191:     <span class="ruby-comment cmt"># Makes the session invalid for xhr's by deleting its key</span>
-192:     <span class="ruby-ivar">@session_keys</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:ses_key</span>] )
-193:     
-194:     <span class="ruby-comment cmt"># Makes the session invalid for all requests by deleting its cookie key</span>
-195:     <span class="ruby-ivar">@session_cookie_keys</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:cookie_key</span>] )
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 194</span>
+194:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expire_session</span>( <span class="ruby-identifier">ses_id</span> )
+195:     
 196:     
-197:     <span class="ruby-comment cmt"># Deletes the session data itself</span>
-198:     <span class="ruby-ivar">@sessions</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">ses_id</span> )
-199:     
-200:     <span class="ruby-comment cmt"># Removes all ticket-based storage bound to the session</span>
-201:     <span class="ruby-constant">TICKETSERVE</span>.<span class="ruby-identifier">expire_ses</span>( <span class="ruby-identifier">ses_id</span> )
-202:     
-203:     <span class="ruby-comment cmt"># Deletes the session's row from the database</span>
-204:     <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;delete from himle_session where id = #{ses_id}&quot;</span> )
-205:     
-206:   <span class="ruby-keyword kw">end</span>
+197:     <span class="ruby-identifier">ses_data</span> = <span class="ruby-ivar">@sessions</span>[ <span class="ruby-identifier">ses_id</span> ]
+198:     
+199:     <span class="ruby-comment cmt"># Makes the session invalid for xhr's by deleting its key</span>
+200:     <span class="ruby-ivar">@session_keys</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:ses_key</span>] )
+201:     
+202:     <span class="ruby-comment cmt"># Makes the session invalid for all requests by deleting its cookie key</span>
+203:     <span class="ruby-ivar">@session_cookie_keys</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:cookie_key</span>] )
+204:     
+205:     <span class="ruby-comment cmt"># Deletes the session data itself</span>
+206:     <span class="ruby-ivar">@sessions</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">ses_id</span> )
+207:     
+208:     <span class="ruby-comment cmt"># Removes all ticket-based storage bound to the session</span>
+209:     <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">expire_ses</span>( <span class="ruby-identifier">ses_id</span> )
+210:     
+211:     <span class="ruby-comment cmt"># Deletes the session's row from the database</span>
+212:     <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;delete from himle_session where id = #{ses_id}&quot;</span> )
+213:     
+214:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000163" class="method-detail">
-        <a name="M000163"></a>
+      <div id="method-M000203" class="method-detail">
+        <a name="M000203"></a>
 
         <div class="method-heading">
-          <a href="#M000163" class="method-signature">
+          <a href="#M000203" class="method-signature">
           <span class="method-name">expire_sessions</span><span class="method-args">()</span>
           </a>
         </div>
@@ -321,31 +321,31 @@ Expires a session by its identifier
 Expires all sessions that meet the timeout criteria
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000163-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000163-source">
+            onclick="toggleCode('M000203-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000203-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 209</span>
-209:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expire_sessions</span>
-210:     
-211:     <span class="ruby-comment cmt"># Loop through all sessions in memory:</span>
-212:     <span class="ruby-ivar">@sessions</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ses_id</span><span class="ruby-operator">|</span>
-213:       
-214:       <span class="ruby-identifier">timed_out</span> = <span class="ruby-ivar">@sessions</span>[ <span class="ruby-identifier">ses_id</span> ][<span class="ruby-identifier">:timeout</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span>
-215:       
-216:       <span class="ruby-comment cmt">## Deletes the session, if the session is too old</span>
-217:       <span class="ruby-identifier">expire_session</span>( <span class="ruby-identifier">ses_id</span> ) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">timed_out</span>
-218:     <span class="ruby-keyword kw">end</span>
-219:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 217</span>
+217:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expire_sessions</span>
+218:     
+219:     <span class="ruby-comment cmt"># Loop through all sessions in memory:</span>
+220:     <span class="ruby-ivar">@sessions</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ses_id</span><span class="ruby-operator">|</span>
+221:       
+222:       <span class="ruby-identifier">timed_out</span> = <span class="ruby-ivar">@sessions</span>[ <span class="ruby-identifier">ses_id</span> ][<span class="ruby-identifier">:timeout</span>] <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span>
+223:       
+224:       <span class="ruby-comment cmt">## Deletes the session, if the session is too old</span>
+225:       <span class="ruby-identifier">expire_session</span>( <span class="ruby-identifier">ses_id</span> ) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">timed_out</span>
+226:     <span class="ruby-keyword kw">end</span>
+227:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000160" class="method-detail">
-        <a name="M000160"></a>
+      <div id="method-M000200" class="method-detail">
+        <a name="M000200"></a>
 
         <div class="method-heading">
-          <a href="#M000160" class="method-signature">
+          <a href="#M000200" class="method-signature">
           <span class="method-name">hexlify</span><span class="method-args">( str )</span>
           </a>
         </div>
@@ -355,50 +355,50 @@ Expires all sessions that meet the timeout criteria
 Utility method for converting strings to hexadecimal
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000160-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000160-source">
+            onclick="toggleCode('M000200-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000200-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 176</span>
-176:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hexlify</span>( <span class="ruby-identifier">str</span> )
-177:     <span class="ruby-node">&quot;0x#{str.unpack('H*')[0]}&quot;</span>
-178:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 184</span>
+184:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hexlify</span>( <span class="ruby-identifier">str</span> )
+185:     <span class="ruby-node">&quot;0x#{str.unpack('H*')[0]}&quot;</span>
+186:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000161" class="method-detail">
-        <a name="M000161"></a>
+      <div id="method-M000201" class="method-detail">
+        <a name="M000201"></a>
 
         <div class="method-heading">
-          <a href="#M000161" class="method-signature">
+          <a href="#M000201" class="method-signature">
           <span class="method-name">new_ses_id</span><span class="method-args">( cookie_key, ses_key, timeout_secs, user_id=0 )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Returns a <a href="SessionStorage.html#M000154">new</a>, unique session
+Returns a <a href="SessionStorage.html#M000194">new</a>, unique session
 identifier by storing the params to the database
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000161-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000161-source">
+            onclick="toggleCode('M000201-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000201-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 181</span>
-181:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">new_ses_id</span>( <span class="ruby-identifier">cookie_key</span>, <span class="ruby-identifier">ses_key</span>, <span class="ruby-identifier">timeout_secs</span>, <span class="ruby-identifier">user_id</span>=<span class="ruby-value">0</span> )
-182:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;insert into himle_session (cookie_key, ses_key, ses_timeout, user_id) values (#{hexlify(cookie_key)},#{hexlify(ses_key)}, #{timeout_secs},#{user_id})&quot;</span> )
-183:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 189</span>
+189:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">new_ses_id</span>( <span class="ruby-identifier">cookie_key</span>, <span class="ruby-identifier">ses_key</span>, <span class="ruby-identifier">timeout_secs</span>, <span class="ruby-identifier">user_id</span>=<span class="ruby-value">0</span> )
+190:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>( <span class="ruby-node">&quot;insert into himle_session (cookie_key, ses_key, ses_timeout, user_id) values (#{hexlify(cookie_key)},#{hexlify(ses_key)}, #{timeout_secs},#{user_id})&quot;</span> )
+191:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000156" class="method-detail">
-        <a name="M000156"></a>
+      <div id="method-M000196" class="method-detail">
+        <a name="M000196"></a>
 
         <div class="method-heading">
-          <a href="#M000156" class="method-signature">
+          <a href="#M000196" class="method-signature">
           <span class="method-name">reset_sessions</span><span class="method-args">()</span>
           </a>
         </div>
@@ -408,23 +408,23 @@ identifier by storing the params to the database
 Deletes all rows from himle_session
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000156-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000156-source">
+            onclick="toggleCode('M000196-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000196-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 133</span>
-133:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset_sessions</span>
-134:     <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;delete from himle_session&quot;</span>)
-135:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 141</span>
+141:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset_sessions</span>
+142:     <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;delete from himle_session&quot;</span>)
+143:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000157" class="method-detail">
-        <a name="M000157"></a>
+      <div id="method-M000197" class="method-detail">
+        <a name="M000197"></a>
 
         <div class="method-heading">
-          <a href="#M000157" class="method-signature">
+          <a href="#M000197" class="method-signature">
           <span class="method-name">restore_sessions</span><span class="method-args">()</span>
           </a>
         </div>
@@ -434,33 +434,33 @@ Deletes all rows from himle_session
 Restores all saved sessions from db to ram
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000157-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000157-source">
+            onclick="toggleCode('M000197-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000197-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 138</span>
-138:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">restore_sessions</span>
-139:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Restoring sessions...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-140:     <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;select * from himle_session&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ses_row</span><span class="ruby-operator">|</span>
-141:       <span class="ruby-identifier">ses_id</span> = <span class="ruby-identifier">ses_row</span>[<span class="ruby-value str">'id'</span>]
-142:       <span class="ruby-identifier">ses_data_dump</span> = <span class="ruby-identifier">ses_row</span>[<span class="ruby-value str">'ses_data'</span>]
-143:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ses_data_dump</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
-144:         <span class="ruby-identifier">ses_data</span> = <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">restore</span>( <span class="ruby-identifier">ses_data_dump</span> )
-145:         <span class="ruby-ivar">@sessions</span>[<span class="ruby-identifier">ses_id</span>] = <span class="ruby-identifier">ses_data</span>
-146:         <span class="ruby-ivar">@session_keys</span>[ <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:ses_key</span>] ] = <span class="ruby-identifier">ses_id</span>
-147:         <span class="ruby-ivar">@session_cookie_keys</span>[ <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:cookie_key</span>] ] = <span class="ruby-identifier">ses_id</span>
-148:       <span class="ruby-keyword kw">end</span>
-149:     <span class="ruby-keyword kw">end</span>
-150:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 146</span>
+146:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">restore_sessions</span>
+147:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Restoring sessions...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+148:     <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-value str">&quot;select * from himle_session&quot;</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ses_row</span><span class="ruby-operator">|</span>
+149:       <span class="ruby-identifier">ses_id</span> = <span class="ruby-identifier">ses_row</span>[<span class="ruby-value str">'id'</span>]
+150:       <span class="ruby-identifier">ses_data_dump</span> = <span class="ruby-identifier">ses_row</span>[<span class="ruby-value str">'ses_data'</span>]
+151:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">ses_data_dump</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+152:         <span class="ruby-identifier">ses_data</span> = <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">restore</span>( <span class="ruby-identifier">ses_data_dump</span> )
+153:         <span class="ruby-ivar">@sessions</span>[<span class="ruby-identifier">ses_id</span>] = <span class="ruby-identifier">ses_data</span>
+154:         <span class="ruby-ivar">@session_keys</span>[ <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:ses_key</span>] ] = <span class="ruby-identifier">ses_id</span>
+155:         <span class="ruby-ivar">@session_cookie_keys</span>[ <span class="ruby-identifier">ses_data</span>[<span class="ruby-identifier">:cookie_key</span>] ] = <span class="ruby-identifier">ses_id</span>
+156:       <span class="ruby-keyword kw">end</span>
+157:     <span class="ruby-keyword kw">end</span>
+158:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000159" class="method-detail">
-        <a name="M000159"></a>
+      <div id="method-M000199" class="method-detail">
+        <a name="M000199"></a>
 
         <div class="method-heading">
-          <a href="#M000159" class="method-signature">
+          <a href="#M000199" class="method-signature">
           <span class="method-name">shutdown</span><span class="method-args">()</span>
           </a>
         </div>
@@ -468,28 +468,28 @@ Restores all saved sessions from db to ram
         <div class="method-description">
           <p>
 Shut-down signal, triggers <a
-href="SessionStorage.html#M000158">store_sessions</a> for now
+href="SessionStorage.html#M000198">store_sessions</a> for now
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000159-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000159-source">
+            onclick="toggleCode('M000199-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000199-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 168</span>
-168:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">shutdown</span>
-169:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Session shutdown in progress...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-170:     <span class="ruby-identifier">store_sessions</span>
-171:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Session shutdown complete.&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-172:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 176</span>
+176:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">shutdown</span>
+177:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Session shutdown in progress...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+178:     <span class="ruby-identifier">store_sessions</span>
+179:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Session shutdown complete.&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+180:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000158" class="method-detail">
-        <a name="M000158"></a>
+      <div id="method-M000198" class="method-detail">
+        <a name="M000198"></a>
 
         <div class="method-heading">
-          <a href="#M000158" class="method-signature">
+          <a href="#M000198" class="method-signature">
           <span class="method-name">store_sessions</span><span class="method-args">()</span>
           </a>
         </div>
@@ -499,23 +499,23 @@ href="SessionStorage.html#M000158">store_sessions</a> for now
 Stores all sessions to db from ram
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000158-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000158-source">
+            onclick="toggleCode('M000198-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000198-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 153</span>
-153:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store_sessions</span>
-154:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Storing sessions...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
-155:     <span class="ruby-ivar">@sessions</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ses_id</span><span class="ruby-operator">|</span>
-156:       <span class="ruby-identifier">ses_data</span> = <span class="ruby-ivar">@sessions</span>[ <span class="ruby-identifier">ses_id</span> ]
-157:       <span class="ruby-identifier">ses_data_dump</span> = <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">dump</span>( <span class="ruby-identifier">ses_data</span> )
-158:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}&quot;</span>)
-159:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}&quot;</span>)
-160:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set user_id = #{ses_data[:user_id]} where id=#{ses_id}&quot;</span>)
-161:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_data = #{hexlify(ses_data_dump)} where id=#{ses_id}&quot;</span>)
-162:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_timeout = #{ses_data[:timeout]}&quot;</span>)
-163:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_stored = #{Time.now.to_i} where id=#{ses_id}&quot;</span>)
-164:     <span class="ruby-keyword kw">end</span>
-165:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/sessionstorage.rb, line 161</span>
+161:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store_sessions</span>
+162:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Storing sessions...&quot;</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+163:     <span class="ruby-ivar">@sessions</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ses_id</span><span class="ruby-operator">|</span>
+164:       <span class="ruby-identifier">ses_data</span> = <span class="ruby-ivar">@sessions</span>[ <span class="ruby-identifier">ses_id</span> ]
+165:       <span class="ruby-identifier">ses_data_dump</span> = <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">dump</span>( <span class="ruby-identifier">ses_data</span> )
+166:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}&quot;</span>)
+167:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}&quot;</span>)
+168:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set user_id = #{ses_data[:user_id]} where id=#{ses_id}&quot;</span>)
+169:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_data = #{hexlify(ses_data_dump)} where id=#{ses_id}&quot;</span>)
+170:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_timeout = #{ses_data[:timeout]}&quot;</span>)
+171:       <span class="ruby-ivar">@db</span>.<span class="ruby-identifier">q</span>(<span class="ruby-node">&quot;update himle_session set ses_stored = #{Time.now.to_i} where id=#{ses_id}&quot;</span>)
+172:     <span class="ruby-keyword kw">end</span>
+173:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

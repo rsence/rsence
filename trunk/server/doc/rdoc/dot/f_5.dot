@@ -10,23 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    Broker [
+    KamppaHaku [
         fontcolor = black,
-        URL = "classes/Broker.html",
+        URL = "classes/KamppaHaku.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "Broker"
-    ]
-
-    RestfulDispatcher [
-        URL = "classes/RestfulDispatcher.html",
-        shape = box,
-        label = "RestfulDispatcher"
-    ]
-
-    RestfulDispatcher -> Broker [
-
+        label = "KamppaHaku"
     ]
 
 }

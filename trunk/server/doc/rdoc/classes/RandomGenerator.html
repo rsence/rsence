@@ -55,8 +55,12 @@
         <tr class="top-aligned-row">
             <td><strong>In:</strong></td>
             <td>
-                <a href="../files/lib/util/randgen_rb.html">
-                lib/util/randgen.rb
+                <a href="../files/lib/util/randgen_c/randgen_c.html">
+                lib/util/randgen_c/randgen.c
+                </a>
+        <br />
+                <a href="../files/lib/util/randgen_rb/randgen_rb.html">
+                lib/util/randgen_rb/randgen.rb
                 </a>
         <br />
             </td>
@@ -81,14 +85,14 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,128,53"      href="RandomGenerator.html" alt="RandomGenerator" />
 </map>
-<img src="../dot/f_16.gif" usemap="#map" border="0" alt="dot/f_16.gif">
+<img src="../dot/f_28.gif" usemap="#map" border="0" alt="dot/f_28.gif">
     </div>
 
     <div id="description">
       <p>
 HRandgen generates a buffer of random strings and keeps that buffer Its <a
-href="RandomGenerator.html#M000073">give</a> method always return a <a
-href="RandomGenerator.html#M000069">new</a> unique number
+href="RandomGenerator.html#M000088">give</a> method always return a <a
+href="RandomGenerator.html#M000083">new</a> unique number
 </p>
 
     </div>
@@ -100,13 +104,14 @@ href="RandomGenerator.html#M000069">new</a> unique number
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000070">generate</a>&nbsp;&nbsp;
-      <a href="#M000072">get</a>&nbsp;&nbsp;
-      <a href="#M000074">get_one</a>&nbsp;&nbsp;
-      <a href="#M000073">give</a>&nbsp;&nbsp;
-      <a href="#M000075">give_one</a>&nbsp;&nbsp;
-      <a href="#M000071">make</a>&nbsp;&nbsp;
-      <a href="#M000069">new</a>&nbsp;&nbsp;
+      <a href="#M000085">generate</a>&nbsp;&nbsp;
+      <a href="#M000087">get</a>&nbsp;&nbsp;
+      <a href="#M000089">get_one</a>&nbsp;&nbsp;
+      <a href="#M000088">give</a>&nbsp;&nbsp;
+      <a href="#M000090">give_one</a>&nbsp;&nbsp;
+      <a href="#M000086">make</a>&nbsp;&nbsp;
+      <a href="#M000083">new</a>&nbsp;&nbsp;
+      <a href="#M000084">randomize_chars</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -121,6 +126,19 @@ href="RandomGenerator.html#M000069">new</a> unique number
 
 
 
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">stats</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
       
 
 
@@ -128,12 +146,12 @@ href="RandomGenerator.html#M000069">new</a> unique number
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000069" class="method-detail">
-        <a name="M000069"></a>
+      <div id="method-M000083" class="method-detail">
+        <a name="M000083"></a>
 
         <div class="method-heading">
-          <a href="#M000069" class="method-signature">
-          <span class="method-name">new</span><span class="method-args">( target_len, buffer_min )</span>
+          <a href="#M000083" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">( target_len, buffer_min, verbose=false )</span>
           </a>
         </div>
       
@@ -146,18 +164,23 @@ Initialize with:
  - buffer_min: the minimum amount of strings in the buffer
 </pre>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000069-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000069-source">
+            onclick="toggleCode('M000083-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000083-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/util/randgen.rb, line 25</span>
-25:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">target_len</span>, <span class="ruby-identifier">buffer_min</span> )
-26:     <span class="ruby-ivar">@counter</span>     = <span class="ruby-value">0</span>
-27:     <span class="ruby-ivar">@chars</span>       = <span class="ruby-value str">'01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'</span>
-28:     <span class="ruby-ivar">@charcount</span>   = <span class="ruby-ivar">@chars</span>.<span class="ruby-identifier">size</span>
-29:     <span class="ruby-ivar">@buffer_min</span>  = <span class="ruby-identifier">buffer_min</span>
-30:     <span class="ruby-ivar">@target_len</span>  = <span class="ruby-identifier">target_len</span>
-31:     <span class="ruby-ivar">@buffer</span>      = []
-32:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/util/randgen_rb/randgen.rb, line 32</span>
+32:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">target_len</span>, <span class="ruby-identifier">buffer_min</span>, <span class="ruby-identifier">verbose</span>=<span class="ruby-keyword kw">false</span> )
+33:     <span class="ruby-ivar">@verbose</span>     = <span class="ruby-identifier">verbose</span>
+34:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">verbose</span>
+35:       <span class="ruby-ivar">@stats</span> = {<span class="ruby-identifier">:make=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">0</span>,<span class="ruby-identifier">:get=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">0</span>}
+36:     <span class="ruby-keyword kw">end</span>
+37:     <span class="ruby-ivar">@chars_in</span> = <span class="ruby-value str">'01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">''</span>)
+38:     <span class="ruby-ivar">@chars_len</span> = <span class="ruby-ivar">@chars_in</span>.<span class="ruby-identifier">size</span>
+39:     <span class="ruby-ivar">@chars</span> = <span class="ruby-identifier">randomize_chars</span>
+40:     <span class="ruby-ivar">@buffer_min</span>  = <span class="ruby-identifier">buffer_min</span>
+41:     <span class="ruby-ivar">@target_len</span>  = <span class="ruby-identifier">target_len</span>
+42:     <span class="ruby-ivar">@buffer</span>      = []
+43:     <span class="ruby-identifier">make</span>( <span class="ruby-ivar">@buffer_min</span> )
+44:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -165,42 +188,41 @@ Initialize with:
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000070" class="method-detail">
-        <a name="M000070"></a>
+      <div id="method-M000085" class="method-detail">
+        <a name="M000085"></a>
 
         <div class="method-heading">
-          <a href="#M000070" class="method-signature">
+          <a href="#M000085" class="method-signature">
           <span class="method-name">generate</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Generate one <a href="RandomGenerator.html#M000069">new</a> string
+Generate one <a href="RandomGenerator.html#M000083">new</a> string
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000070-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000070-source">
+            onclick="toggleCode('M000085-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000085-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/util/randgen.rb, line 35</span>
-35:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">generate</span>
-36:     <span class="ruby-identifier">outp</span> = []
-37:     <span class="ruby-ivar">@target_len</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
-38:       <span class="ruby-identifier">randnum</span> = <span class="ruby-identifier">rand</span>( <span class="ruby-ivar">@charcount</span> )
-39:       <span class="ruby-identifier">outp</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@chars</span>[ <span class="ruby-identifier">randnum</span> ].<span class="ruby-identifier">chr</span> )
-40:     <span class="ruby-keyword kw">end</span>
-41:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">outp</span>.<span class="ruby-identifier">join</span>
-42:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/util/randgen_rb/randgen.rb, line 56</span>
+56:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">generate</span>
+57:     <span class="ruby-identifier">outp</span> = <span class="ruby-value str">''</span>
+58:     <span class="ruby-ivar">@target_len</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
+59:       <span class="ruby-identifier">outp</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@chars</span>[<span class="ruby-identifier">rand</span>(<span class="ruby-ivar">@chars_len</span>)].<span class="ruby-identifier">chr</span>
+60:     <span class="ruby-keyword kw">end</span>
+61:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">outp</span>
+62:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000072" class="method-detail">
-        <a name="M000072"></a>
+      <div id="method-M000087" class="method-detail">
+        <a name="M000087"></a>
 
         <div class="method-heading">
-          <a href="#M000072" class="method-signature">
+          <a href="#M000087" class="method-signature">
           <span class="method-name">get</span><span class="method-args">( amount = 1 )</span>
           </a>
         </div>
@@ -210,28 +232,29 @@ Generate one <a href="RandomGenerator.html#M000069">new</a> string
 Returns amount number of random strings packed in an array
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000072-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000072-source">
+            onclick="toggleCode('M000087-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000087-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/util/randgen.rb, line 72</span>
-72:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>( <span class="ruby-identifier">amount</span> = <span class="ruby-value">1</span> )
-73:     <span class="ruby-identifier">make</span>( <span class="ruby-ivar">@buffer_min</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">amount</span> ) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">amount</span>
-74:     <span class="ruby-identifier">outp</span> = []
-75:     <span class="ruby-identifier">amount</span>.<span class="ruby-identifier">times</span> {
-76:      <span class="ruby-identifier">outp</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">shift</span> )
-77:     }
-78:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">outp</span>
-79:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/util/randgen_rb/randgen.rb, line 73</span>
+73:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>( <span class="ruby-identifier">amount</span> = <span class="ruby-value">1</span> )
+74:     <span class="ruby-ivar">@stats</span>[<span class="ruby-identifier">:get</span>]<span class="ruby-operator">+=</span><span class="ruby-value">1</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@verbose</span>
+75:     <span class="ruby-identifier">make</span>( <span class="ruby-ivar">@buffer_min</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">amount</span> ) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">amount</span>
+76:     <span class="ruby-identifier">outp</span> = []
+77:     <span class="ruby-identifier">amount</span>.<span class="ruby-identifier">times</span> {
+78:      <span class="ruby-identifier">outp</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">shift</span> )
+79:     }
+80:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">outp</span>
+81:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000074" class="method-detail">
-        <a name="M000074"></a>
+      <div id="method-M000089" class="method-detail">
+        <a name="M000089"></a>
 
         <div class="method-heading">
-          <a href="#M000074" class="method-signature">
+          <a href="#M000089" class="method-signature">
           <span class="method-name">get_one</span><span class="method-args">()</span>
           </a>
         </div>
@@ -241,20 +264,20 @@ Returns amount number of random strings packed in an array
 Returns just one random string as string
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000074-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000074-source">
+            onclick="toggleCode('M000089-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000089-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/util/randgen.rb, line 83</span>
-83:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_one</span>
-84:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">get</span>(<span class="ruby-value">1</span>)[<span class="ruby-value">0</span>] <span class="ruby-comment cmt"># the first item in an array of one items</span>
-85:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/util/randgen_rb/randgen.rb, line 85</span>
+85:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get_one</span>
+86:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">get</span>(<span class="ruby-value">1</span>)[<span class="ruby-value">0</span>] <span class="ruby-comment cmt"># the first item in an array of one items</span>
+87:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000073" class="method-detail">
-        <a name="M000073"></a>
+      <div id="method-M000088" class="method-detail">
+        <a name="M000088"></a>
 
         <div class="method-heading">
           <span class="method-name">give</span><span class="method-args">( amount = 1 )</span>
@@ -262,13 +285,13 @@ Returns just one random string as string
       
         <div class="method-description">
           <p>
-Alias for <a href="RandomGenerator.html#M000072">get</a>
+Alias for <a href="RandomGenerator.html#M000087">get</a>
 </p>
         </div>
       </div>
 
-      <div id="method-M000075" class="method-detail">
-        <a name="M000075"></a>
+      <div id="method-M000090" class="method-detail">
+        <a name="M000090"></a>
 
         <div class="method-heading">
           <span class="method-name">give_one</span><span class="method-args">()</span>
@@ -276,16 +299,16 @@ Alias for <a href="RandomGenerator.html#M000072">get</a>
       
         <div class="method-description">
           <p>
-Alias for <a href="RandomGenerator.html#M000074">get_one</a>
+Alias for <a href="RandomGenerator.html#M000089">get_one</a>
 </p>
         </div>
       </div>
 
-      <div id="method-M000071" class="method-detail">
-        <a name="M000071"></a>
+      <div id="method-M000086" class="method-detail">
+        <a name="M000086"></a>
 
         <div class="method-heading">
-          <a href="#M000071" class="method-signature">
+          <a href="#M000086" class="method-signature">
           <span class="method-name">make</span><span class="method-args">( amount = 1 )</span>
           </a>
         </div>
@@ -295,35 +318,44 @@ Alias for <a href="RandomGenerator.html#M000074">get_one</a>
 Adds amount: number of keys to the buffer
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000071-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000071-source">
+            onclick="toggleCode('M000086-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000086-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/util/randgen.rb, line 45</span>
-45:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">make</span>( <span class="ruby-identifier">amount</span> = <span class="ruby-value">1</span> )
-46:     
-47:     <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">amount</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
-48:       
-49:       <span class="ruby-comment cmt">## increment the counter by at least one</span>
-50:       <span class="ruby-identifier">rand_add</span>  = <span class="ruby-identifier">rand</span>(<span class="ruby-value">9</span>) <span class="ruby-operator">+</span> <span class="ruby-value">1</span>
-51:       <span class="ruby-ivar">@counter</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">rand_add</span>
-52:       
-53:       <span class="ruby-comment cmt">## flip the counter, when the number grows big enough</span>
-54:       <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@counter</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">999999999999</span>
-55:         <span class="ruby-ivar">@counter</span> = <span class="ruby-identifier">rand_add</span>
-56:       <span class="ruby-keyword kw">end</span>
-57:       
-58:       <span class="ruby-comment cmt">## uses the counter to prefix the random string to make sure that the </span>
-59:       <span class="ruby-identifier">prefix</span>    = <span class="ruby-value str">''</span>
-60:       <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">SHA1</span>.<span class="ruby-identifier">digest</span>(<span class="ruby-ivar">@counter</span>.<span class="ruby-identifier">to_s</span>).<span class="ruby-identifier">each_byte</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">digest_byte</span><span class="ruby-operator">|</span>
-61:         <span class="ruby-identifier">prefix</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@chars</span>[<span class="ruby-identifier">digest_byte</span><span class="ruby-operator">%</span><span class="ruby-value">64</span>].<span class="ruby-identifier">chr</span>
-62:       <span class="ruby-keyword kw">end</span>
-63:       <span class="ruby-identifier">generated</span> = <span class="ruby-identifier">prefix</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">generate</span>
-64:       <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-identifier">generated</span> )
-65:         <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">generated</span> )
-66:         <span class="ruby-identifier">amount</span> <span class="ruby-operator">-=</span> <span class="ruby-value">1</span>
-67:       <span class="ruby-keyword kw">end</span>
-68:     <span class="ruby-keyword kw">end</span>
-69:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/util/randgen_rb/randgen.rb, line 65</span>
+65:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">make</span>( <span class="ruby-identifier">amount</span> = <span class="ruby-value">1</span> )
+66:     <span class="ruby-ivar">@stats</span>[<span class="ruby-identifier">:make</span>]<span class="ruby-operator">+=</span><span class="ruby-value">1</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@verbose</span>
+67:     <span class="ruby-identifier">amount</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
+68:       <span class="ruby-ivar">@buffer</span>.<span class="ruby-identifier">push</span>( <span class="ruby-identifier">generate</span> )
+69:     <span class="ruby-keyword kw">end</span>
+70:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000084" class="method-detail">
+        <a name="M000084"></a>
+
+        <div class="method-heading">
+          <a href="#M000084" class="method-signature">
+          <span class="method-name">randomize_chars</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000084-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000084-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/util/randgen_rb/randgen.rb, line 46</span>
+46:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">randomize_chars</span>
+47:     <span class="ruby-identifier">chars</span> = <span class="ruby-value str">''</span>
+48:     <span class="ruby-identifier">chars_in</span> = <span class="ruby-ivar">@chars_in</span>.<span class="ruby-identifier">clone</span>
+49:     <span class="ruby-identifier">chars_in</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">n</span><span class="ruby-operator">|</span>
+50:       <span class="ruby-identifier">chars</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">chars_in</span>.<span class="ruby-identifier">delete_at</span>( <span class="ruby-identifier">rand</span>(<span class="ruby-identifier">chars_in</span>.<span class="ruby-identifier">length</span>) )
+51:     <span class="ruby-keyword kw">end</span>
+52:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">chars</span>
+53:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

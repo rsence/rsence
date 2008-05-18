@@ -10,13 +10,22 @@ digraph TopLevel {
         color = black
     ]
 
-    TicketServe [
+    KamppaInfo [
         fontcolor = black,
-        URL = "classes/TicketServe.html",
+        URL = "classes/KamppaInfo.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "TicketServe"
+        label = "KamppaInfo"
+    ]
+
+    Plugin [
+        URL = "classes/Plugin.html",
+        label = "Plugin"
+    ]
+
+    Plugin -> KamppaInfo [
+
     ]
 
 }

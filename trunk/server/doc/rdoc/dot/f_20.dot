@@ -10,22 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    ClockApp [
+    PluginManager [
         fontcolor = black,
-        URL = "classes/ClockApp.html",
+        URL = "classes/PluginManager.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "ClockApp"
-    ]
-
-    Plugin [
-        URL = "classes/Plugin.html",
-        label = "Plugin"
-    ]
-
-    Plugin -> ClockApp [
-
+        label = "PluginManager"
     ]
 
 }

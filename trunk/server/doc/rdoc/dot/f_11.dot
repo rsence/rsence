@@ -10,13 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    PluginManager [
+    FileCache [
         fontcolor = black,
-        URL = "classes/PluginManager.html",
+        URL = "classes/FileCache.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "PluginManager"
+        label = "FileCache"
     ]
 
 }

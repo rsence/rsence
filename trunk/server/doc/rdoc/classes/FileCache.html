@@ -81,7 +81,7 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,83,53"      href="FileCache.html" alt="FileCache" />
 </map>
-<img src="../dot/f_2.gif" usemap="#map" border="0" alt="dot/f_2.gif">
+<img src="../dot/f_11.gif" usemap="#map" border="0" alt="dot/f_11.gif">
     </div>
 
 
@@ -92,12 +92,12 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000099">check_scan</a>&nbsp;&nbsp;
-      <a href="#M000097">getfile</a>&nbsp;&nbsp;
-      <a href="#M000096">httime</a>&nbsp;&nbsp;
-      <a href="#M000094">new</a>&nbsp;&nbsp;
-      <a href="#M000098">scan_dirs</a>&nbsp;&nbsp;
-      <a href="#M000095">suffix</a>&nbsp;&nbsp;
+      <a href="#M000114">check_scan</a>&nbsp;&nbsp;
+      <a href="#M000112">getfile</a>&nbsp;&nbsp;
+      <a href="#M000111">httime</a>&nbsp;&nbsp;
+      <a href="#M000109">new</a>&nbsp;&nbsp;
+      <a href="#M000113">scan_dirs</a>&nbsp;&nbsp;
+      <a href="#M000110">suffix</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -147,11 +147,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000094" class="method-detail">
-        <a name="M000094"></a>
+      <div id="method-M000109" class="method-detail">
+        <a name="M000109"></a>
 
         <div class="method-heading">
-          <a href="#M000094" class="method-signature">
+          <a href="#M000109" class="method-signature">
           <span class="method-name">new</span><span class="method-args">()</span>
           </a>
         </div>
@@ -161,13 +161,13 @@
 Initially, scan.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000094-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000094-source">
+            onclick="toggleCode('M000109-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000109-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 30</span>
-30:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
-31:     <span class="ruby-identifier">scan_dirs</span>
-32:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 37</span>
+37:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+38:     <span class="ruby-identifier">scan_dirs</span>
+39:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -175,11 +175,11 @@ Initially, scan.
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000099" class="method-detail">
-        <a name="M000099"></a>
+      <div id="method-M000114" class="method-detail">
+        <a name="M000114"></a>
 
         <div class="method-heading">
-          <a href="#M000099" class="method-signature">
+          <a href="#M000114" class="method-signature">
           <span class="method-name">check_scan</span><span class="method-args">()</span>
           </a>
         </div>
@@ -189,34 +189,34 @@ Initially, scan.
 Checks, if the client is newer than the cached
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000099-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000099-source">
+            onclick="toggleCode('M000114-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000114-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 147</span>
-147:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_scan</span>
-148:     
-149:     <span class="ruby-comment cmt"># special tag file created by build_client.rb</span>
-150:     <span class="ruby-identifier">buildfile_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:client_parts</span>][<span class="ruby-identifier">:js</span>],<span class="ruby-value str">'built'</span>)
-151:     
-152:     <span class="ruby-comment cmt"># checks, if the tag file is newer than last time the cache is loaded</span>
-153:     <span class="ruby-identifier">build_time</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-identifier">buildfile_path</span>).<span class="ruby-identifier">mtime</span>
-154:     
-155:     <span class="ruby-comment cmt"># make a new scan, if needed</span>
-156:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@scan_time</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">build_time</span> <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">not</span> <span class="ruby-ivar">@busy_scanning</span>
-157:       <span class="ruby-identifier">scan_dirs</span>
-158:     <span class="ruby-keyword kw">end</span>
-159:     
-160:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 154</span>
+154:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_scan</span>
+155:     
+156:     <span class="ruby-comment cmt"># special tag file created by build_client.rb</span>
+157:     <span class="ruby-identifier">buildfile_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:client_parts</span>][<span class="ruby-identifier">:js</span>],<span class="ruby-value str">'built'</span>)
+158:     
+159:     <span class="ruby-comment cmt"># checks, if the tag file is newer than last time the cache is loaded</span>
+160:     <span class="ruby-identifier">build_time</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-identifier">buildfile_path</span>).<span class="ruby-identifier">mtime</span>
+161:     
+162:     <span class="ruby-comment cmt"># make a new scan, if needed</span>
+163:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@scan_time</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">build_time</span> <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">not</span> <span class="ruby-ivar">@busy_scanning</span>
+164:       <span class="ruby-identifier">scan_dirs</span>
+165:     <span class="ruby-keyword kw">end</span>
+166:     
+167:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000097" class="method-detail">
-        <a name="M000097"></a>
+      <div id="method-M000112" class="method-detail">
+        <a name="M000112"></a>
 
         <div class="method-heading">
-          <a href="#M000097" class="method-signature">
+          <a href="#M000112" class="method-signature">
           <span class="method-name">getfile</span><span class="method-args">(path)</span>
           </a>
         </div>
@@ -228,27 +228,27 @@ the data itself, last-modified time of the file formatted as a http
 datetime string and the size of the file in bytes
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000097-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000097-source">
+            onclick="toggleCode('M000112-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000112-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 47</span>
-47:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">path</span>)
-48:     <span class="ruby-identifier">file</span> = <span class="ruby-identifier">open</span>( <span class="ruby-identifier">path</span>, <span class="ruby-value str">'rb'</span> )
-49:     <span class="ruby-identifier">data</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">read</span>
-50:     <span class="ruby-identifier">file</span>.<span class="ruby-identifier">close</span>
-51:     <span class="ruby-identifier">stat</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>( <span class="ruby-identifier">path</span> )
-52:     <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">data</span>,<span class="ruby-identifier">httime</span>(<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">mtime</span>),<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>]
-53:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 54</span>
+54:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">path</span>)
+55:     <span class="ruby-identifier">file</span> = <span class="ruby-identifier">open</span>( <span class="ruby-identifier">path</span>, <span class="ruby-value str">'rb'</span> )
+56:     <span class="ruby-identifier">data</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">read</span>
+57:     <span class="ruby-identifier">file</span>.<span class="ruby-identifier">close</span>
+58:     <span class="ruby-identifier">stat</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>( <span class="ruby-identifier">path</span> )
+59:     <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">data</span>,<span class="ruby-identifier">httime</span>(<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">mtime</span>),<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>]
+60:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000096" class="method-detail">
-        <a name="M000096"></a>
+      <div id="method-M000111" class="method-detail">
+        <a name="M000111"></a>
 
         <div class="method-heading">
-          <a href="#M000096" class="method-signature">
+          <a href="#M000111" class="method-signature">
           <span class="method-name">httime</span><span class="method-args">(time)</span>
           </a>
         </div>
@@ -258,23 +258,23 @@ datetime string and the size of the file in bytes
 Helper method to return the time formatted according to the HTTP RFC
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000096-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000096-source">
+            onclick="toggleCode('M000111-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000111-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 40</span>
-40:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">httime</span>(<span class="ruby-identifier">time</span>)
-41:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">time</span>.<span class="ruby-identifier">gmtime</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">'%a, %d %b %Y %H:%M:%S %Z'</span>)
-42:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 47</span>
+47:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">httime</span>(<span class="ruby-identifier">time</span>)
+48:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">time</span>.<span class="ruby-identifier">gmtime</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-value str">'%a, %d %b %Y %H:%M:%S %Z'</span>)
+49:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000098" class="method-detail">
-        <a name="M000098"></a>
+      <div id="method-M000113" class="method-detail">
+        <a name="M000113"></a>
 
         <div class="method-heading">
-          <a href="#M000098" class="method-signature">
+          <a href="#M000113" class="method-signature">
           <span class="method-name">scan_dirs</span><span class="method-args">()</span>
           </a>
         </div>
@@ -284,126 +284,126 @@ Helper method to return the time formatted according to the HTTP RFC
 The main method to load and purge the theme cache
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000098-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000098-source">
+            onclick="toggleCode('M000113-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000113-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 56</span>
- 56:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan_dirs</span>
- 57:     
- 58:     <span class="ruby-comment cmt"># Just return, if the scan lock is on</span>
- 59:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@busy_scanning</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
- 60:     
- 61:     <span class="ruby-comment cmt"># Set the scan lock</span>
- 62:     <span class="ruby-ivar">@busy_scanning</span> = <span class="ruby-keyword kw">true</span>
- 63:     
- 64:     <span class="ruby-comment cmt"># Root path of the compiled js client framework</span>
- 65:     <span class="ruby-identifier">ui_path</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:client_parts</span>][<span class="ruby-identifier">:js</span>]
- 66:     
- 67:     <span class="ruby-comment cmt"># Clean hash for js data and properties</span>
- 68:     <span class="ruby-identifier">js_cache</span> = {}
- 69:     
- 70:     <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">ui_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
- 71:       <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">ui_path</span>, <span class="ruby-identifier">path_item</span> )
- 72:       <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
- 73:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">suf</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.js'</span>
- 74:         <span class="ruby-identifier">file_key</span> = <span class="ruby-identifier">path_item</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">-4</span>]
- 75:         <span class="ruby-identifier">js_cache</span>[<span class="ruby-identifier">file_key</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
- 76:       <span class="ruby-keyword kw">end</span>
- 77:     <span class="ruby-keyword kw">end</span>
- 78:     
- 79:     <span class="ruby-comment cmt"># Root path of the themes</span>
- 80:     <span class="ruby-identifier">themes_path</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:client_parts</span>][<span class="ruby-identifier">:themes</span>]
- 81:     
- 82:     <span class="ruby-comment cmt"># Clean hash for theme data and properties</span>
- 83:     <span class="ruby-identifier">theme_cache</span> = {}
- 84:     
- 85:     <span class="ruby-comment cmt"># Scans all themes</span>
- 86:     <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">themes_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">theme_name</span><span class="ruby-operator">|</span>
- 87:       
- 88:       <span class="ruby-comment cmt"># Checks, if the theme path is a directory</span>
- 89:       <span class="ruby-identifier">theme_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">themes_path</span>,<span class="ruby-identifier">theme_name</span>)
- 90:       <span class="ruby-identifier">is_dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-identifier">theme_path</span>).<span class="ruby-identifier">directory?</span>
- 91:       
- 92:       <span class="ruby-comment cmt"># Skips dirs starting with a dot</span>
- 93:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">theme_name</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">chr</span> <span class="ruby-operator">!=</span> <span class="ruby-value str">'.'</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">is_dir</span>
- 94:         
- 95:         <span class="ruby-comment cmt"># initializes a theme-specific hash for css/html/gfx entries</span>
- 96:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">theme_cache</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">theme_name</span>)
- 97:           <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>] = {<span class="ruby-value str">'css'</span>=<span class="ruby-operator">&gt;</span>{},<span class="ruby-value str">'html'</span>=<span class="ruby-operator">&gt;</span>{},<span class="ruby-value str">'gfx'</span>=<span class="ruby-operator">&gt;</span>{}}
- 98:         <span class="ruby-keyword kw">end</span>
- 99:         
-100:         <span class="ruby-comment cmt"># build sub-paths for css/html/gfx entries</span>
-101:         <span class="ruby-identifier">gfx_path</span>   = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">theme_path</span>,<span class="ruby-value str">'gfx'</span>)
-102:         <span class="ruby-identifier">css_path</span>   = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">theme_path</span>,<span class="ruby-value str">'css'</span>)
-103:         <span class="ruby-identifier">html_path</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">theme_path</span>,<span class="ruby-value str">'html'</span>)
-104:         
-105:         <span class="ruby-comment cmt"># Scans for css theme files</span>
-106:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">css_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
-107:           <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">css_path</span>, <span class="ruby-identifier">path_item</span> )
-108:           <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
-109:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">suf</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.css'</span>
-110:             <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>][<span class="ruby-value str">'css'</span>][<span class="ruby-identifier">path_item</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
-111:           <span class="ruby-keyword kw">end</span>
-112:         <span class="ruby-keyword kw">end</span>
-113:         
-114:         <span class="ruby-comment cmt"># Scans for html theme files</span>
-115:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">html_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
-116:           <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">html_path</span>, <span class="ruby-identifier">path_item</span> )
-117:           <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
-118:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">suf</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.html'</span>
-119:             <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>][<span class="ruby-value str">'html'</span>][<span class="ruby-identifier">path_item</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
-120:           <span class="ruby-keyword kw">end</span>
-121:         <span class="ruby-keyword kw">end</span>
-122:         
-123:         <span class="ruby-comment cmt"># Scans for gfx theme files</span>
-124:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">gfx_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
-125:           <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">gfx_path</span>, <span class="ruby-identifier">path_item</span> )
-126:           <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
-127:           <span class="ruby-keyword kw">if</span> [<span class="ruby-value str">'.jpg'</span>,<span class="ruby-value str">'.gif'</span>,<span class="ruby-value str">'.swf'</span>,<span class="ruby-value str">'.png'</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">suf</span>)
-128:             <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>][<span class="ruby-value str">'gfx'</span>][<span class="ruby-identifier">path_item</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
-129:           <span class="ruby-keyword kw">end</span>
-130:         <span class="ruby-keyword kw">end</span>
-131:       <span class="ruby-keyword kw">end</span>
-132:     <span class="ruby-keyword kw">end</span>
-133:     
-134:     <span class="ruby-comment cmt"># replaces the current caches with the fresh ones</span>
-135:     <span class="ruby-ivar">@js_cache</span> = <span class="ruby-identifier">js_cache</span>
-136:     <span class="ruby-ivar">@theme_cache</span> = <span class="ruby-identifier">theme_cache</span>
-137:     
-138:     <span class="ruby-comment cmt"># time of last scan:</span>
-139:     <span class="ruby-ivar">@scan_time</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>
+     <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 63</span>
+ 63:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan_dirs</span>
+ 64:     
+ 65:     <span class="ruby-comment cmt"># Just return, if the scan lock is on</span>
+ 66:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@busy_scanning</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">true</span>
+ 67:     
+ 68:     <span class="ruby-comment cmt"># Set the scan lock</span>
+ 69:     <span class="ruby-ivar">@busy_scanning</span> = <span class="ruby-keyword kw">true</span>
+ 70:     
+ 71:     <span class="ruby-comment cmt"># Root path of the compiled js client framework</span>
+ 72:     <span class="ruby-identifier">ui_path</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:client_parts</span>][<span class="ruby-identifier">:js</span>]
+ 73:     
+ 74:     <span class="ruby-comment cmt"># Clean hash for js data and properties</span>
+ 75:     <span class="ruby-identifier">js_cache</span> = {}
+ 76:     
+ 77:     <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">ui_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
+ 78:       <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">ui_path</span>, <span class="ruby-identifier">path_item</span> )
+ 79:       <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
+ 80:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">suf</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.js'</span>
+ 81:         <span class="ruby-identifier">file_key</span> = <span class="ruby-identifier">path_item</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">-4</span>]
+ 82:         <span class="ruby-identifier">js_cache</span>[<span class="ruby-identifier">file_key</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
+ 83:       <span class="ruby-keyword kw">end</span>
+ 84:     <span class="ruby-keyword kw">end</span>
+ 85:     
+ 86:     <span class="ruby-comment cmt"># Root path of the themes</span>
+ 87:     <span class="ruby-identifier">themes_path</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:client_parts</span>][<span class="ruby-identifier">:themes</span>]
+ 88:     
+ 89:     <span class="ruby-comment cmt"># Clean hash for theme data and properties</span>
+ 90:     <span class="ruby-identifier">theme_cache</span> = {}
+ 91:     
+ 92:     <span class="ruby-comment cmt"># Scans all themes</span>
+ 93:     <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">themes_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">theme_name</span><span class="ruby-operator">|</span>
+ 94:       
+ 95:       <span class="ruby-comment cmt"># Checks, if the theme path is a directory</span>
+ 96:       <span class="ruby-identifier">theme_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">themes_path</span>,<span class="ruby-identifier">theme_name</span>)
+ 97:       <span class="ruby-identifier">is_dir</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">stat</span>(<span class="ruby-identifier">theme_path</span>).<span class="ruby-identifier">directory?</span>
+ 98:       
+ 99:       <span class="ruby-comment cmt"># Skips dirs starting with a dot</span>
+100:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">theme_name</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">chr</span> <span class="ruby-operator">!=</span> <span class="ruby-value str">'.'</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">is_dir</span>
+101:         
+102:         <span class="ruby-comment cmt"># initializes a theme-specific hash for css/html/gfx entries</span>
+103:         <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">theme_cache</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">theme_name</span>)
+104:           <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>] = {<span class="ruby-value str">'css'</span>=<span class="ruby-operator">&gt;</span>{},<span class="ruby-value str">'html'</span>=<span class="ruby-operator">&gt;</span>{},<span class="ruby-value str">'gfx'</span>=<span class="ruby-operator">&gt;</span>{}}
+105:         <span class="ruby-keyword kw">end</span>
+106:         
+107:         <span class="ruby-comment cmt"># build sub-paths for css/html/gfx entries</span>
+108:         <span class="ruby-identifier">gfx_path</span>   = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">theme_path</span>,<span class="ruby-value str">'gfx'</span>)
+109:         <span class="ruby-identifier">css_path</span>   = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">theme_path</span>,<span class="ruby-value str">'css'</span>)
+110:         <span class="ruby-identifier">html_path</span>  = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">theme_path</span>,<span class="ruby-value str">'html'</span>)
+111:         
+112:         <span class="ruby-comment cmt"># Scans for css theme files</span>
+113:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">css_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
+114:           <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">css_path</span>, <span class="ruby-identifier">path_item</span> )
+115:           <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
+116:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">suf</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.css'</span>
+117:             <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>][<span class="ruby-value str">'css'</span>][<span class="ruby-identifier">path_item</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
+118:           <span class="ruby-keyword kw">end</span>
+119:         <span class="ruby-keyword kw">end</span>
+120:         
+121:         <span class="ruby-comment cmt"># Scans for html theme files</span>
+122:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">html_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
+123:           <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">html_path</span>, <span class="ruby-identifier">path_item</span> )
+124:           <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
+125:           <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">suf</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'.html'</span>
+126:             <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>][<span class="ruby-value str">'html'</span>][<span class="ruby-identifier">path_item</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
+127:           <span class="ruby-keyword kw">end</span>
+128:         <span class="ruby-keyword kw">end</span>
+129:         
+130:         <span class="ruby-comment cmt"># Scans for gfx theme files</span>
+131:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">entries</span>( <span class="ruby-identifier">gfx_path</span> ).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path_item</span><span class="ruby-operator">|</span>
+132:           <span class="ruby-identifier">file_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>( <span class="ruby-identifier">gfx_path</span>, <span class="ruby-identifier">path_item</span> )
+133:           <span class="ruby-identifier">suf</span> = <span class="ruby-identifier">suffix</span>( <span class="ruby-identifier">file_path</span> )
+134:           <span class="ruby-keyword kw">if</span> [<span class="ruby-value str">'.jpg'</span>,<span class="ruby-value str">'.gif'</span>,<span class="ruby-value str">'.swf'</span>,<span class="ruby-value str">'.png'</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">suf</span>)
+135:             <span class="ruby-identifier">theme_cache</span>[<span class="ruby-identifier">theme_name</span>][<span class="ruby-value str">'gfx'</span>][<span class="ruby-identifier">path_item</span>] = <span class="ruby-identifier">getfile</span>(<span class="ruby-identifier">file_path</span>)
+136:           <span class="ruby-keyword kw">end</span>
+137:         <span class="ruby-keyword kw">end</span>
+138:       <span class="ruby-keyword kw">end</span>
+139:     <span class="ruby-keyword kw">end</span>
 140:     
-141:     <span class="ruby-comment cmt"># release lock</span>
-142:     <span class="ruby-ivar">@busy_scanning</span> = <span class="ruby-keyword kw">false</span>
-143:     
-144:   <span class="ruby-keyword kw">end</span>
+141:     <span class="ruby-comment cmt"># replaces the current caches with the fresh ones</span>
+142:     <span class="ruby-ivar">@js_cache</span> = <span class="ruby-identifier">js_cache</span>
+143:     <span class="ruby-ivar">@theme_cache</span> = <span class="ruby-identifier">theme_cache</span>
+144:     
+145:     <span class="ruby-comment cmt"># time of last scan:</span>
+146:     <span class="ruby-ivar">@scan_time</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>
+147:     
+148:     <span class="ruby-comment cmt"># release lock</span>
+149:     <span class="ruby-ivar">@busy_scanning</span> = <span class="ruby-keyword kw">false</span>
+150:     
+151:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000095" class="method-detail">
-        <a name="M000095"></a>
+      <div id="method-M000110" class="method-detail">
+        <a name="M000110"></a>
 
         <div class="method-heading">
-          <a href="#M000095" class="method-signature">
+          <a href="#M000110" class="method-signature">
           <span class="method-name">suffix</span><span class="method-args">(file_path)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Helper method to return the <a href="FileCache.html#M000095">suffix</a> of
+Helper method to return the <a href="FileCache.html#M000110">suffix</a> of
 a file
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000095-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000095-source">
+            onclick="toggleCode('M000110-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000110-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 35</span>
-35:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">suffix</span>(<span class="ruby-identifier">file_path</span>)
-36:     <span class="ruby-keyword kw">return</span> <span class="ruby-value str">'.'</span><span class="ruby-operator">+</span><span class="ruby-identifier">file_path</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">'.'</span>)[<span class="ruby-value">-1</span>]
-37:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/file/filecache.rb, line 42</span>
+42:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">suffix</span>(<span class="ruby-identifier">file_path</span>)
+43:     <span class="ruby-keyword kw">return</span> <span class="ruby-value str">'.'</span><span class="ruby-operator">+</span><span class="ruby-identifier">file_path</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">'.'</span>)[<span class="ruby-value">-1</span>]
+44:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

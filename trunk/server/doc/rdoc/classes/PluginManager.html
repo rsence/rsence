@@ -81,7 +81,7 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,109,53"      href="PluginManager.html" alt="PluginManager" />
 </map>
-<img src="../dot/f_11.gif" usemap="#map" border="0" alt="dot/f_11.gif">
+<img src="../dot/f_20.gif" usemap="#map" border="0" alt="dot/f_20.gif">
     </div>
 
 
@@ -92,18 +92,18 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000058">close</a>&nbsp;&nbsp;
-      <a href="#M000053">curr_plugin_path</a>&nbsp;&nbsp;
-      <a href="#M000061">delegate</a>&nbsp;&nbsp;
-      <a href="#M000057">flush</a>&nbsp;&nbsp;
-      <a href="#M000056">idle</a>&nbsp;&nbsp;
-      <a href="#M000051">new</a>&nbsp;&nbsp;
-      <a href="#M000055">open</a>&nbsp;&nbsp;
-      <a href="#M000052">plugins</a>&nbsp;&nbsp;
-      <a href="#M000059">rescan</a>&nbsp;&nbsp;
-      <a href="#M000062">run_plugin</a>&nbsp;&nbsp;
-      <a href="#M000054">scan</a>&nbsp;&nbsp;
-      <a href="#M000060">shutdown</a>&nbsp;&nbsp;
+      <a href="#M000072">close</a>&nbsp;&nbsp;
+      <a href="#M000067">curr_plugin_path</a>&nbsp;&nbsp;
+      <a href="#M000075">delegate</a>&nbsp;&nbsp;
+      <a href="#M000071">flush</a>&nbsp;&nbsp;
+      <a href="#M000070">idle</a>&nbsp;&nbsp;
+      <a href="#M000065">new</a>&nbsp;&nbsp;
+      <a href="#M000069">open</a>&nbsp;&nbsp;
+      <a href="#M000066">plugins</a>&nbsp;&nbsp;
+      <a href="#M000073">rescan</a>&nbsp;&nbsp;
+      <a href="#M000076">run_plugin</a>&nbsp;&nbsp;
+      <a href="#M000068">scan</a>&nbsp;&nbsp;
+      <a href="#M000074">shutdown</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -125,11 +125,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000053" class="method-detail">
-        <a name="M000053"></a>
+      <div id="method-M000067" class="method-detail">
+        <a name="M000067"></a>
 
         <div class="method-heading">
-          <a href="#M000053" class="method-signature">
+          <a href="#M000067" class="method-signature">
           <span class="method-name">curr_plugin_path</span><span class="method-args">()</span>
           </a>
         </div>
@@ -139,23 +139,23 @@
 Application module access to its own path
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000053-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000053-source">
+            onclick="toggleCode('M000067-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000067-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 46</span>
-46:   <span class="ruby-keyword kw">def</span> <span class="ruby-constant">PluginManager</span>.<span class="ruby-identifier">curr_plugin_path</span>
-47:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@@curr_plugin_path</span>
-48:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 54</span>
+54:   <span class="ruby-keyword kw">def</span> <span class="ruby-constant">PluginManager</span>.<span class="ruby-identifier">curr_plugin_path</span>
+55:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@@curr_plugin_path</span>
+56:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000051" class="method-detail">
-        <a name="M000051"></a>
+      <div id="method-M000065" class="method-detail">
+        <a name="M000065"></a>
 
         <div class="method-heading">
-          <a href="#M000051" class="method-signature">
+          <a href="#M000065" class="method-signature">
           <span class="method-name">new</span><span class="method-args">()</span>
           </a>
         </div>
@@ -163,49 +163,49 @@ Application module access to its own path
         <div class="method-description">
           <p>
 dirlist is an array of directories to <a
-href="PluginManager.html#M000054">scan</a> for available <a
-href="PluginManager.html#M000052">plugins</a>
+href="PluginManager.html#M000068">scan</a> for available <a
+href="PluginManager.html#M000066">plugins</a>
 </p>
 <p>
-Creates a <a href="PluginManager.html#M000051">new</a> plugin instance,
-scans for available <a href="PluginManager.html#M000052">plugins</a> in
+Creates a <a href="PluginManager.html#M000065">new</a> plugin instance,
+scans for available <a href="PluginManager.html#M000066">plugins</a> in
 <tt>dirlist</tt>
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000051-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000051-source">
+            onclick="toggleCode('M000065-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000065-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 35</span>
-35:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
-36:     <span class="ruby-ivar">@dirs</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:plugin_paths</span>]
-37:     <span class="ruby-identifier">scan</span>()
-38:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 43</span>
+43:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+44:     <span class="ruby-ivar">@dirs</span> = <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:plugin_paths</span>]
+45:     <span class="ruby-identifier">scan</span>()
+46:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000052" class="method-detail">
-        <a name="M000052"></a>
+      <div id="method-M000066" class="method-detail">
+        <a name="M000066"></a>
 
         <div class="method-heading">
-          <a href="#M000052" class="method-signature">
+          <a href="#M000066" class="method-signature">
           <span class="method-name">plugins</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Access to the list of <a href="PluginManager.html#M000052">plugins</a>
+Access to the list of <a href="PluginManager.html#M000066">plugins</a>
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000052-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000052-source">
+            onclick="toggleCode('M000066-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000066-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 41</span>
-41:   <span class="ruby-keyword kw">def</span> <span class="ruby-constant">PluginManager</span>.<span class="ruby-identifier">plugins</span>
-42:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@@plugins</span>
-43:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 49</span>
+49:   <span class="ruby-keyword kw">def</span> <span class="ruby-constant">PluginManager</span>.<span class="ruby-identifier">plugins</span>
+50:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@@plugins</span>
+51:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -213,38 +213,38 @@ Access to the list of <a href="PluginManager.html#M000052">plugins</a>
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000058" class="method-detail">
-        <a name="M000058"></a>
+      <div id="method-M000072" class="method-detail">
+        <a name="M000072"></a>
 
         <div class="method-heading">
-          <a href="#M000058" class="method-signature">
+          <a href="#M000072" class="method-signature">
           <span class="method-name">close</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Tells all <a href="PluginManager.html#M000052">plugins</a> that they are
+Tells all <a href="PluginManager.html#M000066">plugins</a> that they are
 about to be terminated.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000058-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000058-source">
+            onclick="toggleCode('M000072-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000072-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 126</span>
-126:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">close</span>
-127:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'close'</span> )
-128:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 136</span>
+136:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">close</span>
+137:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'close'</span> )
+138:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000061" class="method-detail">
-        <a name="M000061"></a>
+      <div id="method-M000075" class="method-detail">
+        <a name="M000075"></a>
 
         <div class="method-heading">
-          <a href="#M000061" class="method-signature">
+          <a href="#M000075" class="method-signature">
           <span class="method-name">delegate</span><span class="method-args">(method, *args)</span>
           </a>
         </div>
@@ -255,139 +255,139 @@ Check if each plugin handles <tt>method</tt>, and if so, call it, passing
 <tt>args</tt> as a parameter
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000061-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000061-source">
+            onclick="toggleCode('M000075-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000075-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 146</span>
-146:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delegate</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-147:     <span class="ruby-ivar">@@plugins</span>.<span class="ruby-identifier">values</span>.<span class="ruby-identifier">uniq</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin</span><span class="ruby-operator">|</span>
-148:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method</span>)
-149:         <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">send</span>( <span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
-150:       <span class="ruby-keyword kw">end</span>
-151:     <span class="ruby-keyword kw">end</span>
-152:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 156</span>
+156:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delegate</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+157:     <span class="ruby-ivar">@@plugins</span>.<span class="ruby-identifier">values</span>.<span class="ruby-identifier">uniq</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin</span><span class="ruby-operator">|</span>
+158:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">method</span>)
+159:         <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">send</span>( <span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+160:       <span class="ruby-keyword kw">end</span>
+161:     <span class="ruby-keyword kw">end</span>
+162:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000057" class="method-detail">
-        <a name="M000057"></a>
+      <div id="method-M000071" class="method-detail">
+        <a name="M000071"></a>
 
         <div class="method-heading">
-          <a href="#M000057" class="method-signature">
+          <a href="#M000071" class="method-signature">
           <span class="method-name">flush</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Tells all <a href="PluginManager.html#M000052">plugins</a> to <a
-href="PluginManager.html#M000057">flush</a> their data.
+Tells all <a href="PluginManager.html#M000066">plugins</a> to <a
+href="PluginManager.html#M000071">flush</a> their data.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000057-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000057-source">
+            onclick="toggleCode('M000071-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000071-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 121</span>
-121:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">flush</span>
-122:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'flush'</span> )
-123:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 131</span>
+131:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">flush</span>
+132:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'flush'</span> )
+133:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000056" class="method-detail">
-        <a name="M000056"></a>
+      <div id="method-M000070" class="method-detail">
+        <a name="M000070"></a>
 
         <div class="method-heading">
-          <a href="#M000056" class="method-signature">
+          <a href="#M000070" class="method-signature">
           <span class="method-name">idle</span><span class="method-args">( msg )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Tells all <a href="PluginManager.html#M000052">plugins</a> that a request
+Tells all <a href="PluginManager.html#M000066">plugins</a> that a request
 happened and gives the msg-parameter to them.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000056-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000056-source">
+            onclick="toggleCode('M000070-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000070-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 116</span>
-116:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">idle</span>( <span class="ruby-identifier">msg</span> )
-117:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'idle'</span>, <span class="ruby-identifier">msg</span> )
-118:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 126</span>
+126:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">idle</span>( <span class="ruby-identifier">msg</span> )
+127:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'idle'</span>, <span class="ruby-identifier">msg</span> )
+128:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000055" class="method-detail">
-        <a name="M000055"></a>
+      <div id="method-M000069" class="method-detail">
+        <a name="M000069"></a>
 
         <div class="method-heading">
-          <a href="#M000055" class="method-signature">
+          <a href="#M000069" class="method-signature">
           <span class="method-name">open</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Tells all <a href="PluginManager.html#M000052">plugins</a> to <a
-href="PluginManager.html#M000055">open</a> the files or databases they
+Tells all <a href="PluginManager.html#M000066">plugins</a> to <a
+href="PluginManager.html#M000069">open</a> the files or databases they
 need.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000055-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000055-source">
+            onclick="toggleCode('M000069-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000069-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 111</span>
-111:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open</span>
-112:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'open'</span> )
-113:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 121</span>
+121:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">open</span>
+122:     <span class="ruby-identifier">delegate</span>( <span class="ruby-value str">'open'</span> )
+123:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000059" class="method-detail">
-        <a name="M000059"></a>
+      <div id="method-M000073" class="method-detail">
+        <a name="M000073"></a>
 
         <div class="method-heading">
-          <a href="#M000059" class="method-signature">
+          <a href="#M000073" class="method-signature">
           <span class="method-name">rescan</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Restarts all running <a href="PluginManager.html#M000052">plugins</a>
+Restarts all running <a href="PluginManager.html#M000066">plugins</a>
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000059-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000059-source">
+            onclick="toggleCode('M000073-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000073-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 131</span>
-131:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rescan</span>
-132:     <span class="ruby-identifier">flush</span>()
-133:     <span class="ruby-identifier">close</span>()
-134:     <span class="ruby-ivar">@@plugins</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
-135:     <span class="ruby-identifier">scan</span>()
-136:     <span class="ruby-identifier">open</span>()
-137:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 141</span>
+141:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rescan</span>
+142:     <span class="ruby-identifier">flush</span>()
+143:     <span class="ruby-identifier">close</span>()
+144:     <span class="ruby-ivar">@@plugins</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+145:     <span class="ruby-identifier">scan</span>()
+146:     <span class="ruby-identifier">open</span>()
+147:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000062" class="method-detail">
-        <a name="M000062"></a>
+      <div id="method-M000076" class="method-detail">
+        <a name="M000076"></a>
 
         <div class="method-heading">
-          <a href="#M000062" class="method-signature">
+          <a href="#M000076" class="method-signature">
           <span class="method-name">run_plugin</span><span class="method-args">( plugin_name, method_name, *args )</span>
           </a>
         </div>
@@ -398,29 +398,29 @@ Runs a plugin&#8216;s (named <tt>plugin_name</tt>) method (named
 <tt>method_name</tt>) with the supplied <tt>args</tt>
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000062-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000062-source">
+            onclick="toggleCode('M000076-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000076-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 155</span>
-155:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run_plugin</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">method_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
-156:     
-157:     <span class="ruby-comment cmt">## </span>
-158:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@@plugins</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">plugin_name</span> )
-159:       <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@@plugins</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">respond_to?</span>( <span class="ruby-identifier">method_name</span> )
-160:         <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@@plugins</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">method</span>( <span class="ruby-identifier">method_name</span> ).<span class="ruby-identifier">call</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-161:       <span class="ruby-keyword kw">end</span>
-162:     <span class="ruby-keyword kw">end</span>
-163:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 165</span>
+165:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run_plugin</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">method_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+166:     
+167:     <span class="ruby-comment cmt">## </span>
+168:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@@plugins</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">plugin_name</span> )
+169:       <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@@plugins</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">respond_to?</span>( <span class="ruby-identifier">method_name</span> )
+170:         <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@@plugins</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">method</span>( <span class="ruby-identifier">method_name</span> ).<span class="ruby-identifier">call</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+171:       <span class="ruby-keyword kw">end</span>
+172:     <span class="ruby-keyword kw">end</span>
+173:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000054" class="method-detail">
-        <a name="M000054"></a>
+      <div id="method-M000068" class="method-detail">
+        <a name="M000068"></a>
 
         <div class="method-heading">
-          <a href="#M000054" class="method-signature">
+          <a href="#M000068" class="method-signature">
           <span class="method-name">scan</span><span class="method-args">()</span>
           </a>
         </div>
@@ -430,78 +430,80 @@ Runs a plugin&#8216;s (named <tt>plugin_name</tt>) method (named
 Loads pluginlicotions from the list of plugin directories.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000054-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000054-source">
+            onclick="toggleCode('M000068-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000068-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 51</span>
- 51:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan</span>
- 52:     
- 53:     <span class="ruby-comment cmt"># loop through all plugin-mainlevel directories</span>
- 54:     <span class="ruby-ivar">@dirs</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin_dir</span><span class="ruby-operator">|</span>
- 55:       
- 56:       <span class="ruby-comment cmt"># makes sure the plugin dir is a dir</span>
- 57:       <span class="ruby-comment cmt"># (there might be files like readme.txt or licence.txt)</span>
- 58:       <span class="ruby-keyword kw">if</span>(<span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">plugin_dir</span>))
- 59:         
- 60:         <span class="ruby-comment cmt"># goes through all plugins in the</span>
- 61:         <span class="ruby-comment cmt"># plugin dir in alphabetical order:</span>
- 62:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">plugin_dir</span>).<span class="ruby-identifier">sort</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin_name</span><span class="ruby-operator">|</span>
- 63:           
- 64:           <span class="ruby-comment cmt"># skip, if the plugin starts with a dot, like '.svn', '.' and '..'</span>
- 65:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">plugin_name</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\./</span>)
- 66:           
- 67:           <span class="ruby-comment cmt"># sets the plugin path</span>
- 68:           <span class="ruby-ivar">@@curr_plugin_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">plugin_dir</span>,<span class="ruby-identifier">plugin_name</span>)
- 69:           
- 70:           <span class="ruby-comment cmt"># checks that the plugin is a dir</span>
- 71:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span>(<span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-ivar">@@curr_plugin_path</span>))
- 72:           
- 73:           <span class="ruby-comment cmt"># expects to find a 'plugin_dir/plugin_name/plugin_name.rb' file</span>
- 74:           <span class="ruby-identifier">filename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@@curr_plugin_path</span>,<span class="ruby-node">&quot;#{plugin_name}.rb&quot;</span>)
- 75:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">filename</span>)
- 76:           
- 77:           <span class="ruby-comment cmt"># if the plugin contains a 'disabled' flag-file, it skips to the next</span>
- 78:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@@curr_plugin_path</span>,<span class="ruby-value str">'disabled'</span>))
- 79:           
- 80:           <span class="ruby-comment cmt"># Create a new, anonymous module as the plugin namespace.</span>
- 81:           <span class="ruby-identifier">plugin_module</span> = <span class="ruby-constant">Module</span>.<span class="ruby-identifier">new</span>
- 82:           
- 83:           <span class="ruby-comment cmt">##### Evaluates the plugin as a string in an anonymous module</span>
- 84:           <span class="ruby-keyword kw">begin</span>
- 85:             <span class="ruby-identifier">plugin_as_string</span> = <span class="ruby-constant">IO</span>.<span class="ruby-identifier">readlines</span>( <span class="ruby-identifier">filename</span> ).<span class="ruby-identifier">join</span>
- 86:             <span class="ruby-identifier">plugin_module</span>.<span class="ruby-identifier">module_eval</span>( <span class="ruby-identifier">plugin_as_string</span> )
- 87:             
- 88:           <span class="ruby-comment cmt">###### If initialization fails, print a nice stack trace</span>
- 89:           <span class="ruby-keyword kw">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
- 90:             <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
- 91:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;WARN: Plugin #{plugin_name} failed to initialize.&quot;</span>
- 92:             <span class="ruby-keyword kw">if</span> <span class="ruby-constant">DEBUG_MODE</span>
- 93:               <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;--&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
- 94:               <span class="ruby-identifier">puts</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-value str">'(eval):'</span>,<span class="ruby-node">%{#{File.join(@@curr_plugin_path,&quot;#{plugin_name}.rb&quot;)}:}</span>)
- 95:               <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  #{e.backtrace.join(&quot;\n  &quot;)}&quot;</span>
- 96:               <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
- 97:             <span class="ruby-keyword kw">end</span>
- 98:           <span class="ruby-keyword kw">end</span>
- 99:           
-100:         <span class="ruby-keyword kw">end</span>
-101:         
-102:       <span class="ruby-keyword kw">end</span>
-103:       
-104:     <span class="ruby-keyword kw">end</span>
-105:     
-106:     <span class="ruby-ivar">@@curr_plugin_path</span> = <span class="ruby-keyword kw">nil</span>
-107:     
-108:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 59</span>
+ 59:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan</span>
+ 60:     
+ 61:     <span class="ruby-comment cmt"># loop through all plugin-mainlevel directories</span>
+ 62:     <span class="ruby-ivar">@dirs</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin_dir</span><span class="ruby-operator">|</span>
+ 63:       
+ 64:       <span class="ruby-comment cmt"># makes sure the plugin dir is a dir</span>
+ 65:       <span class="ruby-comment cmt"># (there might be files like readme.txt or licence.txt)</span>
+ 66:       <span class="ruby-keyword kw">if</span>(<span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">plugin_dir</span>))
+ 67:         
+ 68:         <span class="ruby-comment cmt"># goes through all plugins in the</span>
+ 69:         <span class="ruby-comment cmt"># plugin dir in alphabetical order:</span>
+ 70:         <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">plugin_dir</span>).<span class="ruby-identifier">sort</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin_name</span><span class="ruby-operator">|</span>
+ 71:           
+ 72:           <span class="ruby-comment cmt"># skip, if the plugin starts with a dot, like '.svn', '.' and '..'</span>
+ 73:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">plugin_name</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\./</span>)
+ 74:           
+ 75:           <span class="ruby-comment cmt"># sets the plugin path</span>
+ 76:           <span class="ruby-ivar">@@curr_plugin_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">plugin_dir</span>,<span class="ruby-identifier">plugin_name</span>)
+ 77:           
+ 78:           <span class="ruby-comment cmt"># checks that the plugin is a dir</span>
+ 79:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span>(<span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-ivar">@@curr_plugin_path</span>))
+ 80:           
+ 81:           <span class="ruby-comment cmt"># expects to find a 'plugin_dir/plugin_name/plugin_name.rb' file</span>
+ 82:           <span class="ruby-identifier">filename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@@curr_plugin_path</span>,<span class="ruby-node">&quot;#{plugin_name}.rb&quot;</span>)
+ 83:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">filename</span>)
+ 84:           
+ 85:           <span class="ruby-comment cmt"># if the plugin contains a 'disabled' flag-file, it skips to the next</span>
+ 86:           <span class="ruby-keyword kw">next</span> <span class="ruby-keyword kw">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@@curr_plugin_path</span>,<span class="ruby-value str">'disabled'</span>))
+ 87:           
+ 88:           <span class="ruby-comment cmt"># Create a new, anonymous module as the plugin namespace.</span>
+ 89:           <span class="ruby-identifier">plugin_module</span> = <span class="ruby-constant">Module</span>.<span class="ruby-identifier">new</span>
+ 90:           
+ 91:           <span class="ruby-comment cmt">##### Evaluates the plugin as a string in an anonymous module</span>
+ 92:           <span class="ruby-keyword kw">begin</span>
+ 93:             <span class="ruby-identifier">plugin_as_string</span> = <span class="ruby-constant">IO</span>.<span class="ruby-identifier">readlines</span>( <span class="ruby-identifier">filename</span> ).<span class="ruby-identifier">join</span>
+ 94:             <span class="ruby-identifier">plugin_module</span>.<span class="ruby-identifier">module_eval</span>( <span class="ruby-identifier">plugin_as_string</span> )
+ 95:             
+ 96:           <span class="ruby-comment cmt">###### If initialization fails, print a nice stack trace</span>
+ 97:           <span class="ruby-keyword kw">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+ 98:             <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+ 99:             <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;WARN: Plugin #{plugin_name} failed to initialize.&quot;</span>
+100:             <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+101:               <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;--&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
+102:               <span class="ruby-identifier">puts</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-value str">'(eval):'</span>,<span class="ruby-node">%{#{File.join(@@curr_plugin_path,&quot;#{plugin_name}.rb&quot;)}:}</span>)
+103:               <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  #{e.backtrace.join(&quot;\n  &quot;)}&quot;</span>
+104:               <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
+105:             <span class="ruby-keyword kw">end</span>
+106:           <span class="ruby-keyword kw">end</span>
+107:           
+108:         <span class="ruby-keyword kw">end</span>
+109:         
+110:       <span class="ruby-keyword kw">end</span>
+111:       
+112:     <span class="ruby-keyword kw">end</span>
+113:     
+114:     <span class="ruby-identifier">open</span>()
+115:     
+116:     <span class="ruby-ivar">@@curr_plugin_path</span> = <span class="ruby-keyword kw">nil</span>
+117:     
+118:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000060" class="method-detail">
-        <a name="M000060"></a>
+      <div id="method-M000074" class="method-detail">
+        <a name="M000074"></a>
 
         <div class="method-heading">
-          <a href="#M000060" class="method-signature">
+          <a href="#M000074" class="method-signature">
           <span class="method-name">shutdown</span><span class="method-args">()</span>
           </a>
         </div>
@@ -511,14 +513,14 @@ Loads pluginlicotions from the list of plugin directories.
 Called when everything is going down
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000060-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000060-source">
+            onclick="toggleCode('M000074-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000074-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 140</span>
-140:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">shutdown</span>
-141:     <span class="ruby-identifier">flush</span>()
-142:     <span class="ruby-identifier">close</span>()
-143:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/plugins/pluginmanager.rb, line 150</span>
+150:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">shutdown</span>
+151:     <span class="ruby-identifier">flush</span>()
+152:     <span class="ruby-identifier">close</span>()
+153:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

@@ -10,13 +10,22 @@ digraph TopLevel {
         color = black
     ]
 
-    Transporter [
+    Request [
         fontcolor = black,
-        URL = "classes/Transporter.html",
+        URL = "classes/Request.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "Transporter"
+        label = "Request"
+    ]
+
+    Rack__Request [
+        URL = "classes/Rack/Request.html",
+        label = "Rack::Request"
+    ]
+
+    Rack__Request -> Request [
+
     ]
 
 }

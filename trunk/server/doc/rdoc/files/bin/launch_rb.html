@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Thu May 08 00:31:04 +0300 2008</td>
+      <td>Sun May 18 03:34:04 +0300 2008</td>
     </tr>
     </table>
   </div>
@@ -75,19 +75,31 @@
 
     <div id="description">
       <p>
-HIMLE RIA Server Copyright (C) 2008 HIMLE GROUP <a
-href="http://himle.org">himle.org</a>/
+Himle Server &#8212; <a href="http://himle.org">himle.org</a>/
 </p>
-<pre>
- This program is free software; you can redistribute it and/or modify it under the terms
- of the GNU General Public License as published by the Free Software Foundation;
- either version 2 of the License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU General Public License for more details.
- You should have received a copy of the GNU General Public License along with this program;
- if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-</pre>
+<p>
+Copyright (C) 2008 Juha-Jarmo Heinonen
+</p>
+<p>
+This file is part of Himle Server.
+</p>
+<p>
+Himle Server is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+</p>
+<p>
+Himle server is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+more details.
+</p>
+<p>
+You should have received a copy of the GNU General Public License along
+with this program. If not, see &lt;<a
+href="http://www.gnu.org/licenses">www.gnu.org/licenses</a>/&gt;.
+</p>
 
     </div>
 
@@ -95,32 +107,13 @@ href="http://himle.org">himle.org</a>/
       <h3 class="section-bar">Required files</h3>
 
       <div class="name-list">
-      rubygems&nbsp;&nbsp;
-      rack&nbsp;&nbsp;
-      file/filecache&nbsp;&nbsp;
-      file/fileserve&nbsp;&nbsp;
-      file/ticketserve&nbsp;&nbsp;
-      page/indexhtml&nbsp;&nbsp;
-      values/valuemanager&nbsp;&nbsp;
-      session/sessionmanager&nbsp;&nbsp;
-      plugins/pluginmanager&nbsp;&nbsp;
-      transporter/transporter&nbsp;&nbsp;
-      http/broker&nbsp;&nbsp;
+      profile&nbsp;&nbsp;
+      daemon/daemon&nbsp;&nbsp;
       </div>
     </div>
 
    </div>
 
-    <div id="method-list">
-      <h3 class="section-bar">Methods</h3>
-
-      <div class="name-list">
-      <a href="#M000002">rack_ebb_handler</a>&nbsp;&nbsp;
-      <a href="#M000004">rack_mongrel_handler</a>&nbsp;&nbsp;
-      <a href="#M000003">rack_thin_handler</a>&nbsp;&nbsp;
-      <a href="#M000001">rack_webrick_handler</a>&nbsp;&nbsp;
-      </div>
-    </div>
 
   </div>
 
@@ -145,96 +138,6 @@ Auto-construct paths using this file as the waypoint
 
 </td>
         </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">PIDPATH</td>
-          <td>=</td>
-          <td class="context-item-value">File.join(SERVER_PATH,'var','run')</td>
-          <td width="3em">&nbsp;</td>
-          <td class="context-item-desc">
-Paths for log and pid files
-
-</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">LOGPATH</td>
-          <td>=</td>
-          <td class="context-item-value">File.join(SERVER_PATH,'var','log')</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">CLIENT_PATH</td>
-          <td>=</td>
-          <td class="context-item-value">ARGV.include?('--client-path')?(ARGV[ARGV.index('--client-path')+1]):File.join( SERVER_PATH, '..', 'client' )</td>
-          <td width="3em">&nbsp;</td>
-          <td class="context-item-desc">
-Client by default is &quot;server/client&quot;
-
-</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">LIB_PATHS</td>
-          <td>=</td>
-          <td class="context-item-value">[File.join( SERVER_PATH, 'lib' )]</td>
-          <td width="3em">&nbsp;</td>
-          <td class="context-item-desc">
-Paths of server libraries
-
-</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">DEBUG_MODE</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:debug_mode]</td>
-          <td width="3em">&nbsp;</td>
-          <td class="context-item-desc">
-Place config file parsing here. #####
-
-</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">FILECACHE</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:filecache]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">FILESERVE</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:fileserve]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">TICKETSERVE</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:ticketserve]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">INDEXHTML</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:indexhtml]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">VALUES</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:valuemanager]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">SESSION</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:sessionmanager]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">PLUGINS</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:plugins]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">TRANSPORTER</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:transporter]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">BROKER</td>
-          <td>=</td>
-          <td class="context-item-value">$config[:broker]</td>
-        </tr>
         </table>
       </div>
     </div>
@@ -245,98 +148,6 @@ Place config file parsing here. #####
 
 
     <!-- if method_list -->
-    <div id="methods">
-      <h3 class="section-bar">Public Instance methods</h3>
-
-      <div id="method-M000002" class="method-detail">
-        <a name="M000002"></a>
-
-        <div class="method-heading">
-          <a href="#M000002" class="method-signature">
-          <span class="method-name">rack_ebb_handler</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000002-source">
-<pre>
-     <span class="ruby-comment cmt"># File bin/launch.rb, line 246</span>
-246: <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rack_ebb_handler</span>;     <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Handler</span><span class="ruby-operator">::</span><span class="ruby-constant">Ebb</span>;     <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000004" class="method-detail">
-        <a name="M000004"></a>
-
-        <div class="method-heading">
-          <a href="#M000004" class="method-signature">
-          <span class="method-name">rack_mongrel_handler</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000004-source">
-<pre>
-     <span class="ruby-comment cmt"># File bin/launch.rb, line 248</span>
-248: <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rack_mongrel_handler</span>; <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Handler</span><span class="ruby-operator">::</span><span class="ruby-constant">Mongrel</span>; <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000003" class="method-detail">
-        <a name="M000003"></a>
-
-        <div class="method-heading">
-          <a href="#M000003" class="method-signature">
-          <span class="method-name">rack_thin_handler</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000003-source">
-<pre>
-     <span class="ruby-comment cmt"># File bin/launch.rb, line 247</span>
-247: <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rack_thin_handler</span>;    <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Handler</span><span class="ruby-operator">::</span><span class="ruby-constant">Thin</span>;    <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000001" class="method-detail">
-        <a name="M000001"></a>
-
-        <div class="method-heading">
-          <a href="#M000001" class="method-signature">
-          <span class="method-name">rack_webrick_handler</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-methods that return rack handlers
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000001-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000001-source">
-<pre>
-     <span class="ruby-comment cmt"># File bin/launch.rb, line 245</span>
-245: <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">rack_webrick_handler</span>; <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Handler</span><span class="ruby-operator">::</span><span class="ruby-constant">WEBrick</span>; <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-
-    </div>
 
 
   </div>

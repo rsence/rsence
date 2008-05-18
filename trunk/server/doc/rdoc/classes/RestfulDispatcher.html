@@ -76,7 +76,7 @@
   <area shape="rect" coords="40,49,147,96"      href="RestfulDispatcher/SingletonMethods.html" alt="SingletonMethods" />
   <area shape="rect" coords="16,16,157,106"      href="RestfulDispatcher.html" alt="RestfulDispatcher" />
 </map>
-<img src="../dot/f_8.gif" usemap="#map" border="0" alt="dot/f_8.gif">
+<img src="../dot/f_17.gif" usemap="#map" border="0" alt="dot/f_17.gif">
     </div>
 
 
@@ -87,10 +87,10 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000170">call</a>&nbsp;&nbsp;
-      <a href="#M000171">dispatcher_class</a>&nbsp;&nbsp;
-      <a href="#M000173">included</a>&nbsp;&nbsp;
-      <a href="#M000172">new</a>&nbsp;&nbsp;
+      <a href="#M000218">call</a>&nbsp;&nbsp;
+      <a href="#M000219">dispatcher_class</a>&nbsp;&nbsp;
+      <a href="#M000221">included</a>&nbsp;&nbsp;
+      <a href="#M000220">new</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -118,48 +118,48 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000173" class="method-detail">
-        <a name="M000173"></a>
+      <div id="method-M000221" class="method-detail">
+        <a name="M000221"></a>
 
         <div class="method-heading">
-          <a href="#M000173" class="method-signature">
+          <a href="#M000221" class="method-signature">
           <span class="method-name">included</span><span class="method-args">(receiver)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000173-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000173-source">
+            onclick="toggleCode('M000221-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000221-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 50</span>
-50:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">receiver</span>)
-51:     <span class="ruby-identifier">receiver</span>.<span class="ruby-identifier">extend</span> <span class="ruby-constant">SingletonMethods</span>
-52:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 72</span>
+72:   <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">receiver</span>)
+73:     <span class="ruby-identifier">receiver</span>.<span class="ruby-identifier">extend</span> <span class="ruby-constant">SingletonMethods</span>
+74:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000172" class="method-detail">
-        <a name="M000172"></a>
+      <div id="method-M000220" class="method-detail">
+        <a name="M000220"></a>
 
         <div class="method-heading">
-          <a href="#M000172" class="method-signature">
+          <a href="#M000220" class="method-signature">
           <span class="method-name">new</span><span class="method-args">(request,response)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000172-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000172-source">
+            onclick="toggleCode('M000220-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000220-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 36</span>
-36:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">request</span>,<span class="ruby-identifier">response</span>)
-37:         <span class="ruby-ivar">@request</span> = <span class="ruby-identifier">request</span>
-38:         <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">response</span>
-39:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 58</span>
+58:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">request</span>,<span class="ruby-identifier">response</span>)
+59:         <span class="ruby-ivar">@request</span> = <span class="ruby-identifier">request</span>
+60:         <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">response</span>
+61:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -167,68 +167,68 @@
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000170" class="method-detail">
-        <a name="M000170"></a>
+      <div id="method-M000218" class="method-detail">
+        <a name="M000218"></a>
 
         <div class="method-heading">
-          <a href="#M000170" class="method-signature">
+          <a href="#M000218" class="method-signature">
           <span class="method-name">call</span><span class="method-args">(env)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000170-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000170-source">
+            onclick="toggleCode('M000218-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000218-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 15</span>
-15:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
-16:     
-17:     <span class="ruby-identifier">request</span>  = <span class="ruby-constant">Request</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">env</span>)
-18:     <span class="ruby-identifier">response</span> = <span class="ruby-constant">Response</span>.<span class="ruby-identifier">new</span>
-19:     
-20:     <span class="ruby-identifier">request_method</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">request_method</span>.<span class="ruby-identifier">downcase</span>
-21:     <span class="ruby-identifier">dispatcher</span> = <span class="ruby-identifier">dispatcher_class</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span> )
-22:     
-23:     <span class="ruby-identifier">dispatcher</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">request_method</span>)
-24:     
-25:     <span class="ruby-identifier">content_type</span> = <span class="ruby-identifier">dispatcher</span>.<span class="ruby-identifier">content_type</span>
-26:     
-27:     <span class="ruby-comment cmt">#puts response.header.inspect</span>
-28:     
-29:     <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span>, <span class="ruby-identifier">response</span>.<span class="ruby-identifier">header</span>, <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>]
-30:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 37</span>
+37:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)
+38:     
+39:     <span class="ruby-identifier">request</span>  = <span class="ruby-constant">Request</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">env</span>)
+40:     <span class="ruby-identifier">response</span> = <span class="ruby-constant">Response</span>.<span class="ruby-identifier">new</span>
+41:     
+42:     <span class="ruby-identifier">request_method</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">request_method</span>.<span class="ruby-identifier">downcase</span>
+43:     <span class="ruby-identifier">dispatcher</span> = <span class="ruby-identifier">dispatcher_class</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span> )
+44:     
+45:     <span class="ruby-identifier">dispatcher</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">request_method</span>)
+46:     
+47:     <span class="ruby-identifier">content_type</span> = <span class="ruby-identifier">dispatcher</span>.<span class="ruby-identifier">content_type</span>
+48:     
+49:     <span class="ruby-comment cmt">#puts response.header.inspect</span>
+50:     
+51:     <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span>, <span class="ruby-identifier">response</span>.<span class="ruby-identifier">header</span>, <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>]
+52:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000171" class="method-detail">
-        <a name="M000171"></a>
+      <div id="method-M000219" class="method-detail">
+        <a name="M000219"></a>
 
         <div class="method-heading">
-          <a href="#M000171" class="method-signature">
+          <a href="#M000219" class="method-signature">
           <span class="method-name">dispatcher_class</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000171-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000171-source">
+            onclick="toggleCode('M000219-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000219-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 32</span>
-32:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dispatcher_class</span>
-33:     <span class="ruby-ivar">@dispatcher</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>) <span class="ruby-keyword kw">do</span>
-34:       <span class="ruby-identifier">attr_accessor</span> <span class="ruby-identifier">:content_type</span>
-35:       
-36:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">request</span>,<span class="ruby-identifier">response</span>)
-37:         <span class="ruby-ivar">@request</span> = <span class="ruby-identifier">request</span>
-38:         <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">response</span>
-39:       <span class="ruby-keyword kw">end</span>
-40:       
-41:     <span class="ruby-keyword kw">end</span>
-42:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/http/restful.rb, line 54</span>
+54:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">dispatcher_class</span>
+55:     <span class="ruby-ivar">@dispatcher</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>) <span class="ruby-keyword kw">do</span>
+56:       <span class="ruby-identifier">attr_accessor</span> <span class="ruby-identifier">:content_type</span>
+57:       
+58:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">request</span>,<span class="ruby-identifier">response</span>)
+59:         <span class="ruby-ivar">@request</span> = <span class="ruby-identifier">request</span>
+60:         <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">response</span>
+61:       <span class="ruby-keyword kw">end</span>
+62:       
+63:     <span class="ruby-keyword kw">end</span>
+64:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

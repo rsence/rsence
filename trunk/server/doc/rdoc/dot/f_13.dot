@@ -10,22 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    SessionManager [
+    TicketServe [
         fontcolor = black,
-        URL = "classes/SessionManager.html",
+        URL = "classes/TicketServe.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "SessionManager"
-    ]
-
-    SessionStorage [
-        URL = "classes/SessionStorage.html",
-        label = "SessionStorage"
-    ]
-
-    SessionStorage -> SessionManager [
-
+        label = "TicketServe"
     ]
 
 }

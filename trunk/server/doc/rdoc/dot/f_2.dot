@@ -10,13 +10,22 @@ digraph TopLevel {
         color = black
     ]
 
-    FileCache [
+    HConsole [
         fontcolor = black,
-        URL = "classes/FileCache.html",
+        URL = "classes/HConsole.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "FileCache"
+        label = "HConsole"
+    ]
+
+    Plugin [
+        URL = "classes/Plugin.html",
+        label = "Plugin"
+    ]
+
+    Plugin -> HConsole [
+
     ]
 
 }

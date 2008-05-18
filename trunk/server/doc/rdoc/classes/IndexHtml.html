@@ -81,7 +81,7 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,83,53"      href="IndexHtml.html" alt="IndexHtml" />
 </map>
-<img src="../dot/f_9.gif" usemap="#map" border="0" alt="dot/f_9.gif">
+<img src="../dot/f_18.gif" usemap="#map" border="0" alt="dot/f_18.gif">
     </div>
 
 
@@ -92,8 +92,8 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000013">get</a>&nbsp;&nbsp;
-      <a href="#M000012">new</a>&nbsp;&nbsp;
+      <a href="#M000016">get</a>&nbsp;&nbsp;
+      <a href="#M000015">new</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -115,36 +115,37 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000012" class="method-detail">
-        <a name="M000012"></a>
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
 
         <div class="method-heading">
-          <a href="#M000012" class="method-signature">
+          <a href="#M000015" class="method-signature">
           <span class="method-name">new</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000012-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000012-source">
+            onclick="toggleCode('M000015-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000015-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 26</span>
-26:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
-27:     
-28:     <span class="ruby-identifier">index_html_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:sys_path</span>]<span class="ruby-operator">+</span><span class="ruby-value str">'/lib/page/index.html'</span>,<span class="ruby-value str">'rb'</span>)
-29:     <span class="ruby-ivar">@index_html</span> = <span class="ruby-identifier">index_html_file</span>.<span class="ruby-identifier">read</span>
-30:     <span class="ruby-identifier">index_html_file</span>.<span class="ruby-identifier">close</span>
-31:     
-32:     <span class="ruby-identifier">loading_gif_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:sys_path</span>]<span class="ruby-operator">+</span><span class="ruby-value str">'/lib/page/loading.gif'</span>,<span class="ruby-value str">'rb'</span>)
-33:     <span class="ruby-identifier">loading_gif</span> = <span class="ruby-identifier">loading_gif_file</span>.<span class="ruby-identifier">read</span>
-34:     <span class="ruby-identifier">loading_gif_file</span>.<span class="ruby-identifier">close</span>
+    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 34</span>
+34:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
 35:     
-36:     <span class="ruby-identifier">loading_gif_id</span> = <span class="ruby-constant">TICKETSERVE</span>.<span class="ruby-identifier">serve_rsrc</span>(<span class="ruby-identifier">loading_gif</span>, <span class="ruby-value str">'image/gif'</span> )
-37:     
-38:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__DEFAULT_TITLE__'</span>,<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:indexhtml_conf</span>][<span class="ruby-identifier">:loading_title</span>])
-39:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__LOADING_GIF_ID__'</span>,<span class="ruby-identifier">loading_gif_id</span>)
-40:   <span class="ruby-keyword kw">end</span>
+36:     <span class="ruby-identifier">index_html_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:sys_path</span>]<span class="ruby-operator">+</span><span class="ruby-value str">'/lib/page/index.html'</span>,<span class="ruby-value str">'rb'</span>)
+37:     <span class="ruby-ivar">@index_html</span> = <span class="ruby-identifier">index_html_file</span>.<span class="ruby-identifier">read</span>
+38:     <span class="ruby-ivar">@content_size</span> = <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">size</span>
+39:     <span class="ruby-identifier">index_html_file</span>.<span class="ruby-identifier">close</span>
+40:     
+41:     <span class="ruby-identifier">loading_gif_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:sys_path</span>]<span class="ruby-operator">+</span><span class="ruby-value str">'/lib/page/loading.gif'</span>,<span class="ruby-value str">'rb'</span>)
+42:     <span class="ruby-identifier">loading_gif</span> = <span class="ruby-identifier">loading_gif_file</span>.<span class="ruby-identifier">read</span>
+43:     <span class="ruby-identifier">loading_gif_file</span>.<span class="ruby-identifier">close</span>
+44:     
+45:     <span class="ruby-identifier">loading_gif_id</span> = <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">serve_rsrc</span>(<span class="ruby-identifier">loading_gif</span>, <span class="ruby-value str">'image/gif'</span> )
+46:     
+47:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__DEFAULT_TITLE__'</span>,<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:indexhtml_conf</span>][<span class="ruby-identifier">:loading_title</span>])
+48:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__LOADING_GIF_ID__'</span>,<span class="ruby-identifier">loading_gif_id</span>)
+49:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -152,11 +153,11 @@
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000013" class="method-detail">
-        <a name="M000013"></a>
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
 
         <div class="method-heading">
-          <a href="#M000013" class="method-signature">
+          <a href="#M000016" class="method-signature">
           <span class="method-name">get</span><span class="method-args">(request, response)</span>
           </a>
         </div>
@@ -166,18 +167,19 @@
 Outputs a static web page. Nothing else.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000013-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000013-source">
+            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000016-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 43</span>
-43:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)
-44:     
-45:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-value">200</span>
-46:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">content_type</span> = <span class="ruby-value str">'text/html; charset=UTF-8'</span>
-47:     
-48:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-ivar">@index_html</span>
-49:     
-50:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 52</span>
+52:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)
+53:     
+54:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-value">200</span>
+55:     <span class="ruby-identifier">response</span>[<span class="ruby-value str">'content-type'</span>] = <span class="ruby-value str">'text/html; charset=UTF-8'</span>
+56:     <span class="ruby-identifier">response</span>[<span class="ruby-value str">'content-size'</span>] = <span class="ruby-ivar">@content_size</span>
+57:     
+58:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-ivar">@index_html</span>
+59:     
+60:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

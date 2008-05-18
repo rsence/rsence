@@ -86,7 +86,7 @@
   <area shape="rect" coords="269,101,392,149"      href="StringValueParser.html" alt="StringValueParser" />
   <area shape="rect" coords="416,101,533,149"      href="FloatValueParser.html" alt="FloatValueParser" />
 </map>
-<img src="../dot/f_17.gif" usemap="#map" border="0" alt="dot/f_17.gif">
+<img src="../dot/f_31.gif" usemap="#map" border="0" alt="dot/f_31.gif">
     </div>
 
 
@@ -97,18 +97,18 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000014">add</a>&nbsp;&nbsp;
-      <a href="#M000017">bind</a>&nbsp;&nbsp;
-      <a href="#M000025">die</a>&nbsp;&nbsp;
-      <a href="#M000022">from_client</a>&nbsp;&nbsp;
-      <a href="#M000016">new</a>&nbsp;&nbsp;
-      <a href="#M000018">release</a>&nbsp;&nbsp;
-      <a href="#M000019">release_all</a>&nbsp;&nbsp;
-      <a href="#M000015">restore</a>&nbsp;&nbsp;
-      <a href="#M000023">set</a>&nbsp;&nbsp;
-      <a href="#M000021">tell</a>&nbsp;&nbsp;
-      <a href="#M000024">to_client</a>&nbsp;&nbsp;
-      <a href="#M000020">unbind</a>&nbsp;&nbsp;
+      <a href="#M000017">add</a>&nbsp;&nbsp;
+      <a href="#M000020">bind</a>&nbsp;&nbsp;
+      <a href="#M000028">die</a>&nbsp;&nbsp;
+      <a href="#M000025">from_client</a>&nbsp;&nbsp;
+      <a href="#M000019">new</a>&nbsp;&nbsp;
+      <a href="#M000021">release</a>&nbsp;&nbsp;
+      <a href="#M000022">release_all</a>&nbsp;&nbsp;
+      <a href="#M000018">restore</a>&nbsp;&nbsp;
+      <a href="#M000026">set</a>&nbsp;&nbsp;
+      <a href="#M000024">tell</a>&nbsp;&nbsp;
+      <a href="#M000027">to_client</a>&nbsp;&nbsp;
+      <a href="#M000023">unbind</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -183,45 +183,45 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000016" class="method-detail">
-        <a name="M000016"></a>
+      <div id="method-M000019" class="method-detail">
+        <a name="M000019"></a>
 
         <div class="method-heading">
-          <a href="#M000016" class="method-signature">
+          <a href="#M000019" class="method-signature">
           <span class="method-name">new</span><span class="method-args">( msg, data )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000016-source">
+            onclick="toggleCode('M000019-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000019-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 62</span>
-62:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span> )
-63:     
-64:     <span class="ruby-comment cmt">## Get an unique integer id for the value</span>
-65:     <span class="ruby-ivar">@val_id</span>   = <span class="ruby-constant">VALUES</span>.<span class="ruby-identifier">randgen</span>.<span class="ruby-identifier">get_one</span>
-66:     
-67:     <span class="ruby-comment cmt">## HValue's type is 'hvalue', just as in js</span>
-68:     <span class="ruby-ivar">@type</span>     = <span class="ruby-value str">'hvalue'</span>
-69:     
-70:     <span class="ruby-comment cmt">## set the data of the hvalue</span>
-71:     <span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span>, <span class="ruby-keyword kw">true</span> )
-72:     
-73:     <span class="ruby-comment cmt">## the @sync flag is raised, when the client data is older than the server data</span>
-74:     <span class="ruby-ivar">@sync</span>  = <span class="ruby-keyword kw">false</span>
-75:     
-76:     <span class="ruby-comment cmt">## the @is_valid flas is lowered, when the client data is newer than the server data</span>
-77:     <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">true</span>
-78:     
-79:     <span class="ruby-comment cmt">## Bind the value to the value manager and report it to the client</span>
-80:     <span class="ruby-identifier">add</span>( <span class="ruby-identifier">msg</span> )
-81:     
-82:     <span class="ruby-comment cmt">## storage for validator bindings</span>
-83:     <span class="ruby-ivar">@members</span> = {}
-84:     
-85:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 70</span>
+70:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span> )
+71:     
+72:     <span class="ruby-comment cmt">## Get an unique integer id for the value</span>
+73:     <span class="ruby-ivar">@val_id</span>   = <span class="ruby-identifier">$VALUES</span>.<span class="ruby-identifier">randgen</span>.<span class="ruby-identifier">get_one</span>
+74:     
+75:     <span class="ruby-comment cmt">## HValue's type is 'hvalue', just as in js</span>
+76:     <span class="ruby-ivar">@type</span>     = <span class="ruby-value str">'hvalue'</span>
+77:     
+78:     <span class="ruby-comment cmt">## set the data of the hvalue</span>
+79:     <span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span>, <span class="ruby-keyword kw">true</span> )
+80:     
+81:     <span class="ruby-comment cmt">## the @sync flag is raised, when the client data is older than the server data</span>
+82:     <span class="ruby-ivar">@sync</span>  = <span class="ruby-keyword kw">false</span>
+83:     
+84:     <span class="ruby-comment cmt">## the @is_valid flas is lowered, when the client data is newer than the server data</span>
+85:     <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">true</span>
+86:     
+87:     <span class="ruby-comment cmt">## Bind the value to the value manager and report it to the client</span>
+88:     <span class="ruby-identifier">add</span>( <span class="ruby-identifier">msg</span> )
+89:     
+90:     <span class="ruby-comment cmt">## storage for validator bindings</span>
+91:     <span class="ruby-ivar">@members</span> = {}
+92:     
+93:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -229,11 +229,11 @@
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000014" class="method-detail">
-        <a name="M000014"></a>
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
 
         <div class="method-heading">
-          <a href="#M000014" class="method-signature">
+          <a href="#M000017" class="method-signature">
           <span class="method-name">add</span><span class="method-args">( msg )</span>
           </a>
         </div>
@@ -243,34 +243,34 @@
 method for binding the value to the session data
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000014-source">
+            onclick="toggleCode('M000017-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000017-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 40</span>
-40:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add</span>( <span class="ruby-identifier">msg</span> )
-41:     
-42:     <span class="ruby-comment cmt"># get the value storage from the session data</span>
-43:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>]
-44:     
-45:     <span class="ruby-comment cmt">## Store the object here</span>
-46:     <span class="ruby-identifier">session_values</span>[ <span class="ruby-ivar">@val_id</span> ] = <span class="ruby-keyword kw">self</span>
-47:     
-48:     <span class="ruby-comment cmt">## Sends the client-side description</span>
-49:     <span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
-50:     
-51:     <span class="ruby-comment cmt">## Set the valid flag, so we know that the value is initially in sync</span>
-52:     <span class="ruby-ivar">@valid</span> = <span class="ruby-keyword kw">true</span>
-53:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 48</span>
+48:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add</span>( <span class="ruby-identifier">msg</span> )
+49:     
+50:     <span class="ruby-comment cmt"># get the value storage from the session data</span>
+51:     <span class="ruby-identifier">session_values</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:by_id</span>]
+52:     
+53:     <span class="ruby-comment cmt">## Store the object here</span>
+54:     <span class="ruby-identifier">session_values</span>[ <span class="ruby-ivar">@val_id</span> ] = <span class="ruby-keyword kw">self</span>
+55:     
+56:     <span class="ruby-comment cmt">## Sends the client-side description</span>
+57:     <span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
+58:     
+59:     <span class="ruby-comment cmt">## Set the valid flag, so we know that the value is initially in sync</span>
+60:     <span class="ruby-ivar">@valid</span> = <span class="ruby-keyword kw">true</span>
+61:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000017" class="method-detail">
-        <a name="M000017"></a>
+      <div id="method-M000020" class="method-detail">
+        <a name="M000020"></a>
 
         <div class="method-heading">
-          <a href="#M000017" class="method-signature">
+          <a href="#M000020" class="method-signature">
           <span class="method-name">bind</span><span class="method-args">( plugin_name, method_name )</span>
           </a>
         </div>
@@ -285,15 +285,40 @@ It uses strings instead of &#8217;&#8230;method(&#8230;)&#8217; because it
 won&#8216;t work with marshal. Strings are easier and work as well.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000017-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000017-source">
+            onclick="toggleCode('M000020-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000020-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 93</span>
-93:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">bind</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">method_name</span> )
-94:     <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>] = [] <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">plugin_name</span> )
-95:     <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">push</span>( <span class="ruby-identifier">method_name</span> ) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">include?</span>( <span class="ruby-identifier">method_name</span> )
-96:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
-97:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 101</span>
+101:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">bind</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">method_name</span> )
+102:     <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>] = [] <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">plugin_name</span> )
+103:     <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">push</span>( <span class="ruby-identifier">method_name</span> ) <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">include?</span>( <span class="ruby-identifier">method_name</span> )
+104:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+105:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000028" class="method-detail">
+        <a name="M000028"></a>
+
+        <div class="method-heading">
+          <a href="#M000028" class="method-signature">
+          <span class="method-name">die</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+clean up self
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000028-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000028-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 198</span>
+198:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">die</span>
+199:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -304,31 +329,6 @@ won&#8216;t work with marshal. Strings are easier and work as well.
 
         <div class="method-heading">
           <a href="#M000025" class="method-signature">
-          <span class="method-name">die</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-clean up self
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000025-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000025-source">
-<pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 190</span>
-190:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">die</span>
-191:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000022" class="method-detail">
-        <a name="M000022"></a>
-
-        <div class="method-heading">
-          <a href="#M000022" class="method-signature">
           <span class="method-name">from_client</span><span class="method-args">( msg, data )</span>
           </a>
         </div>
@@ -338,168 +338,29 @@ clean up self
 handle client updates
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000022-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000022-source">
+            onclick="toggleCode('M000025-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000025-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 136</span>
-136:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">from_client</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span> )
-137:     
-138:     <span class="ruby-comment cmt"># only process changes, if different from the one already stored.</span>
-139:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@data</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">data</span>
-140:       
-141:       <span class="ruby-comment cmt">## set takes care of the setting..</span>
-142:       <span class="ruby-ivar">@data</span> = <span class="ruby-identifier">data</span>
-143:       
-144:       <span class="ruby-comment cmt">## change the valid state, because the value was set by the client!</span>
-145:       <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">false</span>
-146:       
-147:       <span class="ruby-comment cmt">## add the id to the values to be checked</span>
-148:       <span class="ruby-identifier">check_ids</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:check</span>]
-149:       <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">check_ids</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-ivar">@val_id</span> )
-150:         <span class="ruby-identifier">check_ids</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@val_id</span> )
-151:       <span class="ruby-keyword kw">end</span>
-152:     <span class="ruby-keyword kw">end</span>
-153:     
-154:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000018" class="method-detail">
-        <a name="M000018"></a>
-
-        <div class="method-heading">
-          <a href="#M000018" class="method-signature">
-          <span class="method-name">release</span><span class="method-args">( plugin_name=false, method_name=false )</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Releases the binding of the value, both params as in <a
-href="HValue.html#M000017">bind</a>, but optional (false =
-&#8216;wildcard&#8217;)
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000018-source">
-<pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 101</span>
-101:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">release</span>( <span class="ruby-identifier">plugin_name</span>=<span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">method_name</span>=<span class="ruby-keyword kw">false</span> )
-102:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">release_all</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">plugin_name</span> <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">method_name</span>
-103:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">plugin_name</span> )
-104:     <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">method_name</span>
-105:       <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">plugin_name</span> )
-106:     <span class="ruby-keyword kw">else</span> 
-107:       <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">slice!</span>(<span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">index</span>( <span class="ruby-identifier">method_name</span> )) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method_name</span>)
-108:     <span class="ruby-keyword kw">end</span>
-109:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
-110:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000019" class="method-detail">
-        <a name="M000019"></a>
-
-        <div class="method-heading">
-          <a href="#M000019" class="method-signature">
-          <span class="method-name">release_all</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-<a href="HValue.html#M000018">release</a> all members
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000019-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000019-source">
-<pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 113</span>
-113:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">release_all</span>
-114:     <span class="ruby-ivar">@members</span> = {}
-115:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
-116:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000015" class="method-detail">
-        <a name="M000015"></a>
-
-        <div class="method-heading">
-          <a href="#M000015" class="method-signature">
-          <span class="method-name">restore</span><span class="method-args">( msg )</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-(Re-)Send the client-size representation
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000015-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000015-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 56</span>
-56:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
-57:     <span class="ruby-comment cmt">## Initialize a new client value</span>
-58:     <span class="ruby-identifier">init_str</span> = <span class="ruby-node">&quot;new HValue(#{@val_id.inspect}, #{@data.inspect});&quot;</span>
-59:     <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">reply</span>( <span class="ruby-identifier">init_str</span> )
-60:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000023" class="method-detail">
-        <a name="M000023"></a>
-
-        <div class="method-heading">
-          <a href="#M000023" class="method-signature">
-          <span class="method-name">set</span><span class="method-args">( msg, data, dont_tell_client=false )</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-sets the data
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000023-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000023-source">
-<pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 157</span>
-157:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span>, <span class="ruby-identifier">dont_tell_client</span>=<span class="ruby-keyword kw">false</span> )
-158:     
-159:     <span class="ruby-comment cmt">## check, if the data class is a supported type</span>
-160:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@@jstype_conv</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">data</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">inspect</span> )
-161:       <span class="ruby-comment cmt">## the data should be correct</span>
-162:       <span class="ruby-ivar">@jstype</span> = <span class="ruby-ivar">@@jstype_conv</span>[ <span class="ruby-identifier">data</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">inspect</span> ]
-163:       <span class="ruby-ivar">@data</span>   = <span class="ruby-identifier">data</span>
-164:     <span class="ruby-keyword kw">else</span>
-165:       <span class="ruby-comment cmt">## unknown type: default to string (.inspect takes care of that)</span>
-166:       <span class="ruby-ivar">@jstype</span> = <span class="ruby-value str">'string'</span>
-167:       <span class="ruby-ivar">@data</span>   = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">inspect</span>
-168:     <span class="ruby-keyword kw">end</span>
-169:     
-170:     <span class="ruby-comment cmt"># won't tell the client about the change, usually not needed</span>
-171:     <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">dont_tell_client</span>
-172:       <span class="ruby-comment cmt">## update the flags</span>
-173:       <span class="ruby-ivar">@sync</span>  = <span class="ruby-keyword kw">false</span>
-174:       <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">true</span>
-175:       
-176:       <span class="ruby-comment cmt">## add the id to the values to be syncronized (to client)</span>
-177:       <span class="ruby-identifier">sync_ids</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:sync</span>]
-178:       <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">sync_ids</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-ivar">@val_id</span> )
-179:         <span class="ruby-identifier">sync_ids</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@val_id</span> )
-180:       <span class="ruby-keyword kw">end</span>
-181:     <span class="ruby-keyword kw">end</span>
-182:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 144</span>
+144:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">from_client</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span> )
+145:     
+146:     <span class="ruby-comment cmt"># only process changes, if different from the one already stored.</span>
+147:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@data</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">data</span>
+148:       
+149:       <span class="ruby-comment cmt">## set takes care of the setting..</span>
+150:       <span class="ruby-ivar">@data</span> = <span class="ruby-identifier">data</span>
+151:       
+152:       <span class="ruby-comment cmt">## change the valid state, because the value was set by the client!</span>
+153:       <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">false</span>
+154:       
+155:       <span class="ruby-comment cmt">## add the id to the values to be checked</span>
+156:       <span class="ruby-identifier">check_ids</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:check</span>]
+157:       <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">check_ids</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-ivar">@val_id</span> )
+158:         <span class="ruby-identifier">check_ids</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@val_id</span> )
+159:       <span class="ruby-keyword kw">end</span>
+160:     <span class="ruby-keyword kw">end</span>
+161:     
+162:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -510,32 +371,135 @@ sets the data
 
         <div class="method-heading">
           <a href="#M000021" class="method-signature">
-          <span class="method-name">tell</span><span class="method-args">( msg )</span>
+          <span class="method-name">release</span><span class="method-args">( plugin_name=false, method_name=false )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="HValue.html#M000021">tell</a> all bound instances that the value
-is changed
+Releases the binding of the value, both params as in <a
+href="HValue.html#M000020">bind</a>, but optional (false =
+&#8216;wildcard&#8217;)
 </p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000021-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000021-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 122</span>
-122:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tell</span>( <span class="ruby-identifier">msg</span> )
-123:     <span class="ruby-identifier">invalid_count</span> = <span class="ruby-value">0</span>
-124:     <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin_name</span><span class="ruby-operator">|</span>
-125:       <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">method_name</span><span class="ruby-operator">|</span>
-126:         <span class="ruby-identifier">invalid_count</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-constant">PLUGINS</span>.<span class="ruby-identifier">run_plugin</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">method_name</span>, <span class="ruby-identifier">msg</span>, <span class="ruby-keyword kw">self</span> ) 
-127:       <span class="ruby-keyword kw">end</span>
-128:     <span class="ruby-keyword kw">end</span>
-129:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">invalid_count</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
-130:       <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">true</span>
-131:       <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:check</span>].<span class="ruby-identifier">delete</span>( <span class="ruby-ivar">@val_id</span> )
-132:     <span class="ruby-keyword kw">end</span>
-133:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 109</span>
+109:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">release</span>( <span class="ruby-identifier">plugin_name</span>=<span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">method_name</span>=<span class="ruby-keyword kw">false</span> )
+110:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">release_all</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">plugin_name</span> <span class="ruby-keyword kw">and</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">method_name</span>
+111:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">plugin_name</span> )
+112:     <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">method_name</span>
+113:       <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">delete</span>( <span class="ruby-identifier">plugin_name</span> )
+114:     <span class="ruby-keyword kw">else</span> 
+115:       <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">slice!</span>(<span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">index</span>( <span class="ruby-identifier">method_name</span> )) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method_name</span>)
+116:     <span class="ruby-keyword kw">end</span>
+117:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+118:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000022" class="method-detail">
+        <a name="M000022"></a>
+
+        <div class="method-heading">
+          <a href="#M000022" class="method-signature">
+          <span class="method-name">release_all</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="HValue.html#M000021">release</a> all members
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000022-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000022-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 121</span>
+121:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">release_all</span>
+122:     <span class="ruby-ivar">@members</span> = {}
+123:     <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+124:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
+
+        <div class="method-heading">
+          <a href="#M000018" class="method-signature">
+          <span class="method-name">restore</span><span class="method-args">( msg )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+(Re-)Send the client-size representation
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000018-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 64</span>
+64:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">restore</span>( <span class="ruby-identifier">msg</span> )
+65:     <span class="ruby-comment cmt">## Initialize a new client value</span>
+66:     <span class="ruby-identifier">init_str</span> = <span class="ruby-node">&quot;new HValue(#{@val_id.inspect}, #{@data.inspect});&quot;</span>
+67:     <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">reply</span>( <span class="ruby-identifier">init_str</span> )
+68:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000026" class="method-detail">
+        <a name="M000026"></a>
+
+        <div class="method-heading">
+          <a href="#M000026" class="method-signature">
+          <span class="method-name">set</span><span class="method-args">( msg, data, dont_tell_client=false )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+sets the data
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000026-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000026-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 165</span>
+165:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set</span>( <span class="ruby-identifier">msg</span>, <span class="ruby-identifier">data</span>, <span class="ruby-identifier">dont_tell_client</span>=<span class="ruby-keyword kw">false</span> )
+166:     
+167:     <span class="ruby-comment cmt">## check, if the data class is a supported type</span>
+168:     <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@@jstype_conv</span>.<span class="ruby-identifier">has_key?</span>( <span class="ruby-identifier">data</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">inspect</span> )
+169:       <span class="ruby-comment cmt">## the data should be correct</span>
+170:       <span class="ruby-ivar">@jstype</span> = <span class="ruby-ivar">@@jstype_conv</span>[ <span class="ruby-identifier">data</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">inspect</span> ]
+171:       <span class="ruby-ivar">@data</span>   = <span class="ruby-identifier">data</span>
+172:     <span class="ruby-keyword kw">else</span>
+173:       <span class="ruby-comment cmt">## unknown type: default to string (.inspect takes care of that)</span>
+174:       <span class="ruby-ivar">@jstype</span> = <span class="ruby-value str">'string'</span>
+175:       <span class="ruby-ivar">@data</span>   = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">inspect</span>
+176:     <span class="ruby-keyword kw">end</span>
+177:     
+178:     <span class="ruby-comment cmt"># won't tell the client about the change, usually not needed</span>
+179:     <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">dont_tell_client</span>
+180:       <span class="ruby-comment cmt">## update the flags</span>
+181:       <span class="ruby-ivar">@sync</span>  = <span class="ruby-keyword kw">false</span>
+182:       <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">true</span>
+183:       
+184:       <span class="ruby-comment cmt">## add the id to the values to be syncronized (to client)</span>
+185:       <span class="ruby-identifier">sync_ids</span> = <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:sync</span>]
+186:       <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">sync_ids</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-ivar">@val_id</span> )
+187:         <span class="ruby-identifier">sync_ids</span>.<span class="ruby-identifier">push</span>( <span class="ruby-ivar">@val_id</span> )
+188:       <span class="ruby-keyword kw">end</span>
+189:     <span class="ruby-keyword kw">end</span>
+190:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -546,29 +510,65 @@ is changed
 
         <div class="method-heading">
           <a href="#M000024" class="method-signature">
+          <span class="method-name">tell</span><span class="method-args">( msg )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="HValue.html#M000024">tell</a> all bound instances that the value
+is changed
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000024-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000024-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 130</span>
+130:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tell</span>( <span class="ruby-identifier">msg</span> )
+131:     <span class="ruby-identifier">invalid_count</span> = <span class="ruby-value">0</span>
+132:     <span class="ruby-ivar">@members</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">plugin_name</span><span class="ruby-operator">|</span>
+133:       <span class="ruby-ivar">@members</span>[<span class="ruby-identifier">plugin_name</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">method_name</span><span class="ruby-operator">|</span>
+134:         <span class="ruby-identifier">invalid_count</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">$PLUGINS</span>.<span class="ruby-identifier">run_plugin</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">method_name</span>, <span class="ruby-identifier">msg</span>, <span class="ruby-keyword kw">self</span> ) 
+135:       <span class="ruby-keyword kw">end</span>
+136:     <span class="ruby-keyword kw">end</span>
+137:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">invalid_count</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+138:       <span class="ruby-ivar">@is_valid</span> = <span class="ruby-keyword kw">true</span>
+139:       <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">session</span>[<span class="ruby-identifier">:values</span>][<span class="ruby-identifier">:check</span>].<span class="ruby-identifier">delete</span>( <span class="ruby-ivar">@val_id</span> )
+140:     <span class="ruby-keyword kw">end</span>
+141:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000027" class="method-detail">
+        <a name="M000027"></a>
+
+        <div class="method-heading">
+          <a href="#M000027" class="method-signature">
           <span class="method-name">to_client</span><span class="method-args">( msg )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="HValue.html#M000021">tell</a> the client that the value changed
+<a href="HValue.html#M000024">tell</a> the client that the value changed
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000024-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000024-source">
+            onclick="toggleCode('M000027-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000027-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 185</span>
-185:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_client</span>( <span class="ruby-identifier">msg</span> )
-186:     <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">reply</span> <span class="ruby-node">&quot;HVM.s( #{@val_id.inspect}, #{@data.inspect} );&quot;</span> 
-187:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/values/hvalue.rb, line 193</span>
+193:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_client</span>( <span class="ruby-identifier">msg</span> )
+194:     <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">reply</span> <span class="ruby-node">&quot;HVM.s( #{@val_id.inspect}, #{@data.inspect} );&quot;</span> 
+195:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000020" class="method-detail">
-        <a name="M000020"></a>
+      <div id="method-M000023" class="method-detail">
+        <a name="M000023"></a>
 
         <div class="method-heading">
           <span class="method-name">unbind</span><span class="method-args">( plugin_name=false, method_name=false )</span>
@@ -576,7 +576,7 @@ is changed
       
         <div class="method-description">
           <p>
-Alias for <a href="HValue.html#M000018">release</a>
+Alias for <a href="HValue.html#M000021">release</a>
 </p>
         </div>
       </div>

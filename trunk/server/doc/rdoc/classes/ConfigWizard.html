@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: ConfigWizard</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">ConfigWizard</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/lib/conf/wizard_rb.html">
+                lib/conf/wizard.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+    <div id="diagram">
+      <map id="map" name="map">
+  <area shape="rect" coords="5,5,101,53"      href="ConfigWizard.html" alt="ConfigWizard" />
+</map>
+<img src="../dot/f_8.gif" usemap="#map" border="0" alt="dot/f_8.gif">
+    </div>
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000035">ask_about_httpd</a>&nbsp;&nbsp;
+      <a href="#M000034">ask_about_mysql</a>&nbsp;&nbsp;
+      <a href="#M000030">cdiff</a>&nbsp;&nbsp;
+      <a href="#M000032">conf_data</a>&nbsp;&nbsp;
+      <a href="#M000029">hash_deep_copy</a>&nbsp;&nbsp;
+      <a href="#M000031">new</a>&nbsp;&nbsp;
+      <a href="#M000036">run</a>&nbsp;&nbsp;
+      <a href="#M000033">yesno</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000031" class="method-detail">
+        <a name="M000031"></a>
+
+        <div class="method-heading">
+          <a href="#M000031" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+makes a copy of the default configuration for comparisons
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000031-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000031-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 55</span>
+55:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+56:     <span class="ruby-ivar">@conf</span> = <span class="ruby-identifier">hash_deep_copy</span>( <span class="ruby-identifier">$config</span> )
+57:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000035" class="method-detail">
+        <a name="M000035"></a>
+
+        <div class="method-heading">
+          <a href="#M000035" class="method-signature">
+          <span class="method-name">ask_about_httpd</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+configuration dialog for the web server
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000035-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000035-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 310</span>
+310:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">ask_about_httpd</span>
+311:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-&quot;</span>
+312:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; HTTP Server configuration&quot;</span>
+313:     <span class="ruby-identifier">puts</span> 
+314:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  Himle runs its HTTP Server as:&quot;</span>
+315:     <span class="ruby-identifier">puts</span>
+316:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  Server: #{@conf[:http_server][:rack_require].inspect}&quot;</span>
+317:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Address: #{@conf[:http_server][:bind_address].inspect}&quot;</span>
+318:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;    Port: #{@conf[:http_server][:port].inspect}&quot;</span>
+319:     <span class="ruby-identifier">puts</span>
+320:     <span class="ruby-identifier">puts</span>
+321:     <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; Correct, &quot;</span>
+322:     <span class="ruby-identifier">is_correct</span> = <span class="ruby-identifier">yesno</span>(<span class="ruby-keyword kw">true</span>) <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">is_correct</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+323:     <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">is_correct</span>
+324:       <span class="ruby-identifier">server_type</span> = <span class="ruby-value str">''</span>
+325:       <span class="ruby-keyword kw">until</span> [<span class="ruby-value str">'mongrel'</span>,<span class="ruby-value str">'webrick'</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">server_type</span>)
+326:         <span class="ruby-identifier">server_type</span> = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;Server Type? (valid: mongrel, webrick)&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+327:           <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:http_server</span>][<span class="ruby-identifier">:rack_require</span>]
+328:         <span class="ruby-keyword kw">end</span>
+329:       <span class="ruby-keyword kw">end</span>
+330:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:http_server</span>][<span class="ruby-identifier">:rack_require</span>] = <span class="ruby-identifier">server_type</span>
+331:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:http_server</span>][<span class="ruby-identifier">:bind_address</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;Address? (0.0.0.0 binds to all)&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+332:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:http_server</span>][<span class="ruby-identifier">:bind_address</span>]
+333:       <span class="ruby-keyword kw">end</span>
+334:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:http_server</span>][<span class="ruby-identifier">:port</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;Port number?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+335:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:http_server</span>][<span class="ruby-identifier">:port</span>]
+336:       <span class="ruby-keyword kw">end</span>
+337:     <span class="ruby-keyword kw">end</span>
+338:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000034" class="method-detail">
+        <a name="M000034"></a>
+
+        <div class="method-heading">
+          <a href="#M000034" class="method-signature">
+          <span class="method-name">ask_about_mysql</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+configuration dialog for database connectivity
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000034-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000034-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 239</span>
+239:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">ask_about_mysql</span>
+240:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-&quot;</span>
+241:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; Database configuration&quot;</span>
+242:     <span class="ruby-identifier">puts</span> 
+243:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  Himle should ideally have permissions&quot;</span>
+244:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  to create the the himle account and database.&quot;</span>
+245:     <span class="ruby-identifier">puts</span>
+246:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  This feature requires an mysql account with &quot;</span>
+247:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  sufficient privileges of creating databases,&quot;</span>
+248:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  tables and users. &quot;</span>
+249:     <span class="ruby-identifier">puts</span>
+250:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; The default root account is configured as:&quot;</span>
+251:     <span class="ruby-identifier">puts</span>
+252:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Hostname: #{@conf[:database][:root_setup][:host].inspect}&quot;</span>
+253:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Username: #{@conf[:database][:root_setup][:user].inspect}&quot;</span>
+254:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Password: #{@conf[:database][:root_setup][:pass].inspect}&quot;</span>
+255:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Database: #{@conf[:database][:root_setup][:db].inspect}&quot;</span>
+256:     <span class="ruby-identifier">puts</span>
+257:     <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; Correct, &quot;</span>
+258:     <span class="ruby-identifier">is_correct</span> = <span class="ruby-identifier">yesno</span>(<span class="ruby-keyword kw">true</span>) <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">is_correct</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+259:     <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">is_correct</span>
+260:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:host</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Root Hostname (or IP address)?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+261:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:host</span>]
+262:       <span class="ruby-keyword kw">end</span>
+263:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:user</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Root Username?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+264:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:user</span>]
+265:       <span class="ruby-keyword kw">end</span>
+266:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:pass</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Root Password?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+267:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:pass</span>]
+268:       <span class="ruby-keyword kw">end</span>
+269:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:db</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Root Database?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+270:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:root_setup</span>][<span class="ruby-identifier">:db</span>]
+271:       <span class="ruby-keyword kw">end</span>
+272:     <span class="ruby-keyword kw">end</span>
+273:     <span class="ruby-identifier">puts</span>
+274:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  The Himle account is used for Himle session storage &quot;</span>
+275:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  and is also the default database for plugins.&quot;</span>
+276:     <span class="ruby-identifier">puts</span>
+277:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;  It runs in restricted mode and will be created automatically.&quot;</span>
+278:     <span class="ruby-identifier">puts</span>
+279:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; The default himle account is configured as:&quot;</span>
+280:     <span class="ruby-identifier">puts</span>
+281:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Hostname: #{@conf[:database][:auth_setup][:host].inspect}&quot;</span>
+282:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Username: #{@conf[:database][:auth_setup][:user].inspect}&quot;</span>
+283:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Password: #{@conf[:database][:auth_setup][:pass].inspect}&quot;</span>
+284:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot; Database: #{@conf[:database][:auth_setup][:db].inspect}&quot;</span>
+285:     <span class="ruby-identifier">puts</span>
+286:     <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; Correct, &quot;</span>
+287:     <span class="ruby-identifier">is_correct</span> = <span class="ruby-keyword kw">nil</span>
+288:     <span class="ruby-identifier">is_correct</span> = <span class="ruby-identifier">yesno</span>(<span class="ruby-keyword kw">true</span>) <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">is_correct</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+289:     <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">is_correct</span>
+290:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:host</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Himle Hostname (or IP address)?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+291:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:host</span>]
+292:       <span class="ruby-keyword kw">end</span>
+293:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:user</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Himle Username?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+294:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:user</span>]
+295:       <span class="ruby-keyword kw">end</span>
+296:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:pass</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Himle Password?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+297:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:pass</span>]
+298:       <span class="ruby-keyword kw">end</span>
+299:       <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:db</span>] = <span class="ruby-identifier">ask</span>(<span class="ruby-value str">&quot;MySQL Himle Database?&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">q</span><span class="ruby-operator">|</span>
+300:         <span class="ruby-identifier">q</span>.<span class="ruby-identifier">default</span> = <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:db</span>]
+301:       <span class="ruby-keyword kw">end</span>
+302:     <span class="ruby-keyword kw">end</span>
+303:     <span class="ruby-identifier">puts</span>
+304:     <span class="ruby-identifier">print</span> <span class="ruby-value str">&quot; Re-edit these settings, &quot;</span>
+305:     <span class="ruby-identifier">re_edit</span> = <span class="ruby-identifier">yesno</span>(<span class="ruby-keyword kw">false</span>) <span class="ruby-keyword kw">until</span> <span class="ruby-identifier">re_edit</span> <span class="ruby-operator">!=</span> <span class="ruby-keyword kw">nil</span>
+306:     <span class="ruby-identifier">ask_about_mysql</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">re_edit</span>
+307:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000030" class="method-detail">
+        <a name="M000030"></a>
+
+        <div class="method-heading">
+          <a href="#M000030" class="method-signature">
+          <span class="method-name">cdiff</span><span class="method-args">(confkeys)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+returns a pound (&#8217;#&#8217;) char, unless @conf and $config values
+differ
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000030-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000030-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 37</span>
+37:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">cdiff</span>(<span class="ruby-identifier">confkeys</span>)
+38:     <span class="ruby-identifier">conf1</span> = <span class="ruby-ivar">@conf</span>
+39:     <span class="ruby-identifier">conf2</span> = <span class="ruby-identifier">$config</span>
+40:     <span class="ruby-comment cmt"># recurse into config hash</span>
+41:     <span class="ruby-identifier">confkeys</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">confkey</span><span class="ruby-operator">|</span>
+42:       <span class="ruby-identifier">conf1</span> = <span class="ruby-identifier">conf1</span>[<span class="ruby-identifier">confkey</span>]
+43:       <span class="ruby-identifier">conf2</span> = <span class="ruby-identifier">conf2</span>[<span class="ruby-identifier">confkey</span>]
+44:     <span class="ruby-keyword kw">end</span>
+45:     <span class="ruby-comment cmt"># return '' if the values differ, '#' if they are the same</span>
+46:     <span class="ruby-comment cmt">#puts &quot;#{conf1.inspect} vs #{conf2.inspect}&quot;</span>
+47:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">conf1</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">conf2</span>
+48:       <span class="ruby-keyword kw">return</span> <span class="ruby-value str">''</span>
+49:     <span class="ruby-keyword kw">else</span>
+50:       <span class="ruby-keyword kw">return</span> <span class="ruby-value str">'#'</span>
+51:     <span class="ruby-keyword kw">end</span>
+52:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000032" class="method-detail">
+        <a name="M000032"></a>
+
+        <div class="method-heading">
+          <a href="#M000032" class="method-signature">
+          <span class="method-name">conf_data</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+returns configuration as ruby source
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000032-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000032-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 60</span>
+ 60:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">conf_data</span>
+ 61:     <span class="ruby-keyword kw">return</span> <span class="ruby-node">%{
+ 62: 
+ 63: ## Local configuration
+ 64: 
+ 65: # This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
+ 66: #{cdiff([:no_gzip])}$config[:no_gzip] = #{@conf[:no_gzip].inspect}
+ 67: 
+ 68: ## Enabling this appends all msg.reply call output to stdout
+ 69: #{cdiff([:trace])}$config[:trace] = #{@conf[:trace].inspect}
+ 70:   
+ 71: ## Path to the server root (containing lib, rsrc etc..)
+ 72: #{cdiff([:dir_root])}$config[:dir_root] = #{@conf[:dir_root].inspect}
+ 73: 
+ 74: ## Path to the client root (containing js and themes dirs)
+ 75: #{cdiff([:client_root])}$config[:client_root] = #{@conf[:client_root].inspect}
+ 76: 
+ 77: ## Switches on debug-mode:
+ 78: ##  - Generates more output
+ 79: ##  - Each time /hello is post-requested:
+ 80: ##    - Plugins are reloaded from source 
+ 81: ##    - GZFiles are reloaded (if more recent than in memory)
+ 82: #{cdiff([:debug_mode])}$config[:debug_mode] = #{@conf[:debug_mode].inspect}
+ 83: 
+ 84: 
+ 85: ## Web server-related settings:
+ 86: 
+ 87: ## HTTP Port number:
+ 88: #{cdiff([:http_server,:port])}$config[:http_server][:port] = #{@conf[:http_server][:port].inspect}
+ 89: 
+ 90: ## Bind this ip address ('0.0.0.0' means all)
+ 91: #{cdiff([:http_server,:bind_address])}$config[:http_server][:bind_address] = #{@conf[:http_server][:bind_address].inspect}
+ 92:   
+ 93: ## Rack handler to use
+ 94: #{cdiff([:http_server,:rack_require])}$config[:http_server][:rack_require] = #{@conf[:http_server][:rack_require].inspect}
+ 95: 
+ 96: 
+ 97: ## When disabled, tries to prevent all request caching
+ 98: #{cdiff([:cache_maximize])}$config[:cache_maximize] = #{@conf[:cache_maximize].inspect}
+ 99: 
+100: ## When cache_maximize is enabled,
+101: ## this is the time (in seconds) the cached content will expire in
+102: #{cdiff([:cache_expire])}$config[:cache_expire] = #{@conf[:cache_expire].inspect}
+103: 
+104: 
+105: ## Client-related paths (fileserve)
+106: 
+107: ## The paths FileServe uses to load client js
+108: #{cdiff([:client_parts,:js])}$config[:client_parts][:js] = #{@conf[:client_parts][:js].inspect}
+109: 
+110: ## The paths FileServe uses to load client css and html templates
+111: #{cdiff([:client_parts,:themes])}$config[:client_parts][:themes] = #{@conf[:client_parts][:themes].inspect}
+112: 
+113: 
+114: ## Old param, essentially always the same as SERVER_PATH
+115: #{cdiff([:sys_path])}$config[:sys_path] = #{@conf[:sys_path].inspect}
+116: 
+117: 
+118: ## Paths to scan for available plugins
+119: #{cdiff([:plugin_paths])}$config[:plugin_paths] = #{@conf[:plugin_paths].inspect}
+120: 
+121: 
+122: ## Transporter settings:
+123: 
+124: ## Message strings
+125: # If the client fails on javascript, display this:
+126: #{cdiff([:transporter_conf,:messages,:client_error,:title])}$config[:transporter_conf][:messages][:client_error][:title] = #{@conf[:transporter_conf][:messages][:client_error][:title].inspect}
+127: #{cdiff([:transporter_conf,:messages,:client_error,:descr])}$config[:transporter_conf][:messages][:client_error][:descr] = #{@conf[:transporter_conf][:messages][:client_error][:descr].inspect}
+128: #{cdiff([:transporter_conf,:messages,:client_error,:uri])}$config[:transporter_conf][:messages][:client_error][:uri] = #{@conf[:transporter_conf][:messages][:client_error][:uri].inspect}
+129: 
+130: 
+131: ## IndexHtml settings:
+132: 
+133: ## The initial index.html page &lt;title&gt;
+134: #{cdiff([:indexhtml_conf,:loading_title])}$config[:indexhtml_conf][:loading_title] = #{@conf[:indexhtml_conf][:loading_title].inspect}
+135: 
+136: ## The initialized html page &lt;title&gt;
+137: #{cdiff([:indexhtml_conf,:loaded_title])}$config[:indexhtml_conf][:loaded_title] = #{@conf[:indexhtml_conf][:loaded_title].inspect}
+138: 
+139: 
+140: ## Session-related settings
+141: 
+142: ## The comment string in the session cookie
+143: #{cdiff([:session_conf,:ses_cookie_comment])}$config[:session_conf][:ses_cookie_comment] = #{@conf[:session_conf][:ses_cookie_comment].inspect}
+144: 
+145: ## Disposable keys, when enabled, changes the session id on each xhr
+146: #{cdiff([:session_conf,:disposable_keys])}$config[:session_conf][:disposable_keys] = #{@conf[:session_conf][:disposable_keys].inspect}
+147: 
+148: ## Timeout controls how long a session is valid, specify seconds
+149: #{cdiff([:session_conf,:timeout_secs])}$config[:session_conf][:timeout_secs] = #{@conf[:session_conf][:timeout_secs].inspect}
+150: 
+151: ## Key length controls the length of the random-part of the key.
+152: ## The total length is actually key length + 12 bytes, because
+153: ## the uniqueness part is 12 bytes long
+154: #{cdiff([:session_conf,:key_length])}$config[:session_conf][:key_length] = #{@conf[:session_conf][:key_length].inspect}
+155: 
+156: ## Cookie keys are this many times longer than xhr keys
+157: #{cdiff([:session_conf,:cookie_key_multiplier])}$config[:session_conf][:cookie_key_multiplier] = #{@conf[:session_conf][:cookie_key_multiplier].inspect}
+158: 
+159: ## The amount of pre-generated keys to keep
+160: ## Tweaking this might affect performance
+161: #{cdiff([:session_conf,:buffer_size])}$config[:session_conf][:buffer_size] = #{@conf[:session_conf][:buffer_size].inspect}
+162: 
+163: ## When enabled, deletes all old sessions upon server startup
+164: #{cdiff([:session_conf,:reset_sessions])}$config[:session_conf][:reset_sessions] = #{@conf[:session_conf][:reset_sessions].inspect}
+165: 
+166: ## Message strings
+167: # if the session is invalid for one reason or another, display this:
+168: #{cdiff([:session_conf,:messages,:invalid_session,:title])}$config[:session_conf][:messages][:invalid_session][:title] = #{@conf[:session_conf][:messages][:invalid_session][:title].inspect}
+169: #{cdiff([:session_conf,:messages,:invalid_session,:descr])}$config[:session_conf][:messages][:invalid_session][:descr] = #{@conf[:session_conf][:messages][:invalid_session][:descr].inspect}
+170: #{cdiff([:session_conf,:messages,:invalid_session,:uri])  }$config[:session_conf][:messages][:invalid_session][:uri  ] = #{@conf[:session_conf][:messages][:invalid_session][:uri].inspect}
+171: 
+172: 
+173: ## Database configuration
+174: 
+175: # root_setup should ideally have permissions
+176: # to create the auth_setup account and database,
+177: # but if the access fails, it'll fall back to
+178: # auth_setup, if it's created manually
+179: #{cdiff([:database,:root_setup,:host])}$config[:database][:root_setup][:host] = #{@conf[:database][:root_setup][:host].inspect}
+180: #{cdiff([:database,:root_setup,:user])}$config[:database][:root_setup][:user] = #{@conf[:database][:root_setup][:user].inspect}
+181: #{cdiff([:database,:root_setup,:pass])}$config[:database][:root_setup][:pass] = #{@conf[:database][:root_setup][:pass].inspect}
+182: #{cdiff([:database,:root_setup,:db])}$config[:database][:root_setup][:db] = #{@conf[:database][:root_setup][:db].inspect}
+183:   
+184: # auth_setup is the mysql connection himle uses
+185: # to handle session tables. It's obligatory.
+186: #{cdiff([:database,:auth_setup,:host])}$config[:database][:auth_setup][:host] = #{@conf[:database][:auth_setup][:host].inspect}
+187: #{cdiff([:database,:auth_setup,:user])}$config[:database][:auth_setup][:user] = #{@conf[:database][:auth_setup][:user].inspect}
+188: #{cdiff([:database,:auth_setup,:pass])}$config[:database][:auth_setup][:pass] = #{@conf[:database][:auth_setup][:pass].inspect}
+189: #{cdiff([:database,:auth_setup,:db])}$config[:database][:auth_setup][:db] = #{@conf[:database][:auth_setup][:db].inspect}
+190: 
+191: 
+192: ## ValueManager settings
+193: 
+194: ## Key length controls the length of the random-part of the key.
+195: ## The total length is actually key length + 12 bytes, because
+196: ## the uniqueness part is 12 bytes long
+197: #{cdiff([:values_conf,:key_length])}$config[:values_conf][:key_length] = #{@conf[:values_conf][:key_length].inspect}
+198:   
+199: ## The amount of pre-generated keys to keep
+200: ## Tweaking this might affect performance
+201: #{cdiff([:values_conf,:buffer_size])}$config[:values_conf][:buffer_size] = #{@conf[:values_conf][:buffer_size].inspect}
+202: 
+203: ## Disposable keys, when enabled, changes the value id on each session restoration
+204: #{cdiff([:values_conf,:disposable_keys])}$config[:values_conf][:disposable_keys] = #{@conf[:values_conf][:disposable_keys].inspect}
+205: 
+206: ## Message strings
+207:     
+208: # this message is for version mismatches in hsyncvalues
+209: #{cdiff([:values_conf,:messages,:version_mismatch,:title])}$config[:values_conf][:messages][:version_mismatch][:title] = #{@conf[:values_conf][:messages][:version_mismatch][:title].inspect}
+210: #{cdiff([:values_conf,:messages,:version_mismatch,:descr])}$config[:values_conf][:messages][:version_mismatch][:descr] = #{@conf[:values_conf][:messages][:version_mismatch][:descr].inspect}
+211: #{cdiff([:values_conf,:messages,:version_mismatch,:uri])  }$config[:values_conf][:messages][:version_mismatch][:uri  ] = #{@conf[:values_conf][:messages][:version_mismatch][:uri].inspect}
+212:   
+213:     }</span>
+214:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000029" class="method-detail">
+        <a name="M000029"></a>
+
+        <div class="method-heading">
+          <a href="#M000029" class="method-signature">
+          <span class="method-name">hash_deep_copy</span><span class="method-args">(source_hash)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+returns a deep copy of source_hash using Marshal (I wish there was a better
+way)
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000029-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000029-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 32</span>
+32:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hash_deep_copy</span>(<span class="ruby-identifier">source_hash</span>)
+33:     <span class="ruby-keyword kw">return</span> <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">restore</span>( <span class="ruby-constant">Marshal</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">source_hash</span>) )
+34:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000036" class="method-detail">
+        <a name="M000036"></a>
+
+        <div class="method-heading">
+          <a href="#M000036" class="method-signature">
+          <span class="method-name">run</span><span class="method-args">( local_config_file_path )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000036-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000036-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 340</span>
+340:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run</span>( <span class="ruby-identifier">local_config_file_path</span> )
+341:     <span class="ruby-ivar">@conf</span>[<span class="ruby-identifier">:database</span>][<span class="ruby-identifier">:auth_setup</span>][<span class="ruby-identifier">:pass</span>] = <span class="ruby-constant">RandomGenerator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">12</span>,<span class="ruby-value">1</span>).<span class="ruby-identifier">get_one</span>
+342:     <span class="ruby-identifier">ask_about_mysql</span>
+343:     <span class="ruby-identifier">ask_about_httpd</span>
+344:     <span class="ruby-identifier">puts</span>
+345:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Configuration done!&quot;</span>
+346:     <span class="ruby-identifier">puts</span>
+347:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Writing #{local_config_file_path.inspect}...&quot;</span>
+348:     <span class="ruby-identifier">local_config_file</span> = <span class="ruby-identifier">open</span>( <span class="ruby-identifier">local_config_file_path</span>, <span class="ruby-value str">'w'</span> )
+349:     <span class="ruby-identifier">local_config_file</span>.<span class="ruby-identifier">write</span>( <span class="ruby-identifier">conf_data</span> )
+350:     <span class="ruby-identifier">local_config_file</span>.<span class="ruby-identifier">close</span>
+351:     <span class="ruby-identifier">require</span> <span class="ruby-identifier">local_config_file_path</span>[<span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">-4</span>]
+352:     <span class="ruby-identifier">puts</span>
+353:     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Revisit #{local_config_file_path} to edit these (and a lot more) settings.&quot;</span>
+354:     <span class="ruby-identifier">puts</span>
+355:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000033" class="method-detail">
+        <a name="M000033"></a>
+
+        <div class="method-heading">
+          <a href="#M000033" class="method-signature">
+          <span class="method-name">yesno</span><span class="method-args">(default=false)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+asks y/n and returns boleans, the default tells if which one is for just
+enter
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000033-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000033-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/conf/wizard.rb, line 218</span>
+218:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">yesno</span>(<span class="ruby-identifier">default</span>=<span class="ruby-keyword kw">false</span>)
+219:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">default</span>
+220:       <span class="ruby-identifier">question</span> = <span class="ruby-value str">&quot;Y/n? &quot;</span>
+221:     <span class="ruby-keyword kw">else</span>
+222:       <span class="ruby-identifier">question</span> = <span class="ruby-value str">&quot;y/N? &quot;</span>
+223:     <span class="ruby-keyword kw">end</span>
+224:     <span class="ruby-identifier">print</span> <span class="ruby-identifier">question</span>
+225:     <span class="ruby-identifier">answer</span> = <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">strip</span>.<span class="ruby-identifier">downcase</span>[<span class="ruby-value">0</span>]
+226:     <span class="ruby-identifier">answer</span> = <span class="ruby-identifier">answer</span>.<span class="ruby-identifier">chr</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">answer</span>
+227:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">answer</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'n'</span>
+228:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span>
+229:     <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">answer</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'y'</span>
+230:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+231:     <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">answer</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">nil</span>
+232:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">default</span>
+233:     <span class="ruby-keyword kw">else</span>
+234:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span>
+235:     <span class="ruby-keyword kw">end</span>
+236:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

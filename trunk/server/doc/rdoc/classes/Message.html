@@ -81,7 +81,7 @@
       <map id="map" name="map">
   <area shape="rect" coords="5,5,80,53"      href="Message.html" alt="Message" />
 </map>
-<img src="../dot/f_12.gif" usemap="#map" border="0" alt="dot/f_12.gif">
+<img src="../dot/f_21.gif" usemap="#map" border="0" alt="dot/f_21.gif">
     </div>
 
 
@@ -92,13 +92,14 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000006">expire_session</a>&nbsp;&nbsp;
-      <a href="#M000005">new</a>&nbsp;&nbsp;
-      <a href="#M000007">reply</a>&nbsp;&nbsp;
-      <a href="#M000009">serve_file</a>&nbsp;&nbsp;
-      <a href="#M000008">serve_img</a>&nbsp;&nbsp;
-      <a href="#M000010">serve_rsrc</a>&nbsp;&nbsp;
-      <a href="#M000011">unserve_rsrc</a>&nbsp;&nbsp;
+      <a href="#M000008">expire_session</a>&nbsp;&nbsp;
+      <a href="#M000007">new</a>&nbsp;&nbsp;
+      <a href="#M000009">reply</a>&nbsp;&nbsp;
+      <a href="#M000014">run</a>&nbsp;&nbsp;
+      <a href="#M000011">serve_file</a>&nbsp;&nbsp;
+      <a href="#M000010">serve_img</a>&nbsp;&nbsp;
+      <a href="#M000012">serve_rsrc</a>&nbsp;&nbsp;
+      <a href="#M000013">unserve_rsrc</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -168,11 +169,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000005" class="method-detail">
-        <a name="M000005"></a>
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
 
         <div class="method-heading">
-          <a href="#M000005" class="method-signature">
+          <a href="#M000007" class="method-signature">
           <span class="method-name">new</span><span class="method-args">( request, response )</span>
           </a>
         </div>
@@ -184,45 +185,45 @@ href="Request.html">Request</a> and <a href="Response.html">Response</a>
 instance.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000005-source">
+            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000007-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 39</span>
-39:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span> )
-40:     
-41:     <span class="ruby-comment cmt"># The http request object</span>
-42:     <span class="ruby-ivar">@request</span>  = <span class="ruby-identifier">request</span>
-43:     
-44:     <span class="ruby-comment cmt"># The http response object</span>
-45:     <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">response</span>
-46:     
-47:     <span class="ruby-comment cmt"># Session data placeholder, assigned by SessionManager</span>
-48:     <span class="ruby-ivar">@session</span>     = {}
-49:     
-50:     <span class="ruby-comment cmt"># The session identifier placeholder, assigned by SessionManager</span>
-51:     <span class="ruby-ivar">@ses_id</span>      = <span class="ruby-value">0</span>
-52:     
-53:     <span class="ruby-comment cmt"># The 'special' browser's presense is detected here:</span>
-54:     <span class="ruby-ivar">@ie6</span>         = (<span class="ruby-identifier">request</span>.<span class="ruby-identifier">header</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-value str">'user-agent'</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">header</span>[<span class="ruby-value str">'user-agent'</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'MSIE 6.0'</span>))
-55:     
-56:     <span class="ruby-comment cmt"># New session flag, check it in your code to decide</span>
-57:     <span class="ruby-comment cmt"># what to do, when a new session is encountered.</span>
-58:     <span class="ruby-comment cmt"># In plugins, this usually means that some Values</span>
-59:     <span class="ruby-comment cmt"># need to be created and bound or possibly that a</span>
-60:     <span class="ruby-comment cmt"># user_id mapping needs to be done.</span>
-61:     <span class="ruby-ivar">@new_session</span>      = <span class="ruby-keyword kw">false</span>
-62:     
-63:     <span class="ruby-comment cmt"># Old session first xhr flag, check it in your code</span>
-64:     <span class="ruby-comment cmt"># to decide what to do, when a restored session is</span>
-65:     <span class="ruby-comment cmt"># encountered. The old Values are automatically present,</span>
-66:     <span class="ruby-comment cmt"># so you should at least not re-create or re-bind them.</span>
-67:     <span class="ruby-ivar">@restored_session</span> = <span class="ruby-keyword kw">false</span>
-68:     
-69:     <span class="ruby-comment cmt"># The session is not valid by default, it's set</span>
-70:     <span class="ruby-comment cmt"># by SessionManager, if everything seems ok.</span>
-71:     <span class="ruby-ivar">@ses_valid</span> = <span class="ruby-keyword kw">false</span>
-72:     
-73:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 47</span>
+47:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>( <span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span> )
+48:     
+49:     <span class="ruby-comment cmt"># The http request object</span>
+50:     <span class="ruby-ivar">@request</span>  = <span class="ruby-identifier">request</span>
+51:     
+52:     <span class="ruby-comment cmt"># The http response object</span>
+53:     <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">response</span>
+54:     
+55:     <span class="ruby-comment cmt"># Session data placeholder, assigned by SessionManager</span>
+56:     <span class="ruby-ivar">@session</span>     = {}
+57:     
+58:     <span class="ruby-comment cmt"># The session identifier placeholder, assigned by SessionManager</span>
+59:     <span class="ruby-ivar">@ses_id</span>      = <span class="ruby-value">0</span>
+60:     
+61:     <span class="ruby-comment cmt"># The 'special' browser's presense is detected here:</span>
+62:     <span class="ruby-ivar">@ie6</span>         = (<span class="ruby-identifier">request</span>.<span class="ruby-identifier">header</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-value str">'user-agent'</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">header</span>[<span class="ruby-value str">'user-agent'</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'MSIE 6.0'</span>))
+63:     
+64:     <span class="ruby-comment cmt"># New session flag, check it in your code to decide</span>
+65:     <span class="ruby-comment cmt"># what to do, when a new session is encountered.</span>
+66:     <span class="ruby-comment cmt"># In plugins, this usually means that some Values</span>
+67:     <span class="ruby-comment cmt"># need to be created and bound or possibly that a</span>
+68:     <span class="ruby-comment cmt"># user_id mapping needs to be done.</span>
+69:     <span class="ruby-ivar">@new_session</span>      = <span class="ruby-keyword kw">false</span>
+70:     
+71:     <span class="ruby-comment cmt"># Old session first xhr flag, check it in your code</span>
+72:     <span class="ruby-comment cmt"># to decide what to do, when a restored session is</span>
+73:     <span class="ruby-comment cmt"># encountered. The old Values are automatically present,</span>
+74:     <span class="ruby-comment cmt"># so you should at least not re-create or re-bind them.</span>
+75:     <span class="ruby-ivar">@restored_session</span> = <span class="ruby-keyword kw">false</span>
+76:     
+77:     <span class="ruby-comment cmt"># The session is not valid by default, it's set</span>
+78:     <span class="ruby-comment cmt"># by SessionManager, if everything seems ok.</span>
+79:     <span class="ruby-ivar">@ses_valid</span> = <span class="ruby-keyword kw">false</span>
+80:     
+81:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -230,11 +231,11 @@ instance.
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000006" class="method-detail">
-        <a name="M000006"></a>
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
 
         <div class="method-heading">
-          <a href="#M000006" class="method-signature">
+          <a href="#M000008" class="method-signature">
           <span class="method-name">expire_session</span><span class="method-args">()</span>
           </a>
         </div>
@@ -244,41 +245,13 @@ instance.
 Expire the session
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000006-source">
+            onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000008-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 76</span>
-76:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expire_session</span>
-77:     <span class="ruby-constant">SESSION</span>.<span class="ruby-identifier">expire_session</span>( <span class="ruby-ivar">@ses_id</span> )
-78:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000007" class="method-detail">
-        <a name="M000007"></a>
-
-        <div class="method-heading">
-          <a href="#M000007" class="method-signature">
-          <span class="method-name">reply</span><span class="method-args">(data)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Sends some data to the client, usually javascript, but is valid for any
-data.
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000007-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 82</span>
-82:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reply</span>(<span class="ruby-identifier">data</span>)
-83:     <span class="ruby-identifier">puts</span> <span class="ruby-identifier">data</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:trace</span>]
-84:     <span class="ruby-ivar">@response</span>.<span class="ruby-identifier">body</span><span class="ruby-operator">+=</span><span class="ruby-identifier">data</span>
-85:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 84</span>
+84:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">expire_session</span>
+85:     <span class="ruby-identifier">$SESSION</span>.<span class="ruby-identifier">expire_session</span>( <span class="ruby-ivar">@ses_id</span> )
+86:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -289,85 +262,51 @@ data.
 
         <div class="method-heading">
           <a href="#M000009" class="method-signature">
-          <span class="method-name">serve_file</span><span class="method-args">( file_data, content_type='text/plain', filename='untitled.txt' )</span>
+          <span class="method-name">reply</span><span class="method-args">(data)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Sends any binary to be served, returns a disposable uri.
+Sends some data to the client, usually javascript, but is valid for any
+data.
 </p>
           <p><a class="source-toggle" href="#"
             onclick="toggleCode('M000009-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000009-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 93</span>
-93:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serve_file</span>( <span class="ruby-identifier">file_data</span>, <span class="ruby-identifier">content_type</span>=<span class="ruby-value str">'text/plain'</span>, <span class="ruby-identifier">filename</span>=<span class="ruby-value str">'untitled.txt'</span> )
-94:     <span class="ruby-keyword kw">return</span> <span class="ruby-constant">TICKETSERVE</span>.<span class="ruby-identifier">serve_file</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">file_data</span>, <span class="ruby-identifier">content_type</span>, <span class="ruby-identifier">filename</span> )
-95:   <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 90</span>
+90:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reply</span>(<span class="ruby-identifier">data</span>)
+91:     <span class="ruby-identifier">puts</span> <span class="ruby-identifier">data</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:trace</span>]
+92:     <span class="ruby-ivar">@response</span>.<span class="ruby-identifier">body</span><span class="ruby-operator">+=</span><span class="ruby-identifier">data</span>
+93:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000008" class="method-detail">
-        <a name="M000008"></a>
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
 
         <div class="method-heading">
-          <a href="#M000008" class="method-signature">
-          <span class="method-name">serve_img</span><span class="method-args">( img_obj, img_format='PNG' )</span>
+          <a href="#M000014" class="method-signature">
+          <span class="method-name">run</span><span class="method-args">( plugin_name, plug_method, *args )</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Sends a Magick::Image object to be served, returns a disposable uri.
+Calls registered plugin <tt>plugin</tt> method <tt>plugin_method</tt> with
+any <tt>args</tt>
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000008-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000008-source">
+            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000014-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 88</span>
-88:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serve_img</span>( <span class="ruby-identifier">img_obj</span>, <span class="ruby-identifier">img_format</span>=<span class="ruby-value str">'PNG'</span> )
-89:     <span class="ruby-keyword kw">return</span> <span class="ruby-constant">TICKETSERVE</span>.<span class="ruby-identifier">serve_img</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">img_obj</span>, <span class="ruby-identifier">img_format</span> )
-90:   <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000010" class="method-detail">
-        <a name="M000010"></a>
-
-        <div class="method-heading">
-          <a href="#M000010" class="method-signature">
-          <span class="method-name">serve_rsrc</span><span class="method-args">( rsrc_data, content_type='text/plain' )</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Sends any binary to be served, returns a static uri.
-</p>
-<p>
-IMPORTANT: PLEASE call <a href="Message.html#M000011">unserve_rsrc</a>
-manually, when you don&#8216;t need the resource anymore! Otherwise <a
-href="TicketServe.html">TicketServe</a> will keep on chugging more memory
-every time you serve something.
-</p>
-<p>
-HINT: Usually, it&#8216;s a better idea to use <a
-href="Message.html#M000008">serve_img</a> or <a
-href="Message.html#M000009">serve_file</a> instead.
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000010-source">
-<pre>
-     <span class="ruby-comment cmt"># File lib/session/msg.rb, line 106</span>
-106:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serve_rsrc</span>( <span class="ruby-identifier">rsrc_data</span>, <span class="ruby-identifier">content_type</span>=<span class="ruby-value str">'text/plain'</span> )
-107:     <span class="ruby-keyword kw">return</span> <span class="ruby-constant">TICKETSERVE</span>.<span class="ruby-identifier">serve_rsrc</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">rsrc_data</span>, <span class="ruby-identifier">content_type</span> )
-108:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/msg.rb, line 125</span>
+125:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">plug_method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+126:     <span class="ruby-identifier">$PLUGINS</span>.<span class="ruby-identifier">run_plugin</span>( <span class="ruby-identifier">plugin_name</span>, <span class="ruby-identifier">plug_method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+127:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -378,6 +317,95 @@ href="Message.html#M000009">serve_file</a> instead.
 
         <div class="method-heading">
           <a href="#M000011" class="method-signature">
+          <span class="method-name">serve_file</span><span class="method-args">( file_data, content_type='text/plain', filename='untitled.txt' )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Sends any binary to be served, returns a disposable uri.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000011-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/session/msg.rb, line 101</span>
+101:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serve_file</span>( <span class="ruby-identifier">file_data</span>, <span class="ruby-identifier">content_type</span>=<span class="ruby-value str">'text/plain'</span>, <span class="ruby-identifier">filename</span>=<span class="ruby-value str">'untitled.txt'</span> )
+102:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">serve_file</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">file_data</span>, <span class="ruby-identifier">content_type</span>, <span class="ruby-identifier">filename</span> )
+103:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000010" class="method-detail">
+        <a name="M000010"></a>
+
+        <div class="method-heading">
+          <a href="#M000010" class="method-signature">
+          <span class="method-name">serve_img</span><span class="method-args">( img_obj, img_format='PNG' )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Sends a Magick::Image object to be served, returns a disposable uri.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000010-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000010-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/session/msg.rb, line 96</span>
+96:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serve_img</span>( <span class="ruby-identifier">img_obj</span>, <span class="ruby-identifier">img_format</span>=<span class="ruby-value str">'PNG'</span> )
+97:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">serve_img</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">img_obj</span>, <span class="ruby-identifier">img_format</span> )
+98:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000012" class="method-detail">
+        <a name="M000012"></a>
+
+        <div class="method-heading">
+          <a href="#M000012" class="method-signature">
+          <span class="method-name">serve_rsrc</span><span class="method-args">( rsrc_data, content_type='text/plain' )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Sends any binary to be served, returns a static uri.
+</p>
+<p>
+IMPORTANT: PLEASE call <a href="Message.html#M000013">unserve_rsrc</a>
+manually, when you don&#8216;t need the resource anymore! Otherwise <a
+href="TicketServe.html">TicketServe</a> will keep on chugging more memory
+every time you serve something.
+</p>
+<p>
+HINT: Usually, it&#8216;s a better idea to use <a
+href="Message.html#M000010">serve_img</a> or <a
+href="Message.html#M000011">serve_file</a> instead.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000012-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000012-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/session/msg.rb, line 114</span>
+114:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">serve_rsrc</span>( <span class="ruby-identifier">rsrc_data</span>, <span class="ruby-identifier">content_type</span>=<span class="ruby-value str">'text/plain'</span> )
+115:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">serve_rsrc</span>( <span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">rsrc_data</span>, <span class="ruby-identifier">content_type</span> )
+116:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000013" class="method-detail">
+        <a name="M000013"></a>
+
+        <div class="method-heading">
+          <a href="#M000013" class="method-signature">
           <span class="method-name">unserve_rsrc</span><span class="method-args">( uri )</span>
           </a>
         </div>
@@ -388,13 +416,13 @@ Removes the uri served, you HAVE TO call this manually when you are done
 serving something!
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000011-source">
+            onclick="toggleCode('M000013-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000013-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/session/msg.rb, line 112</span>
-112:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unserve_rsrc</span>( <span class="ruby-identifier">uri</span> )
-113:     <span class="ruby-constant">TICKETSERVE</span>.<span class="ruby-identifier">del_rsrc</span>( <span class="ruby-identifier">uri</span>[<span class="ruby-value">3</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>] )
-114:   <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/session/msg.rb, line 120</span>
+120:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unserve_rsrc</span>( <span class="ruby-identifier">uri</span> )
+121:     <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">del_rsrc</span>( <span class="ruby-identifier">uri</span>[<span class="ruby-value">3</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>] )
+122:   <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

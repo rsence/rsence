@@ -10,13 +10,22 @@ digraph TopLevel {
         color = black
     ]
 
-    FileServe [
+    ClockApp [
         fontcolor = black,
-        URL = "classes/FileServe.html",
+        URL = "classes/ClockApp.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "FileServe"
+        label = "ClockApp"
+    ]
+
+    Plugin [
+        URL = "classes/Plugin.html",
+        label = "Plugin"
+    ]
+
+    Plugin -> ClockApp [
+
     ]
 
 }

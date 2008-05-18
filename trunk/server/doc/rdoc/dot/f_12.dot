@@ -10,13 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    Message [
+    FileServe [
         fontcolor = black,
-        URL = "classes/Message.html",
+        URL = "classes/FileServe.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "Message"
+        label = "FileServe"
     ]
 
 }

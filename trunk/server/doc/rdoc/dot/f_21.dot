@@ -10,22 +10,13 @@ digraph TopLevel {
         color = black
     ]
 
-    Main [
+    Message [
         fontcolor = black,
-        URL = "classes/Main.html",
+        URL = "classes/Message.html",
         shape = ellipse,
         color = palegoldenrod,
         style = filled,
-        label = "Main"
-    ]
-
-    Plugin [
-        URL = "classes/Plugin.html",
-        label = "Plugin"
-    ]
-
-    Plugin -> Main [
-
+        label = "Message"
     ]
 
 }
