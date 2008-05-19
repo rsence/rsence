@@ -17,21 +17,21 @@
 // Injects htc stuff into IE
 ie_htc_path = null;
 function ie_early_fixes() {
-  try{document.execCommand("BackgroundImageCache",false,true);}catch(e){}
+  
+  document.execCommand("BackgroundImageCache",false,true);
+  
   var _script = document.scripts[document.scripts.length - 1],
       _src = _script.src;
+  
   ie_htc_path = _src.substring(0, _src.lastIndexOf("/") + 1);
+  
   console = {
     log: function(){
       
     }
   };
 }
-if( (document.all&&navigator.userAgent.indexOf("Opera")==-1) && 
-    (navigator.userAgent.indexOf("MSIE 6")!=-1)
-  ){
-  ie_early_fixes();
-}
+ie_early_fixes();
 
 /***
 **** iefix contains a collection of fixes for IE's bad behavior
@@ -84,7 +84,7 @@ iefix = {
   
   // calculates the border width of the _element:
   // NOTICE: .init() makes ._getBorderHeight() from this by replacing Width with Height
-  _getBorderWidth: function(_element){
+  getBorderWidth: function(_element){
     return _element.offsetWidth-_element.clientWidth;
   },
   
@@ -126,29 +126,30 @@ iefix = {
   // NOTICE: .init() makes _resizeBottom() from this by replacing left/width with top/height
   resizeRight: function(_element){
     var _this=iefix,_left,_width;
+    //window.status = 'resizeRight';
     if(_element.currentStyle===null){return;}
     _left=parseInt(_element.currentStyle.left,10);
     _width=_this.layoutWidth(_element)-parseInt(_element.currentStyle.right,10)-_left;
     if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
     _element.runtimeStyle.width="";
     if(_element.offsetWidth<_width){
-      _width-=_this._getBorderWidth(_element)+_this.getPaddingWidth(_element);
+      _width-=_this.getBorderWidth(_element)+_this.getPaddingWidth(_element);
       if(_width<0){_width=0;}
       _element.runtimeStyle.width=_width;
     }
   },
   
   // (css-property) opacity fix:
-  _fixOpacity: function(_element){
-    var _opacity=(parseFloat(_element.currentStyle.opacity)*100)||1;
-    var _filter=_element.filters["DXImageTransform.Microsoft.Alpha"];
+  fixOpacity: function(_element){
+    var _opacity=(parseFloat(_element.currentStyle.opacity)*100)||1,
+        _filter=_element.filters["DXImageTransform.Microsoft.Alpha"];
     if(_filter){_filter.Opacity=_opacity;_filter.Enabled=true;}
     else{_element.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.Alpha(opacity="+_opacity+")";}
   },
   
   // png background image fix:
-  _fixBackgroundImage: function(_element) {
-    //window.status='_fixBackgroundImage: ';
+  fixBackgroundImage: function(_element) {
+    //window.status='fixBackgroundImage: ';
     var _this=iefix,_url,_filter;
     _url=_element.currentStyle.backgroundImage.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/);
     //window.status+=' url:'+_url;
@@ -175,7 +176,7 @@ iefix = {
   },
   
   // png img opacity fix:
-  _addFilter: function(_element,_image){
+  addFilter: function(_element,_image){
     var _this=iefix,_filter,_tempUrl;
     _filter=_element.filters["DXImageTransform.Microsoft.AlphaImageLoader"];
     if(_filter){_filter.src=_element.src;_filter.Enabled=true;}
@@ -186,45 +187,45 @@ iefix = {
   },
   
   // checks if image is png
-  _fixImg: function(_element){
+  fixImg: function(_element){
     var _this=iefix,_image;
     if(_this.pngCheck.test(_element.src)){ // needs more work
       _image=new Image(_element.width,_element.height);
       _image.onload=function(){_element.width=_image.width;_element.height=_image.height;_image=null;};
-      _this._addFilter(_element,_image);
+      _this.addFilter(_element,_image);
     }
   },
   
+  _noStyleTagNames: ['PARAM'],
   // applies fixes to the _element
-  _inlineStyleChanged: function(_element){
+  inlineStyleChanged: function(_element){
     var _this=iefix,_currentStyle;
     _currentStyle=_element.currentStyle;
-    
+    if(_this._noStyleTagNames.indexOf(_element.tagName)!=-1){ return; }
     // check if element needs to be positioned from the right
     try{
       if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.left!="auto"&&_currentStyle.right!="auto"&&_currentStyle.width=="auto"){
         _this.resizeRight(_element);
       }
-    } catch(e) {}
     
     // check if element needs to be positioned from the bottom
-    try{
       if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.top!="auto"&&_currentStyle.bottom!="auto"&&_currentStyle.height=="auto"){
-        _this._resizeBottom(_element);
+        _this.resizeBottom(_element);
         // TODO: needs line height calculation here too for elements smaller than the line height or font size
       }
-    } catch(e) {}
     
     // check if opacity needs to be fixed:
-    try{
-      if(_element.currentStyle.opacity){_this._fixOpacity(_element);}
-    } catch(e) {}
+      if(_element.currentStyle.opacity){_this.fixOpacity(_element);}
+      
+    } catch(e) {
+      alert("iefix error! element:"+_element.tagName+" e:"+e.description);
+    }
     
     // check if background image needs to be fixed:
-    //if(_element.currentStyle.backgroundImage){_this._fixBackgroundImage(_element);}
+    //if(_element.currentStyle.backgroundImage){_this.fixBackgroundImage(_element);}
     
     // check if png needs to be fixed:
-    //if(_element.tagName=="IMG"||(_element.tagName=="INPUT"&&_element.type=="image")){_this._fixImg(_element);}
+    //if(_element.tagName=="IMG"||(_element.tagName=="INPUT"&&_element.type=="image")){_this.fixImg(_element);}
     
     // anti-click-through fix:
     //else 
@@ -242,7 +243,7 @@ iefix = {
     _element=_element||document.documentElement;
     while(_element){
       if(_element.nodeType==1){
-        _this._inlineStyleChanged(_element);
+        _this.inlineStyleChanged(_element);
       }
       var _next=_element.firstChild;
       if(!_next){ _next=_element.nextSibling;}
@@ -261,21 +262,22 @@ iefix = {
   
   // initial constructs
   init: function() {
-    this._AUTO = /^(auto|0cm)$/;
-    this._PIXEL = /^\d+(px)?$/i;
-    this._PERCENT = /^\d+%$/;
-    this.pngCheck = new RegExp(".png$", "i"); // needs more work
+    var _this = iefix;
+    _this._AUTO = /^(auto|0cm)$/;
+    _this._PIXEL = /^\d+(px)?$/i;
+    _this._PERCENT = /^\d+%$/;
+    _this.pngCheck = new RegExp(".png$", "i"); // needs more work
     //this.pngCheck = new RegExp("((\.gif)|(\.jpg))$", "i"); // needs more work
     // needed for png hack
-    this.blankGifPath=ie_htc_path+"0.gif";
-    eval("this.getMarginWidth="+String(this.getPaddingWidth).replace(/padding/g,"margin"));
-    eval("this.getPaddingHeight="+String(this.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
-    eval("this.getMarginHeight="+String(this.getPaddingHeight).replace(/padding/g,"margin"));
-    eval("this.getBorderHeight="+String(this._getBorderWidth).replace(/Width/g,"Height"));
-    eval("this.layoutHeight="+String(this.layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));
-    eval("this.getPixelHeight="+String(this.getPixelWidth).replace(/Width/g,"Height"));
-    eval("this.resizeBottom="+String(this.resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));
-    this.resizing = false;
+    _this.blankGifPath=ie_htc_path+"0.gif";
+    eval("_this.getMarginWidth="+String(_this.getPaddingWidth).replace(/padding/g,"margin"));
+    eval("_this.getPaddingHeight="+String(_this.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
+    eval("_this.getMarginHeight="+String(_this.getPaddingHeight).replace(/padding/g,"margin"));
+    eval("_this.getBorderHeight="+String(_this.getBorderWidth).replace(/Width/g,"Height"));
+    eval("_this.layoutHeight="+String(_this.layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));
+    eval("_this.getPixelHeight="+String(_this.getPixelWidth).replace(/Width/g,"Height"));
+    eval("_this.resizeBottom="+String(_this.resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));
+    _this.resizing = false;
   },
   
   // entry point from ie_css_style.htc
@@ -289,34 +291,36 @@ iefix = {
   _traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
   //_traverseStyleProperties: ['right','bottom','width','height'],
   
-  _elemEntryCount: 0,
+  //_elemEntryCount: 0,
   
   // entry point from ie_css_element.htc
   htcElementEntry: function(){
-    iefix._elemEntryCount++;
+    //iefix._elemEntryCount++;
+    //window.status="htcElementEntry: "+iefix._elemEntryCount;
     var _element=window.event.srcElement, _propName=window.event.propertyName;
     if (_propName=="style.opacity"){
       //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' opacity';
-      iefix._fixOpacity(_element);
+      iefix.fixOpacity(_element);
     }
     else if((_propName=="src"&&_element.tagName=="IMG")||(_element.tagName=="INPUT"&&_element.type=="image")){
-      //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' img';
-      iefix._fixImg(_element);
+      window.status = 'htcElementEntry: '+iefix._elemEntryCount+' img';
+      iefix.fixImg(_element);
     }
     //else if(_propName=='style.cssText'){
-    //  window.status = 'htcElementEntry: '+iefix._elemEntryCount+' cssText';
-    //  iefix._traverseTree();
+      //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' cssText';
+      //iefix._traverseTree();
     //}
     else if(_propName.substring(0,6)=='style.'){
       if(iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])!=-1){
         //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' style';
         iefix._traverseTree();
       }
+      
       /*
       else {
         window.status+=window.event.propertyName+' ';
-      }
-      */
+      }*/
+      
     }
     //iefix._traverseTree(); // really should have more checks, this impacts performance heavily!
     
@@ -329,19 +333,15 @@ ie_initialized=false;
 
 ie_documentLoaded=function(){if(document.readyState=="complete"){iefix._traverseTree();}};
 ie_fixes=function(){
-  if( (
-        (document.all&&navigator.userAgent.indexOf("Opera")==-1) && 
-        (navigator.userAgent.indexOf("MSIE 6")!=-1)
-      ) &&
-      !ie_initialized
+  if( !ie_initialized
     ){
     if(ie_complete){
-      var _stylesheet=document.createStyleSheet();
-      _stylesheet.cssText='style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}';
+      //var _stylesheet=document.createStyleSheet();
+      //_stylesheet.cssText='style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}';
       ie_documentLoaded();
     }
     else{
-      document.write('<style type="text/css">style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}</style>');
+      //document.write('<style type="text/css">style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}</style>');
       document.onreadystatechange=ie_documentLoaded;
     }
     ie_initialized=true;
