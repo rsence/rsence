@@ -31,12 +31,21 @@
 =end
 class IndexHtml
   
+  def set_deps( deps )
+    @deps = deps
+    render_index_html
+  end
+  
   def initialize
-    
+    @deps = []
     index_html_file = open($config[:sys_path]+'/lib/page/index.html','rb')
-    @index_html = index_html_file.read
-    @content_size = @index_html.size
+    @index_html_src = index_html_file.read
     index_html_file.close
+    render_index_html
+  end
+  def render_index_html
+    
+    @index_html = @index_html_src
     
     loading_gif_file = open($config[:sys_path]+'/lib/page/loading.gif','rb')
     loading_gif = loading_gif_file.read
@@ -46,6 +55,14 @@ class IndexHtml
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',loading_gif_id)
+    
+    deps_src = ''
+    @deps.each do |dep|
+      deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
+    end
+    @index_html.gsub!('__SCRIPT_DEPS__',deps_src)
+    
+    @content_size = @index_html.size
   end
   
   ## Outputs a static web page. Nothing else.
