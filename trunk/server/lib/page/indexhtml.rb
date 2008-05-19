@@ -37,24 +37,27 @@ class IndexHtml
   end
   
   def initialize
+    
     @deps = []
     index_html_file = open($config[:sys_path]+'/lib/page/index.html','rb')
     @index_html_src = index_html_file.read
     index_html_file.close
-    render_index_html
-  end
-  def render_index_html
-    
-    @index_html = @index_html_src
     
     loading_gif_file = open($config[:sys_path]+'/lib/page/loading.gif','rb')
     loading_gif = loading_gif_file.read
     loading_gif_file.close
     
-    loading_gif_id = $TICKETSERVE.serve_rsrc(loading_gif, 'image/gif' )
+    @loading_gif_id = $TICKETSERVE.serve_rsrc(loading_gif, 'image/gif' )
+    
+    render_index_html
+    
+  end
+  def render_index_html
+    
+    @index_html = @index_html_src.clone
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
-    @index_html.gsub!('__LOADING_GIF_ID__',loading_gif_id)
+    @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     
     deps_src = ''
     @deps.each do |dep|
