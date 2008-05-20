@@ -125,7 +125,7 @@ HTransporter = Base.extend({
       eval(_respText); 
     }
     catch(e) {
-      _this.err_msg = '&err_msg='+e;
+      _this.err_msg = '&err_msg='+e+" - "+e.description;
       _this.failure(resp);
     }
     _this.prevData  = '';
