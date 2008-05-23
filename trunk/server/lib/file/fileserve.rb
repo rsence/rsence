@@ -156,7 +156,8 @@ class FileServe
           'css'  => 'text/css; charset=utf-8',
           'png'  => 'image/png',
           'jpg'  => 'image/jpeg',
-          'gif'  => 'image/gif'
+          'gif'  => 'image/gif',
+          'swf'  => 'application/x-shockwave-flash'
         }[file_ext]
         
         ## Comment out, when Rack supports chunked transfers:
