@@ -204,7 +204,7 @@ class JSBuilder
         STDOUT.flush
         Dir.new(src_files_gfx).each do |src_gfx_filename|
           src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
-          if ['.jpg','.gif','.png'].include?(src_file_gfx[-4..-1])
+          if ['.jpg','.gif','.png','.swf'].include?(src_file_gfx[-4..-1])
             tgt_file_gfx = File.join($_THEME_PATH,theme_name,'gfx',src_gfx_filename)
             if File.exist?(src_file_gfx)
               if File.exist?(tgt_file_gfx)
