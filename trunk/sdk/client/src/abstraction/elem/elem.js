@@ -14,6 +14,14 @@
   ***/
 
 ELEMTickerInterval = 10;
+BROWSER_TYPE = {
+  ie:  false,
+  ie6: false,
+  ie7: false,
+  opera: false,
+  safari: false,
+  firefox: false
+};
 ELEM = {
   
   // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
@@ -256,7 +264,7 @@ ELEM = {
   
   setOpacity: function(_id, _value){
     var _this = ELEM;
-    if (_value == 1 && is_ie) {
+    if (_value == 1 && _this._is_ie) {
       _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter', true).replace(/alpha\([^\)]*\)/gi,''));
     } else {  
       if(_value < 0.00001){
@@ -684,12 +692,20 @@ ELEM = {
   
   _warmup: function(){
     _this = ELEM;
-    _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")==-1);
-    _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!=-1);
-    _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1);
-    _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1);
-    _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1);
-    _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1);
+    _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")==-1)?true:false;
+    _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!=-1)?true:false;
+    _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;
+    _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;
+    _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;
+    _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;
+    BROWSER_TYPE = {
+      opera:    _this._is_opera,
+      safari:   _this._is_safari,
+      firefox:  _this._is_ff,
+      ie:  _this._is_ie,
+      ie6: _this._is_ie6,
+      ie7: _this._is_ie7
+    };
     _this._domWaiter();
   },
   // adds items to eval after the dom is done:

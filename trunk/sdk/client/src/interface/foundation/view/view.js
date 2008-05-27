@@ -387,11 +387,11 @@ HView = HClass.extend({
     ELEM.setHTML(this.elemId, this.markup);
     
     this.markupElemIds = {};
-    var _predefinedPartNames = ['bg', 'label', 'state', 'control', 'value', 'subview'];
-    for( var i = 0; i < _predefinedPartNames.length; i++ ) {
-      var _partName = _predefinedPartNames[ i ];
-      var _elemName = _partName + this.elemId;
-      var _htmlIdMatch = ' id="' + _elemName + '"';
+    var _predefinedPartNames = ['bg', 'label', 'state', 'control', 'value', 'subview'], i=0;
+    for(; i < _predefinedPartNames.length; i++ ) {
+      var _partName = _predefinedPartNames[ i ],
+          _elemName = _partName + this.elemId,
+          _htmlIdMatch = ' id="' + _elemName + '"';
       if( this.markup.indexOf( _htmlIdMatch ) != -1 ) {
         this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
       }
