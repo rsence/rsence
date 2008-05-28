@@ -176,9 +176,13 @@ class JSBuilder
     end
     gzip_file(dst_path,dst_path+'.gz') unless $_NO_GZIP
   end
-
-
+  
+  # returns html theme piece for special case optimization
+  def html(theme_name); @html_by_theme[theme_name]; end
+  
+  # processes theme-related files
   def cp_theme(src_name,component_name)
+    
     $_THEMES.each do |theme_name|
       
       tgt_file_css = File.join($_THEME_PATH,theme_name,'css',component_name+'.css')
@@ -186,15 +190,18 @@ class JSBuilder
       
       tgt_file_html = File.join($_THEME_PATH,theme_name,'html',component_name+'.html')
       src_file_html = File.join(src_name,'themes',theme_name,'html',component_name+'.html')
+      
       if File.exist?( src_file_css )
         print  "\r#{' '*80}\r#{theme_name}::#{component_name}::CSS"
         STDOUT.flush
         cp_css_tidy_file(src_file_css,tgt_file_css)
       end
+      
       if File.exist?( src_file_html )
         print  "\r#{' '*80}\r#{theme_name}::#{component_name}::HTML"
         STDOUT.flush
         cp_html_tidy_file(src_file_html,tgt_file_html)
+        @html_by_theme[theme_name][component_name] = read_file(tgt_file_html)
       end
       
       src_files_gfx = File.join(src_name,'themes',theme_name,'gfx')
@@ -355,6 +362,11 @@ class JSBuilder
     @release_order = []
     @packages      = []
     @destinations  = {}
+    @html_by_theme = {}
+    
+    $_THEMES.each do |theme|
+      @html_by_theme[theme] = {}
+    end
     
     $_PACKAGE_NAMES.each do |pkg_name|
       @packages.push( pkg_name )
