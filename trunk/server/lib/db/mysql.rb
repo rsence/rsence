@@ -34,11 +34,19 @@ class Status_TBL
     @size     = row['Data_length']
     @last_id  = row['Auto_increment']
     ct = row['Create_time']
-    creat = Time.gm(ct.year,ct.month,ct.day,ct.hour,ct.minute,ct.second)
-    @created  = creat.to_i
+    if ct == nil
+      @created = 0
+    else
+      creat = Time.gm(ct.year,ct.month,ct.day,ct.hour,ct.minute,ct.second)
+      @created  = creat.to_i
+    end
     mt  = row['Update_time']
-    modit = Time.gm(mt.year,mt.month,mt.day,mt.hour,mt.minute,mt.second)
-    @modified = modit.to_i
+    if mt == nil
+      @modified = 0
+    else
+      modit = Time.gm(mt.year,mt.month,mt.day,mt.hour,mt.minute,mt.second)
+      @modified = modit.to_i
+    end
     @comment  = row['Comment']
   end
 end
