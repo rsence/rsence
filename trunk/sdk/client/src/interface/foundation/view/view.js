@@ -979,6 +979,12 @@ HView = HClass.extend({
       }
     } else {
       _width = parseInt( ELEM.get(_stringElem).clientWidth, 10 );
+      // for some reason, firefox 3 text wrapping rules seem to
+      // differ for the same text widths from time to time, so
+      // let's add a 1px safety margin for it.
+      if(ELEM._is_ff3){
+        _width += 1;
+      }
       if (arguments[3]) {
         _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 );
       }

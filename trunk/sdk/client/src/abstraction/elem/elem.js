@@ -20,7 +20,8 @@ BROWSER_TYPE = {
   ie7: false,
   opera: false,
   safari: false,
-  firefox: false
+  firefox: false,
+  firefox2: false
 };
 ELEM = {
   
@@ -697,6 +698,7 @@ ELEM = {
     _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;
     _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;
     _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;
+    _this._is_ff3=(navigator.userAgent.indexOf("Firefox/3.")!=-1)?true:false;
     _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;
     BROWSER_TYPE = {
       opera:    _this._is_opera,
@@ -704,7 +706,8 @@ ELEM = {
       firefox:  _this._is_ff,
       ie:  _this._is_ie,
       ie6: _this._is_ie6,
-      ie7: _this._is_ie7
+      ie7: _this._is_ie7,
+      firefox3: _this._is_ff3
     };
     _this._domWaiter();
   },
