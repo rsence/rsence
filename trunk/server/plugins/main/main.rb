@@ -87,7 +87,10 @@ class Main < Plugin
       :location_href => HValue.new(msg,''),
       
       ## array for segmented transfers
-      :delayed_calls => []
+      :delayed_calls => [],
+      
+      :poll_mode => true,
+      :title_loading => true
       
     }
     
@@ -104,6 +107,8 @@ class Main < Plugin
     init_ses unless ses.has_key?(:main)
     ses[:main][:boot] = 0
     ses[:main][:delayed_calls] = []
+    ses[:main][:poll_mode] = true
+    ses[:main][:title_loading] = true
   end
   
   # called on every request of an
@@ -192,17 +197,30 @@ class Main < Plugin
       ## Sets the client into poll mode, unless the :delayed_calls -array is empty
       if mses[:boot] > 3
         if mses[:delayed_calls].empty?
-          msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};" )
+          if mses[:title_loading] == true
+            msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};" )
+            mses[:title_loading] = false
+          end
+          msg.reply( "HTransporter.setPollMode(false);" )
+          mses[:poll_mode] = false
+        else
+          msg.reply( "HTransporter.setPollMode(true);" )
+          mses[:poll_mode] = true
         end
-        msg.reply( "HTransporter.setPollMode(#{(not mses[:delayed_calls].empty?).inspect});" )
       end
       
     ## When nothing is delayed and the fifth poll has been made,
     ## sets the client to non-polling-mode, having only HValue
     ## changes trigger new requests.
     elsif mses[:boot] > 3
-      msg.reply "HTransporter.setPollMode(false);"
-      msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};")
+      if msg.session[:main][:poll_mode] == true
+        if mses[:title_loading] == true
+          msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};")
+          mses[:title_loading] = false
+        end
+        msg.reply "HTransporter.setPollMode(false);"
+        mses[:poll_mode] = false
+      end
     end
     
     ## Increment the counter forever.
