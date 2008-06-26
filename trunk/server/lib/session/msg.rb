@@ -21,6 +21,9 @@
   #
   ###
 
+module Himle
+module Server
+
 =begin
 
 The Message object is initialized as 'msg' in SessionManager.
@@ -129,3 +132,5 @@ class Message
   
 end
 
+end
+end

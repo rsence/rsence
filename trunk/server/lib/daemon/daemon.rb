@@ -71,12 +71,15 @@ require 'transporter/transporter'
 require 'http/broker'
 
 
+module Himle
+module Server
+
 # adapted from:
 # http://snippets.dzone.com/posts/show/2265
 
 require 'fileutils'
 
-module HimleDaemon
+module Daemon
   
   class Base
     def self.pid_fn
@@ -168,7 +171,7 @@ module HimleDaemon
   end
 end
 
-class HimleServe < HimleDaemon::Base
+class HimleServe < Himle::Server::Daemon::Base
   def self.start
     
     $config[:filecache]       = FileCache.new
@@ -218,8 +221,6 @@ class HimleServe < HimleDaemon::Base
   end
 end
 
-HimleServe.daemonize
-
-
-
+end
+end
 

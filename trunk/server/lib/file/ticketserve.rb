@@ -25,6 +25,9 @@ require 'RMagick'
 
 require 'util/randgen'
 
+module Himle
+module Server
+
 =begin
 
 TicketServe serves static and disposable data and images.
@@ -408,5 +411,6 @@ class TicketServe
   
 end
 
-
+end
+end
 

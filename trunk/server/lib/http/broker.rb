@@ -20,6 +20,10 @@
   #
   ###
 
+
+module Himle
+module Server
+
 # Restful provides the basic structure for Broker
 require 'http/restful'
 
@@ -28,6 +32,7 @@ require 'http/restful'
  Broker routes requests to the proper request processing instance
 
 =end
+
 class Broker
   include RestfulDispatcher
   
@@ -91,5 +96,5 @@ class Broker
   
 end
 
-
-
+end
+end

@@ -20,6 +20,9 @@
   #
   ###
 
+module Himle
+module Server
+
 =begin
  FileCache scans and stores the ui path for javascript files and 
  (css/html/image) theme files compiled as the result of the client
@@ -168,3 +171,5 @@ class FileCache
   
 end
 
+end
+end

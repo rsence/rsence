@@ -20,6 +20,9 @@
   #
   ###
 
+module Himle
+module Server
+
 =begin
  FileServe serves javascript and (css/html/image) theme files needed by the client from FileCache
 =end
@@ -188,4 +191,7 @@ class FileServe
     
   end
   
+end
+
+end
 end

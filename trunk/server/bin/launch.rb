@@ -57,5 +57,5 @@ $LOAD_PATH << File.join( SERVER_PATH, 'lib' )
 
 ## HimleDaemon controls 
 require 'daemon/daemon'
-
+Himle::Server::HimleServe.daemonize
 

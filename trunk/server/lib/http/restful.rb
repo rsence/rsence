@@ -31,6 +31,8 @@ require 'http/response'
 ## Minimally WEBrick -compatible request object
 require 'http/request'
 
+module Himle
+module Server
 
 module RestfulDispatcher
   
@@ -74,3 +76,5 @@ module RestfulDispatcher
   end
 end
 
+end
+end

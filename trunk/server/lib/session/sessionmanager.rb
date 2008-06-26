@@ -30,6 +30,9 @@ require 'util/randgen'
 ## SessionStorage is the superclass of SessionManager
 require 'session/sessionstorage'
 
+module Himle
+module Server
+
 =begin
 SessionManager does session creation, validation, expiration and storage duties.
 It's quite transparent.
@@ -393,4 +396,6 @@ class SessionManager < SessionStorage
 end
 
 
+end
+end
 

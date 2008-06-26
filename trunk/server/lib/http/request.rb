@@ -23,6 +23,9 @@
 require 'rubygems'
 require 'rack'
 
+module Himle
+module Server
+
 class Request < Rack::Request
   attr_reader :header, :path, :query
   def initialize(env)
@@ -65,4 +68,8 @@ class Request < Rack::Request
       @header["x-#{header_key}"] = @env[x_env_key] if @env.has_key?(x_env_key) if x_env_key.include?('X_')
     end
   end
+end
+
+
+end
 end

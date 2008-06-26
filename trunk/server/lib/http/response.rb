@@ -20,6 +20,9 @@
   #
   ###
 
+module Himle
+module Server
+
 class ResponseBody < Array
   def +(body_data)
     self.push(body_data)
@@ -64,3 +67,5 @@ class Response
   end
 end
 
+end
+end

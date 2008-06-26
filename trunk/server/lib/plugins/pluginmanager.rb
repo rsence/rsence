@@ -26,6 +26,9 @@
 # plugin.rb contains the Plugin skeleton class
 require 'plugins/plugin'
 
+module Himle
+module Server
+
 =begin
  PluginManager manages plugins and delegates messages to and between them to respond to messages.
 =end
@@ -174,4 +177,5 @@ class PluginManager
   
 end
 
-
+end
+end

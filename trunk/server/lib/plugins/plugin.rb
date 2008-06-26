@@ -21,6 +21,9 @@
   #
   ###
 
+module Himle
+module Server
+
 =begin
 Plugin is an abstract class for himle server-side application logic.
 =end
@@ -168,3 +171,7 @@ private
   
   
 end
+
+end
+end
+

@@ -28,6 +28,9 @@ require 'db/mysql'
 ## HValue class for session restoration
 require 'values/hvalue'
 
+module Himle
+module Server
+
 =begin
 SessionStorage doesn't do anything by itself, it's simply
 the superclass for SessionManager that does all the boring
@@ -226,5 +229,8 @@ class SessionStorage
     end
   end
   
+end
+
+end
 end
 

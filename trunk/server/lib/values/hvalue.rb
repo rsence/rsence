@@ -22,6 +22,9 @@
   ###
 
 
+module Himle
+module Server
+
 =begin
 HValue is the server-side representation of the client's HValue object.
 It's the 'messenger' to syncronize server-client data and is smart enough
@@ -319,5 +322,9 @@ class StringValueParser < ValueParser
     puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
     return @default_value
   end
+end
+
+
+end
 end
 

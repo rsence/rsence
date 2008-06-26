@@ -21,6 +21,7 @@
   #
   ###
 
+
 # ValueManager uses rexml for client -> server data parsing
 require 'rexml/document'
 include REXML
@@ -30,6 +31,9 @@ require 'values/hvalue'
 
 # RandomGenerator produces unique, random values
 require 'util/randgen'
+
+module Himle
+module Server
 
 =begin
  ValueManager provides automagic, transparent syncronization of values between client and server.
@@ -199,3 +203,5 @@ class ValueManager
 end
 
 
+end
+end

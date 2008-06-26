@@ -21,6 +21,9 @@
   #
   ###
 
+module Himle
+module Server
+
 ## Uncomment, when Rack supports chunked transfers
 #require 'zlib'
 #
@@ -130,3 +133,5 @@ class Transporter
   
 end
 
+end
+end

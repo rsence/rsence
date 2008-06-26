@@ -21,6 +21,9 @@
   #
   ###
 
+module Himle
+module Server
+
 
 =begin
  
@@ -81,3 +84,5 @@ class IndexHtml
   
 end
 
+end
+end
