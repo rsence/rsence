@@ -1,3 +1,4 @@
+# -* coding: UTF-8 -*-
 #!/usr/bin/env ruby
 
 require 'randgen_rb/randgen'
