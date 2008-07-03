@@ -48,6 +48,7 @@ HApplication = HClass.extend({
   *  _refreshInterval - An integer value (in ms) used for <onIdle> polling events.
   **/
   constructor: function(_refreshInterval){
+    this.componentBehaviour = ['app'];
     this.type = '[HApplication]';
     
     // storage for views

@@ -87,6 +87,9 @@ HView = HClass.extend({
   //rect.top:  flexTopOffset:    0,
   flexBottomOffset: 0,
   
+  // Component behaviour tells other classes what to expect of the component's api and visual behaviour.
+  componentBehaviour: ['view'],
+  
 /** constructor: constructor
   *
   * Constructs the logic part of a <HView>.

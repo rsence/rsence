@@ -261,6 +261,15 @@ HSystem = HClass.extend({
   delView: function(_viewId){
     this.views[_viewId] = null;
     this._freeViewIds.push(_viewId);
+  },
+  
+  activeWindowId: 0,
+  windowFocus: function(_elemId){
+    var _activeWindowId = this.activeWindowId, _views = this.views;
+    if(_activeWindowId != 0){
+      _views[_activeWindowId].lostActiveStatus(_views[_elemId],true);
+    }
+    this.activeWindowId=_elemId;
   }
   
 });

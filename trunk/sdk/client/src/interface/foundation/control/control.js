@@ -55,6 +55,8 @@ HControl = HView.extend({
   refreshOnLabelChange: true,
   constructor: function(_rect, _parentClass, _options) {
     
+    this.componentBehaviour.push('control');
+    
     // Use empty options if none supplied. Change this within components.
     if(!_options) {
       _options = {};

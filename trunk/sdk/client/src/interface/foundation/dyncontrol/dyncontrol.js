@@ -15,6 +15,7 @@
 HDynControl = HControl.extend({
   componentName: 'dyncontrol',
   constructor: function( _rect, _parentClass, _options ){
+    this.componentBehaviour.push('window');
     if(!_options) {
       _options={};
     }
