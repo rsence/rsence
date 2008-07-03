@@ -118,6 +118,10 @@
   background-image: #{this.getCssFilePath('window_parts2.png')};
 }
 
+.inactive .window_body_edge_bottom {
+  background-position: 0px -72px;
+}
+
 .window_label {
   left: 0px; top: 0px; right: 0px; height: 24px;
   line-height: 25px;
