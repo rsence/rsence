@@ -1,4 +1,84 @@
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
 
-ReloadApp=HApplication.extend({constructor:function(_5V,_82,_3h){this.base();this._3h=_3h;var _5T=ELEM.windowSize()[0];var _5S=ELEM.windowSize()[1];var _6M=parseInt(_5T/2,10);var _6L=parseInt(_5S/2,10);this._4a=new HView(new HRect(0,0,_5T,_5S),this);this._4a.setStyle('opacity',0.75);this._4a.setStyle('background-color','#666');var _44=400;var _8a=300;var _2j=_6M-200;var _2k=_6L-150;if(_2j<10){_2j=10;}
-if(_2k<10){_2k=10;}
-var _64=new HRect(_2j,_2k,_2j+_44,_2k+_8a);this._65=new HWindowControl(_64,this,{label:_5V,minSize:[_44,_8a],maxSize:[_44,_8a],enabled:true});var _35=this._65.windowView;var _1E=new HView(new HRect(10,10,350,32),_35);_1E.setStyle('font-family','Trebuchet MS, Arial, sans-serif');_1E.setStyle('font-size','18px');_1E.setStyle('font-weight','bold');_1E.setStyle('color','#000');_1E.setHTML(_5V);var _1D=new HView(new HRect(10,48,350,230),_35);_1D.setStyle('font-family','Trebuchet MS, Arial, sans-serif');_1D.setStyle('font-size','13px');_1D.setStyle('overflow','auto');_1D.setStyle('color','#000');_1D.setHTML(_82);var _8I=new HClickButton(new HRect(10,236,370,258),_35,{label:'Reload',action:this._6c});HTransporter.stop();},_6c:function(){location.href=reloadApp._3h;}});
+ReloadApp = HApplication.extend({
+  constructor: function( _windowTitle, _windowMessage, _destinationUrl ){
+    
+    this.base();
+    
+    this._destinationUrl = _destinationUrl;
+    
+    var _winWidth  = ELEM.windowSize()[0];
+    var _winHeight = ELEM.windowSize()[1];
+    var _halfWidth = parseInt(_winWidth/2,10);
+    var _halfHeight = parseInt(_winHeight/2,10);
+    
+    this._backgroundView = new (HView.extend({flexRight:true,flexBottom:true}))(
+      new HRect( 0, 0, _winWidth, _winHeight ),
+      this
+    );
+    this._backgroundView.setStyle('position','fixed');
+    
+    this._backgroundView.setStyle('opacity',0.75);
+    this._backgroundView.setStyle('background-color','#666');
+    
+    var _alertWidth  = 400;
+    var _alertHeight = 300;
+    var _alertX      = _halfWidth - 200;
+    var _alertY      = _halfHeight - 150;
+    
+    if(_alertX<10){_alertX = 10;}
+    if(_alertY<10){_alertY = 10;}
+    
+    var _alertRect   = new HRect( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight );
+    
+    this._alertWindow = new HWindow(
+      _alertRect,
+      this, {
+        label: _windowTitle,
+        minSize: [_alertWidth,_alertHeight],
+        maxSize: [_alertWidth,_alertHeight],
+        enabled: true
+      }
+    );
+    
+    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 350, 32 ), this._alertWindow );
+    _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
+    _alertMessageTitleBox.setStyle('font-size','18px');
+    _alertMessageTitleBox.setStyle('font-weight','bold');
+    _alertMessageTitleBox.setStyle('color','#000');
+    _alertMessageTitleBox.setHTML( _windowTitle );
+    
+    var _alertMessageBox = new HView( new HRect( 10, 48, 350, 230 ), this._alertWindow );
+    _alertMessageBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
+    _alertMessageBox.setStyle('font-size','13px');
+    _alertMessageBox.setStyle('overflow','auto');
+    _alertMessageBox.setStyle('color','#000');
+    _alertMessageBox.setHTML( _windowMessage );
+    
+    var _reloadButton = new HClickButton(
+      new HRect(10, 236, 370, 258 ),
+      this._alertWindow,
+      { label: 'Reload', action: this._clicked }
+    );
+    HTransporter.stop();
+  },
+  _clicked: function(){
+    location.href = reloadApp._destinationUrl;
+  }
+});
+/** USAGE: 
+jsLoader.load('servermessage');
+reloadApp = new ReloadApp( 'Session Timeout', 'Your session has timed out', '/' );
+**/

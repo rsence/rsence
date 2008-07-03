@@ -35,15 +35,17 @@ HWindow = HDynControl.extend({
   componentName:      'window',
   componentBehaviour: 'window',
   constructor: function(_rect,_parentApp,_options){
-    if(_parentApp.type=='[HApplication]'){
+    if(_parentApp.componentBehaviour[0]!='app'){
       console.log(
         "Himle.ComponentParentError",
         "HWindow parent must be an HApplication instance!"
       );
     }
     this.base(_rect,_parentApp,_options);
+    this.windowView = this; // backwards-compatibility, will go away!
+    HSystem.windowFocus(this);
   },
-  gainedActiveStatus: function(_lastActiveControl){
+  gainedActiveStatus: function(){
     HSystem.windowFocus(this);
   },
   windowFocus: function(){
@@ -51,6 +53,15 @@ HWindow = HDynControl.extend({
   },
   windowBlur: function(){
     this.toggleCSSClass(this.elemId, 'inactive', true);
+  },
+  refresh: function() {
+    if(this.drawn){
+      this.base();
+      // Label
+      if(this.markupElemIds.label){
+        ELEM.setHTML(this.markupElemIds.label, this.label);
+      }
+    }
   }
 });
 

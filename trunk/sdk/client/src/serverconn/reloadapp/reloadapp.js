@@ -24,10 +24,11 @@ ReloadApp = HApplication.extend({
     var _halfWidth = parseInt(_winWidth/2,10);
     var _halfHeight = parseInt(_winHeight/2,10);
     
-    this._backgroundView = new HView(
+    this._backgroundView = new (HView.extend({flexRight:true,flexBottom:true}))(
       new HRect( 0, 0, _winWidth, _winHeight ),
       this
     );
+    this._backgroundView.setStyle('position','fixed');
     
     this._backgroundView.setStyle('opacity',0.75);
     this._backgroundView.setStyle('background-color','#666');
@@ -42,7 +43,7 @@ ReloadApp = HApplication.extend({
     
     var _alertRect   = new HRect( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight );
     
-    this._alertWindow = new HWindowControl(
+    this._alertWindow = new HWindow(
       _alertRect,
       this, {
         label: _windowTitle,
@@ -52,16 +53,14 @@ ReloadApp = HApplication.extend({
       }
     );
     
-    var _alertMessageView = this._alertWindow.windowView;
-    
-    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 350, 32 ), _alertMessageView );
+    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 350, 32 ), this._alertWindow );
     _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
     _alertMessageTitleBox.setStyle('font-size','18px');
     _alertMessageTitleBox.setStyle('font-weight','bold');
     _alertMessageTitleBox.setStyle('color','#000');
     _alertMessageTitleBox.setHTML( _windowTitle );
     
-    var _alertMessageBox = new HView( new HRect( 10, 48, 350, 230 ), _alertMessageView );
+    var _alertMessageBox = new HView( new HRect( 10, 48, 350, 230 ), this._alertWindow );
     _alertMessageBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
     _alertMessageBox.setStyle('font-size','13px');
     _alertMessageBox.setStyle('overflow','auto');
@@ -70,7 +69,7 @@ ReloadApp = HApplication.extend({
     
     var _reloadButton = new HClickButton(
       new HRect(10, 236, 370, 258 ),
-      _alertMessageView,
+      this._alertWindow,
       { label: 'Reload', action: this._clicked }
     );
     HTransporter.stop();

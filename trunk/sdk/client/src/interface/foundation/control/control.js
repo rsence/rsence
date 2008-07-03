@@ -40,6 +40,7 @@
   **/
 HControl = HView.extend({
   
+  componentBehaviour: ['view','control'],
 /** constructor: constructor
   *
   * The first two parameters are the same as with <HView>, but additionally
@@ -54,8 +55,6 @@ HControl = HView.extend({
   refreshOnValueChange: true,
   refreshOnLabelChange: true,
   constructor: function(_rect, _parentClass, _options) {
-    
-    this.componentBehaviour.push('control');
     
     // Use empty options if none supplied. Change this within components.
     if(!_options) {

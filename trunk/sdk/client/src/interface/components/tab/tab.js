@@ -51,10 +51,10 @@ HTabView = HView.extend({
 
 HTab = HControl.extend({
   componentName: "tab",
+  componentBehaviour: ['view','control','tab'],
   refreshOnValueChange: false,
   refreshOnLabelChange: false,
   constructor: function(_rect,_parent,_options){
-    this.componentBehaviour.push('tab');
     this.tabInit();
     if(this.isinherited) {
       this.base(_rect, _parent, _options);

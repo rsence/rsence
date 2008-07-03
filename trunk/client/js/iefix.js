@@ -1,34 +1,354 @@
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
 
-ie_htc_path=null;function ie_early_fixes(){try{document.execCommand("BackgroundImageCache",false,true);}catch(e){}
-var _7q=document.scripts[document.scripts.length-1];var _5x=_7q.src;ie_htc_path=_5x.substring(0,_5x.lastIndexOf("/")+1);console={log:function(){}};}
-if((document.all&&navigator.userAgent.indexOf("Opera")==-1)&&(navigator.userAgent.indexOf("MSIE 6")!=-1)){ie_early_fixes();}
-iefix={setWinSize:function(){window.innerWidth=document.documentElement.clientWidth;window.innerHeight=document.documentElement.clientHeight;},_8v:function(_8){return _8.currentStyle.hasLayout;},_4U:function(_8){var _0=iefix,_v,i=0,_09=_8.offsetParent;while(_09&&!_0._8v(_09)){_09=_09.offsetParent;}
-if(!_09._resizewidthElements){_09._resizewidthElements=[];}
-if(!_8._addedResizewidthFix){_09._resizewidthElements.push(_8);_v=_09;while(_v.offsetParent){_v=_v.offsetParent;if(_v._resizewidthElements){_v._resizewidthElements.push(_8);}
-if(_v.style.position=="absolute"||_v.style.position=="fixed"){break;}}
-_8._addedResizewidthFix=true;}
-if(!_09._resizewidth){_09.attachEvent("onpropertychange",function(){if(window.event.propertyName=="style.width"){for(;i<_09._resizewidthElements.length;i++){_0._7m(_09._resizewidthElements[i]);}}});_09._resizewidth=true;}
-return(_09||document.documentElement).clientWidth;},_6H:function(_8){return _8.offsetWidth-_8.clientWidth;},getPixelValue:function(_8,_85){var _0=iefix,_0k,_7p;if(_0._88.test(_85)){return parseInt(_85,10);}
-_0k=_8.style.left;_7p=_8.runtimeStyle.left;_8.runtimeStyle.left=_8.currentStyle.left;_0.resizing=true;_8.style.left=_85||0;_85=_8.style.pixelLeft;_8.style.left=_0k;_0.resizing=false;_8.runtimeStyle.left=_7p;return _85;},_6K:function(_8,_85){var _0=iefix;if(_0._87.test(_85)){return parseInt(parseFloat(_85)/100*_0._4U(_8),10);}
-return _0.getPixelValue(_8,_85);},_4w:function(_8){var _0=iefix;return _0._6K(_8,_8.currentStyle.paddingLeft)+_0._6K(_8,_8.currentStyle.paddingRight);},_7m:function(_8){var _0=iefix,_00,_h;if(_8.currentStyle===null){return;}
-_00=parseInt(_8.currentStyle.left,10);_h=_0._4U(_8)-parseInt(_8.currentStyle.right,10)-_00;if(parseInt(_8.runtimeStyle.width,10)==_h){return;}
-_8.runtimeStyle.width="";if(_8.offsetWidth<_h){_h-=_0._6H(_8)+_0._4w(_8);if(_h<0){_h=0;}
-_8.runtimeStyle.width=_h;}},_6A:function(_8){var _0a=(parseFloat(_8.currentStyle.opacity)*100)||1;var _Z=_8.filters["DXImageTransform.Microsoft.Alpha"];if(_Z){_Z.Opacity=_0a;_Z.Enabled=true;}
-else{_8.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.Alpha(opacity="+_0a+")";}},_6y:function(_8){var _0=iefix,_o,_Z;_o=_8.currentStyle.backgroundImage.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/);if(!_o){return;}
-else{_o=_o[1];}
-_Z=_8.filters["DXImageTransform.Microsoft.AlphaImageLoader"];if(_0.pngCheck.test(_o)){if(_Z){_Z.sizingMethod="crop";_Z.src=_o;_Z.Enabled=true;}
-else{_8.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+_o+"',sizingMethod='crop')";}
-_8.runtimeStyle.zoom="0";_8.runtimeStyle.backgroundImage="none";}
-else if(_Z){_Z.Enabled=false;}},_89:function(_8,_1m){var _0=iefix,_Z,_tempUrl;_Z=_8.filters["DXImageTransform.Microsoft.AlphaImageLoader"];if(_Z){_Z.src=_8.src;_Z.Enabled=true;}
-else{_8.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+_8.src+"',sizingMethod='scale')";}
-_7L=_8.src;_8.src=_0.blankGifPath;_1m.src=_7L;},_6z:function(_8){var _0=iefix,_1m;if(_0.pngCheck.test(_8.src)){_1m=new Image(_8.width,_8.height);_1m.onload=function(){_8.width=_1m.width;_8.height=_1m.height;_1m=null;};_0._89(_8,_1m);}},_8y:function(_8){var _0=iefix,_0f;_0f=_8.currentStyle;try{if((_0f.position=="absolute"||_0f.position=="fixed")&&_0f.left!="auto"&&_0f.right!="auto"&&_0f.width=="auto"){_0._7m(_8);}}catch(e){}
-try{if((_0f.position=="absolute"||_0f.position=="fixed")&&_0f.top!="auto"&&_0f.bottom!="auto"&&_0f.height=="auto"){_0._7l(_8);}}catch(e){}
-try{if(_8.currentStyle.opacity){_0._6A(_8);}}catch(e){}
-if(_8.style.backgroundColor=='transparent'&&(_8.style.backgroundImage=='none'||!_8.style.backgroundImage)){_8.style.backgroundImage="url("+ie_htc_path+"128.gif)";}},_93:0,_0d:function(_8){var _0=iefix;_0._93++;_8=_8||document.documentElement;while(_8){if(_8.nodeType==1){_0._8y(_8);}
-var _2O=_8.firstChild;if(!_2O){_2O=_8.nextSibling;}
-while(!_2O&&_8.parentNode){_8=_8.parentNode;_2O=_8.nextSibling;}
-_8=_2O;}},stylesheet_refresh:function(_5C){_5C.cssText+="";},init:function(){this._86=/^(auto|0cm)$/;this._88=/^\d+(px)?$/i;this._87=/^\d+%$/;this.pngCheck=new RegExp(".png$","i");this.blankGifPath=ie_htc_path+"0.gif";eval("this._6J="+String(this._4w).replace(/padding/g,"margin"));eval("this._4v="+String(this._4w).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));eval("this._6I="+String(this._4v).replace(/padding/g,"margin"));eval("this._6G="+String(this._6H).replace(/Width/g,"Height"));eval("this._70="+String(this._4U).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));eval("this._8t="+String(this._6K).replace(/Width/g,"Height"));eval("this._7l="+String(this._7m).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));this.resizing=false;},htcStyleEntry:function(){if(document.readyState=="complete"&&window.event.srcElement.readyState=="complete"){iefix._0d();}},_2Y:['width','height','left','top','right','bottom','display','position'],_1R:0,htcElementEntry:function(){iefix._1R++;var _8=window.event.srcElement,_23=window.event.propertyName;if(_23=="style.opacity"){iefix._6A(_8);}
-else if((_23=="src"&&_8.tagName=="IMG")||(_8.tagName=="INPUT"&&_8.type=="image")){iefix._6z(_8);}
-else if(_23.substring(0,6)=='style.'){if(iefix._2Y.indexOf(_23.split('style.')[1])!=-1){iefix._0d();}}}};iefix.init();ie_complete=document.readyState=="complete";ie_initialized=false;ie_documentLoaded=function(){if(document.readyState=="complete"){iefix._0d();}};ie_fixes=function(){if(((document.all&&navigator.userAgent.indexOf("Opera")==-1)&&(navigator.userAgent.indexOf("MSIE 6")!=-1))&&!ie_initialized){if(ie_complete){var _7C=document.createStyleSheet();_7C.cssText='style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}';ie_documentLoaded();}
-else{document.write('<style type="text/css">style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}</style>');document.onreadystatechange=ie_documentLoaded;}
-ie_initialized=true;}};ie_fixes();window.onresize=function(){iefix.setWinSize();iefix._0d();};
+// Injects htc stuff into IE
+ie_htc_path = null;
+function ie_early_fixes() {
+  
+  document.execCommand("BackgroundImageCache",false,true);
+  
+  var _script = document.scripts[document.scripts.length - 1],
+      _src = _script.src;
+  
+  ie_htc_path = _src.substring(0, _src.lastIndexOf("/") + 1);
+  
+  console = {
+    log: function(){
+      
+    }
+  };
+}
+ie_early_fixes();
+
+/***
+**** iefix contains a collection of fixes for IE's bad behavior
+***/
+iefix = {
+  
+  // call this on resize, loaded events:
+  setWinSize: function(){
+    window.innerWidth=document.documentElement.clientWidth;
+    window.innerHeight=document.documentElement.clientHeight;
+  },
+  
+  // checks if the element has the .hasLayout flag set:
+  _hasLayout: function(_element){
+    return _element.currentStyle.hasLayout;
+  },
+  
+  // finds the next parent with fixed or absolute positioning:
+  // NOTICE: .init() makes ._layoutHeight() from this by replacing width with height
+  layoutWidth: function(_element) {
+    var _this=iefix,_parent,i=0,
+        // gets the parent from which the width is calculated
+        _layoutParent=_element.offsetParent;
+    while(_layoutParent&&!_this._hasLayout(_layoutParent)){
+      _layoutParent=_layoutParent.offsetParent;
+    }
+    if(!_layoutParent._resizewidthElements){_layoutParent._resizewidthElements=[];}
+    if(!_element._addedResizewidthFix){
+      _layoutParent._resizewidthElements.push(_element);
+      _parent=_layoutParent;
+      while(_parent.offsetParent){
+        _parent=_parent.offsetParent;
+        if(_parent._resizewidthElements){_parent._resizewidthElements.push(_element);}
+        if(_parent.style.position=="absolute"||_parent.style.position=="fixed"){break;}
+      }
+      _element._addedResizewidthFix=true;
+    }
+    if(!_layoutParent._resizewidth){
+      _layoutParent.attachEvent("onpropertychange", function(){
+        if(window.event.propertyName=="style.width"){
+          for (;i<_layoutParent._resizewidthElements.length;i++){
+            _this.resizeRight(_layoutParent._resizewidthElements[i]);
+          }
+        }
+      });
+      _layoutParent._resizewidth=true;
+    }
+    return (_layoutParent||document.documentElement).clientWidth;
+  },
+  
+  // calculates the border width of the _element:
+  // NOTICE: .init() makes ._getBorderHeight() from this by replacing Width with Height
+  getBorderWidth: function(_element){
+    return _element.offsetWidth-_element.clientWidth;
+  },
+  
+  // calculates the actual value in pixels from _value:
+  getPixelValue: function(_element,_value) {
+    var _this=iefix,_style,_runtimeStyle;
+    if(_this._PIXEL.test(_value)){return parseInt(_value,10);}
+    // saves style in temp
+    _style=_element.style.left;
+    _runtimeStyle=_element.runtimeStyle.left;
+    _element.runtimeStyle.left=_element.currentStyle.left;
+    _this.resizing=true;
+    _element.style.left=_value||0;
+    // has pixel value
+    _value=_element.style.pixelLeft;
+    _element.style.left=_style;
+    _this.resizing=false;
+    _element.runtimeStyle.left=_runtimeStyle;
+    return _value;
+  },
+  
+  // calculates pixel value from the value given (even percentages)
+  // NOTICE: .init() makes ._getPixelHeght() from this by replacing Width with Height
+  getPixelWidth: function(_element,_value){
+    var _this=iefix;
+    if(_this._PERCENT.test(_value)){return parseInt(parseFloat(_value)/100*_this.layoutWidth(_element),10);}
+    return _this.getPixelValue(_element, _value);
+  },
+  
+  // calculates padding width of the _element:
+  // NOTICE: .init() makes .getPaddingHeight() from this by replacing Left/Right/Width with Top/Bottom/Height
+  // NOTICE: .init() also makes ._getMarginWidth() and ._getMarginHeight from this.
+  getPaddingWidth: function(_element) {
+    var _this=iefix;
+    return _this.getPixelWidth(_element,_element.currentStyle.paddingLeft)+_this.getPixelWidth(_element,_element.currentStyle.paddingRight);
+  },
+  
+  // calculates element's position from the right edge of the parent:
+  // NOTICE: .init() makes _resizeBottom() from this by replacing left/width with top/height
+  resizeRight: function(_element){
+    var _this=iefix,_left,_width;
+    //window.status = 'resizeRight';
+    if(_element.currentStyle===null){return;}
+    _left=parseInt(_element.currentStyle.left,10);
+    _width=_this.layoutWidth(_element)-parseInt(_element.currentStyle.right,10)-_left;
+    if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
+    _element.runtimeStyle.width="";
+    if(_element.offsetWidth<_width){
+      _width-=_this.getBorderWidth(_element)+_this.getPaddingWidth(_element);
+      if(_width<0){_width=0;}
+      _element.runtimeStyle.width=_width;
+    }
+  },
+  
+  // (css-property) opacity fix:
+  fixOpacity: function(_element){
+    var _opacity=(parseFloat(_element.currentStyle.opacity)*100)||1,
+        _filter=_element.filters["DXImageTransform.Microsoft.Alpha"];
+    if(_filter){_filter.Opacity=_opacity;_filter.Enabled=true;}
+    else{_element.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.Alpha(opacity="+_opacity+")";}
+  },
+  
+  // png background image fix:
+  fixBackgroundImage: function(_element) {
+    //window.status='fixBackgroundImage: ';
+    var _this=iefix,_url,_filter;
+    _url=_element.currentStyle.backgroundImage.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/);
+    //window.status+=' url:'+_url;
+    //window.status+=' pngCheck:'+_this.pngCheck.test(_url);
+    if(!_url){return;}
+    else{_url=_url[1];}
+    _filter=_element.filters["DXImageTransform.Microsoft.AlphaImageLoader"];
+    if(_this.pngCheck.test(_url)){ // needs more work
+      // access before filter is set makes error
+      if(_filter){
+        _filter.sizingMethod="crop";
+        _filter.src=_url;
+        _filter.Enabled=true;
+      }
+      else{
+        _element.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+_url+"',sizingMethod='crop')";
+      }
+      _element.runtimeStyle.zoom="0";
+      _element.runtimeStyle.backgroundImage="none";
+    }
+    else if(_filter){
+      _filter.Enabled=false;
+    }
+  },
+  
+  // png img opacity fix:
+  addFilter: function(_element,_image){
+    var _this=iefix,_filter,_tempUrl;
+    _filter=_element.filters["DXImageTransform.Microsoft.AlphaImageLoader"];
+    if(_filter){_filter.src=_element.src;_filter.Enabled=true;}
+    else{_element.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+_element.src+"',sizingMethod='scale')";}
+    _tempURL=_element.src;
+    _element.src=_this.blankGifPath;
+    _image.src=_tempURL;
+  },
+  
+  // checks if image is png
+  fixImg: function(_element){
+    var _this=iefix,_image;
+    if(_this.pngCheck.test(_element.src)){ // needs more work
+      _image=new Image(_element.width,_element.height);
+      _image.onload=function(){_element.width=_image.width;_element.height=_image.height;_image=null;};
+      _this.addFilter(_element,_image);
+    }
+  },
+  
+  _noStyleTagNames: ['PARAM'],
+  // applies fixes to the _element
+  inlineStyleChanged: function(_element){
+    var _this=iefix,_currentStyle;
+    _currentStyle=_element.currentStyle;
+    if(_this._noStyleTagNames.indexOf(_element.tagName)!=-1){ return; }
+    // check if element needs to be positioned from the right
+    try{
+      if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.left!="auto"&&_currentStyle.right!="auto"&&_currentStyle.width=="auto"){
+        _this.resizeRight(_element);
+      }
+    
+    // check if element needs to be positioned from the bottom
+      if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.top!="auto"&&_currentStyle.bottom!="auto"&&_currentStyle.height=="auto"){
+        _this.resizeBottom(_element);
+        // TODO: needs line height calculation here too for elements smaller than the line height or font size
+      }
+    
+    // check if opacity needs to be fixed:
+      if(_element.currentStyle.opacity){_this.fixOpacity(_element);}
+      
+    } catch(e) {
+      alert("iefix error! element:"+_element.tagName+" e:"+e.description);
+    }
+    
+    // check if background image needs to be fixed:
+    //if(_element.currentStyle.backgroundImage){_this.fixBackgroundImage(_element);}
+    
+    // check if png needs to be fixed:
+    //if(_element.tagName=="IMG"||(_element.tagName=="INPUT"&&_element.type=="image")){_this.fixImg(_element);}
+    
+    // anti-click-through fix:
+    //else 
+    if(_element.style.backgroundColor=='transparent'&&(_element.style.backgroundImage=='none'||!_element.style.backgroundImage)){
+      _element.style.backgroundImage="url("+ie_htc_path+"128.gif)"; // transparent gif, 128x128
+    }
+  },
+  
+  _traverseCount: 0,
+  // traverses from the _element node from the bottom to fix right|bottom positioning
+  _traverseTree: function(_element){
+    var _this=iefix;
+    _this._traverseCount++;
+    //window.status = 'traversecount: '+_this._traverseCount;
+    _element=_element||document.documentElement;
+    while(_element){
+      if(_element.nodeType==1){
+        _this.inlineStyleChanged(_element);
+      }
+      var _next=_element.firstChild;
+      if(!_next){ _next=_element.nextSibling;}
+      while(!_next&&_element.parentNode) {
+        _element=_element.parentNode;
+        _next=_element.nextSibling;
+      }
+      _element=_next;
+    }
+  },
+  
+  // triggers an htc style event to elements affected by the style.
+  stylesheet_refresh: function(_styleSheet){
+    _styleSheet.cssText += "";
+  },
+  
+  // initial constructs
+  init: function() {
+    var _this = iefix;
+    _this._AUTO = /^(auto|0cm)$/;
+    _this._PIXEL = /^\d+(px)?$/i;
+    _this._PERCENT = /^\d+%$/;
+    _this.pngCheck = new RegExp(".png$", "i"); // needs more work
+    //this.pngCheck = new RegExp("((\.gif)|(\.jpg))$", "i"); // needs more work
+    // needed for png hack
+    _this.blankGifPath=ie_htc_path+"0.gif";
+    eval("_this.getMarginWidth="+String(_this.getPaddingWidth).replace(/padding/g,"margin"));
+    eval("_this.getPaddingHeight="+String(_this.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
+    eval("_this.getMarginHeight="+String(_this.getPaddingHeight).replace(/padding/g,"margin"));
+    eval("_this.getBorderHeight="+String(_this.getBorderWidth).replace(/Width/g,"Height"));
+    eval("_this.layoutHeight="+String(_this.layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));
+    eval("_this.getPixelHeight="+String(_this.getPixelWidth).replace(/Width/g,"Height"));
+    eval("_this.resizeBottom="+String(_this.resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));
+    _this.resizing = false;
+  },
+  
+  // entry point from ie_css_style.htc
+  htcStyleEntry: function(){
+    //window.status = 'htcStyleEntry';
+    if(document.readyState=="complete"&&window.event.srcElement.readyState=="complete"){
+      iefix._traverseTree();
+    }
+  },
+  
+  _traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
+  //_traverseStyleProperties: ['right','bottom','width','height'],
+  
+  //_elemEntryCount: 0,
+  
+  // entry point from ie_css_element.htc
+  htcElementEntry: function(){
+    //iefix._elemEntryCount++;
+    //window.status="htcElementEntry: "+iefix._elemEntryCount;
+    var _element=window.event.srcElement, _propName=window.event.propertyName;
+    if (_propName=="style.opacity"){
+      //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' opacity';
+      iefix.fixOpacity(_element);
+    }
+    else if((_propName=="src"&&_element.tagName=="IMG")||(_element.tagName=="INPUT"&&_element.type=="image")){
+      window.status = 'htcElementEntry: '+iefix._elemEntryCount+' img';
+      iefix.fixImg(_element);
+    }
+    //else if(_propName=='style.cssText'){
+      //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' cssText';
+      //iefix._traverseTree();
+    //}
+    else if(_propName.substring(0,6)=='style.'){
+      if(iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])!=-1){
+        //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' style';
+        iefix._traverseTree();
+      }
+      
+      /*
+      else {
+        window.status+=window.event.propertyName+' ';
+      }*/
+      
+    }
+    //iefix._traverseTree(); // really should have more checks, this impacts performance heavily!
+    
+  }
+};
+iefix.init();
+
+ie_complete=document.readyState=="complete";
+ie_initialized=false;
+
+ie_documentLoaded=function(){if(document.readyState=="complete"){iefix._traverseTree();}};
+ie_fixes=function(){
+  if( !ie_initialized
+    ){
+    if(ie_complete){
+      //var _stylesheet=document.createStyleSheet();
+      //_stylesheet.cssText='style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}';
+      ie_documentLoaded();
+    }
+    else{
+      //document.write('<style type="text/css">style,link{behavior:url('+ie_htc_path+'ie_css_style.htc)}\n*{behavior:url('+ie_htc_path+'ie_css_element.htc)}</style>');
+      document.onreadystatechange=ie_documentLoaded;
+    }
+    ie_initialized=true;
+  }
+};
+ie_fixes();
+window.onresize=function(){iefix.setWinSize();iefix._traverseTree();};
+
+
+

@@ -266,12 +266,14 @@ HSystem = HClass.extend({
   activeWindowId: 0,
   windowFocus: function(_view){
     var _activeWindowId = this.activeWindowId,
-        _views = this.views, _viewId = _view.viewId;
+        _views = this.views,
+        _viewId = _view.viewId;
     if(_activeWindowId != 0){
       _views[_activeWindowId].windowBlur();
     }
     this.activeWindowId=_viewId;
     _view.bringToFront();
+    _view.windowFocus();
   }
   
 });
