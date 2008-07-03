@@ -1,7 +1,6 @@
 ###
   # HIMLE RIA SYSTEM
-  # Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
-  # Copyright (C) 2007 Juha-Jarmo Heinonen <juha-jarmo.heinonen@sorsacode.com>
+  # Copyright (C) 2007-2008 Juha-Jarmo Heinonen <juha-jarmo.heinonen@sorsacode.com>
   #  
   #  This program is free software; you can redistribute it and/or modify it under the terms
   #  of the GNU General Public License as published by the Free Software Foundation;
@@ -33,13 +32,13 @@ $_PACKAGES = {
   'basic' => [
     'button','stringview','textcontrol','textarea','slider','vslider',
     'progressbar','progressindicator','imageview','splitview','stepper','radiobutton',
-    'passwordcontrol','divider','checkbox','validatorview'
+    'passwordcontrol','divider','checkbox','validatorview','window'
   ],
   'tabs' => [
     'tab'
   ],
   'window' => [
-    'windowbar','windowlabel','windowview','windowcontrol'
+    'window'
   ],
   
   'servermessage' => [

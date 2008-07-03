@@ -264,12 +264,14 @@ HSystem = HClass.extend({
   },
   
   activeWindowId: 0,
-  windowFocus: function(_elemId){
-    var _activeWindowId = this.activeWindowId, _views = this.views;
+  windowFocus: function(_view){
+    var _activeWindowId = this.activeWindowId,
+        _views = this.views, _viewId = _view.viewId;
     if(_activeWindowId != 0){
-      _views[_activeWindowId].lostActiveStatus(_views[_elemId],true);
+      _views[_activeWindowId].windowBlur();
     }
-    this.activeWindowId=_elemId;
+    this.activeWindowId=_viewId;
+    _view.bringToFront();
   }
   
 });
