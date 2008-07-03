@@ -96,7 +96,7 @@ HTab = HControl.extend({
     this.tabLabelHeight    = 20; // overridden in the template
     this.tabLabelLeftEdge  = 4;  // overridden in the template
     this.tabLabelRightEdge = 4;  // overridden in the template
-    this.fontStyle = 'font-family:Trebuchet MS,Arial,sans-serif;font-size:13px;'; // overridden in the template
+    this.fontStyle = 'font-family:Arial,sans-serif;font-size:13px;'; // overridden in the template
     this.tabLabelHTMLPrefix1 = '<div class="edge-left"></div><div class="tablabel" style="width:';
     this.tabLabelHTMLPrefix2 = 'px">';
     this.tabLabelHTMLSuffix = '</div><div class="edge-right"></div>';

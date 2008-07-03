@@ -1013,6 +1013,10 @@ HView = HClass.extend({
         _x += ELEM.get(_elem.elemId).offsetLeft;
         _x -= ELEM.get(_elem.elemId).scrollLeft;
       }
+      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
+        _x += ELEM.get(_elem.markupElemIds.subview).offsetLeft;
+        _x -= ELEM.get(_elem.markupElemIds.subview).scrollLeft;
+      }
       _elem = _elem.parent;
     }
     return _x;
@@ -1030,6 +1034,10 @@ HView = HClass.extend({
       if(_elem.elemId && _elem.rect) {
         _y += ELEM.get(_elem.elemId).offsetTop;
         _y -= ELEM.get(_elem.elemId).scrollTop;
+      }
+      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
+        _y += ELEM.get(_elem.markupElemIds.subview).offsetTop;
+        _y -= ELEM.get(_elem.markupElemIds.subview).scrollTop;
       }
       _elem = _elem.parent;
     }
