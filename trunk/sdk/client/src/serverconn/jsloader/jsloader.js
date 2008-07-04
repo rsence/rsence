@@ -32,22 +32,24 @@ JSLoader = Base.extend({
     eval(_resp.responseText);
   }, 
   
-  load: function(_jsName){
-    if(jsLoader._loadedJS.indexOf(_jsName)!=-1){
+  load: function(_jsName,_fullURL){
+    if((jsLoader._loadedJS.indexOf(_jsName)!=-1) && (_fullURL === undefined)) {
       return;
     }
-    //this._currJS.push(_jsName);
-    req_args = {
-      onSuccess:    function(resp){jsLoader._okay(resp);},
-      onFailure:    function(resp){window.status="failed to load js: "+jsLoader._currJS;},
-      method:       'get',
-      asynchronous: false
-    };
-    this._req = new Ajax.Request( this.uri+_jsName+'.js', req_args );
-    this._loadedJS.push(_jsName);
-    
-    //document.write('<script type="text/javascript" src="'+this._basePath+_jsName+'"><'+'/script>');
-    //this._loaded_js.push(_jsName);
+
+    if (_fullURL) {
+      document.write('<script type="text/javascript" src="'+_jsName+'"><'+'/script>');
+    } else {
+      req_args = {
+        onSuccess:    function(resp){jsLoader._okay(resp);},
+        onFailure:    function(resp){window.status="failed to load js: "+jsLoader._currJS;},
+        method:       'get',
+        asynchronous: false
+      };
+      var _url = this.uri+_jsName+'.js';
+      this._req = new Ajax.Request( _url, req_args );
+      this._loadedJS.push(_jsName);
+    }
   }
   
 });
