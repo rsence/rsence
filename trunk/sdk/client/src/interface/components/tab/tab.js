@@ -177,8 +177,11 @@ HTab = HControl.extend({
     }
     _x -= this.pageX();
     _y -= this.pageY();
-    if(_x<=this.rightmostPx){
-      if(_y<=this.tabLabelHeight){
+    if(_y<=this.tabLabelHeight){
+      if (this.tabLabelAlign == 'right') {
+        _x = this.rect.width - _x;
+      }
+      if(_x<=this.rightmostPx){
         var i=0,_labelBounds;
         for(i;i<this.tabLabelBounds.length;i++){
           _labelBounds = this.tabLabelBounds[i];
@@ -188,6 +191,7 @@ HTab = HControl.extend({
           }
         }
       }
+      
     }
   },
   removeTab: function(_tabIdx){
