@@ -1,0 +1,27 @@
+.default .uvnavigator {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  display: block;
+}
+
+.default .uvnavigator a {
+  position: relative;
+  display: block;
+  padding-left: 20px;
+  background-color: #eee;
+  text-decoration: none;
+}
+
+.uvnavigator a:link {
+  color: #000;
+}
+
+.uvnavigator a:hover {
+  background-color: #ddd;
+  color: #fff;
+}
+
+.uvnavigator a:visited {
+  color: #000;
+}
+

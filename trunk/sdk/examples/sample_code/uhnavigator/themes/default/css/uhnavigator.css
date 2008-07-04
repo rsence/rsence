@@ -1,0 +1,67 @@
+/*
+.default .uhnavigator {
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  display: block;
+}
+
+.default .uhnavigator .hitem {
+  position: relative;
+  background-color: lightgray;
+  border: 1px solid gray;
+  vertical-align: middle;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+*/
+
+.default .uhnavigator ul {
+list-style-type:none;
+padding:0;
+margin:0;
+}
+/* make the top level links horizontal and position relative so that we can position the sub level */
+.default .uhnavigator li{
+float:left;
+position:relative;
+z-index:100;
+}
+
+/* use the table to position the dropdown list */
+.default .uhnavigator table{
+position:absolute;
+border-collapse:collapse;
+z-index:80;
+left:-1px;
+top:25px;
+}
+
+/* style all the links */
+.default .uhnavigator a, .default .uhnavigator :visited {
+display:block;
+font-size:10px;
+width:149px;
+padding:7px 0;
+color:#000;
+background:#949e7c;
+text-decoration:none;
+margin-right:1px;
+text-align:center;
+}
+/* style the links hover */
+.default .uhnavigator :hover{
+color:#444;
+background:#d4d8bd;
+}
+
+/* hide the sub level links */
+.default .uhnavigator ul ul {
+visibility:hidden;
+position:absolute;
+width:149px;
+height:0;
+}
+/* make the sub level visible on hover list or link */
+.default .uhnavigator ul li:hover ul, .default .uhnavigator ul a:hover ul{
+visibility:visible;
+}
