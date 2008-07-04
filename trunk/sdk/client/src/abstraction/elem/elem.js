@@ -23,11 +23,14 @@ BROWSER_TYPE = {
   firefox: false,
   firefox2: false
 };
+
 ELEM = {
   
   // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
   _constructor: function(){
     var _this=ELEM;
+    
+    _this._enableRecycler = false;
     
     // pre-init queue
     _this._domLoadQueue = [];
@@ -59,7 +62,11 @@ ELEM = {
     _this._slowness = 1;
     
     _this._elements =   [];
-    _this._recycler =   {_tagNames:[]};
+    if(_this._enableRecycler){
+      _this._recycler =   {_tagNames:[]};
+    } else {
+      _this._freeElemIds = [];
+    }
     _this._styleCache = {};
     _this._styleTodo =  {};
     _this._attrTodo =   {};
@@ -71,6 +78,7 @@ ELEM = {
   
   
   _fillTrash: function(_count,_tagName){
+    if(!ELEM._enableRecycler){return;}
     var _this=ELEM,i=0,_toDel=[],_recycler=_this._initRecycler(_tagName),_trashId=_recycler._trashId;
     for(;i!=_count;i++){_toDel.push(_this.make(_trashId,_tagName));}
     for(i=0;i!=_count;i++){_this.del(_toDel[i]);}
@@ -139,6 +147,7 @@ ELEM = {
   },
   
   _initRecycler: function(_tagName){
+    if(!ELEM._enableRecycler){return;}
     var _this=ELEM,_recycler=_this._recycler;
     if(!_recycler[_tagName]){
       _recycler._tagNames.push(_tagName);
@@ -152,25 +161,33 @@ ELEM = {
   
   // deletes element and all its associated caches by id
   del: function(_id){
-    var _this=ELEM,_elem=_this._elements[_id],_tagName=_elem.tagName,_trashId;
-    _trashId=_this._initRecycler(_tagName);
-    _this.append(_id,_trashId);
+    var _this=ELEM,_elem=_this._elements[_id];
+    _this.setCSS(_id,'display:none;');    
+    if(_this._enableRecycler){
+      var _tagName=_elem.tagName,
+          _trashId=_this._initRecycler(_tagName),
+          _recycler=_this._recycler[_tagName];
+      _this.append(_id,_trashId);
+    }
     
-    var _elemTodoIdx=_this._elemTodo.indexOf(_id),_recycler=_this._recycler[_tagName];
+    var _elemTodoIdx=_this._elemTodo.indexOf(_id);
     if(_elemTodoIdx!=-1){
       _this._elemTodo.splice(_elemTodoIdx,1);
     }
-    
     try{_elem.innerHTML='';}catch(e){}
-    _this.setCSS(_id,'display:none;');
     //_this.setAttr(_id,'id','',true);
     _this.delAttr(_id,'id');
     _this.delAttr(_id,'ctrl');
     
     _this._initCache(_id);
-    _recycler._countIn++;
-    _recycler.push(_id);
-    
+    if(_this._enableRecycler){
+      _recycler._countIn++;
+      _recycler.push(_id);
+    } else {
+      _this._freeElemIds.push(_id);
+      var _parentNode = _elem.parentNode;
+      _parentNode.removeChild(_elem);
+    }
   },
   
   // places element inside another
@@ -495,20 +512,22 @@ ELEM = {
   },
   // sets style key to value of id, bypass sets immediately
   printStats: function(){
-    var _this=ELEM,_recycler=_this._recycler,i=0,_tagName,_tagLen,_countIn,_countOut;
-    console.log('Recycler efficiency:');
-    var _allCountOut=0;
-    for(;i!=_recycler._tagNames.length;i++){
-      _tagName=_recycler._tagNames[i];
-      console.log(' tagName: '+_tagName);
-      _tagLen=_recycler[_tagName].length;
-      console.log('   length  : '+_tagLen);
-      _countIn=_recycler[_tagName]._countIn;
-      console.log('   countIn : '+_countIn);
-      _countOut=_recycler[_tagName]._countOut;
-      _allCountOut+=_countOut;
-      console.log('   countOut: '+_countOut);
-      console.log('--------------------------------');
+    var _this=ELEM,i=0,_tagName,_tagLen,_countIn,_countOut,_allCountOut=0;
+    if(_this._enableRecycler){
+      console.log('Recycler efficiency:');
+      _recycler=_this._recycler;
+      for(;i!=_recycler._tagNames.length;i++){
+        _tagName=_recycler._tagNames[i];
+        console.log(' tagName: '+_tagName);
+        _tagLen=_recycler[_tagName].length;
+        console.log('   length  : '+_tagLen);
+        _countIn=_recycler[_tagName]._countIn;
+        console.log('   countIn : '+_countIn);
+        _countOut=_recycler[_tagName]._countOut;
+        _allCountOut+=_countOut;
+        console.log('   countOut: '+_countOut);
+        console.log('--------------------------------');
+      }
     }
     console.log('================================');
     console.log('Flushing efficiency:');
@@ -527,7 +546,9 @@ ELEM = {
     console.log('  total times non-cache: '+_this._getStyleMissCount);
     console.log('================================');
     console.log('Summary:');
-    console.log('  recycler saved '+(_allCountOut)+' of '+_this._makeCount+' ('+Math.round(_allCountOut/_this._makeCount*100)+'%) document.createElement calls');
+    if(_this._enableRecycler){
+      console.log('  recycler saved '+(_allCountOut)+' of '+_this._makeCount+' ('+Math.round(_allCountOut/_this._makeCount*100)+'%) document.createElement calls');
+    }
     console.log('  style buffer saved '+(_this._setStyleDiffCount-_this._flushStylCount)+' of '+_this._setStyleDiffCount+' ('+Math.round(((_this._setStyleDiffCount-_this._flushStylCount)/_this._setStyleDiffCount)*100)+'%) non-cached DOM style sets');
     console.log('  style cache saved '+(_this._setStyleCount-_this._setStyleDiffCount)+' of '+_this._setStyleCount+' ('+Math.round(((_this._setStyleCount-_this._setStyleDiffCount)/_this._setStyleCount)*100)+'%) DOM style sets');
     console.log('  style cache saved '+(_this._getStyleCount-_this._getStyleMissCount)+' of '+_this._getStyleCount+' ('+Math.round(((_this._getStyleCount-_this._getStyleMissCount)/_this._getStyleCount)*100)+'%) DOM style gets');
@@ -575,25 +596,27 @@ ELEM = {
     }
     var _this=ELEM,_elem,_id;
     _this._makeCount++;
-    if(_this._recycler[_tagName]){
-      if(_this._recycler[_tagName].length!=0){
-        // Recycle the id of a previously deleted element
-        _id = _this._recycler[_tagName].pop();
-        _this._recycler[_tagName]._countOut++;
-        _elem = _this._elements[_id];
-        //_elem.innerHTML='';
-        /*
-        if(_elem.tagName!=_tagName){
-          _elem.outerHTML='<'+_tagName+'></'+_tagName+'>';
+    if(_this._enableRecycler){
+      if(_this._recycler[_tagName]){
+        if(_this._recycler[_tagName].length!=0){
+          // Recycle the id of a previously deleted element
+          _id = _this._recycler[_tagName].pop();
+          _this._recycler[_tagName]._countOut++;
+          _elem = _this._elements[_id];
+          //_elem.innerHTML='';
+          /*
+          if(_elem.tagName!=_tagName){
+            _elem.outerHTML='<'+_tagName+'></'+_tagName+'>';
+          }
+          */
+          if(_this._blockElems.indexOf(','+_tagName+',')!=-1){
+            _this.setCSS(_id,'display:block;');
+          } else {
+            _this.setCSS(_id,'display:inline;');
+          }
+          _this.append(_id,_targetId);
+          return _id;
         }
-        */
-        if(_this._blockElems.indexOf(','+_tagName+',')!=-1){
-          _this.setCSS(_id,'display:block;');
-        } else {
-          _this.setCSS(_id,'display:inline;');
-        }
-        _this.append(_id,_targetId);
-        return _id;
       }
     }
     _elem = document.createElement(_tagName);
@@ -670,10 +693,11 @@ ELEM = {
     _this.bind(document.body);
     
     // creates an 'trash' for div elements
-    _this._trashId = _this.make(0,'div');
-    
-    _this.setCSS(_this._trashId,"display:none;visibility:hidden;");
-    _this.setAttr(_this._trashId,'id','trashcan_'+_this._trashId);
+    if(_this._enableRecycler){
+      _this._trashId = _this.make(0,'div');
+      _this.setCSS(_this._trashId,"display:none;visibility:hidden;");
+      _this.setAttr(_this._trashId,'id','trashcan_'+_this._trashId);
+    }
     
     _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+')',_this._minDelay);
     
