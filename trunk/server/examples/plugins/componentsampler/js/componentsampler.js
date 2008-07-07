@@ -25,10 +25,10 @@ ComponentSampler = HApplication.extend({
     this.numericTab = this.tabs.addTab('Numeric');
     this.progressTab = this.tabs.addTab('Progress');
     this.mediaTab = this.tabs.addTab('Media');
-    this.populateButtons();
+    this.makeButtons();
   },
-  populateButtons: function(){
-    var _buttonRect = new HRect(8,8,148,28);
+  makeButtons: function(){
+    var _buttonRect = new HRect(8,8,168,32);
     
     this.button1 = new HButton(
       new HRect(_buttonRect),
@@ -36,7 +36,7 @@ ComponentSampler = HApplication.extend({
         label: 'HButton enabled'
       }
     );
-    _buttonRect.offsetBy(160,0);
+    _buttonRect.offsetBy(180,0);
     this.button2 = new HButton(
       new HRect(_buttonRect),
       this.buttonsTab, {
@@ -45,7 +45,7 @@ ComponentSampler = HApplication.extend({
       }
     );
     
-    _buttonRect.offsetBy(-160,30);
+    _buttonRect.offsetBy(-180,30);
     this.checkbox1 = new HCheckbox(
       new HRect(_buttonRect),
       this.buttonsTab, {
@@ -53,15 +53,48 @@ ComponentSampler = HApplication.extend({
         value: true
       }
     );
-    _buttonRect.offsetBy(160,0);
+    _buttonRect.offsetBy(180,0);
     this.checkbox2 = new HCheckbox(
       new HRect(_buttonRect),
       this.buttonsTab, {
         label: 'HCheckbox disabled',
         enabled: false,
-        value: false
+        value: true
       }
     );
+    
+    _buttonRect.offsetBy(-180,30);
+    this.radiobutton1 = new HRadioButton(
+      new HRect(_buttonRect),
+      this.buttonsTab, {
+        label: 'HRadiobutton 1'
+      }
+    );
+    _buttonRect.offsetBy(180,0);
+    this.radiobutton2 = new HRadiobutton(
+      new HRect(_buttonRect),
+      this.buttonsTab, {
+        label: 'HRadiobutton 2'
+      }
+    );
+    
+    _buttonRect.offsetBy(-180,30);
+    this.radiobutton3 = new HRadioButton(
+      new HRect(_buttonRect),
+      this.buttonsTab, {
+        label: 'HRadiobutton 3'
+      }
+    );
+    _buttonRect.offsetBy(180,0);
+    this.radiobutton4 = new HRadiobutton(
+      new HRect(_buttonRect),
+      this.buttonsTab, {
+        label: 'HRadiobutton 4 (disabled)',
+        enabled: false,
+        value: true
+      }
+    );
+    
   }
 });
 
