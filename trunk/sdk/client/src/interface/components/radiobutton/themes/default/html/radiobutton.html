@@ -1,4 +1,5 @@
-<div class="radiobutton">
-  <div id="control#{_ID}" class="icon"></div>
-  <div id="label#{_ID}" class="label"></div>
+<div class="radiobutton_control#{this.value?' checked':' unchecked'}" id="control#{_ID}">
+  <div class="radiobutton_state" id="state#{_ID}"></div>
+  <div class="radiobutton_label" id="label#{_ID}">#{this.label}</div>
+  <div class="radiobutton_antiselect"></div>
 </div>

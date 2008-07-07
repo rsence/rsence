@@ -1,75 +1,89 @@
-.default .button {
+
+.button_control,
+.button_edge_left,
+.button_center,
+.button_edge_right,
+.button_label,
+.button_antiselect {
+  position: absolute;
+  top: 0px; height: 24px;
+}
+
+.button_control {
+  left: 0px; right: 0px;
   cursor: pointer;
-  position: absolute;
-  left: 0px; right: 0px; top: 0px; bottom: 0px;
-  text-align: center;
-  display: block;
-  white-space: nowrap;
-  width: auto;
-  padding: 0;
 }
-.default .button #border {
-  position: absolute;
-  background-color: #ccc;
-  line-height: 1px;
-  overflow: hidden;
+.disabled .button_control {
+  cursor: default;
 }
-.default .button .state {
-  position: absolute;
-  left: 1px; right: 1px; top: 1px; bottom: 1px;
-  border: 1px solid #fff;
-  line-height: 0px;
-  background-color: #f0f0f0;
+
+.button_edge_left,
+.button_center,
+.button_edge_right {
+  background-repeat: repeat-x;
+  background-image: #{this.getCssFilePath('button_parts1.png')};
 }
-.enabled .button .state {
-  background-color: #fff;
+
+.button_edge_left {
+  left: 0px; width: 24px;
+  background-position: 0px 0px;
 }
-.active > .button .state {
-  background-color: #eee;
+.disabled > .button_control > .button_edge_left {
+  background-position: 0px -144px;
 }
-.default .button .bg {
-  position: absolute;
-  left: 1px; right: 1px; top: 1px; bottom: 1px;
-  padding: 1px;
+.enabled > .button_control:hover > .button_edge_left {
+  background-position: 0px -48px;
 }
-.enabled .button #border {
-  background-color: #aaa;
+.enabled > .button_control:active > .button_edge_left {
+  background-position: 0px -96px;
 }
-.active > .button #border {
-  background-color: #fb9;
+
+.button_edge_right {
+  right: 0px; width: 24px;
+  background-position: -24px 0px;
 }
-.default .button .border-n {
-  right: 1px; height: 1px;
-  left: 1px; top: 0px;
+.disabled > .button_control > .button_edge_right {
+  background-position: -24px -144px;
 }
-.default .button .border-s {
-  right: 1px; bottom: 0px;
-  left: 1px; height: 1px;
+.enabled > .button_control:hover > .button_edge_right {
+  background-position: -24px -48px;
 }
-.default .button .border-e {
-  width: 1px; bottom: 1px;
-  left: 0px; top: 1px;
+.enabled > .button_control:active > .button_edge_right {
+  background-position: -24px -96px;
 }
-.default .button .border-w {
-  right: 0px; bottom: 1px;
-  width: 1px; top: 1px;
+
+.button_center {
+  left: 24px; right: 24px;
+  background-position: 0px -24px;
 }
-.default .button .label {
-  position: absolute;
-  left: 1px; right: 1px;
-  vertical-align: middle;
-  border: 0;
-  background-color: transparent;
-  font-size: 11px;
-  font-family: 'Trebuchet MS', Verdana, Arial, Helvetica, sans-serif;
-  color: #666;
+.disabled > .button_control > .button_center {
+  background-position: 0px -168px;
 }
-.enabled .button .label {
-  color: #444;
+.enabled > .button_control:hover > .button_center {
+  background-position: 0px -72px;
 }
-.active > .button .label {
+.enabled > .button_control:active > .button_center {
+  background-position: 0px -120px;
+}
+
+.button_label {
+  left: 6px; right: 6px; top: 2px;
+  height: 20px; line-height: 21px;
+  text-align: center; vertical-align: middle;
+  font-family: Arial, sans-serif;
+  font-size: 12px; font-weight: bold;
+  color: #333;
+}
+.disabled > .button_control > .button_label {
+  color: #999;
+}
+.enabled > .button_control:hover > .button_label {
   color: #000;
 }
-.disabled .button {
-  opacity: 0.75;
+.enabled > .button_control:active > .button_label {
+  color: #000;
+}
+
+.button_antiselect {
+  left: 0px; right: 0px;
 }

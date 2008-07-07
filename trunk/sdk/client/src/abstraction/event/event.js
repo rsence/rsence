@@ -404,10 +404,13 @@ EVENT = {
     _clickElementIds=[];
     for(i=0;i!=_this.focused.length;i++){
       if(_this.focused[i]==true){
-        //console.log('_this.focusOptions',_this.focusOptions);
         // Set the active control to the currently focused item.
-        if(_this.focusOptions[i].ctrl.enabled){_newActiveControl=_this.focusOptions[i].ctrl;}
-        else if(_this.focusOptions[i].click==true){_clickElementIds.push(i);}
+        if(_this.focusOptions[i].ctrl.enabled){
+          _newActiveControl=_this.focusOptions[i].ctrl;
+        }
+        if(_this.focusOptions[i].click==true){
+          _clickElementIds.push(i);
+        }
     } }
     // Handle the active control selection.
     if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}

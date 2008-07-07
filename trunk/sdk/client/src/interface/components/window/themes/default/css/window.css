@@ -1,3 +1,5 @@
+
+
 .window_titlebar,
 .window_titlebar_edge_left, 
 .window_titlebar_center,
@@ -36,7 +38,7 @@
   background-position: 0px 0px;
 }
 
-.inactive .window_titlebar_edge_left {
+.inactive > .window_titlebar_edge_left {
   background-position: 0px -48px;
 }
 
@@ -45,7 +47,7 @@
   background-position: -24px 0px;
 }
 
-.inactive .window_titlebar_edge_right {
+.inactive > .window_titlebar_edge_right {
   right: 0px; top: 0px; width: 24px; height: 24px;
   background-position: -24px -48px;
 }
@@ -57,7 +59,7 @@
   background-image: #{this.getCssFilePath('window_parts2.png')};
 }
 
-.inactive .window_titlebar_center {
+.inactive > .window_titlebar_center {
   background-position: 0px -48px;
 }
 
@@ -80,7 +82,7 @@
   background-position: -72px 0px;
 }
 
-.inactive .window_body_edge_left {
+.inactive > .window_body_edge_left {
   background-position: -120px 0px;
 }
 
@@ -90,7 +92,7 @@
   background-position: -96px 0px;
 }
 
-.inactive .window_body_edge_right {
+.inactive > .window_body_edge_right {
   background-position: -144px 0px;
 }
 
@@ -98,7 +100,7 @@
   left: 0px; bottom: 0px; height: 24px; width: 24px;
   background-position: 0px -24px;
 }
-.inactive .window_body_corner_left {
+.inactive > .window_body_corner_left {
   background-position: 0px -72px;
 }
 
@@ -107,7 +109,7 @@
   background-position: -24px -24px;
 }
 
-.inactive .window_body_corner_right {
+.inactive > .window_body_corner_right {
   background-position: -24px -72px;
 }
 
@@ -118,7 +120,7 @@
   background-image: #{this.getCssFilePath('window_parts2.png')};
 }
 
-.inactive .window_body_edge_bottom {
+.inactive > .window_body_edge_bottom {
   background-position: 0px -72px;
 }
 
@@ -133,7 +135,7 @@
   color: #000;
 }
 
-.inactive .window_label {
+.inactive > .window_label {
   color: #666;
 }
 

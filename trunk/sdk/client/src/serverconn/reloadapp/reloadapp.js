@@ -67,7 +67,7 @@ ReloadApp = HApplication.extend({
     _alertMessageBox.setStyle('color','#000');
     _alertMessageBox.setHTML( _windowMessage );
     
-    var _reloadButton = new HClickButton(
+    var _reloadButton = new HButton(
       new HRect(10, 236, 370, 258 ),
       this._alertWindow,
       { label: 'Reload', action: this._clicked }

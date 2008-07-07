@@ -15,7 +15,7 @@
 HDynControl = HControl.extend({
   componentName: 'dyncontrol',
   componentBehaviour: ['view','control','window'],
-  constructor: function( _rect, _parentClass, _options ){
+  constructor: function( _rect, _parent, _options ){
     if(!_options) {
       _options={};
     }
@@ -46,16 +46,15 @@ HDynControl = HControl.extend({
       resizeSE = [0,0];
     }
     if(this.isinherited) {
-      this.base(_rect, _parentClass, _options);
+      this.base(_rect, _parent, _options);
     }
     else {
       this.isinherited = true;
-      this.base(_rect, _parentClass, _options);
+      this.base(_rect, _parent, _options);
       this.isinherited = false;
     }
     this.presrveTheme = true;
     this.setDraggable(true);
-    this.type = "[HDynControl]";
     this._initActionFns();
     this._initActionFlag();
     if(!this.isinherited) {

@@ -82,8 +82,6 @@ HControl = HView.extend({
     var _events = options.events;
     this.setEvents(_events);
     
-    this.type = '[HControl]';
-    
     // These are checked, because these might be overridden before the base is called.
     if(!this.valueObj) {
       this.setValueObj(new HDummyValue());
@@ -343,7 +341,8 @@ HControl = HView.extend({
         keyDown:    false,
         keyUp:      false,
         mouseWheel: false,
-        textEnter:  false
+        textEnter:  false,
+        click:      false
       });
       this.events = new _eventsClass;
     }
@@ -377,10 +376,27 @@ HControl = HView.extend({
   *          the component instance.
   *
   * See also:
-  *  <mouseDown> <setEvents> <HEventManager>
+  *  <setEvents> <HEventManager>
   **/
   setMouseMove: function(_flag) {
     this.events.mouseMove = _flag;
+    this.setEvents();
+  },
+
+/** method: setClickable
+  *
+  * Alternative flag setter for the <click> event type. If set to true, 
+  * starts listening to <click> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <click> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setClickable: function(_flag) {
+    this.events.click = _flag;
     this.setEvents();
   },
   
@@ -931,7 +947,6 @@ HDummyValue = HClass.extend({
   constructor: function(_id, _value) {
     this.id = _id;
     this.value = _value;
-    this.type = '[HDummyValue]';
   },
 
 /** method: set

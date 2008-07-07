@@ -139,11 +139,6 @@ HView = HClass.extend({
     // Set the geometry
     this.setRect(_rect);
     this.isHidden = true;
-    if(this.parent.type == '[HView]') {
-      this.type = '[HSubview]';
-    } else {
-      this.type = '[HView]';
-    }
     
     this.drawn = false;
     
