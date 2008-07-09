@@ -57,9 +57,16 @@ class Broker
     ## the second part of the uri contains the disposable
     ## upload key that has a server-side mapping to the
     ## user's session
-    elsif uri == '/up'
-      puts "/up: #{uri.inspect}" if $DEBUG_MODE
+    elsif uri[0..2] == '/U/'
+      puts "/U: #{uri.inspect}" if $DEBUG_MODE
       $TICKETSERVE.up( @request, @response )
+    else
+      puts "/404: #{uri.inspect}" if $DEBUG_MODE
+      @response.status = 404
+      err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
+      @response['content-type'] = 'text/html; charset=UTF-8'
+      @response['content-size'] = err404.size.to_s
+      @response.body = err404
     end
     
   end
@@ -93,6 +100,14 @@ class Broker
     ## special case for favicon
     elsif uri == '/favicon.ico'
       $TICKETSERVE.favicon( @request, @response )
+    
+    elsif uri == '/U/iframe_html'
+      puts "/U/iframe_html: #{uri.inspect}" if $DEBUG_MODE
+      @response.status = 200
+      http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
+      @response['content-type'] = 'text/html; charset=UTF-8'
+      @response['content-size'] = http_body.size.to_s
+      @response.body = http_body
     
     ## all other get -requests load the index html page 
     else

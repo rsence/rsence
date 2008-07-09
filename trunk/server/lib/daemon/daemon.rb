@@ -26,6 +26,9 @@ require 'conf/default'
 require 'rubygems'
 require 'rack'
 
+## Loads the chosen web-server 
+require $config[:http_server][:rack_require]
+
 # methods that return rack handlers
 def rack_webrick_handler; Rack::Handler::WEBrick; end
 def rack_ebb_handler;     Rack::Handler::Ebb;     end
@@ -41,9 +44,6 @@ $config[:http_server][:rack_handler] = self.method({
 }[$config[:http_server][:rack_require]]).call
 
 $DEBUG_MODE  = $config[:debug_mode]
-
-## Loads the chosen web-server 
-require $config[:http_server][:rack_require]
 
 
 # JSServe / JSCache caches and serves js and theme -files

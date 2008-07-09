@@ -43,6 +43,9 @@ module RestfulDispatcher
     response = Response.new
     
     request_method = request.request_method.downcase
+    
+    puts "request method: #{request_method.inspect}"
+    
     dispatcher = dispatcher_class.new( request, response )
     
     dispatcher.send(request_method)

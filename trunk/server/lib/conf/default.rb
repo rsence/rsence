@@ -62,8 +62,8 @@ $config = {
     ## Bind this ip address ('0.0.0.0' means all)
     :bind_address   => ARGV.include?('--addr')?(ARGV[ARGV.index('--addr')+1]):'0.0.0.0',
     
-    ## Rack handler to use
-    :rack_require   => ARGV.include?('--server')?(ARGV[ARGV.index('--server')+1]):'mongrel',
+    ## Rack handler to use, defaults to thin
+    :rack_require   => ARGV.include?('--server')?(ARGV[ARGV.index('--server')+1]):'thin',
     :rack_handler   => nil # automatic
   },
   
