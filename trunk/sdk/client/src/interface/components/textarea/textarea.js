@@ -30,18 +30,8 @@
   ***/
 HTextArea = HTextControl.extend({
   
-  componentName: "textarea",
+  componentName: "textarea"
 
-/** constructor: constructor
-  *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
-  **/
-  constructor: function(_rect, _parentClass, _options) {
-    this.base(_rect, _parentClass, _options);
-  }
   
 });
 
