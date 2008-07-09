@@ -15,7 +15,7 @@
 $_INC_NAME = 'js.inc'
 
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','basic','tabs','window','servermessage','iefix']
+$_PACKAGE_NAMES = ['core','basic','tabs','window','uploader','servermessage','iefix']
 $_PACKAGES = {
   'core' => [
     'class',
@@ -25,20 +25,31 @@ $_PACKAGES = {
     'event',
     'sha',
     'transporter','valuemanager','value','jsloader',
+    'valuematrix',
     'point','rect',
     'system','application','thememanager','markupview','view','control',
     'dyncontrol'
   ],
+  
   'basic' => [
-    'button','stringview','textcontrol','textarea','slider','vslider',
-    'progressbar','progressindicator','imageview','splitview','stepper','radiobutton',
-    'passwordcontrol','divider','checkbox','validatorview','window'
+    'button','checkbox','radiobutton',
+    'stringview','textcontrol','textarea','slider','vslider',
+    'progressbar','progressindicator','imageview','splitview','stepper',
+    'passwordcontrol','divider','validatorview','window','tab'
   ],
+  
+  # remove until release
   'tabs' => [
-    'tab'
+    'tab_deprecation'
   ],
+  
+  # remove until release
   'window' => [
-    'window'
+    'window_deprecation'
+  ],
+  
+  'uploader' => [
+    'uploader'
   ],
   
   'servermessage' => [
