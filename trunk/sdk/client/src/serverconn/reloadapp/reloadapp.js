@@ -19,24 +19,15 @@ ReloadApp = HApplication.extend({
     
     this._destinationUrl = _destinationUrl;
     
-    var _winWidth  = ELEM.windowSize()[0];
-    var _winHeight = ELEM.windowSize()[1];
-    var _halfWidth = parseInt(_winWidth/2,10);
-    var _halfHeight = parseInt(_winHeight/2,10);
+    var _winWidth  = ELEM.windowSize()[0],
+        _winHeight = ELEM.windowSize()[1],
+        _halfWidth = parseInt(_winWidth/2,10),
+        _halfHeight = parseInt(_winHeight/2,10),
     
-    this._backgroundView = new (HView.extend({flexRight:true,flexBottom:true}))(
-      new HRect( 0, 0, _winWidth, _winHeight ),
-      this
-    );
-    this._backgroundView.setStyle('position','fixed');
-    
-    this._backgroundView.setStyle('opacity',0.75);
-    this._backgroundView.setStyle('background-color','#666');
-    
-    var _alertWidth  = 400;
-    var _alertHeight = 300;
-    var _alertX      = _halfWidth - 200;
-    var _alertY      = _halfHeight - 150;
+        _alertWidth  = 400,
+        _alertHeight = 300,
+        _alertX      = _halfWidth - 200,
+        _alertY      = _halfHeight - 150;
     
     if(_alertX<10){_alertX = 10;}
     if(_alertY<10){_alertY = 10;}
@@ -53,29 +44,46 @@ ReloadApp = HApplication.extend({
       }
     );
     
-    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 350, 32 ), this._alertWindow );
+    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 370, 32 ), this._alertWindow );
     _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
     _alertMessageTitleBox.setStyle('font-size','18px');
     _alertMessageTitleBox.setStyle('font-weight','bold');
     _alertMessageTitleBox.setStyle('color','#000');
     _alertMessageTitleBox.setHTML( _windowTitle );
     
-    var _alertMessageBox = new HView( new HRect( 10, 48, 350, 230 ), this._alertWindow );
+    var _alertMessageBox = new HView( new HRect( 10, 48, 370, 230 ), this._alertWindow );
     _alertMessageBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
     _alertMessageBox.setStyle('font-size','13px');
     _alertMessageBox.setStyle('overflow','auto');
     _alertMessageBox.setStyle('color','#000');
     _alertMessageBox.setHTML( _windowMessage );
     
-    var _reloadButton = new HButton(
-      new HRect(10, 236, 370, 258 ),
+    var _reloadButton = new (HButton.extend({
+      click: function(){
+        location.href = this.app._destinationUrl;
+      }
+    }))(
+      new HRect(300, 234, 370, 258 ),
       this._alertWindow,
-      { label: 'Reload', action: this._clicked }
+      { label: 'Reload', events: {click:true} }
+    );
+    
+    var _ignoreButton = new (HButton.extend({
+      click: function(){
+        HTransporter.start();
+        this.app.die();
+      }
+    }))(
+      new HRect(10, 234, 70, 258 ),
+      this._alertWindow,
+      { label: 'Ignore', events: {click:true} }
     );
     HTransporter.stop();
   },
-  _clicked: function(){
-    location.href = reloadApp._destinationUrl;
+  onIdle: function(){
+    if(this._alertWindow){
+      HSystem.windowFocus(this._alertWindow);
+    }
   }
 });
 /** USAGE: 
