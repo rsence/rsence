@@ -32,6 +32,8 @@ require 'http/response'
 ## Minimally WEBrick -compatible request object
 require 'http/request'
 
+require 'pp'
+
 module Himle
 module Server
 
@@ -44,7 +46,7 @@ module RestfulDispatcher
     
     request_method = request.request_method.downcase
     
-    puts "request method: #{request_method.inspect}"
+    puts "request method: #{request.header['request-method'].inspect}"
     
     dispatcher = dispatcher_class.new( request, response )
     

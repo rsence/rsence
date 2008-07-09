@@ -79,8 +79,7 @@ module Server
 module TicketService
 module Upload
   def up(request,response)
-    puts "up..."
-    #pp request
+    pp request
     response.status = 200
     http_body = '<html><head><title>Uploading Done</title><script type="text/javascript">alert("upload done");</script></head><body></body></html>'
     response['content-type'] = 'text/html; charset=UTF-8'
