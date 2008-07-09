@@ -93,7 +93,7 @@ HDynControl = HControl.extend({
     this.base();
   },
   draw: function(){
-    var _isDrawn = _this.drawn;
+    var _isDrawn = this.drawn;
     this.base();
     this.drawRect();
     if(!_isDrawn){
