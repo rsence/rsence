@@ -88,8 +88,40 @@ class Transporter
         puts
         puts "new session. rescanning apps."
         puts
-        $FILECACHE.check_scan
-        $PLUGINS.rescan()
+        begin
+          $FILECACHE.check_scan
+        rescue => e
+          $SESSION.stop_client_with_message( msg,
+            @config[:messages][:filecache_error][:title],
+            @config[:messages][:filecache_error][:descr]+e.message,
+            @config[:messages][:filecache_error][:uri]
+          )
+          puts "=="*40 if $DEBUG_MODE
+          puts "Transporter::FileCacheError: FileCache.check_scan failed."
+          if $DEBUG_MODE
+            puts "--"*40
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+          end
+        end
+        begin
+          $PLUGINS.rescan()
+        rescue => e
+          $SESSION.stop_client_with_message( msg,
+            @config[:messages][:plugins_rescan_error][:title],
+            @config[:messages][:plugins_rescan_error][:descr]+e.message,
+            @config[:messages][:plugins_rescan_error][:uri]
+          )
+          puts "=="*40 if $DEBUG_MODE
+          puts "Transporter::PluginsRescanError: $PLUGINS.rescan failed."
+          if $DEBUG_MODE
+            puts "--"*40
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+          end
+        end
         puts
         puts "rescan done"
         puts
@@ -98,23 +130,119 @@ class Transporter
       ## Pass the client XML to $VALUES
       if request.query.has_key?( 'HSyncData' )
         syncdata_str = request.query[ 'HSyncData' ]
-        $VALUES.xhr( msg, syncdata_str )
+        begin
+          $VALUES.xhr( msg, syncdata_str )
+        rescue => e
+          $SESSION.stop_client_with_message( msg,
+            @config[:messages][:valuemanager_xhr_error][:title],
+            @config[:messages][:valuemanager_xhr_error][:descr]+e.message,
+            @config[:messages][:valuemanager_xhr_error][:uri]
+          )
+          puts "=="*40 if $DEBUG_MODE
+          puts "Transporter::ValueManagerXHRError: $VALUES.xhr failed."
+          if $DEBUG_MODE
+            puts "--"*40
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+          end
+        end
       end
       
-      $VALUES.validate( msg )
+      begin
+        $VALUES.validate( msg )
+      rescue => e
+        $SESSION.stop_client_with_message( msg,
+          @config[:messages][:valuemanager_validate_error][:title],
+          @config[:messages][:valuemanager_validate_error][:descr]+e.message,
+          @config[:messages][:valuemanager_validate_error][:uri]
+        )
+        puts "=="*40 if $DEBUG_MODE
+        puts "Transporter::ValueManagerValidateError: $VALUES.validate failed."
+        if $DEBUG_MODE
+          puts "--"*40
+          puts e.message
+          puts "  #{e.backtrace.join("\n  ")}"
+          puts "=="*40
+        end
+      end
       
       if msg.restored_session
         msg.session[:deps] = []
-        $PLUGINS.delegate( 'restore_ses', msg )
+        begin
+          $PLUGINS.delegate( 'restore_ses', msg )
+        rescue => e
+          $SESSION.stop_client_with_message( msg,
+            @config[:messages][:plugin_delegate_restore_ses_error][:title],
+            @config[:messages][:plugin_delegate_restore_ses_error][:descr]+e.message,
+            @config[:messages][:plugin_delegate_restore_ses_error][:uri]
+          )
+          puts "=="*40 if $DEBUG_MODE
+          puts "Transporter::PluginDelegateRestoreSesError: $PLUGINS.delegate 'restore_ses' failed."
+          if $DEBUG_MODE
+            puts "--"*40
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+          end
+        end
       elsif msg.new_session
-        $PLUGINS.delegate( 'init_ses', msg )
+        begin
+          $PLUGINS.delegate( 'init_ses', msg )
+        rescue => e
+          $SESSION.stop_client_with_message( msg,
+            @config[:messages][:plugin_delegate_init_ses_error][:title],
+            @config[:messages][:plugin_delegate_init_ses_error][:descr]+e.message,
+            @config[:messages][:plugin_delegate_init_ses_error][:uri]
+          )
+          puts "=="*40 if $DEBUG_MODE
+          puts "Transporter::PluginDelegateInitSesError: $PLUGINS.delegate 'init_ses' failed."
+          if $DEBUG_MODE
+            puts "--"*40
+            puts e.message
+            puts "  #{e.backtrace.join("\n  ")}"
+            puts "=="*40
+          end
+        end
       end
       
-      ### Allows every application to respond to the idle call
-      $PLUGINS.idle( msg )
+      ### Allows every plugin to respond to the idle call
+      begin
+        $PLUGINS.idle( msg )
+      rescue => e
+        $SESSION.stop_client_with_message( msg,
+          @config[:messages][:plugin_idle_error][:title],
+          @config[:messages][:plugin_idle_error][:descr]+e.message,
+          @config[:messages][:plugin_idle_error][:uri]
+        )
+        puts "=="*40 if $DEBUG_MODE
+        puts "Transporter::PluginIdleError: $PLUGINS.idle failed."
+        if $DEBUG_MODE
+          puts "--"*40
+          puts e.message
+          puts "  #{e.backtrace.join("\n  ")}"
+          puts "=="*40
+        end
+      end
       
       ### Process outgoing values to client
-      $VALUES.sync_client( msg )
+      begin
+        $VALUES.sync_client( msg )
+      rescue => e
+        $SESSION.stop_client_with_message( msg,
+          @config[:messages][:valuemanager_sync_client_error][:title],
+          @config[:messages][:valuemanager_sync_client_error][:descr]+e.message,
+          @config[:messages][:valuemanager_sync_client_error][:uri]
+        )
+        puts "=="*40 if $DEBUG_MODE
+        puts "Transporter::ValueManagerSyncClientError: $VALUES.sync_client failed."
+        if $DEBUG_MODE
+          puts "--"*40
+          puts e.message
+          puts "  #{e.backtrace.join("\n  ")}"
+          puts "=="*40
+        end
+      end
       
     end
     

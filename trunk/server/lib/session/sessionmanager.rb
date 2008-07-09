@@ -185,12 +185,15 @@ class SessionManager < SessionStorage
     msg.reply "HTransporter.syncDelay=-1;"
   end
   
+  def js_str( str )
+    return str.to_json.gsub('<','&lt;').gsub('>','&gt;').gsub(/\[\[(.*?)\]\]/,'<\1>')
+  end
+  
   ## Displays error message and stops the client
   def stop_client_with_message( msg, title='Unknown Issue', descr='No issue description given.', uri='/' )
     msg.reply "jsLoader.load('basic');"
-    msg.reply "jsLoader.load('window');"
     msg.reply "jsLoader.load('servermessage');"
-    msg.reply "reloadApp = new ReloadApp( '#{title.gsub("'",'\'')}', '#{descr.gsub("'",'\'')}', '#{uri}'  );"
+    msg.reply "reloadApp = new ReloadApp( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
     stop_client( msg )
   end
   

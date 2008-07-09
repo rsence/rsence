@@ -52,6 +52,14 @@ class Broker
     elsif uri == '/hello'
       puts "/hello: #{uri.inspect}" if $DEBUG_MODE
       $TRANSPORTER.xhr( @request, @response, true )
+    
+    ## /up handles the uploads inited for ticketserve
+    ## the second part of the uri contains the disposable
+    ## upload key that has a server-side mapping to the
+    ## user's session
+    elsif uri == '/up'
+      puts "/up: #{uri.inspect}" if $DEBUG_MODE
+      $TICKETSERVE.up( @request, @response )
     end
     
   end

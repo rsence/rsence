@@ -122,8 +122,64 @@ $config = {
       
       # If the client fails on javascript, display this:
       :client_error => {
-        :title => 'Client Error',
-        :descr => 'Your web browser has encountered an javascript error.<br />Please reload the page to continue.<br />Error encountered:<br />',
+        :title => 'ClientError',
+        :descr => 'Your web browser has encountered an javascript error.[[br /]]Please reload the page to continue.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the filecache fails, display this:
+      :filecache_error => {
+        :title => 'Transporter::FileCacheError',
+        :descr => 'FileCache encountered an error.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :plugins_rescan_error => {
+        :title => 'Transporter::PluginsRescanError',
+        :descr => 'The initialization of a plugin failed.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :valuemanager_xhr_error => {
+        :title => 'Transporter::ValueManagerXHRError',
+        :descr => 'The parsing of the syncvalues xml data failed.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :valuemanager_validate_error => {
+        :title => 'Transporter::ValueManagerValidateError',
+        :descr => 'The value validation process failed.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :valuemanager_sync_client_error => {
+        :title => 'Transporter::ValueManagerSyncClientError',
+        :descr => 'The value syncronization to the client failed.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :plugin_delegate_restore_ses_error => {
+        :title => 'Transporter::PluginDelegateRestoreSesError',
+        :descr => 'The plugin delegation process for restore_ses failed.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :plugin_delegate_init_ses_error => {
+        :title => 'Transporter::PluginDelegateInitSesError',
+        :descr => 'The plugin delegation process for init_ses failed.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
+        :uri   => '/'
+      },
+      
+      # If the plugins rescan fails, display this:
+      :plugin_idle_error => {
+        :title => 'Transporter::PluginIdleError',
+        :descr => 'The idle event failed for a plugin.[[br /]]Please reload the page to retry.[[br /]]Error encountered:[[br /]]',
         :uri   => '/'
       }
     }
