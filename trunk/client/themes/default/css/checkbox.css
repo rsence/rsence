@@ -1,0 +1,69 @@
+.checkbox_control,
+.checkbox_state,
+.checkbox_label,
+.checkbox_antiselect {
+  position: absolute; height: 24px;
+}
+.checkbox_control {
+  left: 0px; top: 0px; right: 0px;
+  cursor: pointer;
+}
+.disabled > .checkbox_control {
+  cursor: default;
+}
+.checkbox_state {
+  left: 0px; top: 0px; width: 24px;
+  background-repeat: no-repeat;
+  background-position: -24px 0px;
+  background-image: #{this.getCssFilePath('checkbox_parts1.png')};
+}
+
+.enabled > .unchecked > .checkbox_state {
+  background-position: -24px 0px;
+}
+.enabled > .unchecked:hover > .checkbox_state {
+  background-position: -24px -24px;
+}
+.enabled > .unchecked:active > .checkbox_state {
+  background-position: -24px -48px;
+}
+
+.enabled > .checked > .checkbox_state {
+  background-position: 0px 0px;
+}
+.enabled > .checked:hover > .checkbox_state {
+  background-position: 0px -24px;
+}
+.enabled > .checked:active > .checkbox_state {
+  background-position: 0px -48px;
+}
+
+.disabled > .unchecked > .checkbox_state {
+  background-position: -24px -72px;
+}
+.disabled > .checked > .checkbox_state {
+  background-position: 0px -72px;
+}
+
+.checkbox_label {
+  left: 30px; right: 0px; top: 2px;
+  height: 20px; line-height: 21px;
+  text-align: left; vertical-align: middle;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #333;
+}
+.disabled > .checkbox_control > .checkbox_label {
+  color: #999;
+}
+.enabled > .checkbox_control:hover > .checkbox_label {
+  color: #000;
+}
+.enabled > .checkbox_control:active > .checkbox_label {
+  color: #000;
+}
+
+.checkbox_antiselect {
+  left: 0px; top: 0px; right: 0px;
+}
+

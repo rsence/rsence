@@ -1,0 +1,33 @@
+
+ie_htc_path=null;function ie_early_fixes(){document.execCommand("BackgroundImageCache",false,true);var _61=document.scripts[document.scripts.length-1],_4t=_61.src;ie_htc_path=_4t.substring(0,_4t.lastIndexOf("/")+1);console={log:function(){}};}
+ie_early_fixes();iefix={setWinSize:function(){window.innerWidth=document.documentElement.clientWidth;window.innerHeight=document.documentElement.clientHeight;},_6W:function(_5){return _5.currentStyle.hasLayout;},layoutWidth:function(_5){var _0=iefix,_f,i=0,_W=_5.offsetParent;while(_W&&!_0._6W(_W)){_W=_W.offsetParent;}
+if(!_W._resizewidthElements){_W._resizewidthElements=[];}
+if(!_5._addedResizewidthFix){_W._resizewidthElements.push(_5);_f=_W;while(_f.offsetParent){_f=_f.offsetParent;if(_f._resizewidthElements){_f._resizewidthElements.push(_5);}
+if(_f.style.position=="absolute"||_f.style.position=="fixed"){break;}}
+_5._addedResizewidthFix=true;}
+if(!_W._resizewidth){_W.attachEvent("onpropertychange",function(){if(window.event.propertyName=="style.width"){for(;i<_W._resizewidthElements.length;i++){_0.resizeRight(_W._resizewidthElements[i]);}}});_W._resizewidth=true;}
+return(_W||document.documentElement).clientWidth;},getBorderWidth:function(_5){return _5.offsetWidth-_5.clientWidth;},getPixelValue:function(_5,_6A){var _0=iefix,_06,_60;if(_0._PIXEL.test(_6A)){return parseInt(_6A,10);}
+_06=_5.style.left;_60=_5.runtimeStyle.left;_5.runtimeStyle.left=_5.currentStyle.left;_0.resizing=true;_5.style.left=_6A||0;_6A=_5.style.pixelLeft;_5.style.left=_06;_0.resizing=false;_5.runtimeStyle.left=_60;return _6A;},getPixelWidth:function(_5,_6A){var _0=iefix;if(_0._PERCENT.test(_6A)){return parseInt(parseFloat(_6A)/100*_0.layoutWidth(_5),10);}
+return _0.getPixelValue(_5,_6A);},getPaddingWidth:function(_5){var _0=iefix;return _0.getPixelWidth(_5,_5.currentStyle.paddingLeft)+_0.getPixelWidth(_5,_5.currentStyle.paddingRight);},resizeRight:function(_5){var _0=iefix,_04,_r;if(_5.currentStyle===null){return;}
+_04=parseInt(_5.currentStyle.left,10);_r=_0.layoutWidth(_5)-parseInt(_5.currentStyle.right,10)-_04;if(parseInt(_5.runtimeStyle.width,10)==_r){return;}
+_5.runtimeStyle.width="";if(_5.offsetWidth<_r){_r-=_0.getBorderWidth(_5)+_0.getPaddingWidth(_5);if(_r<0){_r=0;}
+_5.runtimeStyle.width=_r;}},fixOpacity:function(_5){var _X=(parseFloat(_5.currentStyle.opacity)*100)||1,_O=_5.filters["DXImageTransform.Microsoft.Alpha"];if(_O){_O.Opacity=_X;_O.Enabled=true;}
+else{_5.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.Alpha(opacity="+_X+")";}},fixBackgroundImage:function(_5){var _0=iefix,_l,_O;_l=_5.currentStyle.backgroundImage.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/);if(!_l){return;}
+else{_l=_l[1];}
+_O=_5.filters["DXImageTransform.Microsoft.AlphaImageLoader"];if(_0.pngCheck.test(_l)){if(_O){_O.sizingMethod="crop";_O.src=_l;_O.Enabled=true;}
+else{_5.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+_l+"',sizingMethod='crop')";}
+_5.runtimeStyle.zoom="0";_5.runtimeStyle.backgroundImage="none";}
+else if(_O){_O.Enabled=false;}},addFilter:function(_5,_0Z){var _0=iefix,_O,_tempUrl;_O=_5.filters["DXImageTransform.Microsoft.AlphaImageLoader"];if(_O){_O.src=_5.src;_O.Enabled=true;}
+else{_5.runtimeStyle.filter+="progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+_5.src+"',sizingMethod='scale')";}
+_6k=_5.src;_5.src=_0.blankGifPath;_0Z.src=_6k;},fixImg:function(_5){var _0=iefix,_0Z;if(_0.pngCheck.test(_5.src)){_0Z=new Image(_5.width,_5.height);_0Z.onload=function(){_5.width=_0Z.width;_5.height=_0Z.height;_0Z=null;};_0.addFilter(_5,_0Z);}},_79:['PARAM'],inlineStyleChanged:function(_5){var _0=iefix,_02;_02=_5.currentStyle;if(_0._79.indexOf(_5.tagName)!=-1){return;}
+try{if((_02.position=="absolute"||_02.position=="fixed")&&_02.left!="auto"&&_02.right!="auto"&&_02.width=="auto"){_0.resizeRight(_5);}
+if((_02.position=="absolute"||_02.position=="fixed")&&_02.top!="auto"&&_02.bottom!="auto"&&_02.height=="auto"){_0.resizeBottom(_5);}
+if(_5.currentStyle.opacity){_0.fixOpacity(_5);}}catch(e){alert("iefix error! element:"+_5.tagName+" e:"+e.description);}
+if(_5.style.backgroundColor=='transparent'&&(_5.style.backgroundImage=='none'||!_5.style.backgroundImage)){_5.style.backgroundImage="url("+ie_htc_path+"128.gif)";}},_7w:0,_00:function(_5){var _0=iefix;_0._7w++;_5=_5||document.documentElement;while(_5){if(_5.nodeType==1){_0.inlineStyleChanged(_5);}
+var _2e=_5.firstChild;if(!_2e){_2e=_5.nextSibling;}
+while(!_2e&&_5.parentNode){_5=_5.parentNode;_2e=_5.nextSibling;}
+_5=_2e;}},stylesheet_refresh:function(_4x){_4x.cssText+="";},init:function(){var _0=iefix;_0._AUTO=/^(auto|0cm)$/;_0._PIXEL=/^\d+(px)?$/i;_0._PERCENT=/^\d+%$/;_0.pngCheck=new RegExp(".png$","i");_0.blankGifPath=ie_htc_path+"0.gif";eval("_0.getMarginWidth="+String(_0.getPaddingWidth).replace(/padding/g,"margin"));eval("_0.getPaddingHeight="+String(_0.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));eval("_0.getMarginHeight="+String(_0.getPaddingHeight).replace(/padding/g,"margin"));eval("_0.getBorderHeight="+String(_0.getBorderWidth).replace(/Width/g,"Height"));eval("_0.layoutHeight="+String(_0.layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));eval("_0.getPixelHeight="+String(_0.getPixelWidth).replace(/Width/g,"Height"));eval("_0.resizeBottom="+String(_0.resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));_0.resizing=false;},htcStyleEntry:function(){if(document.readyState=="complete"&&window.event.srcElement.readyState=="complete"){iefix._00();}},_2l:['width','height','left','top','right','bottom','display','position'],htcElementEntry:function(){var _5=window.event.srcElement,_1B=window.event.propertyName;if(_1B=="style.opacity"){iefix.fixOpacity(_5);}
+else if((_1B=="src"&&_5.tagName=="IMG")||(_5.tagName=="INPUT"&&_5.type=="image")){window.status='htcElementEntry: '+iefix._0X+' img';iefix.fixImg(_5);}
+else if(_1B.substring(0,6)=='style.'){if(iefix._2l.indexOf(_1B.split('style.')[1])!=-1){iefix._00();}}}};iefix.init();ie_complete=document.readyState=="complete";ie_initialized=false;ie_documentLoaded=function(){if(document.readyState=="complete"){iefix._00();}};ie_fixes=function(){if(!ie_initialized){if(ie_complete){ie_documentLoaded();}
+else{document.onreadystatechange=ie_documentLoaded;}
+ie_initialized=true;}};ie_fixes();window.onresize=function(){iefix.setWinSize();iefix._00();};
