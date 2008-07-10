@@ -45,7 +45,7 @@ ComponentSampler = HApplication.extend({
       }
     );
     
-    _buttonRect.offsetBy(-180,30);
+    _buttonRect.offsetBy(-180,32);
     this.checkbox1 = new HCheckbox(
       new HRect(_buttonRect),
       this.buttonsTab, {
@@ -62,38 +62,96 @@ ComponentSampler = HApplication.extend({
         value: true
       }
     );
+    _buttonRect.offsetBy(-180,32);
     
-    _buttonRect.offsetBy(-180,30);
-    this.radiobutton1 = new HRadioButton(
-      new HRect(_buttonRect),
-      this.buttonsTab, {
-        label: 'HRadiobutton 1'
+    var _radioGroupARect = new HRect(_buttonRect);
+    _radioGroupARect.setHeight(60);
+    _radioGroupARect.setWidth(360);
+    _radioGroupARect.offsetBy(-4,-4);
+    this.radioGroupA = new HView(
+      _radioGroupARect,
+      this.buttonsTab
+    );
+    this.radioGroupA.setStyle('border','1px solid #999');
+    
+    var _radioButtonRect = new HRect(_buttonRect);
+    _radioButtonRect.offsetTo(4,4);
+    this.radiobuttonA1 = new HRadioButton(
+      new HRect(_radioButtonRect),
+      this.radioGroupA, {
+        label: 'HRadiobutton A1'
       }
     );
-    _buttonRect.offsetBy(180,0);
-    this.radiobutton2 = new HRadiobutton(
-      new HRect(_buttonRect),
-      this.buttonsTab, {
-        label: 'HRadiobutton 2'
+    _radioButtonRect.offsetBy(180,0);
+    this.radiobuttonA2 = new HRadiobutton(
+      new HRect(_radioButtonRect),
+      this.radioGroupA, {
+        label: 'HRadiobutton A2'
       }
     );
     
-    _buttonRect.offsetBy(-180,30);
-    this.radiobutton3 = new HRadioButton(
-      new HRect(_buttonRect),
-      this.buttonsTab, {
-        label: 'HRadiobutton 3'
+    _radioButtonRect.offsetBy(-180,30);
+    this.radiobuttonA3 = new HRadioButton(
+      new HRect(_radioButtonRect),
+      this.radioGroupA, {
+        label: 'HRadiobutton A3'
       }
     );
-    _buttonRect.offsetBy(180,0);
-    this.radiobutton4 = new HRadiobutton(
-      new HRect(_buttonRect),
-      this.buttonsTab, {
-        label: 'HRadiobutton 4 (disabled)',
+    _radioButtonRect.offsetBy(180,0);
+    this.radiobuttonA4 = new HRadiobutton(
+      new HRect(_radioButtonRect),
+      this.radioGroupA, {
+        label: 'HRadiobutton A4 (disabled)',
         enabled: false,
         value: true
       }
     );
+    
+    _buttonRect.offsetBy(0,64);
+    var _radioGroupBRect = new HRect(_buttonRect);
+    _radioGroupBRect.setHeight(60);
+    _radioGroupBRect.setWidth(360);
+    _radioGroupBRect.offsetBy(-4,-4);
+    this.radioGroupB = new HView(
+      _radioGroupBRect,
+      this.buttonsTab
+    );
+    this.radioGroupB.setStyle('border','1px solid #999');
+    
+    var _radioButtonRect = new HRect(_buttonRect);
+    _radioButtonRect.offsetTo(4,4);
+    this.radiobuttonB1 = new HRadioButton(
+      new HRect(_radioButtonRect),
+      this.radioGroupB, {
+        label: 'HRadiobutton B1'
+      }
+    );
+    _radioButtonRect.offsetBy(180,0);
+    this.radiobuttonB2 = new HRadiobutton(
+      new HRect(_radioButtonRect),
+      this.radioGroupB, {
+        label: 'HRadiobutton B2',
+        value: true
+      }
+    );
+    
+    _radioButtonRect.offsetBy(-180,30);
+    this.radiobuttonB3 = new HRadioButton(
+      new HRect(_radioButtonRect),
+      this.radioGroupB, {
+        label: 'HRadiobutton B3'
+      }
+    );
+    _radioButtonRect.offsetBy(180,0);
+    this.radiobuttonB4 = new HRadiobutton(
+      new HRect(_radioButtonRect),
+      this.radioGroupB, {
+        label: 'HRadiobutton B4 (disabled)',
+        enabled: false
+      }
+    );
+    
+    
     
   }
 });

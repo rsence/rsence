@@ -22,6 +22,9 @@
   #
   ###
 
+require 'rubygems'
+require 'json'
+
 ## Shared messaging-object:
 require 'session/msg'
 
