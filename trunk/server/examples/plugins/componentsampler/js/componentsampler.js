@@ -180,7 +180,7 @@ ComponentSampler = HApplication.extend({
     code. More on this later.
     
     */
-    var _tabSeletionValue = HVM.values[this.valueIds.main_tabs];
+    var _tabSelectionValue = HVM.values[this.valueIds.main_tabs];
     _tabSelectionValue.bind(this.tabs);
     
     /*
