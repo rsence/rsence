@@ -35,7 +35,7 @@ else
 end
 
 def newer_files_js?
-  dest_path = File.join($_DESTINATION_PATH,'built')
+  dest_path = File.join($_REL_PATH,'js','built')
   fnewer =  %{#{FIND_NEWER} "#{dest_path}"}
   find_str = %{#{FIND} "#{CHECKPATH_JS}" #{fnewer} -name "*.js" -o #{fnewer} -name "*.html" -o #{fnewer} -name "*.css"}
   newer_files = `#{find_str}`
