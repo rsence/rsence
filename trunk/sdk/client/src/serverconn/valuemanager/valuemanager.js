@@ -103,10 +103,12 @@ HValueManager = HClass.extend({
   **  <add> <set> <HValue>
   ***/
   del: function(_id){
-    var _thisVal  = this.values[_id];
-    var _valViews = _thisVal.views;
-    for(var _viewNum=0;_viewNum<_valViews.length;_viewNum++){
-      var _thisView = _valViews[_viewNum];
+    var _thisVal  = this.values[_id],
+        _valViews = _thisVal.views,
+        _viewNum  = 0,
+        _thisView = null;
+    for(;_viewNum<_valViews.length;_viewNum++){
+      _thisView = _valViews[_viewNum];
       _thisView.valueObj = new HDummyValue(0,_thisVal.value);
     }
     this.values[_id] = null;
