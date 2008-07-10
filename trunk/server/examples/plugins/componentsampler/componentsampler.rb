@@ -22,7 +22,7 @@ class ComponentSampler < Plugin
         componentSampler = new ComponentSampler({
           main_tabs: #{cses[:main_tabs].val_id.to_json},
           checkbox1: #{cses[:checkbox1].val_id.to_json},
-          checkbox2: #{cses[:checkbox1].val_id.to_json},
+          checkbox2: #{cses[:checkbox2].val_id.to_json},
           radio_a:   #{cses[:radio_a].val_id.to_json},
           radio_b:   #{cses[:radio_b].val_id.to_json}
         });
