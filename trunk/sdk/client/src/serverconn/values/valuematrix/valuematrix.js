@@ -26,7 +26,7 @@ HValueMatrixComponentExtension = {
     this.valueMatrixIndex = this.parent.valueMatrix.addControl(this);
   },
   click: function(){
-    if (this.valueMatrix instanceof HValueMatrix) {
+    if (this.parent.valueMatrix instanceof HValueMatrix) {
       this.parent.valueMatrix.setValue( this.valueMatrixIndex );
     }
   }
@@ -38,7 +38,7 @@ HValueMatrix = HClass.extend({
     this.ctrls = [];
     // The index of the value member chosen
     this.value = -1;
-    this.valueObj = HDummyValue();
+    this.valueObj = new HDummyValue();
   },
   
   setValueObj: function(_valueObj){
