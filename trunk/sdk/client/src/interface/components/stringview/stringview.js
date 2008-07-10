@@ -35,36 +35,7 @@
 HStringView = HControl.extend({
 
   componentName: "stringview",
-
-/** constructor: constructor
-  *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
-  **/
-  constructor: function(_rect, _parentClass, _options) {
-    
-    if(this.isinherited) {
-      this.base(_rect, _parentClass, _options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parentClass, _options);
-      this.isinherited = false;
-    }
-    
-    this.type = '[HStringView]';
-    
-    // When this is true, the component is always drawn with the theme that was
-    // active at the creation of the component, not the current theme.
-    this.preserveTheme = true;
-    
-    if(!this.isinherited) {
-      this.draw();
-    }
-  },
-  
+  componentBehaviour: ['view','control','text'],
   
 /** method: draw
   * 
@@ -74,12 +45,11 @@ HStringView = HControl.extend({
   *  <HView.draw>
   **/
   draw: function() {
-    if (!this.drawn) {
-      this.drawRect();
+    var _isDrawn = this.drawn;
+    this.base();
+    if(!_isDrawn){
       this.drawMarkup();
-      this.drawn = true;
     }
-    this.refresh();
   },
   
   
@@ -97,6 +67,7 @@ HStringView = HControl.extend({
       this.base();
       if(this.markupElemIds.value) {
         ELEM.setHTML(this.markupElemIds.value, this.value);
+        ELEM.setAttr(this.markupElemIds.value, 'title', this.label);
       }
     }
   }
