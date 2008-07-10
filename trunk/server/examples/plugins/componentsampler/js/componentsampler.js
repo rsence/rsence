@@ -1,7 +1,8 @@
 
 ComponentSampler = HApplication.extend({
-  constructor: function(){
+  constructor: function(_valueIds){
     this.base();
+    this.valueIds = _valueIds;
     this.window = new HWindow(
       new HRect(100,100,740,500),
       this, {
@@ -20,11 +21,13 @@ ComponentSampler = HApplication.extend({
         enabled: true
       }
     );
-    this.buttonsTab = this.tabs.addTab('Buttons',true);
+    this.introTab = this.tabs.addTab('Intro',true);
+    this.buttonsTab = this.tabs.addTab('Buttons');
     this.textTab = this.tabs.addTab('Text');
     this.numericTab = this.tabs.addTab('Numeric');
     this.progressTab = this.tabs.addTab('Progress');
     this.mediaTab = this.tabs.addTab('Media');
+    HVM.values[this.valueIds.main_tabs].bind(this.tabs);
     this.makeButtons();
   },
   makeButtons: function(){
@@ -53,6 +56,7 @@ ComponentSampler = HApplication.extend({
         value: true
       }
     );
+    HVM.values[this.valueIds.checkbox1].bind(this.checkbox1);
     _buttonRect.offsetBy(180,0);
     this.checkbox2 = new HCheckbox(
       new HRect(_buttonRect),
@@ -62,6 +66,7 @@ ComponentSampler = HApplication.extend({
         value: true
       }
     );
+    HVM.values[this.valueIds.checkbox2].bind(this.checkbox2);
     _buttonRect.offsetBy(-180,32);
     
     var _radioGroupARect = new HRect(_buttonRect);
@@ -106,6 +111,7 @@ ComponentSampler = HApplication.extend({
         value: true
       }
     );
+    HVM.values[this.valueIds.radio_a].bind(this.radioGroupA.valueMatrix);
     
     _buttonRect.offsetBy(0,64);
     var _radioGroupBRect = new HRect(_buttonRect);
@@ -150,6 +156,7 @@ ComponentSampler = HApplication.extend({
         enabled: false
       }
     );
+    HVM.values[this.valueIds.radio_b].bind(this.radioGroupB.valueMatrix);
     
     
     
