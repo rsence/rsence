@@ -1,2 +1,14 @@
 
-HUploader=HControl.extend({componentName:'uploader',constructor:function(_1,_f,_2){this.base(_1,_f,_2);},draw:function(){var _04=this.drawn;this.base();if(!_04){this.drawMarkup();}}});
+HUploader = HControl.extend({
+  componentName: 'uploader',
+  constructor: function(_rect,_parent,_options){
+    this.base(_rect,_parent,_options);
+  },
+  draw: function(){
+    var _isDrawn = this.drawn;
+    this.base();
+    if(!_isDrawn){
+      this.drawMarkup();
+    }
+  }
+});

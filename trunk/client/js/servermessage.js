@@ -1,4 +1,92 @@
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
 
-ReloadApp=HApplication.extend({constructor:function(_4O,_6y,_2C){this.base();this._2C=_2C;var _6x=ELEM.windowSize()[0],_6w=ELEM.windowSize()[1],_5u=parseInt(_6x/2,10),_5t=parseInt(_6w/2,10),_3j=400,_6B=300,_1P=_5u-200,_1Q=_5t-150;if(_1P<10){_1P=10;}
-if(_1Q<10){_1Q=10;}
-var _4W=new HRect(_1P,_1Q,_1P+_3j,_1Q+_6B);this._0O=new HWindow(_4W,this,{label:_4O,minSize:[_3j,_6B],maxSize:[_3j,_6B],enabled:true});var _1e=new HView(new HRect(10,10,370,32),this._0O);_1e.setStyle('font-family','Trebuchet MS, Arial, sans-serif');_1e.setStyle('font-size','18px');_1e.setStyle('font-weight','bold');_1e.setStyle('color','#000');_1e.setHTML(_4O);var _1d=new HView(new HRect(10,48,370,230),this._0O);_1d.setStyle('font-family','Trebuchet MS, Arial, sans-serif');_1d.setStyle('font-size','13px');_1d.setStyle('overflow','auto');_1d.setStyle('color','#000');_1d.setHTML(_6y);var _7c=new(HButton.extend({click:function(){location.href=this.app._2C;}}))(new HRect(300,234,370,258),this._0O,{label:'Reload',events:{click:true}});var _6Y=new(HButton.extend({click:function(){HTransporter.start();this.app.die();}}))(new HRect(10,234,70,258),this._0O,{label:'Ignore',events:{click:true}});HTransporter.stop();},onIdle:function(){if(this._0O){HSystem.windowFocus(this._0O);}}});
+ReloadApp = HApplication.extend({
+  constructor: function( _windowTitle, _windowMessage, _destinationUrl ){
+    
+    this.base();
+    
+    this._destinationUrl = _destinationUrl;
+    
+    var _winWidth  = ELEM.windowSize()[0],
+        _winHeight = ELEM.windowSize()[1],
+        _halfWidth = parseInt(_winWidth/2,10),
+        _halfHeight = parseInt(_winHeight/2,10),
+    
+        _alertWidth  = 400,
+        _alertHeight = 300,
+        _alertX      = _halfWidth - 200,
+        _alertY      = _halfHeight - 150;
+    
+    if(_alertX<10){_alertX = 10;}
+    if(_alertY<10){_alertY = 10;}
+    
+    var _alertRect   = new HRect( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight );
+    
+    this._alertWindow = new HWindow(
+      _alertRect,
+      this, {
+        label: _windowTitle,
+        minSize: [_alertWidth,_alertHeight],
+        maxSize: [_alertWidth,_alertHeight],
+        enabled: true
+      }
+    );
+    
+    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 370, 32 ), this._alertWindow );
+    _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
+    _alertMessageTitleBox.setStyle('font-size','18px');
+    _alertMessageTitleBox.setStyle('font-weight','bold');
+    _alertMessageTitleBox.setStyle('color','#000');
+    _alertMessageTitleBox.setHTML( _windowTitle );
+    
+    var _alertMessageBox = new HView( new HRect( 10, 48, 370, 230 ), this._alertWindow );
+    _alertMessageBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
+    _alertMessageBox.setStyle('font-size','13px');
+    _alertMessageBox.setStyle('overflow','auto');
+    _alertMessageBox.setStyle('color','#000');
+    _alertMessageBox.setHTML( _windowMessage );
+    
+    var _reloadButton = new (HButton.extend({
+      click: function(){
+        location.href = this.app._destinationUrl;
+      }
+    }))(
+      new HRect(300, 234, 370, 258 ),
+      this._alertWindow,
+      { label: 'Reload', events: {click:true} }
+    );
+    
+    var _ignoreButton = new (HButton.extend({
+      click: function(){
+        HTransporter.start();
+        this.app.die();
+      }
+    }))(
+      new HRect(10, 234, 70, 258 ),
+      this._alertWindow,
+      { label: 'Ignore', events: {click:true} }
+    );
+    HTransporter.stop();
+  },
+  onIdle: function(){
+    if(this._alertWindow){
+      HSystem.windowFocus(this._alertWindow);
+    }
+  }
+});
+/** USAGE: 
+jsLoader.load('servermessage');
+reloadApp = new ReloadApp( 'Session Timeout', 'Your session has timed out', '/' );
+**/

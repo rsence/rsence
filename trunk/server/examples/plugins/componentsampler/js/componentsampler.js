@@ -475,7 +475,13 @@ ComponentSampler = HApplication.extend({
     );
     HVM.values[this.valueIds.radio_b].bind(this.radioGroupB.valueMatrix);
     
-    
+    _buttonRect.offsetBy(0,64);
+    var _uploadRect = new HRect(_buttonRect);
+    _uploadRect.setWidth(320);
+    this.uploader = new HUploader(
+      _uploadRect,
+      this.buttonsTab
+    );
     
   }
 });
