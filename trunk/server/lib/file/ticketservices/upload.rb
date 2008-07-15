@@ -1,75 +1,103 @@
 =begin
-#<Himle::Server::Request:0x20ef0e0
+#<Himle::Server::Request:0x150da9c
  @env=
-  {"HTTP_HOST"=>"localhost:8080",
-   "HTTP_ACCEPT"=>
-    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-   "SERVER_NAME"=>"localhost",
+  {"SERVER_NAME"=>"localhost",
    "rack.url_scheme"=>"http",
-   "REQUEST_PATH"=>"/U/foofoo",
+   "CONTENT_LENGTH"=>"19811",
+   "HTTP_ACCEPT_ENCODING"=>"gzip,deflate",
    "HTTP_USER_AGENT"=>
-    "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9) Gecko/2008061004 Firefox/3.0",
-   "HTTP_KEEP_ALIVE"=>"300",
-   "CONTENT_LENGTH"=>"0",
-   "rack.errors"=>
-    #<Rack::Lint::ErrorWrapper:0x20ef108
-     @error=
-      #<IO:/Users/o/code/nokia/lifestream/server/var/log/himle::server::himleserve.stderr>>,
-   "HTTP_ACCEPT_LANGUAGE"=>"en-us,en;q=0.5",
-   "CONTENT_TYPE"=>"application/x-www-form-urlencoded",
-   "SERVER_PROTOCOL"=>"HTTP/1.1",
-   "rack.version"=>[0, 1],
+    "Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15",
+   "PATH_INFO"=>"/U/",
    "rack.run_once"=>false,
-   "SERVER_SOFTWARE"=>"Mongrel 1.1.5",
-   "PATH_INFO"=>"/U/foofoo",
-   "REMOTE_ADDR"=>"127.0.0.1",
-   "HTTP_REFERER"=>"http://localhost:8080/",
+   "rack.input"=>
+    #<Rack::Lint::InputWrapper:0x150dba0 @input=#<StringIO:0x1511ffc>>,
    "SCRIPT_NAME"=>"",
-   "rack.multithread"=>true,
-   "HTTP_VERSION"=>"HTTP/1.1",
-   "HTTP_COOKIE"=>
-    "ses_key=KNaAapFlqCkGWXU4SCh_9iO5GfxTJv1NLm8hBvFN4jyBQyK7D4pIAHEmEw7Sr0EGjylGfoShA60uM6XbX0L577qs8qtHodGmpXkTsTUGrMhhICfZFWxPx3oK7TyHxjX8tUwitx6QqmJ0b9eUUK0qOAUTItM3sWlypCGCGfsLbjjWC1RGcK2_eXQsuxW4nAmT:Domain=localhost:Max-Age=259200:Comment=360Pulse Session Key:Path=/hello",
-   "rack.request.form_vars"=>"",
-   "rack.multiprocess"=>false,
-   "REQUEST_URI"=>"/U/foofoo",
+   "SERVER_PROTOCOL"=>"HTTP/1.1",
+   "HTTP_ACCEPT_LANGUAGE"=>"en-us,en;q=0.5",
+   "HTTP_HOST"=>"localhost:8001",
+   "rack.errors"=>
+    #<Rack::Lint::ErrorWrapper:0x150db14
+     @error=
+      #<IO:/Users/o/code/himle/trunk/server/var/log/himle::server::himleserve.stderr>>,
+   "REMOTE_ADDR"=>"127.0.0.1",
+   "HTTP_KEEP_ALIVE"=>"300",
+   "REQUEST_PATH"=>"/U/",
+   "SERVER_SOFTWARE"=>"thin 0.8.2 codename Double Margarita",
+   "CONTENT_TYPE"=>
+    "multipart/form-data; boundary=---------------------------1019292671580723810704877633",
+   "HTTP_REFERER"=>"http://localhost:8001/",
    "rack.request.form_input"=>
-    #<Rack::Lint::InputWrapper:0x20ef144 @input=#<StringIO:0x20f2150>>,
-   "rack.request.query_hash"=>{},
+    #<Rack::Lint::InputWrapper:0x150dba0 @input=#<StringIO:0x1511ffc>>,
+   "rack.request.query_hash"=>
+    {"upload_file77"=>
+      {:type=>"application/msword",
+       :filename=>"A.doc",
+       :head=>
+        "Content-Disposition: form-data; name=\"upload_file77\"; filename=\"A.doc\"\r\nContent-Type: application/msword\r\n",
+       :name=>"upload_file77",
+       :tempfile=>
+        #<File:/var/folders/jk/jkDpFGpfFb08aV6Rcfl1iE+++TI/-Tmp-/RackMultipart.9499.0>},
+     "upload_button77"=>"Upload"},
+   "HTTP_COOKIE"=>
+    "ses_key=z4UbPjR_LpmNvMbl46VQiQAeFLxA9Ud5RaLNYqYPdgWmHtiv7ht5JCH5XFVpdTHFd6vj5C3kbKE4tfYvmgv358JihCHJkmNKC6Ybi9VocRW1zhW5KBY7Lv6ewr7YhFmANLiUwXJrx5zck58uy97tpz03tbo1HWMge45k7NE_XwnY7qFPTxg26qhX_QBTW204:Domain=localhost:Max-Age=900:Comment=Himle session key (just for your convenience):Path=/hello",
    "HTTP_ACCEPT_CHARSET"=>"ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-   "SERVER_PORT"=>"8080",
-   "REQUEST_METHOD"=>"POST",
-   "rack.request.form_hash"=>{},
+   "HTTP_VERSION"=>"HTTP/1.1",
+   "rack.multithread"=>false,
+   "rack.version"=>[0, 3],
+   "REQUEST_URI"=>"/U/",
+   "rack.multiprocess"=>false,
+   "SERVER_PORT"=>"8001",
+   "rack.request.form_hash"=>
+    {"upload_file77"=>
+      {:type=>"application/msword",
+       :filename=>"A.doc",
+       :head=>
+        "Content-Disposition: form-data; name=\"upload_file77\"; filename=\"A.doc\"\r\nContent-Type: application/msword\r\n",
+       :name=>"upload_file77",
+       :tempfile=>
+        #<File:/var/folders/jk/jkDpFGpfFb08aV6Rcfl1iE+++TI/-Tmp-/RackMultipart.9499.0>},
+     "upload_button77"=>"Upload"},
    "rack.request.query_string"=>"",
    "QUERY_STRING"=>"",
-   "rack.input"=>
-    #<Rack::Lint::InputWrapper:0x20ef144 @input=#<StringIO:0x20f2150>>,
-   "HTTP_ACCEPT_ENCODING"=>"gzip,deflate",
+   "GATEWAY_INTERFACE"=>"CGI/1.2",
+   "HTTP_ACCEPT"=>
+    "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5",
    "HTTP_CONNECTION"=>"keep-alive",
-   "GATEWAY_INTERFACE"=>"CGI/1.2"},
+   "REQUEST_METHOD"=>"POST"},
  @header=
   {"query-string"=>"",
-   "server-port"=>"8080",
+   "server-port"=>"8001",
    "accept-language"=>"en-us,en;q=0.5",
-   "accept"=>"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-   "server-name"=>"localhost",
-   "path-info"=>"/U/foofoo",
+   "path-info"=>"/U/",
    "connection"=>"keep-alive",
-   "request-uri"=>"/U/foofoo",
-   "request-path"=>"/U/foofoo",
-   "user-agent"=>
-    "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9) Gecko/2008061004 Firefox/3.0",
-   "server-protocol"=>"HTTP/1.1",
+   "accept"=>
+    "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5",
    "accept-encoding"=>"gzip,deflate",
+   "request-uri"=>"/U/",
+   "request-path"=>"/U/",
+   "user-agent"=>
+    "Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; en-US; rv:1.8.1.15) Gecko/20080623 Firefox/2.0.0.15",
+   "server-name"=>"localhost",
    "version"=>"HTTP/1.1",
-   "referer"=>"http://localhost:8080/",
+   "referer"=>"http://localhost:8001/",
    "remote-addr"=>"127.0.0.1",
-   "server-software"=>"Mongrel 1.1.5",
-   "host"=>"localhost:8080",
-   "request-method"=>"POST",
+   "server-protocol"=>"HTTP/1.1",
    "accept-charset"=>"ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-   "keep-alive"=>"300"},
- @path="/U/foofoo",
- @query={}>
+   "host"=>"localhost:8001",
+   "request-method"=>"POST",
+   "keep-alive"=>"300",
+   "server-software"=>"thin 0.8.2 codename Double Margarita"},
+ @path="/U/",
+ @query=
+  {"upload_file77"=>
+    {:type=>"application/msword",
+     :filename=>"A.doc",
+     :head=>
+      "Content-Disposition: form-data; name=\"upload_file77\"; filename=\"A.doc\"\r\nContent-Type: application/msword\r\n",
+     :name=>"upload_file77",
+     :tempfile=>
+      #<File:/var/folders/jk/jkDpFGpfFb08aV6Rcfl1iE+++TI/-Tmp-/RackMultipart.9499.0>},
+   "upload_button77"=>"Upload"}>
 =end
 
 require 'pp'
@@ -85,6 +113,8 @@ module Upload
     response['content-type'] = 'text/html; charset=UTF-8'
     response['content-size'] = http_body.size.to_s
     response.body = http_body
+  end
+  def upload_key(msg,max_size=10000,mime_allow=/text\/(.*?)/)
   end
 end
 end
