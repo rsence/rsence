@@ -106,19 +106,76 @@ module Himle
 module Server
 module TicketService
 module Upload
-  def up(request,response)
-    pp request
+  def upload(request,response)
+    
+    ticket_id = request.unparsed_uri.split('/U/')[1]
+    value_id  = request.query['value_id']
+    
+    if not @upload_slots[:by_id].has_key?(ticket_id)
+      done_script = %{
+        with(parent){
+          HVM.values[#{value_id.to_json}].set("403;Invalid Ticket ID");
+        }
+      }
+    else
+      
+      (mime_allow,max_size,ses_id,value_key) = @upload_slots[:by_id][ticket_id]
+      
+      file_data = request.query['file_data']
+      file_mimetype = file_data[:type]
+      file_filename = file_data[:filename]
+      file_filedata = file_data[:tempfile].read
+      file_filesize = file_filedata.size
+      
+      puts "ticket_id: #{ticket_id.inspect}"
+      puts "value_id: #{value_id.inspect}"
+      puts "file_filename: #{file_filename.inspect}"
+      #puts "file_filedata: #{file_filedata.inspect}"
+      puts "file_filesize: #{file_filesize.inspect}"
+      
+      done_script = %{
+        with(parent){
+          HVM.values[#{value_id.to_json}].set("200;OK");
+        }
+      }
+      
+    end
+    
+    response_body = "<html><head><script type=\"text/javascript\">#{done_script}</script></head><body></body></html>"
+    
     response.status = 200
-    http_body = '<html><head><title>Uploading Done</title><script type="text/javascript">alert("upload done");</script></head><body></body></html>'
     response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-size'] = http_body.size.to_s
-    response.body = http_body
+    response['content-size'] = response_body.size.to_s
+    response.body = response_body
   end
-  def upload_key(msg,max_size=10000,mime_allow=/text\/(.*?)/)
+  def upload_key(msg,value_key,max_size=10000,mime_allow=/(.*?)\/(.*?)/)
+    key = @randgen.get_one()
+    while @upload_slots[:by_id].has_key?(key)
+      key = @randgen.get_one()
+    end 
+    @upload_slots[:by_id][key] = [mime_allow,max_size,msg.ses_id,value_key]
+    @upload_slots[:data][key]  = [-1,-1]
+    @upload_slots[:ses_ids][msg.ses_id] = [] unless @upload_slots[:ses_ids].has_key?(msg.ses_id)
+    @upload_slots[:ses_ids][msg.ses_id].push( key )
+    return key
   end
 end
 end
 end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

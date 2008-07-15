@@ -55,12 +55,30 @@ module Common
       'favicon.ico' => ['image/x-icon','350',['749464839316010001005d7200000000ffffff73190d7a27006e6fff6e7fffed8a01d85c0f3fcda9be4c8573191dcf7f7eed7a017a3700754acdcf6f6ebe5c855e7fff754addfd7a017bedeffd7af0d84c1f6bddef7bddffed8af0d85c1f755add6a2700c85c0f4fcda9ed7af04fbda97bddefcf6f7e654acd6bddffce5c853fbda9ffffff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000129f401000007200c200000000010001000060b70c310683c391584408110286a2f8c47e250a01c379555c310217c6ea249c8c1bd385e006047e0a9d25e2894e0924a0d6b04880e5f4020e90b51028384828b530d0d030b830c1a8b8b5603151c0c0602960c0f191b50101522700903ab58080e196028062b5b0f0b096f0220bb468745b1075009b7b5b960605061400b3'].pack('h*')]
     }
     
-    # upload slots, maps back to sessions
     @upload_slots = {
-      # random key      mime    max_size session_id 
-      # 'test123'  => [ '*/*',  15000,   12         ]
+      # upload slots
+      :by_id => {
+        # random key      mime    max_size session_id 
+        # 'test123'  => [ '*/*',  15000,   12         ]
+      },
+      # processed uploads
+      :data => {
+        # same key as :by_id    status_code   himle_uploads:id
+        # 'test123'  =>       [ 200,          37483  ]
+      },
+      # upload ids by session id
+      :ses_ids => {
+        # 12 => ['test123']
+      }
     }
     
+    auth_setup = $config[:database][:auth_setup] # himle-isolated account of mysql
+    @db = MySQLAbstractor.new(auth_setup, auth_setup[:db])
+    
+  end
+  
+  def shutdown
+    @db.close
   end
   
   # serves files and images
@@ -149,13 +167,16 @@ module Common
       @files[:ses_ids].delete( ses_id )
     end
     
+    if @upload_slots[:ses_ids].has_key?(ses_id)
+      
+    end
+    
   end
   
   # serves stuff from get-request
   def get( req, res, type=:img )
     
     is_invalid = true
-    
     
     if type == :img
       

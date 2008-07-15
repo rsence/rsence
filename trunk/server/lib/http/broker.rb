@@ -59,7 +59,7 @@ class Broker
     ## user's session
     elsif uri[0..2] == '/U/'
       puts "/U: #{uri.inspect}" if $DEBUG_MODE
-      $TICKETSERVE.up( @request, @response )
+      $TICKETSERVE.upload( @request, @response )
     else
       puts "/404: #{uri.inspect}" if $DEBUG_MODE
       @response.status = 404
@@ -101,6 +101,7 @@ class Broker
     elsif uri == '/favicon.ico'
       $TICKETSERVE.favicon( @request, @response )
     
+    ## empty html page for the uploader iframe
     elsif uri == '/U/iframe_html'
       puts "/U/iframe_html: #{uri.inspect}" if $DEBUG_MODE
       @response.status = 200
@@ -109,10 +110,19 @@ class Broker
       @response['content-size'] = http_body.size.to_s
       @response.body = http_body
     
-    ## all other get -requests load the index html page 
-    else
+    ## default index html page
+    elsif uri == '/'
       puts "/: #{uri.inspect}" if $DEBUG_MODE
       $INDEXHTML.get( @request, @response )
+    
+    ## all other get -requests load the 404 html page 
+    else
+      puts "/404: #{uri.inspect}" if $DEBUG_MODE
+      @response.status = 404
+      err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
+      @response['content-type'] = 'text/html; charset=UTF-8'
+      @response['content-size'] = err404.size.to_s
+      @response.body = err404
     end
     
   end

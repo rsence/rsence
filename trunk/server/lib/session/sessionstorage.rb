@@ -42,6 +42,7 @@ of SessionManager.
 
 =end
 class SessionStorage
+  attr_accessor :db
   def initialize
     ## Session data storage (by ses_id)
     @sessions     = {}
@@ -128,6 +129,23 @@ class SessionStorage
       puts "Creating version info table..." if $DEBUG_MODE
       @db.q( "create table himle_version ( version int primary key not null default 0)" )
       @db.q( "insert into himle_version ( version ) values (37)" )
+    end
+    
+    ## Creates the 'himle_uploads' table, if necessary
+    ## This table is used for storing temporary uploads before processing
+    unless @db.tables.include?('himle_uploads')
+      puts "Creating uploads table..." if $DEBUG_MODE
+      @db.q( %{
+        create table himle_uploads (
+          id int primary key auto_increment,
+          ses_id int not null,
+          file_uploaded int not null,
+          file_size int not null default 0,
+          file_mime varchar(255) not null default 'text/plain',
+          file_data mediumblob
+        )
+      }.gsub("\n",' ').squeeze(' ') )
+      @db.q( "update himle_version set version = 249" )
     end
     
     ## 
