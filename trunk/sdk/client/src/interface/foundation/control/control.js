@@ -82,11 +82,13 @@ HControl = HView.extend({
     var _events = options.events;
     this.setEvents(_events);
     
-    // These are checked, because these might be overridden before the base is called.
+    if(this.options.valueObj){
+      this.setValueObj(this.options.valueObj);
+    }
     if(!this.valueObj) {
       this.setValueObj(new HDummyValue());
     }
-    if(!this.value) {
+    if(this.value===undefined) {
       this.setValue(options.value);
     }
     

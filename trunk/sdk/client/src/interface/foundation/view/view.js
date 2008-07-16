@@ -352,7 +352,12 @@ HView = HClass.extend({
   *  <drawRect> <drawMarkup> <refresh> <HRect>
   **/
   draw: function() {
+    var _isDrawn = this.drawn;
     this.drawRect();
+    if(!_isDrawn&&(this.componentName!==undefined)){
+      this.drawMarkup();
+    }
+    this.refresh();
   },
   
   // Loads the markup from theme manager. If this.preserveTheme is set to true,
@@ -376,6 +381,7 @@ HView = HClass.extend({
   * See also:
   *  <HThemeManager> <bindMarkupVariables> <drawRect> <draw> <refresh>
   **/
+  markupElemNames: ['bg', 'label', 'state', 'control', 'value', 'subview'],
   drawMarkup: function() {
     ELEM.setStyle(this.elemId, 'display', 'none', true);
     
@@ -385,9 +391,8 @@ HView = HClass.extend({
     ELEM.setHTML(this.elemId, this.markup);
     
     this.markupElemIds = {};
-    var _predefinedPartNames = ['bg', 'label', 'state', 'control', 'value', 'subview'], i=0;
-    for(; i < _predefinedPartNames.length; i++ ) {
-      var _partName = _predefinedPartNames[ i ],
+    for(var i=0; i < this.markupElemNames.length; i++ ) {
+      var _partName = this.markupElemNames[ i ],
           _elemName = _partName + this.elemId,
           _htmlIdMatch = ' id="' + _elemName + '"';
       if( this.markup.indexOf( _htmlIdMatch ) != -1 ) {

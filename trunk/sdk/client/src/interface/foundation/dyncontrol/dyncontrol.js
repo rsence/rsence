@@ -95,9 +95,7 @@ HDynControl = HControl.extend({
   draw: function(){
     var _isDrawn = this.drawn;
     this.base();
-    this.drawRect();
     if(!_isDrawn){
-      this.drawMarkup();
       this.buildStructure();
     }
   },
