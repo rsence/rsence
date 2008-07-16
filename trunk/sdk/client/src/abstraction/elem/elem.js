@@ -558,6 +558,10 @@ ELEM = {
     var _this=ELEM,_cached=_this._styleCache[ _id ],
         _elems=_this._elements,_differs,_styleTodo;
     _this._setStyleCount++;
+    if(_cached===undefined){
+      _this._initCache(_id);
+      var _cached = _this._styleCache[ _id ];
+    }
     //console.log('setStyle(id:',_id,',key:',_key,',value:',_value,')');
     _differs=_value!==_cached[_key];//;_this.getStyle(_id,_key);
     if(_differs){
