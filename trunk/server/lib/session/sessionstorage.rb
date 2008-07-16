@@ -139,13 +139,34 @@ class SessionStorage
         create table himle_uploads (
           id int primary key auto_increment,
           ses_id int not null,
-          file_uploaded int not null,
+          upload_date int not null,
+          upload_done tinyint not null default 0,
+          ticket_id varchar(255) not null,
           file_size int not null default 0,
+          file_name varchar(255) not null,
           file_mime varchar(255) not null default 'text/plain',
           file_data mediumblob
         )
       }.gsub("\n",' ').squeeze(' ') )
-      @db.q( "update himle_version set version = 249" )
+      @db.q( "update himle_version set version = 252" )
+      himle_version = 254
+    end
+    himle_version = @db.q("select version from himle_version")[0]['version'].to_i
+    
+    # updates the uploads-table, if it was created in revision 249:
+    if himle_version < 252
+      @db.q( "alter table himle_uploads add column upload_done tinyint not null default 0" )
+      @db.q( "alter table himle_uploads add column upload_date int not null" )
+      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null" )
+      @db.q( "alter table himle_uploads add column file_name varchar(255) not null" )
+      @db.q( "alter table himle_uploads drop column file_uploaded" )
+      @db.q( "update himle_version set version = 254" )
+      himle_version = 254
+    end
+    if himle_version < 254
+      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null" )
+      @db.q( "alter table himle_uploads add column file_name varchar(255) not null" )
+      @db.q( "update himle_version set version = 254" )
     end
     
     ## 
@@ -159,9 +180,10 @@ class SessionStorage
   end
   
   
-  ## Deletes all rows from himle_session
+  ## Deletes all rows from himle_session as well as himle_uploads
   def reset_sessions
     @db.q("delete from himle_session")
+    @db.q("delete from himle_uploads")
   end
   
   ## Restores all saved sessions from db to ram

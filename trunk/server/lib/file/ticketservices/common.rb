@@ -10,6 +10,11 @@ module Common
     return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
+  ## Utility method for converting strings to hexadecimal
+  def hexlify( str )
+    "0x#{str.unpack('H*')[0]}"
+  end
+  
   # Initializes storage
   def initialize
     
@@ -62,9 +67,9 @@ module Common
         # 'test123'  => [ '*/*',  15000,   12         ]
       },
       # processed uploads
-      :data => {
-        # same key as :by_id    status_code   himle_uploads:id
-        # 'test123'  =>       [ 200,          37483  ]
+      :uploaded => {
+        # same key as :by_id  himle_uploads:id
+        # 'test123'  =>       [37483,37546,38759]
       },
       # upload ids by session id
       :ses_ids => {
@@ -168,7 +173,14 @@ module Common
     end
     
     if @upload_slots[:ses_ids].has_key?(ses_id)
+      # goes through the array, until it's empty
+      until @upload_slots[:ses_ids][ses_id].empty?
+        ticket_id = @upload_slots[:ses_ids][ses_id].shift
+        del_uploads( ticket_id, ses_id )
+      end
       
+      # finally, removes the session id
+      @upload_slots[:ses_ids].delete( ses_id )
     end
     
   end

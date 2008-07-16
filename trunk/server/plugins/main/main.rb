@@ -105,7 +105,7 @@ class Main < Plugin
     
     ## Resets session data to defaults
     ses = msg.session
-    init_ses unless ses.has_key?(:main)
+    init_ses(msg) unless ses.has_key?(:main)
     ses[:main][:boot] = 0
     ses[:main][:delayed_calls] = []
     ses[:main][:poll_mode] = true
@@ -115,6 +115,8 @@ class Main < Plugin
   # called on every request of an
   # active, valid session
   def idle(msg)
+    
+    init_ses(msg) unless msg.session.has_key?(:main)
     
     mses = msg.session[:main]
     
