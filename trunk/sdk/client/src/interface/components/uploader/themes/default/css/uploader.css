@@ -1,10 +1,12 @@
 .uploader_iframe {
+  visibility: hidden;
   width: 0px;
   height: 0px;
   border-width: 0px;
 }
 
 .uploader_form {
+  visibility: hidden;
   position: absolute;
   display: block;
   left: 0px;
@@ -12,10 +14,6 @@
   right: 0px;
   bottom: 0px;
   cursor: pointer;
-}
-
-.uploader_form:hover {
-  background-color: #ffcc00;
 }
 
 .uploader_file {
@@ -30,11 +28,66 @@
   cursor: pointer;
 }
 
-.uploader_message {
+.ack_button {
+  visibility: hidden;
+  left: auto; right: 0px; width: 48px;
+}
+
+.upload_progress {
+  visibility: hidden;
   position: absolute;
   left: 0px; top: 0px;
-  right: 0px; bottom: 0px;
+  right: 0px; height: 24px;
   font-family: Arial, sans-serif;
+  line-height: 24px;
+  vertical-align: middle;
   font-size: 12px;
   color: #333;
+}
+.upload_progress .progress_label {
+  position: absolute;
+  left: 8px; top: 0px; height: 24px; right: 8px;
+  line-height: 24px; vertical-align: middle;
+}
+.upload_progress .progress_indicator {
+  position: absolute;
+  right: 0px; top: 4px; width: 16px; height: 16px;
+  background-image: #{this.getCssFilePath('upload_progress.gif')};
+}
+
+.disabled > .uploader > .button_control > .button_edge_left {
+  background-position: 0px -144px;
+}
+.enabled > .uploader:hover > .button_control > .button_edge_left {
+  background-position: 0px -48px;
+}
+.enabled > .uploader:active > .button_control > .button_edge_left {
+  background-position: 0px -96px;
+}
+.disabled > .uploader > .button_control > .button_edge_right {
+  background-position: -24px -144px;
+}
+.enabled > .uploader:hover > .button_control > .button_edge_right {
+  background-position: -24px -48px;
+}
+.enabled > .uploader:active > .button_control > .button_edge_right {
+  background-position: -24px -96px;
+}
+.disabled > .uploader > .button_control > .button_center {
+  background-position: 0px -168px;
+}
+.enabled > .uploader:hover > .button_control > .button_center {
+  background-position: 0px -72px;
+}
+.enabled > .uploader:active > .button_control > .button_center {
+  background-position: 0px -120px;
+}
+.disabled > .uploader > .button_control > .button_label {
+  color: #999;
+}
+.enabled > .uploader:hover > .button_control > .button_label {
+  color: #000;
+}
+.enabled > .uploader:active > .button_control > .button_label {
+  color: #000;
 }
