@@ -400,7 +400,7 @@ HView = HClass.extend({
       }
     }
     
-    ELEM.setStyle(this.elemId, 'display', 'block', true);
+    ELEM.setStyle(this.elemId, 'display', 'block' );
     
     // right, bottom, opacity and png-transparency
     /*
