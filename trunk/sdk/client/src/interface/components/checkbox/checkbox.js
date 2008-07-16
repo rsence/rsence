@@ -46,10 +46,9 @@ HCheckbox = HButton.extend({
   
   // Toggles the checked/unchecked css-class status
   // according to the trueness of the value.
-  setValue: function(_value){
-    this.base(_value);
-    if(this.drawn&&this.markupElemIds.control){
-      if(_value){
+  refreshValue: function(){
+    if(this.markupElemIds.control){
+      if(this.value){
         this.toggleCSSClass(this.markupElemIds.control, 'checked', true);
         this.toggleCSSClass(this.markupElemIds.control, 'unchecked', false);
       }

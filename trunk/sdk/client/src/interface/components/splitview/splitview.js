@@ -54,9 +54,6 @@ HSplitView = HControl.extend({
       this.base(_rect, _parentClass, _options);
       this.isinherited = false;
     }
-    
-    this.type = '[HSplitView]';
-    
     // When this is true, the component is always drawn with the theme that was
     // active at the creation of the component, not the current theme.
     this.preserveTheme = true;
@@ -255,14 +252,6 @@ HSplitView = HControl.extend({
       }
     }
     this.draw();
-  },
-  draw: function() {
-    if(!this.drawn) {
-      this.drawRect();
-      this.drawMarkup();
-      this.drawn = true;
-    }
-    this.refresh();
   },
   refresh: function() {
     // base method calls drawRect

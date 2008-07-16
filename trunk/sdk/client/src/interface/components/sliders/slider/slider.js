@@ -38,7 +38,6 @@
   ***/
 HSlider = HControl.extend({
   
-  packageName:   "sliders",
   componentName: "slider",
   
 /** constructor: constructor
@@ -78,8 +77,6 @@ HSlider = HControl.extend({
       this.base(_rect,_parentClass,_options);
       this.isinherited = false;
     }
-    
-    this.type = '[HSlider]';
     
     this.refreshOnValueChange = false;
     

@@ -57,9 +57,6 @@ HStepper = HButton.extend({
     }
     
     this.interval = _options.interval;
-    
-    this.type = '[HStepper]';
-    
     this._tmplLabelPrefix = "stepperlabel";
     
     this.border = ((_rect.bottom - _rect.top)/2 + _rect.top);	// calculate a middle border of a stepper

@@ -23,16 +23,14 @@ HValidatorView = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect, _parent, _options) {
-    
     if(_options !== undefined){
       if(_options.valueField !== undefined){
-        _rect.offsetBy(
+        _rect.offsetTo(
           _options.valueField.rect.right,
           _options.valueField.rect.top
         );
       }
     }
-    
     if(this.isinherited) {
       this.base(_rect, _parent, _options);
     }
@@ -41,9 +39,6 @@ HValidatorView = HControl.extend({
       this.base(_rect, _parent, _options);
       this.isinherited = false;
     }
-    
-    this.type = '[HValidatorView]';
-    
     if(!this.isinherited) {
       this.draw();
     }

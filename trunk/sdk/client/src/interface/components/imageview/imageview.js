@@ -61,8 +61,6 @@ HImageView = HControl.extend({
       this.value = this.getThemeGfxPath() + "/blank.gif";
     }
     
-    this.type = '[HImageView]';
-    
     if(!this.isinherited) {
       this.draw();
     }
@@ -88,13 +86,11 @@ HImageView = HControl.extend({
     }
   },
   
-  setValue: function(_value){
-    this.base(_value);
+  refreshValue: function(_value){
     ELEM.setAttr(this.elemId,'src',_value);
   },
   
-  setLabel: function(_label){
-    this.base(_label);
+  refreshLabel: function(_label){
     ELEM.setAttr(this.elemId,'alt',_label);
   },
   

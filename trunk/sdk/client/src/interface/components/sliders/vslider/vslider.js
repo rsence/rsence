@@ -38,7 +38,6 @@
   ***/
 HVSlider = HSlider.extend({
   
-  packageName:   "sliders",
   componentName: "vslider",
   
 /** constructor: constructor

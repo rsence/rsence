@@ -1,0 +1,40 @@
+.uploader_iframe {
+  width: 0px;
+  height: 0px;
+  border-width: 0px;
+}
+
+.uploader_form {
+  position: absolute;
+  display: block;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  cursor: pointer;
+}
+
+.uploader_form:hover {
+  background-color: #ffcc00;
+}
+
+.uploader_file {
+  position: absolute;
+  font-size: 100px;
+  display: block;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.uploader_message {
+  position: absolute;
+  left: 0px; top: 0px;
+  right: 0px; bottom: 0px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #333;
+}

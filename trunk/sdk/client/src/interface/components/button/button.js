@@ -35,35 +35,6 @@
   *
   **/
 HButton = HControl.extend({
-  componentName: 'button',
-  constructor: function(_rect, _parent, _options){
-    if(this.isinherited){
-      this.base(_rect, _parent, _options);
-    }
-    else{
-      this.isinherited = true;
-      this.base(_rect, _parent, _options);
-      this.isinherited = false;
-    }
-    if(!this.isinherited) {
-      this.draw();
-    }
-  },
-  refresh: function() {
-    if(this.drawn){
-      this.base();
-      if(this.markupElemIds.label){
-        ELEM.setHTML(this.markupElemIds.label, this.label);
-      }
-    }
-  },
-  draw: function(){
-    var _isDrawn = this.drawn;
-    this.base();
-    if(!_isDrawn){
-      this.drawMarkup();
-    }
-    this.refresh();
-  }
+  componentName: 'button'
 });
 

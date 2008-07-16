@@ -1,28 +1,30 @@
-<div id="uploader_form">
-  <iframe
+<div
+  id="label#{this.elemId}"
+  class="uploader_message"
+>#{this.label}</div>
+<iframe
+  id="state#{this.elemId}"
+  name="upload_target_#{this.elemId}"
+  src="/U/iframe_html"
+  class="uploader_iframe"
+></iframe>
+<form
+  id="control#{this.elemId}"
+  name="upload_form_#{this.elemId}"
+  enctype="multipart/form-data"
+  method="POST"
+  action="/U/#{this.value}"
+  target="upload_target_#{this.elemId}"
+  class="uploader_form"
+ ><input
     id="state#{this.elemId}"
-    name="upload_target_#{this.elemId}"
-    src="/U/iframe_html"
-    style="width:0;height:0;border:0px solid #fff;"
- ></iframe>
-  <form
-    id="control#{this.elemId}"
-    name="upload_form_#{this.elemId}"
-    enctype="multipart/form-data"
-    method="POST"
-    action="/U/#{this.value}"
-    target="upload_target_#{this.elemId}"
-    style="position:absolute;display:block;left:0px;top:0px;right:0px;bottom:0px;background-color:yellow;"
-   ><input
-      id="state#{this.elemId}"
-      name="file_data"
-      type="file"
-      style="position:absolute;font-size:100px;display:block;left:0px;top:0px;right:0px;bottom:0px;opacity:0;"
-      onchange="this.form.submit();"
-  /><input
-      id="value#{this.elemId}"
-      type="hidden"
-      name="value_id"
-      value="#{this.valueObj.id}"
-  /></form>
-</div>
+    name="file_data"
+    type="file"
+    onchange="HSystem.views[#{this.viewId}].upload();"
+    class="uploader_file"
+/><input
+    id="value#{this.elemId}"
+    type="hidden"
+    name="value_id"
+    value="#{this.valueObj.id}"
+/></form>

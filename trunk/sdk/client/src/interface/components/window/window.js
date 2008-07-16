@@ -83,15 +83,6 @@ HWindow = HDynControl.extend({
   windowBlur: function(){
     this.toggleCSSClass(this.elemId, 'inactive', true);
     this.setStyle('cursor','default');
-  },
-  refresh: function() {
-    if(this.drawn){
-      this.base();
-      // Label
-      if(this.markupElemIds.label){
-        ELEM.setHTML(this.markupElemIds.label, this.label);
-      }
-    }
   }
 });
 

@@ -37,36 +37,9 @@ HStringView = HControl.extend({
   componentName: "stringview",
   componentBehaviour: ['view','control','text'],
   
-/** method: draw
-  * 
-  * Draws the rectangle and the markup of this object on the screen.
-  *
-  * See also:
-  *  <HView.draw>
-  **/
-  draw: function() {
-    var _isDrawn = this.drawn;
-    this.base();
-    if(!_isDrawn){
-      this.drawMarkup();
-    }
-  },
-  
-  
-
-/** method: refresh
-  * 
-  * Redraws only the value, not the whole markup.
-  *
-  * See also:
-  *  <HView.refresh>
-  **/
-  refresh: function() {
-    if(this.drawn) {
-      // Super takes care of calling optimizeWidth(), if required.
-      this.base();
+  refreshLabel: function() {
+    if(this.markupElemIds) {
       if(this.markupElemIds.value) {
-        ELEM.setHTML(this.markupElemIds.value, this.value);
         ELEM.setAttr(this.markupElemIds.value, 'title', this.label);
       }
     }

@@ -41,36 +41,9 @@ HTextControl = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect, _parentClass, _options) {
-    
-    if(this.isinherited) {
-      this.base(_rect, _parentClass, _options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parentClass, _options);
-      this.isinherited = false;
-    }
-    
-    this.type = '[HTextControl]';
-    
-    // When this is true, the component is always drawn with the theme that was
-    // active at the creation of the component, not the current theme.
-    this.preserveTheme = true;
-    if(!this.isinherited) {
-      this.draw();
-    }
-    
+    this.base(_rect, _parentClass, _options);
     this.setTextEnter(true);
     
-  },
-  
-  draw: function(){
-    if(!this.drawn){
-      this.base();
-      this.drawMarkup();
-    } else {
-      this.refresh();
-    }
   },
   
 /** method: setEnabled
