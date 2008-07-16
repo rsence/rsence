@@ -34,18 +34,18 @@ HUploader = HControl.extend({
     if(_state!==this.uploadState){
       this.uploadState = _state;
       var _stateKey = _state.toString();
-      console.log('stateKey:',_stateKey);
+      //console.log('stateKey:',_stateKey);
       if(this.uploadStateLabels[_stateKey]!==undefined){
         ELEM.get(this.markupElemIds.value).value=this.valueObj.id;
         var _label = this.uploadStateLabels[_stateKey];
-        console.log('stateLabel:',_label);
+        //console.log('stateLabel:',_label);
         if(_state==0){
           ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','hidden');
           ELEM.setHTML(this.markupElemIds.button_label,_label);
           ELEM.setStyle(this.markupElemIds.button,'visibility','visible');
           ELEM.setStyle(this.markupElemIds.form,'visibility','visible');
           ELEM.setAttr(this.markupElemIds.form,'action','/U/'+_uploadKey,true);
-          console.log('uploadKey:',ELEM.getAttr(this.markupElemIds.form,'action',true));
+          //console.log('uploadKey:',ELEM.getAttr(this.markupElemIds.form,'action',true));
           ELEM.get(this.markupElemIds.file).value='';
           this.uploadKey = _uploadKey;
         }
