@@ -86,12 +86,12 @@ HImageView = HControl.extend({
     }
   },
   
-  refreshValue: function(_value){
-    ELEM.setAttr(this.elemId,'src',_value);
+  refreshValue: function(){
+    ELEM.setAttr(this.elemId,'src',this.value);
   },
   
-  refreshLabel: function(_label){
-    ELEM.setAttr(this.elemId,'alt',_label);
+  refreshLabel: function(){
+    ELEM.setAttr(this.elemId,'alt',this.label);
   },
   
 /** method: scaleToFit
