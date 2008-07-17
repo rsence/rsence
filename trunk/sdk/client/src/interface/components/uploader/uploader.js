@@ -16,7 +16,8 @@ HUploader = HControl.extend({
      '-1': "Error: Invalid request",
      '-2': "Error: Invalid upload key",
      '-3': "Error: Invalid data format",
-     '-4': "Error: File too big"
+     '-4': "Error: File too big",
+     '-6': "Error: Post-processing failed"
   },
   markupElemNames: [
     'form',
@@ -41,6 +42,8 @@ HUploader = HControl.extend({
         //console.log('stateLabel:',_label);
         if(_state==0){
           ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','hidden');
+          ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','hidden');
+          ELEM.setStyle(this.markupElemIds.ack_button,'visibility','hidden');
           ELEM.setHTML(this.markupElemIds.button_label,_label);
           ELEM.setStyle(this.markupElemIds.button,'visibility','visible');
           ELEM.setStyle(this.markupElemIds.form,'visibility','visible');
@@ -66,6 +69,13 @@ HUploader = HControl.extend({
             ELEM.get(this.markupElemIds.form).submit();
           }
         }
+        else if(_state < 0){
+          ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','hidden');
+          ELEM.setStyle(this.markupElemIds.ack_button,'visibility','visible');
+          ELEM.setHTML(this.markupElemIds.progress_label,'<span style="color:red;">'+_label+'</span>');
+          ELEM.setStyle(this.markupElemIds.button,'visibility','hidden');
+          ELEM.setStyle(this.markupElemIds.form,'visibility','hidden');
+        }
       }
     }
   },
@@ -87,7 +97,9 @@ HUploader = HControl.extend({
     this.setValue('4:::'+this.uploadKey);
   },
   click: function(){
-    if(this.uploadState==3){
+    //console.log('click');
+    if((this.uploadState==3)||(this.uploadState<0)){
+      //console.log('clicked, state=',this.uploadState);
       this.getNewUploadKey();
     }
   }
