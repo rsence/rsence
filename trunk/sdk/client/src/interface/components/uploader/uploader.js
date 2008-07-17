@@ -45,22 +45,22 @@ HUploader = HControl.extend({
           ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','hidden');
           ELEM.setStyle(this.markupElemIds.ack_button,'visibility','hidden');
           ELEM.setHTML(this.markupElemIds.button_label,_label);
-          ELEM.setStyle(this.markupElemIds.button,'visibility','visible');
-          ELEM.setStyle(this.markupElemIds.form,'visibility','visible');
+          ELEM.setStyle(this.markupElemIds.button,'visibility','inherit');
+          ELEM.setStyle(this.markupElemIds.form,'visibility','inherit');
           ELEM.setAttr(this.markupElemIds.form,'action','/U/'+_uploadKey,true);
           //console.log('uploadKey:',ELEM.getAttr(this.markupElemIds.form,'action',true));
           ELEM.get(this.markupElemIds.file).value='';
           this.uploadKey = _uploadKey;
         }
         else if(_state==1||_state==2||_state==3||_state==4){
-          ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','visible');
+          ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','inherit');
           if(_state==1||_state==2||_state==4){
-            ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','visible');
+            ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','inherit');
             ELEM.setStyle(this.markupElemIds.ack_button,'visibility','hidden');
           }
           else {
             ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','hidden');
-            ELEM.setStyle(this.markupElemIds.ack_button,'visibility','visible');
+            ELEM.setStyle(this.markupElemIds.ack_button,'visibility','inherit');
           }
           ELEM.setHTML(this.markupElemIds.progress_label,_label);
           ELEM.setStyle(this.markupElemIds.button,'visibility','hidden');
@@ -71,7 +71,7 @@ HUploader = HControl.extend({
         }
         else if(_state < 0){
           ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','hidden');
-          ELEM.setStyle(this.markupElemIds.ack_button,'visibility','visible');
+          ELEM.setStyle(this.markupElemIds.ack_button,'visibility','inherit');
           ELEM.setHTML(this.markupElemIds.progress_label,'<span style="color:red;">'+_label+'</span>');
           ELEM.setStyle(this.markupElemIds.button,'visibility','hidden');
           ELEM.setStyle(this.markupElemIds.form,'visibility','hidden');
