@@ -16,16 +16,31 @@
   cursor: pointer;
 }
 
+.uploader_file_wrap {
+  position: absolute;
+  left: -350px; top: 0px;
+  bottom: 0px; right: 0px;
+  line-height: 200px;
+  font-size: 200px;
+}
+
 .uploader_file {
   position: absolute;
-  font-size: 100px;
+  right: 0px; top: 0px;
   display: block;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  opacity: 0;
+  line-height: 200px;
+  font-size: 200px;
+  width: 1000px;
+  height: 200px;
+  -moz-opacity:0;
+  filter:alpha(opacity: 0);
+  opacity: 0.0;
+  text-align: right;
   cursor: pointer;
+  z-index: 100;
+}
+.uploader_file:hover {
+  background-color: #ff0;
 }
 
 .ack_button {
