@@ -139,10 +139,13 @@ ELEM = {
   
   // sets inner html of element
   setHTML: function(_id,_html){
-    //try {
+    try {
       var _this=ELEM;
+      if(!((typeof _html === 'string')||(typeof _html === 'number'))){
+        return;
+      }
       _this._elements[_id].innerHTML = _html;
-    //} catch(e) {}
+    } catch(e) {}
     //_this._initCache(_id);
   },
   
