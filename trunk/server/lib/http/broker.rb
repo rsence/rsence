@@ -97,6 +97,11 @@ class Broker
       puts "/f: #{uri.inspect}" if $DEBUG_MODE
       $TICKETSERVE.get( @request, @response, :file )
     
+    ## /B return smart data objects
+    elsif uri[0..2] == '/b/'
+      puts "/b: #{uri.inspect}" if $DEBUG_MODE
+      $TICKETSERVE.get( @request, @response, :blobobj )
+    
     ## special case for favicon
     elsif uri == '/favicon.ico'
       $TICKETSERVE.favicon( @request, @response )

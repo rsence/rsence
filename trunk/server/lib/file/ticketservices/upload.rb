@@ -15,6 +15,7 @@ Upload failure states:
  -3: Invalid mime-type (invalid data format)
  -4: File too big
  -5: Key request forbidden (when calling upload_key)
+ -6: Post-processing failed
 
 
 Default upload table:
@@ -123,7 +124,7 @@ module Upload
               :size => row_data['file_size'],
               :mime => row_data['file_mime'],
               :name => row_data['file_name'],
-              :data => row_data['data']
+              :data => row_data['file_data']
             }
             uploads.push(row_hash)
           end
@@ -149,6 +150,7 @@ module Upload
   
   def del_upload( ticket_id, row_id )
     @upload_slots[:uploaded][ticket_id].delete(row_id)
+    @db.q("delete from himle_uploads where id = #{row_id}")
   end
   
   # removes uploaded files
@@ -161,15 +163,15 @@ module Upload
     if @upload_slots[:uploaded].has_key?( ticket_id )
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         @upload_slots[:uploaded][ticket_id].delete( row_id )
-        @db.q("drop from himle_uploads where id = #{row_id}")
+        @db.q("delete from himle_uploads where id = #{row_id}")
       end
       @upload_slots[:uploaded].delete( ticket_id )
     end
     if @upload_slots[:by_id].has_key?( ticket_id )
       @upload_slots[:by_id].delete( ticket_id )
     end
-    @db.q("drop from himle_uploads where ticket_id = #{hexlify(ticket_id)}")
-    @db.q("drop from himle_uploads where ses_id = #{ses_id}")
+    @db.q("delete from himle_uploads where ticket_id = #{hexlify(ticket_id)}")
+    @db.q("delete from himle_uploads where ses_id = #{ses_id}")
   end
   
   def upload_key(msg,value_key,max_size=1000000,mime_allow=/(.*?)\/(.*?)/,allow_multi=true)

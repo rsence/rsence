@@ -22,6 +22,7 @@ module Common
     # as the key and an array of ids in array as the value
     @expires = {}
     @expire_files = {}
+    @expire_blobobj = {}
     
     # storage for disposable images
     @imgs = {
@@ -75,6 +76,11 @@ module Common
       :ses_ids => {
         # 12 => ['test123']
       }
+    }
+    
+    @blob_objs = {
+      :by_id   => {},
+      :ses_ids => {}
     }
     
     auth_setup = $config[:database][:auth_setup] # himle-isolated account of mysql
@@ -183,6 +189,17 @@ module Common
       @upload_slots[:ses_ids].delete( ses_id )
     end
     
+    if @blob_objs[:ses_ids].has_key?(ses_id)
+      # goes through the array, until it's empty
+      until @blob_objs[:ses_ids][ses_id].empty?
+        ticket_id = @blob_objs[:ses_ids][ses_id].shift
+        del_blobobj( ticket_id, ses_id )
+      end
+      
+      # finally, removes the session id
+      @blob_objs[:ses_ids].delete( ses_id )
+    end
+    
   end
   
   # serves stuff from get-request
@@ -272,6 +289,41 @@ module Common
       else
         (content_type,content_size,content) = @raw_uris['invalid.gif']
       end
+    
+    elsif type == :blobobj
+      blobobj_id = req.unparsed_uri.split('/b/')[1]
+      if blobobj_id == nil
+        puts "fileServe.fetch_blobobj: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        blobobj_id = 'invalid.gif'
+      end
+      if blobobj_id == nil
+        puts "fileServe.fetch_blobobj: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        blobobj_id = 'invalid.gif'
+      elsif blobobj_id.size != 84
+        puts "fileServe.fetch_blobobj: invalid blobobj_id (#{blobobj_id.inspect})" if $DEBUG_MODE
+        blobobj_id = 'invalid.gif'
+      end
+      if @raw_uris.include?(blobobj_id)
+        content_type = @raw_uris[blobobj_id].mime
+        content_size = @raw_uris[blobobj_id].size
+        content      = @raw_uris[blobobj_id].data
+      elsif @blob_objs[:by_id].include?(blobobj_id)
+        (ses_id, blobobj) = @blob_objs[:by_id][blobobj_id]
+        content_type = blobobj.mime
+        content_size = blobobj.size
+        content      = blobobj.data
+        if req.header.has_key?('keep-alive') and req.header['keep-alive'].size > 0
+          keep_alive = req.header['keep-alive'][0].to_i
+          keep_alive = 10  if keep_alive < 10
+          keep_alive = 600 if keep_alive > 600
+          push_keepalive_blobobj( blobobj_id, keep_alive )
+          expire_keepalive_blobobjs
+        else
+          del_blobobj( blobobj_id, ses_id )
+        end
+      else
+        (content_type,content_size,content) = @raw_uris['invalid.gif']
+      end
       
     elsif type == :rsrc
       rsrc_id = req.unparsed_uri.split('/d/')[1]
@@ -300,8 +352,7 @@ module Common
     res['Content-Size'] = content_size
     
     res['Date'] = httime( Time.now )
-    res['Cache-Control'] = 'no-cache' if not $config[:cache_maximize]
-    res['Expires'] = httime(Time.now+$config[:cache_expire]) if $config[:cache_maximize]
+    res['Expires'] = httime(Time.now+$config[:cache_expire])
     
     res.body = content
     

@@ -34,6 +34,7 @@ require 'file/ticketservices/file'    # file-related functionality
 require 'file/ticketservices/upload'  # upload-related functionality
 require 'file/ticketservices/img'     # img-related functionality
 require 'file/ticketservices/favicon' # favicon-related functionality
+require 'file/ticketservices/objblob' # smart object wrapper
 
 module Himle
 module Server
@@ -55,6 +56,7 @@ class TicketServe
   include Himle::Server::TicketService::Img
   include Himle::Server::TicketService::Upload
   include Himle::Server::TicketService::Favicon
+  include Himle::Server::TicketService::ObjBlob
   
 end
 

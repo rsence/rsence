@@ -14,7 +14,7 @@ module File
   # extends expiration time of disposable data, essentially for keep-alive requests
   def push_keepalive_file( file_id, keep_alive )
     expiry_time = Time.now.to_i+keep_alive
-    @expire_files[expiry_time] = [] unless @expires.has_key?(expiry_time)
+    @expire_files[expiry_time] = [] unless @expire_files.has_key?(expiry_time)
     @expire_files[expiry_time].push( file_id )
   end
   
@@ -30,7 +30,7 @@ module File
             del_file( file_id, ses_id )
           end
         end
-        @expires_files.delete(exp_time) if @expires_files[exp_time].size == 0
+        @expire_files.delete(exp_time) if @expire_files[exp_time].size == 0
       end
     end
   end
