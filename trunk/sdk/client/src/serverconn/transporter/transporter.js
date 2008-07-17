@@ -61,6 +61,9 @@ HTransporterMaxRetryCount = 60;     // 60 retries
 HTransporterMaxRetryTime  = 60000; // 60 seconds
 HTransporterRetryDelay    = 1000; // 1 second
 
+// Retarded debug mode for "special" browsers
+HTransporterDebug = false;
+
 /* vars: Instance variables
  *  url_base  - The URL (or path) that the requests are sent to
  *  ses_id    - A value that is the reported in each request by the key 'ses_id'
@@ -120,13 +123,26 @@ HTransporter = Base.extend({
   respond: function(resp){
     var _respText = resp.responseText,
         _this = HTransporter;
-    try {
-      _this.err_msg = '';
-      eval(_respText); 
+    if(HTransporterDebug){
+      try {
+        eval(_respText);
+      }
+      catch(e) {
+        var err_descr = e+' - '+e.description;
+        var aaa = window.open();
+        aaa.window.title = err_descr;
+        aaa.document.write('<html><body><pre>'+_respText.replace('<','&lt;').replace('>','&gt;')+'</pre></body></html>');
+      }
     }
-    catch(e) {
-      _this.err_msg = '&err_msg='+e+" - "+e.description;
-      _this.failure(resp);
+    else {
+      try {
+        _this.err_msg = '';
+        eval(_respText); 
+      }
+      catch(e) {
+        _this.err_msg = '&err_msg='+e+" - "+e.description;
+        _this.failure(resp);
+      }
     }
     _this.prevData  = '';
     if(_this.failCount!=0){window.status='';}
