@@ -1,5 +1,5 @@
 
-if(console===undefined){
+if(window['console']===undefined){
   console = {
     log: function(){
     }
