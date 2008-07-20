@@ -148,7 +148,7 @@ class SessionStorage
           file_data mediumblob
         )
       }.gsub("\n",' ').squeeze(' ') )
-      @db.q( "update himle_version set version = 252" )
+      @db.q( "update himle_version set version = 254" )
       himle_version = 254
     end
     himle_version = @db.q("select version from himle_version")[0]['version'].to_i
