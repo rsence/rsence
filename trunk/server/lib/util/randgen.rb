@@ -22,10 +22,10 @@
   ###
 
 begin
-  require File.expand_path(File.join(File.dirname(__FILE__),'randgen_c/randgen'))
-rescue => e
+  require File.expand_path(File.join(File.dirname(__FILE__),'randgen_c','randgen'))
+rescue LoadError => e
   puts "c-randgen failed to init, reason: #{e.inspect}" if $DEBUG_MODE
   puts "Warning: falling back to old randgen."
-  require File.expand_path(File.join(File.dirname(__FILE__),'randgen_rb/randgen'))
+  require File.expand_path(File.join(File.dirname(__FILE__),'randgen_rb','randgen'))
 end
 
