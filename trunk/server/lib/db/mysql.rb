@@ -93,6 +93,8 @@ class MySQL_UTF8_Util
         col_default = descr_row['Default']
         if col_default == nil and col_null == 'NOT NULL'
           col_default = ''
+        elsif col_default == ''
+          col_default = "default ''"
         elsif col_default == nil
           col_default = 'default NULL'
         else
