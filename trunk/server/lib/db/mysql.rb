@@ -62,9 +62,89 @@ class Status_DB
   end
 end
 
+class MySQL_UTF8_Util
+  
+  def is_database_utf8?(db_name)
+    return @db.q("show create database #{db_name}")[0]['Create Database'].downcase.include?('set utf8')
+  end
+  
+  def is_table_utf8?(table_name)
+    return @db.q("show create table #{table_name}")[0]['Create Table'].downcase.include?('charset=utf8')
+  end
+
+  def convert_charset(string,in_charset='ISO-8859-1',out_charset='UTF-8')
+    return Iconv.iconv(out_charset,in_charset,string)[0]
+  end
+  
+  def convert_table_to_utf8( table_name, column_names )
+    puts "Checking if #{table_name} needs update" if $DEBUG_MODE
+    @db.q( "show full columns from #{table_name}" ).each do |descr_row|
+      col_name = descr_row['Field']
+      col_type = descr_row['Type']
+      collation = descr_row['Collation']
+      if column_names.include?(col_name) and not collation.include?('utf8')
+        puts "..upgrading column #{col_name}" if $DEBUG_MODE
+        col_null = descr_row['Null']
+        if col_null == "YES"
+          col_null = "NULL"
+        else
+          col_null = "NOT NULL"
+        end
+        col_default = descr_row['Default']
+        if col_default == nil and col_null == 'NOT NULL'
+          col_default = ''
+        elsif col_default == nil
+          col_default = 'default NULL'
+        else
+          col_default = "default #{hexlify(col_default)}"
+        end
+        puts "....converting data" if $DEBUG_MODE
+        row_by_id = {}
+        @db.q("select id,#{col_name} from #{table_name}").each do |row|
+          row_id = row['id']
+          row_data = row[col_name]
+          if row_data != nil
+            row_by_id[row_id] = convert_charset(row_data)
+          end
+        end
+        @db.q("alter table #{table_name} change #{col_name} #{col_name} #{col_type} character set utf8 #{col_null} #{col_default}")
+        row_by_id.each do |row_id,row_data|
+          if row_data != ''
+            @db.q("update #{table_name} set #{col_name} = #{hexlify(row_data)} where id = #{row_id}")
+          end
+        end
+      end
+    end
+    if not is_table_utf8?(table_name)
+      @db.q( "alter table #{table_name} default charset utf8 collate utf8_general_ci" )
+    end
+  end
+  
+  def initialize(db)
+    @db = db
+  end
+  
+  def convert_database_to_utf8( db_name )
+    @db.q( "alter database #{db_name} default character set utf8 collate utf8_general_ci" )
+  end
+  
+  ## Utility method for converting strings to hexadecimal
+  def hexlify( str )
+    "0x#{str.unpack('H*')[0]}"
+  end
+  
+end
+
 class MySQLAbstractor
   def initialize(conf,db_name)
     (@host,@user,@pass,@debe) = [conf[:host],conf[:user],conf[:pass],db_name]
+    if conf.has_key?(:charset)
+      @charset = conf[:charset]
+    else
+      @charset = 'utf8'
+    end
+    @conn_retry = 0
+    @conn_retry_max = 2
     if conf.has_key?(:port)
       @port = conf[:port]
     else
@@ -76,6 +156,8 @@ class MySQLAbstractor
     begin
       if not @conn and @debe
         @conn = DBI.connect("DBI:Mysql:database=#{@debe};host=#{@host};port=#{@port}",@user,@pass)
+        @conn.do("set names #{@charset}")
+        @conn_retry = 0
         return true
       end
     rescue DBI::DatabaseError => e
@@ -92,8 +174,12 @@ class MySQLAbstractor
         puts "  #{e.backtrace.join("\n  ")}"
         puts "=="*40
       end
-      @conn = DBI.connect("DBI:Mysql:database=#{@debe};host=#{@host};port=#{@port}",@user,@pass)
-      db(@debe)
+      @conn_retry += 1
+      if @conn_retry <= @conn_retry_max
+        # using 'self.' for clarity
+        self.open()
+        self.db(@debe)
+      end
       return true
     end
   end
