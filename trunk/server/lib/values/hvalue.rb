@@ -67,7 +67,7 @@ class HValue
   ## (Re-)Send the client-size representation
   def restore( msg )
     ## Initialize a new client value
-    init_str = "new HValue(#{@val_id.inspect}, #{@data.inspect});"
+    init_str = "new HValue(#{@val_id.inspect}, #{@data.to_json});"
     msg.reply( init_str )
   end
   
@@ -174,9 +174,9 @@ class HValue
       @jstype = @@jstype_conv[ data.class.inspect ]
       @data   = data
     else
-      ## unknown type: default to string (.inspect takes care of that)
+      ## unknown type: default to string (.to_json takes care of that)
       @jstype = 'string'
-      @data   = data.inspect
+      @data   = data.to_json
     end
     
     # won't tell the client about the change, usually not needed
@@ -195,7 +195,7 @@ class HValue
   
   ## tell the client that the value changed
   def to_client( msg )
-    msg.reply "HVM.s( #{@val_id.inspect}, #{@data.inspect} );" 
+    msg.reply "HVM.s( #{@val_id.inspect}, #{@data.to_json} );" 
   end
   
   ## clean up self
@@ -320,7 +320,7 @@ class StringValueParser < ValueParser
       end
       return val_data
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.to_json}" if $DEBUG_MODE
     return @default_value
   end
 end
