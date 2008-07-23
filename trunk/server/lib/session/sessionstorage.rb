@@ -22,6 +22,8 @@
   #
   ###
 
+require 'rubygems'
+require 'iconv'
 
 ## MySQL database abstraction
 require 'db/mysql'
@@ -73,7 +75,7 @@ class SessionStorage
       db_root.open
       unless db_root.dbs.include?( auth_setup[:db] )
         puts "Creating himle session database #{auth_setup[:db].inspect}..." if $DEBUG_MODE
-        db_root.q( "create database #{auth_setup[:db]}" )
+        db_root.q( "create database #{auth_setup[:db]} default charset=utf8" )
       end
     rescue
       puts "root_setup failed, using auth_setup" if $DEBUG_MODE
@@ -120,7 +122,18 @@ class SessionStorage
     ## This table is used to store sessions
     unless @db.tables.include?('himle_session')
       puts "Creating session table..." if $DEBUG_MODE
-      @db.q( "create table himle_session (id int primary key auto_increment, cookie_key char(252) null, ses_key char(84), ses_timeout int not null default 0, user_id int not null default 0, ses_active tinyint not null default 0, ses_stored int not null default 0, ses_data mediumblob)" )
+      @db.q( %{
+        create table himle_session (
+          id int primary key auto_increment,
+          cookie_key char(252) character set utf8 null,
+          ses_key char(84),
+          ses_timeout int not null default 0,
+          user_id int not null default 0,
+          ses_active tinyint not null default 0,
+          ses_stored int not null default 0,
+          ses_data mediumblob
+        ) default charset utf8
+      }.gsub("\n",' ').squeeze(' ') )
     end
     
     ## Creates the 'himle_version' table, if necessary
@@ -128,7 +141,7 @@ class SessionStorage
     unless @db.tables.include?('himle_version')
       puts "Creating version info table..." if $DEBUG_MODE
       @db.q( "create table himle_version ( version int primary key not null default 0)" )
-      @db.q( "insert into himle_version ( version ) values (37)" )
+      @db.q( "insert into himle_version ( version ) values (270)" )
     end
     
     ## Creates the 'himle_uploads' table, if necessary
@@ -141,15 +154,15 @@ class SessionStorage
           ses_id int not null,
           upload_date int not null,
           upload_done tinyint not null default 0,
-          ticket_id varchar(255) not null,
+          ticket_id varchar(255) character set utf8 not null,
           file_size int not null default 0,
-          file_name varchar(255) not null,
-          file_mime varchar(255) not null default 'text/plain',
+          file_name varchar(255) character set utf8 not null,
+          file_mime varchar(255) character set utf8 not null default 'text/plain',
           file_data mediumblob
-        )
+        ) default character set utf8
       }.gsub("\n",' ').squeeze(' ') )
-      @db.q( "update himle_version set version = 254" )
-      himle_version = 254
+      @db.q( "update himle_version set version = 270" )
+      himle_version = 270
     end
     himle_version = @db.q("select version from himle_version")[0]['version'].to_i
     
@@ -157,16 +170,46 @@ class SessionStorage
     if himle_version < 252
       @db.q( "alter table himle_uploads add column upload_done tinyint not null default 0" )
       @db.q( "alter table himle_uploads add column upload_date int not null" )
-      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null" )
-      @db.q( "alter table himle_uploads add column file_name varchar(255) not null" )
+      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null character set utf8" )
+      @db.q( "alter table himle_uploads add column file_name varchar(255) not null character set utf8" )
       @db.q( "alter table himle_uploads drop column file_uploaded" )
-      @db.q( "update himle_version set version = 254" )
-      himle_version = 254
+      @db.q( "update himle_version set version = 270" )
+      himle_version = 270
     end
     if himle_version < 254
-      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null" )
-      @db.q( "alter table himle_uploads add column file_name varchar(255) not null" )
-      @db.q( "update himle_version set version = 254" )
+      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null character set utf8" )
+      @db.q( "alter table himle_uploads add column file_name varchar(255) not null character set utf8" )
+      @db.q( "update himle_version set version = 270" )
+      himle_version = 270
+    end
+    
+    utf8util = MySQL_UTF8_Util.new(@db)
+    
+    db_is_utf8 = utf8util.is_database_utf8?(auth_setup[:db])
+    
+    ## Convert column definitions and data to utf-8
+    if himle_version < 270 or not db_is_utf8
+=begin
+      himle_session
+        cookie_key
+        ses_key
+      himle_uploads
+        file_mime
+        ticket_id
+        file_name
+=end
+      
+      
+      puts "Converting tables to utf8" if $DEBUG_MODE
+      
+      utf8util.convert_table_to_utf8('himle_session',['cookie_key','ses_key'])
+      utf8util.convert_table_to_utf8('himle_uploads',['file_mime','ticket_id','file_name'])
+      
+      puts "Converting database to utf8" if $DEBUG_MODE
+      utf8util.convert_database_to_utf8(auth_setup[:db])
+      
+      @db.q( "update himle_version set version = 270" )
+      himle_version = 270
     end
     
     ## 
@@ -178,7 +221,6 @@ class SessionStorage
       restore_sessions()
     end
   end
-  
   
   ## Deletes all rows from himle_session as well as himle_uploads
   def reset_sessions
