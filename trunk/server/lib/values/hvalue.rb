@@ -315,7 +315,7 @@ class StringValueParser < ValueParser
     val_data = hvalue_xml.text
     if val_data != nil
       val_data = val_data.unpack('m*')[0] # base64
-      while val_data[-1..-1] == "\000"
+      while val_data[-1].chr == "\000"
         val_data.chop!
       end
       return val_data
