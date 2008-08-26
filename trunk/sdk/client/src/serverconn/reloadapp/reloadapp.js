@@ -60,7 +60,12 @@ ReloadApp = HApplication.extend({
     
     var _reloadButton = new (HButton.extend({
       click: function(){
-        location.href = this.app._destinationUrl;
+        if((!this.app._destinationUrl)||(this.app._destinationUrl=='/')){
+          document.location.reload(true);
+        }
+        else {
+          location.href = this.app._destinationUrl;
+        }
       }
     }))(
       new HRect(300, 234, 370, 258 ),
