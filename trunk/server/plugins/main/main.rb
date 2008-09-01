@@ -137,8 +137,8 @@ class Main < Plugin
     ## is disabled.
     elsif mses[:boot] == 1
       
-      # 60000ms = 60secs
-      msg.reply "sesWatcher = new SesWatcher(60000,'#{mses[:client_time].val_id}');"
+      # 5000ms = 5secs
+      msg.reply "sesWatcher = new SesWatcher(5000,'#{mses[:client_time].val_id}');"
     
     ## Processes delayed calls, if the
     ## :delayed_calls -array contains something to process.
@@ -201,7 +201,7 @@ class Main < Plugin
       if mses[:boot] > 3
         if mses[:delayed_calls].empty?
           if mses[:title_loading] == true
-            msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};" )
+            msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].to_json};" )
             mses[:title_loading] = false
           end
           msg.reply( "HTransporter.setPollMode(false);" )
@@ -218,7 +218,7 @@ class Main < Plugin
     elsif mses[:boot] > 3
       if msg.session[:main][:poll_mode] == true
         if mses[:title_loading] == true
-          msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].inspect};")
+          msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].to_json};")
           mses[:title_loading] = false
         end
         msg.reply "HTransporter.setPollMode(false);"

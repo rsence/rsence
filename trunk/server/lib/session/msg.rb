@@ -41,7 +41,8 @@ class Message
   
   attr_accessor :session, :ses_id,
                 :new_session, :restored_session,
-                :ses_valid, :request, :response
+                :ses_valid, :request, :response,
+                :buffer
   
   attr_reader   :ie6
   
@@ -58,6 +59,9 @@ class Message
     
     # Session data placeholder, assigned by SessionManager
     @session     = {}
+    
+    # response output
+    @buffer = []
     
     # The session identifier placeholder, assigned by SessionManager
     @ses_id      = 0
@@ -93,7 +97,7 @@ class Message
   ### javascript, but is valid for any data.
   def reply(data)
     puts data if $config[:trace]
-    @response.body+=data
+    @buffer.push( data )
   end
   
   ### Sends a Magick::Image object to be served, returns a disposable uri.

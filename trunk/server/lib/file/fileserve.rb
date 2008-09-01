@@ -47,11 +47,10 @@ class FileServe
       response['Cache-Control'] = 'no-cache'
     end
     
-    ## Comment out, when Rack supports chunked transfers:
-    #support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
-    #support_gzip = false if $config[:no_gzip]
-    #is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
-    #is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
+    support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
+    support_gzip = false if $config[:no_gzip]
+    is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
+    is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
     
     ## IE6 is 'special'
     is_msie6  = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
@@ -111,20 +110,19 @@ class FileServe
         response.status = 200
         response.content_type = 'text/javascript; charset=utf-8'
         
-        ## Comment out when Rack supports chunked transfers:
-        #if support_gzip and not is_safari and not is_msie
-        #  response.chunked = true
-        #  response['Content-Encoding'] = 'gzip'
-        #  response['Last-Modified'] = $FILECACHE.gz_cache[ req_file ][1]
-        #  response['Content-Size'] = $FILECACHE.gz_cache[ req_file ][2]
-        #  response.body   = $FILECACHE.gz_cache[ req_file ][0]
-        #else
+        if support_gzip and not is_safari and not is_msie
+          #response['Transfer-Encoding'] = 'chunked,gzip'
+          response['Last-Modified'] = $FILECACHE.gz_cache[ req_file ][1]
+          response['Content-Size'] = $FILECACHE.gz_cache[ req_file ][2]
+          response['Content-Encoding'] = 'gzip'
+          response.body   = $FILECACHE.gz_cache[ req_file ][0]+"\r\n\r\n"
+        else
         
-        response['Last-Modified'] = $FILECACHE.js_cache[ req_file ][1]
-        response['Content-Size'] = $FILECACHE.js_cache[ req_file ][2]
-        response.body = $FILECACHE.js_cache[ req_file ][0]
+          response['Last-Modified'] = $FILECACHE.js_cache[ req_file ][1]
+          response['Content-Size'] = $FILECACHE.js_cache[ req_file ][2]
+          response.body = $FILECACHE.js_cache[ req_file ][0]
         
-        #end
+        end
       end
     
     ## Serve client theme files
@@ -164,28 +162,27 @@ class FileServe
           'swf'  => 'application/x-shockwave-flash'
         }[file_ext]
         
-        ## Comment out, when Rack supports chunked transfers:
-        #support_gzip = false if theme_part == 'gfx'
-        #if support_gzip and not is_safari and not is_msie
-        #  response.chunked = true
-        #  response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
-        #  response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
-        #  response['Content-Encoding'] = 'gzip'
-        #  response.body   = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
-        #else
+        support_gzip = false if theme_part == 'gfx'
+        if support_gzip and not is_safari and not is_msie
+          #response['Transfer-Encoding'] = 'chunked,gzip'
+          response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
+          response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
+          response['Content-Encoding'] = 'gzip'
+          response.body   = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
+        else
           
-        # Special IE6 condition to serve gifs instead of png's, because it works much better
-        # than using the ActiveX alpha filter hack
-        if is_msie6 and req_file[-4..-1] == '.png'
-          ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
-          req_file = ie6_req_png2gif if $FILECACHE.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
-        end
+          # Special IE6 condition to serve gifs instead of png's, because it works much better
+          # than using the ActiveX alpha filter hack
+          if is_msie6 and req_file[-4..-1] == '.png'
+            ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
+            req_file = ie6_req_png2gif if $FILECACHE.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
+          end
         
-        response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][1]
-        response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
-        response.body = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][0]
+          response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][1]
+          response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
+          response.body = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][0]
           
-        #end
+        end
       end
       
     end

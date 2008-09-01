@@ -21,10 +21,10 @@
   **/
 
 // The minimum delay between requests in ms:
-HTransporter.syncDelay = 100;
+HTransporter.syncDelay = 50;
 
 // The HSystem ticker interval in ms:
-HSystemTickerInterval = 200;
+HSystemTickerInterval = 50;
 
 // The Element Manager's DOM-update ticker, in ms
 ELEMTickerInterval=50;
@@ -34,7 +34,7 @@ ELEMTickerInterval=50;
 
 // Prevents wasting precious cpu-cycles on something
 // a human being can't see.
-ELEM.setFPS(30);
+ELEM.setFPS(20);
 
 // Changes the documentElement properties of the web page.
 ELEM.setStyle(0,'background-color','#ffffff');
@@ -50,8 +50,9 @@ ELEM.del(ELEM.bindId('loading'));
 SesWatcher = HApplication.extend({
   constructor: function( _timeoutSecs, _sesTimeoutValueId ){
     
-    // onIdle is called when HSystem's ticker count % 240 == 0
-    this.base(240); 
+    // onIdle is called when HSystem's ticker count % 100 == 0
+    // this means it's 5 seconds with HSystemTickerInterval 50
+    this.base(100); 
     
     // gets the HValue represented by
     // sesTimeoutValueId (:client_time in server)

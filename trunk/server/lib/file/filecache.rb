@@ -31,7 +31,7 @@ module Server
 =end
 class FileCache
   
-  attr_reader :busy_scanning, :scan_time, :js_cache, :theme_cache #, :gz_cache
+  attr_reader :busy_scanning, :scan_time, :js_cache, :theme_cache, :gz_cache
   
   # A lock flag for preventing different threads from
   # scanning simultaneously in debug mode
@@ -77,6 +77,7 @@ class FileCache
     
     # Clean hash for js data and properties
     js_cache = {}
+    gz_cache = {}
     
     Dir.entries( ui_path ).each do |path_item|
       file_path = File.join( ui_path, path_item )
@@ -84,6 +85,9 @@ class FileCache
       if suf == '.js'
         file_key = path_item[0..-4]
         js_cache[file_key] = getfile(file_path)
+      elsif suf == '.gz'
+        file_key = path_item[0..-4]
+        gz_cache[file_key] = getfile(file_path)
       end
     end
     
@@ -117,7 +121,7 @@ class FileCache
         Dir.entries( css_path ).each do |path_item|
           file_path = File.join( css_path, path_item )
           suf = suffix( file_path )
-          if suf == '.css'
+          if suf == '.css' or suf == '.gz'
             theme_cache[theme_name]['css'][path_item] = getfile(file_path)
           end
         end
@@ -126,7 +130,7 @@ class FileCache
         Dir.entries( html_path ).each do |path_item|
           file_path = File.join( html_path, path_item )
           suf = suffix( file_path )
-          if suf == '.html'
+          if suf == '.html' or suf == '.gz'
             theme_cache[theme_name]['html'][path_item] = getfile(file_path)
           end
         end
@@ -144,6 +148,7 @@ class FileCache
     
     # replaces the current caches with the fresh ones
     @js_cache = js_cache
+    @gz_cache = gz_cache
     @theme_cache = theme_cache
     
     # time of last scan:

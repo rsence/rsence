@@ -35,7 +35,7 @@ CLIENT_PATH = ARGV.include?('--client-path')?(ARGV[ARGV.index('--client-path')+1
 $config = {
   
   ## This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
-  :no_gzip => true,
+  :no_gzip => false,
   
   ## Enabling this appends all msg.reply call output to stdout
   :trace   => ARGV.include?('--trace-js'),

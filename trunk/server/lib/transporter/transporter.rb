@@ -52,13 +52,12 @@ class Transporter
     response['Cache-Control'] = 'no-cache'
     
     ## Uncomment, when Rack supports chunked transfers:
-    #if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
-    #  response.chunked = true
-    #  response['Content-Encoding'] = 'gzip'
-    #  do_gzip = true
-    #else
-    #  do_gzip = false
-    #end
+    if request['Accept-Encoding'] and request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
+      response['Content-Encoding'] = 'gzip'
+      do_gzip = true
+    else
+      do_gzip = false
+    end
     
     msg = $SESSION.init_msg( request, response, cookies )
     
@@ -247,17 +246,16 @@ class Transporter
     end
     
     ## return the output
-    #if do_gzip
-    #  outp = GZString.new('')
-    #  gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-    #  gzwriter.write( msg.output.join("\r\n") )
-    #  gzwriter.close
-    #else
-    #outp = msg.output.join("\r\n")
-    #end
+    if do_gzip
+      outp = GZString.new('')
+      gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
+      gzwriter.write( msg.buffer.join("\r\n") )
+      gzwriter.close
+    else
+      outp = msg.buffer.join("\r\n")
+    end
     response['Content-Size'] = response.body.size
-    #return outp
-    #response.body = outp
+    response.body = outp
   end
   
 end
