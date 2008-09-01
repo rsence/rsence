@@ -75,7 +75,7 @@ $_REPL_PREFIX= '_'
 
 $_NO_OBFUSCATION = ARGV.include?('-noo')
 $_NO_WHITESPACE_REMOVAL = ARGV.include?('-nwr')
-$_NO_GZIP = true
+$_NO_GZIP = false
 
 # DON'T COMPRESS THESE WORDS IN THE SOURCE:
 $_RESERVED_NAMES= [

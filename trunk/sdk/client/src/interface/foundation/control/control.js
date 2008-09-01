@@ -88,7 +88,7 @@ HControl = HView.extend({
     if(!this.valueObj) {
       this.setValueObj(new HDummyValue());
     }
-    if(this.value===undefined) {
+    if((this.value===undefined)&&(options.value!==undefined)) {
       this.setValue(options.value);
     }
     
@@ -238,9 +238,9 @@ HControl = HView.extend({
   * See also:
   *  <setValue> <setValueRange> <HValue.bind> <HValue.unbind> <HValueManager>
   **/
-  setValueObj: function(_aValueObj) {
-    this.valueObj = _aValueObj;
-    this.setValue(_aValueObj.value);
+  setValueObj: function(_HValue) {
+    this.valueObj = _HValue;
+    this.setValue(_HValue.value);
   },
   
 /** method: setValueRange
