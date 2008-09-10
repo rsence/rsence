@@ -53,6 +53,11 @@ class Broker
       puts "/hello: #{uri.inspect}" if $DEBUG_MODE
       $TRANSPORTER.xhr( @request, @response, true )
     
+    ## /SOAP handles SOAP Requests
+    elsif uri == '/SOAP'
+      puts "/SOAP: #{uri.inspect}" if $DEBUG_MODE
+      $TRANSPORTER.soap( @request, @response )
+    
     ## /up handles the uploads inited for ticketserve
     ## the second part of the uri contains the disposable
     ## upload key that has a server-side mapping to the

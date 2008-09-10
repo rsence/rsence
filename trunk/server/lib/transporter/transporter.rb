@@ -26,11 +26,11 @@ module Himle
 module Server
 
 ## Uncomment, when Rack supports chunked transfers
-#require 'zlib'
-#
-#class GZString < String
-#  alias write <<
-#end
+require 'zlib'
+
+class GZString < String
+  alias write <<
+end
 
 =begin
   Transporter is the counterpart to the client's HTransporter xhr engine.
@@ -41,7 +41,11 @@ class Transporter
     @config = $config[:transporter_conf]
   end
   
-  ## 
+  ## handles incoming SOAP requests
+  def soap(request, response)
+  end
+  
+  ## handles incoming XMLHttpRequests from the browser
   def xhr(request, response, cookies=false)
     
     ## The response status should always be 200 (OK)

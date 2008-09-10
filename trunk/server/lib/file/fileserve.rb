@@ -164,7 +164,6 @@ class FileServe
         
         support_gzip = false if theme_part == 'gfx'
         if support_gzip and not is_safari and not is_msie
-          #response['Transfer-Encoding'] = 'chunked,gzip'
           response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
           response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
           response['Content-Encoding'] = 'gzip'
