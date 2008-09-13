@@ -11,7 +11,7 @@
 
 # SOAP handler servlet for RACK / Himle
 
-# Modified from soap/rpc/soaplet.rb so this is also true:
+# Modified from soap/rpc/soaplet.rb of soap4r:
 #
 # Copyright (C) 2000-2007  NAKAMURA, Hiroshi <nahi@ruby-lang.org>.
 
@@ -26,42 +26,28 @@ require 'soap/streamHandler'
 module SOAP
 module RPC
 
-class RACK_SOAPlet
+class Himle_SOAPlet
   
 public
   
   attr_reader :options
   attr_accessor :authenticator
   
+  ### Initialize with optional router argument (defaults to ::SOAP::RPC::Router)
   def initialize(router = nil)
-    @router = router || ::SOAP::RPC::Router.new(self.class.name)
+    @router = router or ::SOAP::RPC::Router.new(self.class.name)
     @options = {}
-    @authenticator = nil
     @config = {}
   end
   
+  ### Setter for gzipped transfer encoding
   def allow_content_encoding_gzip=(allow)
     @options[:allow_content_encoding_gzip] = allow
   end
   
-  ###
-  ## Servlet interfaces for WEBrick.
-  #
-  def get_instance(config, *options)
-    @config = config
-    self
-  end
-  
-  def require_path_info?
-    false
-  end
-  
-  def serve_SOAP( req, res )
+  ### Request/Response handler
+  def post( req, res )
     puts "SOAP request: " + req.body if $DEBUG_MODE
-    if @authenticator
-      @authenticator.authenticate(req, res)
-      # you can check authenticated user with SOAP::RPC::SOAPlet.user
-    end
     begin
       conn_data = ::SOAP::StreamHandler::ConnectionData.new
       setup_req(conn_data, req)
@@ -134,12 +120,12 @@ private
       res['set-cookie'] = cookies.collect { |cookie| cookie.to_s }
     end
     if conn_data.is_nocontent
-      res.status = WEBrick::HTTPStatus::RC_ACCEPTED
+      res.status = 202 # "Accepted"
       res.body = ''
       return
     end
     if conn_data.is_fault
-      res.status = WEBrick::HTTPStatus::RC_INTERNAL_SERVER_ERROR
+      res.status = 500 # "Internal Server Error"
     end
     if outstring = encode_gzip(req, conn_data.send_string)
       res['content-encoding'] = 'gzip'

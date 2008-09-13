@@ -21,6 +21,7 @@
   #
   ###
 
+require 'soap/soapserve'
 
 module Himle
 module Server
