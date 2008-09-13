@@ -23,10 +23,10 @@
 require 'soap/rpc/router'
 require 'soap/streamHandler'
 
-module SOAP
-module RPC
+module Himle
+module Server
 
-class Himle_SOAPlet
+class SOAPlet
   
 public
   

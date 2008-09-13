@@ -22,6 +22,8 @@
   #
   ###
 
+require 'http/soap/soapserve'
+
 module Himle
 module Server
 
@@ -39,6 +41,7 @@ class Transporter
   
   def initialize
     @config = $config[:transporter_conf]
+    @soap_serve = SOAP::SOAPServe.new
   end
   
   ## handles incoming SOAP requests
