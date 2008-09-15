@@ -75,7 +75,8 @@ ReloadApp = HApplication.extend({
     
     var _ignoreButton = new (HButton.extend({
       click: function(){
-        HTransporter.start();
+        HTransporter.syncDelay = HTransporter.restoreSyncDelay;
+        HTransporter.start(HTransporter.url_base);
         this.app.die();
       }
     }))(
