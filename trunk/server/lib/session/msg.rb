@@ -37,12 +37,21 @@ because it allows single instances of any classes that handle user data.
 Major clean-up in 2008-05-07.
 
 =end
+
+## Uncomment, when Rack supports chunked transfers
+require 'zlib'
+
+class GZString < String
+  alias write <<
+end
+
+
 class Message
   
   attr_accessor :session, :ses_id,
                 :new_session, :restored_session,
                 :ses_valid, :request, :response,
-                :buffer
+                :buffer, :response_success
   
   attr_reader   :ie6
   
@@ -53,6 +62,9 @@ class Message
     
     # The http request object
     @request  = request
+    
+    # The request success flag
+    @response_success = false
     
     # The http response object
     @response = response
@@ -65,6 +77,9 @@ class Message
     
     # The session identifier placeholder, assigned by SessionManager
     @ses_id      = 0
+    
+    # The session key placeholder
+    @ses_key = false
     
     # The 'special' browser's presense is detected here:
     @ie6         = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
@@ -86,11 +101,63 @@ class Message
     # by SessionManager, if everything seems ok.
     @ses_valid = false
     
+    # It's better to evaluate plain text than to respond with js.
+    @response.content_type = 'text/javascript; charset=utf-8'
+    @response['Cache-Control'] = 'no-cache'
+    
+    # gnu-ziped responses:
+    if @request['Accept-Encoding'] and @request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
+      @response['Content-Encoding'] = 'gzip'
+      @do_gzip = true
+    else
+      @do_gzip = false
+    end
   end
   
   ### Expire the session
   def expire_session
     $SESSION.expire_session( @ses_id )
+  end
+  
+  def ses_key=(ses_key)
+    @ses_key = ses_key
+  end
+  
+  def error_msg( error_js )
+    @error_js = error_js
+    response_done
+  end
+  
+  ## called to flush buffer
+  def response_done
+    ## The response status should always be 200 (OK)
+    @response.status = 200
+    
+    if not @response_success
+      @response.body = [
+        "HTransporter.ses_id='#{@ses_key}';",
+        @error_js,
+        "HTransporter.restoreSyncDelay=HTransporter.syncDelay;",
+        "HTransporter.syncDelay=-1;"
+      ].join("\r\n")
+    else
+      
+      if @ses_key
+        @buffer.unshift( "HTransporter.ses_id='#{@ses_key}';" )
+      end
+      
+      ## flush the output
+      if @do_gzip
+        outp = GZString.new('')
+        gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
+        gzwriter.write( @buffer.join("\r\n") )
+        gzwriter.close
+      else
+        outp = @buffer.join("\r\n")
+      end
+      @response['Content-Size'] = @response.body.size
+      @response.body = outp
+    end
   end
   
   ### Sends some data to the client, usually

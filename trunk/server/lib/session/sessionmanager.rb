@@ -157,7 +157,7 @@ class SessionManager < SessionStorage
         ses_data[:ses_key] = ses_key
         
         # tell the client what its new session key is
-        msg.reply "HTransporter.ses_id='#{ses_key}';"
+        msg.ses_key = ses_key
       end
       ### /extra security
       
@@ -183,21 +183,17 @@ class SessionManager < SessionStorage
     
   end
   
-  ## Tells the client to stop connecting with its session
-  def stop_client( msg )
-    msg.reply "HTransporter.syncDelay=-1;"
-  end
-  
   def js_str( str )
     return str.to_json.gsub('<','&lt;').gsub('>','&gt;').gsub(/\[\[(.*?)\]\]/,'<\1>')
   end
   
   ## Displays error message and stops the client
   def stop_client_with_message( msg, title='Unknown Issue', descr='No issue description given.', uri='/' )
-    msg.reply "jsLoader.load('basic');"
-    msg.reply "jsLoader.load('servermessage');"
-    msg.reply "reloadApp = new ReloadApp( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
-    stop_client( msg )
+    msg.error_msg( [
+      "jsLoader.load('basic');",
+      "jsLoader.load('servermessage');",
+      "reloadApp = new ReloadApp( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
+    ].join("\r\n") )
   end
   
   ### Checks / Sets cookies

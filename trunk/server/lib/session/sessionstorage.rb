@@ -84,13 +84,13 @@ class SessionStorage
     
     ## tests auth_setup permissions by creating and dropping himle_test
     db_auth = MySQLAbstractor.new(auth_setup, auth_setup[:db])
-    begin
+    #begin
       has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
       has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
       has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
-    rescue
-      has_privileges = false
-    end
+    #rescue
+    #  has_privileges = false
+    #end
     
     ## Tries creating necessary permissions for auth_setup
     ## It will fail, if there is no mysql 'root' permissions

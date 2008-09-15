@@ -25,7 +25,14 @@ begin
   require File.expand_path(File.join(File.dirname(__FILE__),'randgen_c','randgen'))
 rescue LoadError => e
   puts "c-randgen failed to init, reason: #{e.inspect}" if $DEBUG_MODE
-  puts "Warning: falling back to old randgen."
+  begin
+    puts "Trying to build extension..."
+    fork do
+      system( 'ruby '+File.expand_path(File.join(File.dirname(__FILE__),'randgen_c','extconf.rb')) )
+    end
+    require File.expand_path(File.join(File.dirname(__FILE__),'randgen_c','randgen'))
+  end
+  warn "falling back to old randgen"
   require File.expand_path(File.join(File.dirname(__FILE__),'randgen_rb','randgen'))
 end
 
