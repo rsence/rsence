@@ -101,6 +101,8 @@ class Message
     # by SessionManager, if everything seems ok.
     @ses_valid = false
     
+    @error_js = ''
+    
     # It's better to evaluate plain text than to respond with js.
     @response.content_type = 'text/javascript; charset=utf-8'
     @response['Cache-Control'] = 'no-cache'
@@ -112,6 +114,8 @@ class Message
     else
       @do_gzip = false
     end
+    
+    @response_sent = false
   end
   
   ### Expire the session
@@ -130,6 +134,7 @@ class Message
   
   ## called to flush buffer
   def response_done
+    return if @response_sent
     ## The response status should always be 200 (OK)
     @response.status = 200
     
@@ -158,6 +163,7 @@ class Message
       @response['Content-Size'] = @response.body.size
       @response.body = outp
     end
+    @response_sent = true
   end
   
   ### Sends some data to the client, usually
