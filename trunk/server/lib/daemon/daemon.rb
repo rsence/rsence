@@ -107,13 +107,13 @@ module Daemon
     def self.daemonize(daemon)
       case !ARGV.empty? && ARGV[0]
       when 'start'
-        start(daemon)
+        self.start(daemon)
       when 'stop'
-        stop(daemon)
+        self.stop(daemon)
       when 'restart'
-        stop(daemon)
+        self.stop(daemon)
         sleep 1
-        start(daemon)
+        self.start(daemon)
       else
         puts "Invalid command. Please specify start, stop or restart."
         exit
@@ -143,15 +143,18 @@ module Daemon
         else
           STDERR.reopen( errpath, "a" )
         end
-        STDOUT.sync = true 
-        STDERR.sync = true 
+        STDOUT.sync = true
+        STDERR.sync = true
+        Signal.trap('USR1') do 
+          $PLUGINS.shutdown
+          $SESSION.shutdown
+        end
         ['INT', 'TERM', 'KILL'].each do |signal|
-          trap(signal) {
-            $PLUGINS.shutdown
-            $SESSION.shutdown
+          Signal.trap(signal) do
+            puts "Got signal #{signal.inspect}"
             daemon.stop
             exit
-          }
+          end
         end
         daemon.start
       end
@@ -164,6 +167,7 @@ module Daemon
       pid = PidFile.recall(daemon)
       FileUtils.rm(daemon.pid_fn)
       begin
+        pid && Process.kill("USR1", pid)
         pid && Process.kill("TERM", pid)
       rescue
         puts "Error, no such pid (#{pid}) running"

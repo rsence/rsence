@@ -84,13 +84,13 @@ class SessionStorage
     
     ## tests auth_setup permissions by creating and dropping himle_test
     db_auth = MySQLAbstractor.new(auth_setup, auth_setup[:db])
-    #begin
+    begin
       has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
       has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
-      has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
-    #rescue
-    #  has_privileges = false
-    #end
+      has_privileges = (db_auth.q("drop table if exists himle_test") == 0) and has_privileges
+    rescue
+      has_privileges = false
+    end
     
     ## Tries creating necessary permissions for auth_setup
     ## It will fail, if there is no mysql 'root' permissions
@@ -217,7 +217,6 @@ class SessionStorage
       puts "Resetting all sessions..."
       reset_sessions()
     else
-      puts "Restoring old sessions..." if $DEBUG_MODE
       restore_sessions()
     end
   end
@@ -233,11 +232,16 @@ class SessionStorage
     puts "Restoring sessions..." if $DEBUG_MODE
     @db.q("select * from himle_session").each do |ses_row|
       ses_id = ses_row['id']
+      #puts "ses_id = #{ses_id.inspect}"
       ses_data_dump = ses_row['ses_data']
-      if ses_data_dump != nil
+      if ses_data_dump == nil
+        @db.q("delete from himle_session where id = #{ses_id}")
+      else
         ses_data = Marshal.restore( ses_data_dump )
+        ses_key = ses_data[:ses_key]
+        #puts "ses_key = #{ses_key.inspect}"
         @sessions[ses_id] = ses_data
-        @session_keys[ ses_data[:ses_key] ] = ses_id
+        @session_keys[ ses_key ] = ses_id
         @session_cookie_keys[ ses_data[:cookie_key] ] = ses_id
       end
     end
@@ -248,6 +252,7 @@ class SessionStorage
     puts "Storing sessions..." if $DEBUG_MODE
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
+      #puts ses_data.inspect
       ses_data_dump = Marshal.dump( ses_data )
       @db.q("update himle_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}")
       @db.q("update himle_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}")
