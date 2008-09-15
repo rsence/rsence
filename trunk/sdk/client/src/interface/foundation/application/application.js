@@ -36,7 +36,7 @@
   *  <HSystem> <HView>
   *
   * Usage example:
-  *  > var myApp = new HApplication(100);
+  *  > var myApp = new HApplication(10);
   *  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
   *  > mySlider.draw();
   *  > myApp.die();
@@ -46,9 +46,9 @@ HApplication = HClass.extend({
 /** constructor: constructor
   *
   * Parameter (optional):
-  *  _refreshInterval - An integer value (in ms) used for <onIdle> polling events.
+  *  _priority - An integer value (in ms) used for <onIdle> polling events.
   **/
-  constructor: function(_refreshInterval){
+  constructor: function(_priority){
     
     // storage for views
     this.views = [];
@@ -60,7 +60,7 @@ HApplication = HClass.extend({
     // reference to that array.
     this.viewsZOrder = HSystem.viewsZOrder;
     // Finalize initialization via HSystem
-    HSystem.addApp(this,_refreshInterval);
+    HSystem.addApp(this,_priority);
   },
   
 /** method: buildParents

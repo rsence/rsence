@@ -137,8 +137,8 @@ HSystem = HClass.extend({
   ** Binds an app and gives it a unique id.
   **
   ** Parameters:
-  **  _appClass - Usually *this* inside the HApplication constructor, is the app namespace.
-  **  _refreshInterval - The interval (in ms) to poll the app and its components.
+  **  _app - Usually *this* inside the HApplication constructor, is the app namespace.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
   **
   ** Returns:
   **  The application unique id.
@@ -146,23 +146,23 @@ HSystem = HClass.extend({
   ** See also:
   **  <HApplication>
   ***/
-  addApp: function(_appClass,_refreshInterval){
+  addApp: function(_app, _priority){
     
     if(this.freeAppIds.length > 1024){
       var _appId = this.freeAppIds.shift();
-      this.apps[_appId] = _appClass;
+      this.apps[_appId] = _app;
     } else {
-      this.apps.push(_appClass);
+      this.apps.push(_app);
       var _appId = this.apps.length-1;
     }
     
     // sets self as parent
-    _appClass.parent  = this;
-    _appClass.parents = [this];
+    _app.parent  = this;
+    _app.parents = [this];
     
-    _appClass.appId = _appId;
+    _app.appId = _appId;
     
-    this.startApp(_appId, _refreshInterval);
+    this.startApp(_appId, _priority);
     
     return _appId;
   },
@@ -173,16 +173,16 @@ HSystem = HClass.extend({
   **
   ** Parameters:
   **  _appId - The unique id of the app.
-  **  _refreshInterval - The interval (in ms) to poll the app and its components.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
   **
   ** See also:
   **  <HApplication.start> <HSystem.stopApp> <HSystem.reniceApp>
   ***/
-  startApp: function(_appId,_refreshInterval){
-    if(_refreshInterval===undefined){
-      _refreshInterval = this.defaultInterval;
+  startApp: function(_appId,_priority){
+    if(_priority===undefined){
+      _priority = this.defaultInterval;
     }
-    this.appPriorities[ _appId ] = _refreshInterval;
+    this.appPriorities[ _appId ] = _priority;
     this.busyApps[_appId] = false;
   },
   
@@ -206,13 +206,13 @@ HSystem = HClass.extend({
   **
   ** Parameters:
   **  _appId - The unique id of the app.
-  **  _refreshInterval - The interval (in ms) to poll the app and its components.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
   **
   ** See also:
   **  <HSystem.stopApp> <HSystem.startApp>
   ***/
-  reniceApp: function(_appId,_refreshInterval){
-    this.appPriorities[ _appId ] = _refreshInterval;
+  reniceApp: function(_appId,_priority){
+    this.appPriorities[ _appId ] = _priority;
   },
   
 /*** method: killApp
