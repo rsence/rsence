@@ -22,7 +22,7 @@
   #
   ###
 
-require 'http/soap/soapserve'
+require 'http/soap/hsoaplet'
 
 module Himle
 module Server
@@ -30,19 +30,30 @@ module Server
 =begin
   Transporter is the counterpart to the client's HTransporter xhr engine.
 =end
+
+
+
 class Transporter
+  
+  ## just for testing, for now:
+  class TestSoaplet < ::SOAP::RPC::HSoaplet
+    def self.test( name='foo' )
+      return "Hello, #{name.inspect}"
+    end
+  end
   
   def initialize
     @config = $config[:transporter_conf]
-    @soap_serve = SOAP::SOAPServe.new
+    @soap_serve = TestSoaplet.new
   end
   
   ## handles incoming SOAP requests
   def soap(request, response)
-    puts 'Transporter.soap'
-    response.status = 200
-    response.body = "hello\n"
-    @soap_serve.post( request, response )
+    #puts 'Transporter.soap'
+    #require 'pp'
+    #pp request
+    #puts request.env['rack.input'].read
+    @soap_serve.process( request, response )
   end
   
   # wrapper for the session manager stop client functionality
@@ -144,9 +155,10 @@ class Transporter
         xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: $VALUES.sync_client failed." )
       end
       
+      msg.response_success = true
+      
     end
     
-    msg.response_success = true
     msg.response_done
   end
   

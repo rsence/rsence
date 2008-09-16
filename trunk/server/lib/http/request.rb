@@ -61,7 +61,8 @@ class Request < Rack::Request
       ['QUERY_STRING',          'query-string'],
       ['HTTP_ACCEPT',           'accept'],
       ['REQUEST_METHOD',        'request-method'],
-      ['HTTP_CONNECTION',       'connection']
+      ['HTTP_CONNECTION',       'connection'],
+      ['HTTP_SOAPACTION',       'soapaction']
     ].each do |env_key,header_key|
       @header[header_key] = @env[env_key] if @env.has_key?(env_key)
       @header["x-#{header_key}"] = @env["X_#{env_key}"] if @env.has_key?("X_#{env_key}")

@@ -53,8 +53,8 @@ class Broker
       puts "/hello: #{uri.inspect}" if $DEBUG_MODE
       $TRANSPORTER.xhr( @request, @response, true )
     
-    ## /SOAP handles SOAP Requests
-    elsif uri == '/SOAP'
+    ## /SOAP handles SOAP Requests (only when debugging, for now...)
+    elsif uri == '/SOAP' and $DEBUG_MODE
       puts "/SOAP: #{uri.inspect}" if $DEBUG_MODE
       $TRANSPORTER.soap( @request, @response )
     
