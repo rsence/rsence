@@ -38,8 +38,8 @@ def rack_mongrel_handler; Rack::Handler::Mongrel; end
 # Selects handler for Rack
 $config[:http_server][:rack_handler] = self.method({
   'webrick' => :rack_webrick_handler,
-  'ebb'     => :rack_ebb_handler,  # unsupported
-  'thin'    => :rack_thin_handler, # unsupported
+  'ebb'     => :rack_ebb_handler,
+  'thin'    => :rack_thin_handler,
   'mongrel' => :rack_mongrel_handler
 }[$config[:http_server][:rack_require]]).call
 
@@ -104,25 +104,52 @@ module Daemon
   end
   
   module Controller
+    
+    def self.print_status(daemon)
+      is_running = self.status(daemon)
+      puts "Himle is #{'not ' unless is_running}running"
+    end
+    
+    ## Status is not entirely reliable
+    def self.status(daemon)
+      if File.file?(daemon.pid_fn)
+        begin
+          pid = open(daemon.pid_fn,'r').read.to_i
+          pid && Process.kill('USR2',pid)
+          return true
+        rescue Errno::ESRCH => e
+          return false
+        end
+      end
+      return false
+    end
+    
     def self.daemonize(daemon)
       case !ARGV.empty? && ARGV[0]
+      when 'status'
+        self.print_status(daemon)
       when 'start'
         self.start(daemon)
       when 'stop'
         self.stop(daemon)
       when 'restart'
         self.stop(daemon)
-        sleep 1
         self.start(daemon)
+      when 'save'
+        self.save(daemon)
       else
-        puts "Invalid command. Please specify start, stop or restart."
+        puts "Invalid command. Please specify one of the following: start, stop, restart, status, save or help."
         exit
       end
     end
     def self.start(daemon)
-      if File.file?(daemon.pid_fn)
-        puts "Already running. Try restart."
+      is_running = self.status(daemon)
+      if is_running
+        puts "Himle is already running. Try restart."
         exit
+      elsif not is_running and File.file?(daemon.pid_fn)
+        puts "Stale pid file, removing.."
+        FileUtils.rm(daemon.pid_fn)
       end
       fork do
         Process.setsid
@@ -149,6 +176,9 @@ module Daemon
           $PLUGINS.shutdown
           $SESSION.shutdown
         end
+        Signal.trap('USR2') do 
+          puts "Alive."
+        end
         ['INT', 'TERM', 'KILL'].each do |signal|
           Signal.trap(signal) do
             puts "Got signal #{signal.inspect}"
@@ -158,17 +188,37 @@ module Daemon
         end
         daemon.start
       end
+      sleep 1
+      if self.status(daemon)
+        puts "Himle is running now."
+      else
+        puts "Himle did not start, please check the logfile."
+      end
+    end
+    def self.save(daemon)
+      if !File.file?(daemon.pid_fn)
+        puts "Pid file not found. Is Himle started?"
+        exit
+      end
+      pid = open(daemon.pid_fn,'r').read.to_i
+      begin
+        pid && Process.kill("USR1", pid)
+        puts "Session data saved."
+      rescue
+        puts "Error, no such pid (#{pid}) running"
+      end
     end
     def self.stop(daemon)
+      self.save(daemon)
       if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is the daemon started?"
+        puts "Pid file not found. Is Himle started?"
         exit
       end
       pid = PidFile.recall(daemon)
       FileUtils.rm(daemon.pid_fn)
       begin
-        pid && Process.kill("USR1", pid)
         pid && Process.kill("TERM", pid)
+        puts "Himle is stopped now."
       rescue
         puts "Error, no such pid (#{pid}) running"
       end

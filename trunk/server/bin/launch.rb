@@ -23,13 +23,21 @@
   #
   ###
 
-if ARGV.include?('--help') or ARGV.include?('-h') or ARGV.include?('help')
+if ARGV.include?('--help') or ARGV.include?('-h') or
+   ARGV.include?('help') or not (
+    ARGV.include?('start') or ARGV.include?('stop') or 
+    ARGV.include?('restart') or ARGV.include?('status') or
+    ARGV.include?('save')
+  )
   puts "Usage: #{__FILE__} command [params]"
   puts
   puts "command is one of:"
-  puts " start      Starts the server daemon"
-  puts " stop       Stops the server daemon"
-  puts " restart    Restarts the server daemon"
+  puts " status     Tells if Himle Server is running or not"
+  puts " start      Starts Himle Server"
+  puts " stop       Stops Himle Server"
+  puts " restart    Restarts Himle Server"
+  puts " save       Saves Himle Server session data"
+  puts " help       This text"
   puts
   puts "Params:"
   puts " --trace-js               Write content of msg.reply calls to stdout."
