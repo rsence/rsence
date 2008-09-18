@@ -104,6 +104,91 @@ class HSoaplet
     
   end
   
+  ### Other public methods:
+  def mapping_registry
+    @router.mapping_registry
+  end
+
+  def mapping_registry=(mapping_registry)
+    @router.mapping_registry = mapping_registry
+  end
+
+  def literal_mapping_registry
+    @router.literal_mapping_registry
+  end
+
+  def literal_mapping_registry=(literal_mapping_registry)
+    @router.literal_mapping_registry = literal_mapping_registry
+  end
+
+  def generate_explicit_type
+    @router.generate_explicit_type
+  end
+
+  def generate_explicit_type=(generate_explicit_type)
+    @router.generate_explicit_type = generate_explicit_type
+  end
+  
+  # servant entry interface
+  
+  def add_rpc_request_servant(factory, namespace = @default_namespace)
+    @router.add_rpc_request_servant(factory, namespace)
+  end
+  
+  def add_rpc_servant(obj, namespace = @default_namespace)
+    @router.add_rpc_servant(obj, namespace)
+  end
+  alias add_servant add_rpc_servant
+  
+  def add_request_headerhandler(factory)
+    @router.add_request_headerhandler(factory)
+  end
+  
+  def add_headerhandler(obj)
+    @router.add_headerhandler(obj)
+  end
+  alias add_rpc_headerhandler add_headerhandler
+  
+  def filterchain
+    @router.filterchain
+  end
+  
+  # method entry interface
+
+  def add_rpc_method(obj, name, *param)
+    add_rpc_method_as(obj, name, name, *param)
+  end
+  alias add_method add_rpc_method
+
+  def add_rpc_method_as(obj, name, name_as, *param)
+    qname = XSD::QName.new(@default_namespace, name_as)
+    soapaction = nil
+    param_def = ::SOAP::RPC::SOAPMethod.derive_rpc_param_def(obj, name, *param)
+    @router.add_rpc_operation(obj, qname, soapaction, name, param_def)
+  end
+  alias add_method_as add_rpc_method_as
+
+  def add_document_method(obj, soapaction, name, req_qnames, res_qnames)
+    param_def = SOAPMethod.create_doc_param_def(req_qnames, res_qnames)
+    @router.add_document_operation(obj, soapaction, name, param_def)
+  end
+
+  def add_rpc_operation(receiver, qname, soapaction, name, param_def, opt = {})
+    @router.add_rpc_operation(receiver, qname, soapaction, name, param_def, opt)
+  end
+
+  def add_rpc_request_operation(factory, qname, soapaction, name, param_def, opt = {})
+    @router.add_rpc_request_operation(factory, qname, soapaction, name, param_def, opt)
+  end
+
+  def add_document_operation(receiver, soapaction, name, param_def, opt = {})
+    @router.add_document_operation(receiver, soapaction, name, param_def, opt)
+  end
+
+  def add_document_request_operation(factory, soapaction, name, param_def, opt = {})
+    @router.add_document_request_operation(factory, soapaction, name, param_def, opt)
+  end
+  
 private
   
   ### Copies the needed request headers and the response body and
