@@ -108,7 +108,7 @@ class Transporter
         begin
           $VALUES.xhr( msg, syncdata_str )
         rescue => e
-          xhr_errer_handler( msg, :valuemanager_xhr_error, e.message )
+          xhr_error_handler( msg, :valuemanager_xhr_error, e.message )
           xhr_traceback_handler( e, "Transporter::ValueManagerXHRError: $VALUES.xhr failed." )
         end
       end
@@ -117,7 +117,7 @@ class Transporter
       begin
         $VALUES.validate( msg )
       rescue => e
-        xhr_errer_handler( msg, :valuemanager_validate_error, e.message )
+        xhr_error_handler( msg, :valuemanager_validate_error, e.message )
         xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: $VALUES.validate failed." )
       end
       
@@ -127,14 +127,14 @@ class Transporter
         begin
           $PLUGINS.delegate( 'restore_ses', msg )
         rescue => e
-          xhr_errer_handler( msg, :plugin_delegate_restore_ses_error, e.message )
+          xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: $PLUGINS.delegate 'restore_ses' failed." )
         end
       elsif msg.new_session
         begin
           $PLUGINS.delegate( 'init_ses', msg )
         rescue => e
-          xhr_errer_handler( msg, :plugin_delegate_init_ses_error, e.message )
+          xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: $PLUGINS.delegate 'init_ses' failed." )
         end
       end
@@ -143,7 +143,7 @@ class Transporter
       begin
         $PLUGINS.idle( msg )
       rescue => e
-        xhr_errer_handler( msg, :plugin_idle_error, e.message )
+        xhr_error_handler( msg, :plugin_idle_error, e.message )
         xhr_traceback_handler( e, "Transporter::PluginIdleError: $PLUGINS.idle failed." )
       end
       
@@ -151,7 +151,7 @@ class Transporter
       begin
         $VALUES.sync_client( msg )
       rescue => e
-        xhr_errer_handler( msg, :valuemanager_sync_client_error, e.message )
+        xhr_error_handler( msg, :valuemanager_sync_client_error, e.message )
         xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: $VALUES.sync_client failed." )
       end
       
