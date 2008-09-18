@@ -1,0 +1,10 @@
+
+List of dependencies, parenthesis contain tested version(s).
+
+ruby (1.8.7 and 1.9.0)
+rack (0.4.0)
+thin (0.8.2)
+rmagick (2.6.0)
+dbi (0.4.0)
+soap4r (1.5.8, DOES NOT WORK WITH ruby 1.9; FAIL!)
+... more when 1.9 issues are resolved

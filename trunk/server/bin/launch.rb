@@ -64,6 +64,10 @@ SERVER_PATH = ARGV.include?('--root-path')?(ARGV[ARGV.index('--root-path')+1]):F
 $LOAD_PATH << SERVER_PATH
 $LOAD_PATH << File.join( SERVER_PATH, 'lib' )
 
+if RUBY_VERSION.to_f >= 1.9
+  $LOAD_PATH << File.join( SERVER_PATH, 'lib', 'compat19' )
+end
+
 ## HimleDaemon controls 
 require 'daemon/daemon'
 Himle::Server::HimleServe.daemonize
