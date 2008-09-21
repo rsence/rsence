@@ -27,6 +27,12 @@
 # plugin.rb contains the Plugin skeleton class
 require 'plugins/plugin'
 
+# soapserve contains an extended hsoaplet for pluginmanager usage
+require 'http/soap/soapserve'
+
+# soap_plugin includes a SOAPPlugin class, that includes plug-and-play SOAP access
+require 'plugins/soap_plugin'
+
 module Himle
 module Server
 
@@ -46,7 +52,25 @@ class PluginManager
   # Creates a new plugin instance, scans for available plugins in +dirlist+
   def initialize
     @dirs = $config[:plugin_paths]
+    
+    @soap_serve = SOAP::SOAPServe.new
+    
+    ## Example usage, provides all public methods of HelloServant (a regular class)
+    # hello_servant = HelloServant.new
+    # @soap_serve.add_servant( hello_servant, 'urn:HelloServant' )
+    
     scan()
+    
+  end
+  
+  ### Access to the @soap_serve instance of SOAPServe
+  def soap_serve
+    @soap_serve
+  end
+  
+  ### Routes requests and responses from transporter:
+  def soap( request, response )
+    @soap_serve.process( request, response )
   end
   
   # Access to the list of plugins

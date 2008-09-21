@@ -22,8 +22,6 @@
   #
   ###
 
-require 'http/soap/hsoaplet'
-
 module Himle
 module Server
 
@@ -31,38 +29,15 @@ module Server
   Transporter is the counterpart to the client's HTransporter xhr engine.
 =end
 
-require 'soap/rpc/driver'
-
 class Transporter
-  if $DEBUG_MODE
-  ## just for testing, for now:
-  class TestSoaplet
-    def fserver(*args)
-      puts args.inspect
-    end
-    def initialize #(ns, srv)
-      #@drv = ::SOAP::RPC::Driver.new( ns, srv )
-      #@drv.add_method( 'test', 'name' )
-    end
-    def self.test( name='foo' )
-      return "Hello, #{name.inspect}"
-    end
-  end
-  end # /DEBUG_MODE
   
   def initialize
     @config = $config[:transporter_conf]
-    if $DEBUG
-      @soap_serve = ::SOAP::RPC::HSoaplet.new( ::SOAP::RPC::Router.new('TestSoaplet') )
-      test_soaplet = TestSoaplet.new #( 'urn:TestSoaplet', 'http://localhost:8001/SOAP' )
-      #@soap_serve.add_servant( test_soaplet, 'urn:TestSoaplet' )
-      @soap_serve.add_rpc_method( test_soaplet, 'test', 'name' )
-    end
   end
   
   ## handles incoming SOAP requests
   def soap(request, response)
-    @soap_serve.process( request, response )
+    $PLUGINS.soap( request, response )
   end
   
   # wrapper for the session manager stop client functionality

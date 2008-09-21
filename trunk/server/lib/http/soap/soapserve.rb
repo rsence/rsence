@@ -21,9 +21,7 @@
   #
   ###
 
-require 'soap/rpc/router'
-require 'soap/streamHandler'
-require 'http/soap/soaplet'
+require 'http/soap/hsoaplet'
 
 module Himle
 module Server
@@ -32,11 +30,8 @@ module Server
  Himle::Server::SOAP::SOAPServe provides Himle-specific SOAP access to Himle::Server::Pluginmanager
 =end
 module SOAP
-  class SOAPServe < SOAPlet
-    def post( req, res )
-      super
-      puts "SOAPServe post done."
-    end
+  class SOAPServe < ::SOAP::RPC::HSoaplet
+    # nothing here for now
   end
 end
 

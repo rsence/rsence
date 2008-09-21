@@ -77,7 +77,7 @@ class HSoaplet
         # Copies the request body, content type and soap action data to conn_data
         setup_req( conn_data, request )
         
-        # Process conn_data with the RPC Router, 'ConnectionData:route!' anyone?
+        # Process conn_data with the RPC Router
         conn_data = @router.route( conn_data )
         
         # Sets the status code depending on the success status:
@@ -194,7 +194,8 @@ private
   ### Copies the needed request headers and the response body and
   ### sets the appropriate ConnectionData instance members
   def setup_req(conn_data, req)
-    conn_data.receive_string = req.body.read
+    req_body_data = req.body.read
+    conn_data.receive_string = req_body_data
     conn_data.receive_contenttype = req.env['CONTENT_TYPE']
     conn_data.soapaction = parse_soapaction( req.env['HTTP_SOAPACTION'] )
   end
