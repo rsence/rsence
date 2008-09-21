@@ -42,10 +42,18 @@ module Server
 class PluginManager
   
   # hash of associated plugins
-  @@plugins = Hash.new
+  @@plugins = {}
   
   # the current plugin path during scan
   @@curr_plugin_path = nil
+  
+  ### SOAPServe Instance
+  ## Example usage, provides all public methods of HelloServant (a regular class)
+  # hello_servant = HelloServant.new
+  # @@soap_serve.add_servant( hello_servant, 'urn:HelloServant' )
+  @@soap_serve = nil
+  # list of method accessors of the private, but required methods in SOAPPlugin instances:
+  @@soap_plugins = []
   
   # dirlist is an array of directories to scan for available plugins
   #
@@ -53,24 +61,18 @@ class PluginManager
   def initialize
     @dirs = $config[:plugin_paths]
     
-    @soap_serve = SOAP::SOAPServe.new
-    
-    ## Example usage, provides all public methods of HelloServant (a regular class)
-    # hello_servant = HelloServant.new
-    # @soap_serve.add_servant( hello_servant, 'urn:HelloServant' )
-    
     scan()
     
   end
   
   ### Access to the @soap_serve instance of SOAPServe
-  def soap_serve
-    @soap_serve
+  def PluginManager.soap_serve
+    @@soap_serve
   end
   
   ### Routes requests and responses from transporter:
-  def soap( request, response )
-    @soap_serve.process( request, response )
+  def PluginManager.soap( request, response )
+    @@soap_serve.process( request, response )
   end
   
   # Access to the list of plugins
@@ -83,8 +85,29 @@ class PluginManager
     return @@curr_plugin_path
   end
   
+  ### destroys soapserve (to free all instances)
+  def deinit_soapserve
+    @@soap_serve = nil
+    @@soap_plugins = []
+  end
+  
+  ### initializes soapserve
+  def init_soapserve
+    @@soap_serve = SOAP::SOAPServe.new
+  end
+  
+  ### Adds soapserve instance
+  def PluginManager.add_soap_plugin( plug_instance, urn, plugin_methods )
+    @@soap_serve.add_servant( plug_instance, urn )
+    @@soap_plugins.push( plugin_methods )
+  end
+  
   # Loads pluginlicotions from the list of plugin directories.
   def scan
+    
+    ## Reset soapserve
+    deinit_soapserve
+    init_soapserve
     
     # loop through all plugin-mainlevel directories
     @dirs.each do |plugin_dir|
@@ -147,6 +170,7 @@ class PluginManager
   
   # Tells all plugins to open the files or databases they need.
   def open
+    delegate_soap( :open )
     delegate( 'open' )
   end
   
@@ -157,11 +181,13 @@ class PluginManager
   
   # Tells all plugins to flush their data.
   def flush
+    delegate_soap( :flush )
     delegate( 'flush' )
   end
   
   # Tells all plugins that they are about to be terminated.
   def close
+    delegate_soap( :close )
     delegate( 'close' )
   end
   
@@ -169,7 +195,7 @@ class PluginManager
   def rescan
     flush()
     close()
-    @@plugins = Hash.new
+    @@plugins = {}
     scan()
     open()
   end
@@ -178,6 +204,12 @@ class PluginManager
   def shutdown
     flush()
     close()
+  end
+  
+  def delegate_soap( method_name )
+    @@soap_plugins.each do |method_hash|
+      method_hash[ method_name ].call()
+    end
   end
   
   ### Check if each plugin handles +method+, and if so, call it, passing +args+ as a parameter

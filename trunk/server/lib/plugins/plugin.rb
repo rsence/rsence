@@ -115,9 +115,13 @@ private
   
   ## Utilities
   
-  # File reader utility, practical for simple file data operations
-  def file_read(full_path)
-    srcfile = File.open(full_path,'r')
+  # File reader utility,
+  # practical for simple file data operations
+  def file_read( path )
+    if path[0].chr != '/'
+      path = File.join( @path, path )
+    end
+    srcfile = File.open( path, 'r' )
     srcdata = srcfile.read
     srcfile.close
     return srcdata

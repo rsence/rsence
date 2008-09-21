@@ -37,7 +37,7 @@ class Transporter
   
   ## handles incoming SOAP requests
   def soap(request, response)
-    $PLUGINS.soap( request, response )
+    PluginManager.soap( request, response )
   end
   
   # wrapper for the session manager stop client functionality
