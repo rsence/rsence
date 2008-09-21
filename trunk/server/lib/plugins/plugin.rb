@@ -118,13 +118,10 @@ private
   # File reader utility,
   # practical for simple file data operations
   def file_read( path )
-    if path[0].chr != '/'
+    if path[0].chr != '/' and path[0..1] != '..'
       path = File.join( @path, path )
     end
-    srcfile = File.open( path, 'r' )
-    srcdata = srcfile.read
-    srcfile.close
-    return srcdata
+    return File.read( path )
   end
   
   # Javascript inclusion utility.
