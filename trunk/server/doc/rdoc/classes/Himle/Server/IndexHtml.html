@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Himle::Server::IndexHtml</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Himle::Server::IndexHtml</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/lib/page/indexhtml_rb.html">
+                lib/page/indexhtml.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+    <div id="diagram">
+      <map id="map" name="map">
+  <area shape="rect" coords="1385,5,1457,53"      href="../../Array.html" alt="Array" />
+  <area shape="rect" coords="1368,180,1475,228"      href="ResponseBody.html" alt="ResponseBody" />
+  <area shape="rect" coords="1959,276,2031,324"      href="Broker.html" alt="Broker" />
+  <area shape="rect" coords="2859,276,2947,324"      href="TicketServe.html" alt="TicketServe" />
+  <area shape="rect" coords="2117,180,2189,228"      href="Daemon/Base.html" alt="Base" />
+  <area shape="rect" coords="2109,276,2197,324"      href="HimleServe.html" alt="HimleServe" />
+  <area shape="rect" coords="1739,5,1811,53"      href="../../String.html" alt="String" />
+  <area shape="rect" coords="1747,180,1819,228"      href="GZString.html" alt="GZString" />
+  <area shape="rect" coords="1632,180,1723,228"      href="ValueParser.html" alt="ValueParser" />
+  <area shape="rect" coords="1404,276,1508,324"      href="IntValueParser.html" alt="IntValueParser" />
+  <area shape="rect" coords="1532,276,1647,324"      href="BoolValueParser.html" alt="BoolValueParser" />
+  <area shape="rect" coords="1671,276,1793,324"      href="StringValueParser.html" alt="StringValueParser" />
+  <area shape="rect" coords="1817,276,1935,324"      href="FloatValueParser.html" alt="FloatValueParser" />
+  <area shape="rect" coords="1499,180,1608,228"      href="SessionStorage.html" alt="SessionStorage" />
+  <area shape="rect" coords="1265,276,1380,324"      href="SessionManager.html" alt="SessionManager" />
+  <area shape="rect" coords="1835,5,1939,53"      href="../../Rack/Request.html" alt="Rack::Request" />
+  <area shape="rect" coords="1843,180,1915,228"      href="Request.html" alt="Request" />
+  <area shape="rect" coords="3288,5,3443,53"      href="../../SOAP/RPC/HSoaplet.html" alt="::SOAP::RPC::HSoaplet" />
+  <area shape="rect" coords="3320,180,3411,228"      href="SOAP/SOAPServe.html" alt="SOAPServe" />
+  <area shape="rect" coords="1243,180,1317,228"      href="Message.html" alt="Message" />
+  <area shape="rect" coords="1139,180,1219,228"      href="IndexHtml.html" alt="IndexHtml" />
+  <area shape="rect" coords="1043,180,1115,228"      href="HValue.html" alt="HValue" />
+  <area shape="rect" coords="931,180,1019,228"      href="Transporter.html" alt="Transporter" />
+  <area shape="rect" coords="800,180,907,228"      href="PluginManager.html" alt="PluginManager" />
+  <area shape="rect" coords="696,180,776,228"      href="Response.html" alt="Response" />
+  <area shape="rect" coords="592,180,672,228"      href="FileCache.html" alt="FileCache" />
+  <area shape="rect" coords="491,180,568,228"      href="KeyValue.html" alt="KeyValue" />
+  <area shape="rect" coords="376,180,467,228"      href="SOAPPlugin.html" alt="SOAPPlugin" />
+  <area shape="rect" coords="280,180,352,228"      href="Plugin.html" alt="Plugin" />
+  <area shape="rect" coords="181,180,256,228"      href="FileServe.html" alt="FileServe" />
+  <area shape="rect" coords="53,180,157,228"      href="ValueManager.html" alt="ValueManager" />
+  <area shape="rect" coords="2432,180,2504,228"      href="TicketService/BlobObj.html" alt="BlobObj" />
+  <area shape="rect" coords="3283,145,3421,239"      href="SOAP.html" alt="SOAP" />
+  <area shape="rect" coords="3168,168,3261,216"      href="TicketService/Common.html" alt="Common" />
+  <area shape="rect" coords="3064,168,3157,216"      href="TicketService/ObjBlob.html" alt="ObjBlob" />
+  <area shape="rect" coords="2960,168,3053,216"      href="TicketService/Favicon.html" alt="Favicon" />
+  <area shape="rect" coords="2856,168,2949,216"      href="TicketService/Img.html" alt="Img" />
+  <area shape="rect" coords="2752,168,2845,216"      href="TicketService/Upload.html" alt="Upload" />
+  <area shape="rect" coords="2648,168,2741,216"      href="TicketService/Rsrc.html" alt="Rsrc" />
+  <area shape="rect" coords="2544,168,2637,216"      href="TicketService/File.html" alt="File" />
+  <area shape="rect" coords="2421,133,3272,239"      href="TicketService.html" alt="TicketService" />
+  <area shape="rect" coords="2307,168,2400,216"      href="Daemon/Controller.html" alt="Controller" />
+  <area shape="rect" coords="2203,168,2296,216"      href="Daemon/PidFile.html" alt="PidFile" />
+  <area shape="rect" coords="2080,133,2411,239"      href="Daemon.html" alt="Daemon" />
+  <area shape="rect" coords="1952,168,2059,216"      href="RestfulDispatcher/SingletonMethods.html" alt="SingletonMethods" />
+  <area shape="rect" coords="1928,133,2069,227"      href="RestfulDispatcher.html" alt="RestfulDispatcher" />
+  <area shape="rect" coords="43,99,3432,335"      href="../Server.html" alt="Server" />
+  <area shape="rect" coords="16,64,3443,345"      href="../../Himle.html" alt="Himle" />
+</map>
+<img src="../../../dot/f_3.gif" usemap="#map" border="0" alt="dot/f_3.gif">
+    </div>
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000131">debug_rescan</a>&nbsp;&nbsp;
+      <a href="#M000132">get</a>&nbsp;&nbsp;
+      <a href="#M000129">new</a>&nbsp;&nbsp;
+      <a href="#M000130">render_index_html</a>&nbsp;&nbsp;
+      <a href="#M000128">set_deps</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000129" class="method-detail">
+        <a name="M000129"></a>
+
+        <div class="method-heading">
+          <a href="#M000129" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000129-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000129-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 43</span>
+43:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+44:     
+45:     <span class="ruby-ivar">@deps</span> = []
+46:     <span class="ruby-identifier">index_html_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:sys_path</span>]<span class="ruby-operator">+</span><span class="ruby-value str">'/lib/page/index.html'</span>,<span class="ruby-value str">'rb'</span>)
+47:     <span class="ruby-ivar">@index_html_src</span> = <span class="ruby-identifier">index_html_file</span>.<span class="ruby-identifier">read</span>
+48:     <span class="ruby-identifier">index_html_file</span>.<span class="ruby-identifier">close</span>
+49:     
+50:     <span class="ruby-identifier">loading_gif_file</span> = <span class="ruby-identifier">open</span>(<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:sys_path</span>]<span class="ruby-operator">+</span><span class="ruby-value str">'/lib/page/loading.gif'</span>,<span class="ruby-value str">'rb'</span>)
+51:     <span class="ruby-identifier">loading_gif</span> = <span class="ruby-identifier">loading_gif_file</span>.<span class="ruby-identifier">read</span>
+52:     <span class="ruby-identifier">loading_gif_file</span>.<span class="ruby-identifier">close</span>
+53:     
+54:     <span class="ruby-ivar">@loading_gif_id</span> = <span class="ruby-identifier">$TICKETSERVE</span>.<span class="ruby-identifier">serve_rsrc</span>(<span class="ruby-identifier">loading_gif</span>, <span class="ruby-value str">'image/gif'</span> )
+55:     
+56:     <span class="ruby-identifier">render_index_html</span>
+57:     
+58:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000131" class="method-detail">
+        <a name="M000131"></a>
+
+        <div class="method-heading">
+          <a href="#M000131" class="method-signature">
+          <span class="method-name">debug_rescan</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000131-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000131-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 75</span>
+ 75:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">debug_rescan</span>
+ 76:     
+ 77:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;re-buffering client files&quot;</span>
+ 78:     <span class="ruby-keyword kw">begin</span>
+ 79:       <span class="ruby-identifier">$FILECACHE</span>.<span class="ruby-identifier">check_scan</span>
+ 80:     <span class="ruby-keyword kw">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+ 81:       <span class="ruby-identifier">$SESSION</span>.<span class="ruby-identifier">stop_client_with_message</span>( <span class="ruby-identifier">msg</span>,
+ 82:         <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:filecache_error</span>][<span class="ruby-identifier">:title</span>],
+ 83:         <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:filecache_error</span>][<span class="ruby-identifier">:descr</span>]<span class="ruby-operator">+</span><span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>,
+ 84:         <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:filecache_error</span>][<span class="ruby-identifier">:uri</span>]
+ 85:       )
+ 86:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+ 87:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;IndexHtml::FileCacheError: $FILECACHE.check_scan failed.&quot;</span>
+ 88:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+ 89:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;--&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
+ 90:         <span class="ruby-identifier">puts</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>
+ 91:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  #{e.backtrace.join(&quot;\n  &quot;)}&quot;</span>
+ 92:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
+ 93:       <span class="ruby-keyword kw">end</span>
+ 94:     <span class="ruby-keyword kw">end</span>
+ 95:     
+ 96:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;re-scanning plugins.&quot;</span>
+ 97:     <span class="ruby-keyword kw">begin</span>
+ 98:       <span class="ruby-identifier">$PLUGINS</span>.<span class="ruby-identifier">rescan</span>()
+ 99:     <span class="ruby-keyword kw">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+100:       <span class="ruby-identifier">$SESSION</span>.<span class="ruby-identifier">stop_client_with_message</span>( <span class="ruby-identifier">msg</span>,
+101:         <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:plugins_rescan_error</span>][<span class="ruby-identifier">:title</span>],
+102:         <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:plugins_rescan_error</span>][<span class="ruby-identifier">:descr</span>]<span class="ruby-operator">+</span><span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>,
+103:         <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">:messages</span>][<span class="ruby-identifier">:plugins_rescan_error</span>][<span class="ruby-identifier">:uri</span>]
+104:       )
+105:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+106:       <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;IndexHtml::PluginsRescanError: $PLUGINS.rescan failed.&quot;</span>
+107:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+108:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;--&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
+109:         <span class="ruby-identifier">puts</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>
+110:         <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;  #{e.backtrace.join(&quot;\n  &quot;)}&quot;</span>
+111:         <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;==&quot;</span><span class="ruby-operator">*</span><span class="ruby-value">40</span>
+112:       <span class="ruby-keyword kw">end</span>
+113:     <span class="ruby-keyword kw">end</span>
+114:     
+115:     <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;re-rendering index html&quot;</span>
+116:     <span class="ruby-identifier">render_index_html</span>
+117:     
+118:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000132" class="method-detail">
+        <a name="M000132"></a>
+
+        <div class="method-heading">
+          <a href="#M000132" class="method-signature">
+          <span class="method-name">get</span><span class="method-args">(request, response)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Outputs a static web page. If $DEBUG_MODE is active, re-renders page and
+reloads filecache.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000132-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000132-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 122</span>
+122:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)
+123:     
+124:     <span class="ruby-identifier">debug_rescan</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">$DEBUG_MODE</span>
+125:     
+126:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-value">200</span>
+127:     <span class="ruby-identifier">response</span>[<span class="ruby-value str">'content-type'</span>] = <span class="ruby-value str">'text/html; charset=UTF-8'</span>
+128:     <span class="ruby-identifier">response</span>[<span class="ruby-value str">'content-size'</span>] = <span class="ruby-ivar">@content_size</span>
+129:     
+130:     <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-ivar">@index_html</span>
+131:     
+132:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000130" class="method-detail">
+        <a name="M000130"></a>
+
+        <div class="method-heading">
+          <a href="#M000130" class="method-signature">
+          <span class="method-name">render_index_html</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000130-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000130-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 59</span>
+59:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render_index_html</span>
+60:     
+61:     <span class="ruby-ivar">@index_html</span> = <span class="ruby-ivar">@index_html_src</span>.<span class="ruby-identifier">clone</span>
+62:     
+63:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__DEFAULT_TITLE__'</span>,<span class="ruby-identifier">$config</span>[<span class="ruby-identifier">:indexhtml_conf</span>][<span class="ruby-identifier">:loading_title</span>])
+64:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__LOADING_GIF_ID__'</span>,<span class="ruby-ivar">@loading_gif_id</span>)
+65:     
+66:     <span class="ruby-identifier">deps_src</span> = <span class="ruby-value str">''</span>
+67:     <span class="ruby-ivar">@deps</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">dep</span><span class="ruby-operator">|</span>
+68:       <span class="ruby-identifier">deps_src</span> <span class="ruby-operator">+=</span> <span class="ruby-node">%{&lt;script src=&quot;#{dep}&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;}</span>
+69:     <span class="ruby-keyword kw">end</span>
+70:     <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-value str">'__SCRIPT_DEPS__'</span>,<span class="ruby-identifier">deps_src</span>)
+71:     
+72:     <span class="ruby-ivar">@content_size</span> = <span class="ruby-ivar">@index_html</span>.<span class="ruby-identifier">size</span>
+73:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000128" class="method-detail">
+        <a name="M000128"></a>
+
+        <div class="method-heading">
+          <a href="#M000128" class="method-signature">
+          <span class="method-name">set_deps</span><span class="method-args">( deps )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000128-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000128-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/page/indexhtml.rb, line 38</span>
+38:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">set_deps</span>( <span class="ruby-identifier">deps</span> )
+39:     <span class="ruby-ivar">@deps</span> = <span class="ruby-identifier">deps</span>
+40:     <span class="ruby-identifier">render_index_html</span>
+41:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

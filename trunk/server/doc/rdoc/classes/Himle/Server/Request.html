@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Himle::Server::Request</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Himle::Server::Request</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/lib/http/request_rb.html">
+                lib/http/request.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Rack::Request
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+    <div id="diagram">
+      <map id="map" name="map">
+  <area shape="rect" coords="1385,5,1457,53"      href="../../Array.html" alt="Array" />
+  <area shape="rect" coords="1368,180,1475,228"      href="ResponseBody.html" alt="ResponseBody" />
+  <area shape="rect" coords="1959,276,2031,324"      href="Broker.html" alt="Broker" />
+  <area shape="rect" coords="2859,276,2947,324"      href="TicketServe.html" alt="TicketServe" />
+  <area shape="rect" coords="2117,180,2189,228"      href="Daemon/Base.html" alt="Base" />
+  <area shape="rect" coords="2109,276,2197,324"      href="HimleServe.html" alt="HimleServe" />
+  <area shape="rect" coords="1739,5,1811,53"      href="../../String.html" alt="String" />
+  <area shape="rect" coords="1747,180,1819,228"      href="GZString.html" alt="GZString" />
+  <area shape="rect" coords="1632,180,1723,228"      href="ValueParser.html" alt="ValueParser" />
+  <area shape="rect" coords="1404,276,1508,324"      href="IntValueParser.html" alt="IntValueParser" />
+  <area shape="rect" coords="1532,276,1647,324"      href="BoolValueParser.html" alt="BoolValueParser" />
+  <area shape="rect" coords="1671,276,1793,324"      href="StringValueParser.html" alt="StringValueParser" />
+  <area shape="rect" coords="1817,276,1935,324"      href="FloatValueParser.html" alt="FloatValueParser" />
+  <area shape="rect" coords="1499,180,1608,228"      href="SessionStorage.html" alt="SessionStorage" />
+  <area shape="rect" coords="1265,276,1380,324"      href="SessionManager.html" alt="SessionManager" />
+  <area shape="rect" coords="1835,5,1939,53"      href="../../Rack/Request.html" alt="Rack::Request" />
+  <area shape="rect" coords="1843,180,1915,228"      href="Request.html" alt="Request" />
+  <area shape="rect" coords="3288,5,3443,53"      href="../../SOAP/RPC/HSoaplet.html" alt="::SOAP::RPC::HSoaplet" />
+  <area shape="rect" coords="3320,180,3411,228"      href="SOAP/SOAPServe.html" alt="SOAPServe" />
+  <area shape="rect" coords="1243,180,1317,228"      href="Message.html" alt="Message" />
+  <area shape="rect" coords="1139,180,1219,228"      href="IndexHtml.html" alt="IndexHtml" />
+  <area shape="rect" coords="1043,180,1115,228"      href="HValue.html" alt="HValue" />
+  <area shape="rect" coords="931,180,1019,228"      href="Transporter.html" alt="Transporter" />
+  <area shape="rect" coords="800,180,907,228"      href="PluginManager.html" alt="PluginManager" />
+  <area shape="rect" coords="696,180,776,228"      href="Response.html" alt="Response" />
+  <area shape="rect" coords="592,180,672,228"      href="FileCache.html" alt="FileCache" />
+  <area shape="rect" coords="491,180,568,228"      href="KeyValue.html" alt="KeyValue" />
+  <area shape="rect" coords="376,180,467,228"      href="SOAPPlugin.html" alt="SOAPPlugin" />
+  <area shape="rect" coords="280,180,352,228"      href="Plugin.html" alt="Plugin" />
+  <area shape="rect" coords="181,180,256,228"      href="FileServe.html" alt="FileServe" />
+  <area shape="rect" coords="53,180,157,228"      href="ValueManager.html" alt="ValueManager" />
+  <area shape="rect" coords="2432,180,2504,228"      href="TicketService/BlobObj.html" alt="BlobObj" />
+  <area shape="rect" coords="3283,145,3421,239"      href="SOAP.html" alt="SOAP" />
+  <area shape="rect" coords="3168,168,3261,216"      href="TicketService/Common.html" alt="Common" />
+  <area shape="rect" coords="3064,168,3157,216"      href="TicketService/ObjBlob.html" alt="ObjBlob" />
+  <area shape="rect" coords="2960,168,3053,216"      href="TicketService/Favicon.html" alt="Favicon" />
+  <area shape="rect" coords="2856,168,2949,216"      href="TicketService/Img.html" alt="Img" />
+  <area shape="rect" coords="2752,168,2845,216"      href="TicketService/Upload.html" alt="Upload" />
+  <area shape="rect" coords="2648,168,2741,216"      href="TicketService/Rsrc.html" alt="Rsrc" />
+  <area shape="rect" coords="2544,168,2637,216"      href="TicketService/File.html" alt="File" />
+  <area shape="rect" coords="2421,133,3272,239"      href="TicketService.html" alt="TicketService" />
+  <area shape="rect" coords="2307,168,2400,216"      href="Daemon/Controller.html" alt="Controller" />
+  <area shape="rect" coords="2203,168,2296,216"      href="Daemon/PidFile.html" alt="PidFile" />
+  <area shape="rect" coords="2080,133,2411,239"      href="Daemon.html" alt="Daemon" />
+  <area shape="rect" coords="1952,168,2059,216"      href="RestfulDispatcher/SingletonMethods.html" alt="SingletonMethods" />
+  <area shape="rect" coords="1928,133,2069,227"      href="RestfulDispatcher.html" alt="RestfulDispatcher" />
+  <area shape="rect" coords="43,99,3432,335"      href="../Server.html" alt="Server" />
+  <area shape="rect" coords="16,64,3443,345"      href="../../Himle.html" alt="Himle" />
+</map>
+<img src="../../../dot/f_3.gif" usemap="#map" border="0" alt="dot/f_3.gif">
+    </div>
+
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000228">env2header</a>&nbsp;&nbsp;
+      <a href="#M000226">new</a>&nbsp;&nbsp;
+      <a href="#M000227">unparsed_uri</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">header</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">path</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">query</td>
+          <td class="context-item-value">&nbsp;[R]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000226" class="method-detail">
+        <a name="M000226"></a>
+
+        <div class="method-heading">
+          <a href="#M000226" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">(env)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000226-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000226-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/http/request.rb, line 32</span>
+32:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">env</span>)
+33:     <span class="ruby-ivar">@header</span> = {
+34:       
+35:     }
+36:     <span class="ruby-keyword kw">super</span>
+37:     <span class="ruby-identifier">env2header</span>()
+38:     <span class="ruby-ivar">@path</span> = <span class="ruby-identifier">path_info</span>()
+39:     <span class="ruby-ivar">@query</span> = <span class="ruby-identifier">params</span>()
+40:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000228" class="method-detail">
+        <a name="M000228"></a>
+
+        <div class="method-heading">
+          <a href="#M000228" class="method-signature">
+          <span class="method-name">env2header</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000228-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000228-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/http/request.rb, line 44</span>
+44:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">env2header</span>
+45:     [ [<span class="ruby-value str">'SERVER_NAME'</span>,           <span class="ruby-value str">'server-name'</span>],
+46:       [<span class="ruby-value str">'HTTP_USER_AGENT'</span>,       <span class="ruby-value str">'user-agent'</span>],
+47:       [<span class="ruby-value str">'HTTP_ACCEPT_ENCODING'</span>,  <span class="ruby-value str">'accept-encoding'</span>],
+48:       [<span class="ruby-value str">'PATH_INFO'</span>,             <span class="ruby-value str">'path-info'</span>],
+49:       [<span class="ruby-value str">'HTTP_HOST'</span>,             <span class="ruby-value str">'host'</span>],
+50:       [<span class="ruby-value str">'HTTP_ACCEPT_LANGUAGE'</span>,  <span class="ruby-value str">'accept-language'</span>],
+51:       [<span class="ruby-value str">'SERVER_PROTOCOL'</span>,       <span class="ruby-value str">'server-protocol'</span>],
+52:       [<span class="ruby-value str">'REQUEST_PATH'</span>,          <span class="ruby-value str">'request-path'</span>],
+53:       [<span class="ruby-value str">'HTTP_KEEP_ALIVE'</span>,       <span class="ruby-value str">'keep-alive'</span>],
+54:       [<span class="ruby-value str">'SERVER_SOFTWARE'</span>,       <span class="ruby-value str">'server-software'</span>],
+55:       [<span class="ruby-value str">'REMOTE_ADDR'</span>,           <span class="ruby-value str">'remote-addr'</span>],
+56:       [<span class="ruby-value str">'HTTP_REFERER'</span>,          <span class="ruby-value str">'referer'</span>],
+57:       [<span class="ruby-value str">'HTTP_VERSION'</span>,          <span class="ruby-value str">'version'</span>],
+58:       [<span class="ruby-value str">'HTTP_ACCEPT_CHARSET'</span>,   <span class="ruby-value str">'accept-charset'</span>],
+59:       [<span class="ruby-value str">'REQUEST_URI'</span>,           <span class="ruby-value str">'request-uri'</span>],
+60:       [<span class="ruby-value str">'SERVER_PORT'</span>,           <span class="ruby-value str">'server-port'</span>],
+61:       [<span class="ruby-value str">'QUERY_STRING'</span>,          <span class="ruby-value str">'query-string'</span>],
+62:       [<span class="ruby-value str">'HTTP_ACCEPT'</span>,           <span class="ruby-value str">'accept'</span>],
+63:       [<span class="ruby-value str">'REQUEST_METHOD'</span>,        <span class="ruby-value str">'request-method'</span>],
+64:       [<span class="ruby-value str">'HTTP_CONNECTION'</span>,       <span class="ruby-value str">'connection'</span>],
+65:       [<span class="ruby-value str">'HTTP_SOAPACTION'</span>,       <span class="ruby-value str">'soapaction'</span>]
+66:     ].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">env_key</span>,<span class="ruby-identifier">header_key</span><span class="ruby-operator">|</span>
+67:       <span class="ruby-ivar">@header</span>[<span class="ruby-identifier">header_key</span>] = <span class="ruby-ivar">@env</span>[<span class="ruby-identifier">env_key</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@env</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">env_key</span>)
+68:       <span class="ruby-ivar">@header</span>[<span class="ruby-node">&quot;x-#{header_key}&quot;</span>] = <span class="ruby-ivar">@env</span>[<span class="ruby-node">&quot;X_#{env_key}&quot;</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@env</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-node">&quot;X_#{env_key}&quot;</span>)
+69:       <span class="ruby-identifier">x_env_key</span> = <span class="ruby-node">&quot;#{env_key.gsub('HTTP_','HTTP_X_')}&quot;</span>
+70:       <span class="ruby-ivar">@header</span>[<span class="ruby-node">&quot;x-#{header_key}&quot;</span>] = <span class="ruby-ivar">@env</span>[<span class="ruby-identifier">x_env_key</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@env</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">x_env_key</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">x_env_key</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value str">'X_'</span>)
+71:     <span class="ruby-keyword kw">end</span>
+72:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000227" class="method-detail">
+        <a name="M000227"></a>
+
+        <div class="method-heading">
+          <a href="#M000227" class="method-signature">
+          <span class="method-name">unparsed_uri</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000227-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000227-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/http/request.rb, line 41</span>
+41:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unparsed_uri</span>
+42:     <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@header</span>[<span class="ruby-value str">'request-uri'</span>]
+43:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

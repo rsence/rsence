@@ -1,0 +1,55 @@
+digraph TopLevel {
+    compound = true
+    bgcolor = lightcyan1
+    fontname = Arial
+    fontsize = 8
+    label = "TopLevel"
+    node [
+        fontname = Arial,
+        fontsize = 8,
+        color = black
+    ]
+
+    subgraph cluster_SOAP {
+        fillcolor = palegreen1
+        URL = "classes/SOAP.html"
+        fontname = Arial
+        color = blue
+        label = "SOAP"
+        style = filled
+        SOAP [
+            shape = plaintext,
+            height = 0.01,
+            width = 0.01,
+            label = ""
+        ]
+
+        subgraph cluster_SOAP__RPC {
+            fillcolor = palegreen3
+            URL = "classes/SOAP/RPC.html"
+            fontname = Arial
+            color = blue
+            label = "RPC"
+            style = filled
+            SOAP__RPC [
+                shape = plaintext,
+                height = 0.01,
+                width = 0.01,
+                label = ""
+            ]
+
+            SOAP__RPC__HSoaplet [
+                fontcolor = black,
+                URL = "classes/SOAP/RPC/HSoaplet.html",
+                shape = ellipse,
+                color = palegoldenrod,
+                style = filled,
+                label = "HSoaplet"
+            ]
+
+        }
+
+    }
+
+}
+
