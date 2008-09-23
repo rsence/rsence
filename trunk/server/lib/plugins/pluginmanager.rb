@@ -114,58 +114,61 @@ class PluginManager
       
       # makes sure the plugin dir is a dir
       # (there might be files like readme.txt or licence.txt)
-      if(FileTest.directory?(plugin_dir))
-        
-        # goes through all plugins in the
-        # plugin dir in alphabetical order:
-        Dir.new(plugin_dir).sort.each do |plugin_name|
-          
-          # skip, if the plugin starts with a dot, like '.svn', '.' and '..'
-          next if(plugin_name =~ /^\./)
-          
-          # sets the plugin path
-          @@curr_plugin_path = File.join(plugin_dir,plugin_name)
-          
-          # checks that the plugin is a dir
-          next unless(FileTest.directory?(@@curr_plugin_path))
-          
-          # expects to find a 'plugin_dir/plugin_name/plugin_name.rb' file
-          filename = File.join(@@curr_plugin_path,"#{plugin_name}.rb")
-          next unless File.exist?(filename)
-          
-          # if the plugin contains a 'disabled' flag-file, it skips to the next
-          next if File.exist?(File.join(@@curr_plugin_path,'disabled'))
-          
-          # Create a new, anonymous module as the plugin namespace.
-          plugin_module = Module.new
-          
-          ##### Evaluates the plugin as a string in an anonymous module
-          begin
-            plugin_as_string = IO.readlines( filename ).join
-            plugin_module.module_eval( plugin_as_string )
-            
-          ###### If initialization fails, print a nice stack trace
-          rescue => e
-            puts "=="*40 if $DEBUG_MODE
-            puts "WARN: Plugin #{plugin_name} failed to initialize."
-            if $DEBUG_MODE
-              puts "--"*40
-              puts e.message.gsub('(eval):',%{#{File.join(@@curr_plugin_path,"#{plugin_name}.rb")}:})
-              puts "  #{e.backtrace.join("\n  ")}"
-              puts "=="*40
-            end
-          end
-          
-        end
-        
-      end
+      is_dir = FileTest.directory?( plugin_dir )
+      next unless is_dir
+      
+      scan_plugin_dir( plugin_dir )
       
     end
-    
-    open()
-    
+    open
     @@curr_plugin_path = nil
-    
+  end
+  
+  def scan_plugin_dir( plugin_dir )
+    # goes through all plugins in the
+    # plugin dir in alphabetical order:
+    Dir.new(plugin_dir).sort.each do |plugin_name|
+      
+      # skip, if the plugin starts with a dot, like '.svn', '.' and '..'
+      dot_file = (plugin_name =~ /^\./)
+      next if dot_file
+      
+      # sets the plugin path
+      @@curr_plugin_path = File.join(plugin_dir,plugin_name)
+      
+      # checks that the plugin is a dir
+      is_dir = FileTest.directory?( @@curr_plugin_path )
+      next unless is_dir
+      
+      # expects to find a 'plugin_dir/plugin_name/plugin_name.rb' file
+      filename = File.join( @@curr_plugin_path, "#{plugin_name}.rb" )
+      next unless File.exist?( filename )
+      
+      # if the plugin contains a 'disabled' flag-file, it skips to the next
+      disabled_path = File.join( @@curr_plugin_path, 'disabled' )
+      next if File.exist?( disabled_path )
+      
+      begin
+        ## eval the plugin source
+        plugin_eval( filename )
+      rescue => e
+        puts "=="*40 if $DEBUG_MODE
+        puts "WARN: Plugin #{plugin_name} failed to initialize."
+        if $DEBUG_MODE
+          e_msg = e.message.gsub('(eval):',filename+':')
+          b_trace = e.backtrace.join("\n  ")
+          puts "#{'--'*40}\n#{e_msg}\n  #{b_trace}\n#{'=='*40}"
+        end
+      end
+    end
+  end
+  
+  ### Evaluates the plugin as a string in an anonymous module
+  def plugin_eval( filename )
+    # Create a new, anonymous module as the plugin namespace.
+    module_ns = Module.new
+    plugin_src = File.read( filename )
+    module_ns.module_eval( plugin_src )
   end
   
   # Tells all plugins to open the files or databases they need.
@@ -193,22 +196,22 @@ class PluginManager
   
   # Restarts all running plugins
   def rescan
-    flush()
-    close()
+    flush
+    close
     @@plugins = {}
-    scan()
-    open()
+    scan
+    open
   end
   
   # Called when everything is going down
   def shutdown
-    flush()
-    close()
+    flush
+    close
   end
   
   def delegate_soap( method_name )
     @@soap_plugins.each do |method_hash|
-      method_hash[ method_name ].call()
+      method_hash[ method_name ].call
     end
   end
   
