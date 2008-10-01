@@ -36,6 +36,7 @@ public
   def initialize( urn )
     @path = PluginManager.curr_plugin_path
     register( urn )
+    init
   end
 
 
