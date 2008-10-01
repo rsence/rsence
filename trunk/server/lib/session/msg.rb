@@ -105,11 +105,11 @@ class Message
     
     # It's better to evaluate plain text than to respond with js.
     @response.content_type = 'text/javascript; charset=utf-8'
-    @response['Cache-Control'] = 'no-cache'
+    @response['cache-control'] = 'no-cache'
     
     # gnu-ziped responses:
-    if @request['Accept-Encoding'] and @request['Accept-Encoding'].include?('gzip') and not $config[:no_gzip]
-      @response['Content-Encoding'] = 'gzip'
+    if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not $config[:no_gzip]
+      @response['content-encoding'] = 'gzip'
       @do_gzip = true
     else
       @do_gzip = false
@@ -153,14 +153,16 @@ class Message
       
       ## flush the output
       if @do_gzip
+        puts "do_gzip" if $DEBUG_MODE
         outp = GZString.new('')
         gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
         gzwriter.write( @buffer.join("\r\n") )
         gzwriter.close
       else
+        puts "no_gzip" if $DEBUG_MODE
         outp = @buffer.join("\r\n")
       end
-      @response['Content-Size'] = @response.body.size
+      @response['content-size'] = outp.size
       @response.body = outp
     end
     @response_sent = true
