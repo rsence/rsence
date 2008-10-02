@@ -43,6 +43,9 @@ class Broker
     ## The full request URI:
     uri = @request.fullpath
     
+    ## User agent:
+    ua = @request.header['user-agent'] if $DEBUG_MODE
+    
     ## /x handles xhr without cookies
     if uri == '/x'
       puts "/x: #{uri.inspect}" if $DEBUG_MODE
@@ -81,6 +84,9 @@ class Broker
     
     ## The full request URI:
     uri = @request.fullpath
+    
+    ## User agent:
+    ua = @request.header['user-agent'] if $DEBUG_MODE
     
     ## /j processes client framework files (js & themes)
     if uri[0..2] == '/H/'
@@ -122,7 +128,7 @@ class Broker
     
     ## default index html page
     elsif uri == '/'
-      puts "/: #{uri.inspect}" if $DEBUG_MODE
+      puts "/: #{uri.inspect} (#{ua})" if $DEBUG_MODE
       $INDEXHTML.get( @request, @response )
     
     ## all other get -requests load the 404 html page 

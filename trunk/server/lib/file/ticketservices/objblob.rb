@@ -22,22 +22,26 @@ module ObjBlob
   def serve_blobobj( msg, blob_obj, no_expire=false )
     # gets a new, unique identifier
     ticket_id = @randgen.get_one
-    uri = "/b/#{ticket_id}"
     if no_expire
+      @raw_uris[ticket_id] = blob_obj
+    else
       @blob_objs[:ses_ids][msg.ses_id] = [] unless @imgs[:ses_ids].has_key?(msg.ses_id)
       @blob_objs[:ses_ids][msg.ses_id].push( ticket_id )
       @blob_objs[:by_id][ticket_id] = [msg.ses_id,blob_obj]
-    else
-      @raw_uris[ticket_id] = blob_obj
     end
+    uri = "/b/#{ticket_id}"
     return uri
   end
   
   def del_blobobj( ticket_id, ses_id=false )
-    if ses_id and @blob_objs[:ses_ids].has_key?( ses_id )
-      @blob_objs[:ses_ids][ses_id].delete( ticket_id ) if @blob_objs[:ses_ids][ses_id].include?( ticket_id )
+    if @raw_uris.has_key?( ticket_id )
+      @raw_uris.delete( rsrc_id )
+    else
+      if ses_id and @blob_objs[:ses_ids].has_key?( ses_id )
+        @blob_objs[:ses_ids][ses_id].delete( ticket_id ) if @blob_objs[:ses_ids][ses_id].include?( ticket_id )
+      end
+      @blob_objs[:by_id].delete( ticket_id ) if @blob_objs[:by_id].has_key?( ticket_id )
     end
-    @blob_objs[:by_id].delete( ticket_id ) if @blob_objs[:by_id].has_key?( ticket_id )
   end
   
   def push_keepalive_blobobj( ticket_id, keep_alive )
@@ -46,7 +50,7 @@ module ObjBlob
     @expire_blobobj[expiry_time].push( ticket_id )
   end
   
-  def expire_keepalive_blobobj
+  def expire_keepalive_blobobjs
     curr_time = Time.now.to_i
     @expire_blobobj.keys.sort.each do |exp_time|
       if exp_time < curr_time

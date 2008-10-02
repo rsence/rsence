@@ -121,7 +121,7 @@ class IndexHtml
   ## If $DEBUG_MODE is active, re-renders page and reloads filecache.
   def get(request, response)
     
-    debug_rescan if $DEBUG_MODE
+    debug_rescan if $DEBUG_MODE and not ARGV.include?('-no-rescan')
     
     response.status = 200
     response['content-type'] = 'text/html; charset=UTF-8'
