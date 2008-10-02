@@ -123,26 +123,17 @@ HTransporter = Base.extend({
   respond: function(resp){
     var _respText = resp.responseText,
         _this = HTransporter;
-    if(HTransporterDebug){
-      try {
-        eval(_respText);
-      }
-      catch(e) {
-        var err_descr = e+' - '+e.description;
-        var aaa = window.open();
-        aaa.window.title = err_descr;
-        aaa.document.write('<html><body><pre>'+_respText.replace('<','&lt;').replace('>','&gt;')+'</pre></body></html>');
-      }
+    try {
+      _this.err_msg = '';
+      eval(_respText); 
     }
-    else {
-      try {
-        _this.err_msg = '';
-        eval(_respText); 
+    catch(e) {
+      if(HTransporterDebug){
+        console.log(e);
+        console.log(e.description);
       }
-      catch(e) {
-        _this.err_msg = '&err_msg='+e+" - "+e.description;
-        _this.failure(resp);
-      }
+      _this.err_msg = '&err_msg='+e+" - "+e.description;
+      _this.failure(resp);
     }
     _this.prevData  = '';
     if(_this.failCount!=0){window.status='';}

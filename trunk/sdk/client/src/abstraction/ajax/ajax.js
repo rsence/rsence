@@ -74,7 +74,7 @@ Ajax.Request = HClass.extend({
       // if already has ? puts &
       this.url += (this.url.indexOf("?") >= 0 ? "&" : "?") + this.options.parameters.toQueryString();
     }
-    //try {
+    try {
       this.transport.open(
         this.options.method.toUpperCase(),
         this.url,
@@ -93,12 +93,12 @@ Ajax.Request = HClass.extend({
       if (!this.options.asynchronous && this.transport.overrideMimeType) {
         this.onStateChange();
       }
-    //} catch (e) {
-    //  console.log('error:',e);
-    //}
+    } catch (e) {
+      console.log('error:',e);
+    }
   },
   setRequestHeaders: function() {
-    var headers = {};
+    var headers = {}, o;
     
     if (this.options.method == "post") {
       headers["Content-type"] = this.options.contentType +
@@ -109,7 +109,6 @@ Ajax.Request = HClass.extend({
         headers["Connection"] = "close";
       }
     }
-    var o;
     for (o in headers) {
       this.transport.setRequestHeader(o, headers[o]);
     }
