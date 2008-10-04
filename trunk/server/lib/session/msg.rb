@@ -129,7 +129,7 @@ class Message
   
   def error_msg( error_js )
     @error_js = error_js
-    response_done
+    #response_done
   end
   
   ## called to flush buffer
@@ -139,12 +139,27 @@ class Message
     @response.status = 200
     
     if not @response_success
-      @response.body = [
+      puts "msg: @response_success == false" if $DEBUG_MODE
+      err_outp = [
         "HTransporter.ses_id='#{@ses_key}';",
         @error_js,
         "HTransporter.restoreSyncDelay=HTransporter.syncDelay;",
         "HTransporter.syncDelay=-1;"
       ].join("\r\n")
+      puts "msg: error outp = #{err_outp.inspect}"
+      ## flush the output
+      if @do_gzip
+        puts "do_gzip" if $DEBUG_MODE
+        outp = GZString.new('')
+        gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
+        gzwriter.write( err_outp )
+        gzwriter.close
+      else
+        puts "no_gzip" if $DEBUG_MODE
+        outp = err_outp
+      end
+      @response['content-size'] = outp.size
+      @response.body = outp
     else
       
       if @ses_key
