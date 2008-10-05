@@ -323,8 +323,8 @@ class ConfigWizard
     is_correct = yesno(true) until is_correct != nil
     unless is_correct
       server_type = ''
-      until ['mongrel','webrick'].include?(server_type)
-        server_type = ask("Server Type? (valid: mongrel, webrick)") do |q|
+      until ['mongrel','webrick','thin','ebb'].include?(server_type)
+        server_type = ask("Server Type? (valid: mongrel, webrick, thin, ebb)") do |q|
           q.default = @conf[:http_server][:rack_require]
         end
       end
