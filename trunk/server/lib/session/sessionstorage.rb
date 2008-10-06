@@ -77,7 +77,13 @@ class SessionStorage
         puts "Creating himle session database #{auth_setup[:db].inspect}..." if $DEBUG_MODE
         db_root.q( "create database #{auth_setup[:db]} default charset=utf8" )
       end
-    rescue
+    rescue DBI::InterfaceError => e
+      puts "mysql driver not loaded, error: #{e}"
+      puts "  "+e.backtrace.join("\n  ")
+      puts "exit."
+      exit
+    rescue => e
+      puts "root setup failed, reason: #{e.inspect}"
       puts "root_setup failed, using auth_setup" if $DEBUG_MODE
       db_root = false
     end
@@ -88,7 +94,8 @@ class SessionStorage
       has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
       has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
       has_privileges = (db_auth.q("drop table if exists himle_test") == 0) and has_privileges
-    rescue
+    rescue => e
+      puts "privilege test failed, reason: #{e.inspect}"
       has_privileges = false
     end
     
