@@ -242,7 +242,7 @@ $config = {
     # but if the access fails, it'll fall back to
     # auth_setup, if it's created manually
     :root_setup => {
-      :host => 'localhost', # try '127.0.0.1' if this fails with your mysql configuration
+      :host => '127.0.0.1', # try '127.0.0.1' if this fails with your mysql configuration
       :user => 'root',
       :pass => '',
       :db   => 'mysql'
@@ -251,7 +251,7 @@ $config = {
     # auth_setup is the mysql connection himle uses
     # to handle session tables. It's obligatory.
     :auth_setup => {
-      :host => 'localhost',
+      :host => '127.0.0.1',
       :user => 'himle',
       :pass => 'bbJNhmtwtOBu6',
       :db   => 'himle'
