@@ -1,18 +1,40 @@
-rack-0.4.0
-highline-1.4.0
-randgen_c
-mkmf
-(build-essential ubuntun repositoryssa)
-mysql-server-5.0 (ubuntu)
-thin 1.0.0
-eventmachine 0.12.2
-daemons-1.0.10
-imagemagick (ubuntu)
-RMagick (ubuntu)
-libdbd-mysql-ruby (ubuntu)
-libmagick9-dev
-rmagick-2.7.0
-json 1.1.3 (ruby)
-soap4r-1.5.8
-httpclient-2.1.2
+
+This list is still outdated.
+Please report your experience and additions.
+
+Mac OS X, MacPorts:
+  port install ruby
+  port install mysql5
+  port install mysql5-devel
+  port install rb-rubygems
+  port install rb-dbi +dbd_mysql
+  port install ImageMagick
+
+Linux Packages, Ubuntu/Debian:
+  apt-get install ruby1.8
+  apt-get install rubygems
+  apt-get install build-essentials
+  apt-get install mysql-server-5.0
+  apt-get install imagemagick
+  apt-get install libdbd-mysql-ruby
+  apt-get install libmagick9-dev
+
+Rubygems (select newest version available):
+  gem install mysql
+  gem install rack
+  gem install highline
+  gem install eventmachine
+  gem install daemons
+  gem install httpclient
+  gem install thin
+  gem install mkmf
+  gem install soap4r
+  gem install rmagick
+  gem install json
+
+Locally, execute:
+  pushd
+  cd lib/util/randgen_c
+  ruby extconf.rb
+  popd
 
