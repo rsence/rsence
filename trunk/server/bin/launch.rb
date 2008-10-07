@@ -68,7 +68,10 @@ if RUBY_VERSION.to_f >= 1.9
   $LOAD_PATH << File.join( SERVER_PATH, 'lib', 'compat19' )
 end
 
-## HimleDaemon controls 
+## Dependencies / dependency check:
+require 'conf/dependencies'
+
+## HimleDaemon controls
 require 'daemon/daemon'
 Himle::Server::HimleServe.daemonize
 

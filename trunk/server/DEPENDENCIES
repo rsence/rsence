@@ -2,37 +2,37 @@
 This list is still outdated.
 Please report your experience and additions.
 
-Mac OS X, MacPorts:
-  port install ruby
-  port install mysql5
-  port install mysql5-devel
-  port install rb-rubygems
-  port install rb-dbi +dbd_mysql
-  port install ImageMagick
+Mac OS X, MacPorts packages:
+  ruby
+  mysql5-devel
+  rb-rubygems
+  rb-mysql
+  rb-dbi +dbd_mysql
+  ImageMagick
 
-Linux Packages, Ubuntu/Debian:
-  apt-get install ruby1.8
-  apt-get install rubygems
-  apt-get install build-essentials
-  apt-get install mysql-server-5.0
-  apt-get install imagemagick
-  apt-get install libdbd-mysql-ruby
-  apt-get install libmagick9-dev
+Linux Packages, Ubuntu/Debian apt packages:
+  ruby
+  rubygems
+  build-essentials
+  mysql-server-5.0
+  imagemagick
+  libdbd-mysql-ruby
+  libmagick9-dev
 
-Rubygems (select newest version available):
-  gem install mysql
-  gem install rack
-  gem install highline
-  gem install eventmachine
-  gem install daemons
-  gem install httpclient
-  gem install thin
-  gem install mkmf
-  gem install soap4r
-  gem install rmagick
-  gem install json
+Rubygems (select newest version available, if prompted):
+  mysql
+  rack
+  highline
+  eventmachine
+  daemons
+  httpclient
+  thin
+  mkmf
+  soap4r
+  rmagick
+  json
 
-Locally, execute:
+Locally, go to the himle server directory and run:
   pushd
   cd lib/util/randgen_c
   ruby extconf.rb
