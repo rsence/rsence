@@ -139,7 +139,10 @@ class Main < Plugin
       
       # 5000ms = 5secs
       msg.reply "sesWatcher = new SesWatcher(5000,'#{mses[:client_time].val_id}');"
-    
+      
+      # Delegates the init_ui method to each plugin to signal bootstrap completion.
+      $PLUGINS.delegate( 'init_ui', msg )
+      
     ## Processes delayed calls, if the
     ## :delayed_calls -array contains something to process.
     elsif not mses[:delayed_calls].empty?
