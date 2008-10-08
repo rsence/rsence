@@ -78,11 +78,11 @@ class IndexHtml
     begin
       $FILECACHE.check_scan
     rescue => e
-      $SESSION.stop_client_with_message( msg,
-        @config[:messages][:filecache_error][:title],
-        @config[:messages][:filecache_error][:descr]+e.message,
-        @config[:messages][:filecache_error][:uri]
-      )
+      #$SESSION.stop_client_with_message( msg,
+      #  @config[:messages][:filecache_error][:title],
+      #  @config[:messages][:filecache_error][:descr]+e.message,
+      #  @config[:messages][:filecache_error][:uri]
+      #)
       puts "=="*40 if $DEBUG_MODE
       puts "IndexHtml::FileCacheError: $FILECACHE.check_scan failed."
       if $DEBUG_MODE
@@ -97,11 +97,11 @@ class IndexHtml
     begin
       $PLUGINS.rescan()
     rescue => e
-      $SESSION.stop_client_with_message( msg,
-        @config[:messages][:plugins_rescan_error][:title],
-        @config[:messages][:plugins_rescan_error][:descr]+e.message,
-        @config[:messages][:plugins_rescan_error][:uri]
-      )
+      #$SESSION.stop_client_with_message( msg,
+      #  @config[:messages][:plugins_rescan_error][:title],
+      #  @config[:messages][:plugins_rescan_error][:descr]+e.message,
+      #  @config[:messages][:plugins_rescan_error][:uri]
+      #)
       puts "=="*40 if $DEBUG_MODE
       puts "IndexHtml::PluginsRescanError: $PLUGINS.rescan failed."
       if $DEBUG_MODE
