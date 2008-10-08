@@ -121,8 +121,27 @@ private
     if path[0].chr != '/' and path[0..1] != '..'
       path = File.join( @path, path )
     end
+    return false unless File.exist?( path )
     return File.read( path )
   end
+  
+  # File writer utility,
+  # practical for simple file data operations
+  def file_write( path, data )
+    if path[0].chr != '/' and path[0..1] != '..'
+      path = File.join( @path, path )
+    end
+    begin
+      datafile = File.open( path, 'wb' )
+      datafile.write( data )
+      datafile.close
+      return true
+    rescue => e
+      warn "file_write error for path #{path} #{e}"
+      return false
+    end
+  end
+  alias file_save file_write
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir
