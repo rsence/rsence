@@ -30,7 +30,6 @@ require 'rubygems'
   'rack',
   ['thin', '>= 1.0'],
   ['soap4r', '>= 1.5.8'],
-  'rmagick',
   'json',
   'iconv',
   'mkmf',
@@ -52,3 +51,8 @@ require 'rubygems'
   end
 end
 
+begin
+  gem 'rmagick'
+rescue Gem::LoadError
+  require 'RMagick'
+end
