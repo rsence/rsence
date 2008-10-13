@@ -56,9 +56,9 @@ class Broker
       puts "/hello: #{uri.inspect}" if $DEBUG_MODE
       $TRANSPORTER.xhr( @request, @response, true )
     
-    ## /SOAP handles SOAP Requests (only when debugging, for now...)
-    elsif uri == '/SOAP' and $DEBUG_MODE
-      puts "/SOAP: #{uri.inspect}" if $DEBUG_MODE
+    ## /SOAP handles SOAP Requests
+    elsif uri == '/SOAP'
+      puts "/SOAP: #{uri.inspect}"
       $TRANSPORTER.soap( @request, @response )
     
     ## /up handles the uploads inited for ticketserve
