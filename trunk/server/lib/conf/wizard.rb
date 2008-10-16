@@ -119,6 +119,9 @@ class ConfigWizard
 ## Paths to scan for available plugins
 #{cdiff([:plugin_paths])}$config[:plugin_paths] = #{@conf[:plugin_paths].inspect}
 
+## Tracking-related settings (allows storing what the user does from the server's point of view)
+#{cdiff([:tracking,:enabled])}$config[:tracking][:enabled] = true
+
 
 ## Transporter settings:
 

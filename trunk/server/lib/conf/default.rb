@@ -115,6 +115,12 @@ $config = {
   ## The global PluginManager instance will be bound to:
   :plugins => nil,
   
+  ## Tracking-related settings (allows storing what the user does from the server's point of view)
+  :tracking => {
+    :enabled => ARGV.include?('--enable-tracking')
+  },
+  
+  
   ## Transporter settings:
   :transporter_conf => {
     ## Message strings

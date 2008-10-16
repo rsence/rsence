@@ -196,16 +196,6 @@ class SessionStorage
     
     ## Convert column definitions and data to utf-8
     if himle_version < 270 or not db_is_utf8
-=begin
-      himle_session
-        cookie_key
-        ses_key
-      himle_uploads
-        file_mime
-        ticket_id
-        file_name
-=end
-      
       
       puts "Converting tables to utf8" if $DEBUG_MODE
       
