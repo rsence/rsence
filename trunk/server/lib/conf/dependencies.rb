@@ -34,12 +34,16 @@ require 'rubygems'
   'iconv',
   'mkmf',
   'mysql',
+  'dbd-mysql',
   'dbi'
 ].each do |dep|
   if dep.class == String
     begin
       gem dep
     rescue Gem::LoadError
+      # gem name to require string conversions:
+      dep = 'dbd/Mysql' if dep == 'dbd-mysql'
+      dep = 'RMagick'   if dep == 'rmagick'
       require dep
     end
   elsif dep.class == Array
@@ -51,8 +55,3 @@ require 'rubygems'
   end
 end
 
-begin
-  gem 'rmagick'
-rescue Gem::LoadError
-  require 'RMagick'
-end
