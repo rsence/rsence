@@ -28,15 +28,30 @@ require "dbi"
 
 class Status_TBL
   attr_reader :name, :rows, :size_avg, :size, :last_id, :created, :modified, :comment
+  def string2time(datetime_str)
+    # "2008-07-25 17:51:24"
+    (date_str,time_str) = datetime_str.split(' ')
+    split_date = date_str.split('-')
+    split_time = time_str.split(':')
+    year = split_date[0].to_i
+    month = split_date[1].to_i
+    day = split_date[2].to_i
+    hour = split_time[0].to_i
+    minute = split_time[1].to_i
+    second = split_time[2].to_i
+    return Time.gm(year,month,day,hour,minute,second)
+  end
   def initialize(row)
     @name     = row['Name']
-    @rows     = row['Rows']
-    @size_avg = row['Avg_row_length']
-    @size     = row['Data_length']
-    @last_id  = row['Auto_increment']
+    @rows     = row['Rows'].to_i
+    @size_avg = row['Avg_row_length'].to_i
+    @size     = row['Data_length'].to_i
+    @last_id  = row['Auto_increment'].to_i
     ct = row['Create_time']
     if ct == nil
       @created = 0
+    elsif ct.class == String 
+      @created = string2time(ct).to_i
     else
       creat = Time.gm(ct.year,ct.month,ct.day,ct.hour,ct.minute,ct.second)
       @created  = creat.to_i
@@ -44,6 +59,8 @@ class Status_TBL
     mt  = row['Update_time']
     if mt == nil
       @modified = 0
+    elsif ct.class == String 
+      @modified = string2time(mt).to_i
     else
       modit = Time.gm(mt.year,mt.month,mt.day,mt.hour,mt.minute,mt.second)
       @modified = modit.to_i
