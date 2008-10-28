@@ -23,8 +23,10 @@
 
 
 ### ROXOR MySQL Abstractor
-
+require "rubygems"
+gem "dbi", ">= 0.4.0"
 require "dbi"
+DBI.convert_types = true
 
 class Status_TBL
   attr_reader :name, :rows, :size_avg, :size, :last_id, :created, :modified, :comment
@@ -41,6 +43,9 @@ class Status_TBL
     second = split_time[2].to_i
     return Time.gm(year,month,day,hour,minute,second)
   end
+  def datetime2time(datetime)
+    return Time.gm(datetime.year,datetime.month,datetime.mday,datetime.hour,datetime.min,datetime.sec)
+  end
   def initialize(row)
     @name     = row['Name']
     @rows     = row['Rows'].to_i
@@ -50,6 +55,8 @@ class Status_TBL
     ct = row['Create_time']
     if ct == nil
       @created = 0
+    elsif ct.class == DateTime
+      @created = datetime2time(ct).to_i
     elsif ct.class == String 
       @created = string2time(ct).to_i
     else
@@ -59,6 +66,8 @@ class Status_TBL
     mt  = row['Update_time']
     if mt == nil
       @modified = 0
+    elsif ct.class == DateTime
+      @modified = datetime2time(mt).to_i
     elsif ct.class == String 
       @modified = string2time(mt).to_i
     else
@@ -333,7 +342,6 @@ class MySQLAbstractor
       end
     elsif @debe
       begin
-        rows = []
         begin
           quo = @conn.execute(qu)
         rescue => e
@@ -357,14 +365,31 @@ class MySQLAbstractor
             end
           end
         end
-        quo.fetch_hash() do |row|
-          rows.push( row ) if row != nil
-        end
-        return rows
+        return fetch_hash_array( quo )
       end
     else
       $stderr.write("ERROR: DBConn.q; unknown query type (qu.inspect)\n")
       return false
     end
   end
+  def fetch_hash_array(quo)
+    col_names = quo.column_names
+    rows_arr  = quo.fetch_all()
+    rows = []
+    rows_arr.each do |row|
+      row_hash = {}
+      col_names.size.times do |col_num|
+        col_name = col_names[ col_num ]
+        row_hash[ col_name ] = row[col_num]
+      end
+      rows.push( row_hash )
+    end
+    return rows
+  end
 end
+
+
+
+
+
+
