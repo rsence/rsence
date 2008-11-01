@@ -33,7 +33,7 @@
   **  <HView> <HMarkupView>
   ***/
 
-HDefaultThemePath = '../../';
+HDefaultThemePath = '/H/themes';
 HDefaultThemeName = 'default';
 HNoComponentCSS = [];
 HThemeHasIE6GifsInsteadOfPng = [];
