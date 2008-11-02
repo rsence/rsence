@@ -190,6 +190,11 @@ class Message
     @buffer.push( data )
   end
   
+  ### Sends data to the client's console
+  def console(data)
+    reply( "console.log(#{data.to_json});" )
+  end
+  
   ### Sends a Magick::Image object to be served, returns a disposable uri.
   def serve_img( img_obj, img_format='PNG' )
     return $TICKETSERVE.serve_img( self, img_obj, img_format )
