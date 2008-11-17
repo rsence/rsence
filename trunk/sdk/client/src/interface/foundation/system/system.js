@@ -268,7 +268,7 @@ HSystem = HClass.extend({
     var _activeWindowId = this.activeWindowId,
         _views = this.views,
         _viewId = _view.viewId;
-    if(_activeWindowId != 0){
+    if(_views[_activeWindowId]){
       _views[_activeWindowId].windowBlur();
     }
     this.activeWindowId=_viewId;
