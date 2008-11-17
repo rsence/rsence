@@ -2,8 +2,6 @@
 .tab_label {
   position: absolute;
   top: 0px; left: 0px right: 0px; height: 24px;
-  background-position: 0px -96px;
-  background-repeat: repeat-x;
   cursor: pointer;
 }
 
@@ -17,10 +15,18 @@
 .tab_label,
 .tab_label .edge-left,
 .tab_label .edge-right,
-.tab_label .tablabel {
+.tab_label .tablabel,
+.tab_label_fill_bg {
   background-repeat: no-repeat;
   background-image: #{this.getCssFilePath('tab_parts1.png')};
 }
+.tab_label_fill_bg {
+  position: absolute;
+  top: 0px; left: 0px; right: 0px; height: 24px;
+  background-position: 0px -96px;
+  background-repeat: repeat-x;
+}
+
 .tab_label .edge-left {
   position: absolute;
   top: 0px; left: 0px; width: 12px; height: 24px;
@@ -57,22 +63,6 @@
   background-position: 0px -48px;
   color: #666;
 }
-
-
-/*
-<div class="label" id="label1234">
-  <div class="item-fg" style="left:0px;width:128px;">
-    <div class="edge-left"></div>
-    <div class="tablabel"></div>
-    <div class="edge-right"></div>
-  </div>
-  <div class="item-bg" style="left:128px;width:128px;">
-    <div class="edge-left"></div>
-    <div class="tablabel"></div>
-    <div class="edge-right"></div>
-  </div>
-</div>
-*/
 
 .tab_bg {
   position: absolute;

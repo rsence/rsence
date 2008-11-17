@@ -103,6 +103,7 @@ HTab = HControl.extend({
     this.tabLabelParentElem = 'label';
     this.tabLabelElementTagName = 'div';
     this.tabLabelAlign = 'left';
+    this.tabLabelFillBg = false;
     this.tabTriggerLink = false;
     this.tabLabelNoHTMLPrefix = false;
   },
@@ -161,6 +162,9 @@ HTab = HControl.extend({
     this.rightmostPx+=_labelWidth;
     if(this.tabLabelAlign == 'right'){
       ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');
+    }
+    else if (this.tabLabelFillBg) {
+      ELEM.setStyle(this.markupElemIds.state,'left',this.rightmostPx+'px');
     }
     this.tabs.push(_tab.viewId);
     this.tabLabels.push(_tabLabelElemId);
