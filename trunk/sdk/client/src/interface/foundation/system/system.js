@@ -269,7 +269,9 @@ HSystem = HClass.extend({
         _views = this.views,
         _viewId = _view.viewId;
     if(_views[_activeWindowId]){
-      _views[_activeWindowId].windowBlur();
+      if (_views[_activeWindowId]["windowBlur"]) {
+        _views[_activeWindowId].windowBlur();        
+      }
     }
     this.activeWindowId=_viewId;
     _view.bringToFront();
