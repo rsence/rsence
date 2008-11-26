@@ -13,14 +13,14 @@ module Img
   
   # extends expiration time of disposable files, essentially for keep-alive requests
   def push_keepalive( img_id, keep_alive )
-    expiry_time = Time.now.utc.to_i+keep_alive
+    expiry_time = Time.now.to_i+keep_alive
     @expires[expiry_time] = [] unless @expires.has_key?(expiry_time)
     @expires[expiry_time].push( img_id )
   end
   
   # removes all expired images
   def expire_keepalives
-    curr_time = Time.now.utc.to_i
+    curr_time = Time.now.to_i
     @expires.keys.sort.each do |exp_time|
       if exp_time < curr_time
         @expires[exp_time].size.times do |incr|

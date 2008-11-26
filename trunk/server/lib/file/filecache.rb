@@ -152,7 +152,7 @@ class FileCache
     @theme_cache = theme_cache
     
     # time of last scan:
-    @scan_time = Time.now.utc
+    @scan_time = Time.now
     
     # release lock
     @busy_scanning = false

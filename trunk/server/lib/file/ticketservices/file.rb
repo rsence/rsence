@@ -13,14 +13,14 @@ module File
   
   # extends expiration time of disposable data, essentially for keep-alive requests
   def push_keepalive_file( file_id, keep_alive )
-    expiry_time = Time.now.utc.to_i+keep_alive
+    expiry_time = Time.now.to_i+keep_alive
     @expire_files[expiry_time] = [] unless @expire_files.has_key?(expiry_time)
     @expire_files[expiry_time].push( file_id )
   end
   
   # removes all expired files
   def expire_keepalive_files
-    curr_time = Time.now.utc.to_i
+    curr_time = Time.now.to_i
     @expire_files.keys.sort.each do |exp_time|
       if exp_time < curr_time
         @expire_files[exp_time].size.times do |incr|

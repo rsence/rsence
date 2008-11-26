@@ -31,18 +31,18 @@ class FileServe
   
   # Helper method to return the time formatted according to the HTTP RFC
   def httime(time)
-    return time.strftime('%a, %d %b %Y %H:%M:%S %Z')
+    return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
   ## Responds to get-requests
   def get( request, response )
     
     # Sets the response date header to the current time:
-    response['Date'] = httime( Time.now.utc )
+    response['Date'] = httime( Time.now )
     
     # Controls caching with headers based on the configuration
     if $config[:cache_maximize]
-      response['Expires'] = httime(Time.now.utc+$config[:cache_expire])
+      response['Expires'] = httime(Time.now+$config[:cache_expire])
     else
       response['Cache-Control'] = 'no-cache'
     end
