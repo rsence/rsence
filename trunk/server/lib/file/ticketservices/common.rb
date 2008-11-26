@@ -7,7 +7,7 @@ module Common
   
   # Helper method to return the time formatted according to the HTTP RFC
   def httime(time)
-    return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
+    return time.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
   ## Utility method for converting strings to hexadecimal
@@ -351,8 +351,8 @@ module Common
     res['Content-Type'] = content_type
     res['Content-Size'] = content_size
     
-    res['Date'] = httime( Time.now )
-    res['Expires'] = httime(Time.now+$config[:cache_expire])
+    res['Date'] = httime( Time.now.utc )
+    res['Expires'] = httime(Time.now.utc+$config[:cache_expire])
     
     res.body = content
     

@@ -68,7 +68,7 @@ module Upload
           insert into himle_uploads
             (ses_id,ticket_id,upload_date,upload_done,file_name,file_size,file_mime,file_data)
           values
-            (#{ses_id},#{ticket_id.inspect},#{Time.now.to_i},0,#{hexlify(file_filename)},#{file_size},#{file_mimetype.inspect},'')
+            (#{ses_id},#{ticket_id.inspect},#{Time.now.utc.to_i},0,#{hexlify(file_filename)},#{file_size},#{file_mimetype.inspect},'')
         })
         if not @upload_slots[:uploaded].has_key?(ticket_id)
           @upload_slots[:uploaded][ticket_id] = []
@@ -119,7 +119,7 @@ module Upload
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
-              :date => Time.at(row_data['upload_date']),
+              :date => Time.at(row_data['upload_date']).utc,
               :done => (row_data['upload_done']==1),
               :size => row_data['file_size'],
               :mime => row_data['file_mime'],
@@ -133,7 +133,7 @@ module Upload
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
-              :date => Time.at(row_data['upload_date']),
+              :date => Time.at(row_data['upload_date']).utc,
               :done => (row_data['upload_done']==1),
               :size => row_data['file_size'],
               :mime => row_data['file_mime'],

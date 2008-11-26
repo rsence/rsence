@@ -60,7 +60,7 @@ class SessionManager < SessionStorage
   def init_ses( msg )
     
     ## Assigns new timeout for the session
-    time_now = Time.now.to_i # seconds since epoch
+    time_now = Time.now.utc.to_i # seconds since epoch
     timeout  = time_now + @config[:timeout_secs]
     
     ## Creates a new session key
@@ -138,7 +138,7 @@ class SessionManager < SessionStorage
       ses_data = @sessions[ ses_id ]
       
       # new time-out
-      ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
+      ses_data[:timeout] = Time.now.utc.to_i + @config[:timeout_secs]
       
       ### extra security
       # re-generates the ses_key for each xhr

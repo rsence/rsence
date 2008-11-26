@@ -45,13 +45,13 @@ module ObjBlob
   end
   
   def push_keepalive_blobobj( ticket_id, keep_alive )
-    expiry_time = Time.now.to_i+keep_alive
+    expiry_time = Time.now.utc.to_i+keep_alive
     @expire_blobobj[expiry_time] = [] unless @expire_blobobj.has_key?(expiry_time)
     @expire_blobobj[expiry_time].push( ticket_id )
   end
   
   def expire_keepalive_blobobjs
-    curr_time = Time.now.to_i
+    curr_time = Time.now.utc.to_i
     @expire_blobobj.keys.sort.each do |exp_time|
       if exp_time < curr_time
         @expire_blobobj[exp_time].size.times do |incr|

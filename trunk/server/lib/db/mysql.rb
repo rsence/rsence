@@ -23,8 +23,8 @@
 
 
 ### ROXOR MySQL Abstractor
-require "rubygems"
-gem "dbi", ">= 0.4.0"
+#require "rubygems"
+#gem "dbi", ">= 0.4.0"
 require "dbi"
 DBI.convert_types = true
 
@@ -171,6 +171,11 @@ class MySQLAbstractor
     else
       @charset = 'utf8'
     end
+    if conf.has_key?(:timezone)
+      @timezone = conf[:timezone]
+    else
+      @timezone = '+0:00'
+    end
     @conn_retry = 0
     @conn_retry_max = 2
     if conf.has_key?(:port)
@@ -184,7 +189,8 @@ class MySQLAbstractor
     begin
       if not @conn and @debe
         @conn = DBI.connect("DBI:Mysql:database=#{@debe};host=#{@host};port=#{@port}",@user,@pass)
-        @conn.do("set names #{@charset}")
+        @conn.do("set names '#{@charset}'")
+        @conn.do("set time_zone = '#{@timezone}'")
         @conn_retry = 0
         return true
       end
@@ -288,7 +294,7 @@ class MySQLAbstractor
   def q(qu)
     action = qu.split(' ')[0].downcase
     inserters = ['insert']
-    updaters  = ['update','delete','replace','create','grant','drop','flush','alter']
+    updaters  = ['update','delete','replace','create','grant','drop','flush','alter','set']
     get_id = inserters.include?(action)
     get_count = updaters.include?(action)
     open() if not @conn
@@ -365,7 +371,19 @@ class MySQLAbstractor
             end
           end
         end
-        return fetch_hash_array( quo )
+        if not quo
+          return []
+        elsif quo.respond_to?('fetch_all_hash')
+          return quo.fetch_all_hash
+        elsif DBI::VERSION == '0.4.0'
+          rows = []
+          quo.fetch_hash do |row|
+            rows.push( row ) unless row == nil
+          end
+          return rows
+        else
+          return fetch_hash_array( quo )
+        end
       end
     else
       $stderr.write("ERROR: DBConn.q; unknown query type (qu.inspect)\n")
@@ -378,7 +396,7 @@ class MySQLAbstractor
     rows = []
     rows_arr.each do |row|
       row_hash = {}
-      col_names.size.times do |col_num|
+      col_names.each_with_index do |col,col_num|
         col_name = col_names[ col_num ]
         row_hash[ col_name ] = row[col_num]
       end

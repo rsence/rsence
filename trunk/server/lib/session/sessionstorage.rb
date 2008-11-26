@@ -256,7 +256,7 @@ class SessionStorage
       @db.q("update himle_session set user_id = #{ses_data[:user_id]} where id=#{ses_id}")
       @db.q("update himle_session set ses_data = #{hexlify(ses_data_dump)} where id=#{ses_id}")
       @db.q("update himle_session set ses_timeout = #{ses_data[:timeout]}")
-      @db.q("update himle_session set ses_stored = #{Time.now.to_i} where id=#{ses_id}")
+      @db.q("update himle_session set ses_stored = #{Time.now.utc.to_i} where id=#{ses_id}")
     end
   end
   
@@ -307,7 +307,7 @@ class SessionStorage
     # Loop through all sessions in memory:
     @sessions.each_key do |ses_id|
       
-      timed_out = @sessions[ ses_id ][:timeout] < Time.now.to_i
+      timed_out = @sessions[ ses_id ][:timeout] < Time.now.utc.to_i
       
       ## Deletes the session, if the session is too old
       expire_session( ses_id ) if timed_out

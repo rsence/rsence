@@ -156,7 +156,7 @@ class Main < Plugin
         call_count = 4
       end
       
-      time_start = Time.now.to_f
+      time_start = Time.now.utc.to_f
       time_taken = 0.0
       
       ## process delayed calls, until:
@@ -195,7 +195,7 @@ class Main < Plugin
         end
         
         ## calculates time taken
-        time_taken = Time.now.to_f - time_start
+        time_taken = Time.now.utc.to_f - time_start
         
         call_count -= 1
       end

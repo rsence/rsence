@@ -12,7 +12,7 @@ module Favicon
     res['Content-Type'] = favicon_data[0]
     res['Content-Size'] = favicon_data[1]
     
-    res['Date'] = httime( Time.now )
+    res['Date'] = httime( Time.now.utc )
     res.body = favicon_data[2]
     
   end
