@@ -24,23 +24,23 @@ end
 DIR_ROOT = File.join(File.split($0)[0], '..')
 
 if RUBY_PLATFORM.include? "mswin32"
-  JSMIN = File.join(BINPATH,'jsmin.exe').gsub("/","\\")
+  JSMIN = File.join(BUILDER_BINPATH,'jsmin.exe').gsub("/","\\")
   HTMLTIDY = 'type'
 elsif RUBY_PLATFORM.include? "linux"
-  JSMIN = File.join(BINPATH,'jsmin.linux')
+  JSMIN = File.join(BUILDER_BINPATH,'jsmin.linux')
   HTMLTIDY = 'cat'
 elsif RUBY_PLATFORM.include? "powerpc-darwin"
-  JSMIN = File.join(BINPATH,'jsmin.macppc')
-  HTMLTIDY = "#{File.join(BINPATH,'htmltidy.macppc')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
+  JSMIN = File.join(BUILDER_BINPATH,'jsmin.macppc')
+  HTMLTIDY = "#{File.join(BUILDER_BINPATH,'htmltidy.macppc')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
 elsif RUBY_PLATFORM.include? "darwin"
-  JSMIN = File.join(BINPATH,'jsmin.macintel')
-  HTMLTIDY = "#{File.join(BINPATH,'htmltidy.macintel')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
+  JSMIN = File.join(BUILDER_BINPATH,'jsmin.macintel')
+  HTMLTIDY = "#{File.join(BUILDER_BINPATH,'htmltidy.macintel')} -q -config #{File.join(CONFPATH,'htmltidy.config')} -utf8"
 end
 if RUBY_PLATFORM.include? "mswin32"
-  FIND = File.join(BINPATH,'find.exe').gsub('/',"\\")
-  GZIP = File.join(BINPATH,'gzip.exe').gsub('/',"\\")
+  FIND = File.join(BUILDER_BINPATH,'find.exe').gsub('/',"\\")
+  GZIP = File.join(BUILDER_BINPATH,'gzip.exe').gsub('/',"\\")
   CAT  = 'type'
-  TOUCH = File.join(BINPATH,'touch.exe').gsub("/","\\")
+  TOUCH = File.join(BUILDER_BINPATH,'touch.exe').gsub("/","\\")
 else
   FIND = 'find'
   GZIP = 'gzip'

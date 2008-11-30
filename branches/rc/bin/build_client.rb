@@ -17,14 +17,20 @@
 
 BINPATH  = File.split( File.expand_path( __FILE__ ) )[0]
 BASEPATH = File.split(BINPATH)[0]
+BUILDER_BINPATH  File.join(BASEPATH,'lib','jsbuilder','bin')
 CONFPATH = File.join(BASEPATH,'conf')
 $LOAD_PATH << CONFPATH
 $LOAD_PATH << File.join(BASEPATH,'lib')
 Dir.chdir(BASEPATH)
 
-require 'platform_bins'
-require 'client-build-config'
-require 'js_builder'
+require 'jsbuilder/platform_bins'
+require 'jsbuilder/client-build-config'
+require 'jsbuilder/js_builder'
+
+# if local custom client build override:
+if File.exist? File.join(CONFPATH,'client-build-config.rb')
+  require 'conf/client-build-config'
+end
 
 JSBuilder.new.run
 
