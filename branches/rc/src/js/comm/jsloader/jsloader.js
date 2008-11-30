@@ -14,7 +14,7 @@
   ***/
 
 
-JSLoader = Base.extend({
+JSLoader = HClass.extend({
   
   constructor: function(_uri){
     this._loadedJS = [];
@@ -54,7 +54,7 @@ JSLoader = Base.extend({
   
 });
 
-LOAD("jsLoader = new JSLoader('/H/js/');");
+RUN("jsLoader = new JSLoader('/H/js/');");
 
 
 

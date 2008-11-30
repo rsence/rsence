@@ -793,6 +793,7 @@ ELEM = {
   }
 };
 ELEM._constructor();
+RUN = ELEM._domLoader;
 LOAD = ELEM._domLoader;
 ELEM._warmup();
 

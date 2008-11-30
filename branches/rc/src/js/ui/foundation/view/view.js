@@ -333,7 +333,11 @@ HView = HClass.extend({
     * other elements too.
     */
   _updateZIndex: function() {
-    ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
+    // doing this via HSystem shaves 10% off the view creation time
+    //ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
+    if(this.parent.viewId){
+      HSystem.updateZIndexOfChildren(this.parent.viewId);
+    }
   },
   
   /**
@@ -410,6 +414,10 @@ HView = HClass.extend({
     ELEM.setStyle(this.elemId, 'display', 'block' );
     
     // right, bottom, opacity and png-transparency
+    //  - commented out, because the thing (IE6) is slow
+    //  - enabled in ELEM at regular intervals, makes 
+    //    advanced layout a little choppier, but overall
+    //    much faster on IE6
     /*
     if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
       iefix._traverseTree(ELEM.get(this.elemId));
