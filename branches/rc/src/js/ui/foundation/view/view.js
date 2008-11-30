@@ -335,10 +335,17 @@ HView = HClass.extend({
   _updateZIndex: function() {
     ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
   },
+  
+  /**
+    * This function is really slow.
+    *
+    * According to benchmarking, with 1000 views, deletion
+    * takes over 2000 ms on avegare with this on versus 50 ms off.
+    *
+    **/
   _updateZIndexAllSiblings: function() {
-    var _views = this.parent.viewsZOrder;
-    for (var i = 0; i < _views.length; i++) {
-      ELEM.setStyle(HSystem.views[_views[i]].elemId, 'z-index', i);
+    if(this.parent.viewId){
+      HSystem.updateZIndexOfChildren(this.parent.viewId);
     }
   },
   
@@ -606,6 +613,12 @@ HView = HClass.extend({
       
       // Drop the z-order from the parent's array
       this.parent.viewsZOrder.splice( _viewZIdx, 1 );
+      
+      // frees this view from zindex re-ordering, if added
+      var _sysUpdateZIndexOfChildrenBufferIndex = HSystem._updateZIndexOfChildrenBuffer.indexOf( this.viewId );
+      if(_sysUpdateZIndexOfChildrenBufferIndex != -1){
+        HSystem._updateZIndexOfChildrenBuffer.splice( _sysUpdateZIndexOfChildrenBufferIndex, 1 );
+      }
       
       // Make sure the z-order array stays solid.
       this._updateZIndexAllSiblings();

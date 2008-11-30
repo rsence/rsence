@@ -49,27 +49,59 @@ function test(){
   console.log( 'ctrl basics ok' );
   control1.setStyle('border','1px solid #003366');
   console.log( 'ctrl setStyle ok' );
+  for(var j=0;j<10;j++){
+    var _start = new Date().getTime();
+    var _rotRect = new HRect(220,0,260,40), _rotRect2;
+    var _rotCtrls = [];
+    var _rotCtrl;
+    var _rx,_ry,_rw,_rh;
+    for(var i=0;i<1000;i++){
+      _rotRect2 = new HRect(_rotRect);
+      _rx = parseInt(Math.random()*480,10);
+      _ry = parseInt(Math.random()*280,10);
+      _rw = parseInt(Math.random()*48,10);
+      _rh = parseInt(Math.random()*28,10);
+      _rotRect2.offsetTo(_rx,_ry);
+      _rotRect2.setSize(_rw,_rh);
+      _rotCtrl = new HView(_rotRect2,control1);
+      _rotCtrl.setStyle('background-color','rgb('+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+')');
+      _rotCtrls.push( _rotCtrl );
+    }
+    console.log('creating 1000 views took: '+(new Date().getTime()-_start)+'ms');
+    var _start = new Date().getTime();
+    for(var i=0;i<1000;i++){
+      _rotCtrls[i].die();
+    }
+    console.log('deleting 1000 views took: '+(new Date().getTime()-_start)+'ms');
+  }
+  for(var j=0;j<10;j++){
+    var _start = new Date().getTime();
+    var _rotElemIds = [];
+    var _rotElemId;
+    var _rx,_ry,_rw,_rh;
+    for(var i=0;i<1000;i++){
+      _rx = parseInt(Math.random()*480,10);
+      _ry = parseInt(Math.random()*280,10);
+      _rw = parseInt(Math.random()*48,10);
+      _rh = parseInt(Math.random()*28,10);
+      _rotElemId = ELEM.make( control1.elemId, 'div' );
+      ELEM.setStyle( _rotElemId, 'position', 'absolute' );
+      ELEM.setStyle( _rotElemId, 'left', _rx+'px');
+      ELEM.setStyle( _rotElemId, 'top', _ry+'px');
+      ELEM.setStyle( _rotElemId, 'width', _rw+'px');
+      ELEM.setStyle( _rotElemId, 'height', _rh+'px');
+      ELEM.setStyle( _rotElemId, 'background-color', 'rgb('+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+')');
+      _rotElemIds.push( _rotElemId );
+    }
+    console.log('creating 1000 elems took: '+(new Date().getTime()-_start)+'ms');
+    var _start = new Date().getTime();
+    for(var i=0;i<1000;i++){
+      ELEM.del( _rotElemIds[i] );
+    }
+    console.log('deleting 1000 elems took: '+(new Date().getTime()-_start)+'ms');
+  }
   control1.die();
   
-  var _rotRect = new HRect(220,0,260,40), _rotRect2;
-  var _rotCtrls = [];
-  var _rotCtrl;
-  var _rx,_ry,_rw,_rh;
-  for(var i=0;i<1000;i++){
-    _rotRect2 = new HRect(_rotRect);
-    _rx = parseInt(Math.random()*480,10);
-    _ry = parseInt(Math.random()*280,10);
-    _rw = parseInt(Math.random()*48,10);
-    _rh = parseInt(Math.random()*28,10);
-    _rotRect2.offsetTo(_rx,_ry);
-    _rotRect2.setSize(_rw,_rh);
-    _rotCtrl = new HView(_rotRect2,view1);
-    _rotCtrl.setStyle('background-color','rgb('+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+')');
-    _rotCtrls.push( _rotCtrl );
-  }
-  for(var i=0;i<1000;i++){
-    _rotCtrls[i].die();
-  }
   
   //console.log( view1 );
   //console.log( control1 );

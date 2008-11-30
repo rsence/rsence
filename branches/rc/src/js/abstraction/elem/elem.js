@@ -167,7 +167,6 @@ ELEM = {
     var _this=ELEM,_elem=_this._elements[_id];
     while(_this._flushing){}
     _this._flushing=true;
-    _this.setCSS(_id,'display:none;');    
     if(_this._enableRecycler){
       var _tagName=_elem.tagName,
           _trashId=_this._initRecycler(_tagName),

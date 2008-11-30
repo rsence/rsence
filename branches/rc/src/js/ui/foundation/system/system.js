@@ -94,9 +94,10 @@ HSystem = HClass.extend({
   **
   ***/
   scheduler: function(){
-    if ((this.ticks % 10) == 0 && this.fix_ie) {
+    //if ((this.ticks % 10) == 0 && this.fix_ie) {
       //_traverseTree();
-    }
+    //}
+    
     // Loop through all applications:
     for( var _appId=0; _appId<this.apps.length; _appId++ ){
       // Check, if the application exists:
@@ -115,6 +116,9 @@ HSystem = HClass.extend({
         }
       }
     }
+    
+    if(this._updateZIndexOfChildrenBuffer.length!=0){this._flushUpdateZIndexOfChilden();}
+    
   },
   
   
@@ -276,7 +280,32 @@ HSystem = HClass.extend({
     this.activeWindowId=_viewId;
     _view.bringToFront();
     _view.windowFocus();
+  },
+  
+  // optimization of zindex buffer, see HView
+  _updateZIndexOfChildrenBuffer: [],
+  updateZIndexOfChildren: function(_viewId) {
+    if(this._updateZIndexOfChildrenBuffer.indexOf(_viewId)==-1){
+      this._updateZIndexOfChildrenBuffer.push(_viewId);
+    }
+  },
+  
+  _flushUpdateZIndexOfChilden: function(){
+    var j=0; _buffer=this._updateZIndexOfChildrenBuffer;
+    for(;j!=_buffer.length;j++){
+      var _viewId = _buffer.unshift(),
+        _views = this.views[_viewId].viewsZOrder,
+        _viewlen = _views.length,_setStyl=ELEM.setStyle,
+        _sysViews = this.views, _viewId, _view, _elemIdStr = 'elemId', _zIdxStr = 'z-index',
+        i=0;
+      for(;i!=_viewlen;i++){
+        _viewId = _views[i];
+        _view = _sysViews[_viewId];
+        _setStyl(_view[_elemIdStr], _zIdxStr, i);
+      }
+    }
   }
+
   
 });
 
