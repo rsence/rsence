@@ -15,7 +15,7 @@
 $_INC_NAME = 'js.inc'
 
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','basic','tabs','window','uploader','servermessage','iefix']
+$_PACKAGE_NAMES = ['core','controls','uploader','servermessage','iefix']
 $_PACKAGES = {
   'core' => [
     'class',
@@ -31,24 +31,11 @@ $_PACKAGES = {
     'dyncontrol'
   ],
   
-  'basic' => [
+  'controls' => [
     'button','checkbox','radiobutton',
     'stringview','textcontrol','textarea','slider','vslider',
     'progressbar','progressindicator','imageview','splitview','stepper',
-    'passwordcontrol','divider','validatorview','window','tab'
-  ],
-  
-  # remove until release
-  'tabs' => [
-    'tab_deprecation'
-  ],
-  
-  # remove until release
-  'window' => [
-    'window_deprecation'
-  ],
-  
-  'uploader' => [
+    'passwordcontrol','divider','validatorview','window','tab',
     'uploader'
   ],
   
@@ -82,47 +69,6 @@ $_RESERVED_NAMES= [
   
   ## template stuff:
   '_ID', '_WIDTH', '_HEIGHT',
-  
-  ## javascript reserved:
-  "abstract", "boolean", "break", "byte", "case", "catch", "char",
-  "class", "const", "continue", "debugger", "default", "delete",
-  "do", "doubleelse", "enum", "export", "extends", "false", "final",
-  "finally", "float", "for", "function", "goto", "if", "implements",
-  "import", "ininstanceof", "int", "interface", "long", "native",
-  "new", "null", "package", "private", "protected", "public",
-  "return", "short", "static", "superswitch", "synchronized",
-  "this", "throw", "throws", "transient", "true", "try", "typeof",
-  "var", "void", "volatile", "while", "with",
-  
-  ## browser
-  "setTimeout", "setInterval", "clearTimeout",
-  "document", "getElementById", "setAttribute", "setProperty", "style",
-  "appendChild", "createElement", "innerHTML", 
-  "attributes", "childNodes", "className", "clientWidth", "clientHeight",
-  "dir", "firstChild", "id", "lang", "lastChild", "localName",
-  "namespaceURI", "nextSibling", "nodeName", "nodeType", "nodeValue",
-  "offsetLeft", "offsetTop", "offsetParent", "offsetWidth", "offsetHeight",
-  "ownerDocument", "parentNode", "prefix", "previousSibling", "scrollLeft",
-  "scrollTop", "scrollHeight", "scrollWidth", "style", "tabIndex", "tagName",
-  "title",
-  
-  ## misc
-  'Function', 'console', 'arguments', 'apply', 'callee', 'parent',
-  'instanceof', 'indexOf', 'set', 'toLowerCase', 'charAt', 'Object',
-  'undefined', 'else', 'position', 'absolute', 'display', 'block',
-  'type', 'rect', 'ELEM', 'EVENT', 'CTRL', 'px', 'lefyt', 'top', 'right',
-  'bottom', 'width', 'auto', 'height', 'box', 'focus', 'blur', 'Event',
-  'e', 'extend', 'cssText', 'getPropertyValue', 'getAttribute',
-  'visible', 'currentStyle', 'filter', 'match', 'alpha', 'replace',
-  'padding', 'border', 'mode', 'parseInt', 'parseFloat', 'parseString',
-  'navigator', 'Opera', 'MSIE', 'KHTML', 'khtml', 'pre', 'div', 'img',
-  'span', 'src', 'onload', 'javascript', 'js', 'http', 'readyState',
-  'complete', 'Safari', 'Mozilla', 'pointerX', 'pointerY', 'stop',
-  'preventDefault', 'window', 'unload', 'status',
-  
-  'mousemove', 'mouseup', 'mousedown', 'keyup', 'keydown', 'keypress',
-  'contextmenu', 'DOMMouseScroll', 'mouseover', 'mouseout', 'Date',
-  'zIndex', 'onreadystatechange', 'send', 'sent', 'run', 'step'
   
 ]
 
