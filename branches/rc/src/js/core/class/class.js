@@ -101,6 +101,13 @@ HClass.prototype = {
         }
       }
     }
+    this.nu = function() {
+      var _argArr = [], _this=this;
+      for(var i=0;i<arguments.length;i++){
+        _argArr.push('arguments['+i+']');
+      }
+      return eval('new _this('+_argArr.join(',')+')');
+    };
     return this;
   },
   /** method: base
@@ -252,8 +259,8 @@ HClass.implement = function(_interface) {
 
 var Base = HClass;
 
-
-if ([].indexOf===undefined) {
+// Array fix
+if ([]['indexOf']===undefined) {
   Object.extend = function(destination, source) {
     for (property in source) {
       destination[property] = source[property];
