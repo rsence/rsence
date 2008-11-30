@@ -165,6 +165,8 @@ ELEM = {
   // deletes element and all its associated caches by id
   del: function(_id){
     var _this=ELEM,_elem=_this._elements[_id];
+    while(_this._flushing){}
+    _this._flushing=true;
     _this.setCSS(_id,'display:none;');    
     if(_this._enableRecycler){
       var _tagName=_elem.tagName,
@@ -177,10 +179,11 @@ ELEM = {
     if(_elemTodoIdx!=-1){
       _this._elemTodo.splice(_elemTodoIdx,1);
     }
-    try{_elem.innerHTML='';}catch(e){}
+    //try{_elem.innerHTML='';}catch(e){}
     //_this.setAttr(_id,'id','',true);
-    _this.delAttr(_id,'id');
-    _this.delAttr(_id,'ctrl');
+    //console.log('ret');_this._flushing=false;return;
+    //_this.delAttr(_id,'id');
+    //_this.delAttr(_id,'ctrl');
     
     _this._initCache(_id);
     if(_this._enableRecycler){
@@ -190,7 +193,10 @@ ELEM = {
       _this._freeElemIds.push(_id);
       var _parentNode = _elem.parentNode;
       _parentNode.removeChild(_elem);
+      _elem = null;
+      _this._elements[_id] = null;
     }
+    _this._flushing=false;
   },
   
   // places element inside another
@@ -691,7 +697,7 @@ ELEM = {
       /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
 
             /*  idx: 10 for non-ie */
-      /* 10 */       "_elemS.setProperty(_key,_cached[_key],'');}}};"
+      /* 10 */       "console.log('elemS:',_elemS,'key:',_key,'val:',_cached[_key]);_elemS.setProperty(_key,_cached[_key],'');}}};"
     ];
     if(_this._is_ie){
       _flushStyleCacheTmpl.pop();

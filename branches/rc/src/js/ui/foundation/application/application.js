@@ -169,10 +169,13 @@ HApplication = HClass.extend({
   
   // calls the idle method of each view
   _pollViews: function(){
-    var i, _viewId;
+    var i, _viewId, _view;
     for(i=0;i<this.views.length;i++){
       _viewId = this.views[i];
-      HSystem.views[i].onIdle();
+      _view = HSystem.views[_viewId];
+      if((_view!==null)&&(_view['onIdle']!==undefined)){
+        _view.onIdle();
+      }
     }
   },
   

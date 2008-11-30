@@ -626,26 +626,27 @@ HView = HClass.extend({
   *  <HApplication.die> <addView> <remove> <die> <Element Manager.elem_del>
   **/
   die: function() {
-    
     // Delete the children first.
-    for (var i = 0; i < this.views.length; i++) {
-      HSystem.views[this.views[i]].die();
+    var i=0, _childViewId;
+    for (; i < this.views.length; i++) {
+      _childViewId = this.views[i];
+      this.destroyView(_childViewId);
     }
-    
     // Remove this object's bindings, except the DOM element.
     this.remove();
-    
     // Remove the DOM element bindings.
-    for (var i = 0; i < this._domElementBindings.length; i++) {
+    for (i = 0; i < this._domElementBindings.length; i++) {
       ELEM.del(this._domElementBindings[i]);
     }
     this._domElementBindings = [];
     
+    this.drawn = false;
+    console.log(ELEM.get(this.elemId));
+    
     // Remove the DOM object itself
     ELEM.del(this.elemId);
     
-    this.elemId = null;
-    this.drawn = false;
+    console.log('died');
     
     delete this.rect;
     
