@@ -21,7 +21,7 @@ else
 end
 
 
-DIR_ROOT = File.join(File.split($0)[0], '..')
+DIR_ROOT = File.join(BASEPATH, 'src')
 
 if RUBY_PLATFORM.include? "mswin32"
   JSMIN = File.join(BUILDER_BINPATH,'jsmin.exe').gsub("/","\\")

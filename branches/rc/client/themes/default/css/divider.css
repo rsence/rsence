@@ -1,0 +1,57 @@
+.helmiTheme .divider {
+  cursor: pointer;
+  position: absolute;
+  left: 0px; right: 0px; top: 0px; bottom: 0px;
+  text-align: center;
+  display: block;
+  white-space: nowrap;
+  width: auto;
+  padding: 0;
+}
+.helmiTheme .divider .border-bg-normal {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+  border: 1px solid #FFF;
+  overflow: hidden;
+  background-color: #CBCCCC;
+}
+.helmiTheme .divider .border-bg-highlight {
+  position: absolute;
+  left: 1px; right: 1px; top: 1px; bottom: 1px;
+  border: 1px solid #FFF;
+  overflow: hidden;
+  background-repeat: repeat-x;
+  background-color: #BCBDBE;
+}
+.helmiTheme .divider .border {
+  position: absolute;
+  overflow: hidden;
+}
+.helmiTheme .divider .border-n {
+  right: 1px; height: 1px;
+  left: 1px; top: 0px;
+}
+.helmiTheme .divider .border-s {
+  right: 1px; bottom: 0px;
+  left: 1px; height: 1px;
+}
+.helmiTheme .divider .border-w {
+  width: 1px; bottom: 1px;
+  left: 0px; top: 1px;
+}
+.helmiTheme .divider .border-e {
+  right: 0px; bottom: 1px;
+  width: 1px; top: 1px;
+}
+.helmiTheme .divider .border-nw-normal {
+  background-color: #CBCCCC;
+}
+.helmiTheme .divider .border-se-normal {
+  background-color: #BCBDBE;
+}
+.helmiTheme .divider .border-nw-highlight {
+  background-color: #FFA51B;
+}
+.helmiTheme .divider .border-se-highlight {
+  background-color: #FC9102;
+}

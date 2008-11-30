@@ -15,7 +15,7 @@
 $_INC_NAME = 'js.inc'
 
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','controls','uploader','servermessage','iefix']
+$_PACKAGE_NAMES = ['core','controls','servermessage','iefix']
 $_PACKAGES = {
   'core' => [
     'class',
