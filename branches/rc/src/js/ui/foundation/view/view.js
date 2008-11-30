@@ -337,10 +337,10 @@ HView = HClass.extend({
   },
   
   /**
-    * This function is really slow.
+    * This function was really slow, that's why it's moved off to the system scheduler.
     *
     * According to benchmarking, with 1000 views, deletion
-    * takes over 2000 ms on avegare with this on versus 50 ms off.
+    * took over 2000 ms on average before, versus 50 ms after.
     *
     **/
   _updateZIndexAllSiblings: function() {
