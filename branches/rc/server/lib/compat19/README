@@ -1,0 +1,7 @@
+
+This directory contains files needed for backwards compatibility (1.8.x) of ruby 1.9.
+
+parsedate.rb:
+ - DBI depends on this, included a copy from 1.8.7
+
+
