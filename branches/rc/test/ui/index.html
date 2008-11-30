@@ -1,113 +1,117 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html><head><title>ui test</title>
-<script src="../../src/js/abstraction/class/class.js" type="text/javascript"></script>
+
+<!-- Very simple unit tester -->
+<script src="./unit/unit.js" type="text/javascript"></script>
+
+<!-- The Abstraction libraries -->
+<!-- The HClass is needed for almost everything, so we include that first -->
+<script src="../../src/js/core/class/class.js" type="text/javascript"></script>
+<!-- The common.js is a place for patches, currently just console.log detection and simulation -->
 <script src="../../src/js/ui/controls/common/common.js" type="text/javascript"></script>
-<script src="../../src/js/abstraction/ajax/ajax.js" type="text/javascript"></script>
-<script src="../../src/js/abstraction/elem/elem.js" type="text/javascript"></script>
-<script src="../../src/js/abstraction/event/event.js" type="text/javascript"></script>
+<!-- The Ajax object is needed for all data transfers -->
+<script src="../../src/js/core/ajax/ajax.js" type="text/javascript"></script>
+<!-- The ELEM Management system is needed for everything that accesses the DOM element model -->
+<script src="../../src/js/core/elem/elem.js" type="text/javascript"></script>
+<!-- The EVENT Management system is needed for everything that accesses the DOM event model -->
+<script src="../../src/js/core/event/event.js" type="text/javascript"></script>
+
+<!-- Automated value management -->
+<!-- Encryption and encoding library (SHA1/MD5/Base64) -->
 <script src="../../src/js/comm/sha/sha.js" type="text/javascript"></script>
+<!-- HTransporter does the value transfers -->
 <script src="../../src/js/comm/transporter/transporter.js" type="text/javascript"></script>
+<!-- HValueManager (HVM) controls syncronization and manages HValue instances -->
 <script src="../../src/js/comm/valuemanager/valuemanager.js" type="text/javascript"></script>
+<!-- HValue contains data to be syncronized -->
 <script src="../../src/js/comm/values/value/value.js" type="text/javascript"></script>
+<!-- JSLoader loads arbitary urls and evaluates their contents (used for js dependencies) -->
 <script src="../../src/js/comm/jsloader/jsloader.js" type="text/javascript"></script>
+<!-- HValueMatrix controls things like radio button groups -->
 <script src="../../src/js/comm/values/valuematrix/valuematrix.js" type="text/javascript"></script>
+
+<!-- Geometry -->
+<!-- HPoint is the coordinate object for points (x and y) -->
 <script src="../../src/js/ui/foundation/geom/point/point.js" type="text/javascript"></script>
+<!-- HRect is the coordinate object for areas (rectangles); top-left x,y plus bottom-right x,y -->
 <script src="../../src/js/ui/foundation/geom/rect/rect.js" type="text/javascript"></script>
+
+<!-- Process management -->
+<!-- HSystem contains global UI methods as well as the process priority queue -->
 <script src="../../src/js/ui/foundation/system/system.js" type="text/javascript"></script>
+<!-- HApplication is the root controller of views and gets "idle" events from the HSystem -->
 <script src="../../src/js/ui/foundation/application/application.js" type="text/javascript"></script>
+
+<!-- Controls -->
+<!-- HThemeManager loads css and html resources on an as-needen basis -->
 <script src="../../src/js/ui/thememanager/thememanager.js" type="text/javascript"></script>
+<!-- HMarkupView implements automated html template rendering for controls -->
 <script src="../../src/js/ui/foundation/markupview/markupview.js" type="text/javascript"></script>
+<!-- HView defines all basic view functionality "simple control"-->
 <script src="../../src/js/ui/foundation/view/view.js" type="text/javascript"></script>
+<!-- HControl defines all basic control functionality, extends HView -->
 <script src="../../src/js/ui/foundation/control/control.js" type="text/javascript"></script>
+<!-- HDynControl is a very simple freely movable and resizable control extension -->
 <script src="../../src/js/ui/foundation/dyncontrol/dyncontrol.js" type="text/javascript"></script>
 
-<!--script src="../../client/js/core.js" type="text/javascript"></script-->
+<!-- Test suite -->
+<!--
+<script src="js/test_hclass.js"        type="text/javascript"></script>
+<script src="js/test_elem.js"          type="text/javascript"></script>
+<script src="js/test_ajax.js"          type="text/javascript"></script>
+<script src="js/test_sha.js"           type="text/javascript"></script>
+<script src="js/test_jsloader.js"      type="text/javascript"></script>
+<script src="js/test_hvalue.js"        type="text/javascript"></script>
+<script src="js/test_hvaluemanager.js" type="text/javascript"></script>
+<script src="js/test_hvaluematrix.js"  type="text/javascript"></script>
+<script src="js/test_htransporter.js"  type="text/javascript"></script>
+<script src="js/test_hsystem.js"       type="text/javascript"></script>
+<script src="js/test_happlication.js"  type="text/javascript"></script>
+<script src="js/test_hpoint.js"        type="text/javascript"></script>
+<script src="js/test_hrect.js"         type="text/javascript"></script>
+<script src="js/test_hview.js"         type="text/javascript"></script>
+<script src="js/test_hcontrol.js"      type="text/javascript"></script>
+<script src="js/test_hmarkupview.js"   type="text/javascript"></script>
+<script src="js/test_hthememanager.js" type="text/javascript"></script>
+<script src="js/test_hdyncontrol.js"   type="text/javascript"></script>
+-->
+
 <script type="text/javascript">
 
 function test(){
-  console.log('starting test');
-  var app = new HApplication();
-  console.log('HApplication ok');
-  var point1 = new HPoint(0,0);
-  var point2 = new HPoint(600,400);
-  var rect1  = new HRect( point1, point2 );
-  console.log( 'geometry basics ok' );
-  var view1 = new HView( rect1, app );
-  console.log( 'view basics ok' );
-  view1.setStyle('border','1px solid #3366cc');
-  console.log(view1.elemId);
-  console.log( 'view setStyle ok' );
   
-  var ctrl_rect = new HRect( rect1 );
-  ctrl_rect.insetBy( 60, 60 );
-  var ctrl_options = {
-    label: 'Test Label',
-    value: 'Test Value'
-  };
-  var control1 = new HControl( ctrl_rect, view1, ctrl_options );
-  console.log( 'ctrl basics ok' );
-  control1.setStyle('border','1px solid #003366');
-  console.log( 'ctrl setStyle ok' );
-  for(var j=0;j<10;j++){
-    var _start = new Date().getTime();
-    var _rotRect = new HRect(220,0,260,40), _rotRect2;
-    var _rotCtrls = [];
-    var _rotCtrl;
-    var _rx,_ry,_rw,_rh;
-    for(var i=0;i<1000;i++){
-      _rotRect2 = new HRect(_rotRect);
-      _rx = parseInt(Math.random()*480,10);
-      _ry = parseInt(Math.random()*280,10);
-      _rw = parseInt(Math.random()*48,10);
-      _rh = parseInt(Math.random()*28,10);
-      _rotRect2.offsetTo(_rx,_ry);
-      _rotRect2.setSize(_rw,_rh);
-      _rotCtrl = new HView(_rotRect2,control1);
-      _rotCtrl.setStyle('background-color','rgb('+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+')');
-      _rotCtrls.push( _rotCtrl );
-    }
-    console.log('creating 1000 views took: '+(new Date().getTime()-_start)+'ms');
-    var _start = new Date().getTime();
-    for(var i=0;i<1000;i++){
-      _rotCtrls[i].die();
-    }
-    console.log('deleting 1000 views took: '+(new Date().getTime()-_start)+'ms');
-  }
-  for(var j=0;j<10;j++){
-    var _start = new Date().getTime();
-    var _rotElemIds = [];
-    var _rotElemId;
-    var _rx,_ry,_rw,_rh;
-    for(var i=0;i<1000;i++){
-      _rx = parseInt(Math.random()*480,10);
-      _ry = parseInt(Math.random()*280,10);
-      _rw = parseInt(Math.random()*48,10);
-      _rh = parseInt(Math.random()*28,10);
-      _rotElemId = ELEM.make( control1.elemId, 'div' );
-      ELEM.setStyle( _rotElemId, 'position', 'absolute' );
-      ELEM.setStyle( _rotElemId, 'left', _rx+'px');
-      ELEM.setStyle( _rotElemId, 'top', _ry+'px');
-      ELEM.setStyle( _rotElemId, 'width', _rw+'px');
-      ELEM.setStyle( _rotElemId, 'height', _rh+'px');
-      ELEM.setStyle( _rotElemId, 'background-color', 'rgb('+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+')');
-      _rotElemIds.push( _rotElemId );
-    }
-    console.log('creating 1000 elems took: '+(new Date().getTime()-_start)+'ms');
-    var _start = new Date().getTime();
-    for(var i=0;i<1000;i++){
-      ELEM.del( _rotElemIds[i] );
-    }
-    console.log('deleting 1000 elems took: '+(new Date().getTime()-_start)+'ms');
-  }
-  control1.die();
+  var tests = [
+    'hclass','elem','ajax','sha','jsloader','hvalue','hvaluemanager','hvaluematrix','htransporter',
+    'hsystem','happlication','hpoint','hrect','hview','hcontrol','hmarkupview','hthememanager',
+    'hdyncontrol'
+  ];
   
+  unitTest('./tests/test_',tests);
   
-  //console.log( view1 );
-  //console.log( control1 );
-  //view1.setStyle('background-color','#cc6633');
+  // test inheritance
+  /*
+  test_HClass();
+  test_ELEM();
+  test_Ajax();
+  test_SHA();
+  test_JSLoader();
+  test_HValue();
+  test_HValueManager();
+  test_HValueMatrix();
+  test_HTransporter();
+  test_HSystem();
+  test_HApplication();
+  test_HPoint();
+  test_HRect();
+  test_HView();
+  test_HControl();
+  test_HMarkupView();
+  test_HThemeManager();
+  test_HDynControl();
+  */
 }
-LOAD('test();');
+RUN('test();');
 
 </script>
 </head>
