@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head><title>ui test</title>
+<script src="../../src/js/abstraction/class/class.js" type="text/javascript"></script>
+<script src="../../src/js/ui/controls/common/common.js" type="text/javascript"></script>
+<script src="../../src/js/abstraction/ajax/ajax.js" type="text/javascript"></script>
+<script src="../../src/js/abstraction/elem/elem.js" type="text/javascript"></script>
+<script src="../../src/js/abstraction/event/event.js" type="text/javascript"></script>
+<script src="../../src/js/comm/sha/sha.js" type="text/javascript"></script>
+<script src="../../src/js/comm/transporter/transporter.js" type="text/javascript"></script>
+<script src="../../src/js/comm/valuemanager/valuemanager.js" type="text/javascript"></script>
+<script src="../../src/js/comm/values/value/value.js" type="text/javascript"></script>
+<script src="../../src/js/comm/jsloader/jsloader.js" type="text/javascript"></script>
+<script src="../../src/js/comm/values/valuematrix/valuematrix.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/geom/point/point.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/geom/rect/rect.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/system/system.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/application/application.js" type="text/javascript"></script>
+<script src="../../src/js/ui/thememanager/thememanager.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/markupview/markupview.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/view/view.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/control/control.js" type="text/javascript"></script>
+<script src="../../src/js/ui/foundation/dyncontrol/dyncontrol.js" type="text/javascript"></script>
+
+<!--script src="../../client/js/core.js" type="text/javascript"></script-->
+<script type="text/javascript">
+
+function test(){
+  console.log('starting test');
+  var app = new HApplication();
+  console.log('HApplication ok');
+  var point1 = new HPoint(0,0);
+  var point2 = new HPoint(600,400);
+  var rect1  = new HRect( point1, point2 );
+  console.log( 'geometry basics ok' );
+  var view1 = new HView( rect1, app );
+  console.log( 'view basics ok' );
+  view1.setStyle('border','1px solid #3366cc');
+  console.log(view1.elemId);
+  console.log( 'view setStyle ok' );
+  
+  var ctrl_rect = new HRect( rect1 );
+  ctrl_rect.insetBy( 60, 60 );
+  var ctrl_options = {
+    label: 'Test Label',
+    value: 'Test Value'
+  };
+  var control1 = new HControl( ctrl_rect, view1, ctrl_options );
+  console.log( 'ctrl basics ok' );
+  control1.setStyle('border','1px solid #003366');
+  console.log( 'ctrl setStyle ok' );
+  control1.die();
+  
+  var _rotRect = new HRect(220,0,260,40), _rotRect2;
+  var _rotCtrls = [];
+  var _rotCtrl;
+  var _rx,_ry,_rw,_rh;
+  for(var i=0;i<1000;i++){
+    _rotRect2 = new HRect(_rotRect);
+    _rx = parseInt(Math.random()*480,10);
+    _ry = parseInt(Math.random()*280,10);
+    _rw = parseInt(Math.random()*48,10);
+    _rh = parseInt(Math.random()*28,10);
+    _rotRect2.offsetTo(_rx,_ry);
+    _rotRect2.setSize(_rw,_rh);
+    _rotCtrl = new HView(_rotRect2,view1);
+    _rotCtrl.setStyle('background-color','rgb('+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+','+parseInt(Math.random()*256,10)+')');
+    _rotCtrls.push( _rotCtrl );
+  }
+  for(var i=0;i<1000;i++){
+    _rotCtrls[i].die();
+  }
+  
+  //console.log( view1 );
+  //console.log( control1 );
+  //view1.setStyle('background-color','#cc6633');
+}
+LOAD('test();');
+
+</script>
+</head>

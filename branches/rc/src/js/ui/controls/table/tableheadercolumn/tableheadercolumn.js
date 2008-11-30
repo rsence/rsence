@@ -339,6 +339,6 @@ _demo_sort= function(a, b) {
     return (_demo_sort.direction) ? 1 : -1;
   }
   return 0;
-}
+};
 _demo_sort.direction = true;
 _demo_sort.column = 0;

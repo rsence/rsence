@@ -21,7 +21,7 @@ _HTableColumn = function(_index,_width,_string,_dataView,_headerView) {
   this.headerView = _headerView;
   this.headerCreated = false;
   this.created = false;
-}
+};
 
 /** class: HTableControl
   *
@@ -385,10 +385,10 @@ HTableControl = HControl.extend({
     // this._dataStartBufferIndex = 0;
     this._dataEndBufferIndex = _dataBuffer.endBufferStartRow();
     this._tableRows[_columnIndex] = new Array();
-    var _dataView = _tableColumn.dataView
+    var _dataView = _tableColumn.dataView;
     // will be removed
     if (typeof _dataView == "string") {
-      _dataView = ITextControl
+      _dataView = ITextControl;
     }
     var _view, _viewRect, _value;
     for (var _rowIndex=_startBufferRow;_rowIndex<_endBufferRow;_rowIndex++) {
@@ -446,7 +446,7 @@ HTableControl = HControl.extend({
       return 0;
     }
     _y -= this.options.headerViewHeight;
-    return parseInt(_y / this.options.rowHeight);
+    return parseInt(_y / this.options.rowHeight,10);
   },
 /** method: addColumn
   * 
@@ -555,17 +555,17 @@ HTableControl = HControl.extend({
     this.tableColumns.splice(_index2,0,_column);
     
     // moves header column views to right place
-    _column = this.tableHeaderColumns[_index1]
+    _column = this.tableHeaderColumns[_index1];
     this.tableHeaderColumns.splice(_index1,1);
     this.tableHeaderColumns.splice(_index2,0,_column);
     
     // moves row buffer initialized information to right place
-    _column = this._dataRowBufferInitialized[_index1]
+    _column = this._dataRowBufferInitialized[_index1];
     this._dataRowBufferInitialized.splice(_index1,1);
     this._dataRowBufferInitialized.splice(_index2,0,_column);
     
     // moves row buffer to right place
-    _column = this._tableRows[_index1]
+    _column = this._tableRows[_index1];
     this._tableRows.splice(_index1,1);
     this._tableRows.splice(_index2,0,_column);
     this._calculateDimensions();

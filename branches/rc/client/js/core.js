@@ -1,339 +1,15783 @@
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
 
-var HClass=function(){if(arguments.length){var _3j=arguments[0];if(this==window){HClass.prototype.extend.call(_3j,arguments.callee.prototype);}else{this.extend(_3j);}}};HClass.prototype={extend:function(_0g,_4){var _1y=HClass.prototype.extend;if(arguments.length==2){var _2s=this[_0g];if((_2s instanceof Function)&&(_4 instanceof Function)&&_2s.valueOf()!=_4.valueOf()&&(/\bbase\b/).test(_4)){var _30=_4;_4=function(){var _5X=this.base;this.base=_2s;var _62=_30.apply(this,arguments);this.base=_5X;return _62;};_4.valueOf=function(){return _30;};_4.toString=function(){return String(_30);};}
-return this[_0g]=_4;}else if(_0g){var _0o={toSource:null};var _4n=["toString","valueOf"];if(HClass._38){_4n.push("constructor");}
-for(var i=0;(_0j=_4n[i]);i++){if(_0g[_0j]!=_0o[_0j]){_1y.call(this,_0j,_0g[_0j]);}}
-for(var _0j in _0g){if(!_0o[_0j]){_1y.call(this,_0j,_0g[_0j]);}}}
-return this;},base:function(){}};HClass.extend=function(_0m,_3d){var _1y=HClass.prototype.extend;if(!_0m){_0m={};}
-HClass._38=true;var _0o=new this;_1y.call(_0o,_0m);var _0U=_0o.constructor;_0o.constructor=this;delete HClass._38;var _0K=function(){if(!HClass._38){_0U.apply(this,arguments);}
-this.constructor=_0K;};_0K.prototype=_0o;_0K.extend=this.extend;_0K.implement=this.implement;_0K.toString=function(){return String(_0U);};_1y.call(_0K,_3d);var _33=_0U?_0K:_0o;if(_33.init instanceof Function){_33.init();}
-return _33;};HClass.implement=function(_1A){if(_1A instanceof Function){_1A=_1A.prototype;}
-this.prototype.extend(_1A);};var Base=HClass;if([].indexOf===undefined){Object.extend=function(destination,source){for(property in source){destination[property]=source[property];}
-return destination;};Object.extend(Array.prototype,{indexOf:function(_4Z){var i=0,l=this.length;for(;i<l;i++){if(this[i]==_4Z){return i;}}
-return-1;}});}
-try{if(window['console']===undefined){console={log:function(){}};}}catch(e){}
-is_ie=!(navigator.userAgent.toLowerCase().indexOf("opera")>-1)&&navigator.appName=="Microsoft Internet Explorer";Array.prototype.toQueryString=function(){var i,l=this.length,_3o=[];for(i=0;i<l;i++){_3o.push(encodeURIComponent(this[i].key)+"="+
-encodeURIComponent(this[i].value));}
-return _3o.join("&");};Ajax=HClass.extend({constructor:null,getTransport:function(){if(window.XMLHttpRequest){return new XMLHttpRequest();}else if(is_ie){if(ScriptEngineMajorVersion()>=5){return new ActiveXObject("Msxml2.XMLHTTP");}else{return new ActiveXObject("Microsoft.XMLHTTP");}}else{return false;}}});Ajax.Request=HClass.extend({constructor:function(_l,_6C){this.transport=Ajax.getTransport();if(!_6C){_6C={};}
-var _r=HClass.extend({method:"post",asynchronous:true,contentType:"application/x-www-form-urlencoded",encoding:"UTF-8",parameters:""});_r=_r.extend(_6C);this.options=new _r();this.request(_l);},request:function(_l){this.url=_l;if(this.options.method=="get"&&this.options.parameters.length){this.url+=(this.url.indexOf("?")>=0?"&":"?")+this.options.parameters.toQueryString();}
-try{this.transport.open(this.options.method.toUpperCase(),this.url,this.options.asynchronous,this.options.username,this.options.password);var _m=this;this.transport.onreadystatechange=function(){_m.onStateChange();};this.setRequestHeaders();var _51=this.options.method=="post"?(this.options.postBody||this.options.parameters.toQueryString()):null;this.transport.send(_51);if(!this.options.asynchronous&&this.transport.overrideMimeType){this.onStateChange();}}catch(e){console.log('error:',e);}},setRequestHeaders:function(){var headers={},o;if(this.options.method=="post"){headers["Content-type"]=this.options.contentType+
-(this.options.encoding?"; charset="+this.options.encoding:"");if(this.transport.overrideMimeType&&(navigator.userAgent.match(/Gecko\/(\d{4})/)||[0,2005])[1]<2005){headers["Connection"]="close";}}
-for(o in headers){this.transport.setRequestHeader(o,headers[o]);}},onStateChange:function(){var _1F=this.transport.readyState;if(_1F>1){this.respondToReadyState(_1F);}},respondToReadyState:function(_1F){if(_1F==4){(this.options["on"+(this.success()?"Success":"Failure")]||(function(){console.log('aa');}))(this.transport);}
-if(_1F==4){this.transport.onreadystatechange=function(){};}},success:function(){return(this.transport.status>=200&&this.transport.status<300);}});ELEMTickerInterval=10;BROWSER_TYPE={ie:false,ie6:false,ie7:false,opera:false,safari:false,firefox:false,firefox2:false};ELEM={_0U:function(){var _0=ELEM;_0._5k=false;_0._6P=[];_0._5h=null;_0._6Q=false;_0._initDone=false;_0._7b=0;_0._setStyleCount=0;_0._setStyleDiffCount=0;_0._6Z=0;_0._getStyleMissCount=0;_0._flushLoopCount=0;_0._flushLoopFlushedCount=0;_0._flushStylCount=0;_0._flushTime=0;_0._flushCounter=0;_0._3O=500;_0._timer=null;_0._12=ELEMTickerInterval;_0._flushing=false;_0._needFlush=false;_0._4u=1;_0._F=[];if(_0._5k){_0._G={_6m:[]};}else{_0._freeElemIds=[];}
-_0._4y={};_0._0N={};_0._0b={};_0._0q={};_0._3E=[];_0._2H={};_0._blockElems=",ADDRESS,BLOCKQUOTE,CENTER,DIR,DIV,DL,FIELDSET,FORM,H1,H2,H3,H4,H5,H6,HR,ISINDEX,MENU,NOFRAMES,NOSCRIPT,OL,P,PRE,TABLE,UL,";},_6T:function(_3A,_v){if(!ELEM._5k){return;}
-var _0=ELEM,i=0,_4M=[],_G=_0._3T(_v),_1O=_G._1O;for(;i!=_3A;i++){_4M.push(_0.make(_1O,_v));}
-for(i=0;i!=_3A;i++){_0.del(_4M[i]);}},_4V:function(_6){var _2,_0,_F;_0=ELEM;_F=_0._F;_F.push(_6);_2=_F.length-1;return _2;},_73:function(_2){var _0=ELEM;_0._0N[_2]=[];_0._4y[_2]={};_0._0b[_2]=[];_0._0q[_2]={};_0._2H[_2]=false;},bindId:function(_5g){var _0=ELEM,_6=document.getElementById(_5g),_9=_0._4V(_6);_0._73(_9);return _9;},bind:function(_6){var _2,_0=ELEM;_2=_0._4V(_6);_0._73(_2);return _2;},_7h:function(_2,_6){var _0=ELEM;_0._F[_2]=_6;},get:function(_2){return ELEM._F[_2];},setHTML:function(_2,_0I){try{var _0=ELEM;if(!((typeof _0I==='string')||(typeof _0I==='number'))){return;}
-_0._F[_2].innerHTML=_0I;}catch(e){}},_3T:function(_v){if(!ELEM._5k){return;}
-var _0=ELEM,_G=_0._G;if(!_G[_v]){_G._6m.push(_v);_G[_v]=[];_G[_v]._1W=1;_G[_v]._1o=0;_G[_v]._1O=_0.make(_0._1O,'div');}
-return _G[_v]._1O;},del:function(_2){var _0=ELEM,_6=_0._F[_2];_0.setCSS(_2,'display:none;');if(_0._5k){var _v=_6.tagName,_1O=_0._3T(_v),_G=_0._G[_v];_0.append(_2,_1O);}
-var _3F=_0._3E.indexOf(_2);if(_3F!=-1){_0._3E.splice(_3F,1);}
-try{_6.innerHTML='';}catch(e){}
-_0.delAttr(_2,'id');_0.delAttr(_2,'ctrl');_0._73(_2);if(_0._5k){_G._1W++;_G.push(_2);}else{_0._freeElemIds.push(_2);var _5R=_6.parentNode;_5R.removeChild(_6);}},append:function(_67,_1M){var _0g,_3g,_0;_0=ELEM;_0g=_0._F[_67];_3g=_0._F[_1M];_3g.appendChild(_0g);},setCSS:function(_2,_6N){ELEM._F[_2].style.cssText=_6N;},getCSS:function(_2){return ELEM._F[_2].style.cssText;},getVisibleSize:function(_2){var _0,_6,w,h,_i,_2k,_0=ELEM,_6=_0._F[_2],w=_6.offsetWidth,h=_6.offsetHeight,_i=_6.parentNode;while(_i&&_i.nodeName.toLowerCase()!='body'){if(!_0._25){_2k=document.defaultView.getComputedStyle(_i,null).getPropertyValue('overflow');}
-else{_2k=_i.currentStyle.getAttribute('overflow');}
-_2k=_2k!='visible';if(w>_i.clientWidth&&_2k){w=_i.clientWidth-_6.offsetLeft;}
-if(h>_i.clientHeight&&_2k){h=_i.clientHeight-_6.offsetTop;}
-_6=_6.parentNode;_i=_6.parentNode;}
-return[w,h];},getSize:function(_2){var _0,_6,w,h,_i,_2k,_0=ELEM,_6=_0._F[_2],w=_6.offsetWidth,h=_6.offsetHeight;return[w,h];},getScrollSize:function(_2){var _0,_6,w,h,_i,_2k,_0=ELEM,_6=_0._F[_2],w=_6.scrollWidth,h=_6.scrollHeight;return[w,h];},getVisiblePosition:function(_2){var x,y,_6,_0,_0=ELEM,x=0,y=0,_6=_0._F[_2];while(_6!==document){x+=_6.offsetLeft;y+=_6.offsetTop;x-=_6.scrollLeft;y-=_6.scrollTop;_6=_6.parentNode;if(!_6){break;}}
-return[x,y];},getOpacity:function(_2){var _0,_Y,_3h,_22;_0=ELEM;_22=_0.getStyle;if(_Y=_22(_2,'-khtml-opacity')){return parseFloat(_Y);}
-if(_Y=_22(_2,'-moz-opacity')){return parseFloat(_Y);}
-_3h=_22(_2,'opacity',true);if(_Y=_3h||(_3h==0)){return parseFloat(_Y);}
-if(_Y=(_0._F[_2].currentStyle['filter']||'').match(/alpha\(opacity=(.*)\)/)){if(_Y[1]){return parseFloat(_Y[1])/100;}}
-return 1.0;},setOpacity:function(_2,_4){var _0=ELEM;if(_4==1&&_0._25){_0._F[_2].style.setAttribute('filter',_0.getStyle(_2,'filter',true).replace(/alpha\([^\)]*\)/gi,''));}else{if(_4<0.00001){_4=0;}
-if(_0._25){_0._F[_2].style.setAttribute('filter',_0.getStyle(_2,'filter',true).replace(/alpha\([^\)]*\)/gi,'')+'alpha(opacity='+_4*100+')');}else{_0._F[_2].style.setProperty('opacity',_4,'');}}},getIntStyle:function(_2,_e){var _4=ELEM.getStyle(_2,_e);return parseInt(_4,10);},setBoxCoords:function(_2,_02){ELEM.setStyle(_2,'left',_02[0]+'px');ELEM.setStyle(_2,'top',_02[1]+'px');ELEM.setStyle(_2,'width',_02[2]+'px');ELEM.setStyle(_2,'height',_02[3]+'px');},getExtraWidth:function(_2){var _0n=ELEM.getIntStyle;return _0n(_2,'padding-left')+_0n(_2,'padding-right')+_0n(_2,'border-left-width')+_0n(_2,'border-right-width');},getExtraHeight:function(_2){var _0n=ELEM.getIntStyle;return _0n(_2,'padding-top')+_0n(_2,'padding-bottom')+_0n(_2,'border-top-width')+_0n(_2,'border-bottom-width');},setFPS:function(_0l){ELEM._12=1000/_0l;if(ELEM._12<ELEMTickerInterval){ELEM._12=ELEMTickerInterval;}},setSlowness:function(_4u){ELEM._4u=_4u;},setIdleDelay:function(_3O){ELEM._3O=_3O;},_71:false,flushLoop:function(_04){var _0=ELEM;_0._flushLoopCount++;if(_0._1B&&(_0._flushLoopCount%5==0)&&_0._71){iefix._01();_0._71=false;}
-clearTimeout(_0._timer);if(_0._flushing){_04*=2;_0._timer=setTimeout('ELEM.flushLoop('+_04+');',_04);return;}else{if(!_0._needFlush){if(_0._1B&&_0._71){iefix._01();_0._71=false;}
-_0._timer=setTimeout('ELEM.flushLoop('+_04+');',_0._3O);return;}
-_04=parseInt(_0._4u*(_0._flushTime/_0._flushCounter),ELEMTickerInterval);if(_04<_0._12||!_04){_04=_0._12;}
-_0._flushing=true;_0._timer=setTimeout('ELEM.flushLoop('+_04+');',_04);}
-_0._flushTime-=new Date().getTime();var _2X,_1s,i,_0N;_3E=_0._3E;_2X=_3E.length;_1s=_3E.splice(0,_2X);var _5p=new Date().getTime();for(i=0;i<_2X;i++){_0._flushLoopFlushed++;var _2=_1s.pop();_0._2H[_2]=false;_0._5q(_2);_0._6U(_2);}
-_0._flushCounter++;_0._flushTime+=new Date().getTime();if(_0._3E.length==0&&_0._needFlush){_0._needFlush=false;}
-_0._flushing=false;},_6U:function(_2){var _0=ELEM,_0b=_0._0b[_2],_0q=_0._0q[_2],_6=_0._F[_2],_e,_0O,i,_3N=_0b.length,_1s=_0b.splice(0,_3N);for(i=0;i!=_3N;i++){_e=_1s.pop();_0O=_0q[_e];_6.setAttribute(_e,_0O);}},getAttr:function(_2,_e,_0r){var _0=ELEM,_1V=_0._0q[_2][_e],_0O;if(_1V!==undefined&&!_0r){return _1V;}
-var _6=_0._F[_2];if(_6.getAttribute(_e)==null){_6[_e]='';}
-_0O=_6.getAttribute(_e);_0._0q[_2][_e]=_0O;return _0O;},setAttr:function(_2,_e,_4,_0r){var _1u,_0=ELEM,_0b=_0._0b[_2],_0q=_0._0q[_2];_1u=_4!=_0.getAttr(_2,_e);if(_1u){_0q[_e]=_4;if(_0r){_0._F[_2].setAttribute(_e,_4);}
-else{if(_0b.indexOf(_e)==-1){_0b.push(_e);}
-if(!_0._2H[_2]){_0._3E.push(_2);_0._2H[_2]=true;_0._6K();}}}},delAttr:function(_2,_e){var _1u,_0=ELEM,_0b=_0._0b[_2],_0q=_0._0q[_2];delete _0q[_e];_0._F[_2].removeAttribute(_e);if(_0b.indexOf(_e)!=-1){_0b.splice(_0b.indexOf(_e,1));}
-if(_0._2H[_2]){_0._3E.splice(_0._3E.indexOf(_2,1));_0._2H[_2]=false;_0._6K();}},hasClassName:function(_9,_0S){var _5=ELEM.get(_9);if(!_5)return;var _3H=false;var _0T=_5.className.split(' ');for(var i=0;i<_0T.length;i++){if(_0T[i]==_0S){_3H=true;}}
-return _3H;},addClassName:function(_9,_0S){var _5=ELEM.get(_9);if(!_5)return;ELEM.removeClassName(_9,_0S);_5.className+=' '+_0S;},removeClassName:function(_9,_0S){var _5=ELEM.get(_9);if(!_5)return;var _32='';var _0T=_5.className.split(' ');for(var i=0;i<_0T.length;i++){if(_0T[i]!=_0S){if(i>0)_32+=' ';_32+=_0T[i];}}
-_5.className=_32;},_6K:function(){var _0=ELEM;if(!_0._needFlush){_0._needFlush=true;if(!_0._flushing){clearTimeout(_0._timer);_0._timer=setTimeout('ELEM.flushLoop('+_0._12+');',_0._12);}}},printStats:function(){var _0=ELEM,i=0,_v,_6l,_1W,_1o,_2r=0;if(_0._5k){console.log('Recycler efficiency:');_G=_0._G;for(;i!=_G._6m.length;i++){_v=_G._6m[i];console.log(' tagName: '+_v);_6l=_G[_v].length;console.log('   length  : '+_6l);_1W=_G[_v]._1W;console.log('   countIn : '+_1W);_1o=_G[_v]._1o;_2r+=_1o;console.log('   countOut: '+_1o);console.log('--------------------------------');}}
-console.log('================================');console.log('Flushing efficiency:');console.log('  total real time spent: '+_0._flushTime+'ms');console.log('  total times called:    '+_0._flushLoopCount);console.log('  total times flushed:   '+_0._flushCounter);console.log('  total items flushed:   '+_0._flushLoopFlushedCount);console.log('  total real style sets: '+_0._flushStylCount);console.log('================================');console.log('setStyle efficiency:');console.log('  total times called:    '+_0._setStyleCount);console.log('  total times non-cache: '+_0._setStyleDiffCount);console.log('================================');console.log('getStyle efficiency:');console.log('  total times called:    '+_0._6Z);console.log('  total times non-cache: '+_0._getStyleMissCount);console.log('================================');console.log('Summary:');if(_0._5k){console.log('  recycler saved '+(_2r)+' of '+_0._7b+' ('+Math.round(_2r/_0._7b*100)+'%) document.createElement calls');}
-console.log('  style buffer saved '+(_0._setStyleDiffCount-_0._flushStylCount)+' of '+_0._setStyleDiffCount+' ('+Math.round(((_0._setStyleDiffCount-_0._flushStylCount)/_0._setStyleDiffCount)*100)+'%) non-cached DOM style sets');console.log('  style cache saved '+(_0._setStyleCount-_0._setStyleDiffCount)+' of '+_0._setStyleCount+' ('+Math.round(((_0._setStyleCount-_0._setStyleDiffCount)/_0._setStyleCount)*100)+'%) DOM style sets');console.log('  style cache saved '+(_0._6Z-_0._getStyleMissCount)+' of '+_0._6Z+' ('+Math.round(((_0._6Z-_0._getStyleMissCount)/_0._6Z)*100)+'%) DOM style gets');console.log('  style buffer and cache saved '+(_0._setStyleCount-_0._flushStylCount)+' of '+_0._setStyleCount+' ('+Math.round(((_0._setStyleCount-_0._flushStylCount)/_0._setStyleCount)*100)+'%) total DOM style sets');},setStyle:function(_2,_e,_4,_0r){var _0=ELEM,_s=_0._4y[_2],_3G=_0._F,_1u,_0N;_0._setStyleCount++;if(_s===undefined){_0._73(_2);var _s=_0._4y[_2];}
-_1u=_4!==_s[_e];if(_1u){_0._setStyleDiffCount++;_s[_e]=_4;if(_0r){if(_e=='opacity'){_0.setOpacity(_2,_4);}
-else{_0._25?(_3G[_2].style.setAttribute(_e.replace(/((-)([a-z])(\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4;}),_s[_e])):(_3G[_2].style.setProperty(_e,_s[_e],''));}
-if(_0._1B){if(iefix._2o.indexOf(_e)!=-1){_0._71=true;}}}else{_2H=_0._2H;_0N=_0._0N[_2];if(_0N.indexOf(_e)==-1){_0N.push(_e);}
-if(!_2H[_2]){_0._3E.push(_2);_2H[_2]=true;_0._6K();}}}},make:function(_1M,_v){if(_1M===undefined){_1M=0;}
-if(_v===undefined){_v='DIV';}else{_v=_v.toUpperCase();}
-var _0=ELEM,_6,_2;_0._7b++;if(_0._5k){if(_0._G[_v]){if(_0._G[_v].length!=0){_2=_0._G[_v].pop();_0._G[_v]._1o++;_6=_0._F[_2];if(_0._blockElems.indexOf(','+_v+',')!=-1){_0.setCSS(_2,'display:block;');}else{_0.setCSS(_2,'display:inline;');}
-_0.append(_2,_1M);return _2;}}}
-_6=document.createElement(_v);_0._F[_1M].appendChild(_6);_2=_0._4V(_6);_0._73(_2);return _2;},windowSize:function(){var _0j,_5u;_0j=(window.innerWidth)?window.innerWidth:document.documentElement.clientWidth;_5u=(window.innerHeight)?window.innerHeight:document.documentElement.clientHeight;return[_0j,_5u];},_3R:function(){var _0=ELEM,_0F,_2z;var _2N=["ELEM.getStyle=function(_2,_e,_0r){","var _0=ELEM,_s=_0._4y[_2],_1H;_0._6Z++;","if((_s[_e]===undefined)||_0r){","if(!_0r){_0._getStyleMissCount++;}","if((_e=='opacity')&&_0r){_1H=_0.getOpacity(_2);}","else{","_1H=document.defaultView.getComputedStyle(_0._F[_2],null).getPropertyValue(_e);","_53=_e.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){","return $3.toUpperCase()+$4});","_1H=_0._F[_2].currentStyle[_53];","}_s[_e]=_1H;","}return _s[_e];};"];if(_0._25){_2N.splice(6,1);}else{_2N.splice(7,3);}
-eval(_2N.join(''));var _2J=["ELEM._5q=function(_2){","var _0=ELEM,_0N=_0._0N[_2],_s=_0._4y[_2],_6=_0._F[_2],_1w,_43,_3v,_e,_1s,_1H;","if(!_6){return;}","_1w=_6.style;","_43=_0N.length;","_1s=_0N.splice(0,_43);","for(_3v=0;_3v!=_43;_3v++){","_e=_1s.pop();_0._flushStylCount++;","if(_e=='opacity'){_1H=_0.getOpacity(_2,_s[_e]);}else{","if(_0._1B){if(iefix._2o.indexOf(_e)!=-1){_0._71=true;}}try{_1w.setAttribute(_e.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_s[_e]);}catch(e){}}}};","_1w.setProperty(_e,_s[_e],'');}}};"];if(_0._25){_2J.pop();}else{_2J.splice(9,1);}
-eval(_2J.join(''));_0.bind(document.body);if(_0._5k){_0._1O=_0.make(0,'div');_0.setCSS(_0._1O,"display:none;visibility:hidden;");_0.setAttr(_0._1O,'id','trashcan_'+_0._1O);}
-_0._timer=setTimeout('ELEM.flushLoop('+_0._12+')',_0._12);if(!_0._6P){return;}
-while(_0._6P.length!=0){_0F=_0._6P.shift();if(typeof _0F=='string'){_2z=eval(_0F);if(typeof _2z=='string'){_0._6P.push(_2z);}}}
-_0._initDone=true;},_6x:function(){_0=ELEM;_0._25=(document.all&&navigator.userAgent.indexOf("Opera")==-1)?true:false;_0._1B=(_0._25&&navigator.userAgent.indexOf("MSIE 6")!=-1)?true:false;_0._76=(_0._25&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;_0._78=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;_0._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;_0._75=(navigator.userAgent.indexOf("Firefox/3.")!=-1)?true:false;_0._77=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;BROWSER_TYPE={opera:_0._77,safari:_0._78,firefox:_0._is_ff,ie:_0._25,ie6:_0._1B,ie7:_0._76,firefox3:_0._75};_0._5j();},_5i:function(_0F){var _0=ELEM;if(typeof _0F=='string'){if(_0._initDone==true){eval(_0F);}else{_0._6P.push(_0F);}}},_5j:function(){var _79=false;var _0=ELEM;if(_0._25){var _3P="javascript:void(0)";if(location.protocol=="https:"){_3P="src=//0";}
-document.write("<scr"+"ipt id=_4T defer src="+_3P+"><\/scr"+"ipt>");var _5C=document.getElementById("_4T");_5C.onreadystatechange=function(){if(this.readyState=="complete"){ELEM._6Q=true;ELEM._3R();delete ELEM._6P;clearTimeout(ELEM._5h);delete ELEM._5h;}};return;}
-else if((/KHTML|WebKit/i.test(navigator.userAgent))&&(/loaded|complete/.test(document.readyState))){_0._6Q=true;}
-else if(document.body){_0._6Q=true;}
-if(!_0._6Q){_0._5h=setTimeout('ELEM._5j()',ELEMTickerInterval*10);}else{_0._3R();delete _0._6P;clearTimeout(_0._5h);delete _0._5h;}}};ELEM._0U();LOAD=ELEM._5i;ELEM._6x();Event={element:function(e){return e.target||e.srcElement;},pointerX:function(e){return e.pageX||e.clientX+document.documentElement.scrollLeft;},pointerY:function(e){return e.pageY||e.clientY+document.documentElement.scrollTop;},stop:function(e){if(e.preventDefault){e.preventDefault();e.stopPropagation();}
-else{e.returnValue=false;e.cancelBubble=true;}},isLeftClick:function(e){if(ELEM._25||ELEM._78){return(e.button==1);}
-else{return(e.button==0);}},observers:false,_5K:function(_6,_0j,_1z,_1P){if(!Event.observers){Event.observers=[];}
-if(_6.addEventListener){this.observers.push([_6,_0j,_1z,_1P]);_6.addEventListener(_0j,_1z,_1P);}
-else if(_6.attachEvent){this.observers.push([_6,_0j,_1z,_1P]);_6.attachEvent("on"+_0j,_1z);}},unloadCache:function(){if(!Event.observers){return;}
-var i,l=Event.observers.length;for(i=0;i<l;i++){Event.stopObserving.apply(this,Event.observers[0]);}
-Event.observers=false;},observe:function(_6,_0j,_1z,_1P){_1P=_1P||false;Event._5K(_6,_0j,_1z,_1P);},stopObserving:function(_6,_0j,_1z,_1P){_1P=_1P||false;if(_6.removeEventListener){_6.removeEventListener(_0j,_1z,_1P);}
-else if(detachEvent){_6.detachEvent("on"+_0j,_1z);}
-var i=0;while(i<Event.observers.length){var eo=Event.observers[i];if(eo&&eo[0]==_6&&eo[1]==_0j&&eo[2]==_1z&&eo[3]==_1P){Event.observers[i]=null;Event.observers.splice(i,1);}
-else{i++;}}},KEY_BACKSPACE:8,KEY_TAB:9,KEY_RETURN:13,KEY_ESC:27,KEY_LEFT:37,KEY_UP:38,KEY_RIGHT:39,KEY_DOWN:40,KEY_DELETE:46,KEY_HOME:36,KEY_END:35,KEY_PAGEUP:33,KEY_PAGEDOWN:34};if(ELEM._25){Event.observe(window,"unload",Event.unloadCache,false);}
-_3B={mouseMove:false,mouseDown:false,click:false,mouseUp:false,draggable:false,droppable:false,keyDown:false,keyUp:false,mouseWheel:false,isDragged:false,textEnter:false};EVENT={status:[false,false,0,0,[],false,false,false],button1:0,button2:1,crsrX:2,crsrY:3,keysDown:4,altKeyDown:5,ctrlKeyDown:6,shiftKeyDown:7,start:function(){var _2O,_2I,i,_0=EVENT;if(ELEM._25){_2O=document;}
-else{_2O=window;}
-_2I=[['mousemove',EVENT.mouseMove],['mouseup',EVENT.mouseUp],['mousedown',EVENT.mouseDown],['click',EVENT.click],['keyup',EVENT.keyUp],['keydown',EVENT.keyDown],['keypress',EVENT.keyPress],['contextmenu',EVENT.contextMenu],['resize',EVENT.resize],['mousewheel',EVENT.mouseWheel]];for(i=0;i!=_2I.length;i++){Event.observe(_2O,_2I[i][0],_2I[i][1]);}
-if(window.addEventListener){window.addEventListener('DOMMouseScroll',EVENT.mouseWheel,false);}
-_0.listeners=[];_0.focused=[];_0.resizeListeners=[];_0.coordListeners=[];_0.focusOptions={};_0.dragItems=[];_0.hovered=[];_0.hoverInterval=50;_0.hoverTimer=new Date().getTime();_0.topmostDroppable=null;_0.textEnterCtrls=[];_0._2A=[];_0._coordCacheFlag=true;_0._lastCoordFlushTimeout=null;_0.activeControl=null;_0._lastKeyDown=null;},coordCacheFlush:function(_9){if(_9){EVENT._2A[_9]=null;}
-else{EVENT._2A=[];}},reg:function(_c,_0u){var _9,_6,_0=EVENT,_5Y;_9=_c.elemId;_6=ELEM.get(_9);if(ELEM._25){_6.setAttribute('ctrl',_c);}
-else{_6.ctrl=_c;}
-_0.listeners[_9]=true;_0.focused[_9]=false;for(var _5Y in _3B){if(_0u[_5Y]===undefined){_0u[_5Y]=_3B[_5Y];}}
-_0.focusOptions[_9]=_0u;var _2B=_0.coordListeners.indexOf(_9);if(_0u.mouseMove){if(_2B==-1){_0.coordListeners.push(_9);}}
-else if(_2B!=-1){_0.coordListeners.splice(_2B,1);}
-if(_0u.textEnter){if(_0.textEnterCtrls.indexOf(_c.viewId)==-1){_0.textEnterCtrls.push(_c.viewId);}}
-if(_0u.resize){if(_0.resizeListeners.indexOf(_c.viewId)==-1){_0.resizeListeners.push(_c.viewId);}}
-Event.observe(_6,'mouseover',_0._4a);},unreg:function(_c){var _0=EVENT,_9,_6;if(_c===this.activeControl){_0.changeActiveControl(null);}
-_9=_c.elemId;_6=ELEM.get(_9);this.listeners[_9]=false;this.focused[_9]=false;this._2A[_9]=null;var _4F=_0.textEnterCtrls.indexOf(_c.viewId);if(_4F!=-1){_0.textEnterCtrls.splice(_4F,1);}
-var _4p=_0.resizeListeners.indexOf(_c.viewId);if(_4p!=-1){_0.resizeListeners.splice(_4p,1);}
-Event.stopObserving(_6,'mouseover',_0._4a);},resize:function(e){var i=0,_0=EVENT,_20,_c;for(;i<_0.resizeListeners.length;i++){_20=_0.resizeListeners[i];_c=HSystem.views[_20];if(_c.onResize){_c.onResize();}}},_4a:function(e){if(!Event.element){return;}
-var _k=Event.element(e);while(_k&&_k.ctrl===undefined){_k=_k.parentNode;}
-if(!_k){return;}
-var _0=_k.ctrl;EVENT.focus(_0);Event.stop(e);},_49:function(e){if(!Event.element){return;}
-var _k=Event.element(e);while(_k&&_k.ctrl===undefined){_k=_k.parentNode;}
-if(!_k){return;}
-var _0=_k.ctrl;EVENT.blur(_0);Event.stop(e);},focus:function(_c){var _0=EVENT,_9,_6;_9=_c.elemId;_6=ELEM.get(_9);if(_0.focused[_9]==false&&_0.focusOptions[_9].isDragged==false){Event.stopObserving(_6,'mouseover',_0._4a);Event.observe(_6,'mouseout',_0._49);_0.focused[_9]=true;if(_c['focus']){_c.focus();}}},blur:function(_c){var _0=EVENT,_9,_6;_9=_c.elemId;_6=ELEM.get(_9);if(_0.focused[_9]==true&&_0.focusOptions[_9].isDragged==false){Event.stopObserving(_6,'mouseout',_0._49);Event.observe(_6,'mouseover',_0._4a);_0.focused[_9]=false;if(_c['blur']){_c.blur();}}},mouseMove:function(e){var _0=EVENT,x,y,_0W;x=Event.pointerX(e);y=Event.pointerY(e);_0.status[_0.crsrX]=x;_0.status[_0.crsrY]=y;_0W=_0.flushMouseMove(x,y);_0._7c(e);if(_0W){Event.stop(e);}},flushMouseMove:function(x,y){var _0=EVENT,x,y,_0W,i,j,_9,_c;clearTimeout(_0._lastCoordFlushTimeout);_0W=false;for(i=0;i!=_0.dragItems.length;i++){_9=_0.dragItems[i];_0.focusOptions[_9].ctrl.doDrag(x,y);_0.coordCacheFlush(_9);_0W=true;}
-if(new Date().getTime()>_0.hoverTimer+_0.hoverInterval){for(i=0;i!=_0.coordListeners.length;i++){_9=_0.coordListeners[i];_c=_0.focusOptions[_9].ctrl;_c.mouseMove(x,y);}
-_0._7B();var _2q;for(i=0;i!=_0.dragItems.length;i++){_2q=_0.topmostDroppable;_0.topmostDroppable=null;_9=_0.dragItems[i];_c=_0.focusOptions[_9].ctrl;var _23,_1v;for(j=0;j!=_0.hovered.length;j++){_23=_0.hovered[j];if(_23!=_9&&_0.focusOptions[_23].ctrl){_1v=_0.focusOptions[_23].ctrl;if(!_0.topmostDroppable||_1v.zIndex()>_0.topmostDroppable.zIndex()||_1v.supr===_0.topmostDroppable){if(_0.focusOptions[_1v.elemId].droppable){_0.topmostDroppable=_1v;}}}}
-if(_2q!=_0.topmostDroppable){if(_2q){_2q.onHoverEnd(_c);}
-if(_0.topmostDroppable){_0.topmostDroppable.onHoverStart(_c);}}}
-_0.hoverTimer=new Date().getTime();}
-else{_0._lastCoordFlushTimeout=setTimeout('EVENT.flushMouseMove('+x+','+y+');',_0.hoverInterval);}
-return _0W;},_7B:function(){var _0=EVENT,x,y,i,_c,_6,_34,_4t,_02;_0.hovered=[];x=_0.status[_0.crsrX];y=_0.status[_0.crsrY];for(i=0;i!=_0.listeners.length;i++){if(!_0.listeners[i]||!_0.focusOptions[i].ctrl){continue;}
-_c=_0.focusOptions[i].ctrl;_6=ELEM.get(i);if(!_0._coordCacheFlag||!_0._2A[i]){_34=ELEM.getVisiblePosition(_c.elemId);_4t=ELEM.getVisibleSize(_c.elemId);_0._2A[i]=[_34[0],_34[1],_4t[0],_4t[1]];}
-_02=_0._2A[i];if(x>=_02[0]&&x<=_02[0]+_02[2]&&y>=_02[1]&&y<=_02[1]+_02[3]){_0.hovered.push(i);}}},mouseDown:function(e,_U){var _0=EVENT,_2F,x,y,i,_A,_0z,_2d;_0._7c(e);_2F=false;if(_U===undefined){_U=Event.isLeftClick(e);}
-if(_U){_0.status[_0.button1]=true;}
-else{_0.status[_0.button2]=true;}
-x=_0.status[_0.crsrX];y=_0.status[_0.crsrY];_A=null;_0z=[];_2d=[];for(i=0;i!=_0.focused.length;i++){if(_0.focused[i]==true){if(_0.focusOptions[i].ctrl.enabled){_A=_0.focusOptions[i].ctrl;}
-if((_0.focusOptions[i].draggable==true)&&_0.dragItems.indexOf(i)==-1){_0z.push(i);}
-else if(_0.focusOptions[i].mouseDown==true){_2d.push(i);}}}
-if(_A){_0.changeActiveControl(_A);}
-for(i=0;i!=_0z.length;i++){_0.dragItems.push(_0z[i]);_0.focusOptions[_0z[i]].ctrl.startDrag(x,y);_2F=true;}
-var _1K=_2d.length;for(i=0;i!=_2d.length;i++){if(_0.focusOptions[_2d[i]].ctrl.mouseDown(x,y,_U)){_1K--;}}
-if(_2F){document.body.focus();_0._storedOnSelectStart=document.onselectstart;document.onselectstart=function(){return false;};}
-if((_1K==0)&&(_0.hovered.length!=0)&&(_A&&(_A.textElemId===false))){Event.stop(e);}
-return true;},click:function(e,_U){var _0=EVENT,x,y,i,_A,_2y;_0._7c(e);if(_U===undefined){_U=Event.isLeftClick(e);}
-if(_U){_0.status[_0.button1]=true;}
-else{_0.status[_0.button2]=true;}
-x=_0.status[_0.crsrX];y=_0.status[_0.crsrY];_A=null;_2y=[];for(i=0;i!=_0.focused.length;i++){if(_0.focused[i]==true){if(_0.focusOptions[i].ctrl.enabled){_A=_0.focusOptions[i].ctrl;}
-if(_0.focusOptions[i].click==true){_2y.push(i);}}}
-if(_A){_0.changeActiveControl(_A);}
-var _1K=_2y.length;for(i=0;i!=_2y.length;i++){if(_0.focusOptions[_2y[i]].ctrl.click(x,y,_U)){_1K--;}}
-if((_1K==0)&&(_0.hovered.length!=0)&&(_A&&(_A.textElemId===false))){Event.stop(e);}
-return true;},changeActiveControl:function(_c){var _0=EVENT,_17;_17=_0.activeControl;if(_c!=_17){if(_17){_17.active=false;_17._5I(_c);}
-_0.activeControl=null;if(_c){_c.active=true;_0.activeControl=_c;_c._5t(_17);}}},mouseUp:function(e){var _0=EVENT,_2E,x,y,_9,_c,i;_0._7c(e);_2E=false;_U=Event.isLeftClick(e);_0.status[_0.button1]=false;_0.status[_0.button2]=false;x=_0.status[_0.crsrX];y=_0.status[_0.crsrY];for(i=0;i!=_0.dragItems.length;i++){_9=_0.dragItems[i];_c=_0.focusOptions[_9].ctrl;_c.endDrag(x,y);_2E=true;_0._7B();if(_0.hovered.indexOf(_9)==-1){_0.blur(_c);}
-if(_0.topmostDroppable){_0.topmostDroppable.onHoverEnd(_c);_0.topmostDroppable.onDrop(_c);_0.topmostDroppable=null;}}
-_0.dragItems=[];if(_2E){document.onselectstart=_0._storedOnSelectStart;}
-for(i=0;i!=_0.focused.length;i++){if(_0.focused[i]==true){if(_0.focusOptions[i].mouseUp==true){_0.focusOptions[i].ctrl.mouseUp(x,y,_U);}}}
-return true;},keyDown:function(e){var _0=EVENT,_0h;_0._7c(e);_0h=e.keyCode;if(_0.activeControl&&_0.focusOptions[_0.activeControl.elemId].keyDown==true){Event.stop(e);if(_0._lastKeyDown!=_0h){_0.activeControl.keyDown(_0h);}}
-if(_0.status[_0.keysDown].indexOf(_0h)==-1){_0.status[_0.keysDown].push(_0h);}
-_0._lastKeyDown=_0h;},keyUp:function(e){var _0=EVENT,_0h,_keycodeindex;_0._7c(e);_0h=e.keyCode;_0._lastKeyDown=null;for(var i=0;i!=_0.textEnterCtrls.length;i++){var _20=_0.textEnterCtrls[i],_c=HSystem.views[_20];if(_c.textEnter){_c.textEnter();}}
-if(_0.activeControl&&_0.focusOptions[_0.activeControl.elemId].keyUp==true){_0.activeControl.keyUp(_0h);}
-_3W=_0.status[_0.keysDown].indexOf(_0h);if(_3W!=-1){_0.status[_0.keysDown].splice(_3W,1);}},keyPress:function(e){var _0=EVENT;if(_0.activeControl&&_0.focusOptions[_0.activeControl.elemId].keyDown==true){Event.stop(e);}},mouseWheel:function(e){var _0=EVENT,_O,i;_O=0;if(!e){e=window.event;}
-if(e.wheelDelta){_O=e.wheelDelta/120;if(window.opera){_O=-_O;}}
-else if(e.detail){_O=-e.detail/3;}
-for(i=0;i!=_0.focused.length;i++){if(_0.focused[i]==true){if(_0.focusOptions[i].mouseWheel==true){Event.stop(e);_0.focusOptions[i].ctrl.mouseWheel(_O);}}}},contextMenu:function(e){EVENT.mouseDown(e,false);Event.stop(e);},_7c:function(e){var _0=EVENT;_0.status[_0.altKeyDown]=e.altKey;_0.status[_0.ctrlKeyDown]=e.ctrlKey;_0.status[_0.shiftKeyDown]=e.shiftKey;}};LOAD('EVENT.start();');SHA={_3M:0,hexCase:function(){return SHA._3M;},setHexCase:function(_54){SHA._3M=_54;},_3q:"=",base64Pad:function(){return SHA._3q;},setBase64Pad:function(_5Q){SHA._3q=_5Q;},_3u:8,chrsz:function(){return SHA._3u;},setChrsz:function(_50){SHA._3u=_50;},hexSHA1:function(_0y){var _0=SHA;return _0._6I(_0._6M(_0._7w(_0y),_0y.length*_0._3u));},b64SHA1:function(_0y){var _0=SHA;return _0._6H(_0._6M(_0._7w(_0y),_0y.length*_0._3u));},strSHA1:function(_0y){var _0=SHA;return _0._6J(_0._6M(_0._7w(_0y),_0y.length*_0._3u));},hexHmacSHA1:function(_e,_0s){var _0=SHA;return _0._6I(_0._6L(_e,_0s));},b64HmacSHA1:function(_e,_0s){var _0=SHA;return _0._6H(_0._6L(_e,_0s));},strHmacSHA1:function(_e,_0s){var _0=SHA;return _0._6J(_0._6L(_e,_0s));},str2Base64:function(_B){var _0=SHA;return _0._6H(_0._7w(_B));},test:function(){return SHA.hexSHA1("abc")=="a9993e364706816aba3e25717850c26c9cd0d89d";},_6M:function(_7,_2W){var _0=SHA;_7[_2W>>5]|=0x80<<(24-_2W%32);_7[((_2W+64>>9)<<4)+15]=_2W;var _0j=new Array(80),_0D=1732584193,_N=-271733879,_S=-1732584194,_T=271733878,_0Y=-1009589776,i,_4f,_4g,_4h,_4i,_4j,j,_M;for(i=0;i<_7.length;i+=16){_4f=_0D;_4g=_N;_4h=_S;_4i=_T;_4j=_0Y;for(j=0;j<80;j++){if(j<16){_0j[j]=_7[i+j];}
-else{_0j[j]=_0._7r(_0j[j-3]^_0j[j-8]^_0j[j-14]^_0j[j-16],1);}
-_M=_0._7s(_0._7s(_0._7r(_0D,5),_0._7t(j,_N,_S,_T)),_0._7s(_0._7s(_0Y,_0j[j]),_0._7u(j)));_0Y=_T;_T=_S;_S=_0._7r(_N,30);_N=_0D;_0D=_M;}
-_0D=_0._7s(_0D,_4f);_N=_0._7s(_N,_4g);_S=_0._7s(_S,_4h);_T=_0._7s(_T,_4i);_0Y=_0._7s(_0Y,_4j);}
-return[_0D,_N,_S,_T,_0Y];},_7t:function(_M,_N,_S,_T){if(_M<20){return(_N&_S)|((~_N)&_T);}
-if(_M<40){return _N^_S^_T;}
-if(_M<60){return(_N&_S)|(_N&_T)|(_S&_T);}
-return _N^_S^_T;},_7u:function(_M){return(_M<20)?1518500249:(_M<40)?1859775393:(_M<60)?-1894007588:-899497514;},_6L:function(_e,_0s){var _0=SHA,_1j=_0._7w(_e),_3V=new Array(16),_4k=new Array(16),i,_3J;if(_1j.length>16){_1j=_0._6M(_1j,_e.length*_0._3u);}
-for(i=0;i<16;i++){_3V[i]=_1j[i]^0x36363636;_4k[i]=_1j[i]^0x5C5C5C5C;}
-_3J=_0._6M(_3V.concat(_0._7w(_0s)),512+_0s.length*_0._3u);return _0._6M(_4k.concat(_3J),512+160);},_7s:function(_7,_b){var _44=(_7&0xFFFF)+(_b&0xFFFF),_5J=(_7>>16)+(_b>>16)+(_44>>16);return(_5J<<16)|(_44&0xFFFF);},_7r:function(_2i,_3w){return(_2i<<_3w)|(_2i>>>(32-_3w));},_7w:function(_B){var _0=SHA,_1i=[],_2Z=(1<<_0._3u)-1,_6d=_B.length*_0._3u,i;for(i=0;i<_6d;i+=_0._3u){_1i[i>>5]|=(_B.charCodeAt(i/_0._3u)&_2Z)<<(32-_0._3u-i%32);}
-return _1i;},_6J:function(_1i){var _0=SHA,_B="",_2Z=(1<<_0._3u)-1,i,_2v=_1i.length*32,_4S=32-_0._3u;for(i=0;i<_2v;i+=_0._3u){_B+=String.fromCharCode((_1i[i>>5]>>>(_4S-i%32))&_2Z);}
-return _B;},_6I:function(_0k){var _0=SHA,_3L=_0._3M?"0123456789ABCDEF":"0123456789abcdef",_B="",i,_2u=_0k.length*4;for(i=0;i<_2u;i++){_B+=_3L.charAt((_0k[i>>2]>>((3-i%4)*8+4))&0xF)+
-_3L.charAt((_0k[i>>2]>>((3-i%4)*8))&0xF);}
-return _B;},_6H:function(_0k){var _0=SHA,_1c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",_B="",i,_2u=_0k.length*4,_4B,_4C,_6C,_4N,j,_2v=_0k.length*32;for(i=0;i<_2u;i+=3){_4B=(((_0k[i>>2]>>8*(3-i%4))&0xFF)<<16);_4C=(((_0k[i+1>>2]>>8*(3-(i+1)%4))&0xFF)<<8);_6j=((_0k[i+2>>2]>>8*(3-(i+2)%4))&0xFF);_4N=(_4B|_4C|_6j);for(j=0;j<4;j++){if(i*8+j*6>_2v){_B+=_0._3q;}
-else{_B+=_1c.charAt((_4N>>6*(3-j))&0x3F);}}}
-return _B;}};HTransportURL=false;HTransportPoll=true;HFailPageUrl='/';HTransporterMaxRetryCount=60;HTransporterMaxRetryTime=60000;HTransporterRetryDelay=1000;HTransporterDebug=false;HTransporter=Base.extend({constructor:null,start:function(_6s){var _0=HTransporter;_0.url_base=_6s;_0.ses_id=0;_0.err_msg='';_0.isBusy=false;_0.syncNum=0;_0.syncDelay=100;_0.prevData='';_0.failCount=0;_0.firstFail=0;_0.pollMode=HTransportPoll;_0.req_timeout=setTimeout('HTransporter.sync();',_0.syncDelay);},setPollMode:function(_8){HTransporter.pollMode=_8;},failure:function(resp){var _5e=HTransporterMaxRetryTime+(new Date().getTime()),_0=HTransporter;clearTimeout(_0.req_timeout);if(_0.firstFail==0){_0.isBusy=false;_0.firstFail=(new Date().getTime());_0.failCount++;window.status='Communications error, retry attempt '+_0.failCount+' of '+HTransporterMaxRetryCount+'...';}
-else if((_0.failCount<HTransporterMaxRetryCount)&&(_0.firstFail<_5e)){_0.isBusy=false;_0.failCount++;window.status='Communications error, retry attempt '+_0.failCount+' of '+HTransporterMaxRetryCount+'...';}
-else{window.status='Communications error, reloading page...';location.href=HFailPageUrl;_0.isBusy=true;}
-_0.req_timeout=setTimeout('HTransporter.sync();',HTransporterRetryDelay);},respond:function(resp){var _61=resp.responseText,_0=HTransporter;try{_0.err_msg='';eval(_61);}
-catch(e){if(HTransporterDebug){console.log(e);console.log(e.description);}
-_0.err_msg='&err_msg='+e+" - "+e.description;_0.failure(resp);}
-_0.prevData='';if(_0.failCount!=0){window.status='';}
-_0.failCount=0;_0.firstFail=0;_0.isBusy=false;if(_0.pollMode){_0.req_timeout=setTimeout('HTransporter.sync();',_0.syncDelay);}},sync:function(){var _0=HTransporter,_6u=((_0.syncDelay>0)||(_0.syncDelay==0));if(_6u&&_0.url_base){if(!_0.isBusy){_0.isBusy=true;if(_0.prevData!=''){_1b=_0.prevData;}
-else{_1b=HValueManager.toXML();_0.prevData=_1b;}
-if(""!=_1b||_0.pollMode){_0.syncNum++;HVM.isGetting=true;req_args={onSuccess:function(resp){_0.respond(resp);},onFailure:function(resp){_0.failure(resp);},method:'post',postBody:'ses_id='+_0.ses_id+_0.err_msg+_1b};try{_0.req=new Ajax.Request(_0.url_base,req_args);HVM.isGetting=false;}
-catch(e){window.status='conn error:'+e;HVM.isGetting=false;_0.failure(null);}}
-else{_0.isBusy=false;}}}},stop:function(){clearTimeout(_0.req_timeout);}});LOAD("HTransporter.start(HTransportURL);");HValueManager=HClass.extend({constructor:null,values:{},tosync:[],isSending:false,isGetting:false,add:function(_2,_m){this.values[_2]=_m;},set:function(_2,_4){this.values[_2].set(_4);},s:function(_2,_4){this.values[_2].s(_4);},del:function(_2){var _4H=this.values[_2],_6t=_4H.views,_0a=0,_4I=null;for(;_0a<_6t.length;_0a++){_4I=_6t[_0a];_4I.valueObj=new HDummyValue(0,_4H.value);}
-this.values[_2]=null;},changed:function(_1N){if(this.isGetting==false){if(this.tosync.indexOf(_1N.id)==-1){this.tosync.push(_1N.id);}
-var _M=HTransporter;if(!_M.pollMode){clearTimeout(_M.req_timeout);_M.req_timeout=setTimeout('HTransporter.sync();',_M.syncDelay);}}},toXML:function(){var _4m='&HSyncData=';if(!this.isSending){this.isSending=true;var _6g=this.tosync.length;if(_6g==0){this.isSending=false;return'';}
-var _4A=[],_10;for(_10=0;_10<_6g;_10++){var _1L=this.tosync.shift();var _6h=this.values[_1L];_4A.push(_6h.toXML(_10));}
-var _6i=_4A.join('');_4m+='<hsyncvalues version="8118">'+_6i+'</hsyncvalues>';this.isSending=false;}
-return _4m;},output:function(){return this.toXML();}});HVM=HValueManager;HValue=HClass.extend({constructor:function(_2,_4){this.id=_2;this.type='[HValue]';this.value=_4;this.views=[];HValueManager.add(_2,this);},set:function(_4){if(_4!=this.value){this.value=_4;HValueManager.changed(this);this.refresh();}},s:function(_4){this.value=_4;this.refresh();},get:function(){return this.value;},bind:function(_E){if(_E===undefined){throw("HValueBindError: _E is undefined!");}
-this.views.push(_E);_E.setValueObj(this);},unbind:function(_E){for(var _0a=0;_0a<this.views.length;_0a++){var _6p=this.views[_0a];if(_6p===_E){this.views.splice(_0a);return;}}},release:function(_E){return this.unbind(_E);},refresh:function(){for(var _0a=0;_0a<this.views.length;_0a++){var _E=this.views[_0a];if(_E.value!=this.value){if(!_E._valueIsBeingSet){_E._valueIsBeingSet=true;_E.setValue(this.value);_E._valueIsBeingSet=false;}}}},toXML:function(_10){var _1L=this.id.toString();var _Z=this.value;var _0p=(typeof _Z).slice(0,1);var _0A;if(_0p=='s'){_0A=_Z.toString();_0A=SHA.str2Base64(_0A);}
-else if(_0p=='n'){if(Math.ceil(_Z)===Math.floor(_Z)===_Z){_0p='i';_0A=parseInt(_Z,10).toString();}
-else{_0p='f';_0A=parseFloat(_Z).toString();}}
-else if(_0p=='b'){if(_Z){_0A='1';}
-else{_0A='0';}}
-else{try{if(console&&console.log){console.log('syncvalue type error');console.log('  syncid:',_1L);console.log('  syncjstype:',_0p);console.log('  typeof:',(typeof _Z));console.log('  syncvalue:',_Z);}}
-catch(e){alert('value error, syncid:'+_1L+' syncjstype:'+_0p+' typeof:'+(typeof _Z)+' syncvalue:'+_Z);}
-return'';}
-return'<'+_0p+' id="'+_1L+'">'+_0A+'</'+_0p+'>';}});JSLoader=Base.extend({constructor:function(_6r){this._1C=[];this.uri=_6r;this._3a=null;},_5N:function(_4q){eval(_4q.responseText);},load:function(_26,_5s){if((jsLoader._1C.indexOf(_26)!=-1)&&(_5s===undefined)){return;}
-if(_5s){document.write('<script type="text/javascript" src="'+_26+'"><'+'/script>');}else{req_args={onSuccess:function(resp){jsLoader._5N(resp);},onFailure:function(resp){window.status="failed to load js: "+jsLoader._2C;},method:'get',asynchronous:false};var _l=this.uri+_26+'.js';this._3a=new Ajax.Request(_l,req_args);this._1C.push(_26);}}});LOAD("jsLoader = new JSLoader('/H/js/');");HValueMatrixComponentExtension={componentBehaviour:['view','control','matrix'],constructor:function(_1,_i,_6C){this.base(_1,_i,_6C);this.setValueMatrix();},setValueMatrix:function(){if(!this.parent.valueMatrix){this.parent.valueMatrix=new HValueMatrix();}
-this.valueMatrixIndex=this.parent.valueMatrix.addControl(this);},click:function(){if(this.parent.valueMatrix instanceof HValueMatrix){this.parent.valueMatrix.setValue(this.valueMatrixIndex);}}};HValueMatrix=HClass.extend({constructor:function(){this.ctrls=[];this.value=-1;this.valueObj=new HDummyValue();},setValueObj:function(_4Q){this.valueObj=_4Q;this.setValue(_4Q.value);},setValue:function(_p){if(_p!=this.value){if(this.value!=-1){this.ctrls[this.value].setValue(false);}
-if(_p!=-1){this.valueObj.set(_p);this.value=_p;if(_p<this.ctrls.length){this.ctrls[_p].setValue(true);}}}},addControl:function(_c){this.ctrls.push(_c);var _4c=this.ctrls.length-1;if(_c.value){this.setValue(_4c);}
-return _4c;}});HPoint=HClass.extend({constructor:function(){this.type='[HPoint]';var _0D=arguments;if(_0D.length===0){this._1m();}
-else if(_0D.length==2){this._3z(_0D[0],_0D[1]);}
-else if(_0D.length==1){this._1n(_0D[0]);}
-else{throw"Invalid number of arguments.";}},_1m:function(){this.x=null;this.y=null;},_3z:function(x,y){this.x=x;this.y=y;},_1n:function(_d){this.x=_d.x;this.y=_d.y;},set:function(){var _0D=arguments;if(_0D.length===0){this._1m();}
-else if(_0D.length==2){this._3z(_0D[0],_0D[1]);}
-else if(_0D.length==1){this._1n(_0D[0]);}
-else{throw"Invalid number of arguments.";}},constrainTo:function(_1){if(this.x<_1.left){this.x=_1.left;}
-if(this.y<_1.top){this.y=_1.top;}
-if(this.x>_1.right){this.x=_1.right;}
-if(this.y>_1.bottom){this.y=_1.bottom;}},add:function(_d){_0D=arguments;if((_0D.length==1)&&(_0D[0].type==this.type)){_d=_0D[0];return new HPoint((this.x+_d.x),(this.y+_d.y));}
-else if(_0D.length==2){return new HPoint((this.x+_0D[0]),(this.y+_0D[1]));}else{return new HPoint(0,0);}},subtract:function(){_0D=arguments;if((_0D.length==1)&&(_0D[0].type==this.type)){_d=_0D[0];return new HPoint(this.x-_d.x,this.y-_d.y);}
-else if(_0D.length==2){return new HPoint(this.x-_0D[0],this.y-_0D[1]);}else{return new HPoint(0,0);}},equals:function(_d){return(this.x==_d.x&&this.y==_d.y);}});HRect=HClass.extend({constructor:function(){this.type='[HRect]';var _0D=arguments;if(_0D.length===0){this._1m();}else if(_0D.length==4){this._3y(_0D[0],_0D[1],_0D[2],_0D[3]);}
-else if(_0D.length==2){this._1n(_0D[0],_0D[1]);}
-else if(_0D.length==1){this._3x(_0D[0]);}
-else{throw"Invalid number of arguments.";}
-this.updateSecondaryValues();},_1m:function(){this.top=0;this.left=0;this.bottom=-1;this.right=-1;},_3y:function(_05,_0B,_1I,_1k){this.top=_0B;this.left=_05;this.bottom=_1k;this.right=_1I;},_1n:function(_41,_4r){this.top=_41.y;this.left=_41.x;this.bottom=_4r.y;this.right=_4r.x;},_3x:function(_1){this.top=_1.top;this.left=_1.left;this.bottom=_1.bottom;this.right=_1.right;},updateSecondaryValues:function(){this.isValid=(this.right>=this.left&&this.bottom>=this.top);this.leftTop=new HPoint(this.left,this.top);this.leftBottom=new HPoint(this.left,this.bottom);this.rightTop=new HPoint(this.right,this.top);this.rightBottom=new HPoint(this.right,this.bottom);this.width=(this.right-this.left);this.height=(this.bottom-this.top);},set:function(){var _0D=arguments;if(_0D.length===0){this._1m();}else if(_0D.length==4){this._3y(_0D[0],_0D[1],_0D[2],_0D[3]);}
-else if(_0D.length==2){this._1n(_0D[0],_0D[1]);}
-else if(_0D.length==1){this._3x(_0D[0]);}
-else{throw"Invalid number of arguments.";}
-this.updateSecondaryValues();},setLeft:function(_05){this.left=_05;this.updateSecondaryValues();},setRight:function(_1I){this.right=_1I;this.updateSecondaryValues();},setTop:function(_0B){this.top=_0B;this.updateSecondaryValues();},setBottom:function(_1k){this.bottom=_1k;this.updateSecondaryValues();},setLeftTop:function(_d){this.left=_d.x;this.top=_d.y;this.updateSecondaryValues();},setLeftBottom:function(_d){this.left=_d.x;this.bottom=_d.y;this.updateSecondaryValues();},setRightTop:function(_d){this.right=_d.x;this.top=_d.y;this.updateSecondaryValues();},setRightBottom:function(_d){this.right=_d.x;this.bottom=_d.y;this.updateSecondaryValues();},setWidth:function(_q){this.right=this.left+_q;this.updateSecondaryValues();},setHeight:function(_H){this.bottom=this.top+_H;this.updateSecondaryValues();},setSize:function(){var _0D=arguments;if(_0D.length===2){_q=_0D[0];_H=_0D[1];}
-else if(_0D.length===1){_q=_0D.x;_H=_0D.y;}
-this.right=this.left+_q;this.bottom=this.top+_H;this.updateSecondaryValues();},intersects:function(_1){return(((_1.left>=this.left&&_1.left<=this.right)||(_1.right>=this.left&&_1.right<=this.right))&&((_1.top>=this.top&&_1.top<=this.bottom)||(_1.bottom>=this.top&&_1.bottom<=this.bottom)));},contains:function(_m){if(_m instanceof HPoint){return this._58(_m);}
-else if(_m instanceof HRect){return this._59(_m);}
-else{throw"Wrong argument type.";}},_58:function(_d){return(_d.x>=this.left&&_d.x<=this.right&&_d.y>=this.top&&_d.y<=this.bottom);},_59:function(_1){return(_1.left>=this.left&&_1.right<=this.right&&_1.top>=this.top&&_1.bottom<=this.bottom);},insetBy:function(){var _0D=arguments;if(_0D.length===1){this._5F(_0D[0]);}else if(_0D.length==2){this._3U(_0D[0],_0D[1]);}else{throw"Invalid number of arguments.";}
-this.updateSecondaryValues();},_5F:function(_d){this._3U(_d.x,_d.y);},_3U:function(x,y){this.left+=x;this.top+=y;this.right-=x;this.bottom-=y;},offsetBy:function(){var _0D=arguments;if(_0D.length===1){this._5L(_0D[0]);}else if(_0D.length==2){this._4d(_0D[0],_0D[1]);}else{throw"Invalid number of arguments.";}
-this.updateSecondaryValues();},_5L:function(_d){this._4d(_d.x,_d.y);},_4d:function(x,y){this.left+=x;this.top+=y;this.right+=x;this.bottom+=y;},offsetTo:function(){var _0D=arguments;if(_0D.length===1){this._5M(_0D[0]);}else if(_0D.length==2){this._4e(_0D[0],_0D[1]);}else{throw"Invalid number of arguments.";}
-this.updateSecondaryValues();},_5M:function(_d){this._4e(_d.x,_d.y);},_4e:function(x,y){this.right+=x-this.left;this.left=x;this.bottom+=y-this.top;this.top=y;},equals:function(_1){return(this.left==_1.left&&this.top==_1.top&&this.right==_1.right&&this.bottom==_1.bottom);},intersection:function(_1){return new HRect(Math.max(this.left,_1.left),Math.max(this.top,_1.top),Math.min(this.right,_1.right),Math.min(this.bottom,_1.bottom));},union:function(_1){return new HRect(Math.min(this.left,_1.left),Math.min(this.top,_1.top),Math.max(this.right,_1.right),Math.max(this.bottom,_1.bottom));},bind:function(_m){},unbind:function(_m){}});HDefaultApplicationInterval=20;HSystemTickerInterval=10;HSystem=HClass.extend({constructor:null,type:'[HSystem]',apps:[],appPriorities:[],busyApps:[],appTimers:[],freeAppIds:[],defaultInterval:HDefaultApplicationInterval,viewsZOrder:[],ticks:0,maxAppRunTime:5000,scheduler:function(){if((this.ticks%10)==0&&this.fix_ie){}
-for(var _j=0;_j<this.apps.length;_j++){if(this.apps[_j]){if(!this.busyApps[_j]){if((this.ticks%this.appPriorities[_j])==0){this.appTimers[_j]=setTimeout('if (HSystem.apps['+_j+']) {HSystem.apps['+_j+']._4w();}',10);}}}}},ticker:function(){this.ticks++;this.scheduler();this._7y=setTimeout('HSystem.ticker();',HSystemTickerInterval);},addApp:function(_0R,_06){if(this.freeAppIds.length>1024){var _j=this.freeAppIds.shift();this.apps[_j]=_0R;}else{this.apps.push(_0R);var _j=this.apps.length-1;}
-_0R.parent=this;_0R.parents=[this];_0R.appId=_j;this.startApp(_j,_06);return _j;},startApp:function(_j,_06){if(_06===undefined){_06=this.defaultInterval;}
-this.appPriorities[_j]=_06;this.busyApps[_j]=false;},stopApp:function(_j){this.busyApps[_j]=true;},reniceApp:function(_j,_06){this.appPriorities[_j]=_06;},killApp:function(_j,_5r){if(!_5r){var _6a=new Date().getTime();while(this.busyApps[_j]==true){if(new Date().getTime()>_6a+this.maxAppRunTime){break;}}}
-this.busyApps[_j]=true;this.apps[_j].destroyAllViews();delete this.apps[_j];this.apps[_j]=null;this.freeAppIds.push(_j);},views:[],_2K:[],addView:function(_g){var _2f;if(this._2K.length==0){_2f=this.views.length;this.views.push(_g);}
-else{_2f=this._2K.pop();this.views[_2f]=_g;}
-return _2f;},delView:function(_h){this.views[_h]=null;this._2K.push(_h);},activeWindowId:0,windowFocus:function(_g){var _6E=this.activeWindowId,_1e=this.views,_h=_g.viewId;if(_1e[_6E]){if(_1e[_6E]["windowBlur"]){_1e[_6E].windowBlur();}}
-this.activeWindowId=_h;_g.bringToFront();_g.windowFocus();}});LOAD('HSystem.ticker();');HApplication=HClass.extend({componentBehaviour:['app'],constructor:function(_06){this.views=[];this.markupElemIds=[];this.viewsZOrder=HSystem.viewsZOrder;HSystem.addApp(this,_06);},buildParents:function(_h){var _g=HSystem.views[_h];_g.parent=this;_g.parents=[];for(var _0L=0;_0L<this.parents.length;_0L++){_g.parents.push(this.parents[_0L]);}
-_g.parents.push(this);},addView:function(_g){var _h=HSystem.addView(_g);this.views.push(_h);this.buildParents(_h);this.viewsZOrder.push(_h);return _h;},removeView:function(_h){HSystem.views[_h].remove();},destroyView:function(_h){HSystem.views[_h].die();},die:function(){HSystem.killApp(this.appId,false);},destroyAllViews:function(){var i,_h;for(i=0;i<this.views.length;i++){_h=this.views[i];HSystem.views[_h].die();}},_5T:function(){var i,_h;for(i=0;i<this.views.length;i++){_h=this.views[i];HSystem.views[i].onIdle();}},_4w:function(){HSystem.busyApps[this.appId]=true;this.onIdle();this._5T();HSystem.busyApps[this.appId]=false;},onIdle:function(){}});HDefaultThemePath='/H/themes';HDefaultThemeName='default';HNoComponentCSS=[];HThemeHasIE6GifsInsteadOfPng=[];HThemeMode=1;HThemeManager=HClass.extend({constructor:null,init:function(){this.themePath=HDefaultThemePath;this._2n={};this._1X={};this.currentTheme=HDefaultThemeName;},setThemePath:function(_R){this.themePath=_R;},_5n:function(_l){console.log("ERROR: Template Not Found: '"+_l+"' ");},_5m:function(_l){console.log("ERROR: Template Failure: '"+_l+"' ");},_5l:function(_l){console.log("ERROR: Template Exception: '"+_l+"' ");},fetch:function(_l,_0G){var _1G;if(!_0G){var _0G='text/html; charset=UTF-8';}
-var _3a=new Ajax.Request(_l,{method:'GET',onSuccess:function(_6B){_1G=_6B.responseText;},on404:function(){HThemeManager._5n(_l);},onFailure:function(){HThemeManager._5m(_l);},onException:function(){HThemeManager._5l(_l);},asynchronous:false,contentType:_0G});_3a.onStateChange();return _1G;},getThemeGfxPath:function(){var _f=this._1q[0],_n=this._1q[1],_u=this._1q[2],_y=this._1q[3],_0C=this._0C(_f,_n,_u,_y);return this._I(_0C,'gfx');},getCssFilePath:function(_0d){var _f=this._1q[0];if((HThemeHasIE6GifsInsteadOfPng.indexOf(_f)!=-1)&&ELEM._1B){return"url('"+this._I(this.getThemeGfxPath(),_0d.replace('.png','-ie6.gif'))+"')";}
-else{return"url('"+this._I(this.getThemeGfxPath(),_0d)+"')";}},loadCSS:function(_l){var _0G='text/css';var _0H=this.fetch(_l,_0G);if(!_0H||_0H==""){return;}
-_0H=this._3r(_0H);var _08,_4z,_3K;if(ELEM._25){_08=document.createStyleSheet();_08.cssText=_0H;}
-else{_08=document.createElement("style");_08.type=_0G;_08.media="all";_3K=document.getElementsByTagName('head')[0];_3K.appendChild(_08);if(navigator.userAgent.indexOf('KHTML')!=-1){var _5d=document.createTextNode(_0H);_08.appendChild(_5d);}
-else{_08.innerHTML=_0H;}}},_4W:function(_B){if(_B[_B.length-1]!='/'){_B+='/';}
-return _B;},_I:function(_6b,_6c){return this._4W(_6b)+_6c;},_0C:function(_f,_n,_u,_y){var _R=_u;if(_u===null){_R=this.themePath;}
-if(HThemeMode==0){if(_y){_R=this._I(_R,_y);}
-if(_u===null){_R=this._I(_R,_n);_R=this._I(_R,'themes');}
-_R=this._I(_R,_f);}
-else if(HThemeMode==1){_R=this._I(_R,_f);}
-return _R;},_1Z:function(_f,_n,_u,_y){this._1q=[_f,_n,_u,_y];var _5b=this._0C(_f,_n,_u,_y);var _5c=this._I('css',_n+'.css');var _1Z=this._I(_5b,_5c);return _1Z;},_2Y:function(_f,_n,_u,_y){var _5z=this._0C(_f,_n,_u,_y);var _5A=this._I('html',_n+'.html');var _5B=this._I(_5z,_5A);return _5B;},loadMarkup:function(_f,_n,_u,_y){if(!this._2n[_f]){this._2n[_f]={};}
-var _s=this._2n[_f][_n];if(null===_s||undefined===_s){var _2Y=this._2Y(_f,_n,_u,_y);_s=this.fetch(_2Y);if(null===_s||undefined===_s){_s="";}
-this._2n[_f][_n]=_s;}
-return _s;},getMarkup:function(_f,_n,_u,_y){if(!this._1X[_f]){var _55=this._1Z(_f,'common',_u,null);this._1X[_f]={};this.loadCSS(_55);}
-if(HNoComponentCSS.indexOf(_f)==-1){if(!this._1X[_f][_n]){var _56=this._1Z(_f,_n,_u,_y);this._1X[_f][_n]=true;this.loadCSS(_56);}}
-return this.loadMarkup(_f,_n,_u,_y);},_1l:function(_f,_n,_u,_y){var _0C=this._0C(_f,_n,_u,_y);var _l=this._I(_0C,'gfx');return _l;},_57:function(_f,_n,_u,_y,_0d){if((HThemeHasIE6GifsInsteadOfPng.indexOf(_f)!=-1)&&ELEM._1B){return this._I(this._1l(_f,_n,_u,_y),_0d.replace('.png','-ie6.gif'));}
-return this._I(this._1l(_f,_n,_u,_y),_0d);},getThemeGfxFile:function(_0d){return this.getThemeGfxPath()+_0d;},setTheme:function(_4G){this.currentTheme=_4G;},restoreDefaultTheme:function(){this.setTheme(HDefaultThemeName);},_0P:new RegExp(/#\{([^\}]*)\}/),_3r:function(_1r){while(this._0P.test(_1r)){_1r=_1r.replace(this._0P,eval(RegExp.$1));}
-return _1r;}});HMarkupView=HClass.extend({bindMarkupVariables:function(){var _0w=this.markup;while(HMarkupView._3p.test(_0w)){_0w=_0w.replace(HMarkupView._3p,this.evalMarkupVariable(RegExp.$1,true));}
-while(HMarkupView._0P.test(_0w)){_0w=_0w.replace(HMarkupView._0P,this.evalMarkupVariable(RegExp.$1));}
-this.markup=_0w;},evalMarkupVariable:function(_6e,_74){try{var _ID=this.elemId.toString(),_WIDTH=this.rect.width,_HEIGHT=this.rect.height,_1G=eval(_6e);if(_74){return'';}
-if(_1G===undefined){return'';}
-else{return _1G;}}
-catch(e){return'';}},toggleCSSClass:function(_0c,_1p,_4s){if(_0c){var _3I=ELEM.hasClassName(_0c,_1p);if(_4s){if(!_3I){ELEM.addClassName(_0c,_1p);}}
-else{if(_3I){ELEM.removeClassName(_0c,_1p);}}}}},{_0P:new RegExp(/#\{([^\}]*)\}/),_3p:new RegExp(/\$\{([^\}]*)\}/)});HView=HClass.extend({themePath:null,packageName:null,isAbsolute:true,flexRight:false,flexLeft:true,flexTop:true,flexBottom:false,flexRightOffset:0,flexBottomOffset:0,componentBehaviour:['view'],constructor:function(_1,_i){if(this.theme===undefined){this.theme=HThemeManager.currentTheme;this.preserveTheme=false;}
-else{this.preserveTheme=true;}
-this.optimizeWidthOnRefresh=true;this.parent=_i;this.viewId=this.parent.addView(this);this.appId=this.parent.appId;this.app=HSystem.apps[this.appId];this.views=[];this.viewsZOrder=[];this._5a();this.setRect(_1);this.isHidden=true;this.drawn=false;this._3s=_1.left;this._3t=_1.top;this._0X=[];if(!this.isinherited){this.draw();this.show();}},setFlexRight:function(_8,_V){if(_8===undefined){_8=true;}
-this.flexRight=_8;if(_V===undefined){_V=0;}
-this.flexRightOffset=_V;},setFlexLeft:function(_8,_V){if(_8===undefined){_8=true;}
-this.flexLeft=_8;if(_V!==undefined){this.rect.setLeft(_V);}},setFlexTop:function(_8,_V){if(_8===undefined){_8=true;}
-this.flexTop=_8;if(_V!==undefined){this.rect.setTop(_V);}},setFlexBottom:function(_8,_V){if(_8===undefined){_8=true;}
-this.flexBottom=_8;if(_V===undefined){_V=0;}
-this.flexBottomOffset=_V;},setAbsolute:function(_8){if(_8===undefined){_8=true;}
-this.isAbsolute=_8;},setRelative:function(_8){if(_8===undefined){_8=true;}
-this.isAbsolute=(!_8);},getThemeGfxPath:function(){if(this.preserveTheme){_f=this.theme;}else{_f=HThemeManager.currentTheme;}
-return HThemeManager._1l(_f,this.componentName,this.themePath,this.packageName);},getThemeGfxFile:function(_0d){if(this.preserveTheme){_f=this.theme;}else{_f=HThemeManager.currentTheme;}
-return HThemeManager._57(_f,this.componentName,this.themePath,this.packageName,_0d);},_45:function(_16){this.elemId=ELEM.make(_16,'div');},_66:function(_4X){var _1Y='display:none;overflow:hidden;visibility:hidden;';if(this.isAbsolute){_1Y+='position:absolute;';}else{_1Y+='position:relative;';}
-_1Y+=_4X;ELEM.setCSS(this.elemId,_1Y);},_2M:function(){var _16;if(this.parent.elemId===undefined){_16=0;}
-else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){_16=this.parent.markupElemIds['subview'];}
-else{_16=this.parent.elemId;}
-return _16;},_5a:function(){if(!this.elemId){this._45(this._2M());this._66('');if(this.preserveTheme){ELEM.addClassName(this.elemId,this.theme);}
-else{ELEM.addClassName(this.elemId,HThemeManager.currentTheme);}}},drawRect:function(){if(!this.parent||!this.rect.isValid){return;}
-this.drawn=true;var _9=this.elemId;var _1=this.rect;ELEM.setStyle(_9,'left',this.flexLeft?(_1.left+'px'):'auto',true);ELEM.setStyle(_9,'top',this.flexTop?(_1.top+'px'):'auto',true);ELEM.setStyle(_9,'right',this.flexRight?(this.flexRightOffset+'px'):'auto',true);ELEM.setStyle(_9,'bottom',this.flexBottom?(this.flexBottomOffset+'px'):'auto',true);ELEM.setStyle(_9,'width',(this.flexLeft&&this.flexRight)?'auto':(_1.width+'px'),true);ELEM.setStyle(_9,'height',(this.flexTop&&this.flexBottom)?'auto':(_1.height+'px'),true);if(this.flexLeft&&this.flexRight){ELEM.setStyle(_9,'min-width',_1.width+'px',true);}
-if(this.flexTop&&this.flexBottom){ELEM.setStyle(_9,'min-height',_1.height+'px',true);}
-if(undefined===this.isHidden||this.isHidden==false){ELEM.setStyle(_9,'visibility','inherit',true);}
-ELEM.setStyle(_9,'display','block',true);this._4O();if(this._3s!=_1.left||this._3t!=_1.top){this.invalidatePositionCache();this._3s=_1.left;this._3t=_1.top;}},_4O:function(){ELEM.setStyle(this.elemId,'z-index',this.parent.viewsZOrder.indexOf(this.viewId));},_2p:function(){var _1e=this.parent.viewsZOrder;for(var i=0;i<_1e.length;i++){ELEM.setStyle(HSystem.views[_1e[i]].elemId,'z-index',i);}},draw:function(){var _0J=this.drawn;this.drawRect();if(!_0J&&(this.componentName!==undefined)){this.drawMarkup();}
-this.refresh();},_42:function(){var _f;if(this.preserveTheme){_f=this.theme;}
-else{_f=HThemeManager.currentTheme;}
-this.markup=HThemeManager.getMarkup(_f,this.componentName,this.themePath,this.packageName);},markupElemNames:['bg','label','state','control','value','subview'],drawMarkup:function(){ELEM.setStyle(this.elemId,'display','none',true);this._42();this.bindMarkupVariables();ELEM.setHTML(this.elemId,this.markup);this.markupElemIds={};for(var i=0;i<this.markupElemNames.length;i++){var _0f=this.markupElemNames[i],_3D=_0f+this.elemId,_5y=' id="'+_3D+'"';if(this.markup.indexOf(_5y)!=-1){this.markupElemIds[_0f]=this.bindDomElement(_3D);}}
-ELEM.setStyle(this.elemId,'display','block');},setHTML:function(_0I){ELEM.setHTML(this.elemId,_0I);},refresh:function(){if(this.drawn){this.drawRect();}
-if(this.optimizeWidthOnRefresh){this.optimizeWidth();}},setRect:function(_1){if(this.rect){this.rect.unbind(this);}
-this.rect=_1;this.rect.bind(this);this.refresh();},setStyle:function(_0j,_4,_2x){if(!this.elemId){return;}
-ELEM.setStyle(this.elemId,_0j,_4,_2x);},style:function(_0j){if(!this.elemId){return;}
-return ELEM.getStyle(this.elemId,_0j);},setStyleForPart:function(_0f,_0j,_4,_2x){if(!this.markupElemIds[_0f]){return;}
-ELEM.setStyle(this.markupElemIds[_0f],_0j,_4,_2x);},styleForPart:function(_0f,_0j){if(!this.markupElemIds[_0f]){return;}
-ELEM.getStyle(this.markupElemIds[_0f],_0j);},hide:function(){if(!this.isHidden){this.setStyle('visibility','hidden');this.setStyle('display','none');this.isHidden=true;}},show:function(){if(this.isHidden){this.setStyle('visibility','inherit');this.setStyle('display','block');this.isHidden=false;}},toggle:function(){if(this.isHidden){this.show();}else{this.hide();}},remove:function(){if(this.parent){var _6w=this.parent.viewsZOrder.indexOf(this.viewId),_6v=this.parent.views.indexOf(this.viewId);this.parent.views.splice(_6v,1);HSystem.delView(this.viewId);this.parent.viewsZOrder.splice(_6w,1);this._2p();this.parent=null;this.parents=[];}},die:function(){for(var i=0;i<this.views.length;i++){HSystem.views[this.views[i]].die();}
-this.remove();for(var i=0;i<this._0X.length;i++){ELEM.del(this._0X[i]);}
-this._0X=[];ELEM.del(this.elemId);this.elemId=null;this.drawn=false;delete this.rect;},onIdle:function(){for(var i=0;i<this.views.length;i++){HSystem.views[this.views[i]].onIdle();}},buildParents:function(_h){var _g=HSystem.views[_h];_g.parent=this;_g.parents=[];for(var _0L=0;_0L<this.parents.length;_0L++){_g.parents.push(this.parents[_0L]);}
-_g.parents.push(this);},addView:function(_g){var _h=HSystem.addView(_g);this.views.push(_h);this.buildParents(_h);this.viewsZOrder.push(_h);return _h;},removeView:function(_h){HSystem.views[_h].remove();},destroyView:function(_h){HSystem.views[_h].die();},bounds:function(){var _0E=new HRect(this.rect);_0E.right-=_0E.left;_0E.left=0;_0E.bottom-=_0E.top;_0E.top=0;return _0E;},resizeBy:function(_2P,_1Q){var _1=this.rect;_1.right+=_2P;_1.bottom+=_1Q;_1.updateSecondaryValues();this.drawRect();},resizeTo:function(_q,_H){var _1=this.rect;_1.right=_1.left+_q;_1.bottom=_1.top+_H;_1.updateSecondaryValues();this.drawRect();},offsetTo:function(){this.rect.offsetTo.apply(this.rect,arguments);this.drawRect();},moveTo:function(){this.offsetTo.apply(this,arguments);},offsetBy:function(_2P,_1Q){this.rect.offsetBy(_2P,_1Q);this.drawRect();},moveBy:function(){this.offsetBy.apply(this,arguments);},bringToFront:function(){if(!this.parent){return;}
-var _p=this.zIndex();this.parent.viewsZOrder.splice(_p,1);this.parent.viewsZOrder.push(this.viewId);this._2p();},sendToBack:function(){if(!this.parent){return;}
-var _p=this.zIndex();this.parent.viewsZOrder.splice(_p,1);this.parent.viewsZOrder.splice(0,0,this.viewId);this._2p();},zIndex:function(){if(!this.parent){return;}
-return this.parent.viewsZOrder.indexOf(this.viewId);},stringWidth:function(_1a,_28,_9){if(_28!==undefined&&_28!=null){_1a=_1a.substring(0,_28);}
-if(_9===undefined||_9==null){_9=this.elemId;}
-var _0M=ELEM.make(_9);ELEM.setCSS(_0M,"visibility:hidden;position:absolute;white-space:nowrap;");ELEM.setHTML(_0M,_1a);var _q=0,_H=0;if(ELEM._1B||ELEM._76||ELEM._77){_q=parseInt(ELEM.get(_0M).offsetWidth,10);if(arguments[3]){_H=parseInt(ELEM.get(_0M).offsetHeight,10);}}else{_q=parseInt(ELEM.get(_0M).clientWidth,10);if(ELEM._75){_q+=1;}
-if(arguments[3]){_H=parseInt(ELEM.get(_0M).clientHeight,10);}}
-ELEM.del(_0M);if(arguments[3]){return[_q,_H];}else{return _q;}},pageX:function(){var _7=0;var _6=this;while(_6){if(_6.elemId&&_6.rect){_7+=ELEM.get(_6.elemId).offsetLeft;_7-=ELEM.get(_6.elemId).scrollLeft;}
-if(_6.markupElemIds&&_6.markupElemIds.subview){_7+=ELEM.get(_6.markupElemIds.subview).offsetLeft;_7-=ELEM.get(_6.markupElemIds.subview).scrollLeft;}
-_6=_6.parent;}
-return _7;},pageY:function(){var _b=0;var _6=this;while(_6){if(_6.elemId&&_6.rect){_b+=ELEM.get(_6.elemId).offsetTop;_b-=ELEM.get(_6.elemId).scrollTop;}
-if(_6.markupElemIds&&_6.markupElemIds.subview){_b+=ELEM.get(_6.markupElemIds.subview).offsetTop;_b-=ELEM.get(_6.markupElemIds.subview).scrollTop;}
-_6=_6.parent;}
-return _b;},pageLocation:function(){return new HPoint(this.pageX(),this.pageY());},optimizeWidth:function(){},invalidatePositionCache:function(){for(var i=0;i<this.views.length;i++){HSystem.views[this.views[i]].invalidatePositionCache();}},bindDomElement:function(_3C){var _2w=ELEM.bindId(_3C);if(_2w){this._0X.push(_2w);}
-return _2w;},unbindDomElement:function(_0c){var _3Q=this._0X.indexOf(_0c);if(_3Q>-1){ELEM.del(_0c);this._0X.splice(_3Q,1);}},animateTo:function(_m,_0t,_0l){if(_m instanceof HPoint){var _1=new HRect(_m,_m);_1.setSize(this.rect.width,this.rect.height);this._2t(_1,_0t);}
-else if(_m instanceof HRect){this._2t(_m,_0t);}
-else{throw"Wrong argument type.";}},stopAnimation:function(){if(this._1U){window.clearInterval(this._1U);this._1U=null;var _05=parseInt(this.style('left'),10),_0B=parseInt(this.style('top'),10),_q=parseInt(this.style('width'),10),_H=parseInt(this.style('height'),10);this.rect.set(_05,_0B,_05+_q,_0B+_H);this.drawRect();if(this._3n){this.onAnimationEnd();}
-else{this.onAnimationCancel();}}},_2t:function(_1,_0t,_0l){if(null===_0t||undefined===_0t){_0t=500;}
-if(null===_0l||undefined===_0l||_0l<1){_0l=50;}
-if(!this._1U){this._3n=false;this.onAnimationStart();var _69=new Date().getTime();var _k=this;this._1U=window.setInterval(function(){_k._6G({startTime:_69,duration:_0t,transition:function(t,b,c,d){return c*t/d+b;},props:[{prop:'left',from:_k.rect.left,to:_1.left,unit:'px'},{prop:'top',from:_k.rect.top,to:_1.top,unit:'px'},{prop:'width',from:_k.rect.width,to:_1.width,unit:'px'},{prop:'height',from:_k.rect.height,to:_1.height,unit:'px'}]});},Math.round(1000/_0l));}},_6G:function(_m){var _4J=new Date().getTime();if(_4J<_m.startTime+_m.duration){var _52=_4J-_m.startTime;for(var i=0;i<_m.props.length;i++){var _2L=_m.props[i].from;var _4L=_m.props[i].to;if(_2L!=_4L){var _5Z=_m.transition(_52,_2L,(_4L-_2L),_m.duration);this.setStyle(_m.props[i].prop,_5Z+_m.props[i].unit);}}}else{for(var i=0;i<_m.props.length;i++){this.setStyle(_m.props[i].prop,_m.props[i].to+_m.props[i].unit);}
-this._3n=true;this.stopAnimation();}},onAnimationStart:function(){},onAnimationEnd:function(){},onAnimationCancel:function(){}});HView.implement(HMarkupView);HControl=HView.extend({componentBehaviour:['view','control'],refreshOnValueChange:true,refreshOnLabelChange:true,constructor:function(_1,_x,_6C){if(!_6C){_6C={};}
-var options=new(HComponentDefaults.extend(_6C));this.options=options;if(this.isinherited){this.base(_1,_x);}
-else{this.isinherited=true;this.base(_1,_x);this.isinherited=false;}
-var _J=options.label;this.setLabel(_J);var _1x=options.events;this.setEvents(_1x);if(this.options.valueObj){this.setValueObj(this.options.valueObj);}
-if(!this.valueObj){this.setValueObj(new HDummyValue());}
-if((this.value===undefined)&&(options.value!==undefined)){this.setValue(options.value);}
-var _5G=(_6C.minValue||_6C.maxValue);if(_5G){this.setValueRange(options.value,options.minValue,options.maxValue);}
-this.setEnabled(options.enabled);this.action=options.action;if(options.visible){this.show();}
-else{this.hide();}
-if(!this.isinherited){this.draw();}},setAction:function(_3l){this.action=_3l;},die:function(){if(this.valueObj){this.valueObj.unbind(this);delete this.valueObj;}
-EVENT.unreg(this);this.base();},setLabel:function(_J){this.label=_J;this.options.label=_J;this.refresh();},setEnabled:function(_8){for(var i=0;i<this.views.length;i++){HSystem.views[this.views[i]].setEnabled(_8);}
-if(this.enabled===_8){return;}
-this.enabled=_8;if(_8){EVENT.reg(this,this.events);}
-else{EVENT.unreg(this);}
-this.toggleCSSClass(this.elemId,HControl.CSS_ENABLED,this.enabled);this.toggleCSSClass(this.elemId,HControl.CSS_DISABLED,!this.enabled);},setValue:function(_4){if(_4===undefined){return;}
-if(!this.valueObj){return;}
-if(_4!==this.value){this.value=_4;this.valueObj.set(this.value);this.refresh();}},setValueObj:function(_3k){this.valueObj=_3k;this.setValue(_3k.value);},setValueRange:function(_4,_2c,_2b){this.minValue=_2c;this.maxValue=_2b;_4=(_4<_2c)?_2c:_4;_4=(_4>_2b)?_2b:_4;this.setValue(_4);this.refresh();},refreshValue:function(){if(this.markupElemIds){if(this.markupElemIds.value){ELEM.setHTML(this.markupElemIds.value,this.value);}}},refreshLabel:function(){if(this.markupElemIds){if(this.markupElemIds.label){ELEM.setHTML(this.markupElemIds.label,this.label);}}},refresh:function(){this.base();if(this.drawn){if(this.refreshOnValueChange){this.refreshValue();}
-if(this.refreshOnLabelChange){this.refreshLabel();}}},setEvents:function(_1x){if(!this.events){var _5o=HClass.extend({mouseMove:false,mouseDown:false,mouseUp:false,draggable:false,droppable:false,keyDown:false,keyUp:false,mouseWheel:false,textEnter:false,click:false});this.events=new _5o;}
-if(_1x){this.events.extend(_1x);}
-this.events.ctrl=this;EVENT.focusOptions[this.elemId]=this.events;var _48=this.events.mouseMove;var _31=EVENT.coordListeners.indexOf(this.elemId);if(_48&&(_31==-1)){EVENT.coordListeners.push(this.elemId);}else if((!_48)&&(_31!=-1)){EVENT.coordListeners.splice(_31,1);}
-this.isDragged=false;},setMouseMove:function(_8){this.events.mouseMove=_8;this.setEvents();},setClickable:function(_8){this.events.click=_8;this.setEvents();},setMouseDown:function(_8){this.events.mouseDown=_8;this.setEvents();},setMouseUp:function(_8){this.events.mouseUp=_8;this.setEvents();},setMouseWheel:function(_8){this.events.mouseWheel=_8;this.setEvents();},setDraggable:function(_8){this.events.draggable=_8;this.setEvents();},setDroppable:function(_8){this.events.droppable=_8;this.setEvents();},setKeyDown:function(_8){this.events.keyDown=_8;this.setEvents();},setKeyUp:function(_8){this.events.keyUp=_8;this.setEvents();},setTextEnter:function(_8){this.events.textEnter=_8;this.setEvents();},textEnter:function(){},focus:function(){},blur:function(){},gainedActiveStatus:function(_2V){},_5t:function(_2V){if(this.enabled){this.toggleCSSClass(this.elemId,HControl.CSS_ACTIVE,true);}
-this.gainedActiveStatus(_2V);},lostActiveStatus:function(_A){},_5I:function(_A){if(this.enabled){this.toggleCSSClass(this.elemId,HControl.CSS_ACTIVE,false);}
-this.lostActiveStatus(_A);},mouseMove:function(_7,_b){},mouseDown:function(_7,_b,_27){},mouseUp:function(_7,_b,_27){},mouseWheel:function(_O){},startDrag:function(x,y){this.isDragged=true;},doDrag:function(x,y){},endDrag:function(x,y){this.isDragged=false;this.invalidatePositionCache();},onDrop:function(obj){},onHoverStart:function(obj){},onHoverEnd:function(obj){},keyDown:function(_z){},keyUp:function(_z){},_4a:function(e){if(!Event.element){return;}
-var _k=Event.element(e);while(_k&&_k.ctrl===undefined){_k=_k.parentNode;}
-if(!_k){return;}
-var _0=_k.ctrl;EVENT.focus(_0);Event.stop(e);},_49:function(e){if(!Event.element){return;}
-var _k=Event.element(e);while(_k&&_k.ctrl===undefined){_k=_k.parentNode;}
-if(!_k){return;}
-var _0=_k.owner;EVENT.blur(_0);Event.stop(e);},invalidatePositionCache:function(){this.base();EVENT.coordCacheFlush(this.elemId);}},{stopPropagation:function(event){if(event.stopPropagation){event.stopPropagation();}else{event.cancelBubble=true;}},H_CONTROL_ON:1,H_CONTROL_OFF:0,CSS_DISABLED:"disabled",CSS_ENABLED:"enabled",CSS_ACTIVE:"active"});HDummyValue=HClass.extend({constructor:function(_2,_4){this.id=_2;this.value=_4;},set:function(_4){this.value=_4;},get:function(){return this.value;},bind:function(_1N){},unbind:function(_1N){}});HComponentDefaults=HClass.extend({label:"Untitled",visible:true,events:{},value:0,action:function(){},enabled:true,active:false,minValue:-2147483648,maxValue:2147483648});HDynControl=HControl.extend({componentName:'dyncontrol',componentBehaviour:['view','control','window'],constructor:function(_1,_i,_6C){if(!_6C){_6C={};}
-var _r=HClass.extend({minSize:[24,54],maxSize:[16000,9000],resizeW:1,resizeE:1,resizeN:1,resizeS:1,resizeNW:[1,1],resizeNE:[1,1],resizeSW:[1,1],resizeSE:[1,1],noResize:false});_6C=new(_r.extend(_6C))();if(_6C.noResize){_6C.minSize=[_1.width,_1.height];_6C.maxSize=[_1.width,_1.height];_6C.resizeW=0;resizeE=0;resizeN=0;resizeS=0;resizeNW=[0,0];resizeNE=[0,0];resizeSW=[0,0];resizeSE=[0,0];}
-if(this.isinherited){this.base(_1,_i,_6C);}
-else{this.isinherited=true;this.base(_1,_i,_6C);this.isinherited=false;}
-this.presrveTheme=true;this.setDraggable(true);this._5D();this._3S();if(!this.isinherited){this.draw();}},drawRect:function(_40,_6o){if(this.rect.width<this.options.minSize[0]){var _2G=0-(this.options.minSize[0]-this.rect.width);this.rect.setWidth(this.options.minSize[0]);if(_40){this.rect.offsetBy(_2G,0);}}
-else if(this.rect.width>this.options.maxSize[0]){var _2G=0-(this.options.maxSize[0]-this.rect.width);this.rect.setWidth(this.options.maxSize[0]);if(_40){this.rect.offsetBy(_2G,0);}}
-if(this.rect.height<this.options.minSize[1]){var _2D=0-(this.options.minSize[1]-this.rect.height);this.rect.setHeight(this.options.minSize[1]);if(_6o){this.rect.offsetBy(0,_2D);}}
-else if(this.rect.height>this.options.maxSize[1]){var _2D=0-(this.options.maxSize[1]-this.rect.height);this.rect.setHeight(this.options.maxSize[1]);if(_6o){this.rect.offsetBy(0,_2D);}}
-this.base();},draw:function(){var _0J=this.drawn;this.base();if(!_0J){this.buildStructure();}},buildStructure:function(){},_21:function(_7,_b){return this._5V.subtract(_7,_b);},dynResizeNW:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setLeftTop(_0.rect.leftTop.subtract(_D));_0.drawRect(1,1);_0._5V.set(_7,_b);},dynResizeNE:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setRightTop(_0.rect.rightTop.subtract(_D));_0.drawRect(0,1);_0._5V.set(_7,_b);},dynResizeSW:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setLeftBottom(_0.rect.leftBottom.subtract(_D));_0.drawRect(1,0);_0._5V.set(_7,_b);},dynResizeSE:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setRightBottom(_0.rect.rightBottom.subtract(_D));_0.drawRect(0,0);_0._5V.set(_7,_b);},dynResizeW:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setLeft(_0.rect.left-_D.x);_0.drawRect(1,0);_0._5V.set(_7,_b);},dynResizeE:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setRight(_0.rect.right-_D.x);_0.drawRect(0,0);_0._5V.set(_7,_b);},dynResizeN:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setTop(_0.rect.top-_D.y);_0.drawRect(0,1);_0._5V.set(_7,_b);},dynResizeS:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.setBottom(_0.rect.bottom-_D.y);_0.drawRect(0,0);_0._5V.set(_7,_b);},dynDrag:function(_0,_7,_b){var _D=_0._21(_7,_b);_0.rect.offsetTo(_0.rect.leftTop.subtract(_D));_0.drawRect(1,1);_0._5V.set(_7,_b);},_5D:function(){this._W=[];var i,_0=this,_7m=0,_7l=1,_7p=2,_7o=3,_7q=4,_7j=5,_7k=6,_7n=7,_6R=8,_W=this._W;_W[_7m]=_0.dynResizeNW;_W[_7l]=_0.dynResizeNE;_W[_7p]=_0.dynResizeSW;_W[_7o]=_0.dynResizeSE;_W[_7q]=_0.dynResizeW;_W[_7j]=_0.dynResizeE;_W[_7k]=_0.dynResizeN;_W[_7n]=_0.dynResizeS;_W[_6R]=_0.dynDrag;},_3S:function(){this._1f=-1;this._1R=[];var i,_1J,_t=this.options,_1=this.rect,_60=[[0,0,_t.resizeNW[0],_t.resizeNW[1]],[_1.width-_t.resizeNE[0],0,_1.width,_t.resizeNE[1]],[0,_1.height-_t.resizeSW[1],_t.resizeSW[0],_1.height],[_1.width-_t.resizeSE[0],_1.height-_t.resizeSE[1],_1.width,_1.height],[0,_t.resizeN,_t.resizeW,_1.height-_t.resizeS],[_1.width-_t.resizeE,_t.resizeN,_1.width,_1.height-_t.resizeS],[_t.resizeW,0,_1.width-_t.resizeE,_t.resizeN],[_t.resizeW,_1.height-_t.resizeS,_1.width-_t.resizeE,_1.height],[_t.resizeW,_t.resizeN,_1.width-_t.resizeE,_1.height-_t.resizeS]];for(i=0;i!=9;i++){_1J=_60[i];this._1R.push(new HRect(_1J[0],_1J[1],_1J[2],_1J[3]));}},_5f:function(){var i,_4U=this._68.subtract(this.rect.left,this.rect.top),_1R=this._1R;for(i=0;i!=9;i++){if(_1R[i].contains(_4U)){this._1f=i;return;}}},startDrag:function(_7,_b,_24){this._68=new HPoint(_7,_b);this._5V=new HPoint(_7,_b);this._7v=new HRect(this.rect);this._5f();if(this._1f==8){this.setStyle('cursor','move');}
-this.bringToFront();this.doDrag(_7,_b,_24);},doDrag:function(_7,_b,_24){if(this._1f!=-1){this._W[this._1f](this,_7,_b);}},endDrag:function(_7,_b,_24){this.doDrag(_7,_b,_24);if(this._1f==8){this.setStyle('cursor','default');}
-this._3S();}});
+// all properties should be installed in constructor because otherwise those
+// are iterated unnecessary
+
+// super keyword conflicts for example with Safari
+// cannot be used
+
+// Safari leaves copies of prototype properties and methods to parent class
+// in for (var in this) structure
+
+/** class: HClass
+  *
+  * HClass class is a simple JavaScript class that eases the pain of JavaScript OO. 
+  * It is intended for the following main purposes:
+  *   -	to easily create classes without the MyClass.prototype cruft,
+  *   -	method overriding with intuitive access to the overridden method (like Java's super),
+  *   -	to avoid calling a class' constructor function during the prototyping phase,
+  *   -	to easily add static (class) properties and methods,
+  *   -	to achieve the above without resorting to global functions to build prototype chains,
+  *   -	to achieve the above without affecting Object.prototype. 
+  *
+  *
+  * The HClass class extends the 'Object' object by adding one instance method (base) 
+  * and two class methods (extend, implement). Instance method extend can be also called directly.
+  *
+  **/
+var HClass = function() {
+  if (arguments.length) {
+    var _1stArg = arguments[0];
+    if (this == window) {
+      HClass.prototype.extend.call(_1stArg, arguments.callee.prototype);
+    } else {
+      this.extend(_1stArg);
+    }
+  }
+};
+
+HClass.prototype = {
+  
+  // basically internal methods event if can be called safely
+  extend: function(_source, _value) {
+    var _extend = HClass.prototype.extend;
+    if (arguments.length == 2) {
+      var _ancestor = this[_source];
+      // only methods are inherited
+      if ((_ancestor instanceof Function) && (_value instanceof Function) &&
+          _ancestor.valueOf() != _value.valueOf() && (/\bbase\b/).test(_value)) {
+        var _method = _value;
+        _value = function() {
+          // saves the this.base that is the this.base method of this child
+          var _previous = this.base;
+          // copies previous this.base from the direction from HClass
+          this.base = _ancestor;
+          // current class's method is called
+          // now inside the function when called this.base points to parent method
+          var _returnValue = _method.apply(this, arguments);
+          // then because event this function can be called from child method
+          // resets the base to as is was before calling this function
+          this.base = _previous;
+          return _returnValue;
+        };
+        _value.valueOf = function() {
+          return _method;
+        };
+        _value.toString = function() {
+          return String(_method);
+        };
+      }
+      return this[_source] = _value;
+    // this is called when called by HClass.extend
+    } else if (_source) {
+      var _prototype = {toSource: null};
+      var _protected = ["toString", "valueOf"];
+      // we want default constructor function
+      if (HClass._prototyping) {
+        // 3. index
+        _protected.push("constructor");
+      }
+      for (var i = 0; (_name = _protected[i]); i++) {
+        if (_source[_name] != _prototype[_name]) {
+          _extend.call(this, _name, _source[_name]);
+        }
+      }
+      for (var _name in _source) {
+        if (!_prototype[_name]) {
+          _extend.call(this, _name, _source[_name]);
+        }
+      }
+    }
+    return this;
+  },
+  /** method: base
+    *
+    * If a method has been overridden then the base method provides access to the overridden method. 
+    * Call this method from any other method to invoke that method's ancestor.
+    * It is also possible to call the base method from within a constructor function.
+    *
+    **/
+  base: function() {
+    // this method can be called from any other method to invoke that method's parent
+  }
+};
+
+/** method: extend
+  *
+  * Enables the inheritance. If the method name constructor is defined null in _instance parameter returns a single instance.
+  *
+  * Parameters:
+  *   _instance - An object that has properties and methods of inherited class.
+  *   _static - An object that has properties and methods of inherited class's class methods if the method named constructor
+  *     is defined null in _instance parameter.
+  *   
+  * Returns:
+  *   Return value is inherited class.
+  *
+  * Example:
+  *
+  * > Point = HClass.extend({
+  * > constructor: function(x, y) {
+  * >   this.x = x;
+  * >   this.y = y;
+  * > }
+  * > });
+  * > Rectangle = Point.extend({
+  * > constructor: function(x, y, width, height) {
+  * >   this.base(x, y);
+  * >   this.width = width;
+  * >   this.height = height;
+  * > },
+  * > getWidth: function() {
+  * >   return this.width;
+  * > },
+  * > getHeight: function() {
+  * >   return this.height;
+  * > }
+  * > },
+  * > {
+  * > // class methods
+  * > description: "this is a Rectangle",
+  * > getClass: function() {
+  * >   return this;
+  * > }
+  * > });
+  *
+  **/
+HClass.extend = function(_instance, _static) {
+  // reference to HClass's prototype extend method (HClass's class structure extend method)
+  var _extend = HClass.prototype.extend;
+  // if _instance is undefined,null,"" etc. creates object so that code below works
+  if (!_instance) {
+    _instance = {};
+  }
+  HClass._prototyping = true;
+  // this is base for single instance or prototype (class structure) for object that are created
+  // from this class
+  var _prototype = new this;
+  // copies properties and methods from _instance to _prototype (class structure)
+  _extend.call(_prototype, _instance);
+  // this constructor came from _instance
+  var _constructor = _prototype.constructor;
+  _prototype.constructor = this;
+  delete HClass._prototyping;
+  
+  var _klass = function() {
+    if (!HClass._prototyping) {
+      _constructor.apply(this, arguments);
+    }
+    this.constructor = _klass;
+  };
+  // this is the new class's prototype (class structure)
+  _klass.prototype = _prototype;
+  // copies static method (class method)
+  // acts like HClass.extend
+  _klass.extend = this.extend;
+  // copies static method (class method)
+  // acts like HClass.implement
+  _klass.implement = this.implement;
+  _klass.toString = function() {
+    return String(_constructor);
+  };
+  // copies properties and methods from _static directly to statc methods (class methods)
+  // of new class
+  _extend.call(_klass, _static);
+  // if _constructor is marked as null returns the created instance (that is also class structure for
+  // instances if class is returned
+  var _object = _constructor ? _klass : _prototype;
+  if (_object.init instanceof Function) {
+    _object.init();
+  }
+  return _object;
+};
+
+/** method: implement
+  *
+  * Copies the prototype properties and methods from _interface or if it is an object it's properties and functions
+  * to HClass or class inherited from HClass. Mimics the interface behaviour of ordinary programming languages.
+  *
+  * Example:
+  *
+  * > // Mimics the interface
+  * > 
+  * > AreaInterface = HClass.extend({
+  * > constructor: null,
+  * >   // implement
+  * >   // don't define here
+  * >   //getWidth: function() {},
+  * >   //getHeight: function() {},
+  * > area: function() {
+  * >   return this.getWidth() * this.getHeight();
+  * > }
+  * > });
+  * > 
+  * > Rectangle = HClass.extend({
+  * > constructor: function(x, y, width, height) {
+  * >   this.x = x;
+  * >   this.y = y;
+  * >   this.width = width;
+  * >   this.height = height;
+  * > },
+  * > getWidth: function() {
+  * >   return this.width;
+  * > },
+  * > getHeight: function() {
+  * >   return this.height;
+  * > }
+  * > });
+  * > 
+  * > Rectangle.implement(AreaInterface);
+  *
+  **/
+HClass.implement = function(_interface) {
+  // copies prototype fields and methods (class structures properties and methods)
+  if (_interface instanceof Function) {
+    _interface = _interface.prototype;
+  }
+  this.prototype.extend(_interface);
+};
+
+var Base = HClass;
+
+
+if ([].indexOf===undefined) {
+  Object.extend = function(destination, source) {
+    for (property in source) {
+      destination[property] = source[property];
+    }
+    return destination;
+  };
+  Object.extend(Array.prototype, {
+    indexOf: function(_anObject){
+      var i = 0, l = this.length;
+      for (; i < l; i++) {
+        if (this[i] == _anObject) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  });
+}
+
+
+// ff version 3.0.3 fails on this, when firebug installed: try/catch block
+try {
+
+// console.log surrogate for browsers without a console
+if(window['console']===undefined){
+  console = {
+    log: function(){
+    }
+  };
+}
+
+
+} catch(e) {}
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+is_ie = !(navigator.userAgent.toLowerCase().indexOf("opera") > -1) && navigator.appName == "Microsoft Internet Explorer";
+
+
+Array.prototype.toQueryString = function() {
+  var i, l = this.length,
+      _array = [];
+  for (i = 0; i < l; i++) {
+    _array.push( encodeURIComponent(this[i].key) + "=" +
+      encodeURIComponent(this[i].value) );
+  }
+  return _array.join("&");
+};
+
+
+
+
+
+
+
+
+Ajax = HClass.extend({
+  constructor: null,
+  getTransport: function() {
+    if (window.XMLHttpRequest) {
+      return new XMLHttpRequest();
+    } else if (is_ie) {
+      // checks the Microsoft Internet Explorer script engine version
+      if (ScriptEngineMajorVersion() >= 5) {
+        return new ActiveXObject("Msxml2.XMLHTTP");
+      } else {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    } else {
+      return false;
+    }
+  }
+});
+
+Ajax.Request = HClass.extend({
+  constructor: function(_url, _options) {
+    this.transport = Ajax.getTransport();
+    if(!_options){
+      _options = {};
+    }
+    var _defaults = HClass.extend({
+      method: "post",
+      asynchronous: true,
+      contentType: "application/x-www-form-urlencoded",
+      encoding: "UTF-8",
+      parameters: ""
+    });
+    _defaults = _defaults.extend(_options);
+    this.options = new _defaults();
+    this.request(_url);
+  },
+  request: function(_url) {
+    this.url = _url;
+    if (this.options.method == "get" && this.options.parameters.length) {
+      // if already has ? puts &
+      this.url += (this.url.indexOf("?") >= 0 ? "&" : "?") + this.options.parameters.toQueryString();
+    }
+    try {
+      this.transport.open(
+        this.options.method.toUpperCase(),
+        this.url,
+        this.options.asynchronous,
+        this.options.username,
+        this.options.password
+      );
+      var _obj = this;
+      this.transport.onreadystatechange = function(){
+        _obj.onStateChange();
+      };
+      this.setRequestHeaders();
+      var _body = this.options.method == "post" ?
+        (this.options.postBody || this.options.parameters.toQueryString()) : null;
+      this.transport.send(_body);
+      if (!this.options.asynchronous && this.transport.overrideMimeType) {
+        this.onStateChange();
+      }
+    } catch (e) {
+      console.log('error:',e);
+    }
+  },
+  setRequestHeaders: function() {
+    var headers = {}, o;
+    
+    if (this.options.method == "post") {
+      headers["Content-type"] = this.options.contentType +
+        (this.options.encoding ? "; charset=" + this.options.encoding : "");
+        
+      if (this.transport.overrideMimeType &&
+        (navigator.userAgent.match(/Gecko\/(\d{4})/) || [0,2005])[1] < 2005) {
+        headers["Connection"] = "close";
+      }
+    }
+    for (o in headers) {
+      this.transport.setRequestHeader(o, headers[o]);
+    }
+  },
+  /*
+  Firefox
+  0 UNINITIALIZED open() has not been called yet.
+  1 LOADING send() has not been called yet.
+  2 LOADED send() has been called, headers and status are available.
+  3 INTERACTIVE Downloading, responseText holds the partial data.
+  4 COMPLETED Finished with all operations.
+  IE
+  0 (Uninitialized) The object has been created, but not initialized (the open method has not been called).
+  1 (Open) The object has been created, but the send method has not been called.
+  2 (Sent) The send method has been called, but the status and headers are not yet available.
+  3 (Receiving) Some data has been received. Calling the responseBody and responseText properties at this state to obtain partial results will return an error, because status and response headers are not fully available.
+  4 (Loaded) All the data has been received, and the complete data is available.
+  */
+  onStateChange: function() {
+    var _readyState = this.transport.readyState;
+    if (_readyState > 1) {
+      this.respondToReadyState(_readyState);
+    }
+  },
+  respondToReadyState: function(_readyState) {
+    if (_readyState == 4) { // Completed(Loaded in IE 7)
+      //try {
+        (this.options["on"+(this.success()?"Success":"Failure")]||(function(){console.log('aa');}))(this.transport);
+      //} catch (e) {
+        //console.log('error:',e);
+      //}
+    }
+    
+    if (_readyState == 4) { // Completed(Loaded in IE 7)
+      this.transport.onreadystatechange = function(){};
+    }
+  },
+  success: function() {
+    //return !this.transport.status || (this.transport.status >= 200 && this.transport.status < 300);
+    return (this.transport.status >= 200 && this.transport.status < 300);
+  }
+});
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+ELEMTickerInterval = 10;
+BROWSER_TYPE = {
+  ie:  false,
+  ie6: false,
+  ie7: false,
+  opera: false,
+  safari: false,
+  firefox: false,
+  firefox2: false
+};
+
+ELEM = {
+  
+  // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
+  _constructor: function(){
+    var _this=ELEM;
+    
+    _this._enableRecycler = false;
+    
+    // pre-init queue
+    _this._domLoadQueue = [];
+    _this._domLoadTimer = null;
+    
+    // turns true when document is actually loaded:
+    _this._domLoadStatus = false;
+    
+    // initial tasks
+    _this._initDone = false;
+    
+    _this._makeCount = 0;
+    
+    _this._setStyleCount = 0; _this._setStyleDiffCount = 0;
+    _this._getStyleCount = 0; _this._getStyleMissCount = 0;
+    
+    _this._flushLoopCount = 0;
+    _this._flushLoopFlushedCount = 0;
+    _this._flushStylCount = 0;
+    
+    _this._flushTime = 0;
+    _this._flushCounter = 0;
+    _this._idleDelay = 500;
+    
+    _this._timer = null;
+    _this._minDelay = ELEMTickerInterval;
+    _this._flushing = false;
+    _this._needFlush = false;
+    _this._slowness = 1;
+    
+    _this._elements =   [];
+    if(_this._enableRecycler){
+      _this._recycler =   {_tagNames:[]};
+    } else {
+      _this._freeElemIds = [];
+    }
+    _this._styleCache = {};
+    _this._styleTodo =  {};
+    _this._attrTodo =   {};
+    _this._attrCache =  {};
+    _this._elemTodo =   [];
+    _this._elemTodoH =  {};
+    _this._blockElems = ",ADDRESS,BLOCKQUOTE,CENTER,DIR,DIV,DL,FIELDSET,FORM,H1,H2,H3,H4,H5,H6,HR,ISINDEX,MENU,NOFRAMES,NOSCRIPT,OL,P,PRE,TABLE,UL,";
+  },
+  
+  
+  _fillTrash: function(_count,_tagName){
+    if(!ELEM._enableRecycler){return;}
+    var _this=ELEM,i=0,_toDel=[],_recycler=_this._initRecycler(_tagName),_trashId=_recycler._trashId;
+    for(;i!=_count;i++){_toDel.push(_this.make(_trashId,_tagName));}
+    for(i=0;i!=_count;i++){_this.del(_toDel[i]);}
+  },
+  
+  // adds an element reference
+  // returns its id
+  _add: function(_elem){
+    var _id, _this, _elements;
+    _this = ELEM;
+    _elements = _this._elements;
+    
+    // Adds the element to the cache
+    _elements.push(_elem);
+    // Get cache size == serial id
+    _id = _elements.length-1;
+    
+    return _id;
+  },
+  
+  // makes new style caches
+  _initCache: function(_id){
+    var _this = ELEM;
+    _this._styleTodo[_id] = [];
+    _this._styleCache[_id] = {};
+    _this._attrTodo[_id] = [];
+    _this._attrCache[_id] = {};
+    _this._elemTodoH[_id] = false;
+  },
+  
+  // binds a dom element by dom id property
+  // returns id
+  bindId: function(_domId){
+    var _this=ELEM,_elem=document.getElementById(_domId),_elemId=_this._add(_elem);
+    _this._initCache(_elemId);
+    return _elemId;
+  },
+  
+  // binds a dom element
+  // returns id
+  bind: function(_elem){
+    var _id, _this=ELEM;
+    _id = _this._add(_elem);
+    _this._initCache(_id);
+    return _id;
+  },
+  
+  // deprecated; backwards-compatibility
+  _replace: function(_id,_elem){
+    var _this=ELEM;
+    _this._elements[_id] = _elem;
+  },
+  
+  // returns dom element by id
+  get: function(_id){
+    return ELEM._elements[_id];
+  },
+  
+  // sets inner html of element
+  setHTML: function(_id,_html){
+    try {
+      var _this=ELEM;
+      if(!((typeof _html === 'string')||(typeof _html === 'number'))){
+        return;
+      }
+      _this._elements[_id].innerHTML = _html;
+    } catch(e) {}
+    //_this._initCache(_id);
+  },
+  
+  _initRecycler: function(_tagName){
+    if(!ELEM._enableRecycler){return;}
+    var _this=ELEM,_recycler=_this._recycler;
+    if(!_recycler[_tagName]){
+      _recycler._tagNames.push(_tagName);
+      _recycler[_tagName]=[];
+      _recycler[_tagName]._countIn=1;
+      _recycler[_tagName]._countOut=0;
+      _recycler[_tagName]._trashId=_this.make(_this._trashId,'div');
+    }
+    return _recycler[_tagName]._trashId;
+  },
+  
+  // deletes element and all its associated caches by id
+  del: function(_id){
+    var _this=ELEM,_elem=_this._elements[_id];
+    while(_this._flushing){}
+    _this._flushing=true;
+    _this.setCSS(_id,'display:none;');    
+    if(_this._enableRecycler){
+      var _tagName=_elem.tagName,
+          _trashId=_this._initRecycler(_tagName),
+          _recycler=_this._recycler[_tagName];
+      _this.append(_id,_trashId);
+    }
+    
+    var _elemTodoIdx=_this._elemTodo.indexOf(_id);
+    if(_elemTodoIdx!=-1){
+      _this._elemTodo.splice(_elemTodoIdx,1);
+    }
+    //try{_elem.innerHTML='';}catch(e){}
+    //_this.setAttr(_id,'id','',true);
+    _this.delAttr(_id,'id');
+    _this.delAttr(_id,'ctrl');
+    
+    _this._initCache(_id);
+    if(_this._enableRecycler){
+      _recycler._countIn++;
+      _recycler.push(_id);
+    } else {
+      _this._freeElemIds.push(_id);
+      var _parentNode = _elem.parentNode;
+      _parentNode.removeChild(_elem);
+      _elem = null;
+      _this._elements[_id] = null;
+    }
+    _this._flushing=false;
+  },
+  
+  // places element inside another
+  append: function(_sourceId,_targetId){
+    var _source, _target, _this;
+    _this   = ELEM;
+    _source = _this._elements[_sourceId];
+    _target = _this._elements[_targetId];
+    _target.appendChild(_source);
+  },
+  
+  setCSS: function(_id,_css){
+    ELEM._elements[_id].style.cssText = _css;
+  },
+  
+  getCSS: function(_id){
+    return ELEM._elements[_id].style.cssText;
+  },
+  
+  // returns element's size from the part that is not hidden by its parent elements with overflow property
+  getVisibleSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.offsetWidth,h=_elem.offsetHeight,
+    _parent=_elem.parentNode;
+    while(_parent&&_parent.nodeName.toLowerCase()!='body'){
+      if(!_this._is_ie){_parentOverflow=document.defaultView.getComputedStyle(_parent,null).getPropertyValue('overflow');}
+      else{_parentOverflow=_parent.currentStyle.getAttribute('overflow');}
+      _parentOverflow=_parentOverflow!='visible';
+      if(w>_parent.clientWidth&&_parentOverflow){w=_parent.clientWidth-_elem.offsetLeft;}
+      if(h>_parent.clientHeight&&_parentOverflow){h=_parent.clientHeight-_elem.offsetTop;}
+      _elem=_elem.parentNode;_parent=_elem.parentNode;
+    }
+    return [w,h];
+  },
+
+  // returns element's full size
+  getSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.offsetWidth,h=_elem.offsetHeight;
+    return [w,h];
+  },
+
+  // returns element's full size
+  getScrollSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.scrollWidth,h=_elem.scrollHeight;
+    return [w,h];
+  },
+
+  getVisiblePosition: function(_id){
+    var x,y,_elem,_this,_this=ELEM,
+    x=0,y=0,_elem=_this._elements[_id];
+    while(_elem!==document){
+      x+=_elem.offsetLeft;y+=_elem.offsetTop;
+      x-=_elem.scrollLeft;y-=_elem.scrollTop;
+      _elem=_elem.parentNode;
+      if(!_elem){break;}
+    }
+    return [x,y];
+  },
+
+  // these two are created in _init
+  //getStyle: function(_id,_key,_bypass){},
+  //_flushStyleCache: function(_id){},
+  
+  getOpacity: function(_id){
+    var _this, _opacity, _try_opacity, _getStyle;
+    _this = ELEM;
+    _getStyle = _this.getStyle;
+    // old safari (1.x):
+    if (_opacity = _getStyle(_id,'-khtml-opacity')) {
+      return parseFloat(_opacity);
+    }
+    // old mozilla (ff 1.0 and below):
+    if (_opacity = _getStyle(_id,'-moz-opacity')) {
+      return parseFloat(_opacity);
+    }
+    _try_opacity = _getStyle(_id,'opacity',true);
+    if (_opacity = _try_opacity || (_try_opacity==0)) {
+      return parseFloat(_opacity);
+    }
+    if (_opacity = (_this._elements[_id].currentStyle['filter'] || '').match(/alpha\(opacity=(.*)\)/)) {
+      if(_opacity[1]) {
+        return parseFloat(_opacity[1]) / 100;
+      }
+    }
+    return 1.0;
+  },
+  
+  setOpacity: function(_id, _value){
+    var _this = ELEM;
+    if (_value == 1 && _this._is_ie) {
+      _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter', true).replace(/alpha\([^\)]*\)/gi,''));
+    } else {  
+      if(_value < 0.00001){
+        _value = 0;
+      }
+      if(_this._is_ie) {
+        _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter',true).replace(/alpha\([^\)]*\)/gi,'')+'alpha(opacity='+_value*100+')');
+      } else {
+        _this._elements[_id].style.setProperty('opacity',_value,'');
+      }
+    }
+  },
+  
+  getIntStyle: function(_id,_key){
+    var _value = ELEM.getStyle(_id,_key);
+    return parseInt(_value,10);
+  },
+  setBoxCoords: function(_id,_coords){
+    ELEM.setStyle(_id,'left',_coords[0]+'px');
+    ELEM.setStyle(_id,'top',_coords[1]+'px');
+    ELEM.setStyle(_id,'width',_coords[2]+'px');
+    ELEM.setStyle(_id,'height',_coords[3]+'px');
+  },
+  
+  getExtraWidth: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id,'padding-left')+_int(_id,'padding-right')+_int(_id,'border-left-width')+_int(_id,'border-right-width');
+  },
+  
+  getExtraHeight: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id,'padding-top')+_int(_id,'padding-bottom')+_int(_id,'border-top-width')+_int(_id,'border-bottom-width');
+  },
+  
+  setFPS: function(_fps){
+    ELEM._minDelay = 1000/_fps;
+    if(ELEM._minDelay<ELEMTickerInterval){
+      ELEM._minDelay=ELEMTickerInterval;
+    }
+    /*
+    if(ELEM._is_ie6){
+      if(ELEM._minDelay<200){
+        ELEM._minDelay=200;
+      }
+      if(ELEMTickerInterval<200){
+        ELEMTickerInterval=200;
+      }
+    }
+    */
+  },
+  setSlowness: function(_slowness){
+    // we should replace this with an
+    // actual browser speed benchmark
+    ELEM._slowness = _slowness;
+  },
+  setIdleDelay: function(_idleDelay){
+    ELEM._idleDelay = _idleDelay;
+  },
+  
+  _ieFixesNeeded: false,
+  flushLoop: function(_delay){
+    //console.log('flushLoop('+_delay+')');
+    var _this=ELEM; _this._flushLoopCount++;
+    if(_this._is_ie6&&(_this._flushLoopCount%5==0)&&_this._ieFixesNeeded){
+      //window.status = 'traversetree0:'+_this._flushLoopCount;
+      iefix._traverseTree();
+      _this._ieFixesNeeded=false;
+    }
+    clearTimeout(_this._timer);
+    if(_this._flushing){
+      _delay *= 2;
+      _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_delay);
+      return;
+    } else {
+      if(!_this._needFlush){
+        // goto sleep mode
+        if(_this._is_ie6&&_this._ieFixesNeeded){
+          //window.status = 'traversetree1:'+_this._flushLoopCount;
+          iefix._traverseTree();
+          _this._ieFixesNeeded=false;
+        }
+        _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_this._idleDelay);
+        return;
+      }
+      _delay = parseInt(_this._slowness*(_this._flushTime/_this._flushCounter), ELEMTickerInterval);
+      if(_delay<_this._minDelay||!_delay){_delay=_this._minDelay;}
+      _this._flushing = true;
+      _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_delay);
+    }
+    _this._flushTime -= new Date().getTime();
+    var _loopMaxL, _currTodo, i, _styleTodo;
+    _elemTodo=_this._elemTodo;
+    _loopMaxL=_elemTodo.length;
+    _currTodo=_elemTodo.splice(0,_loopMaxL);
+    //console.log('flushing:');
+    var _flushStartTime = new Date().getTime();
+    for(i=0;i<_loopMaxL;i++){
+      _this._flushLoopFlushed++;
+      var _id = _currTodo.pop();
+      _this._elemTodoH[_id]=false;
+      _this._flushStyleCache(_id);
+      _this._flushAttrCache(_id);
+    }
+    /*
+    if(_this._is_ie6&&_this._ieFixesNeeded){
+      window.status = 'traversetree2:'+_this._flushLoopCount;
+      iefix._traverseTree();
+      _this._ieFixesNeeded=false;
+    }*/
+    _this._flushCounter++;
+    _this._flushTime += new Date().getTime();
+    if(_this._elemTodo.length==0&&_this._needFlush){
+      _this._needFlush=false;
+    }
+    //console.log('flush took '+(new Date().getTime()-_flushStartTime));
+    _this._flushing = false;
+  },
+  _flushAttrCache: function(_id){
+    var _this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id],
+        _elem=_this._elements[_id],//_elemP=_elem.setAttribute,
+        _key,_val,i,_iMax=_attrTodo.length,_currTodo=_attrTodo.splice(0,_iMax);
+    for(i=0;i!=_iMax;i++){
+      _key=_currTodo.pop();
+      _val=_attrCache[_key];
+      //console.log('id:'+_id+' key:'+_key+' val:'+_val);
+      //console.log(_elem);
+      //console.log('real val:'+_this.getAttr(_id,_key,true));
+      _elem.setAttribute(_key,_val);
+      //_elem[_key]=_val;
+    }
+  },
+  getAttr: function(_id,_key,_bypass){
+    var _this=ELEM,_attrVal=_this._attrCache[_id][_key],_val;
+    //console.log('_attrVal:'+_attrVal);
+    if(_attrVal!==undefined&&!_bypass){return _attrVal;}
+    var _elem=_this._elements[_id];
+    if(_elem.getAttribute(_key)==null){
+      _elem[_key]='';
+    }
+    _val=_elem.getAttribute(_key);
+    //console.log(_val+'=getAttr(id:'+_id+', key:'+_key+')');
+    _this._attrCache[_id][_key]=_val;
+    return _val;
+  },
+  setAttr: function(_id,_key,_value,_bypass){
+    var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
+    _differs=_value!=_this.getAttr(_id,_key);
+    if(_differs){
+      _attrCache[_key]=_value;
+      if(_bypass){_this._elements[_id].setAttribute(_key,_value);}
+      else{
+        if(_attrTodo.indexOf(_key)==-1){_attrTodo.push(_key);}
+        if(!_this._elemTodoH[_id]){
+          _this._elemTodo.push(_id);
+          _this._elemTodoH[_id]=true;
+          _this._checkNeedFlush();
+        }
+      }
+    }
+  },
+  delAttr: function(_id,_key){
+    var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
+    delete _attrCache[_key];
+    _this._elements[_id].removeAttribute(_key);
+    if(_attrTodo.indexOf(_key)!=-1){_attrTodo.splice(_attrTodo.indexOf(_key,1));}
+    if(_this._elemTodoH[_id]){
+      _this._elemTodo.splice(_this._elemTodo.indexOf(_id,1));
+      _this._elemTodoH[_id]=false;
+      _this._checkNeedFlush();
+    }
+  },
+  
+  // class name functions mostly ripped from moo.fx's prototype.lite.js
+  hasClassName: function(_elemId, _className) {
+    //_element = $(_element);
+    var _element = ELEM.get(_elemId);
+    if (!_element) return;
+    
+    var _hasClass = false;
+    var _classNames = _element.className.split(' ');
+    
+    for(var i = 0; i < _classNames.length; i++) {
+      if (_classNames[i] == _className) {
+        _hasClass = true;
+      }
+    }
+    
+    return _hasClass;
+  },
+  
+  addClassName: function(_elemId, _className) {
+    //_element = $(_element);
+    var _element = ELEM.get(_elemId);
+    if (!_element) return;
+    
+    ELEM.removeClassName(_elemId, _className);
+    _element.className += ' ' + _className;
+  },
+  
+  removeClassName: function(_elemId, _className) {
+    //_element = $(_element);
+    var _element = ELEM.get(_elemId);
+    if (!_element) return;
+    
+    var _newClassName = '';
+    var _classNames = _element.className.split(' ');
+    
+    for(var i = 0; i < _classNames.length; i++) {
+      if (_classNames[i] != _className){
+        if (i > 0) _newClassName += ' ';
+        _newClassName += _classNames[i];
+      }
+    }
+    
+    _element.className = _newClassName;
+  },
+  
+  _checkNeedFlush: function(){
+    var _this=ELEM;
+    if(!_this._needFlush){
+      _this._needFlush=true;
+      if(!_this._flushing){
+        clearTimeout(_this._timer);
+        _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+');',_this._minDelay);
+      }
+    }
+  },
+  
+/***
+  // sets style key to value of id, bypass sets immediately
+  printStats: function(){
+    var _this=ELEM,i=0,_tagName,_tagLen,_countIn,_countOut,_allCountOut=0;
+    if(_this._enableRecycler){
+      console.log('Recycler efficiency:');
+      _recycler=_this._recycler;
+      for(;i!=_recycler._tagNames.length;i++){
+        _tagName=_recycler._tagNames[i];
+        console.log(' tagName: '+_tagName);
+        _tagLen=_recycler[_tagName].length;
+        console.log('   length  : '+_tagLen);
+        _countIn=_recycler[_tagName]._countIn;
+        console.log('   countIn : '+_countIn);
+        _countOut=_recycler[_tagName]._countOut;
+        _allCountOut+=_countOut;
+        console.log('   countOut: '+_countOut);
+        console.log('--------------------------------');
+      }
+    }
+    console.log('================================');
+    console.log('Flushing efficiency:');
+    console.log('  total real time spent: '+_this._flushTime+'ms');
+    console.log('  total times called:    '+_this._flushLoopCount);
+    console.log('  total times flushed:   '+_this._flushCounter);
+    console.log('  total items flushed:   '+_this._flushLoopFlushedCount);
+    console.log('  total real style sets: '+_this._flushStylCount);
+    console.log('================================');
+    console.log('setStyle efficiency:');
+    console.log('  total times called:    '+_this._setStyleCount);
+    console.log('  total times non-cache: '+_this._setStyleDiffCount);
+    console.log('================================');
+    console.log('getStyle efficiency:');
+    console.log('  total times called:    '+_this._getStyleCount);
+    console.log('  total times non-cache: '+_this._getStyleMissCount);
+    console.log('================================');
+    console.log('Summary:');
+    if(_this._enableRecycler){
+      console.log('  recycler saved '+(_allCountOut)+' of '+_this._makeCount+' ('+Math.round(_allCountOut/_this._makeCount*100)+'%) document.createElement calls');
+    }
+    console.log('  style buffer saved '+(_this._setStyleDiffCount-_this._flushStylCount)+' of '+_this._setStyleDiffCount+' ('+Math.round(((_this._setStyleDiffCount-_this._flushStylCount)/_this._setStyleDiffCount)*100)+'%) non-cached DOM style sets');
+    console.log('  style cache saved '+(_this._setStyleCount-_this._setStyleDiffCount)+' of '+_this._setStyleCount+' ('+Math.round(((_this._setStyleCount-_this._setStyleDiffCount)/_this._setStyleCount)*100)+'%) DOM style sets');
+    console.log('  style cache saved '+(_this._getStyleCount-_this._getStyleMissCount)+' of '+_this._getStyleCount+' ('+Math.round(((_this._getStyleCount-_this._getStyleMissCount)/_this._getStyleCount)*100)+'%) DOM style gets');
+    console.log('  style buffer and cache saved '+(_this._setStyleCount-_this._flushStylCount)+' of '+_this._setStyleCount+' ('+Math.round(((_this._setStyleCount-_this._flushStylCount)/_this._setStyleCount)*100)+'%) total DOM style sets');
+  },
+***/
+  setStyle: function(_id,_key,_value,_bypass){
+    var _this=ELEM,_cached=_this._styleCache[ _id ],
+        _elems=_this._elements,_differs,_styleTodo;
+    _this._setStyleCount++;
+    if(_cached===undefined){
+      _this._initCache(_id);
+      var _cached = _this._styleCache[ _id ];
+    }
+    //console.log('setStyle(id:',_id,',key:',_key,',value:',_value,')');
+    _differs=_value!==_cached[_key];//;_this.getStyle(_id,_key);
+    if(_differs){
+      _this._setStyleDiffCount++;
+      _cached[_key]=_value;
+      if(_bypass){
+        if(_key=='opacity'){_this.setOpacity(_id,_value);}
+        else{_this._is_ie?(_elems[_id].style.setAttribute(_key.replace(/((-)([a-z])(\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4;}),_cached[_key])):(_elems[_id].style.setProperty(_key,_cached[_key],''));}
+        if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}
+      } else {
+        _elemTodoH=_this._elemTodoH;
+        _styleTodo=_this._styleTodo[_id];
+        if(_styleTodo.indexOf(_key)==-1){_styleTodo.push(_key);}
+        if(!_elemTodoH[_id]){
+          _this._elemTodo.push(_id);
+          _elemTodoH[_id]=true;
+          _this._checkNeedFlush();
+        }
+      }
+    }
+  },
+  
+  // creates a new dom node inside _targetId
+  // _tagName is a string (eg 'div', 'span' or 'img'
+  // returns id
+  // _target defaults to document.body's id: 0
+  // _tagName defaults to 'div'
+  make: function(_targetId,_tagName){
+    if( _targetId === undefined ){
+      _targetId = 0;
+    }
+    if( _tagName === undefined ){
+      _tagName = 'DIV';
+    } else {
+      _tagName = _tagName.toUpperCase();
+    }
+    var _this=ELEM,_elem,_id;
+    _this._makeCount++;
+    if(_this._enableRecycler){
+      if(_this._recycler[_tagName]){
+        if(_this._recycler[_tagName].length!=0){
+          // Recycle the id of a previously deleted element
+          _id = _this._recycler[_tagName].pop();
+          _this._recycler[_tagName]._countOut++;
+          _elem = _this._elements[_id];
+          //_elem.innerHTML='';
+          /*
+          if(_elem.tagName!=_tagName){
+            _elem.outerHTML='<'+_tagName+'></'+_tagName+'>';
+          }
+          */
+          if(_this._blockElems.indexOf(','+_tagName+',')!=-1){
+            _this.setCSS(_id,'display:block;');
+          } else {
+            _this.setCSS(_id,'display:inline;');
+          }
+          _this.append(_id,_targetId);
+          return _id;
+        }
+      }
+    }
+    _elem = document.createElement(_tagName);
+    _this._elements[_targetId].appendChild(_elem);
+    _id = _this._add(_elem);
+    _this._initCache(_id);
+    return _id;
+  },
+  
+  windowSize: function(){
+    var _w, _h;
+    _w = (window.innerWidth) ? window.innerWidth : document.documentElement.clientWidth;
+    _h = (window.innerHeight) ? window.innerHeight : document.documentElement.clientHeight;
+    return [_w,_h];
+  },
+  
+  _init: function(){
+    var _this=ELEM,_cmdStr, _cmdResult;
+    var _getStyleTmpl = [
+      // idx   source
+      /*  0 */ "ELEM.getStyle=function(_id,_key,_bypass){",
+      /*  1 */   "var _this=ELEM,_cached=_this._styleCache[_id],_retval;_this._getStyleCount++;",
+      /*  2 */   "if((_cached[_key]===undefined)||_bypass){",
+      /*  3 */     "if(!_bypass){_this._getStyleMissCount++;}",
+      /*  4 */     "if((_key=='opacity')&&_bypass){_retval=_this.getOpacity(_id);}",
+      /*  5 */     "else{",
+      
+            /*  idx:6 for non-ie */
+      /*  6 */       "_retval=document.defaultView.getComputedStyle(_this._elements[_id],null).getPropertyValue(_key);",
+      
+            /*  idx:7,8,9 for ie */
+      /*  7 */       "_camelName=_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){",
+      /*  8 */         "return $3.toUpperCase()+$4});",
+      /*  9 */       "_retval=_this._elements[_id].currentStyle[_camelName];",
+      
+      /* 10 */     "}_cached[_key]=_retval;",
+      /* 11 */   "}return _cached[_key];};"
+    ];
+    if(_this._is_ie){
+      _getStyleTmpl.splice(6,1);
+    } else {
+      _getStyleTmpl.splice(7,3);
+    }
+    eval(_getStyleTmpl.join(''));
+    
+    var _flushStyleCacheTmpl = [
+      // idx   source
+      /*  0 */ "ELEM._flushStyleCache=function(_id){",
+      /*  1 */   "var _this=ELEM,_styleTodo=_this._styleTodo[_id],_cached=_this._styleCache[_id],_elem=_this._elements[_id],_elemS,_loopMaxP,_cid,_key,_currTodo,_retval;",
+      /*  2 */   "if(!_elem){return;}",
+      /*  3 */   "_elemS=_elem.style;",
+      /*  4 */   "_loopMaxP=_styleTodo.length;",
+      /*  5 */   "_currTodo=_styleTodo.splice(0,_loopMaxP);",
+      /*  6 */   "for(_cid=0;_cid!=_loopMaxP;_cid++){",
+      /*  7 */     "_key=_currTodo.pop();_this._flushStylCount++;",
+      /*  8 */     "if(_key=='opacity'){_retval=_this.getOpacity(_id,_cached[_key]);}else{",
+            /*  idx:  9 for ie */
+
+                     //"alert(_cached[_key]);eval('_elemS.'+_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4})+'=\"'+_cached[_key]+'\";');}}};",
+                     //"_elemS.cssText+=_key+':'+_cached[_key]+';';}}};",
+                     //"var _keyIE=_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4});\nalert(_keyIE);\n_elemS[_keyIE]=_cached[_key];}}};",
+      /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
+
+            /*  idx: 10 for non-ie */
+      /* 10 */       "console.log('elemS:',_elemS,'key:',_key,'val:',_cached[_key]);_elemS.setProperty(_key,_cached[_key],'');}}};"
+    ];
+    if(_this._is_ie){
+      _flushStyleCacheTmpl.pop();
+    } else {
+      _flushStyleCacheTmpl.splice(9,1);
+    }
+    eval(_flushStyleCacheTmpl.join(''));
+    
+    _this.bind(document.body);
+    
+    // creates an 'trash' for div elements
+    if(_this._enableRecycler){
+      _this._trashId = _this.make(0,'div');
+      _this.setCSS(_this._trashId,"display:none;visibility:hidden;");
+      _this.setAttr(_this._trashId,'id','trashcan_'+_this._trashId);
+    }
+    
+    _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+')',_this._minDelay);
+    
+    if(!_this._domLoadQueue){return;}
+    
+    while(_this._domLoadQueue.length!=0){
+      _cmdStr = _this._domLoadQueue.shift();
+      if(typeof _cmdStr == 'string'){
+        _cmdResult = eval(_cmdStr);
+        if(typeof _cmdResult == 'string'){
+          _this._domLoadQueue.push( _cmdResult );
+        }
+      }
+    }
+    _this._initDone = true;
+  },
+  
+  _warmup: function(){
+    _this = ELEM;
+    _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")==-1)?true:false;
+    _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!=-1)?true:false;
+    _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;
+    _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;
+    _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;
+    _this._is_ff3=(navigator.userAgent.indexOf("Firefox/3.")!=-1)?true:false;
+    _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;
+    BROWSER_TYPE = {
+      opera:    _this._is_opera,
+      safari:   _this._is_safari,
+      firefox:  _this._is_ff,
+      ie:  _this._is_ie,
+      ie6: _this._is_ie6,
+      ie7: _this._is_ie7,
+      firefox3: _this._is_ff3
+    };
+    _this._domWaiter();
+  },
+  // adds items to eval after the dom is done:
+  _domLoader: function(_cmdStr){
+    var _this = ELEM;
+    if(typeof _cmdStr == 'string'){
+      if(_this._initDone==true){
+        eval(_cmdStr);
+      } else {
+        _this._domLoadQueue.push(_cmdStr);
+      }
+    }
+  },
+  _domWaiter: function(){
+    var _isloaded = false;
+    var _this = ELEM;
+    // A hack for ie (ripped from DomLoaded.js)
+    // http://www.cherny.com/demos/onload/domloaded.js
+    if(_this._is_ie){
+      var _ie_proto = "javascript:void(0)";
+      if (location.protocol == "https:"){
+        _ie_proto = "src=//0";
+      }
+      document.write("<scr"+"ipt id=__ie_onload defer src=" + _ie_proto + "><\/scr"+"ipt>");
+      var _ie_script = document.getElementById("__ie_onload");
+      _ie_script.onreadystatechange = function(){
+        if(this.readyState == "complete"){
+          ELEM._domLoadStatus = true;
+          ELEM._init();
+          delete ELEM._domLoadQueue;
+          clearTimeout( ELEM._domLoadTimer );
+          delete ELEM._domLoadTimer;
+        }
+      };
+      // the event will trigger on ie, so we don't have to keep on polling:
+      return;
+    }
+    
+    // Safari / KHTML readyness detection:
+    else if((/KHTML|WebKit/i.test(navigator.userAgent)) &&
+            (/loaded|complete/.test(document.readyState))) {
+      _this._domLoadStatus = true;
+    }
+    
+    // Works for Mozilla:
+    else if(document.body){
+      _this._domLoadStatus = true;
+    }
+    
+    if(!_this._domLoadStatus){
+      _this._domLoadTimer = setTimeout('ELEM._domWaiter()',ELEMTickerInterval*10);
+    } else {
+      _this._init();
+      delete _this._domLoadQueue;
+      clearTimeout(_this._domLoadTimer);
+      delete _this._domLoadTimer;
+    }
+  }
+};
+ELEM._constructor();
+LOAD = ELEM._domLoader;
+ELEM._warmup();
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+// Caching mid-level event listener abstraction
+Event = {
+  element: function(e){return e.target||e.srcElement;},
+  pointerX: function(e){return e.pageX||e.clientX+document.documentElement.scrollLeft;},
+  pointerY: function(e){return e.pageY||e.clientY+document.documentElement.scrollTop;},
+  stop: function(e){
+    if(e.preventDefault){e.preventDefault();e.stopPropagation();}
+    else{e.returnValue=false;e.cancelBubble=true;}
+  },
+  isLeftClick: function(e){
+    // IE: left 1, middle 4, right 2
+    if(ELEM._is_ie||ELEM._is_safari){return(e.button==1);}
+    else{return(e.button==0);}
+  },
+  observers: false,
+  _observeAndCache: function(_elem,_name,_function,_useCapture){
+    if(!Event.observers){Event.observers=[];}
+    if(_elem.addEventListener){
+      this.observers.push([_elem,_name,_function,_useCapture]);
+      _elem.addEventListener(_name,_function,_useCapture);
+    }
+    else if(_elem.attachEvent){
+      this.observers.push([_elem,_name,_function,_useCapture]);
+      _elem.attachEvent("on"+_name,_function);
+    }
+  },
+  unloadCache: function(){
+    if(!Event.observers){return;}
+    var i,l=Event.observers.length;
+    for(i=0;i<l;i++){Event.stopObserving.apply(this,Event.observers[0]);}
+    Event.observers=false;
+  },
+  observe: function(_elem,_name,_function,_useCapture){
+    _useCapture=_useCapture||false;
+    Event._observeAndCache(_elem,_name,_function,_useCapture);
+  },
+  stopObserving: function(_elem,_name,_function,_useCapture){
+    _useCapture=_useCapture||false;
+    if(_elem.removeEventListener){_elem.removeEventListener(_name,_function,_useCapture);}
+    else if(detachEvent){_elem.detachEvent("on"+_name,_function);}
+    var i=0; while(i<Event.observers.length){
+      var eo=Event.observers[i];
+      if(eo&&eo[0]==_elem&&eo[1]==_name&&eo[2]==_function&&eo[3]==_useCapture){Event.observers[i]=null;Event.observers.splice(i,1);}
+      else{i++;}
+    }
+  },
+  // ascii symbols:
+  KEY_BACKSPACE:8,KEY_TAB:9,KEY_RETURN:13,KEY_ESC:27,KEY_LEFT:37,KEY_UP:38,KEY_RIGHT:39,
+  KEY_DOWN:40,KEY_DELETE:46,KEY_HOME:36,KEY_END:35,KEY_PAGEUP:33,KEY_PAGEDOWN:34
+};
+
+// IE memory cleanup:
+if(ELEM._is_ie){Event.observe(window,"unload",Event.unloadCache,false);}
+
+_defaultFocusOptions = {
+  mouseMove:  false,
+  mouseDown:  false,
+  click:      false,
+  mouseUp:    false,
+  draggable:  false,
+  droppable:  false,
+  keyDown:    false,
+  keyUp:      false,
+  mouseWheel: false,
+  isDragged:  false,
+  textEnter:  false
+};
+
+// "Event Manager"
+EVENT = {
+  status:[false,false,0,0,[],false,false,false],
+  button1:0,button2:1,crsrX:2,crsrY:3,keysDown:4,
+  altKeyDown:5,ctrlKeyDown:6,shiftKeyDown:7,
+  start: function() {
+    var _globalEventTargetElement, _eventMap, i, _this=EVENT;
+    if(ELEM._is_ie){_globalEventTargetElement=document;}
+    else{_globalEventTargetElement=window;}
+    _eventMap = [
+      ['mousemove',   EVENT.mouseMove],
+      ['mouseup',     EVENT.mouseUp],
+      ['mousedown',   EVENT.mouseDown],
+      ['click',       EVENT.click],
+      ['keyup',       EVENT.keyUp],
+      ['keydown',     EVENT.keyDown],
+      ['keypress',    EVENT.keyPress],
+      ['contextmenu', EVENT.contextMenu],
+      ['resize',      EVENT.resize],
+      ['mousewheel',  EVENT.mouseWheel]
+    ];
+    for(i=0;i!=_eventMap.length;i++){Event.observe(_globalEventTargetElement,_eventMap[i][0],_eventMap[i][1]);}
+    if(window.addEventListener){window.addEventListener('DOMMouseScroll',EVENT.mouseWheel,false);}
+    //window.onmousewheel=document.onmousewheel=EVENT.mouseWheel;
+    _this.listeners=[];      // keep elemId buffer of all listeners
+    _this.focused=[];        // keep elemId buffer of all focused listeners
+    _this.resizeListeners=[]; // list of resize-event listeners
+    _this.coordListeners=[]; // global mouse movement listeners
+    _this.focusOptions={};   // keep property lists by elemId
+    _this.dragItems=[];      // elemId of currently dragged items
+    _this.hovered=[];        // items currently under the mouse cursor
+    _this.hoverInterval=50;  // 50 means send hover events at most with 50ms intervals
+    _this.hoverTimer=new Date().getTime(); // Time since last hover event triggered
+    _this.topmostDroppable=null; // the currently hovered element accepting droppable items
+    _this.textEnterCtrls=[];  // ID of controls with textfields
+    // position caching benefits performance, see coordCacheFlush
+    _this._coordCache=[];
+    _this._coordCacheFlag=true;
+    _this._lastCoordFlushTimeout=null;
+    
+    _this.activeControl = null; // control that currently has the focus
+    _this._lastKeyDown = null;  // the most recent keypress
+  },
+  // flushes the position cache by elemId, if no elemId is specified, everything is flushed
+  coordCacheFlush: function(_elemId){
+    if(_elemId){EVENT._coordCache[_elemId]=null;}
+    else{EVENT._coordCache=[];}
+  },
+  // registers the View instance _ctrl by event listener flags in _focusOptions
+  reg: function(_ctrl,_focusOptions){
+    var _elemId,_elem,_this=EVENT,_propIn;
+    // Binds the class to the element (so it can be called on the event)
+    _elemId=_ctrl.elemId;
+    _elem=ELEM.get(_elemId);
+    if(ELEM._is_ie){_elem.setAttribute('ctrl',_ctrl);}
+    else{_elem.ctrl=_ctrl;}
+    _this.listeners[_elemId]=true;
+    _this.focused[_elemId]=false;
+    for(var _propIn in _defaultFocusOptions){
+      if(_focusOptions[_propIn]===undefined){
+        _focusOptions[_propIn] = _defaultFocusOptions[_propIn];
+      }
+    }
+    _this.focusOptions[_elemId]=_focusOptions;
+    var _coordListenIdx=_this.coordListeners.indexOf(_elemId);
+    if(_focusOptions.mouseMove){
+      if(_coordListenIdx==-1){
+        _this.coordListeners.push(_elemId);
+    } }
+    else if(_coordListenIdx!=-1){
+      _this.coordListeners.splice(_coordListenIdx,1);
+    }
+    //console.log('focusOptions:',_focusOptions);
+    //console.log('focusOptions.textEnter: ',_focusOptions.textEnter);
+    if(_focusOptions.textEnter){
+      if(_this.textEnterCtrls.indexOf(_ctrl.viewId)==-1){
+        _this.textEnterCtrls.push(_ctrl.viewId);
+      }
+    }
+    if(_focusOptions.resize){
+      if(_this.resizeListeners.indexOf(_ctrl.viewId)==-1){
+        _this.resizeListeners.push(_ctrl.viewId);
+      }
+    }
+    Event.observe(_elem,'mouseover',_this._mouseOver);
+  },
+  // unregisters the View instance _ctrl event listeners
+  unreg: function(_ctrl){
+    var _this=EVENT,_elemId,_elem;
+    if(_ctrl===this.activeControl){_this.changeActiveControl(null);}
+    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    this.listeners[_elemId]=false;
+    this.focused[_elemId]=false;
+    this._coordCache[_elemId]=null;
+    var _textEnterIndex=_this.textEnterCtrls.indexOf(_ctrl.viewId);
+    if(_textEnterIndex!=-1){
+      _this.textEnterCtrls.splice(_textEnterIndex,1);
+    }
+    
+    var _resizeIndex=_this.resizeListeners.indexOf(_ctrl.viewId);
+    if(_resizeIndex!=-1){
+      _this.resizeListeners.splice(_resizeIndex,1);
+    }
+    Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+  },
+  
+  resize: function(e){
+    var i=0,_this=EVENT,_ctrlID,_ctrl;
+    for(;i<_this.resizeListeners.length;i++){
+      _ctrlID=_this.resizeListeners[i];
+      _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.onResize){_ctrl.onResize();}
+    }
+  },
+  
+  // element-specific over/out handler
+  _mouseOver: function(e) {
+    if(!Event.element){return;}
+    var _that=Event.element(e);
+    while(_that&&_that.ctrl===undefined){_that=_that.parentNode;}
+    if(!_that){return;}
+    var _this=_that.ctrl;
+    EVENT.focus(_this);
+    Event.stop(e);
+  },
+  
+  // element-specific over/out handler
+  _mouseOut: function(e) {
+    if(!Event.element){return;}
+    var _that=Event.element(e);
+    while(_that&&_that.ctrl===undefined){_that=_that.parentNode;}
+    if(!_that){return;}
+    var _this=_that.ctrl;
+    EVENT.blur(_this);
+    Event.stop(e);
+  },
+  
+  // stops mouseover listening and starts mouseout listening,
+  // sends a focus() call to the ctrl
+  focus: function(_ctrl){
+    var _this=EVENT,_elemId,_elem;
+    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    if(_this.focused[_elemId]==false&&_this.focusOptions[_elemId].isDragged==false){
+      Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+      Event.observe(_elem,'mouseout',_this._mouseOut);
+      _this.focused[_elemId]=true;
+      if(_ctrl['focus']){_ctrl.focus();}
+    }
+  },
+  // stops mouseout listening and starts mouseover listening,
+  // sends a blur() call to the ctrl
+  blur: function(_ctrl) {
+    var _this=EVENT,_elemId,_elem;
+    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    if(_this.focused[_elemId]==true&&_this.focusOptions[_elemId].isDragged==false){
+      Event.stopObserving(_elem,'mouseout',_this._mouseOut);
+      Event.observe(_elem,'mouseover',_this._mouseOver);
+      _this.focused[_elemId]=false;
+      if(_ctrl['blur']){_ctrl.blur();}
+    }
+  },
+  
+  //// Event listeners:
+  
+  // tracks mouse movement,
+  // sends doDrag, mouseMove, onHoverEnd, onHoverStart pseudo-events
+  mouseMove: function(e) {
+    var _this=EVENT,x,y,_currentlyDragging;
+    // current position
+    x=Event.pointerX(e);
+    y=Event.pointerY(e);
+    _this.status[_this.crsrX]=x;
+    _this.status[_this.crsrY]=y;
+    _currentlyDragging = _this.flushMouseMove(x,y);
+    _this._modifiers(e); // might work
+    if(_currentlyDragging){Event.stop(e);} // Only prevent default action when we are dragging something.
+  },
+  
+  flushMouseMove: function(x,y){
+    var _this=EVENT,x,y,_currentlyDragging,i,j,_elemId,_ctrl;
+    clearTimeout(_this._lastCoordFlushTimeout);
+    // drag detect flag
+    _currentlyDragging=false;
+    // send doDrag event to all drag-interested ctrls
+    for(i=0;i!=_this.dragItems.length;i++){
+      _elemId=_this.dragItems[i];
+      _this.focusOptions[_elemId].ctrl.doDrag(x,y);
+      _this.coordCacheFlush(_elemId);
+      _currentlyDragging=true;
+    }
+    
+    // Check which items are under the mouse coordinates now.
+    if(new Date().getTime()>_this.hoverTimer+_this.hoverInterval) {
+      // sends mouseMove pseudo-events to ctrls interested
+      for(i=0;i!=_this.coordListeners.length;i++){
+        _elemId=_this.coordListeners[i];_ctrl=_this.focusOptions[_elemId].ctrl;
+        _ctrl.mouseMove(x,y);
+      }
+      _this._updateHoverItems();
+      // sends drag&drop pseudo-events
+      var _wasTopmostDroppable;
+      for(i=0;i!=_this.dragItems.length;i++){
+        // Find the current droppable while dragging.
+        _wasTopmostDroppable=_this.topmostDroppable;
+        _this.topmostDroppable=null;
+        _elemId=_this.dragItems[i];_ctrl=_this.focusOptions[_elemId].ctrl;
+        // Check for a drop target from the currently hovered items
+        var _hoverIndex, _dropCtrl;
+        for(j=0;j!=_this.hovered.length;j++){
+          _hoverIndex=_this.hovered[j];
+          if(_hoverIndex!=_elemId&&_this.focusOptions[_hoverIndex].ctrl){
+            _dropCtrl=_this.focusOptions[_hoverIndex].ctrl;
+            if(!_this.topmostDroppable|| // First time
+              _dropCtrl.zIndex()>_this.topmostDroppable.zIndex() || // Z beaten
+              _dropCtrl.supr===_this.topmostDroppable){ // subview
+              if(_this.focusOptions[_dropCtrl.elemId].droppable){
+                _this.topmostDroppable=_dropCtrl; // Finally, the item must accept drop events.
+        } } } }
+        
+        // Topmost item has changed, send onHoverStart or onHoverEnd to the droppable.
+        if(_wasTopmostDroppable!=_this.topmostDroppable){
+          if(_wasTopmostDroppable){_wasTopmostDroppable.onHoverEnd(_ctrl);}
+          if(_this.topmostDroppable){_this.topmostDroppable.onHoverStart(_ctrl);}
+      } }
+      _this.hoverTimer = new Date().getTime();
+    }
+    else {
+      _this._lastCoordFlushTimeout=setTimeout('EVENT.flushMouseMove('+x+','+y+');',_this.hoverInterval);
+    }
+    return _currentlyDragging;
+  },
+  
+  // Loop through all registered items and store indices of elements that are currenly under
+  // the mouse cursor in .hovered array. Uses cached position and dimensions value when possible.
+  _updateHoverItems: function() {
+    var _this=EVENT,x,y,i,_ctrl,_elem,_pos,_size,_coords;
+    _this.hovered=[];
+    x=_this.status[_this.crsrX];
+    y=_this.status[_this.crsrY];
+    for(i=0;i!=_this.listeners.length;i++) {
+      if(!_this.listeners[i]||!_this.focusOptions[i].ctrl){continue;}
+      _ctrl=_this.focusOptions[i].ctrl;_elem=ELEM.get(i);
+      if(!_this._coordCacheFlag||!_this._coordCache[i]){
+        _pos=ELEM.getVisiblePosition(_ctrl.elemId);   // [x,y]
+        _size=ELEM.getVisibleSize(_ctrl.elemId); // [w,h]
+        _this._coordCache[i]=[_pos[0],_pos[1],_size[0],_size[1]];
+      }
+      _coords=_this._coordCache[i];
+      // Is the mouse pointer inside the element's rectangle?
+      if (x>=_coords[0]&&x<=_coords[0]+_coords[2]&&y>=_coords[1]&&y<=_coords[1]+_coords[3]){
+        _this.hovered.push(i);
+    } }
+  },
+  
+  
+  // tracks mouse clicks,
+  // sends mouseDown and startDrag pseudo-events
+  mouseDown: function(e,_isLeftButton){
+    var _this=EVENT,_didStartDrag,x,y,i,_newActiveControl,_startDragElementIds,_mouseDownElementIds;
+    _this._modifiers(e);
+    _didStartDrag=false;
+    if(_isLeftButton===undefined){_isLeftButton=Event.isLeftClick(e);}
+    if(_isLeftButton){_this.status[_this.button1]=true;}
+    else{_this.status[_this.button2]=true;} // bug??
+    x=_this.status[_this.crsrX];y=_this.status[_this.crsrY];
+    // Unset the active control when clicking on anything.
+    _newActiveControl=null;
+    // The startDrag and mouseDown event receivers are first collected into
+    // these arrays and the events are sent after the active control status has
+    // been changed.
+    _startDragElementIds=[];
+    _mouseDownElementIds=[];
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        // Set the active control to the currently focused item.
+        if(_this.focusOptions[i].ctrl.enabled){_newActiveControl=_this.focusOptions[i].ctrl;}
+        if((_this.focusOptions[i].draggable==true)&&_this.dragItems.indexOf(i)==-1){_startDragElementIds.push(i);}
+        else if(_this.focusOptions[i].mouseDown==true){_mouseDownElementIds.push(i);}
+    } }
+    // Handle the active control selection.
+    //console.log('EVENT.mouseDown, newActiveControl:',_newActiveControl.type,_newActiveControl.enabled);
+    if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
+    // Call the mouseDown and startDrag events after the active control change has been handled.
+    for(i=0;i!=_startDragElementIds.length;i++){
+      _this.dragItems.push(_startDragElementIds[i]);
+      //console.log('_startDragElementIds',_startDragElementIds);
+      //console.log('_this.focusOptions',_this.focusOptions);
+      //console.log('_this.focusOptions['+_startDragElementIds[i]+']',_this.focusOptions[_startDragElementIds[i]]);
+      _this.focusOptions[_startDragElementIds[i]].ctrl.startDrag(x,y);
+      _didStartDrag=true;
+    }
+    
+    var _stopEvent=_mouseDownElementIds.length;
+    for(i=0;i!=_mouseDownElementIds.length;i++){
+      if(_this.focusOptions[_mouseDownElementIds[i]].ctrl.mouseDown(x,y,_isLeftButton)){_stopEvent--;}
+    }
+    if(_didStartDrag){
+      // Remove possible selections.
+      document.body.focus();
+      // Prevent text selection in MSIE when dragging starts.
+      _this._storedOnSelectStart=document.onselectstart;
+      document.onselectstart=function(){return false;};
+    }
+    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
+    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    return true;
+  },
+  
+  click: function(e,_isLeftButton){
+    var _this=EVENT,x,y,i,_newActiveControl,_clickElementIds;
+    _this._modifiers(e);
+    if(_isLeftButton===undefined){_isLeftButton=Event.isLeftClick(e);}
+    if(_isLeftButton){_this.status[_this.button1]=true;}
+    else{_this.status[_this.button2]=true;} // bug???
+    x=_this.status[_this.crsrX];y=_this.status[_this.crsrY];
+    // Unset the active control when clicking on anything.
+    _newActiveControl=null;
+    // The startDrag and mouseDown event receivers are first collected into
+    // these arrays and the events are sent after the active control status has
+    // been changed.
+    _clickElementIds=[];
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        // Set the active control to the currently focused item.
+        if(_this.focusOptions[i].ctrl.enabled){
+          _newActiveControl=_this.focusOptions[i].ctrl;
+        }
+        if(_this.focusOptions[i].click==true){
+          _clickElementIds.push(i);
+        }
+    } }
+    // Handle the active control selection.
+    if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
+    var _stopEvent=_clickElementIds.length;
+    for(i=0;i!=_clickElementIds.length;i++){
+      if(_this.focusOptions[_clickElementIds[i]].ctrl.click(x,y,_isLeftButton)){_stopEvent--;}
+    }
+    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
+    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    //if(_this.hovered.length!=0){Event.stop(e);}
+    return true;
+  },
+  
+  // changes active ctrl,
+  // previous active ctrl gets the _lostActiveStatus pseudo-event,
+  // the new active ctrl gets the _gainedActiveStatus pseudo-event
+  changeActiveControl: function(_ctrl){
+    //console.log('EVENT.changeActiveControl: ',_ctrl);
+    var _this=EVENT,_prevActiveCtrl;
+    // Store the currently active control so we can inform it, if it no longer is the active control.
+    _prevActiveCtrl=_this.activeControl;
+    // Did the active control change?
+    if(_ctrl!=_prevActiveCtrl){
+      if(_prevActiveCtrl){
+        // Previously active control just lost the active status.
+        _prevActiveCtrl.active=false;
+        _prevActiveCtrl._lostActiveStatus(_ctrl);
+      }
+      _this.activeControl=null;
+      if(_ctrl){
+        // A new control gained the active status.
+        _ctrl.active = true;
+        _this.activeControl = _ctrl;
+        _ctrl._gainedActiveStatus(_prevActiveCtrl);
+    } }
+  },
+  
+  
+  // tracks mouse up events,
+  // sends onHoverEnd, onDrop, mouseUp, endDrag
+  mouseUp: function(e){
+    var _this=EVENT,_didEndDrag,x,y,_elemId,_ctrl,i;
+    _this._modifiers(e);
+    _didEndDrag=false;
+    _isLeftButton=Event.isLeftClick(e); // might not work?
+    _this.status[_this.button1]=false;
+    _this.status[_this.button2]=false;
+    x=_this.status[_this.crsrX];
+    y=_this.status[_this.crsrY];
+    // Send endDrag for the currently dragged items even when they don't have focus, and clear the drag item array.
+    for(i=0;i!=_this.dragItems.length;i++){
+      _elemId=_this.dragItems[i];
+      _ctrl=_this.focusOptions[_elemId].ctrl;
+      _ctrl.endDrag(x,y);
+      _didEndDrag=true;
+      // If the mouse slipped off the dragged item before the mouse button was released, blur the item manually
+      _this._updateHoverItems();
+      if (_this.hovered.indexOf(_elemId)==-1){_this.blur(_ctrl);}
+      // If there is a drop target in the currently hovered items, send onDrop to it.
+      if (_this.topmostDroppable) {
+        // Droppable found at the release point.
+        _this.topmostDroppable.onHoverEnd(_ctrl);
+        _this.topmostDroppable.onDrop(_ctrl);
+        _this.topmostDroppable=null;
+    } }
+    _this.dragItems=[];
+    // Restore MSIE's ability to select text after dragging has ended.
+    if(_didEndDrag){document.onselectstart=_this._storedOnSelectStart;}
+    // Check for mouseUp listeners.
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        if(_this.focusOptions[i].mouseUp==true){
+          _this.focusOptions[i].ctrl.mouseUp(x,y,_isLeftButton);
+    } } }
+    return true;
+  },
+  
+  
+  // tracks key presses,
+  // sends keyDown pseudo-events to active items that are interested
+  keyDown: function(e){
+    var _this=EVENT,_theKeyCode;
+    _this._modifiers(e);
+    _theKeyCode=e.keyCode;
+    if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyDown==true){
+      Event.stop(e);
+      // Workaround for msie rapid fire keydown
+      if(_this._lastKeyDown!=_theKeyCode){_this.activeControl.keyDown(_theKeyCode);}
+    }
+    // Insert key to the realtime array, remove in keyUp
+    if(_this.status[_this.keysDown].indexOf(_theKeyCode)==-1){_this.status[_this.keysDown].push(_theKeyCode);}
+    _this._lastKeyDown=_theKeyCode;
+  },
+  
+  
+  // tracks key releases,
+  // sends keyUp pseudo-events to active items that are interested
+  keyUp: function(e){
+    var _this=EVENT,_theKeyCode,_keycodeindex;
+    _this._modifiers(e);
+    _theKeyCode=e.keyCode;
+    _this._lastKeyDown=null;
+    //console.log('EVENT.keyUp: ',_this.textEnterCtrls);
+    //console.log(_this.textEnterCtrls);
+    for(var i=0;i!=_this.textEnterCtrls.length;i++){
+      var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.textEnter){_ctrl.textEnter();}
+    }
+    if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyUp==true){
+      _this.activeControl.keyUp(_theKeyCode);
+    }
+    // Remove the key from the realtime array, inserted in keyDown
+    _keyCodeIndex=_this.status[_this.keysDown].indexOf(_theKeyCode);
+    if(_keyCodeIndex!=-1){_this.status[_this.keysDown].splice(_keyCodeIndex,1);}
+  },
+  
+  // prevents this event (key being hold down; we don't want repetitions)
+  keyPress: function(e){
+    var _this=EVENT;
+    if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyDown==true){Event.stop(e);}
+  },
+  
+  
+  // tracks mouse wheel events,
+  // sends mouseWheel pseudo-events
+  mouseWheel: function(e) {
+    var _this=EVENT,_delta,i;
+    _delta=0;
+    if(!e){e=window.event;}
+    if(e.wheelDelta){
+      _delta=e.wheelDelta/120; 
+      if(window.opera){_delta=-_delta;}
+    }
+    else if(e.detail){
+      _delta=-e.detail/3;
+    }
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        if(_this.focusOptions[i].mouseWheel==true){
+          Event.stop(e);_this.focusOptions[i].ctrl.mouseWheel(_delta);
+    } } }
+  },
+  
+  /// Alternative right button detection, wraps mousedown
+  contextMenu: function(e){
+    EVENT.mouseDown(e, false);
+    Event.stop(e);
+  },
+  
+  /// Handle the event modifiers.
+  _modifiers: function(e){
+    var _this=EVENT;
+    _this.status[_this.altKeyDown] = e.altKey;
+    _this.status[_this.ctrlKeyDown] = e.ctrlKey;
+    _this.status[_this.shiftKeyDown] = e.shiftKey;
+  }
+  
+};
+
+/** Starts the only instance
+  */
+LOAD('EVENT.start();');
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/**
+*** This File is a part of AppSpace
+***
+*** Copyright (c) 2007 Juha-Jarmo Heinonen
+***                    juha-jarmo.heinonen@sorsacode.com
+**/
+
+// Encoder / Decoder facility
+
+/** IMPROVED FROM: **/
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+
+ * vBulletin Usage: md5hash(input,output)
+ * Recommend: input = password input field; output = hidden field
+
+ */
+
+
+SHA = {
+  /* hex output format. 0 - lowercase; 1 - uppercase        */
+  _hexcase: 0,
+  hexCase: function(){
+    return SHA._hexcase;
+  },
+  setHexCase: function(_case){
+    SHA._hexcase = _case;
+  },
+  
+  /* base-64 pad character. "=" for strict RFC compliance   */
+  _b64pad: "=",
+  base64Pad: function(){
+    return SHA._b64pad;
+  },
+  setBase64Pad: function(_pad){
+    SHA._b64pad = _pad;
+  },
+  
+  /* bits per input character. 8 - ASCII; 16 - Unicode      */
+  _chrsz: 8,
+  chrsz: function(){
+    return SHA._chrsz;
+  },
+  setChrsz: function(_bits){
+    SHA._chrsz = _bits;
+  },
+  
+/*
+ * These are the functions you'll usually want to call
+ * They take string arguments and return either hex or base-64 encoded strings
+ */
+  hexSHA1: function(_s){
+    var _this=SHA;
+    return _this._binb2hex(
+      _this._coreSHA1(
+        _this._str2binb(_s),
+        _s.length * _this._chrsz
+      )
+    );
+  },
+  b64SHA1: function(_s){
+    var _this=SHA;
+    return _this._binb2b64(
+      _this._coreSHA1(
+        _this._str2binb(_s),
+        _s.length * _this._chrsz
+      )
+    );
+  },
+  strSHA1: function(_s){
+    var _this=SHA;
+    return _this._binb2str(
+      _this._coreSHA1(
+        _this._str2binb(_s),
+        _s.length * _this._chrsz
+      )
+    );
+  },
+  hexHmacSHA1: function(_key, _data){
+    var _this=SHA;
+    return _this._binb2hex(
+      _this._coreHmacSHA1(_key, _data)
+    );
+  },
+  b64HmacSHA1: function(_key, _data){
+    var _this=SHA;
+    return _this._binb2b64(
+      _this._coreHmacSHA1(_key, _data)
+    );
+  },
+  strHmacSHA1: function(_key, _data){
+    var _this=SHA;
+    return _this._binb2str(
+      _this._coreHmacSHA1(_key, _data)
+    );
+  },
+  
+  str2Base64: function(_str){
+    var _this=SHA;
+    return _this._binb2b64(_this._str2binb(_str));
+  },
+  
+  /*
+   * Perform a simple self-test to see if the VM is working
+   */
+  test: function(){
+    return SHA.hexSHA1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+  },
+
+  /*
+   * Calculate the SHA-1 of an array of big-endian words, and a bit length
+   */
+  _coreSHA1: function(_x, _len){
+    var _this=SHA;
+    /* append padding */
+    _x[_len >> 5] |= 0x80 << (24 - _len % 32);
+    _x[((_len + 64 >> 9) << 4) + 15] = _len;
+
+    var _w = new Array(80),
+        _a =  1732584193,
+        _b = -271733879,
+        _c = -1732584194,
+        _d =  271733878,
+        _e = -1009589776,
+        i, _olda, _oldb, _oldc, _oldd, _olde,
+        j, _t;
+
+    for(i = 0; i < _x.length; i += 16){
+      _olda = _a;
+      _oldb = _b;
+      _oldc = _c;
+      _oldd = _d;
+      _olde = _e;
+
+      for(j = 0; j < 80; j++){
+        if(j < 16){
+          _w[j] = _x[i + j];
+        }
+        else {
+          _w[j] = _this._rol(_w[j-3] ^ _w[j-8] ^ _w[j-14] ^ _w[j-16], 1);
+        }
+        _t = _this._safeAdd(_this._safeAdd(_this._rol(_a, 5), _this._sha1FT(j, _b, _c, _d)),
+             _this._safeAdd(_this._safeAdd(_e, _w[j]), _this._sha1KT(j)));
+        _e = _d;
+        _d = _c;
+        _c = _this._rol(_b, 30);
+        _b = _a;
+        _a = _t;
+      }
+
+      _a = _this._safeAdd(_a, _olda);
+      _b = _this._safeAdd(_b, _oldb);
+      _c = _this._safeAdd(_c, _oldc);
+      _d = _this._safeAdd(_d, _oldd);
+      _e = _this._safeAdd(_e, _olde);
+    }
+    return [_a, _b, _c, _d, _e];
+
+  },
+
+  /*
+   * Perform the appropriate triplet combination function for the current
+   * iteration
+   */
+  _sha1FT: function(_t, _b, _c, _d) {
+    if(_t < 20){
+      return (_b & _c) | ((~_b) & _d);
+    }
+    if(_t < 40){
+      return _b ^ _c ^ _d;
+    }
+    if(_t < 60){
+      return (_b & _c) | (_b & _d) | (_c & _d);
+    }
+    return _b ^ _c ^ _d;
+  },
+
+  /*
+   * Determine the appropriate additive constant for the current iteration
+   */
+  _sha1KT: function(_t){
+    return (_t < 20) ?  1518500249 : (_t < 40) ?  1859775393 :
+           (_t < 60) ? -1894007588 : -899497514;
+  },
+
+  /*
+   * Calculate the HMAC-SHA1 of a key and some data
+   */
+  _coreHmacSHA1: function(_key, _data){
+    var _this=SHA,
+        _bkey = _this._str2binb(_key),
+        _ipad = new Array(16),
+        _opad = new Array(16),
+        i, _hash;
+    if(_bkey.length > 16){
+      _bkey = _this._coreSHA1(_bkey, _key.length * _this._chrsz);
+    }
+    for(i = 0; i  < 16; i++){
+      _ipad[i] = _bkey[i] ^ 0x36363636;
+      _opad[i] = _bkey[i] ^ 0x5C5C5C5C;
+    }
+    
+    _hash = _this._coreSHA1(_ipad.concat(_this._str2binb(_data)), 512 + _data.length * _this._chrsz);
+    return _this._coreSHA1(_opad.concat(_hash), 512 + 160);
+  },
+
+  /*
+   * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+   * to work around bugs in some JS interpreters.
+   */
+  _safeAdd: function(_x, _y){
+    var _lsw = (_x & 0xFFFF) + (_y & 0xFFFF),
+        _msw = (_x >> 16) + (_y >> 16) + (_lsw >> 16);
+    return (_msw << 16) | (_lsw & 0xFFFF);
+  },
+
+  /*
+   * Bitwise rotate a 32-bit number to the left.
+   */
+  _rol: function(_num, _cnt){
+    return (_num << _cnt) | (_num >>> (32 - _cnt));
+  },
+  
+  /*
+   * Convert an 8-bit or 16-bit string to an array of big-endian words
+   * In 8-bit function, characters >255 have their hi-byte silently ignored.
+   */
+  _str2binb: function(_str){
+    var _this=SHA,
+        _bin = [],
+        _mask = (1 << _this._chrsz) - 1,
+        _strLenChrSZ = _str.length * _this._chrsz,
+        i;
+    for(i = 0; i < _strLenChrSZ; i += _this._chrsz){
+      _bin[i>>5] |= (_str.charCodeAt(i / _this._chrsz) & _mask) << (32 - _this._chrsz - i%32);
+    }
+    return _bin;
+  },
+
+  /*
+   * Convert an array of big-endian words to a string
+   */
+  _binb2str: function(_bin){
+    var _this=SHA,
+        _str = "",
+        _mask = (1 << _this._chrsz) - 1,
+        i,
+        _binLen32 = _bin.length * 32,
+        _32chrsz = 32 - _this._chrsz;
+    for(i = 0; i < _binLen32; i += _this._chrsz){
+      _str += String.fromCharCode((_bin[i>>5] >>> (_32chrsz - i%32)) & _mask);
+    }
+    return _str;
+  },
+
+  /*
+   * Convert an array of big-endian words to a hex string.
+   */
+  _binb2hex: function(_binarray){
+    var _this=SHA,
+        _hexTab = _this._hexcase ? "0123456789ABCDEF" : "0123456789abcdef",
+        _str = "",
+        i,
+        _binLen = _binarray.length * 4;
+    for(i = 0; i < _binLen; i++){
+      _str += _hexTab.charAt((_binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+              _hexTab.charAt((_binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+    }
+    return _str;
+  },
+
+  /*
+   * Convert an array of big-endian words to a base-64 string
+   */
+  _binb2b64: function(_binarray){
+    var _this=SHA,
+        _tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+        _str = "",
+        i,
+        _binLen = _binarray.length * 4,
+        _t1, _t2, _3,
+        _triplet,
+        j,
+        _binLen32 = _binarray.length * 32;
+    for(i = 0; i < _binLen; i += 3){
+      _t1 = (((_binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16);
+      _t2 = (((_binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 );
+      _t3 = ((_binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
+      _triplet = (_t1 | _t2 | _t3);
+      for(j = 0; j < 4; j++){
+        if(i * 8 + j * 6 > _binLen32){
+          _str += _this._b64pad;
+        }
+        else {
+          _str += _tab.charAt((_triplet >> 6*(3-j)) & 0x3F);
+        }
+      }
+    }
+    return _str;
+  }
+};
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HTransporter
+  *
+  * *Simple mid-level AJAX communication system.*
+  *
+  * Designed as single instance, depends on <HValueManager>.
+  *
+  * When implementing the server part:
+  *  - feed it with raw javascript
+  *  - override ses_id as early as possible with your own session id, this tells the clients apart.
+  *  - change the syncDelay depending on how fast you want the client to poll the server (a value in ms)
+  *  - you may refer to 't' as the HTransporter's namespace.
+  *
+  * Sample initialization sequence:
+  * > HTransporter.ses_id    = 'nhHOZ8Zo64Wfo';
+  * > HTransporter.syncDelay = 400;
+  * > HTransporter.url_base = '/ui';
+  *
+  * See Also:
+  *  <HValueManager.toXML>
+  **/
+
+/* int: HTransportURL
+ *
+ * Tells the <HTransporter> which url/path to start polling.
+ * - "global"
+ * - Override it with your server's path or url before the document is loaded.
+ */
+HTransportURL = false;
+
+/* int: HTransportPoll
+ *
+ * Tells the <HTransporter> whether to use polling (true) or to sync values only
+ * when there's something on the client-side to sync (false).
+ * - "global"
+ * - Defaults to true (polling), override it with false before the document is
+ *   loaded if you don't want polling.
+ */
+HTransportPoll = true;
+
+/* str: HFailPageUrl
+ *
+ * Url or uri where the the client goes, if a communication error is encountered.
+ */
+HFailPageUrl = '/';
+HTransporterMaxRetryCount = 60;     // 60 retries
+HTransporterMaxRetryTime  = 60000; // 60 seconds
+HTransporterRetryDelay    = 1000; // 1 second
+
+// Retarded debug mode for "special" browsers
+HTransporterDebug = false;
+
+/* vars: Instance variables
+ *  url_base  - The URL (or path) that the requests are sent to
+ *  ses_id    - A value that is the reported in each request by the key 'ses_id'
+ *  syncDelay - An integer value (in ms) that the client waits before starting the next request
+ */
+HTransporter = Base.extend({
+  
+  constructor: null,
+  
+  start: function(_url_base){
+    var _this = HTransporter;
+    _this.url_base  = _url_base;
+    _this.ses_id    = 0;
+    _this.err_msg   = '';
+    _this.isBusy    = false;
+    _this.syncNum   = 0;
+    _this.syncDelay = 100;
+    
+    _this.prevData  = '';
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    
+    _this.pollMode  = HTransportPoll;
+    _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+  },
+  
+  setPollMode: function(_flag) {
+    HTransporter.pollMode = _flag;
+  },
+  
+  failure: function(resp){
+    //console.log('failure');
+    var _currFailAge = HTransporterMaxRetryTime+(new Date().getTime()),
+        _this = HTransporter;
+    clearTimeout(_this.req_timeout);
+    if(_this.firstFail==0){
+      _this.isBusy = false;
+      _this.firstFail=(new Date().getTime());
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else if((_this.failCount<HTransporterMaxRetryCount)&&(_this.firstFail<_currFailAge)){
+      _this.isBusy = false;
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else {
+      // If the connection fails, automatically try to reload the page.
+      window.status = 'Communications error, reloading page...';
+      location.href = HFailPageUrl;
+      _this.isBusy = true;
+    }
+    //console.log('fail..retry');
+    _this.req_timeout = setTimeout('HTransporter.sync();',HTransporterRetryDelay);
+  },
+  
+  respond: function(resp){
+    var _respText = resp.responseText,
+        _this = HTransporter;
+    try {
+      _this.err_msg = '';
+      eval(_respText); 
+    }
+    catch(e) {
+      if(HTransporterDebug){
+        console.log(e);
+        console.log(e.description);
+      }
+      _this.err_msg = '&err_msg='+e+" - "+e.description;
+      _this.failure(resp);
+    }
+    _this.prevData  = '';
+    if(_this.failCount!=0){window.status='';}
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    _this.isBusy = false;
+    if(_this.pollMode){
+      _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+    }
+  },
+  
+  sync: function(){
+    var _this = HTransporter,
+        _valid_delay = ((_this.syncDelay>0)||(_this.syncDelay==0));
+    // Negative syncDelay stops transporter.
+    if(_valid_delay && _this.url_base){
+      if(!_this.isBusy){
+        _this.isBusy = true;
+        if(_this.prevData!=''){
+          _syncData = _this.prevData;
+          //console.log('syncData0:',_syncData);
+        }
+        else {
+          _syncData = HValueManager.toXML();
+          _this.prevData = _syncData;
+          //console.log('syncData1:',_syncData);
+        }
+        if(""!=_syncData || _this.pollMode) {
+          _this.syncNum++;
+          HVM.isGetting=true;
+          req_args = {
+            onSuccess: function(resp){_this.respond(resp);},
+            onFailure: function(resp){_this.failure(resp);},
+            method:    'post',
+            postBody:  'ses_id='+_this.ses_id+_this.err_msg+_syncData
+          };
+          try{
+            _this.req  = new Ajax.Request( _this.url_base, req_args );
+            HVM.isGetting=false;
+          }
+          catch(e){
+            window.status = 'conn error:'+e;
+            HVM.isGetting=false;
+            _this.failure(null);
+          }
+        }
+        else {
+          _this.isBusy = false;
+        }
+      }
+    }
+  },
+  
+  stop: function() {
+    clearTimeout(_this.req_timeout);
+  }
+  
+});
+
+LOAD("HTransporter.start(HTransportURL);");
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HValueManager
+  *
+  * *Simple value syncronization system.*
+  * 
+  * Designed as single instance, depends on <HValue> and <HControl>.
+  *
+  * The system relies heavily on <HValue> instances.
+  * It allows easy value syncronization between the server and client components.
+  * <HTransporter> makes <toXML> calls whenever it's making a server poll to send
+  * changed data to the server as XML, accessable by the 'HSyncData' request key.
+  *
+  * See Also:
+  *  <HValue> <HTransporter> <HControl>
+  *
+  * Simple usage example:
+  *  > var myApp = new HApplication(100);
+  *  > var myTextCtrl1 = new HTextControl(new HRect(100,100,356,118),myApp,'',"Hello, I'm a textcontrol!");
+  *  > myTextCtrl1.draw();
+  *  > var myTextCtrl2 = new HTextControl(new HRect(120,100,356,138),myApp,'',"Hi, I'm also a textcontrol!");
+  *  > myTextCtrl2.draw();
+  *  > var myNewHValue = new HValue('foo123', "Hi, I am an example value.");
+  *  > myNewValue.bind( myTextCtrl1 );
+  *  > myNewValue.bind( myTextCtrl2 );
+  *  > HValueManager.set('foo123',"Hi, I am the new replacement value!");
+  *  > var myXMLChanged = HValueManager.toXML();
+  **/
+
+HValueManager = HClass.extend({
+  constructor: null,
+  
+/** vars: Instance variables
+  *
+  * values - Array, contains all values currently managed, accessible by <HValue> id:s
+  * tosync - Array, contains changed values that need to be reported to the remote side via <HTransporter>
+  * isSending - flag, is set to true when <HTransporter> is busy.
+  *
+  **/
+  values: {},
+  tosync: [],
+  isSending: false,
+  isGetting: false,
+  
+/*** method: add
+  ** 
+  ** Adds a new <HValue> bound to the value of id into the value index of <HValueManager>.
+  ** These values will then then be automatically syncronized between components
+  ** and other compatible instances, like server-side value management. Most
+  ** likely to be called from inside a <HValue> constructor.
+  **
+  ** Parameters:
+  **  _id - An id for the value, doesn't really matter at the client-side as long as it is unique. Matters for server-side. Could be int or str, depending on the server implementation.
+  **  _obj - A <HValue> object instance, usually *this* inside constructors of <HValue>-compatible classes.
+  **
+  ** See also:
+  **  <set> <del> <HValue.constructor>
+  ***/
+  add: function(_id,_obj){
+    this.values[_id] = _obj;
+  },
+  
+/*** method: set
+  **
+  ** Sets a new *container value* to the <HValue> object by calling the bound <HValue> by its id.
+  **
+  ** Parameters:
+  **  _id - The <HValue>-instance id to be modified.
+  **  _value - The container value (NOT a <HValue>)
+  **
+  ** See also:
+  **  <add> <del> <HValue.set> <HControl.setValue>
+  ***/
+  set: function(_id,_value){
+    this.values[_id].set(_value);
+  },
+  
+  s: function(_id,_value){
+    this.values[_id].s(_value);
+  },
+  
+/*** method: del
+  **
+  ** Deletes the <HValue> by id from the value management system.
+  **
+  ** Parameters:
+  **  _id - The <HValue>-instance id to be deleted.
+  **
+  ** See also:
+  **  <add> <set> <HValue>
+  ***/
+  del: function(_id){
+    var _thisVal  = this.values[_id],
+        _valViews = _thisVal.views,
+        _viewNum  = 0,
+        _thisView = null;
+    for(;_viewNum<_valViews.length;_viewNum++){
+      _thisView = _valViews[_viewNum];
+      _thisView.valueObj = new HDummyValue(0,_thisVal.value);
+    }
+    this.values[_id] = null;
+  },
+  
+/*** method: changed
+  **
+  ** Reports the <HValue> to <HValueManager> as a changed object.
+  ** It adds a reference to the <HValue>, unless the value is changed via <HTransporter>.
+  ** 
+  ** There is no need to call it manually, except when creating a new <HValue> -compatible
+  ** object from the scratch. Value-classes call changed whenever the change needs
+  ** to be reported elsewhere.
+  **
+  ** Parameters:
+  **  _theObj - The <HValue> -instance object to list as changed.
+  **
+  ** See also:
+  **  <isGetting> <tosync> <set>
+  ***/
+  changed: function(_theObj){
+    if(this.isGetting==false){
+      if(this.tosync.indexOf(_theObj.id)==-1){
+        this.tosync.push(_theObj.id);
+      }
+      var _t=HTransporter;
+      if(!_t.pollMode){
+        clearTimeout(_t.req_timeout);
+        _t.req_timeout = setTimeout('HTransporter.sync();',_t.syncDelay);
+      }
+    }
+  },
+  
+/*** method: toXML
+  **
+  ** Outputs all changed values to XML.
+  **
+  ** See also:
+  **  <HTransporter>
+  ***/
+  toXML: function(){
+    var _postBody = '&HSyncData=';
+    if(!this.isSending){
+      this.isSending = true;
+      var _synclen = this.tosync.length;
+      if(_synclen==0){
+        this.isSending = false;
+        return '';
+      }
+      var _syncvalueArr = [],_i;
+      for(_i=0;_i<_synclen;_i++){
+        var _syncid = this.tosync.shift();
+        var _syncobj = this.values[_syncid];
+        _syncvalueArr.push( _syncobj.toXML(_i) );
+      }
+      var _syncvalues = _syncvalueArr.join('');
+      // version: 8000 + himle svn revision at modification time
+      _postBody += '<hsyncvalues version="8118">'+_syncvalues+'</hsyncvalues>';
+      this.isSending = false;
+    }
+    return _postBody;
+  },
+  
+  // Backwards-compatibility:
+  output: function(){
+    return this.toXML();
+  }
+});
+
+// HVM is a shortcut to HValueManager
+HVM = HValueManager;
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HValue
+  **
+  ** Data that needs to be syncronized between components or remote clients should be implemented as HValues.
+  ** If client-side validation and type-checking is needed, it should be implemented by subclassing HValue.
+  **
+  ** vars: Instance variables
+  **  id - Value Id, used by the whole value management system to identify individual values.
+  **  type - '[HValue]'
+  **  value - The container/"payload" data value itself.
+  **  views - A list of Components that uses this value. 
+  **          Used for automatic value syncronization between components.
+  **
+  ** Usage example:
+  **  > var myApp = new HApplication(100);
+  **  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
+  **  > mySlider.draw();
+  **  > var myValue = new HValue(123,100.0);
+  **  > myValue.bind(mySlider);
+  **
+  ** See also:
+  **  <HValueManager> <HControl>
+  ***/
+
+
+HValue = HClass.extend({
+/** constructor: constructor
+  *
+  * Parameters:
+  *   _id - The source id (ideally set by server, should be unique)
+  *   _value - The initial data 
+  **/
+  constructor: function(_id,_value){
+    this.id    = _id;
+    this.type  = '[HValue]';
+    this.value = _value;
+    this.views = [];
+    HValueManager.add(_id,this);
+  },
+  
+/** method: set
+  * 
+  * Replaces the data of the value. Extend this, if you need validation etc.
+  *
+  * Parameters:
+  *  _value - The new data to replace the old data with.
+  *
+  * See also:
+  *  <HControl.setValue> <HValueManager.set>
+  **/
+  set: function(_value){
+    if(_value != this.value){
+      this.value = _value;
+      HValueManager.changed(this);
+      this.refresh();
+    }
+  },
+  
+/** method: s
+  * 
+  * Just as <set>, but doesn't re-notify the server about the change.
+  *
+  **/
+  s: function(_value){
+    this.value = _value;
+    this.refresh();
+  },
+  
+/** method: get
+  *
+  * Return the data, synonymous to the <value> instance variable
+  *
+  * Returns:
+  *  The value instance variable (the data "payload")
+  *
+  * See also:
+  *  <HValue.value>
+  **/
+  get: function(){
+    return this.value;
+  },
+  
+/** method: bind
+  *
+  * Bind a component to the value, use to attach HValues to components derived from HControl.
+  *
+  * Parameters:
+  *  _viewObj - Any component that is derived from HControl *or* any class 
+  *             that responds to setValueObj and setValue methods.
+  *
+  * See also:
+  *  <unbind> <HControl.setValueObj>
+  *
+  **/
+  bind: function(_viewObj){
+    if(_viewObj===undefined){
+      throw("HValueBindError: _viewObj is undefined!");
+    }
+    //if(this.views.indexOf(_viewObj)==-1){
+      this.views.push(_viewObj);
+      _viewObj.setValueObj( this );
+    //}
+  },
+  
+/** method: unbind
+  *
+  * Detach a component bound to this value.
+  *
+  * Parameters:
+  *  _viewObj - Any component that is derived from HControl *or* any class 
+  *             that responds to setValueObj and setValue methods.
+  *
+  * See also:
+  *  <bind>
+  *
+  **/
+  unbind: function(_viewObj){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _tryObj = this.views[_viewNum];
+      if(_tryObj===_viewObj){
+        this.views.splice(_viewNum);
+        return;
+      }
+    }
+  },
+  
+  release: function(_viewObj){
+    return this.unbind(_viewObj);
+  },
+  
+/** method: refresh
+  *
+  * Calls the setValue method all components bound to this HValue.
+  *
+  * See also:
+  *  <HControl.setValue>
+  **/
+  refresh: function(){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _viewObj = this.views[_viewNum];
+      if(_viewObj.value != this.value){
+        if(!_viewObj._valueIsBeingSet){
+          _viewObj._valueIsBeingSet=true;
+          _viewObj.setValue( this.value );
+          _viewObj._valueIsBeingSet=false;
+        }
+      }
+    }
+  },
+  
+/** method: toXML
+  *
+  * Responsible for generating the xml representation of the value object.
+  *
+  * Parameter:
+  *  _i - The sequence number of the item, generated by HValueManager.
+  *
+  * Returns:
+  *  A XML string with meta-info about the object
+  *
+  * See Also:
+  *  <HValueManager.toXML>
+  *
+  * Samples:
+  * > <b id="996">1</b>'
+  * > <b id="996">0</b>'
+  * > <f id="997">123.321</f>'
+  * > <i id="997">123</i>'
+  * > <s id="PnG_aXSutjPoeqgi02mXOVA9HQWREvprkkeW">c3RyaW5nAAA=</s>'
+  **/
+  toXML: function(_i){
+    var _syncid = this.id.toString();
+    //var _synctype = this.type.slice(1,-1).toLowerCase();
+    var _syncvalue = this.value;
+    var _syncjstype = (typeof _syncvalue).slice(0,1);
+    var _syncescvalue;
+    
+    if (_syncjstype == 's'){ // string
+      _syncescvalue = _syncvalue.toString();
+      _syncescvalue = SHA.str2Base64( _syncescvalue );
+    }
+    else if (_syncjstype == 'n'){ // number
+      if (Math.ceil(_syncvalue) === Math.floor(_syncvalue) === _syncvalue) {
+        _syncjstype = 'i'; // integer
+        _syncescvalue = parseInt(_syncvalue,10).toString();
+      }
+      else {
+        _syncjstype = 'f'; // float
+        _syncescvalue = parseFloat(_syncvalue).toString();
+      }
+    }
+    else if (_syncjstype == 'b'){ // boolean
+      if(_syncvalue){_syncescvalue='1';}
+      else{_syncescvalue='0';}
+    }
+    else {
+      try{
+        if(console&&console.log){
+          console.log('syncvalue type error');
+          console.log('  syncid:',_syncid);
+          console.log('  syncjstype:',_syncjstype);
+          console.log('  typeof:',(typeof _syncvalue));
+          console.log('  syncvalue:',_syncvalue);
+        }
+      }
+      catch(e){
+        alert('value error, syncid:'+_syncid+' syncjstype:'+_syncjstype+' typeof:'+(typeof _syncvalue)+' syncvalue:'+_syncvalue);
+      }
+      return '';
+    }
+    
+    return '<'+_syncjstype+' id="'+_syncid+'">'+_syncescvalue+'</'+_syncjstype+'>';
+  }
+  
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+
+JSLoader = Base.extend({
+  
+  constructor: function(_uri){
+    this._loadedJS = [];
+    this.uri  = _uri;
+    this._req = null;
+    //this._currJS = [];
+  },
+  
+  _okay: function(_resp){
+    //var _loadedJS = jsLoader._currJS.shift();
+    //console.log('resp: ',_resp);
+    //console.log('loadedJS: ',_loadedJS);
+    //console.log('jsLoader.loadedJS: ',jsLoader._loadedJS);
+    //console.log('jsLoader.currJS: ',jsLoader._currJS);
+    eval(_resp.responseText);
+  }, 
+  
+  load: function(_jsName,_fullURL){
+    if((jsLoader._loadedJS.indexOf(_jsName)!=-1) && (_fullURL === undefined)) {
+      return;
+    }
+
+    if (_fullURL) {
+      document.write('<script type="text/javascript" src="'+_jsName+'"><'+'/script>');
+    } else {
+      req_args = {
+        onSuccess:    function(resp){jsLoader._okay(resp);},
+        onFailure:    function(resp){window.status="failed to load js: "+jsLoader._currJS;},
+        method:       'get',
+        asynchronous: false
+      };
+      var _url = this.uri+_jsName+'.js';
+      this._req = new Ajax.Request( _url, req_args );
+      this._loadedJS.push(_jsName);
+    }
+  }
+  
+});
+
+LOAD("jsLoader = new JSLoader('/H/js/');");
+
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+HValueMatrixComponentExtension = {
+  componentBehaviour: ['view','control','matrix'],
+  constructor: function(_rect, _parent, _options) {
+    this.base(_rect, _parent, _options);
+    this.setValueMatrix();
+  },
+  setValueMatrix: function(){
+    if(!this.parent.valueMatrix){
+      this.parent.valueMatrix = new HValueMatrix();
+    }
+    this.valueMatrixIndex = this.parent.valueMatrix.addControl(this);
+  },
+  click: function(){
+    if (this.parent.valueMatrix instanceof HValueMatrix) {
+      this.parent.valueMatrix.setValue( this.valueMatrixIndex );
+    }
+  }
+};
+
+HValueMatrix = HClass.extend({
+  constructor: function(){
+    // An array to hold member components
+    this.ctrls = [];
+    // The index of the value member chosen
+    this.value = -1;
+    this.valueObj = new HDummyValue();
+  },
+  
+  setValueObj: function(_valueObj){
+    this.valueObj = _valueObj;
+    this.setValue(_valueObj.value);
+  },
+  
+  setValue: function(_index){
+    if(_index!=this.value){
+      // Set the previous value object to false (reflects to its container component(s))
+      if(this.value != -1){
+        this.ctrls[this.value].setValue(false);
+      }
+      if(_index != -1){
+        this.valueObj.set(_index);
+        // Store the new index as the currently active value
+        this.value = _index;
+        // Set the new value object to true (reflects to its container component(s))
+        if(_index<this.ctrls.length){
+          this.ctrls[_index].setValue(true);
+        }
+      }
+    }
+  },
+  
+  addControl: function(_ctrl) {
+    this.ctrls.push(_ctrl);
+    var _newIndex = this.ctrls.length-1;
+    if(_ctrl.value){
+      this.setValue(_newIndex);
+    }
+    return _newIndex;
+  }
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HPoint
+  *
+  * Point objects represent points on a two-dimensional coordinate grid. The
+  * object's coordinates are stored as public x and y data members.
+  *
+  * vars: Instance Variables
+  *  type - '[HPoint]'
+  *  x - The X coordinate of the point
+  *  y - The Y coordinate of the point
+  *
+  * See also:
+  *  <HRect>
+  **/
+HPoint = HClass.extend({
+
+/** constructor: constructor
+  *
+  * Creates a new Point object that corresponds to the point (x, y), or that's
+  * copied from point. If no coordinate values are assigned, the Point's
+  * location is indeterminate.
+  *
+  * Parameter (by using a <HPoint> instance):
+  *  point - Another <HPoint> or other compatible structure.
+  *
+  * Parameters (by using separate numeric coordinates):
+  *  x, y - Separate coordinates
+  *
+  * Initialization examlpes:
+  * > var myPoint = new HPoint(100,200);
+  * > var mySameCoordPoint = new HPoint( myPoint );
+  **/
+  constructor: function() {
+    this.type = '[HPoint]';
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    }
+    else if (_args.length == 2) {
+      this._constructorValues(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorPoint(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+
+  },
+  _constructorDefault: function() {
+    this.x = null;
+    this.y = null;
+  },
+  _constructorValues: function(x, y) {
+    this.x = x;
+    this.y = y;
+  },
+  _constructorPoint: function(_point) {
+    this.x = _point.x;
+    this.y = _point.y;
+  },
+  
+/** method: set
+  *
+  * Sets the Point's x and y coordinates.
+  *
+  * Parameters:
+  *  x - The new X coordinate of the point
+  *  y - The new Y coordinate of the point
+  **/
+  set: function() {
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    }
+    else if (_args.length == 2) {
+      this._constructorValues(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorPoint(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+  },
+  
+/** method: constrainTo
+  *
+  * Ensures that the Point lies within rect. If it's already contained in the
+  * rectangle, the Point is unchanged; otherwise, it's moved to the rect's
+  * nearest edge.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to constrain to.
+  *
+  * See also:
+  *  <HRect>
+  **/
+  constrainTo: function(_rect) {
+    
+    if (this.x < _rect.left) {
+        this.x = _rect.left;
+    }
+    if (this.y < _rect.top) {
+      this.y = _rect.top;
+    }
+    if (this.x > _rect.right) {
+      this.x = _rect.right;
+    }
+    if (this.y > _rect.bottom) {
+      this.y = _rect.bottom;
+    }
+    
+  },
+  
+/** method: add
+  *
+  * Creates and returns a new Point that adds the given Point and this Point
+  * together. The new object's x coordinate is the sum of the operands' x
+  * values; its y value is the sum of the operands' y values.
+  *
+  * Parameter (with HPoint):
+  *  _point - An <HPoint> to add to.
+  *
+  * Parameters (with coordinates):
+  *  _x - An X-coordinate to add to.
+  *  _y - An Y-coordinate to add to.
+  *
+  * Returns:
+  *  A new <HPoint>.
+  *
+  * See also:
+  *  <subtract> <equals>
+  **/
+  add: function(_point) {
+    _args = arguments;
+    if((_args.length==1)&&(_args[0].type==this.type)){
+      _point = _args[0];
+      return new HPoint( (this.x + _point.x), (this.y + _point.y) );
+    }
+    else if(_args.length==2){
+      return new HPoint( (this.x + _args[0]), (this.y + _args[1]) );
+    } else {
+      return new HPoint( 0, 0 );
+    }
+  },
+  
+  
+/** method: subtract
+  *
+  * Creates and returns a new Point that subtracts the given Point from this
+  * Point. The new object's x coordinate is the difference between the
+  * operands' x values; its y value is the difference between the operands'
+  * y values.
+  *
+  * Parameter (with HPoint):
+  *  _point - An <HPoint> to subtract from.
+  *
+  * Parameters (with coordinates):
+  *  _x - An X-coordinate to subtract from.
+  *  _y - An Y-coordinate to subtract from.
+  *
+  * Returns:
+  *  A new <HPoint>.
+  *
+  * See also:
+  *  <add> <equals>
+  **/
+  subtract: function(){
+    _args = arguments;
+    if((_args.length==1)&&(_args[0].type==this.type)){
+      _point = _args[0];
+      return new HPoint( this.x-_point.x, this.y-_point.y );
+    }
+    else if(_args.length==2){
+      return new HPoint( this.x-_args[0], this.y-_args[1] );
+    } else {
+      return new HPoint( 0, 0 );
+    }
+  },
+  
+  
+/** method: equals
+  *
+  * Returns true if the two objects' point exactly coincide.
+  *
+  * Parameter:
+  *  _point - A <HPoint> to compare to.
+  *
+  * Returns:
+  *  The result; true or false.
+  *
+  * See also:
+  *  <subtract> <add>
+  **/
+  equals: function(_point) {
+    return ( this.x == _point.x && this.y == _point.y );
+  }
+
+
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HRect
+  *
+  * A Rect object represents a rectangle. Rects are used throughout the
+  * Components to define the frames of windows, views, bitmaps even the 
+  * screen itself. A HRect is defined by its four sides, expressed as the public
+  * data members left, top, right, and bottom.
+  *
+  * If you change a component's rect, you should call its <HView.drawRect> method.
+  *
+  * vars: Instance Variables
+  *  type - '[HRect]'
+  *  top - The position of the rect's top side (from parent top)
+  *  left - The position of the rect's left side (from parent left)
+  *  bottom - The position of the rect's bottom side (from parent top)
+  *  right - The position of the rect's right side (from parent left)
+  *  leftTop - A <HPoint> representing the coordinate of the rect's *left top corner*
+  *  leftBottom - A <HPoint> representing the coordinate of the rect's *left bottom corner*
+  *  rightTop - A <HPoint> representing the coordinate of the rect's *right top corner*
+  *  rightBottom - A <HPoint> representing the coordinate of the rect's *right bottom corner*
+  *  width - The width of the rect.
+  *  height - The height of the rect.
+  *
+  * See also:
+  *  <HPoint> <HView> <HView.drawRect>
+  **/  
+HRect = HClass.extend({
+
+/** constructor: constructor
+  *
+  * Initializes a Rect as four sides, as two diametrically opposed corners,
+  * or as a copy of some other Rect object. A rectangle that's not assigned
+  * any initial values is invalid, until a specific assignment is made, either
+  * through a set() function or by setting the object's data members directly.
+  *
+  * Parameter (using a <HRect> instance):
+  *  rect - Another <HRect>.
+  *
+  * Parameters (using two <HPoint> instances):
+  *  leftTop, rightBottom - Coordinates of the *left top corner* and *right bottom corner*.
+  *
+  * Parameters (using separate Numeric coordinates):
+  *  left, top, right, bottom - Coordinates of the *sides*.
+  *
+  * Initialization examples:
+  * > var myLeftTopPoint = new HPoint(100,200);
+  * > var myBottomRightPoint = new HPoint(300,400);
+  * > var myRectFromOppositeCornerPoints = new HRect( myLeftTopPoint, myBottomRightPoint );
+  * > var myRectFromSideCoordinates = new HRect(100,200,300,400);
+  * > var myRectFromAnotherRect = new HRect( myRectFromEdgeCoordinates );
+  **/
+  constructor: function() {
+    this.type = '[HRect]';
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    } else if (_args.length == 4) {
+      this._constructorSides(_args[0],_args[1],_args[2],_args[3]);
+    }
+    else if (_args.length == 2) {
+      this._constructorPoint(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorRect(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _constructorDefault: function() {
+    this.top = 0;
+    this.left = 0;
+    this.bottom = -1;
+    this.right = -1;
+  },
+  _constructorSides: function(_left, _top, _right, _bottom) {
+    this.top = _top;
+    this.left = _left;
+    this.bottom = _bottom;
+    this.right = _right;
+  },
+  _constructorPoint: function(_leftTop, _rightBottom) {
+    this.top = _leftTop.y;
+    this.left = _leftTop.x;
+    this.bottom = _rightBottom.y;
+    this.right = _rightBottom.x;
+  },
+  _constructorRect: function(_rect) {
+    this.top = _rect.top;
+    this.left = _rect.left;
+    this.bottom = _rect.bottom;
+    this.right = _rect.right;
+  },
+
+/** method: updateSecondaryValues
+  *
+  * You should call this on the instance to update secondary values, like
+  * width and height, if you change a primary (left/top/right/bottom) value
+  * straight through the property.
+  *
+  * *Do not change properties other than the primaries through properties.*
+  *
+  * *Use the accompanied methods instead.*
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  updateSecondaryValues: function() {
+    /**
+      * isValid is true if the Rect's right side is greater than or equal to its left
+      * and its bottom is greater than or equal to its top, and false otherwise.
+      * An invalid rectangle can't be used to define an interface area (such as
+      * the frame of a view or window).
+      */
+    this.isValid = ( this.right >= this.left && this.bottom >= this.top );
+    
+    /**
+      *
+      * The Point-returning functions return the coordinates of one of the
+      * rectangle's four corners. 
+      */
+    this.leftTop = new HPoint(this.left, this.top);
+    this.leftBottom = new HPoint(this.left, this.bottom);
+    this.rightTop = new HPoint(this.right, this.top);
+    this.rightBottom = new HPoint(this.right, this.bottom);
+    
+    /**
+      * The width and height of a Rect's rectangle, as returned through these
+      * properties.
+      */
+    this.width = (this.right - this.left);
+    this.height = (this.bottom - this.top);
+  },
+  
+/** method: set
+  *
+  * Sets the object's rectangle by defining the coordinates of all four
+  * sides.
+  *
+  * The other set...() functions move one of the rectangle's corners to the
+  * Point argument; the other corners and sides are modified concomittantly.
+  *
+  * *None of these methods prevents you from creating an invalid rectangle.*
+  *
+  * Parameters:
+  *  _left - The coordinate of the left side.
+  *  _top - The coordinate of the top side.
+  *  _right - The coordinate of the right side.
+  *  _bottom - The coordinate of the bottom side.
+  *
+  * See also:
+  *  <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  set: function() {
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    } else if (_args.length == 4) {
+      this._constructorSides(_args[0],_args[1],_args[2],_args[3]);
+    }
+    else if (_args.length == 2) {
+      this._constructorPoint(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorRect(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  
+/** method: setLeft
+  *
+  * Moves the rect's left side to a new coordinate.
+  *
+  * Parameter:
+  *  _left - The new left side coordinate (in px)
+  *
+  **/
+  setLeft: function(_left){
+    this.left = _left;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setRight
+  *
+  * Moves the rect's right side to a new coordinate.
+  *
+  * Parameter:
+  *  _right - The new right side coordinate (in px)
+  *
+  **/
+  setRight: function(_right){
+    this.right = _right;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setTop
+  *
+  * Moves the rect's top side to a new coordinate.
+  *
+  * Parameter:
+  *  _top - The new top side coordinate (in px)
+  *
+  **/
+  setTop: function(_top){
+    this.top = _top;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setBottom
+  *
+  * Moves the rect's bottom side to a new coordinate.
+  *
+  * Parameter:
+  *  _bottom - The new bottom side coordinate (in px)
+  *
+  **/
+  setBottom: function(_bottom){
+    this.bottom = _bottom;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setLeftTop
+  *
+  * Moves the rects left and top sides to a new point. Affects the position,
+  * width and height.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  setLeftTop: function(_point) {
+    this.left=_point.x;
+    this.top=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setLeftBottom
+  *
+  * Moves the rects left and bottom sides to a new point. Affects the left
+  * position, width and height.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  setLeftBottom: function(_point) {
+    this.left=_point.x;
+    this.bottom=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setRightTop
+  *
+  * Moves the rects right and top sides to a new point. Affects the top
+  * position, width and height.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  setRightTop: function(_point) {
+    this.right=_point.x;
+    this.top=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setRightBottom
+  *
+  * Moves the rects right and bottom sides to a new point. Affects the width
+  * and height. Does not affect the position.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setWidth> <setHeight> <setSize>
+  **/
+  setRightBottom: function(_point) {
+    this.right=_point.x;
+    this.bottom=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setWidth
+  *
+  * Moves the rects right side to a new coordinate. Does not affect the position.
+  *
+  * Parameter:
+  *  _width - A numeric value representing the new target width of the rect.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setHeight> <setSize>
+  **/
+  setWidth: function(_width){
+    this.right = this.left + _width;
+    this.updateSecondaryValues();
+  },
+
+/** method: setHeight
+  *
+  * Moves the rects bottom side to a new coordinate. Does not affect the position.
+  *
+  * Parameter:
+  *  _height - A numeric value representing the new target height of the rect.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setSize>
+  **/
+  setHeight: function(_height){
+    this.bottom = this.top + _height;
+    this.updateSecondaryValues();
+  },
+
+/** method: setSize
+  *
+  * Moves the rects right and bottom sides to new coordinates. Does not affect the position.
+  *
+  * Parameter (by separate numeric values):
+  *  _width - A numeric value representing the new target width of the rect.
+  *  _height - A numeric value representing the new target height of the rect.
+  *
+  * Parameter (by <HPoint> used as "HSize"):
+  *  _point.x - A numeric value representing the new target width of the rect.
+  *  _point.y - A numeric value representing the new target height of the rect.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight>
+  **/
+  setSize: function(){
+    var _args=arguments;
+    // Using width and height:
+    if (_args.length === 2) {
+      _width = _args[0];
+      _height = _args[1];
+    }
+    // Using a point:
+    else if (_args.length === 1) {
+      _width = _args.x;
+      _height = _args.y;
+    }
+    this.right = this.left + _width;
+    this.bottom = this.top + _height;
+    this.updateSecondaryValues();
+  },
+  
+/** method: intersects
+  *
+  * Returns true if the Rect has any area even a corner or part 
+  * of a side in common with rect, and false if it doesn't.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to intersect this rect with
+  *
+  * Returns:
+  *  A Boolean (true/false) depending on the result.
+  *
+  * See also:
+  *  <contains> <equals> <intersection> <union>
+  **/
+  intersects: function(_rect) {
+    return (
+      ((_rect.left >= this.left && _rect.left <= this.right) ||
+        (_rect.right >= this.left && _rect.right <= this.right)) && 
+      ((_rect.top >= this.top && _rect.top <= this.bottom) ||
+        (_rect.bottom >= this.top && _rect.bottom <= this.bottom)));
+  },
+  
+/** method: contains
+  *
+  * Returns true if point or rect lies entirely within the Rect's
+  * rectangle (and false if not). A rectangle contains the points that lie
+  * along its edges; for example, two identical rectangles contain each other.
+  * 
+  * Also works with <HPoint> instances.
+  *
+  * Parameter:
+  *  _obj - A <HRect> or <HPoint> to check the containment with.
+  *
+  * Returns:
+  *  A Boolean (true/false) depending on the result.
+  *
+  * See also:
+  *  <intersects> <equals> <intersection> <union>
+  **/
+  contains: function(_obj) {
+    if(_obj instanceof HPoint) {
+      return this._containsPoint(_obj);
+    }
+    else if(_obj instanceof HRect) {
+      return this._containsRect(_obj);
+    }
+    else {
+      throw "Wrong argument type.";
+    }
+  },
+  _containsPoint: function(_point) {
+    return ( _point.x >= this.left && _point.x <= this.right &&
+             _point.y >= this.top && _point.y <= this.bottom );
+  },
+  _containsRect: function(_rect) {
+    return ( _rect.left >= this.left && _rect.right <= this.right &&
+             _rect.top >= this.top && _rect.bottom <= this.bottom );
+  },
+  
+/** method: insetBy
+  *
+  * Insets the sides of the Rect's rectangle by x units (left and
+  * right sides) and y units (top and bottom). Positive inset values shrink
+  * the rectangle; negative values expand it. Note that both sides of each
+  * pair moves the full amount. For example, if you inset a Rect by (4,4), the
+  * left side moves (to the right) four units and the right side moves (to the
+  * left) four units (and similarly with the top and bottom).
+  *
+  * Parameter (using a <HPoint>):
+  *  point - A <HPoint> to inset by.
+  *
+  * Parameter (using separate x and y coordinates):
+  *  x, y - Numeric coordinates to inset by.
+  *
+  * See also:
+  *  <offsetBy> <offsetTo> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
+  **/
+  insetBy: function() {
+    var _args=arguments;
+    if (_args.length === 1) {
+      this._insetByPoint(_args[0]);
+    } else if (_args.length == 2) {
+      this._insetByXY(_args[0],_args[1]);
+    } else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _insetByPoint: function(_point) {
+    this._insetByXY(_point.x, _point.y);
+  },
+  _insetByXY: function(x, y) {
+    this.left += x;
+    this.top += y;
+    this.right -= x;
+    this.bottom -= y;
+  },
+  
+/** method: offsetBy
+  *
+  * Moves the Rect horizontally by x units and vertically by y
+  * units. The rectangle's size doesn't change.
+  *
+  * Parameter (using a <HPoint>):
+  *  point - A <HPoint> to offset by.
+  *
+  * Parameter (using separate x and y coordinates):
+  *  x, y - Numeric coordinates to offset by.
+  *
+  * See also:
+  *  <insetBy> <offsetTo> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
+  **/
+  offsetBy: function() {
+    var _args=arguments;
+    if (_args.length === 1) {
+      this._offsetByPoint(_args[0]);
+    } else if (_args.length == 2) {
+      this._offsetByXY(_args[0],_args[1]);
+    } else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _offsetByPoint: function(_point) {
+    this._offsetByXY(_point.x, _point.y);
+  },
+  _offsetByXY: function(x, y) {
+    this.left += x;
+    this.top += y;
+    this.right += x;
+    this.bottom += y;
+  },
+  
+/** method: offsetTo
+  *
+  * Moves the Rect to the location (x,y).
+  *
+  * Parameter (using a <HPoint>):
+  *  point - A <HPoint> to offset to.
+  *
+  * Parameter (using separate x and y coordinates):
+  *  x, y - Numeric coordinates to offset to.
+  *
+  * See also:
+  *  <insetBy> <offsetBy> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
+  **/
+  offsetTo: function() {
+    var _args=arguments;
+    if (_args.length === 1) {
+      this._offsetToPoint(_args[0]);
+    } else if (_args.length == 2) {
+      this._offsetToXY(_args[0],_args[1]);
+    } else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _offsetToPoint: function(_point) {
+    this._offsetToXY(_point.x, _point.y);
+  },
+  _offsetToXY: function(x, y) {
+    this.right += x-this.left;
+    this.left = x;
+    this.bottom += y-this.top;
+    this.top = y;
+  },
+  
+/** method: equals
+  *
+  * Returns true if the two objects' rectangles exactly coincide.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to compare to.
+  *
+  * Returns:
+  *  A Boolean (true/false) depending on the result.
+  *
+  * See also:
+  *  <intersects> <contains> <intersection> <union>
+  **/
+  equals: function(_rect) {
+    return (this.left == _rect.left && this.top == _rect.top &&
+            this.right == _rect.right && this.bottom == _rect.bottom);
+  },
+  
+/** method: intersection
+  *
+  * Creates and returns a new Rect that's the intersection of this Rect and
+  * the specified Rect. The new Rect encloses the area that the two Rects have
+  * in common. If the two Rects don't intersect, the new Rect will be invalid.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to compare to.
+  *
+  * Returns:
+  *  A new <HRect> instance.
+  *
+  * See also:
+  *  <intersects> <contains> <equals> <union>
+  **/
+  intersection: function(_rect) {
+    return new HRect(
+       Math.max(this.left, _rect.left), Math.max(this.top, _rect.top),
+       Math.min(this.right, _rect.right), Math.min(this.bottom, _rect.bottom)
+    );
+  },
+  
+/** method: union
+  *
+  * Creates and returns a new Rect that minimally but completely encloses the
+  * area defined by this Rect and the specified Rect.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to compare to.
+  *
+  * Returns:
+  *  A new <HRect> instance.
+  *
+  * See also:
+  *  <intersects> <contains> <equals> <intersection>
+  **/
+  union: function(_rect) {
+    return new HRect(
+      Math.min(this.left, _rect.left), Math.min(this.top, _rect.top),
+      Math.max(this.right, _rect.right), Math.max(this.bottom, _rect.bottom)
+    );
+  },
+  
+  // Compability with HRectValue (dummy methods)
+  bind: function(_obj){},
+  unbind: function(_obj){}
+  
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+
+/** class: HSystem
+  *
+  * *Simple application householding system.*
+  * 
+  * Designed as single instance.
+  *
+  * HSystem is used to keep <HApplication> instances in order.
+  * HApplication itself calls HSystem, so there is no real need to access
+  * HSystem itself besides its <HSystem.stopApp>, <HSystem.startApp>, 
+  * <HSystem.reniceApp> and <HSystem.killApp> methods.
+  *
+  * HSystem works as the root of the component hierachy and currently offers
+  * only <HApplication> management. Useful for implementing taskbars/docks etc.
+  *
+  * var: HDefaultApplicationInterval
+  *  - Defines the default ms interval of polling.
+  *  - Defaults to 100 (ms)
+  *  - Change it before <Element Manager.onloader> is started.
+  *  - Has no effect after the system is initialized.
+  *
+  * vars: Instance variables
+  *  type - '[HSystem]'
+  *  apps - A list of Applications running. 
+  *  defaultInterval - The default application priority.
+  *
+  * See Also:
+  *  <HApplication>
+  *
+  * Usage example:
+  *  > var MyApp = new HApplication();
+  *  > myAppId = MyApp.appId;
+  *  > HSystem.reniceApp(myAppId, 10);
+  *  > HSystem.killApp(myAppId);
+  **/
+
+
+HDefaultApplicationInterval=20;
+HSystemTickerInterval=10;
+HSystem = HClass.extend({
+  
+  // Single instance; has no constructor
+  constructor: null,
+  
+  type: '[HSystem]',
+    
+  // An array of HApplication instances, index is the appId
+  apps: [],
+  
+  // An array (in the same order as apps): holds priority values
+  appPriorities: [],
+  
+  // An array (in the same order as apps): holds busy statuses
+  busyApps: [],
+  
+  // An array (in the same order as apps): holds Timeout values
+  appTimers: [],
+  
+  // This array holds free app id:s
+  freeAppIds: [],
+  
+  defaultInterval: HDefaultApplicationInterval,
+  
+  // The Z-order of applications. All the array handling is done by
+  // HApplication and HView instances.
+  viewsZOrder: [],
+  
+  // This is the internal "clock" counter. Gets updated on every process tick.
+  ticks: 0,
+  //fix_ie: false,
+  
+  // Time in milliseconds how long to wait for an application to finish before
+  // terminating it when the application is killed.
+  maxAppRunTime: 5000,
+  
+/*** method: scheduler
+  **
+  ** Calls applications, uses the divmod as a prioritizer.
+  **
+  ***/
+  scheduler: function(){
+    if ((this.ticks % 10) == 0 && this.fix_ie) {
+      //_traverseTree();
+    }
+    // Loop through all applications:
+    for( var _appId=0; _appId<this.apps.length; _appId++ ){
+      // Check, if the application exists:
+      if( this.apps[ _appId ] ){
+        // Check, if the application is busy:
+        if( !this.busyApps[ _appId ] ){
+          // Check, if the tick count matches the priority of the app:
+          if( (this.ticks % this.appPriorities[ _appId ]) == 0 ){
+            // Set the app busy, the app itself should "unbusy" itself, when the idle call is done.
+            // That happens in <HApplication._startIdle>
+            
+            // If the app is not busy, then make a idle call:
+            this.appTimers[ _appId ] = setTimeout('if (HSystem.apps[' + _appId +
+             ']) {HSystem.apps['+_appId+']._startIdle();}',10);
+          }
+        }
+      }
+    }
+  },
+  
+  
+/*** method: ticker
+  **
+  ** Calls the scheduler and then calls itself.
+  **
+  ***/
+  ticker: function(){
+    // Increment the tick counter:
+    this.ticks++;
+    this.scheduler();
+    this._tickTimeout = setTimeout('HSystem.ticker();',HSystemTickerInterval);
+  },
+  
+  
+/*** method: addApp
+  **
+  ** Called from inside the <HApplication> constructor.
+  ** Binds an app and gives it a unique id.
+  **
+  ** Parameters:
+  **  _app - Usually *this* inside the HApplication constructor, is the app namespace.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
+  **
+  ** Returns:
+  **  The application unique id.
+  **
+  ** See also:
+  **  <HApplication>
+  ***/
+  addApp: function(_app, _priority){
+    
+    if(this.freeAppIds.length > 1024){
+      var _appId = this.freeAppIds.shift();
+      this.apps[_appId] = _app;
+    } else {
+      this.apps.push(_app);
+      var _appId = this.apps.length-1;
+    }
+    
+    // sets self as parent
+    _app.parent  = this;
+    _app.parents = [this];
+    
+    _app.appId = _appId;
+    
+    this.startApp(_appId, _priority);
+    
+    return _appId;
+  },
+  
+/*** method: startApp
+  **
+  ** Starts polling an app instance (and its components).
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
+  **
+  ** See also:
+  **  <HApplication.start> <HSystem.stopApp> <HSystem.reniceApp>
+  ***/
+  startApp: function(_appId,_priority){
+    if(_priority===undefined){
+      _priority = this.defaultInterval;
+    }
+    this.appPriorities[ _appId ] = _priority;
+    this.busyApps[_appId] = false;
+  },
+  
+/*** method: stopApp
+  **
+  ** Stops polling an app instance (and its components).
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **
+  ** See also:
+  **  <HApplication.stop> <HSystem.startApp> <HSystem.reniceApp>
+  ***/
+  stopApp: function(_appId){
+    this.busyApps[_appId] = true;
+  },
+  
+/*** method: reniceApp
+  **
+  ** Changes the priority of the app. Calls <stopApp> and <startApp>.
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
+  **
+  ** See also:
+  **  <HSystem.stopApp> <HSystem.startApp>
+  ***/
+  reniceApp: function(_appId,_priority){
+    this.appPriorities[ _appId ] = _priority;
+  },
+  
+/*** method: killApp
+  **
+  ** Stops polling and deletes an app instance (and its components).
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **
+  ** See also:
+  **  <HApplication.die> <HSystem.stopApp>
+  ***/
+  killApp: function(_appId, _forced){
+    if( !_forced ){
+      var _startedWaiting = new Date().getTime();
+      while( this.busyApps[ _appId ] == true ) {
+        /* Waiting for the app to finish its idle loop... */
+        if (new Date().getTime() > _startedWaiting + this.maxAppRunTime) {
+          break;
+        }
+      }
+    }
+    this.busyApps[_appId] = true;
+    
+    this.apps[ _appId ].destroyAllViews();
+    delete this.apps[ _appId ];
+    this.apps[ _appId ] = null;
+    
+    this.freeAppIds.push( _appId );
+  },
+  
+  views: [],
+  _freeViewIds: [],
+  addView: function(_view){
+    var _newId;
+    if(this._freeViewIds.length==0){
+      _newId = this.views.length;
+      this.views.push(_view);
+    }
+    else {
+      _newId = this._freeViewIds.pop();
+      this.views[_newId] = _view;
+    }
+    return _newId;
+  },
+  delView: function(_viewId){
+    this.views[_viewId] = null;
+    this._freeViewIds.push(_viewId);
+  },
+  
+  activeWindowId: 0,
+  windowFocus: function(_view){
+    var _activeWindowId = this.activeWindowId,
+        _views = this.views,
+        _viewId = _view.viewId;
+    if(_views[_activeWindowId]){
+      if (_views[_activeWindowId]["windowBlur"]) {
+        _views[_activeWindowId].windowBlur();        
+      }
+    }
+    this.activeWindowId=_viewId;
+    _view.bringToFront();
+    _view.windowFocus();
+  }
+  
+});
+
+// Starts the ticking:
+LOAD('HSystem.ticker();');
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HApplication
+  *
+  * *Simple application template.*
+  *
+  * Depends on <HSystem>
+  *
+  * HApplication instances are good namespaces to bind your client-side logic to.
+  * Feel free to extend HApplication to suit your needs. The primary default
+  * purpose is root-level component (<HView>) management and being the
+  * root controller for <onIdle> events.
+  *
+  * vars: Instance variables
+  *  type - '[HApplication]'
+  *  views - A list of child components bound to it through <HView>
+  *  parent - Usually <HSystem>
+  *  parents - An array containing parents, usually just <HSystem>
+  *  appId - The unique id of the app
+  *  isBusy - A flag that is true when the app is doing <onIdle> events or stopped.
+  *
+  * See Also:
+  *  <HSystem> <HView>
+  *
+  * Usage example:
+  *  > var myApp = new HApplication(10);
+  *  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
+  *  > mySlider.draw();
+  *  > myApp.die();
+  **/
+HApplication = HClass.extend({
+  componentBehaviour: ['app'],
+/** constructor: constructor
+  *
+  * Parameter (optional):
+  *  _priority - An integer value (in ms) used for <onIdle> polling events.
+  **/
+  constructor: function(_priority){
+    
+    // storage for views
+    this.views = [];
+    
+    // storage for dom element id's in view, not utilized in HApplication by default
+    this.markupElemIds = [];
+    
+    // Views in Z order. The actual Z data is stored in HSystem, this is just a
+    // reference to that array.
+    this.viewsZOrder = HSystem.viewsZOrder;
+    // Finalize initialization via HSystem
+    HSystem.addApp(this,_priority);
+  },
+  
+/** method: buildParents
+  *
+  * Used by addView to build a parents array of parent classes.
+  *
+  **/
+  buildParents: function(_viewId){
+    var _view = HSystem.views[_viewId];
+    _view.parent = this;
+    _view.parents = [];
+    for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
+      _view.parents.push(this.parents[_parentNum]);
+    }
+    _view.parents.push(this);
+  },
+  
+/** method: addView
+  *
+  * Adds a view to the app, <HView> defines an indentical structure for subviews.
+  *
+  * Called from inside the HView constructor and should be automatic for all 
+  * components that accept the 'parent' parameter, usually the second argument,
+  * after the <HRect>.
+  *
+  * Parameter:
+  *  _view - Usually *this* inside <HView>-derivate components.
+  *
+  * Returns:
+  *  The parent view specific view id.
+  *
+  * See also:
+  *  <HView.addView> <removeView> <destroyView> <die>
+  **/
+  addView: function(_view) {
+
+    var _viewId = HSystem.addView(_view);
+    this.views.push(_viewId);
+    
+    this.buildParents(_viewId);
+    this.viewsZOrder.push(_viewId);
+    
+    return _viewId;
+  },
+  
+/** method: removeView
+  *
+  * Call this if you need to remove a child view from its parent without
+  * destroying its element, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to another.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <addView> <HView.addView> <destroyView> <die>
+  **/
+  removeView: function(_viewId){
+    HSystem.views[_viewId].remove();
+  },
+
+/** method: destroyView
+  *
+  * Call this if you need to remove a child view from its parent, destroying its
+  * child elements recursively and removing all DOM elements too.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <addView> <HView.addView> <removeView> <die>
+  **/
+  destroyView: function(_viewId){
+    HSystem.views[_viewId].die();
+  },
+  
+/** method: die
+  *
+  * Stops this application and destroys all the views currently in this
+  * application.
+  *
+  * See also:
+  *  <HSystem.killApp> <destroyView>
+  **/
+  die: function(){
+    HSystem.killApp(this.appId, false);
+  },
+  
+  
+/** method: destroyAllViews
+  *
+  * Deletes all the views added to this application but doesn't stop the
+  * application itself.
+  *
+  * See also:
+  *  <addView> <HView.addView> <removeView> <destroyView> <die>
+  **/
+  destroyAllViews: function(){
+    var i, _viewId;
+    for (i = 0; i < this.views.length; i++) {
+      _viewId = this.views[i];
+      HSystem.views[_viewId].die();
+    }
+  },
+  
+  
+  // calls the idle method of each view
+  _pollViews: function(){
+    var i, _viewId, _view;
+    for(i=0;i<this.views.length;i++){
+      _viewId = this.views[i];
+      _view = HSystem.views[_viewId];
+      if((_view!==null)&&(_view['onIdle']!==undefined)){
+        _view.onIdle();
+      }
+    }
+  },
+  
+/** method: startIdle
+  *
+  * Gets called by HSystem, is a separate method to make onIdle() extensions more failure resistant.
+  * Do not override or change!
+  *
+  **/
+  _startIdle: function(){
+    HSystem.busyApps[ this.appId ] = true;
+    this.onIdle();
+    this._pollViews();
+    HSystem.busyApps[ this.appId ] = false;
+  },
+  
+/** event: onIdle
+  *
+  * Extend this method, if you are going to perform regular actions in a app.
+  * Polled with the 'priority' interval timer given to <start>.
+  *
+  * *Very useful for 'slow, infinite loops' that don't take all the client browser machine CPU cycles.*
+  *
+  * See also:
+  *  <start> <renice> <HSystem.reniceApp>
+  **/
+  onIdle: function(){
+    /* Your code here */
+  }
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HThemeManager
+  **
+  ** A single instance class.
+  **
+  ** The theme manager knows the name of the currently loaded theme and handles
+  ** the loading of theme specific markup snippets and style declarations.
+  **
+  ** vars: Instance variables
+  **  themePath - Relative path to the components' top directory. 
+  **  currentTheme - The name of the theme currently in use. Initially the
+  **    default unnamed theme is used.
+  **  usesComponentDir - True when the components are separated in their own
+  **    directories, usually when using the source/development version. False
+  **    when the components are all in same directory. This is the case in the
+  **    release build.
+  **
+  ** See also:
+  **  <HView> <HMarkupView>
+  ***/
+
+HDefaultThemePath = '/H/themes';
+HDefaultThemeName = 'default';
+HNoComponentCSS = [];
+HThemeHasIE6GifsInsteadOfPng = [];
+
+/** HDefaultThemeMode:
+  *
+  *  0 = Pre-built mode
+  *  1 = Post-built mode
+  *
+  */
+HThemeMode = 1;
+
+HThemeManager = HClass.extend({
+  
+  constructor: null,
+  
+  init: function(){
+    
+    // Default root path of the themes path, should contain at least the default theme.
+    this.themePath = HDefaultThemePath;
+    
+    // Hash map of loaded template markup (html templates), by theme.
+    // componentName is used as the secondary key.
+    this._tmplCache = {};
+    
+    // Hash map of loaded css templates, by theme.
+    // componentName is used as the secondary key.
+    this._cssCache = {};
+    
+    // The currently selected default theme name.
+    this.currentTheme = HDefaultThemeName;
+  },
+  
+  setThemePath: function( _path ){
+    this.themePath = _path;
+  },
+  
+  // Error messages, should be refined.
+  _errTemplateNotFound: function( _url ) {
+    console.log( "ERROR: Template Not Found: '" + _url + "' ");
+  },
+  _errTemplateFailure: function( _url ) {
+    console.log( "ERROR: Template Failure: '" + _url + "' ");
+  },
+  _errTemplateException: function( _url ) {
+    console.log( "ERROR: Template Exception: '" + _url + "' ");
+  },
+  
+/** method: fetch
+  *
+  * Loads a template file and returns its contents.
+  * If errors occurred, calls the error management functions.
+  *
+  * Parameters:
+  *  _url - A valid local file path or http url pointing to the resource to load.
+  *  _contentType - An optional parameter, specifies the content type wanted, defaults to text/html.
+  *
+  * Returns:
+  *  The contents of the path.
+  */
+  fetch: function( _url, _contentType ) {
+    var _result;
+    if( !_contentType ){
+      var _contentType = 'text/html; charset=UTF-8';
+    }
+    var _req = new Ajax.Request(_url, {
+      method:    'GET',
+      
+      onSuccess: function( _xhr ) {
+        _result   = _xhr.responseText;
+      },
+      
+      on404:        function(){ HThemeManager._errTemplateNotFound(  _url ); },
+      onFailure:    function(){ HThemeManager._errTemplateFailure(   _url ); },
+      onException:  function(){ HThemeManager._errTemplateException( _url ); },
+      
+      asynchronous: false,
+      contentType:  _contentType
+    });
+    
+    _req.onStateChange();
+    
+    return _result;
+  },
+  
+  
+/** method: getThemeGfxPath
+  *
+  * Returns the theme/component -specific path, called from inside css
+  * themes, a bit kludgy approach to tell the theme grapics file paths. 
+  */
+  getThemeGfxPath: function() {
+    var _themeName      = this._cssEvalParams[0],
+        _componentName  = this._cssEvalParams[1],
+        _themePath      = this._cssEvalParams[2],
+        _pkgName        = this._cssEvalParams[3],
+        _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    return this._joinPath( _urlPrefix, 'gfx' );
+  },
+  
+/** method: getCssFilePath
+  *
+  * Returns the theme/component -specific graphics file path with proper css wrappers.
+  * Used from inside css themes, a bit kludgy approach to tell the file name path.
+  *
+  * Parameters:
+  *  _fileName - The File name to load.
+  *
+  */
+  getCssFilePath: function( _fileName ){
+    var _themeName      = this._cssEvalParams[0];
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+      return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
+    }
+    else {
+      return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName )+"')";
+    }
+  },
+  
+/** method: loadCSS
+  *
+  * Loads a css file based on the given url (or file path).
+  * Evaluates the css data.
+  * Makes sure the browser uses the data for component styles.
+  *
+  * Parameter:
+  *  _url - A valid url that points to a valid css file.
+  *
+  * Returns:
+  *  The source of the url.
+  */
+  loadCSS: function( _url ) {
+    var _contentType = 'text/css';
+    var _cssText = this.fetch( _url, _contentType );
+    
+    // Don't try to do anything with empty or invalid css data:
+    if (!_cssText || _cssText == "") {
+      return;
+    }
+    
+    // Evaluate the css text
+    _cssText = this._bindCSSVariables( _cssText );
+    
+    var _style, _styleSheet, _head;
+    
+    if(ELEM._is_ie) {
+      // Internet Explorer (at least 6.x; check what 7.x does)
+      _style         = document.createStyleSheet();
+      _style.cssText = _cssText;
+    }
+    
+    else {
+      // Common, standard <style> tag generation in <head>
+      _style        = document.createElement( "style" );
+      _style.type   = _contentType;
+      _style.media  = "all";
+      
+      _head = document.getElementsByTagName('head')[0];
+      _head.appendChild(_style);
+      
+      if (navigator.userAgent.indexOf('KHTML') != -1) {
+        // Work-around for safari
+        var _cssTextElement = document.createTextNode(_cssText);
+        _style.appendChild(_cssTextElement);
+      }
+      else {
+        // This works for others (add more checks, if problems with new browsers)
+        _style.innerHTML = _cssText;
+      }
+    }
+  },
+  
+  _addSlash: function( _str ){
+    if( _str[ _str.length-1 ] != '/' ){
+      _str += '/';
+    }
+    return _str;
+  },
+  
+  _joinPath: function( _str1, _str2 ){
+    return this._addSlash( _str1 ) + _str2;
+  },
+  
+  // Makes a common url prefix for template files
+  _urlPrefix: function( _themeName, _componentName, _themePath, _pkgName ) {
+    
+    var _path = _themePath;
+    
+    // Usually null
+    if( _themePath === null ) {
+      _path = this.themePath;
+    }
+    
+    // Pre-Build Path Format
+    if( HThemeMode == 0 ) {
+      if( _pkgName ){
+        _path = this._joinPath( _path, _pkgName );
+      }
+      // When using a component specific theme path, skip the standard directory
+      // structure and use the path directly.
+      if( _themePath === null ) {
+        _path = this._joinPath( _path, _componentName );
+        _path = this._joinPath( _path, 'themes' );
+      }
+      _path = this._joinPath( _path, _themeName );
+    }
+    
+    // Post-Build Path Format
+    else if( HThemeMode == 1 ) {
+      _path = this._joinPath( _path, _themeName );
+    }
+    
+    return _path;
+  },
+  
+  // Makes a valid css template url
+  _cssUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
+    this._cssEvalParams = [_themeName, _componentName, _themePath, _pkgName];
+    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _cssSuffix = this._joinPath( 'css', _componentName+'.css' );
+    var _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
+    return _cssUrl;
+  },
+  
+  // Makes a valid html template url
+  _markupUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
+    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _htmlSuffix = this._joinPath( 'html', _componentName+'.html' );
+    var _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
+    return _htmlUrl;
+  },
+  
+/** method: loadMarkup
+  *
+  * Loads HTML templates of components. Handles caching independently and intelligently.
+  *
+  * Parameters:
+  *  _themeName     - The name of the template to use.
+  *  _componentName - The name of the component template (css/html) to load.
+  *  _themePath     - (Optional) parameter to override the global theme path.
+  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
+  *
+  * Returns:
+  *  The Pre-Evaluated HTML Template.
+  *
+  **/
+  loadMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
+    if( !this._tmplCache[_themeName] ){
+      this._tmplCache[_themeName] = {};
+    }
+    var _cached = this._tmplCache[_themeName][_componentName];
+    
+    if (null === _cached || undefined === _cached) { 
+      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName );
+      _cached = this.fetch( _markupUrl );
+      // Save an empty string to template cache to prevent repeated failing
+      // requests.
+      if (null === _cached || undefined === _cached) {
+        _cached = "";
+      }
+      this._tmplCache[_themeName][_componentName] = _cached;
+    }
+    return _cached;
+  },
+  
+/** method: getMarkup
+  *
+  * Loads CSS and HTML templates of components. Called from <HView._loadMarkup>.
+  * Returns the HTML Template as text.
+  * Manages file caches independently and intelligently.
+  *
+  * Parameters:
+  *  _themeName     - The name of the template to use.
+  *  _componentName - The name of the component template (css/html) to load.
+  *  _themePath     - (Optional) parameter to override the global theme path.
+  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
+  *
+  * Returns:
+  *  The Pre-Evaluated HTML Template.
+  *
+  **/
+  getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
+    
+    /* Load Theme-Specific CSS: */
+    if (!this._cssCache[_themeName]){
+      var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
+      this._cssCache[_themeName] = {};
+      this.loadCSS( _commonCssUrl );
+    }
+    
+    /* Load Component-Specific CSS, unless configured to only load the common css: */
+    if(HNoComponentCSS.indexOf(_themeName)==-1){
+      //console.log('HNoComponentCSS:',HNoComponentCSS,',  indexOf:',HNoComponentCSS.indexOf(_themeName),',  themeName:',_themeName, ',  componentName:', _componentName, ',  themePath:',_themePath,',  pkgName:',_pkgName);
+      if (!this._cssCache[_themeName][_componentName]){
+        var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
+        this._cssCache[_themeName][_componentName] = true;
+        this.loadCSS( _componentCssUrl );
+      }
+    }
+    
+    /* Load/Return Component-Specific HTML: */
+    return this.loadMarkup( _themeName, _componentName, _themePath, _pkgName );
+  },
+  
+  
+/** method: _componentGfxPath
+  *
+  * Called via HView to determine the valid path prefix to aid
+  * finding theme- and component-specific image files.
+  *
+  * Returns:
+  *   A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
+  *
+  **/
+  _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
+    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _url = this._joinPath( _urlPrefix, 'gfx' );
+    return _url;
+  },
+  _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+      return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName.replace('.png','-ie6.gif') );
+    }
+    return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName );
+  },
+  
+  
+  getThemeGfxFile: function( _fileName ) {
+    
+    return this.getThemeGfxPath() + _fileName;
+    
+  },
+  
+  
+/** method: setTheme
+  * 
+  * Sets the active theme.
+  * 
+  * Parameters:
+  *  _theme - The name of the theme to be set as the active theme.
+  *
+  **/
+  setTheme: function(_theme) {
+    this.currentTheme = _theme;
+  },
+  
+/** method: restoreDefaultTheme
+  *
+  * Sets the default theme ( HDefaultTheme ) to be the active theme.
+  **/
+  restoreDefaultTheme: function() {
+    this.setTheme( HDefaultThemeName );
+  },
+  
+/** regexp: _variable_match
+  *
+  * A regular expression to match the template evaluation syntax: #{stuff_to_evaluate}
+  **/
+  _variable_match: new RegExp(/#\{([^\}]*)\}/),
+  
+/** method: _bindCSSVariables
+  *
+  * Evaluates the _variable_match regular expression for the string _markup.
+  *
+  * Parameters:
+  *  _cssTmpl - The css template file to be evaluated. 
+  *
+  * Returns:
+  *  An evaluated CSS Template.
+  **/
+  _bindCSSVariables: function( _cssTmpl ) {
+    while ( this._variable_match.test( _cssTmpl ) ) {  
+      _cssTmpl = _cssTmpl.replace(  this._variable_match, eval( RegExp.$1 )  );
+    }
+    return _cssTmpl;
+  }
+  
+});
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HMarkupView
+  **
+  ** Serves as a mixin class for classes that need to draw markup but don't
+  ** inherit from the HView.
+  **
+  ** vars: Instance variables
+  **  markup - The markup from the component's HTML template.
+  **
+  ** See also:
+  **  <HView>
+  ***/
+HMarkupView = HClass.extend({
+
+/** method: bindMarkupVariables
+  * 
+  * Evaluates the pieces of code defined in the markup template marked with
+  * syntax #{}.
+  * Can't use } characters in the code though. This might need another look...
+  * 
+  * Places the resulting markup in the instance variable.
+  * 
+  **/
+  bindMarkupVariables: function() {
+    
+    var _markup = this.markup;
+    
+    while ( HMarkupView._assignment_match.test(_markup) ) {  
+      _markup = _markup.replace( HMarkupView._assignment_match, this.evalMarkupVariable(RegExp.$1,true) );
+    }
+    while ( HMarkupView._variable_match.test(_markup) ) {  
+      _markup = _markup.replace( HMarkupView._variable_match, this.evalMarkupVariable(RegExp.$1) );
+    }
+    
+    this.markup = _markup;
+  },
+  
+  evalMarkupVariable: function(_strToEval,_isAssignment){
+    try {
+      var _ID     = this.elemId.toString(),
+          _WIDTH  = this.rect.width,
+          _HEIGHT = this.rect.height,
+          _result = eval(_strToEval);
+      if(_isAssignment){
+        return '';
+      }
+      if(_result===undefined){
+        return '';
+      }
+      else {
+        return _result;
+      }
+    }
+    catch(e) {
+      return '';
+    }
+  },
+  
+/** method: toggleCSSClass
+  * 
+  * Sets or unsets the _cssClass into a DOM element that goes by the ID
+  * _elementId.
+  * 
+  * Parameters:
+  *  _elementId - ID of the DOM element, or the element itself, to be modified.
+  *  _cssClass - Name of the CSS class to be added or removed.
+  *  _setOn - Boolean value that tells should the CSS class be added or removed.
+  * 
+  **/
+  toggleCSSClass: function(_elementId, _cssClass, _setOn) {
+    if(_elementId) {
+      
+      var _has_class = ELEM.hasClassName(_elementId, _cssClass);
+      
+      if (_setOn) {
+        if (!_has_class) {
+          ELEM.addClassName(_elementId, _cssClass);
+        }
+      }
+      else {
+        if (_has_class) {
+          ELEM.removeClassName(_elementId, _cssClass);
+        }
+      }
+
+    }
+
+  }
+
+},{
+  _variable_match: new RegExp(/#\{([^\}]*)\}/),
+  _assignment_match: new RegExp(/\$\{([^\}]*)\}/)
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HView
+  *
+  * Abstract foundation class for all visual components.
+  *
+  * Depends on <HApplication> <HMarkupView>
+  *
+  * HView instances are the simplest component type. HViews don't respond to 
+  * events, they don't have a visible visual representation (just an invisible
+  * '<div>' element), but offers the common visual methods of most components.
+  *
+  * Feel free to extend HView to suit your needs.
+  * However, extend <HControl> instead if you are going to make an active component.
+  *
+  * vars: Instance variables (common for almost all components)
+  *  type - '[HView]' normally, '[HSubview]' if the parent is also a HView
+  *
+  *  views - A list of child components bound.
+  *  viewId - The view index id of this view (parent specific, will change to system-wide uniqueness)
+  *  drawn  - A flag that is true after draw is called the first time (the DOM element exists after that)
+  *  elemId - The <Element Manager> compatible element index id of the main <div> DOM element of the view. Exists after <draw> is called.
+  *  parent - The parent of the view structure
+  *  parents - An array containing parents, up to <HApplication> and <HSystem>
+  *  appId - The unique id of the app that contains the view
+  *  app - References the <HApplication> instance at the root of the view structure
+  *
+  *  rect - The <HRect> instance that defines the coordinates and dimensions of the view. Call <drawRect> for changes to a rect property to take effect.
+  *
+  *  theme - The theme chosen to render the component with.
+  *  preserveTheme - Boolean, won't change the theme on the fly if true and the global theme changes. Defaults to false.
+  *  optimizeWidthOnRefresh - Boolean, true (default) when <optimizeWidth> should be called whenever <refresh> gets called.
+  *  
+  *  isHidden - Boolean flag, true if set to hidden. Defaults to false (visible)
+  *
+  *  viewZOrder - The order of subviews in the Z-dimension.
+  *
+  * See Also:
+  *  <HSystem> <HApplication> <HControl>
+  *
+  * Usage example:
+  *  > var myApp = new HApplication(100);
+  *  > var myView = new HView( new HRect(100,100,200,200), myApp );
+  *  > myView.draw();
+  *  > myView.setStyle('background-color','#660000');
+  *  > var mySubview = new HView( new HRect(50,50,100,100), myView );
+  *  > mySubview.draw();
+  *  > mySubview.setStyle('background-color','#ffcc00');
+  *  > mySubview.setStyle('border','1 px solid #ffffff');
+  **/
+HView = HClass.extend({
+  
+  // This property should be overridden in custom made components. It's like a
+  // theme path, but points to the location of a component specific themes. The
+  // directory structure must be the same as in the release version's themes
+  // directory.
+  themePath:   null,
+  
+  // In pre-build mode, this is the prefix of the directory that contains a set of components.
+  packageName: null,
+  
+  // Uses absolute positioning by default
+  isAbsolute: true,
+  
+  // flags, sets positioning mode
+  flexRight:  false,
+  flexLeft:   true,
+  flexTop:    true,
+  flexBottom: false,
+  
+  // ints, positioning mode offsets
+  flexRightOffset:  0,
+  //rect.left: flexLeftOffset:   0,
+  //rect.top:  flexTopOffset:    0,
+  flexBottomOffset: 0,
+  
+  // Component behaviour tells other classes what to expect of the component's api and visual behaviour.
+  componentBehaviour: ['view'],
+  
+/** constructor: constructor
+  *
+  * Constructs the logic part of a <HView>.
+  * The view still needs to be drawn on screen. To do that, call <draw> after
+  * subcomponents of the view are initialized.
+  *
+  * Parameters:
+  *  _rect - An instance of <HRect>, defines the position and size of views.
+  *  _parent - Another <HView> -compatible instance, like <HApplication>, <HControl> and derived component classes.
+  *
+  * See also:
+  *  <HApplication.addView> <draw> <drawRect> <refresh> <setRect> <drawMarkup> <HControl.draw>
+  **/
+  constructor: function(_rect, _parent) {
+    // Moved these to the top to ensure safe themeing operation
+    if(this.theme===undefined){
+      this.theme = HThemeManager.currentTheme;
+      this.preserveTheme = false;
+    }
+    else {
+      this.preserveTheme = true;
+    }
+    
+    
+    // Used for smart template elements (resizing)
+    
+    this.optimizeWidthOnRefresh = true;
+    
+    // adds the parentClass as a "super" object
+    this.parent = _parent;
+    
+    this.viewId = this.parent.addView(this);
+    // the parent addView method adds this.parents
+    
+    this.appId = this.parent.appId;
+    this.app = HSystem.apps[this.appId];
+    
+    // subview-ids, index of HView-derived objects that are found in HSystem.views[viewId]
+    this.views = [];
+    
+    // Subviews in Z order.
+    this.viewsZOrder = [];
+    
+    // Keep the view (and its subviews) hidden until its drawn.
+    this._createElement();
+    
+    // Set the geometry
+    this.setRect(_rect);
+    this.isHidden = true;
+    
+    this.drawn = false;
+    
+    this._cachedLeft = _rect.left;
+    this._cachedTop = _rect.top;
+    
+    // Additional DOM element bindings are saved into this array so they can be
+    // deleted from the element manager when the view gets destroyed.
+    this._domElementBindings = [];
+    
+    if(!this.isinherited) {
+      this.draw();
+      this.show();
+    }
+  },
+  
+  setFlexRight: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexRight = _flag;
+    if(_px===undefined){_px=0;}
+    this.flexRightOffset = _px;
+  },
+  setFlexLeft: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexLeft = _flag;
+    if(_px!==undefined){
+      this.rect.setLeft(_px);
+    }
+  },
+  setFlexTop: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexTop = _flag;
+    if(_px!==undefined){
+      this.rect.setTop(_px);
+    }
+  },
+  setFlexBottom: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexBottom = _flag;
+    if(_px===undefined){_px=0;}
+    this.flexBottomOffset = _px;
+  },
+  setAbsolute: function(_flag){
+    if(_flag===undefined){_flag=true;}
+    this.isAbsolute = _flag;
+  },
+  setRelative: function(_flag){
+    if(_flag===undefined){_flag=true;}
+    this.isAbsolute = (!_flag);
+  },
+  
+/** method: getThemeGfxPath
+  *
+  * Used by from html theme templates to get the theme-specific image path.
+  *
+  * Returns:
+  *  The theme image directory of the current theme.
+  *
+  * See also:
+  *  <HThemeManager._componentGfxPath>
+  **/
+  getThemeGfxPath: function() {
+    if( this.preserveTheme ){
+      _themeName = this.theme;
+    } else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath, this.packageName );
+  },
+  getThemeGfxFile: function( _fileName ) {
+    if( this.preserveTheme ){
+      _themeName = this.theme;
+    } else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, this.packageName, _fileName );
+  },
+  
+  // provided solely for component extendability:
+  _makeElem: function(_parentElemId){
+    this.elemId = ELEM.make(_parentElemId,'div');
+  },
+  // provided solely for component extendability:
+  _setCSS: function(_additional){
+      var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
+      if(this.isAbsolute){
+        _cssStyle += 'position:absolute;';
+      } else {
+        _cssStyle += 'position:relative;';
+      }
+      _cssStyle += _additional;
+      ELEM.setCSS(this.elemId,_cssStyle);
+  },
+  
+  _getParentElemId: function(){
+    var _parentElemId;
+    // if the parent does not have an element:
+    if(this.parent.elemId === undefined) {
+      _parentElemId = 0;
+    }
+    // if a subview element is defined in the template, use it:
+    else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){
+      _parentElemId = this.parent.markupElemIds['subview'];
+    }
+    // otherwise, use main elemId
+    else {
+      _parentElemId = this.parent.elemId;
+    }
+    return _parentElemId;
+  },
+  
+  // create the dom element
+  _createElement: function() {
+    if(!this.elemId) {
+      
+      this._makeElem(this._getParentElemId());
+      this._setCSS('');
+      
+      // Theme name == CSS class name
+      if(this.preserveTheme){
+        ELEM.addClassName( this.elemId, this.theme );
+      }
+      else {
+        ELEM.addClassName( this.elemId, HThemeManager.currentTheme );
+      }
+    }
+  },
+  
+/** method: drawRect
+  *
+  * Sets the correct properties for elements after changes in the <rect> instance object.
+  * Effectively updates the visual representation to match the state of <rect>.
+  *
+  * See also:
+  *  <draw> <drawMarkup> <refresh> <setRect> <HRect>
+  **/
+  drawRect: function() {
+    if (!this.parent || !this.rect.isValid) {
+      return;
+    }
+    
+    this.drawn = true;
+    
+    var _elemId = this.elemId;
+    var _rect = this.rect;
+    
+    ELEM.setStyle( _elemId, 'left', this.flexLeft?(_rect.left+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'top', this.flexTop?(_rect.top+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'right', this.flexRight?(this.flexRightOffset+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'bottom', this.flexBottom?(this.flexBottomOffset+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'width', (this.flexLeft&&this.flexRight)?'auto':(_rect.width+'px'), true);
+    ELEM.setStyle( _elemId, 'height', (this.flexTop&&this.flexBottom)?'auto':(_rect.height+'px'), true);
+    
+    if(this.flexLeft&&this.flexRight){
+      ELEM.setStyle( _elemId, 'min-width', _rect.width+'px', true);
+    }
+    if(this.flexTop&&this.flexBottom){
+      ELEM.setStyle( _elemId, 'min-height', _rect.height+'px', true);
+    }
+    
+    // Show the rectangle once it gets created, unless visibility was set to
+    // hidden in the constructor.
+    if(undefined === this.isHidden || this.isHidden == false) {
+      ELEM.setStyle( _elemId, 'visibility', 'inherit', true);
+    }
+    
+    ELEM.setStyle( _elemId, 'display', 'block', true);
+    
+    this._updateZIndex();
+    
+    if (this._cachedLeft != _rect.left || this._cachedTop != _rect.top) {
+      this.invalidatePositionCache();
+      this._cachedLeft = _rect.left;
+      this._cachedTop = _rect.top;
+    }
+    
+    // right, bottom, opacity and png-transparency
+    /*
+    if (ELEM._is_ie6 && !this.ie_resizefixadded) {
+      iefix._traverseTree(ELEM.get(this.elemId));
+      this.ie_resizefixadded = true;
+      HSystem.fix_ie = true;
+    }
+    */
+  },
+  
+  /**
+    * These methods update the z-index property of the actual element(s).
+    * _updateZIndex updates this object only and it is used when the object is
+    * initially drawn. _updateZIndexAllSiblings updates this object and all its
+    * siblings. This is useful when modifying this object's z-order affects
+    * other elements too.
+    */
+  _updateZIndex: function() {
+    ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
+  },
+  _updateZIndexAllSiblings: function() {
+    var _views = this.parent.viewsZOrder;
+    for (var i = 0; i < _views.length; i++) {
+      ELEM.setStyle(HSystem.views[_views[i]].elemId, 'z-index', i);
+    }
+  },
+  
+/** method: draw
+  *
+  * Initializes the visual representation of the object, should call at least <drawRect>.
+  *
+  * *When extending <HView>, override this method, don't extend it.*
+  *
+  * See also:
+  *  <drawRect> <drawMarkup> <refresh> <HRect>
+  **/
+  draw: function() {
+    var _isDrawn = this.drawn;
+    this.drawRect();
+    if(!_isDrawn&&(this.componentName!==undefined)){
+      this.drawMarkup();
+    }
+    this.refresh();
+  },
+  
+  // Loads the markup from theme manager. If this.preserveTheme is set to true,
+  // the this.theme is used for loading the markup. Otherwise the currently
+  // active theme is used.
+  _loadMarkup: function() {
+    var _themeName;
+    if (this.preserveTheme) {
+      _themeName = this.theme;
+    }
+    else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    this.markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+  },
+  
+/** method: drawMarkup
+  *
+  * Replaces the *contents* of the view's DOM element with html from the theme specific html file.
+  *
+  * See also:
+  *  <HThemeManager> <bindMarkupVariables> <drawRect> <draw> <refresh>
+  **/
+  markupElemNames: ['bg', 'label', 'state', 'control', 'value', 'subview'],
+  drawMarkup: function() {
+    ELEM.setStyle(this.elemId, 'display', 'none', true);
+    
+    this._loadMarkup();
+    
+    this.bindMarkupVariables();
+    ELEM.setHTML(this.elemId, this.markup);
+    
+    this.markupElemIds = {};
+    for(var i=0; i < this.markupElemNames.length; i++ ) {
+      var _partName = this.markupElemNames[ i ],
+          _elemName = _partName + this.elemId,
+          _htmlIdMatch = ' id="' + _elemName + '"';
+      if( this.markup.indexOf( _htmlIdMatch ) != -1 ) {
+        this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
+      }
+    }
+    
+    ELEM.setStyle(this.elemId, 'display', 'block' );
+    
+    // right, bottom, opacity and png-transparency
+    /*
+    if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
+      iefix._traverseTree(ELEM.get(this.elemId));
+      this.ie_htmlresizefixadded = true;
+      HSystem.fix_ie = true;
+    }
+    */
+  },
+  
+/** method: setHTML
+  *
+  * Replaces the contents of the view's DOM element with custom html.
+  *
+  * Parameters:
+  *  _html - The HTML (string-formatted) to replace the content with.
+  **/
+  setHTML: function( _html ) {
+    ELEM.setHTML( this.elemId, _html );
+  },
+  
+/** method: refresh
+  *
+  * This method should be extended in order to redraw only specific parts. The
+  * base implementation calls <optimizeWidth> when optimizeWidthOnRefresh is set
+  * to true.
+  *
+  * See also:
+  *  <HThemeManager> <drawRect> <drawMarkup> <draw>
+  **/
+  refresh: function() {
+    if(this.drawn) {
+      // this.drawn is checked here so the rectangle doesn't get drawn by the
+      // constructor when setRect() is initially called.
+      this.drawRect();
+    }
+    if(this.optimizeWidthOnRefresh) {
+      this.optimizeWidth();
+    }
+  },
+
+/** method: setRect
+  *
+  * Replaces the <rect> of the component with a new <HRect> instance and
+  * then refreshes the display.
+  *
+  * Parameter:
+  *  _rect - The new <HRect> instance to replace the old <rect> instance with.
+  **/
+  setRect: function(_rect) {
+    if (this.rect) {
+      this.rect.unbind(this);
+    }
+    this.rect = _rect;
+    this.rect.bind(this);
+    this.refresh();
+  },
+  
+/** method: setStyle
+  *
+  * Sets any arbitary style of the main DOM element of the component.
+  * Utilizes <Element Manager>'s drawing queue/cache to perform the action, 
+  * thus working efficiently even when called frequently.
+  *
+  * Parameters:
+  *  _name - The style name (css syntax, eg. 'background-color')
+  *  _value - The style value (css syntax, eg. 'rgb(255,0,0)')
+  *
+  * See also:
+  *  <Element Manager.styl_set> <style> <elemId>
+  **/
+  setStyle: function(_name, _value, _cacheOverride) {
+    if (!this.elemId) {
+      return;
+    }
+    ELEM.setStyle(this.elemId, _name, _value, _cacheOverride);
+  },
+
+/** method: style
+  *
+  * Returns a style of the main DOM element of the component.
+  * Utilizes <Element Manager>'s cache to perform the action, thus working
+  * efficiently even when called frequently.
+  *
+  * Parameters:
+  *  _name - The style name (css syntax, eg. 'background-color')
+  *
+  * Returns:
+  *  The style property value (css syntax, eg. 'rgb(255,0,0)')
+  *
+  * See also:
+  *  <Element Manager.styl_get> <setStyle> <elemId>
+  **/
+  style: function(_name) {
+    if (!this.elemId) {
+      return;
+    }
+    return ELEM.getStyle(this.elemId, _name);
+  },
+  
+/** method: setStyleForPart
+  *
+  * Sets a style for a specified markup element that has been bound to this
+  * view.
+  *
+  * Parameters:
+  *  _partName - The identifier of the markup element.
+  *  _name - The style name
+  *  _value - The style value
+  *
+  * See also:
+  *  <setStyle> <styleForPart>
+  **/
+  setStyleForPart: function(_partName, _name, _value, _cacheOverride) {
+    if (!this.markupElemIds[_partName]) {
+      return;
+    }
+    ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+  },
+  
+/** method: styleForPart
+  *
+  * Returns a style of a specified markup element that has been bound to this
+  * view.
+  *
+  * Parameters:
+  *  _partName - The identifier of the markup element.
+  *  _name - The style name
+  *
+  * See also:
+  *  <style> <SetStyleForPart>
+  **/
+  styleForPart: function(_partName, _name) {
+    if (!this.markupElemIds[_partName]) {
+      return;
+    }
+    ELEM.getStyle(this.markupElemIds[_partName], _name);
+  },
+
+/** method: hide
+  *
+  * Hides the component's main DOM element (and its children).
+  *
+  * See also:
+  *  <show> <toggle>
+  **/
+  hide: function() {
+    if(!this.isHidden) {
+      this.setStyle('visibility', 'hidden');
+      this.setStyle('display', 'none');
+      this.isHidden = true;
+    }
+  },
+  
+/** method: show
+  *
+  * Restores the visibility of the component's main DOM element (and its children).
+  *
+  * See also:
+  *  <hide> <toggle>
+  **/
+  show: function() {
+    if(this.isHidden) {
+      this.setStyle('visibility', 'inherit');
+      this.setStyle('display', 'block');
+      this.isHidden = false;
+    }
+  },
+  
+/** method: toggle
+  *
+  * Toggles between <hide> and <show>.
+  *
+  * See also:
+  *  <hide> <show>
+  **/
+  toggle: function() {
+    if(this.isHidden) {
+      this.show();
+    } else {
+      this.hide();
+    }
+  },
+  
+/** method: remove
+  *
+  * Call this if you need to remove a component from its parent's <views> array without
+  * destroying the DOM element itself, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to another.
+  *
+  * See also:
+  *  <HApplication.removeView> <addView> <destroy> <die>
+  **/
+  remove: function() {
+    if( this.parent ) {
+      
+      var _viewZIdx = this.parent.viewsZOrder.indexOf(this.viewId),
+          _viewPIdx = this.parent.views.indexOf(this.viewId);
+      
+      this.parent.views.splice(_viewPIdx,1);
+      HSystem.delView(this.viewId);
+      
+      // Drop the z-order from the parent's array
+      this.parent.viewsZOrder.splice( _viewZIdx, 1 );
+      
+      // Make sure the z-order array stays solid.
+      this._updateZIndexAllSiblings();
+      
+      // Since were not in the parent's array anymore, we don't need a reference
+      // to that object.
+      this.parent  = null;
+      this.parents = [];
+    }
+  },
+  
+/** method: die
+  *
+  * Deletes the component and all its children.
+  * Should normally be called from the parent.
+  *
+  * See also:
+  *  <HApplication.die> <addView> <remove> <die> <Element Manager.elem_del>
+  **/
+  die: function() {
+    // Delete the children first.
+    var i=0, _childViewId;
+    for (; i < this.views.length; i++) {
+      _childViewId = this.views[i];
+      this.destroyView(_childViewId);
+    }
+    // Remove this object's bindings, except the DOM element.
+    this.remove();
+    // Remove the DOM element bindings.
+    for (i = 0; i < this._domElementBindings.length; i++) {
+      ELEM.del(this._domElementBindings[i]);
+    }
+    this._domElementBindings = [];
+    
+    this.drawn = false;
+    console.log(this.elemId);
+    
+    // Remove the DOM object itself
+    ELEM.del(this.elemId);
+    
+    delete this.rect;
+    
+  },
+  
+  // Idle poller (recursive)
+  onIdle: function() {
+    for(var i = 0; i < this.views.length; i++) {
+      HSystem.views[this.views[i]].onIdle();
+    }
+  },
+  
+/** method: buildParents
+  *
+  * Used by addView to build a parents array of parent classes.
+  *
+  **/
+  buildParents: function(_viewId){
+    var _view = HSystem.views[_viewId];
+    _view.parent = this;
+    _view.parents = [];
+    for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
+      _view.parents.push(this.parents[_parentNum]);
+    }
+    _view.parents.push(this);
+  },
+  
+/** method: addView
+  *
+  * Adds a sub-view/component to the view.
+  *
+  * Called from inside the HView constructor and should be automatic for all 
+  * components that accept the 'parent' parameter, usually the second argument,
+  * after the <HRect>.
+  *
+  * May also be used to attach a freely floating component (removed with <remove>)
+  * to another component.
+  *
+  * Parameter:
+  *  _view - Usually *this* inside <HView>-derivate components.
+  *
+  * Returns:
+  *  The view id.
+  *
+  * See also:
+  *  <HApplication.addView> <remove> <die>
+  **/
+  addView: function(_view) {
+    var _viewId = HSystem.addView(_view);
+    this.views.push(_viewId);
+    
+    this.buildParents(_viewId);
+    this.viewsZOrder.push(_viewId);
+    
+    return _viewId;
+  },
+  
+/** method: removeView
+  *
+  * Call this if you need to remove a child view from this view without
+  * destroying its element, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to another.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <remove> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
+  **/
+  removeView: function(_viewId) {
+    HSystem.views[_viewId].remove();
+  },
+  
+/** method: destroyView
+  *
+  * Call this if you need to remove a child view from this view, destroying its
+  * child elements recursively and removing all DOM elements too.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <remove> <removeView> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
+  **/
+  destroyView: function(_viewId) {
+    HSystem.views[_viewId].die();
+  },
+  
+/** method: bounds
+  *
+  *  Returns bounds rectangle that defines the size and coordinate system
+  *  of the component. This should be identical to the rectangle used in
+  *  constructing the object, unless it has been changed after construction.
+  *
+  * Returns:
+  *  A new <HRect> instance with identical values to this component's rect.
+  *
+  * See also:
+  *  <resizeTo> <resizeBy> <offsetTo> <offsetBy> <HRect> <rect>
+  **/
+  bounds: function() {
+    // Could be cached.
+    var _bounds = new HRect(this.rect);
+    
+    _bounds.right -= _bounds.left;
+    _bounds.left = 0;
+    _bounds.bottom -= _bounds.top;
+    _bounds.top = 0;
+    
+    return _bounds;
+  },
+  
+  
+/** method: resizeBy
+  *
+  * This method resizes the view, without moving its left and top sides.
+  * It adds horizontal coordinate units to the width and vertical units to
+  * the height of the view.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  *
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters:
+  *  _horizonal - Horizonal units to add to the width (negative units subtract)
+  *  _vertical - Vertical units to add to the height (negative units subtract)
+  *
+  * See also:
+  *  <resizeTo> <offsetTo> <offsetBy> <HRect> <rect> <bounds>
+  **/
+  resizeBy: function(_horizontal, _vertical) {
+    var _rect = this.rect;
+    _rect.right += _horizontal;
+    _rect.bottom += _vertical;
+    _rect.updateSecondaryValues();
+    this.drawRect();
+  },
+
+/** method: resizeTo
+  *
+  * This method makes the view width units wide
+  * and height units high. This method adjust the right and bottom
+  * components of the frame rectangle accordingly.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  * 
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters:
+  *  _width - The new width of the view.
+  *  _height - The new height of the view.
+  *
+  * See also:
+  *  <resizeBy> <offsetTo> <offsetBy> <HRect> <rect> <bounds>
+  **/
+  resizeTo: function(_width, _height) {
+    var _rect = this.rect;
+    _rect.right = _rect.left + _width;
+    _rect.bottom = _rect.top + _height;
+    _rect.updateSecondaryValues();
+    this.drawRect();
+  },
+
+/** method: offsetTo
+  *
+  * This method moves the view to a new coordinate. It adjusts the 
+  * left and top components of the frame rectangle accordingly.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  * 
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters (using component numeric values):
+  *  _x - The new x-coordinate of the view.
+  *  _y - The new y-coordinate of the view.
+  *
+  * Parameters (using a <HPoint> instance):
+  *  _point - The new coordinate point of the view.
+  *
+  * See also:
+  *  <resizeBy> <resizeTo> <offsetBy> <HRect.offsetTo> <rect> <bounds>
+  **/
+  offsetTo: function() {
+    this.rect.offsetTo.apply(this.rect, arguments);
+    this.drawRect();
+  },
+  
+/** method: moveTo
+  *
+  * Alias method for <offsetTo>
+  *
+  **/
+  moveTo: function() {
+    this.offsetTo.apply(this, arguments);
+  },
+  
+/** method: offsetBy
+  *
+  * This method re-positions the view without changing its size.
+  * It adds horizontal coordinate units to the x coordinate and vertical
+  * units to the y coordinate of the view.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  *
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters:
+  *  _horizonal - Horizonal units to change the x coordinate (negative units subtract)
+  *  _vertical - Vertical units to add to change the y coordinate (negative units subtract)
+  *
+  * See also:
+  *  <resizeTo> <offsetTo> <resizeBy> <HRect> <rect> <bounds>
+  **/
+  offsetBy: function(_horizontal, _vertical) {
+    this.rect.offsetBy(_horizontal, _vertical);
+    this.drawRect();
+  },
+  
+/** method: moveBy
+  *
+  * Alias method for <offsetBy>
+  *
+  **/
+  moveBy: function() {
+    this.offsetBy.apply(this, arguments);
+  },
+
+/** method: bringToFront
+  *
+  * Brings the view to the front by changing its Z-Index.
+  *
+  * See also:
+  *  <sendToBack> <zIndex>
+  **/
+  bringToFront: function() {
+    if (!this.parent) {
+      return;
+    }
+    var _index = this.zIndex();
+    this.parent.viewsZOrder.splice(_index, 1);
+    this.parent.viewsZOrder.push(this.viewId);
+    this._updateZIndexAllSiblings();
+  },
+
+/** method: sendToBack
+  *
+  * Sends the view to the back by changing its Z-Index.
+  *
+  * See also:
+  *  <bringToFront> <zIndex>
+  **/
+  sendToBack: function() {
+    if (!this.parent) {
+      return;
+    }
+    var _index = this.zIndex();
+    this.parent.viewsZOrder.splice(_index, 1);
+    this.parent.viewsZOrder.splice(0, 0, this.viewId); // Hmmm?
+    this._updateZIndexAllSiblings();
+  },
+
+/** method: sendToBack
+  *
+  * Use this method to get the Z-Index of itself.
+  *
+  * Returns:
+  *  The current Z-Index value.
+  *
+  * See also:
+  *  <bringToFront> <sendToBack>
+  **/
+  zIndex: function() {
+    if (!this.parent) {
+      return;
+    }
+    // Returns the z-order of this item as seen by the parent.
+    return this.parent.viewsZOrder.indexOf(this.viewId);
+  },
+  
+/** method: stringWidth
+  *
+  * Measures the characters encoded in length bytes of the string - or,
+  * if no length is specified, the entire string up to the null character,
+  * '0', which terminates it. The return value totals the width of all the
+  * characters in coordinate units; it's the length of the baseline required
+  * to draw the string.
+  *
+  * Parameters:
+  * _string - The string to measure.
+  * _length - (optional) How many characters to count.
+  * _elemId - (optional) The element ID where the temporary string is created
+  *   in.
+  *
+  * Returns:
+  * The width in pixels required to draw a string in the font.
+  *
+  */
+  stringWidth: function(_string, _length, _elemId) {
+    if (_length !== undefined && _length != null) {
+      _string = _string.substring(0, _length);
+    }
+    if (_elemId === undefined || _elemId == null) {
+      _elemId = this.elemId;
+    }
+    
+    var _stringElem = ELEM.make(_elemId);
+    ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;white-space:nowrap;");
+    ELEM.setHTML(_stringElem, _string);
+    var _width=0,_height=0;
+    if (ELEM._is_ie6 || ELEM._is_ie7 || ELEM._is_opera) {
+      _width = parseInt( ELEM.get(_stringElem).offsetWidth, 10 );
+      if (arguments[3]) {
+        _height = parseInt( ELEM.get(_stringElem).offsetHeight, 10 );
+      }
+    } else {
+      _width = parseInt( ELEM.get(_stringElem).clientWidth, 10 );
+      // for some reason, firefox 3 text wrapping rules seem to
+      // differ for the same text widths from time to time, so
+      // let's add a 1px safety margin for it.
+      if(ELEM._is_ff3){
+        _width += 1;
+      }
+      if (arguments[3]) {
+        _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 );
+      }
+    }
+    ELEM.del(_stringElem);
+    if (arguments[3]) {
+      return [_width, _height];
+    } else {
+      return _width;
+    }
+  },
+  
+/** method: pageX
+  *
+  * Returns:
+  *  The X coordinate that has the scrolled position calculated.
+  **/
+  pageX: function() {
+    var _x = 0;
+    var _elem = this;
+    while(_elem) {
+      if(_elem.elemId && _elem.rect) {
+        _x += ELEM.get(_elem.elemId).offsetLeft;
+        _x -= ELEM.get(_elem.elemId).scrollLeft;
+      }
+      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
+        _x += ELEM.get(_elem.markupElemIds.subview).offsetLeft;
+        _x -= ELEM.get(_elem.markupElemIds.subview).scrollLeft;
+      }
+      _elem = _elem.parent;
+    }
+    return _x;
+  },
+  
+/** method: pageY
+  *
+  * Returns:
+  *  The Y coordinate that has the scrolled position calculated.
+  **/
+  pageY: function() {
+    var _y = 0;
+    var _elem = this;
+    while(_elem) {
+      if(_elem.elemId && _elem.rect) {
+        _y += ELEM.get(_elem.elemId).offsetTop;
+        _y -= ELEM.get(_elem.elemId).scrollTop;
+      }
+      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
+        _y += ELEM.get(_elem.markupElemIds.subview).offsetTop;
+        _y -= ELEM.get(_elem.markupElemIds.subview).scrollTop;
+      }
+      _elem = _elem.parent;
+    }
+    return _y;
+  },
+  
+/** method: pageLocation
+  *
+  * Returns:
+  *  The HPoint that has the scrolled position calculated.
+  **/
+  pageLocation: function() {
+    return new HPoint(this.pageX(), this.pageY());
+  },
+  
+/** method: optimizeWidth
+  * 
+  * An abstract method that derived classes may implement, if they are able to
+  * resize themselves so that their content fits nicely inside.
+  * 
+  */
+  optimizeWidth: function() {
+
+  },
+  
+  
+/** method: invalidatePositionCache
+  * 
+  * Invalidates event manager's element position cache for this view and its
+  * subviews. Actual functionality is implemented in HControl.
+  * 
+  * See also:
+  *   <HControl.invalidatePositionCache> <EventManager.invalidatePositionCache>
+  * 
+  */
+  invalidatePositionCache: function() {
+    for(var i=0; i<this.views.length; i++) {
+      HSystem.views[this.views[i]].invalidatePositionCache();
+    }
+  },
+  
+  
+/** method: bindDomElement
+  * 
+  * Binds a DOM element to the element manager's cache. This is a wrapper for
+  * the <Element Manager.elem_bind> that keeps track of the bound elements and
+  * frees them from the element manager when the view is destroyed.
+  * 
+  * Parameters:
+  *   _domElementId - The value of the DOM element's id attribute that is to be
+  *                   bound to the element cache.
+  * 
+  * Returns:
+  *   The element index id of the bound element.
+  * 
+  * See also: 
+  *   <unbindDomElement> <Element Manager.elem_bind>
+  */
+  bindDomElement: function(_domElementId) {
+    var _cacheId = ELEM.bindId(_domElementId);
+    if (_cacheId) {
+      this._domElementBindings.push(_cacheId);
+    }
+    return _cacheId;
+  },
+  
+  
+/** method: unbindDomElement
+  * 
+  * Removes a DOM element from the element manager's cache. This is a wrapper
+  * for the <Element Manager.elem_del>. This is used for safely removing DOM
+  * nodes from the cache.
+  * 
+  * Parameters:
+  *   _elementId - The id of the element in the element manager's cache that is
+  *                to be removed from the cache.
+  * 
+  * See also: 
+  *   <bindDomElement> <Element Manager.elem_del>
+  */
+  unbindDomElement: function(_elementId) {
+    var _indexOfElementId = this._domElementBindings.indexOf(_elementId);
+    if (_indexOfElementId > -1) {
+      ELEM.del(_elementId);
+      this._domElementBindings.splice(_indexOfElementId, 1);
+    }
+  },
+  
+  
+/** method: animateTo
+  * 
+  * Moves the view smoothly into another location and/or size. The
+  * onAnimationStart event on the view gets called when the animation starts.
+  * 
+  * Parameters:
+  *   _obj - An instance of <HPoint> or <HRect>, depending on the desired 
+  *          animation result. When a point is passed, the view is moved in
+  *          that position. When a rect is passed, the view can also be resized
+  *          with or without moving to different coordinates.
+  *   _duration - (optional) The duration of the animation in milliseconds. The
+  *               default duration is 500 ms.
+  *   _fps - (optional) The frame rate for the animation. The default fps is 50.
+  * 
+  * See also: 
+  *   <stopAnimation> <onAnimationStart> <onAnimationEnd> <onAnimationCancel>
+  */
+  animateTo: function(_obj, _duration, _fps) {
+    
+    // Redirect the method call to _animateTo(HRect).
+    if(_obj instanceof HPoint) {
+      var _rect = new HRect(_obj, _obj);
+      _rect.setSize(this.rect.width, this.rect.height);
+      this._animateTo(_rect, _duration);
+    }
+    else if(_obj instanceof HRect) {
+      this._animateTo(_obj, _duration);
+    }
+    else {
+      throw "Wrong argument type.";
+    }
+    
+  },
+  
+  
+/** method: stopAnimation
+  * 
+  * Stops the current animation for this view. If the view is not being
+  * animated, this method has no effect.  The onAnimationEnd event on the view
+  * gets called when the animation finishes (reaches the end position/size), but
+  * onAnimationCancel gets called when this method is called while the animation
+  * is still in action.
+  * 
+  * See also: 
+  *   <animateTo> <onAnimationStart> <onAnimationEnd> <onAnimationCancel>
+  */
+  stopAnimation: function() {
+    if (this._animateInterval) {
+      // Stop the animation interval only if it has been set.
+      window.clearInterval(this._animateInterval);
+      this._animateInterval = null;
+      
+      // Update the rect after the new position and size have been reached.
+      var _left   = parseInt(this.style('left'), 10),
+          _top    = parseInt(this.style('top'), 10),
+          _width  = parseInt(this.style('width'), 10),
+          _height = parseInt(this.style('height'), 10);
+      this.rect.set(_left, _top, _left + _width, _top + _height);
+      this.drawRect();
+      
+      if (this._animationDone) {
+        this.onAnimationEnd();
+      }
+      else {
+        this.onAnimationCancel();
+      }
+      
+    }
+  },
+  
+  
+  // Private method.
+  // Starts the animation with the target _rect.
+  _animateTo: function(_rect, _duration, _fps) {
+    
+    if (null === _duration || undefined === _duration) {
+      _duration = 500; // default duration is half second
+    }
+    if (null === _fps || undefined === _fps || _fps < 1) {
+      _fps = 50; // default fps
+    }
+    
+    // Don't start another animation until the current animation has stopped.
+    if (!this._animateInterval) {
+      
+      this._animationDone = false;
+      this.onAnimationStart();
+      
+      var _startTime = new Date().getTime();
+      
+      var _that = this;
+      // Start the animation interval. It will be cleared when the view reaches
+      // its destination.
+      this._animateInterval = window.setInterval(
+        function() {
+          _that._animateStep({
+            startTime: _startTime,
+            duration: _duration,
+            // Linear transition effect.
+            transition: function(t, b, c, d) { return c * t / d + b; },
+            props: [{
+              prop: 'left',
+              from: _that.rect.left,
+              to: _rect.left,
+              unit: 'px'
+            },{
+              prop: 'top',
+              from: _that.rect.top,
+              to: _rect.top,
+              unit: 'px'
+            },{
+              prop: 'width',
+              from: _that.rect.width,
+              to: _rect.width,
+              unit: 'px'
+            },{
+              prop: 'height',
+              from: _that.rect.height,
+              to: _rect.height,
+              unit: 'px'
+            }]
+          });
+        }, Math.round(1000 / _fps)
+      );
+    }
+    
+  },
+  
+  
+  // Private method.
+  // Moves the view for one step. This gets called repeatedly when the animation
+  // is happening.
+  _animateStep: function(_obj) {
+    
+    var _time = new Date().getTime();
+    if (_time < _obj.startTime + _obj.duration) {
+      var _cTime = _time - _obj.startTime;
+      
+      // Handle all the defined properties.
+      for (var i = 0; i < _obj.props.length; i++) {
+        var _from = _obj.props[i].from;
+        var _to = _obj.props[i].to;
+        
+        if (_from != _to) {
+          // The value of the property at this time.
+          var _propNow = _obj.transition(_cTime, _from, (_to - _from),
+            _obj.duration);
+          this.setStyle(_obj.props[i].prop, _propNow + _obj.props[i].unit);
+        }
+      }
+      
+    } else {
+      // Animation is done, clear the interval and finalize the animation.
+      for (var i = 0; i < _obj.props.length; i++) {
+        this.setStyle(_obj.props[i].prop,
+          _obj.props[i].to + _obj.props[i].unit);
+      }
+      this._animationDone = true;
+      this.stopAnimation();
+    }
+    
+  },
+  
+  
+/** event: onAnimationStart
+  *
+  * Extend the onAnimationStart method, if you want to do something special 
+  * when this view starts animating.
+  *
+  * See also:
+  *  <onAnimationEnd> <onAnimationCancel>
+  **/
+  onAnimationStart: function() {
+    
+  },
+  
+  
+/** event: onAnimationEnd
+  *
+  * Extend the onAnimationEnd method, if you want to do something special 
+  * when an animation on this view is finished.
+  *
+  * See also:
+  *  <onAnimationStart> <onAnimationCancel>
+  **/
+  onAnimationEnd: function() {
+    
+  },
+  
+  
+/** event: onAnimationCancel
+  *
+  * Extend the onAnimationCancel method, if you want to do something special 
+  * when an animation on this view gets cancelled.
+  *
+  * See also:
+  *  <onAnimationStart> <onAnimationEnd>
+  **/
+  onAnimationCancel: function() {
+    
+  }
+  
+  
+});
+
+HView.implement(HMarkupView);
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HControl
+  *
+  * Abstract foundation class for all active visual components that implement events and values.
+  *
+  * Feel free to extend HControl to suit your needs. See any component for extension reference.
+  *
+  * vars: Instance variables (common for almost all components)
+  *  type - '[HControl]'
+  *  label - The visual value of a component. See <setLabel>.
+  *  action - A function reference to call in certain situations.
+  *  events - A structure that tells what events to bind.
+  *  enabled - The enabled/disabled flag. See <setEnabled>.
+  *  value - The current value of a component. See <setValue>.
+  *  valueObj - The current <HValue>-compatible object. Do not set directly. Holds reference to the bound <HValue> instance. Set with <HValue.bind>.
+  *  minValue - The minimum allowed value, when the component utilizes value ranges. See <setValueRange>.
+  *  maxValue - The maximum allowed value, when the component utilizes value ranges. See <setValueRange>.
+  *  active - A boolean value that shows whether this control is currently active or not. Control gets active when the user clicks on it.
+  *
+  * Extends:
+  *  <HView>
+  *
+  * See Also:
+  *  <HSystem> <HApplication> <HView> <HValue> <HEventManager>
+  *
+  **/
+HControl = HView.extend({
+  
+  componentBehaviour: ['view','control'],
+/** constructor: constructor
+  *
+  * The first two parameters are the same as with <HView>, but additionally
+  * sets the label and events.
+  *
+  * Parameters:
+  *  _rect - The rectangle of the component. See <HView.constructor>.
+  *  _parentClass - The parent component of the component. See <HView.constructor>.
+  *  _options - (optional) All other parameters. See <HComponentDefaults>.
+  *
+  **/
+  refreshOnValueChange: true,
+  refreshOnLabelChange: true,
+  constructor: function(_rect, _parentClass, _options) {
+    
+    // Use empty options if none supplied. Change this within components.
+    if(!_options) {
+      _options = {};
+    }
+    
+    // Construct and extend the options object on the fly.
+    var options = new (HComponentDefaults.extend(_options));
+    this.options = options;
+    
+    // HView.constructor:
+    if(this.isinherited) {
+      this.base(_rect, _parentClass);
+    }
+    else {
+      this.isinherited = true;
+      this.base(_rect, _parentClass);
+      this.isinherited = false;
+    }
+    
+    // Assign these variables from options.
+    var _label = options.label;
+    this.setLabel(_label);
+    
+    var _events = options.events;
+    this.setEvents(_events);
+    
+    if(this.options.valueObj){
+      this.setValueObj(this.options.valueObj);
+    }
+    if(!this.valueObj) {
+      this.setValueObj(new HDummyValue());
+    }
+    if((this.value===undefined)&&(options.value!==undefined)) {
+      this.setValue(options.value);
+    }
+    
+    // Check if a value range is defined
+    var _isValueRange = (_options.minValue || _options.maxValue);
+    // Also call setValueRange in that case.
+    if(_isValueRange) {
+      this.setValueRange(options.value, options.minValue, options.maxValue);
+    }
+    
+    this.setEnabled(options.enabled);
+    
+    this.action = options.action;
+    
+    // Initial visibility.
+    if(options.visible) {
+      this.show();
+    }
+    else {
+      this.hide();
+    }
+    
+    if(!this.isinherited) {
+      this.draw();
+    }
+  },
+  
+/** method: setAction
+  *
+  * Actions are specified as function calls to components. These are usually used as defineable external function calls.
+  *
+  * Parameters:
+  *  _action - A function reference, the number of parameters the receiver function should take depends on the component.
+  *
+  * Examples:
+  *  > myComponent.setAction(alert);
+  *  > myComponent.setAction(function(param){window.status='param given: '+param});
+  *
+  **/
+  setAction: function(_action) {
+    this.action = _action;
+  },
+  
+/** method: die
+  *
+  * Unregisters events before destroying the view.
+  *
+  * See also:
+  *  <HView.die>
+  **/
+  die: function() {
+    if(this.valueObj){
+      this.valueObj.unbind(this);
+      delete this.valueObj;
+    }
+    EVENT.unreg(this);
+    this.base();
+  },
+  
+/** method: setLabel
+  *
+  * Sets the label on a control component: the text that's displayed, for
+  * example, in the <HButton>. Actual functionality is implemented in component
+  * templates and component <refresh> method extensions.
+  *
+  * Parameters:
+  *  _label - The text the component should display.
+  *
+  **/
+  setLabel: function(_label) {
+    this.label = _label;
+    this.options.label = _label;
+    this.refresh();
+  },
+  
+/** method: setEnabled
+  *
+  * Enables the Control if the enabled flag is true, and disables
+  * it if enabled is false.
+  * Typically, a disabled Control also won't post messages or respond
+  * to mouse and keyboard manipulation.
+  *
+  * Parameters:
+  *  _flag - Boolean; true enables, false disables.
+  *
+  * See also:
+  *  <events> <HEventManager.register> <HEventManager.unreg>
+  *
+  **/
+  setEnabled: function(_flag) {
+    
+    // Enable/disable the children first.
+    for (var i = 0; i < this.views.length; i++) {
+      HSystem.views[this.views[i]].setEnabled(_flag);
+    }
+    
+    if (this.enabled === _flag) {
+      // No change in enabled status, do nothing.
+      return;
+    }
+    
+    this.enabled = _flag;
+    
+    if(_flag) {
+      EVENT.reg(this, this.events);
+    }
+    else {
+      EVENT.unreg(this);
+    }
+    
+    // Toggle the CSS class: enabled/disabled
+    this.toggleCSSClass(this.elemId, HControl.CSS_ENABLED, this.enabled);
+    this.toggleCSSClass(this.elemId, HControl.CSS_DISABLED, !this.enabled);
+  },
+  
+/** method: setValue
+  *
+  * Assigns the object a new value. Extend it, if your component needs to do
+  * something whenever the value changes.
+  *
+  * Parameter:
+  *  _value - The new value. Allowed values depend on the component type 
+  *           and other usage of the bound <HValue> instance.
+  *
+  * See also:
+  *  <setValueRange> <HValue> <HValueManager> <refresh>
+  *
+  **/
+  setValue: function(_value) {
+    if(_value === undefined){return;}
+    if(!this.valueObj){return;}
+    if(_value !== this.value) {
+      this.value = _value;
+      this.valueObj.set(this.value);
+      this.refresh();
+    }
+  },
+  
+/** method: setValueObj
+  *
+  * Binds an <HValue>-compatible instance to the component's valueObj. Also 
+  * calls <setValue>. It should not be called from user code, instead use <HValue.bind>.
+  *
+  * Parameter:
+  *  _aValueObj - The new value object.
+  *
+  * See also:
+  *  <setValue> <setValueRange> <HValue.bind> <HValue.unbind> <HValueManager>
+  **/
+  setValueObj: function(_HValue) {
+    this.valueObj = _HValue;
+    this.setValue(_HValue.value);
+  },
+  
+/** method: setValueRange
+  *
+  * Assigns the object a new value range. Used for sliders etc. Calls 
+  * <setValue> with the value given.
+  *
+  * Parameters:
+  *  _value - The new <value> to be set to the component's <HValue>-compatible instance.
+  *  _minValue - The new minimum <value> limit. See <minValue>.
+  *  _maxValue - The new maximum <value> limit. See <maxValue>.
+  *
+  * See also:
+  *  <setValue> <HValue> <minValue> <maxValue> <HValueManager> <refresh>
+  **/
+  setValueRange: function(_value, _minValue, _maxValue) {
+    this.minValue = _minValue;
+    this.maxValue = _maxValue;
+    _value = (_value < _minValue) ? _minValue : _value;
+    _value = (_value > _maxValue) ? _maxValue : _value;
+    this.setValue(_value);
+    this.refresh();
+  },
+  
+  refreshValue: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.value){
+        ELEM.setHTML(this.markupElemIds.value,this.value);
+      }
+    }
+  },
+  refreshLabel: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.label){
+        ELEM.setHTML(this.markupElemIds.label,this.label);
+      }
+    }
+  },
+  refresh: function(){
+    this.base();
+    if(this.drawn){
+      if(this.refreshOnValueChange){
+        this.refreshValue();
+      }
+      if(this.refreshOnLabelChange){
+        this.refreshLabel();
+      }
+    }
+  },
+  
+  
+/** method: setEvents
+  *
+  * Sets the events the control should listen to. Event bindings happen 
+  * automatically through <HEventManager>.
+  *
+  * *NOTE* Currently, click and drag events conflict, if both are set simultaneously.
+  *
+  * Parameter:
+  *  _events - A {key: flag} hash structure, sets events based on the keys and the flag.
+  *
+  * Pre-Defined event types (used as the key name):
+  *  mouseMove - flag, start listening to global mousemove events
+  *  mouseDown - flag, start listening to mousedown events when the component has focus
+  *  mouseUp   - flag, start listening to mouseup events when the component has focus
+  *  mouseWheel   - flag, start listening to mousewheel events when the component has focus
+  *  draggable - flag, start listening to dragging events when the component has focus
+  *  droppable - flag, start listening to dropping events when the component has focus
+  *  keyDown - flag, start listening to keydown events when the component has focus
+  *  keyUp - flag, start listening to keyup events when the component has focus
+  *
+  * Pre-defined event handler methods, extend in component code:
+  *   focus - Called when the component gets focus
+  *   blur - Called when the component loses focus
+  *   mouseDown - Called when the mouse button is pushed down
+  *   mouseUp - Called when the mouse button is released
+  *   mouseWheel - Called when the mouse wheel is used
+  *   startDrag - Called when the mouse button is pressed (and item is draggable)
+  *   endDrag - Called when the mouse button is released (and item is draggable)
+  *   doDrag - Called when the mouse is moved and mouse button is down (and item is draggable)
+  *   onDrop - Called when a draggable item is released on the droppable
+  *   onHoverStart - Called when a draggable item is moved over the droppable
+  *   onHoverEnd - Called when a draggable item is moved out of the droppable
+  *   keyDown - Called when the user presses a key, and the control is active
+  *   keyUp - Called when the user releases a key, and the control is active
+  *   gainedActiveStatus - Called when the component gets activated.
+  *   lostActiveStatus - Called when the component gets deactivated.
+  *
+  * See also:
+  *  <HEventManager.focusOptions> <focus> <blur> <mouseDown> <mouseUp> <mouseWheel> <startDrag> <endDrag> <doDrag> <onDrop> <onHoverStart> <onHoverEnd>
+  **/
+  setEvents: function(_events) {
+    if(!this.events) {
+      var _eventsClass = HClass.extend({
+        mouseMove:  false,
+        mouseDown:  false,
+        mouseUp:    false,
+        draggable:  false,
+        droppable:  false,
+        keyDown:    false,
+        keyUp:      false,
+        mouseWheel: false,
+        textEnter:  false,
+        click:      false
+      });
+      this.events = new _eventsClass;
+    }
+    if(_events) {
+      this.events.extend( _events );
+    }
+    this.events.ctrl = this;
+    EVENT.focusOptions[this.elemId] = this.events;
+    var _mmoveStatus = this.events.mouseMove;
+    var _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
+    if (_mmoveStatus && (_mmoveIndex==-1)){
+      EVENT.coordListeners.push(this.elemId);
+    } else if ((!_mmoveStatus) && (_mmoveIndex!=-1)){
+      EVENT.coordListeners.splice(_mmoveIndex,1);
+    }
+    //if(this.events.textEnter){
+    //  EVENT.
+    //}
+    
+    /// The following boolean must be set:
+    this.isDragged = false;
+  },
+
+/** method: setMouseMove
+  *
+  * Alternative flag setter for the <mouseDown> event type. If set to true, 
+  * starts listening to <mouseDown> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseDown> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setMouseMove: function(_flag) {
+    this.events.mouseMove = _flag;
+    this.setEvents();
+  },
+
+/** method: setClickable
+  *
+  * Alternative flag setter for the <click> event type. If set to true, 
+  * starts listening to <click> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <click> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setClickable: function(_flag) {
+    this.events.click = _flag;
+    this.setEvents();
+  },
+  
+/** method: setMouseDown
+  *
+  * Alternative flag setter for the <mouseDown> event type. If set to true, 
+  * starts listening to <mouseDown> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseDown> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <mouseDown> <setEvents> <HEventManager>
+  **/
+  setMouseDown: function(_flag) {
+    this.events.mouseDown = _flag;
+    this.setEvents();
+  },
+  
+/** method: setMouseUp
+  *
+  * Alternative flag setter for the <mouseUp> event type. If set to true, 
+  * starts listening to <mouseUp> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseUp> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <mouseUp> <setEvents> <HEventManager>
+  **/
+  setMouseUp: function(_flag) {
+    this.events.mouseUp = _flag;
+    this.setEvents();
+  },
+  
+/** method: setMouseWheel
+  *
+  * Alternative flag setter for the <mouseWheel> event type. If set to true, 
+  * starts listening to <mouseWheel> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseWheel> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setMouseWheel: function(_flag) {
+    this.events.mouseWheel = _flag;
+    this.setEvents();
+  },
+  
+/** method: setDraggable
+  *
+  * Alternative flag setter for the <startDrag>, <onDrag> and <endDrag> event
+  * types. If set to true, starts listening to these events when the component
+  * has focus.
+  *
+  * Parameters:
+  *  _flag - Set the <startDrag>, <doDrag> and <endDrag> event listening 
+  *          on/off (true/false) for the component instance.
+  *
+  * See also:
+  *  <startDrag> <doDrag> <endDrag> <setEvents> <HEventManager>
+  **/
+  setDraggable: function(_flag) {
+    this.events.draggable = _flag;
+    this.setEvents();
+  },
+  
+/** method: setDroppable
+  *
+  * Alternative flag setter for the <onHoverStart>, <onDrop> and <onHoverEnd> event
+  * types. If set to true, starts listening to these events when the component
+  * has focus.
+  *
+  * Parameters:
+  *  _flag - Set the <onHoverStart>, <onDrop> and <onHoverEnd> event listening 
+  *          on/off (true/false) for the component instance.
+  *
+  * See also:
+  *  <onHoverStart> <onDrop> <onHoverEnd> <setEvents> <HEventManager>
+  **/
+  setDroppable: function(_flag) {
+    this.events.droppable = _flag;
+    this.setEvents();
+  },
+  
+  
+/** method: setKeyDown
+  *
+  * Alternative flag setter for the <keyDown> event type. If set to true, 
+  * starts listening to <keyDown> events when the component is active.
+  *
+  * Parameters:
+  *  _flag - Set the <keyDown> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <keyDown> <setKeyUp> <setEvents> <HEventManager>
+  **/
+  setKeyDown: function(_flag) {
+    this.events.keyDown = _flag;
+    this.setEvents();
+  },
+  
+  
+/** method: setKeyUp
+  *
+  * Alternative flag setter for the <keyUp> event type. If set to true, 
+  * starts listening to <keyUp> events when the component is active.
+  *
+  * Parameters:
+  *  _flag - Set the <keyUp> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <keyUp> <setKeyDown> <setEvents> <HEventManager>
+  **/
+  setKeyUp: function(_flag) {
+    this.events.keyUp = _flag;
+    this.setEvents();
+  },
+  
+  
+  setTextEnter: function(_flag) {
+    this.events.textEnter = _flag;
+    this.setEvents();
+  },
+  textEnter: function() {
+    
+  },
+  
+/** event: focus
+  *
+  * Implement/extend the focus method, if you want to do something special when
+  * the focus is gained.
+  *
+  * Called when the component gets focus.
+  *
+  * See also:
+  *  <blur> <HEventManager> <setEvents>
+  **/
+  focus: function() {
+   /* Example:
+    this.hasFocus = true;
+   */
+  },
+  
+/** event: blur
+  *
+  * Implement/extend the blur method, if you want to do something special when
+  * the focus is lost.
+  *
+  * Called when the component loses focus.
+  *
+  * See also:
+  *  <focus> <HEventManager> <setEvents>
+  **/
+  blur: function() {
+   /* Example:
+    this.hasFocus = false;
+   */
+  },
+  
+  
+/** event: gainedActiveStatus
+  *
+  * Implement/extend this if you want to do something special when the control gets
+  * activated.
+  *
+  * Parameters:
+  *  _lastActiveControl - A reference to the control that was active before this
+  *                       control became active. Can be null if there was no
+  *                       active control.
+  *
+  * See also:
+  *  <lostActiveStatus> <HEventManager> <setEvents>
+  **/
+  gainedActiveStatus: function(_lastActiveControl) {
+    
+  },
+  // A low-level handler, don't extend this.
+  _gainedActiveStatus: function(_lastActiveControl) {
+    if(this.enabled) {
+      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, true);
+    }
+    this.gainedActiveStatus(_lastActiveControl);
+  },
+  
+  
+/** event: lostActiveStatus
+  *
+  * Implement/extend this if you want to do something special when the control loses its
+  * active status.
+  *
+  * Parameters:
+  *  _newActiveControl - A reference to the control that became the currently
+  *                      active control. Can be null if there is no active
+  *                      control.
+  *
+  * See also:
+  *  <gainedActiveStatus> <HEventManager> <setEvents>
+  **/
+  lostActiveStatus: function(_newActiveControl) {
+    
+  },
+  // A low-level handler, don't extend this.
+  
+  _lostActiveStatus: function(_newActiveControl) {
+    if(this.enabled) {
+      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, false);
+    }
+    this.lostActiveStatus(_newActiveControl);
+  },
+  
+  
+/** event: mouseDown
+  *
+  * Implement/extend the mouseDown method, if you want to do something special 
+  * when the mouse button is pressed down and the component instance has focus.
+  *
+  * Parameters:
+  *  _x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  _y - The vertical coordinate units (px) of the mouse cursor position.
+  *  _leftButton - Flag, is false when the right mouse button was pressed. *Do not rely on it*
+  *
+  * See also:
+  *  <setMouseDown> <mouseUp> <HEventManager> <setEvents>
+  **/
+  mouseMove: function(_x, _y) {
+   /* Example:
+    this.hasMouseDown = true;
+    this.mouseDownCoords  = new HPoint(_x,_y);
+   */
+  },
+  
+  
+/** event: mouseDown
+  *
+  * Implement/extend the mouseDown method, if you want to do something special 
+  * when the mouse button is pressed down and the component instance has focus.
+  *
+  * Parameters:
+  *  _x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  _y - The vertical coordinate units (px) of the mouse cursor position.
+  *  _leftButton - Flag, is false when the right mouse button was pressed. *Do not rely on it*
+  *
+  * See also:
+  *  <setMouseDown> <mouseUp> <HEventManager> <setEvents>
+  **/
+  mouseDown: function(_x, _y, _leftButton) {
+   /* Example:
+    this.hasMouseDown = true;
+    this.mouseDownCoords  = new HPoint(_x,_y);
+   */
+  },
+  
+  
+/** event: mouseUp
+  *
+  * Implement/extend the mouseUp method, if you want to do something special 
+  * when the mouse button is released and the component instance has focus.
+  *
+  * This is the preferred method to extend when you want click functionality
+  * for a component.
+  *
+  * Parameters:
+  *  _x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  _y - The vertical coordinate units (px) of the mouse cursor position.
+  *  _leftButton - Flag, is false when the right mouse button was pressed. *Do not rely on it*
+  *
+  * See also:
+  *  <setMouseUp> <mouseDown> <HEventManager> <setEvents>
+  **/
+  mouseUp: function(_x, _y, _leftButton) {
+   /* Example:
+    this.hasMouseDown = false;
+    this.mouseUpCoords  = new HPoint(_x,_y);
+   */
+  },
+  
+/** event: mouseWheel
+  *
+  * Implement/extend the mouseWheel method, if you want to do something special 
+  * when the mouse wheel is used and the component instance has focus.
+  *
+  * Parameters:
+  *  _delta - Scrolling delta, the wheel angle change. If delta is positive,
+  *   wheel was scrolled up. Otherwise, it was scrolled down.
+  *
+  * See also:
+  *  <setMouseWheel> <HEventManager> <setEvents>
+  **/
+  mouseWheel: function(_delta) {
+   /* Example:
+    if (_delta > 0)
+      msg = "Moving up!";
+    else 
+      msg = "Going down...";
+   */
+  },
+  
+/** event: startDrag
+  *
+  * Extend the startDrag method, if you want to do something special 
+  * when the user starts a dragging event.
+  *
+  * This is the preferred method to extend if you want <mouseDown> functionality
+  * for a draggable component.
+  *
+  * Parameters:
+  *  x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  y - The vertical coordinate units (px) of the mouse cursor position.
+  *
+  * See also:
+  *  <endDrag> <doDrag> <onDrop> <mouseDown> <HEventManager> <setEvents>
+  **/
+  startDrag: function(x, y) {
+    this.isDragged = true; // must be set to work
+   /* Example:
+    this.originX = x-parseInt(prop_get(this.elemId,'left'));
+    this.originY = y-parseInt(prop_get(this.elemId,'top'));
+   */
+  },
+  
+/** event: doDrag
+  *
+  * Extend the doDrag method, if you want to do something special 
+  * when the user is performing a dragging event. Called whenever the 
+  * mouse cursor moves.
+  *
+  * Parameters:
+  *  x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  y - The vertical coordinate units (px) of the mouse cursor position.
+  *
+  * See also:
+  *  <startDrag> <endDrag> <onDrop> <HEventManager> <setEvents>
+  **/
+  doDrag: function(x, y) {
+   /* Example:
+    prop_set(this.elemId,'left',(x-this.originX)+'px');
+    prop_set(this.elemId,'top',(y-this.originY)+'px');
+   */
+  },
+  
+/** event: endDrag
+  *
+  * Extend the endDrag method, if you want to do something special 
+  * when the user ends a dragging event.
+  *
+  * This is the preferred method to extend if you want <mouseUp> functionality
+  * for a draggable component.
+  *
+  * Parameters:
+  *  x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  y - The vertical coordinate units (px) of the mouse cursor position.
+  *
+  * See also:
+  *  <startDrag> <doDrag> <onDrop> <mouseUp> <HEventManager> <setEvents>
+  **/
+  endDrag: function(x, y) {
+    this.isDragged = false; // must be un-set to work
+    this.invalidatePositionCache();
+   /* Example:
+   */
+  },
+
+/** event: onDrop
+  *
+  * Extend the onDrop method, if you want to do something special 
+  * when the user is performing a drop event. Called when a dragged component instance
+  * is dropped on another component instance.
+  *
+  * Parameter:
+  *  obj - The dragged component object.
+  *
+  * See also:
+  *  <onHoverStart> <onHoverEnd> <endDrag> <HEventManager> <setEvents>
+  **/
+  onDrop: function(obj) {
+    
+  },
+
+/** event: onHoverStart
+  *
+  * Extend the onHoverStart method, if you want to do something special 
+  * when a dragged component instance is dragged over a droppable component instance.
+  *
+  * Parameter:
+  *  obj - The dragged component object.
+  *
+  * See also:
+  *  <onDrop> <onHoverEnd> <doDrag> <HEventManager> <setEvents>
+  **/
+  onHoverStart: function(obj) {
+    
+  },
+  
+  
+/** event: onHoverEnd
+  *
+  * Extend the onHoverEnd method, if you want to do something special 
+  * when a dragged component instance is dragged from a droppable component instance.
+  *
+  * Parameter:
+  *  obj - The dragged component object.
+  *
+  * See also:
+  *  <onDrop> <onHoverStart> <doDrag> <HEventManager> <setEvents>
+  **/
+  onHoverEnd: function(obj) {
+    
+  },
+  
+  
+/** event: keyDown
+  *
+  * Implement/extend the keyDown method, if you want to do something special 
+  * when a key is pressed down and the component is active.
+  *
+  * Parameters:
+  *  _keycode - The keycode of the key that was pressed down.
+  *
+  * See also:
+  *  <setKeyDown> <keyUp> <HEventManager> <setEvents>
+  **/
+  keyDown: function(_keycode) {
+    
+  },
+  
+  
+/** event: keyUp
+  *
+  * Implement/extend the keyUp method, if you want to do something special 
+  * when a key is released and the component is active.
+  *
+  * Parameters:
+  *  _keycode - The keycode of the key that was released.
+  *
+  * See also:
+  *  <setKeyUp> <keyDown> <HEventManager> <setEvents>
+  **/
+  keyUp: function(_keycode) {
+    
+  },
+  
+  
+  /***** DON'T TOUCH _mouseOver, IT IS A LOW-LEVEL HANDLER, use focus() instead *****/
+  _mouseOver: function(e) {
+    if (!Event.element) {
+      return;
+    }
+    var _that = Event.element(e);
+    while(_that && _that.ctrl === undefined) {
+      _that = _that.parentNode;
+    }
+    if (!_that) {
+      return;
+    }
+    var _this = _that.ctrl;
+
+    EVENT.focus(_this);
+    Event.stop(e);
+  },
+  
+  /***** DON'T TOUCH _mouseOut, IT IS A LOW-LEVEL HANDLER, use blur() instead *****/
+  _mouseOut: function(e) {
+    if (!Event.element) {
+      return;
+    }
+    var _that = Event.element(e);
+    while(_that && _that.ctrl === undefined) {
+      _that = _that.parentNode;
+    }
+    if (!_that) {
+      return;
+    }
+    var _this = _that.owner;
+    
+    EVENT.blur(_this);
+    Event.stop(e);
+  },
+  
+  
+/** method: invalidatePositionCache
+  *
+  * Forces retrieving this control's DOM element position directly rather than
+  * using the cached version when the position is needed by the <HEventManager>.
+  * Child controls are invalidated recursively by <HView>.
+  *
+  * See also:
+  *   <HEventManager.invalidatePositionCache>
+  * 
+  **/
+  invalidatePositionCache: function() {
+    this.base();
+    EVENT.coordCacheFlush(this.elemId);
+  }
+  
+  
+},{
+  
+  
+  // Class methods and properties
+  
+  stopPropagation: function(event) {
+    if (event.stopPropagation) { 
+      event.stopPropagation(); 
+    } else {
+      event.cancelBubble = true;
+    }
+  },
+  
+  H_CONTROL_ON:  1,
+  H_CONTROL_OFF: 0,
+  
+  // CSS class names for different statuses.
+  CSS_DISABLED: "disabled",
+  CSS_ENABLED:  "enabled",
+  CSS_ACTIVE:   "active"
+  
+});
+
+/** class: HDummyValue
+  *
+  * A HDummyValue is just a placeholder for <HValue> values. HDummyValue
+  * is a light-weight alternative that doesn't implement any actual <HValue>
+  * functionality, but implements the essential methods that keep <HControl> happy.
+  * It's the default value type for components not bound to real <HValue> instances.
+  *
+  * See also:
+  *  <HValue> <HControl> <HValueManager>
+  *
+  **/
+HDummyValue = HClass.extend({
+/** constructor: constructor
+  *
+  * HDummyValue is initialized just like a real <HValue>.
+  *
+  * Parameters:
+  *  _id - Any string or integer, just a placeholder for <HValue.id>
+  *  _value - Any valid js object, just as for <HValue.value>
+  *
+  **/
+  constructor: function(_id, _value) {
+    this.id = _id;
+    this.value = _value;
+  },
+
+/** method: set
+  *
+  * Parameter:
+  *  _value - Sets a new instance payload value.
+  *
+  **/
+  set: function(_value) {
+    this.value = _value;
+  },
+
+/** method: get
+  *
+  * Returns:
+  *  The instance payload value.
+  *
+  **/
+  get: function() {
+    return this.value;
+  },
+  
+  bind: function( _theObj ){
+  },
+  
+  unbind: function( _theObj ){
+  }
+});
+
+
+/** class: HComponentDefaults
+  *
+  * Define default setting here. Will be used, when no or invalid constructor options are supplied.
+  *
+  * vars: Settable Control-level defaults, override on construction
+  *  label - The visual value of the component
+  **/
+HComponentDefaults = HClass.extend({
+  
+  // The visual value of a component:
+  label:    "Untitled",
+  visible:  true,
+  
+  // A structure that tells what events to bind.
+  /*
+  
+  valid sample (the default): {
+    mouseDown:  false,
+    mouseUp:    false,
+    draggable:  false,
+    droppable:  false,
+    keyDown:    false,
+    keyUp:      false,
+    mouseWheel: false
+  }
+  
+  */
+  // See <HControl.setEvents>.
+  events:   {},
+  
+  // The default value. See <HControl.setValue>
+  value:    0,
+  
+  // The default action, See <HControl.setAction>
+  action:   function(){},
+  
+  // The enabled/disabled flag. See <HControl.setEnabled>
+  enabled:  true,
+  active:   false,
+  
+  // Value Range -related
+  minValue: -2147483648, // signed 32bit
+  maxValue:  2147483648 // signed 32bit
+  
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+HDynControl = HControl.extend({
+  componentName: 'dyncontrol',
+  componentBehaviour: ['view','control','window'],
+  constructor: function( _rect, _parent, _options ){
+    if(!_options) {
+      _options={};
+    }
+    var _defaults = HClass.extend({
+      minSize:   [24,54],
+      maxSize:   [16000,9000],
+      resizeW:   1,
+      resizeE:   1,
+      resizeN:   1,
+      resizeS:   1,
+      resizeNW:  [ 1, 1 ],
+      resizeNE:  [ 1, 1 ],
+      resizeSW:  [ 1, 1 ],
+      resizeSE:  [ 1, 1 ],
+      noResize:  false
+    });
+    _options = new (_defaults.extend(_options))();
+    if(_options.noResize){
+      _options.minSize = [_rect.width,_rect.height];
+      _options.maxSize = [_rect.width,_rect.height];
+      _options.resizeW = 0;
+      resizeE = 0;
+      resizeN = 0;
+      resizeS = 0;
+      resizeNW = [0,0];
+      resizeNE = [0,0];
+      resizeSW = [0,0];
+      resizeSE = [0,0];
+    }
+    if(this.isinherited) {
+      this.base(_rect, _parent, _options);
+    }
+    else {
+      this.isinherited = true;
+      this.base(_rect, _parent, _options);
+      this.isinherited = false;
+    }
+    this.presrveTheme = true;
+    this.setDraggable(true);
+    this._initActionFns();
+    this._initActionFlag();
+    if(!this.isinherited) {
+      this.draw();
+    }
+  },
+  drawRect: function(_leftChange,_topChange){
+    if(this.rect.width <this.options.minSize[0]){
+      var _dw=0-(this.options.minSize[0]-this.rect.width);
+      this.rect.setWidth( this.options.minSize[0]);
+      if(_leftChange){
+        this.rect.offsetBy( _dw, 0 );
+      }
+    }
+    else if(this.rect.width >this.options.maxSize[0]){
+      var _dw=0-(this.options.maxSize[0]-this.rect.width);
+      this.rect.setWidth( this.options.maxSize[0]);
+      if(_leftChange){
+        this.rect.offsetBy( _dw, 0 );
+      }
+    }
+    if(this.rect.height<this.options.minSize[1]){
+      var _dh=0-(this.options.minSize[1]-this.rect.height);
+      this.rect.setHeight(this.options.minSize[1]);
+      if(_topChange){
+        this.rect.offsetBy( 0, _dh );
+      }
+    }
+    else if(this.rect.height>this.options.maxSize[1]){
+      var _dh=0-(this.options.maxSize[1]-this.rect.height);
+      this.rect.setHeight(this.options.maxSize[1]);
+      if(_topChange){
+        this.rect.offsetBy( 0, _dh );
+      }
+    }
+    this.base();
+  },
+  draw: function(){
+    var _isDrawn = this.drawn;
+    this.base();
+    if(!_isDrawn){
+      this.buildStructure();
+    }
+  },
+  buildStructure: function(){
+    
+  },
+  _diffPoint: function(_x,_y){
+    return this._prevPoint.subtract(_x,_y);
+  },
+  
+  dynResizeNW: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setLeftTop(_this.rect.leftTop.subtract(_dp));
+    _this.drawRect(1,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeNE: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setRightTop(_this.rect.rightTop.subtract(_dp));
+    _this.drawRect(0,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeSW: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setLeftBottom(_this.rect.leftBottom.subtract(_dp));
+    _this.drawRect(1,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeSE: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setRightBottom(_this.rect.rightBottom.subtract(_dp));
+    _this.drawRect(0,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeW: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setLeft(_this.rect.left-_dp.x);
+    _this.drawRect(1,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeE: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setRight(_this.rect.right-_dp.x);
+    _this.drawRect(0,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeN: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setTop(_this.rect.top-_dp.y);
+    _this.drawRect(0,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeS: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setBottom(_this.rect.bottom-_dp.y);
+    _this.drawRect(0,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynDrag: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.offsetTo(_this.rect.leftTop.subtract(_dp));
+    _this.drawRect(1,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  _initActionFns: function(){
+    this._actionFns = [];
+    var i, _this = this,
+    _resizeNW=0,_resizeNE=1,_resizeSW=2,_resizeSE=3,
+    _resizeW =4, _resizeE=5, _resizeN=6, _resizeS=7, _drag=8,
+    _actionFns=this._actionFns;
+    _actionFns[_resizeNW] = _this.dynResizeNW;
+    _actionFns[_resizeNE] = _this.dynResizeNE;
+    _actionFns[_resizeSW] = _this.dynResizeSW;
+    _actionFns[_resizeSE] = _this.dynResizeSE;
+    
+    _actionFns[_resizeW] = _this.dynResizeW;
+    _actionFns[_resizeE] = _this.dynResizeE;
+    _actionFns[_resizeN] = _this.dynResizeN;
+    _actionFns[_resizeS] = _this.dynResizeS;
+    
+    _actionFns[_drag] = _this.dynDrag;
+  },
+  _initActionFlag: function(){
+    this._actionFlag = -1;
+    this._actionRects = [];
+    var i,_rr,
+    _opts=this.options, _rect=this.rect,
+    _rectRules = [
+      // corners:
+      [0,0,_opts.resizeNW[0],_opts.resizeNW[1]], // NW
+      [_rect.width-_opts.resizeNE[0],0,_rect.width,_opts.resizeNE[1]], // NE
+      [0,_rect.height-_opts.resizeSW[1],_opts.resizeSW[0],_rect.height], // SW
+      [_rect.width-_opts.resizeSE[0],_rect.height-_opts.resizeSE[1],_rect.width,_rect.height], // SE
+      // borders:
+      [0,_opts.resizeN,_opts.resizeW,_rect.height-_opts.resizeS], // W
+      [_rect.width-_opts.resizeE,_opts.resizeN,_rect.width,_rect.height-_opts.resizeS], // E
+      [_opts.resizeW,0,_rect.width-_opts.resizeE,_opts.resizeN], // N
+      [_opts.resizeW,_rect.height-_opts.resizeS,_rect.width-_opts.resizeE,_rect.height], // S
+      // drag-area:
+      [_opts.resizeW,_opts.resizeN,_rect.width-_opts.resizeE,_rect.height-_opts.resizeS]
+    ];
+    for(i=0;i!=9;i++){
+      _rr = _rectRules[i];
+      this._actionRects.push( new HRect(_rr[0],_rr[1],_rr[2],_rr[3]) );
+    }
+  },
+  _detectActionFlag: function(){
+    var i,
+    _actionPoint = this._startPoint.subtract(this.rect.left,this.rect.top),
+    _actionRects = this._actionRects;
+    for(i=0;i!=9;i++){
+      if(_actionRects[i].contains(_actionPoint)){
+        this._actionFlag=i;
+        return;
+      }
+    }
+  },
+  startDrag: function(_x,_y,_isLeft){
+    this._startPoint = new HPoint(_x,_y);
+    this._prevPoint  = new HPoint(_x,_y);
+    this._startRect  = new HRect( this.rect );
+    this._detectActionFlag();
+    if(this._actionFlag==8){
+      this.setStyle('cursor','move');
+    }
+    this.bringToFront();
+    this.doDrag(_x,_y,_isLeft);
+  },
+  doDrag: function(_x,_y,_isLeft){
+    if(this._actionFlag!=-1){
+      this._actionFns[this._actionFlag](this,_x,_y);
+    }
+  },
+  endDrag: function(_x,_y,_isLeft){
+    this.doDrag(_x,_y,_isLeft);
+    if(this._actionFlag==8){
+      this.setStyle('cursor','default');
+    }
+    this._initActionFlag();
+  }
+});
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+// all properties should be installed in constructor because otherwise those
+// are iterated unnecessary
+
+// super keyword conflicts for example with Safari
+// cannot be used
+
+// Safari leaves copies of prototype properties and methods to parent class
+// in for (var in this) structure
+
+/** class: HClass
+  *
+  * HClass class is a simple JavaScript class that eases the pain of JavaScript OO. 
+  * It is intended for the following main purposes:
+  *   -	to easily create classes without the MyClass.prototype cruft,
+  *   -	method overriding with intuitive access to the overridden method (like Java's super),
+  *   -	to avoid calling a class' constructor function during the prototyping phase,
+  *   -	to easily add static (class) properties and methods,
+  *   -	to achieve the above without resorting to global functions to build prototype chains,
+  *   -	to achieve the above without affecting Object.prototype. 
+  *
+  *
+  * The HClass class extends the 'Object' object by adding one instance method (base) 
+  * and two class methods (extend, implement). Instance method extend can be also called directly.
+  *
+  **/
+var HClass = function() {
+  if (arguments.length) {
+    var _1stArg = arguments[0];
+    if (this == window) {
+      HClass.prototype.extend.call(_1stArg, arguments.callee.prototype);
+    } else {
+      this.extend(_1stArg);
+    }
+  }
+};
+
+HClass.prototype = {
+  
+  // basically internal methods event if can be called safely
+  extend: function(_source, _value) {
+    var _extend = HClass.prototype.extend;
+    if (arguments.length == 2) {
+      var _ancestor = this[_source];
+      // only methods are inherited
+      if ((_ancestor instanceof Function) && (_value instanceof Function) &&
+          _ancestor.valueOf() != _value.valueOf() && (/\bbase\b/).test(_value)) {
+        var _method = _value;
+        _value = function() {
+          // saves the this.base that is the this.base method of this child
+          var _previous = this.base;
+          // copies previous this.base from the direction from HClass
+          this.base = _ancestor;
+          // current class's method is called
+          // now inside the function when called this.base points to parent method
+          var _returnValue = _method.apply(this, arguments);
+          // then because event this function can be called from child method
+          // resets the base to as is was before calling this function
+          this.base = _previous;
+          return _returnValue;
+        };
+        _value.valueOf = function() {
+          return _method;
+        };
+        _value.toString = function() {
+          return String(_method);
+        };
+      }
+      return this[_source] = _value;
+    // this is called when called by HClass.extend
+    } else if (_source) {
+      var _prototype = {toSource: null};
+      var _protected = ["toString", "valueOf"];
+      // we want default constructor function
+      if (HClass._prototyping) {
+        // 3. index
+        _protected.push("constructor");
+      }
+      for (var i = 0; (_name = _protected[i]); i++) {
+        if (_source[_name] != _prototype[_name]) {
+          _extend.call(this, _name, _source[_name]);
+        }
+      }
+      for (var _name in _source) {
+        if (!_prototype[_name]) {
+          _extend.call(this, _name, _source[_name]);
+        }
+      }
+    }
+    return this;
+  },
+  /** method: base
+    *
+    * If a method has been overridden then the base method provides access to the overridden method. 
+    * Call this method from any other method to invoke that method's ancestor.
+    * It is also possible to call the base method from within a constructor function.
+    *
+    **/
+  base: function() {
+    // this method can be called from any other method to invoke that method's parent
+  }
+};
+
+/** method: extend
+  *
+  * Enables the inheritance. If the method name constructor is defined null in _instance parameter returns a single instance.
+  *
+  * Parameters:
+  *   _instance - An object that has properties and methods of inherited class.
+  *   _static - An object that has properties and methods of inherited class's class methods if the method named constructor
+  *     is defined null in _instance parameter.
+  *   
+  * Returns:
+  *   Return value is inherited class.
+  *
+  * Example:
+  *
+  * > Point = HClass.extend({
+  * > constructor: function(x, y) {
+  * >   this.x = x;
+  * >   this.y = y;
+  * > }
+  * > });
+  * > Rectangle = Point.extend({
+  * > constructor: function(x, y, width, height) {
+  * >   this.base(x, y);
+  * >   this.width = width;
+  * >   this.height = height;
+  * > },
+  * > getWidth: function() {
+  * >   return this.width;
+  * > },
+  * > getHeight: function() {
+  * >   return this.height;
+  * > }
+  * > },
+  * > {
+  * > // class methods
+  * > description: "this is a Rectangle",
+  * > getClass: function() {
+  * >   return this;
+  * > }
+  * > });
+  *
+  **/
+HClass.extend = function(_instance, _static) {
+  // reference to HClass's prototype extend method (HClass's class structure extend method)
+  var _extend = HClass.prototype.extend;
+  // if _instance is undefined,null,"" etc. creates object so that code below works
+  if (!_instance) {
+    _instance = {};
+  }
+  HClass._prototyping = true;
+  // this is base for single instance or prototype (class structure) for object that are created
+  // from this class
+  var _prototype = new this;
+  // copies properties and methods from _instance to _prototype (class structure)
+  _extend.call(_prototype, _instance);
+  // this constructor came from _instance
+  var _constructor = _prototype.constructor;
+  _prototype.constructor = this;
+  delete HClass._prototyping;
+  
+  var _klass = function() {
+    if (!HClass._prototyping) {
+      _constructor.apply(this, arguments);
+    }
+    this.constructor = _klass;
+  };
+  // this is the new class's prototype (class structure)
+  _klass.prototype = _prototype;
+  // copies static method (class method)
+  // acts like HClass.extend
+  _klass.extend = this.extend;
+  // copies static method (class method)
+  // acts like HClass.implement
+  _klass.implement = this.implement;
+  _klass.toString = function() {
+    return String(_constructor);
+  };
+  // copies properties and methods from _static directly to statc methods (class methods)
+  // of new class
+  _extend.call(_klass, _static);
+  // if _constructor is marked as null returns the created instance (that is also class structure for
+  // instances if class is returned
+  var _object = _constructor ? _klass : _prototype;
+  if (_object.init instanceof Function) {
+    _object.init();
+  }
+  return _object;
+};
+
+/** method: implement
+  *
+  * Copies the prototype properties and methods from _interface or if it is an object it's properties and functions
+  * to HClass or class inherited from HClass. Mimics the interface behaviour of ordinary programming languages.
+  *
+  * Example:
+  *
+  * > // Mimics the interface
+  * > 
+  * > AreaInterface = HClass.extend({
+  * > constructor: null,
+  * >   // implement
+  * >   // don't define here
+  * >   //getWidth: function() {},
+  * >   //getHeight: function() {},
+  * > area: function() {
+  * >   return this.getWidth() * this.getHeight();
+  * > }
+  * > });
+  * > 
+  * > Rectangle = HClass.extend({
+  * > constructor: function(x, y, width, height) {
+  * >   this.x = x;
+  * >   this.y = y;
+  * >   this.width = width;
+  * >   this.height = height;
+  * > },
+  * > getWidth: function() {
+  * >   return this.width;
+  * > },
+  * > getHeight: function() {
+  * >   return this.height;
+  * > }
+  * > });
+  * > 
+  * > Rectangle.implement(AreaInterface);
+  *
+  **/
+HClass.implement = function(_interface) {
+  // copies prototype fields and methods (class structures properties and methods)
+  if (_interface instanceof Function) {
+    _interface = _interface.prototype;
+  }
+  this.prototype.extend(_interface);
+};
+
+var Base = HClass;
+
+
+if ([].indexOf===undefined) {
+  Object.extend = function(destination, source) {
+    for (property in source) {
+      destination[property] = source[property];
+    }
+    return destination;
+  };
+  Object.extend(Array.prototype, {
+    indexOf: function(_anObject){
+      var i = 0, l = this.length;
+      for (; i < l; i++) {
+        if (this[i] == _anObject) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  });
+}
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+is_ie = !(navigator.userAgent.toLowerCase().indexOf("opera") > -1) && navigator.appName == "Microsoft Internet Explorer";
+
+
+Array.prototype.toQueryString = function() {
+  var i, l = this.length,
+      _array = [];
+  for (i = 0; i < l; i++) {
+    _array.push( encodeURIComponent(this[i].key) + "=" +
+      encodeURIComponent(this[i].value) );
+  }
+  return _array.join("&");
+};
+
+
+
+
+
+
+
+
+Ajax = HClass.extend({
+  constructor: null,
+  getTransport: function() {
+    if (window.XMLHttpRequest) {
+      return new XMLHttpRequest();
+    } else if (is_ie) {
+      // checks the Microsoft Internet Explorer script engine version
+      if (ScriptEngineMajorVersion() >= 5) {
+        return new ActiveXObject("Msxml2.XMLHTTP");
+      } else {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    } else {
+      return false;
+    }
+  }
+});
+
+Ajax.Request = HClass.extend({
+  constructor: function(_url, _options) {
+    this.transport = Ajax.getTransport();
+    if(!_options){
+      _options = {};
+    }
+    var _defaults = HClass.extend({
+      method: "post",
+      asynchronous: true,
+      contentType: "application/x-www-form-urlencoded",
+      encoding: "UTF-8",
+      parameters: ""
+    });
+    _defaults = _defaults.extend(_options);
+    this.options = new _defaults();
+    this.request(_url);
+  },
+  request: function(_url) {
+    this.url = _url;
+    if (this.options.method == "get" && this.options.parameters.length) {
+      // if already has ? puts &
+      this.url += (this.url.indexOf("?") >= 0 ? "&" : "?") + this.options.parameters.toQueryString();
+    }
+    try {
+      this.transport.open(
+        this.options.method.toUpperCase(),
+        this.url,
+        this.options.asynchronous,
+        this.options.username,
+        this.options.password
+      );
+      var _obj = this;
+      this.transport.onreadystatechange = function(){
+        _obj.onStateChange();
+      };
+      this.setRequestHeaders();
+      var _body = this.options.method == "post" ?
+        (this.options.postBody || this.options.parameters.toQueryString()) : null;
+      this.transport.send(_body);
+      if (!this.options.asynchronous && this.transport.overrideMimeType) {
+        this.onStateChange();
+      }
+    } catch (e) {
+      console.log('error:',e);
+    }
+  },
+  setRequestHeaders: function() {
+    var headers = {}, o;
+    
+    if (this.options.method == "post") {
+      headers["Content-type"] = this.options.contentType +
+        (this.options.encoding ? "; charset=" + this.options.encoding : "");
+        
+      if (this.transport.overrideMimeType &&
+        (navigator.userAgent.match(/Gecko\/(\d{4})/) || [0,2005])[1] < 2005) {
+        headers["Connection"] = "close";
+      }
+    }
+    for (o in headers) {
+      this.transport.setRequestHeader(o, headers[o]);
+    }
+  },
+  /*
+  Firefox
+  0 UNINITIALIZED open() has not been called yet.
+  1 LOADING send() has not been called yet.
+  2 LOADED send() has been called, headers and status are available.
+  3 INTERACTIVE Downloading, responseText holds the partial data.
+  4 COMPLETED Finished with all operations.
+  IE
+  0 (Uninitialized) The object has been created, but not initialized (the open method has not been called).
+  1 (Open) The object has been created, but the send method has not been called.
+  2 (Sent) The send method has been called, but the status and headers are not yet available.
+  3 (Receiving) Some data has been received. Calling the responseBody and responseText properties at this state to obtain partial results will return an error, because status and response headers are not fully available.
+  4 (Loaded) All the data has been received, and the complete data is available.
+  */
+  onStateChange: function() {
+    var _readyState = this.transport.readyState;
+    if (_readyState > 1) {
+      this.respondToReadyState(_readyState);
+    }
+  },
+  respondToReadyState: function(_readyState) {
+    if (_readyState == 4) { // Completed(Loaded in IE 7)
+      //try {
+        (this.options["on"+(this.success()?"Success":"Failure")]||(function(){console.log('aa');}))(this.transport);
+      //} catch (e) {
+        //console.log('error:',e);
+      //}
+    }
+    
+    if (_readyState == 4) { // Completed(Loaded in IE 7)
+      this.transport.onreadystatechange = function(){};
+    }
+  },
+  success: function() {
+    //return !this.transport.status || (this.transport.status >= 200 && this.transport.status < 300);
+    return (this.transport.status >= 200 && this.transport.status < 300);
+  }
+});
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HTransporter
+  *
+  * *Simple mid-level AJAX communication system.*
+  *
+  * Designed as single instance, depends on <HValueManager>.
+  *
+  * When implementing the server part:
+  *  - feed it with raw javascript
+  *  - override ses_id as early as possible with your own session id, this tells the clients apart.
+  *  - change the syncDelay depending on how fast you want the client to poll the server (a value in ms)
+  *  - you may refer to 't' as the HTransporter's namespace.
+  *
+  * Sample initialization sequence:
+  * > HTransporter.ses_id    = 'nhHOZ8Zo64Wfo';
+  * > HTransporter.syncDelay = 400;
+  * > HTransporter.url_base = '/ui';
+  *
+  * See Also:
+  *  <HValueManager.toXML>
+  **/
+
+/* int: HTransportURL
+ *
+ * Tells the <HTransporter> which url/path to start polling.
+ * - "global"
+ * - Override it with your server's path or url before the document is loaded.
+ */
+HTransportURL = false;
+
+/* int: HTransportPoll
+ *
+ * Tells the <HTransporter> whether to use polling (true) or to sync values only
+ * when there's something on the client-side to sync (false).
+ * - "global"
+ * - Defaults to true (polling), override it with false before the document is
+ *   loaded if you don't want polling.
+ */
+HTransportPoll = true;
+
+/* str: HFailPageUrl
+ *
+ * Url or uri where the the client goes, if a communication error is encountered.
+ */
+HFailPageUrl = '/';
+HTransporterMaxRetryCount = 60;     // 60 retries
+HTransporterMaxRetryTime  = 60000; // 60 seconds
+HTransporterRetryDelay    = 1000; // 1 second
+
+// Retarded debug mode for "special" browsers
+HTransporterDebug = false;
+
+/* vars: Instance variables
+ *  url_base  - The URL (or path) that the requests are sent to
+ *  ses_id    - A value that is the reported in each request by the key 'ses_id'
+ *  syncDelay - An integer value (in ms) that the client waits before starting the next request
+ */
+HTransporter = Base.extend({
+  
+  constructor: null,
+  
+  start: function(_url_base){
+    var _this = HTransporter;
+    _this.url_base  = _url_base;
+    _this.ses_id    = 0;
+    _this.err_msg   = '';
+    _this.isBusy    = false;
+    _this.syncNum   = 0;
+    _this.syncDelay = 100;
+    
+    _this.prevData  = '';
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    
+    _this.pollMode  = HTransportPoll;
+    _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+  },
+  
+  setPollMode: function(_flag) {
+    HTransporter.pollMode = _flag;
+  },
+  
+  failure: function(resp){
+    //console.log('failure');
+    var _currFailAge = HTransporterMaxRetryTime+(new Date().getTime()),
+        _this = HTransporter;
+    clearTimeout(_this.req_timeout);
+    if(_this.firstFail==0){
+      _this.isBusy = false;
+      _this.firstFail=(new Date().getTime());
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else if((_this.failCount<HTransporterMaxRetryCount)&&(_this.firstFail<_currFailAge)){
+      _this.isBusy = false;
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else {
+      // If the connection fails, automatically try to reload the page.
+      window.status = 'Communications error, reloading page...';
+      location.href = HFailPageUrl;
+      _this.isBusy = true;
+    }
+    //console.log('fail..retry');
+    _this.req_timeout = setTimeout('HTransporter.sync();',HTransporterRetryDelay);
+  },
+  
+  respond: function(resp){
+    var _respText = resp.responseText,
+        _this = HTransporter;
+    try {
+      _this.err_msg = '';
+      eval(_respText); 
+    }
+    catch(e) {
+      if(HTransporterDebug){
+        console.log(e);
+        console.log(e.description);
+      }
+      _this.err_msg = '&err_msg='+e+" - "+e.description;
+      _this.failure(resp);
+    }
+    _this.prevData  = '';
+    if(_this.failCount!=0){window.status='';}
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    _this.isBusy = false;
+    if(_this.pollMode){
+      _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+    }
+  },
+  
+  sync: function(){
+    var _this = HTransporter,
+        _valid_delay = ((_this.syncDelay>0)||(_this.syncDelay==0));
+    // Negative syncDelay stops transporter.
+    if(_valid_delay && _this.url_base){
+      if(!_this.isBusy){
+        _this.isBusy = true;
+        if(_this.prevData!=''){
+          _syncData = _this.prevData;
+          //console.log('syncData0:',_syncData);
+        }
+        else {
+          _syncData = HValueManager.toXML();
+          _this.prevData = _syncData;
+          //console.log('syncData1:',_syncData);
+        }
+        if(""!=_syncData || _this.pollMode) {
+          _this.syncNum++;
+          HVM.isGetting=true;
+          req_args = {
+            onSuccess: function(resp){_this.respond(resp);},
+            onFailure: function(resp){_this.failure(resp);},
+            method:    'post',
+            postBody:  'ses_id='+_this.ses_id+_this.err_msg+_syncData
+          };
+          try{
+            _this.req  = new Ajax.Request( _this.url_base, req_args );
+            HVM.isGetting=false;
+          }
+          catch(e){
+            window.status = 'conn error:'+e;
+            HVM.isGetting=false;
+            _this.failure(null);
+          }
+        }
+        else {
+          _this.isBusy = false;
+        }
+      }
+    }
+  },
+  
+  stop: function() {
+    clearTimeout(_this.req_timeout);
+  }
+  
+});
+
+LOAD("HTransporter.start(HTransportURL);");
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HValueManager
+  *
+  * *Simple value syncronization system.*
+  * 
+  * Designed as single instance, depends on <HValue> and <HControl>.
+  *
+  * The system relies heavily on <HValue> instances.
+  * It allows easy value syncronization between the server and client components.
+  * <HTransporter> makes <toXML> calls whenever it's making a server poll to send
+  * changed data to the server as XML, accessable by the 'HSyncData' request key.
+  *
+  * See Also:
+  *  <HValue> <HTransporter> <HControl>
+  *
+  * Simple usage example:
+  *  > var myApp = new HApplication(100);
+  *  > var myTextCtrl1 = new HTextControl(new HRect(100,100,356,118),myApp,'',"Hello, I'm a textcontrol!");
+  *  > myTextCtrl1.draw();
+  *  > var myTextCtrl2 = new HTextControl(new HRect(120,100,356,138),myApp,'',"Hi, I'm also a textcontrol!");
+  *  > myTextCtrl2.draw();
+  *  > var myNewHValue = new HValue('foo123', "Hi, I am an example value.");
+  *  > myNewValue.bind( myTextCtrl1 );
+  *  > myNewValue.bind( myTextCtrl2 );
+  *  > HValueManager.set('foo123',"Hi, I am the new replacement value!");
+  *  > var myXMLChanged = HValueManager.toXML();
+  **/
+
+HValueManager = HClass.extend({
+  constructor: null,
+  
+/** vars: Instance variables
+  *
+  * values - Array, contains all values currently managed, accessible by <HValue> id:s
+  * tosync - Array, contains changed values that need to be reported to the remote side via <HTransporter>
+  * isSending - flag, is set to true when <HTransporter> is busy.
+  *
+  **/
+  values: {},
+  tosync: [],
+  isSending: false,
+  isGetting: false,
+  
+/*** method: add
+  ** 
+  ** Adds a new <HValue> bound to the value of id into the value index of <HValueManager>.
+  ** These values will then then be automatically syncronized between components
+  ** and other compatible instances, like server-side value management. Most
+  ** likely to be called from inside a <HValue> constructor.
+  **
+  ** Parameters:
+  **  _id - An id for the value, doesn't really matter at the client-side as long as it is unique. Matters for server-side. Could be int or str, depending on the server implementation.
+  **  _obj - A <HValue> object instance, usually *this* inside constructors of <HValue>-compatible classes.
+  **
+  ** See also:
+  **  <set> <del> <HValue.constructor>
+  ***/
+  add: function(_id,_obj){
+    this.values[_id] = _obj;
+  },
+  
+/*** method: set
+  **
+  ** Sets a new *container value* to the <HValue> object by calling the bound <HValue> by its id.
+  **
+  ** Parameters:
+  **  _id - The <HValue>-instance id to be modified.
+  **  _value - The container value (NOT a <HValue>)
+  **
+  ** See also:
+  **  <add> <del> <HValue.set> <HControl.setValue>
+  ***/
+  set: function(_id,_value){
+    this.values[_id].set(_value);
+  },
+  
+  s: function(_id,_value){
+    this.values[_id].s(_value);
+  },
+  
+/*** method: del
+  **
+  ** Deletes the <HValue> by id from the value management system.
+  **
+  ** Parameters:
+  **  _id - The <HValue>-instance id to be deleted.
+  **
+  ** See also:
+  **  <add> <set> <HValue>
+  ***/
+  del: function(_id){
+    var _thisVal  = this.values[_id],
+        _valViews = _thisVal.views,
+        _viewNum  = 0,
+        _thisView = null;
+    for(;_viewNum<_valViews.length;_viewNum++){
+      _thisView = _valViews[_viewNum];
+      _thisView.valueObj = new HDummyValue(0,_thisVal.value);
+    }
+    this.values[_id] = null;
+  },
+  
+/*** method: changed
+  **
+  ** Reports the <HValue> to <HValueManager> as a changed object.
+  ** It adds a reference to the <HValue>, unless the value is changed via <HTransporter>.
+  ** 
+  ** There is no need to call it manually, except when creating a new <HValue> -compatible
+  ** object from the scratch. Value-classes call changed whenever the change needs
+  ** to be reported elsewhere.
+  **
+  ** Parameters:
+  **  _theObj - The <HValue> -instance object to list as changed.
+  **
+  ** See also:
+  **  <isGetting> <tosync> <set>
+  ***/
+  changed: function(_theObj){
+    if(this.isGetting==false){
+      if(this.tosync.indexOf(_theObj.id)==-1){
+        this.tosync.push(_theObj.id);
+      }
+      var _t=HTransporter;
+      if(!_t.pollMode){
+        clearTimeout(_t.req_timeout);
+        _t.req_timeout = setTimeout('HTransporter.sync();',_t.syncDelay);
+      }
+    }
+  },
+  
+/*** method: toXML
+  **
+  ** Outputs all changed values to XML.
+  **
+  ** See also:
+  **  <HTransporter>
+  ***/
+  toXML: function(){
+    var _postBody = '&HSyncData=';
+    if(!this.isSending){
+      this.isSending = true;
+      var _synclen = this.tosync.length;
+      if(_synclen==0){
+        this.isSending = false;
+        return '';
+      }
+      var _syncvalueArr = [],_i;
+      for(_i=0;_i<_synclen;_i++){
+        var _syncid = this.tosync.shift();
+        var _syncobj = this.values[_syncid];
+        _syncvalueArr.push( _syncobj.toXML(_i) );
+      }
+      var _syncvalues = _syncvalueArr.join('');
+      // version: 8000 + himle svn revision at modification time
+      _postBody += '<hsyncvalues version="8118">'+_syncvalues+'</hsyncvalues>';
+      this.isSending = false;
+    }
+    return _postBody;
+  },
+  
+  // Backwards-compatibility:
+  output: function(){
+    return this.toXML();
+  }
+});
+
+// HVM is a shortcut to HValueManager
+HVM = HValueManager;
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HValue
+  **
+  ** Data that needs to be syncronized between components or remote clients should be implemented as HValues.
+  ** If client-side validation and type-checking is needed, it should be implemented by subclassing HValue.
+  **
+  ** vars: Instance variables
+  **  id - Value Id, used by the whole value management system to identify individual values.
+  **  type - '[HValue]'
+  **  value - The container/"payload" data value itself.
+  **  views - A list of Components that uses this value. 
+  **          Used for automatic value syncronization between components.
+  **
+  ** Usage example:
+  **  > var myApp = new HApplication(100);
+  **  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
+  **  > mySlider.draw();
+  **  > var myValue = new HValue(123,100.0);
+  **  > myValue.bind(mySlider);
+  **
+  ** See also:
+  **  <HValueManager> <HControl>
+  ***/
+
+
+HValue = HClass.extend({
+/** constructor: constructor
+  *
+  * Parameters:
+  *   _id - The source id (ideally set by server, should be unique)
+  *   _value - The initial data 
+  **/
+  constructor: function(_id,_value){
+    this.id    = _id;
+    this.type  = '[HValue]';
+    this.value = _value;
+    this.views = [];
+    HValueManager.add(_id,this);
+  },
+  
+/** method: set
+  * 
+  * Replaces the data of the value. Extend this, if you need validation etc.
+  *
+  * Parameters:
+  *  _value - The new data to replace the old data with.
+  *
+  * See also:
+  *  <HControl.setValue> <HValueManager.set>
+  **/
+  set: function(_value){
+    if(_value != this.value){
+      this.value = _value;
+      HValueManager.changed(this);
+      this.refresh();
+    }
+  },
+  
+/** method: s
+  * 
+  * Just as <set>, but doesn't re-notify the server about the change.
+  *
+  **/
+  s: function(_value){
+    this.value = _value;
+    this.refresh();
+  },
+  
+/** method: get
+  *
+  * Return the data, synonymous to the <value> instance variable
+  *
+  * Returns:
+  *  The value instance variable (the data "payload")
+  *
+  * See also:
+  *  <HValue.value>
+  **/
+  get: function(){
+    return this.value;
+  },
+  
+/** method: bind
+  *
+  * Bind a component to the value, use to attach HValues to components derived from HControl.
+  *
+  * Parameters:
+  *  _viewObj - Any component that is derived from HControl *or* any class 
+  *             that responds to setValueObj and setValue methods.
+  *
+  * See also:
+  *  <unbind> <HControl.setValueObj>
+  *
+  **/
+  bind: function(_viewObj){
+    if(_viewObj===undefined){
+      throw("HValueBindError: _viewObj is undefined!");
+    }
+    //if(this.views.indexOf(_viewObj)==-1){
+      this.views.push(_viewObj);
+      _viewObj.setValueObj( this );
+    //}
+  },
+  
+/** method: unbind
+  *
+  * Detach a component bound to this value.
+  *
+  * Parameters:
+  *  _viewObj - Any component that is derived from HControl *or* any class 
+  *             that responds to setValueObj and setValue methods.
+  *
+  * See also:
+  *  <bind>
+  *
+  **/
+  unbind: function(_viewObj){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _tryObj = this.views[_viewNum];
+      if(_tryObj===_viewObj){
+        this.views.splice(_viewNum);
+        return;
+      }
+    }
+  },
+  
+  release: function(_viewObj){
+    return this.unbind(_viewObj);
+  },
+  
+/** method: refresh
+  *
+  * Calls the setValue method all components bound to this HValue.
+  *
+  * See also:
+  *  <HControl.setValue>
+  **/
+  refresh: function(){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _viewObj = this.views[_viewNum];
+      if(_viewObj.value != this.value){
+        if(!_viewObj._valueIsBeingSet){
+          _viewObj._valueIsBeingSet=true;
+          _viewObj.setValue( this.value );
+          _viewObj._valueIsBeingSet=false;
+        }
+      }
+    }
+  },
+  
+/** method: toXML
+  *
+  * Responsible for generating the xml representation of the value object.
+  *
+  * Parameter:
+  *  _i - The sequence number of the item, generated by HValueManager.
+  *
+  * Returns:
+  *  A XML string with meta-info about the object
+  *
+  * See Also:
+  *  <HValueManager.toXML>
+  *
+  * Samples:
+  * > <b id="996">1</b>'
+  * > <b id="996">0</b>'
+  * > <f id="997">123.321</f>'
+  * > <i id="997">123</i>'
+  * > <s id="PnG_aXSutjPoeqgi02mXOVA9HQWREvprkkeW">c3RyaW5nAAA=</s>'
+  **/
+  toXML: function(_i){
+    var _syncid = this.id.toString();
+    //var _synctype = this.type.slice(1,-1).toLowerCase();
+    var _syncvalue = this.value;
+    var _syncjstype = (typeof _syncvalue).slice(0,1);
+    var _syncescvalue;
+    
+    if (_syncjstype == 's'){ // string
+      _syncescvalue = _syncvalue.toString();
+      _syncescvalue = SHA.str2Base64( _syncescvalue );
+    }
+    else if (_syncjstype == 'n'){ // number
+      if (Math.ceil(_syncvalue) === Math.floor(_syncvalue) === _syncvalue) {
+        _syncjstype = 'i'; // integer
+        _syncescvalue = parseInt(_syncvalue,10).toString();
+      }
+      else {
+        _syncjstype = 'f'; // float
+        _syncescvalue = parseFloat(_syncvalue).toString();
+      }
+    }
+    else if (_syncjstype == 'b'){ // boolean
+      if(_syncvalue){_syncescvalue='1';}
+      else{_syncescvalue='0';}
+    }
+    else {
+      try{
+        if(console&&console.log){
+          console.log('syncvalue type error');
+          console.log('  syncid:',_syncid);
+          console.log('  syncjstype:',_syncjstype);
+          console.log('  typeof:',(typeof _syncvalue));
+          console.log('  syncvalue:',_syncvalue);
+        }
+      }
+      catch(e){
+        alert('value error, syncid:'+_syncid+' syncjstype:'+_syncjstype+' typeof:'+(typeof _syncvalue)+' syncvalue:'+_syncvalue);
+      }
+      return '';
+    }
+    
+    return '<'+_syncjstype+' id="'+_syncid+'">'+_syncescvalue+'</'+_syncjstype+'>';
+  }
+  
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+
+JSLoader = Base.extend({
+  
+  constructor: function(_uri){
+    this._loadedJS = [];
+    this.uri  = _uri;
+    this._req = null;
+    //this._currJS = [];
+  },
+  
+  _okay: function(_resp){
+    //var _loadedJS = jsLoader._currJS.shift();
+    //console.log('resp: ',_resp);
+    //console.log('loadedJS: ',_loadedJS);
+    //console.log('jsLoader.loadedJS: ',jsLoader._loadedJS);
+    //console.log('jsLoader.currJS: ',jsLoader._currJS);
+    eval(_resp.responseText);
+  }, 
+  
+  load: function(_jsName,_fullURL){
+    if((jsLoader._loadedJS.indexOf(_jsName)!=-1) && (_fullURL === undefined)) {
+      return;
+    }
+
+    if (_fullURL) {
+      document.write('<script type="text/javascript" src="'+_jsName+'"><'+'/script>');
+    } else {
+      req_args = {
+        onSuccess:    function(resp){jsLoader._okay(resp);},
+        onFailure:    function(resp){window.status="failed to load js: "+jsLoader._currJS;},
+        method:       'get',
+        asynchronous: false
+      };
+      var _url = this.uri+_jsName+'.js';
+      this._req = new Ajax.Request( _url, req_args );
+      this._loadedJS.push(_jsName);
+    }
+  }
+  
+});
+
+LOAD("jsLoader = new JSLoader('/H/js/');");
+
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+// all properties should be installed in constructor because otherwise those
+// are iterated unnecessary
+
+// super keyword conflicts for example with Safari
+// cannot be used
+
+// Safari leaves copies of prototype properties and methods to parent class
+// in for (var in this) structure
+
+/** class: HClass
+  *
+  * HClass class is a simple JavaScript class that eases the pain of JavaScript OO. 
+  * It is intended for the following main purposes:
+  *   -	to easily create classes without the MyClass.prototype cruft,
+  *   -	method overriding with intuitive access to the overridden method (like Java's super),
+  *   -	to avoid calling a class' constructor function during the prototyping phase,
+  *   -	to easily add static (class) properties and methods,
+  *   -	to achieve the above without resorting to global functions to build prototype chains,
+  *   -	to achieve the above without affecting Object.prototype. 
+  *
+  *
+  * The HClass class extends the 'Object' object by adding one instance method (base) 
+  * and two class methods (extend, implement). Instance method extend can be also called directly.
+  *
+  **/
+var HClass = function() {
+  if (arguments.length) {
+    var _1stArg = arguments[0];
+    if (this == window) {
+      HClass.prototype.extend.call(_1stArg, arguments.callee.prototype);
+    } else {
+      this.extend(_1stArg);
+    }
+  }
+};
+
+HClass.prototype = {
+  
+  // basically internal methods event if can be called safely
+  extend: function(_source, _value) {
+    var _extend = HClass.prototype.extend;
+    if (arguments.length == 2) {
+      var _ancestor = this[_source];
+      // only methods are inherited
+      if ((_ancestor instanceof Function) && (_value instanceof Function) &&
+          _ancestor.valueOf() != _value.valueOf() && (/\bbase\b/).test(_value)) {
+        var _method = _value;
+        _value = function() {
+          // saves the this.base that is the this.base method of this child
+          var _previous = this.base;
+          // copies previous this.base from the direction from HClass
+          this.base = _ancestor;
+          // current class's method is called
+          // now inside the function when called this.base points to parent method
+          var _returnValue = _method.apply(this, arguments);
+          // then because event this function can be called from child method
+          // resets the base to as is was before calling this function
+          this.base = _previous;
+          return _returnValue;
+        };
+        _value.valueOf = function() {
+          return _method;
+        };
+        _value.toString = function() {
+          return String(_method);
+        };
+      }
+      return this[_source] = _value;
+    // this is called when called by HClass.extend
+    } else if (_source) {
+      var _prototype = {toSource: null};
+      var _protected = ["toString", "valueOf"];
+      // we want default constructor function
+      if (HClass._prototyping) {
+        // 3. index
+        _protected.push("constructor");
+      }
+      for (var i = 0; (_name = _protected[i]); i++) {
+        if (_source[_name] != _prototype[_name]) {
+          _extend.call(this, _name, _source[_name]);
+        }
+      }
+      for (var _name in _source) {
+        if (!_prototype[_name]) {
+          _extend.call(this, _name, _source[_name]);
+        }
+      }
+    }
+    return this;
+  },
+  /** method: base
+    *
+    * If a method has been overridden then the base method provides access to the overridden method. 
+    * Call this method from any other method to invoke that method's ancestor.
+    * It is also possible to call the base method from within a constructor function.
+    *
+    **/
+  base: function() {
+    // this method can be called from any other method to invoke that method's parent
+  }
+};
+
+/** method: extend
+  *
+  * Enables the inheritance. If the method name constructor is defined null in _instance parameter returns a single instance.
+  *
+  * Parameters:
+  *   _instance - An object that has properties and methods of inherited class.
+  *   _static - An object that has properties and methods of inherited class's class methods if the method named constructor
+  *     is defined null in _instance parameter.
+  *   
+  * Returns:
+  *   Return value is inherited class.
+  *
+  * Example:
+  *
+  * > Point = HClass.extend({
+  * > constructor: function(x, y) {
+  * >   this.x = x;
+  * >   this.y = y;
+  * > }
+  * > });
+  * > Rectangle = Point.extend({
+  * > constructor: function(x, y, width, height) {
+  * >   this.base(x, y);
+  * >   this.width = width;
+  * >   this.height = height;
+  * > },
+  * > getWidth: function() {
+  * >   return this.width;
+  * > },
+  * > getHeight: function() {
+  * >   return this.height;
+  * > }
+  * > },
+  * > {
+  * > // class methods
+  * > description: "this is a Rectangle",
+  * > getClass: function() {
+  * >   return this;
+  * > }
+  * > });
+  *
+  **/
+HClass.extend = function(_instance, _static) {
+  // reference to HClass's prototype extend method (HClass's class structure extend method)
+  var _extend = HClass.prototype.extend;
+  // if _instance is undefined,null,"" etc. creates object so that code below works
+  if (!_instance) {
+    _instance = {};
+  }
+  HClass._prototyping = true;
+  // this is base for single instance or prototype (class structure) for object that are created
+  // from this class
+  var _prototype = new this;
+  // copies properties and methods from _instance to _prototype (class structure)
+  _extend.call(_prototype, _instance);
+  // this constructor came from _instance
+  var _constructor = _prototype.constructor;
+  _prototype.constructor = this;
+  delete HClass._prototyping;
+  
+  var _klass = function() {
+    if (!HClass._prototyping) {
+      _constructor.apply(this, arguments);
+    }
+    this.constructor = _klass;
+  };
+  // this is the new class's prototype (class structure)
+  _klass.prototype = _prototype;
+  // copies static method (class method)
+  // acts like HClass.extend
+  _klass.extend = this.extend;
+  // copies static method (class method)
+  // acts like HClass.implement
+  _klass.implement = this.implement;
+  _klass.toString = function() {
+    return String(_constructor);
+  };
+  // copies properties and methods from _static directly to statc methods (class methods)
+  // of new class
+  _extend.call(_klass, _static);
+  // if _constructor is marked as null returns the created instance (that is also class structure for
+  // instances if class is returned
+  var _object = _constructor ? _klass : _prototype;
+  if (_object.init instanceof Function) {
+    _object.init();
+  }
+  return _object;
+};
+
+/** method: implement
+  *
+  * Copies the prototype properties and methods from _interface or if it is an object it's properties and functions
+  * to HClass or class inherited from HClass. Mimics the interface behaviour of ordinary programming languages.
+  *
+  * Example:
+  *
+  * > // Mimics the interface
+  * > 
+  * > AreaInterface = HClass.extend({
+  * > constructor: null,
+  * >   // implement
+  * >   // don't define here
+  * >   //getWidth: function() {},
+  * >   //getHeight: function() {},
+  * > area: function() {
+  * >   return this.getWidth() * this.getHeight();
+  * > }
+  * > });
+  * > 
+  * > Rectangle = HClass.extend({
+  * > constructor: function(x, y, width, height) {
+  * >   this.x = x;
+  * >   this.y = y;
+  * >   this.width = width;
+  * >   this.height = height;
+  * > },
+  * > getWidth: function() {
+  * >   return this.width;
+  * > },
+  * > getHeight: function() {
+  * >   return this.height;
+  * > }
+  * > });
+  * > 
+  * > Rectangle.implement(AreaInterface);
+  *
+  **/
+HClass.implement = function(_interface) {
+  // copies prototype fields and methods (class structures properties and methods)
+  if (_interface instanceof Function) {
+    _interface = _interface.prototype;
+  }
+  this.prototype.extend(_interface);
+};
+
+var Base = HClass;
+
+
+if ([].indexOf===undefined) {
+  Object.extend = function(destination, source) {
+    for (property in source) {
+      destination[property] = source[property];
+    }
+    return destination;
+  };
+  Object.extend(Array.prototype, {
+    indexOf: function(_anObject){
+      var i = 0, l = this.length;
+      for (; i < l; i++) {
+        if (this[i] == _anObject) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  });
+}
+
+
+// ff version 3.0.3 fails on this, when firebug installed: try/catch block
+try {
+
+// console.log surrogate for browsers without a console
+if(window['console']===undefined){
+  console = {
+    log: function(){
+    }
+  };
+}
+
+
+} catch(e) {}
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+is_ie = !(navigator.userAgent.toLowerCase().indexOf("opera") > -1) && navigator.appName == "Microsoft Internet Explorer";
+
+
+Array.prototype.toQueryString = function() {
+  var i, l = this.length,
+      _array = [];
+  for (i = 0; i < l; i++) {
+    _array.push( encodeURIComponent(this[i].key) + "=" +
+      encodeURIComponent(this[i].value) );
+  }
+  return _array.join("&");
+};
+
+
+
+
+
+
+
+
+Ajax = HClass.extend({
+  constructor: null,
+  getTransport: function() {
+    if (window.XMLHttpRequest) {
+      return new XMLHttpRequest();
+    } else if (is_ie) {
+      // checks the Microsoft Internet Explorer script engine version
+      if (ScriptEngineMajorVersion() >= 5) {
+        return new ActiveXObject("Msxml2.XMLHTTP");
+      } else {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    } else {
+      return false;
+    }
+  }
+});
+
+Ajax.Request = HClass.extend({
+  constructor: function(_url, _options) {
+    this.transport = Ajax.getTransport();
+    if(!_options){
+      _options = {};
+    }
+    var _defaults = HClass.extend({
+      method: "post",
+      asynchronous: true,
+      contentType: "application/x-www-form-urlencoded",
+      encoding: "UTF-8",
+      parameters: ""
+    });
+    _defaults = _defaults.extend(_options);
+    this.options = new _defaults();
+    this.request(_url);
+  },
+  request: function(_url) {
+    this.url = _url;
+    if (this.options.method == "get" && this.options.parameters.length) {
+      // if already has ? puts &
+      this.url += (this.url.indexOf("?") >= 0 ? "&" : "?") + this.options.parameters.toQueryString();
+    }
+    try {
+      this.transport.open(
+        this.options.method.toUpperCase(),
+        this.url,
+        this.options.asynchronous,
+        this.options.username,
+        this.options.password
+      );
+      var _obj = this;
+      this.transport.onreadystatechange = function(){
+        _obj.onStateChange();
+      };
+      this.setRequestHeaders();
+      var _body = this.options.method == "post" ?
+        (this.options.postBody || this.options.parameters.toQueryString()) : null;
+      this.transport.send(_body);
+      if (!this.options.asynchronous && this.transport.overrideMimeType) {
+        this.onStateChange();
+      }
+    } catch (e) {
+      console.log('error:',e);
+    }
+  },
+  setRequestHeaders: function() {
+    var headers = {}, o;
+    
+    if (this.options.method == "post") {
+      headers["Content-type"] = this.options.contentType +
+        (this.options.encoding ? "; charset=" + this.options.encoding : "");
+        
+      if (this.transport.overrideMimeType &&
+        (navigator.userAgent.match(/Gecko\/(\d{4})/) || [0,2005])[1] < 2005) {
+        headers["Connection"] = "close";
+      }
+    }
+    for (o in headers) {
+      this.transport.setRequestHeader(o, headers[o]);
+    }
+  },
+  /*
+  Firefox
+  0 UNINITIALIZED open() has not been called yet.
+  1 LOADING send() has not been called yet.
+  2 LOADED send() has been called, headers and status are available.
+  3 INTERACTIVE Downloading, responseText holds the partial data.
+  4 COMPLETED Finished with all operations.
+  IE
+  0 (Uninitialized) The object has been created, but not initialized (the open method has not been called).
+  1 (Open) The object has been created, but the send method has not been called.
+  2 (Sent) The send method has been called, but the status and headers are not yet available.
+  3 (Receiving) Some data has been received. Calling the responseBody and responseText properties at this state to obtain partial results will return an error, because status and response headers are not fully available.
+  4 (Loaded) All the data has been received, and the complete data is available.
+  */
+  onStateChange: function() {
+    var _readyState = this.transport.readyState;
+    if (_readyState > 1) {
+      this.respondToReadyState(_readyState);
+    }
+  },
+  respondToReadyState: function(_readyState) {
+    if (_readyState == 4) { // Completed(Loaded in IE 7)
+      //try {
+        (this.options["on"+(this.success()?"Success":"Failure")]||(function(){console.log('aa');}))(this.transport);
+      //} catch (e) {
+        //console.log('error:',e);
+      //}
+    }
+    
+    if (_readyState == 4) { // Completed(Loaded in IE 7)
+      this.transport.onreadystatechange = function(){};
+    }
+  },
+  success: function() {
+    //return !this.transport.status || (this.transport.status >= 200 && this.transport.status < 300);
+    return (this.transport.status >= 200 && this.transport.status < 300);
+  }
+});
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+ELEMTickerInterval = 10;
+BROWSER_TYPE = {
+  ie:  false,
+  ie6: false,
+  ie7: false,
+  opera: false,
+  safari: false,
+  firefox: false,
+  firefox2: false
+};
+
+ELEM = {
+  
+  // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
+  _constructor: function(){
+    var _this=ELEM;
+    
+    _this._enableRecycler = false;
+    
+    // pre-init queue
+    _this._domLoadQueue = [];
+    _this._domLoadTimer = null;
+    
+    // turns true when document is actually loaded:
+    _this._domLoadStatus = false;
+    
+    // initial tasks
+    _this._initDone = false;
+    
+    _this._makeCount = 0;
+    
+    _this._setStyleCount = 0; _this._setStyleDiffCount = 0;
+    _this._getStyleCount = 0; _this._getStyleMissCount = 0;
+    
+    _this._flushLoopCount = 0;
+    _this._flushLoopFlushedCount = 0;
+    _this._flushStylCount = 0;
+    
+    _this._flushTime = 0;
+    _this._flushCounter = 0;
+    _this._idleDelay = 500;
+    
+    _this._timer = null;
+    _this._minDelay = ELEMTickerInterval;
+    _this._flushing = false;
+    _this._needFlush = false;
+    _this._slowness = 1;
+    
+    _this._elements =   [];
+    if(_this._enableRecycler){
+      _this._recycler =   {_tagNames:[]};
+    } else {
+      _this._freeElemIds = [];
+    }
+    _this._styleCache = {};
+    _this._styleTodo =  {};
+    _this._attrTodo =   {};
+    _this._attrCache =  {};
+    _this._elemTodo =   [];
+    _this._elemTodoH =  {};
+    _this._blockElems = ",ADDRESS,BLOCKQUOTE,CENTER,DIR,DIV,DL,FIELDSET,FORM,H1,H2,H3,H4,H5,H6,HR,ISINDEX,MENU,NOFRAMES,NOSCRIPT,OL,P,PRE,TABLE,UL,";
+  },
+  
+  
+  _fillTrash: function(_count,_tagName){
+    if(!ELEM._enableRecycler){return;}
+    var _this=ELEM,i=0,_toDel=[],_recycler=_this._initRecycler(_tagName),_trashId=_recycler._trashId;
+    for(;i!=_count;i++){_toDel.push(_this.make(_trashId,_tagName));}
+    for(i=0;i!=_count;i++){_this.del(_toDel[i]);}
+  },
+  
+  // adds an element reference
+  // returns its id
+  _add: function(_elem){
+    var _id, _this, _elements;
+    _this = ELEM;
+    _elements = _this._elements;
+    
+    // Adds the element to the cache
+    _elements.push(_elem);
+    // Get cache size == serial id
+    _id = _elements.length-1;
+    
+    return _id;
+  },
+  
+  // makes new style caches
+  _initCache: function(_id){
+    var _this = ELEM;
+    _this._styleTodo[_id] = [];
+    _this._styleCache[_id] = {};
+    _this._attrTodo[_id] = [];
+    _this._attrCache[_id] = {};
+    _this._elemTodoH[_id] = false;
+  },
+  
+  // binds a dom element by dom id property
+  // returns id
+  bindId: function(_domId){
+    var _this=ELEM,_elem=document.getElementById(_domId),_elemId=_this._add(_elem);
+    _this._initCache(_elemId);
+    return _elemId;
+  },
+  
+  // binds a dom element
+  // returns id
+  bind: function(_elem){
+    var _id, _this=ELEM;
+    _id = _this._add(_elem);
+    _this._initCache(_id);
+    return _id;
+  },
+  
+  // deprecated; backwards-compatibility
+  _replace: function(_id,_elem){
+    var _this=ELEM;
+    _this._elements[_id] = _elem;
+  },
+  
+  // returns dom element by id
+  get: function(_id){
+    return ELEM._elements[_id];
+  },
+  
+  // sets inner html of element
+  setHTML: function(_id,_html){
+    try {
+      var _this=ELEM;
+      if(!((typeof _html === 'string')||(typeof _html === 'number'))){
+        return;
+      }
+      _this._elements[_id].innerHTML = _html;
+    } catch(e) {}
+    //_this._initCache(_id);
+  },
+  
+  _initRecycler: function(_tagName){
+    if(!ELEM._enableRecycler){return;}
+    var _this=ELEM,_recycler=_this._recycler;
+    if(!_recycler[_tagName]){
+      _recycler._tagNames.push(_tagName);
+      _recycler[_tagName]=[];
+      _recycler[_tagName]._countIn=1;
+      _recycler[_tagName]._countOut=0;
+      _recycler[_tagName]._trashId=_this.make(_this._trashId,'div');
+    }
+    return _recycler[_tagName]._trashId;
+  },
+  
+  // deletes element and all its associated caches by id
+  del: function(_id){
+    var _this=ELEM,_elem=_this._elements[_id];
+    while(_this._flushing){}
+    _this._flushing=true;
+    _this.setCSS(_id,'display:none;');    
+    if(_this._enableRecycler){
+      var _tagName=_elem.tagName,
+          _trashId=_this._initRecycler(_tagName),
+          _recycler=_this._recycler[_tagName];
+      _this.append(_id,_trashId);
+    }
+    
+    var _elemTodoIdx=_this._elemTodo.indexOf(_id);
+    if(_elemTodoIdx!=-1){
+      _this._elemTodo.splice(_elemTodoIdx,1);
+    }
+    //try{_elem.innerHTML='';}catch(e){}
+    //_this.setAttr(_id,'id','',true);
+    _this.delAttr(_id,'id');
+    _this.delAttr(_id,'ctrl');
+    
+    _this._initCache(_id);
+    if(_this._enableRecycler){
+      _recycler._countIn++;
+      _recycler.push(_id);
+    } else {
+      _this._freeElemIds.push(_id);
+      var _parentNode = _elem.parentNode;
+      _parentNode.removeChild(_elem);
+      _elem = null;
+      _this._elements[_id] = null;
+    }
+    _this._flushing=false;
+  },
+  
+  // places element inside another
+  append: function(_sourceId,_targetId){
+    var _source, _target, _this;
+    _this   = ELEM;
+    _source = _this._elements[_sourceId];
+    _target = _this._elements[_targetId];
+    _target.appendChild(_source);
+  },
+  
+  setCSS: function(_id,_css){
+    ELEM._elements[_id].style.cssText = _css;
+  },
+  
+  getCSS: function(_id){
+    return ELEM._elements[_id].style.cssText;
+  },
+  
+  // returns element's size from the part that is not hidden by its parent elements with overflow property
+  getVisibleSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.offsetWidth,h=_elem.offsetHeight,
+    _parent=_elem.parentNode;
+    while(_parent&&_parent.nodeName.toLowerCase()!='body'){
+      if(!_this._is_ie){_parentOverflow=document.defaultView.getComputedStyle(_parent,null).getPropertyValue('overflow');}
+      else{_parentOverflow=_parent.currentStyle.getAttribute('overflow');}
+      _parentOverflow=_parentOverflow!='visible';
+      if(w>_parent.clientWidth&&_parentOverflow){w=_parent.clientWidth-_elem.offsetLeft;}
+      if(h>_parent.clientHeight&&_parentOverflow){h=_parent.clientHeight-_elem.offsetTop;}
+      _elem=_elem.parentNode;_parent=_elem.parentNode;
+    }
+    return [w,h];
+  },
+
+  // returns element's full size
+  getSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.offsetWidth,h=_elem.offsetHeight;
+    return [w,h];
+  },
+
+  // returns element's full size
+  getScrollSize: function(_id){
+    var _this,_elem,w,h,_parent,_parentOverflow,
+    _this=ELEM,_elem=_this._elements[_id],
+    w=_elem.scrollWidth,h=_elem.scrollHeight;
+    return [w,h];
+  },
+
+  getVisiblePosition: function(_id){
+    var x,y,_elem,_this,_this=ELEM,
+    x=0,y=0,_elem=_this._elements[_id];
+    while(_elem!==document){
+      x+=_elem.offsetLeft;y+=_elem.offsetTop;
+      x-=_elem.scrollLeft;y-=_elem.scrollTop;
+      _elem=_elem.parentNode;
+      if(!_elem){break;}
+    }
+    return [x,y];
+  },
+
+  // these two are created in _init
+  //getStyle: function(_id,_key,_bypass){},
+  //_flushStyleCache: function(_id){},
+  
+  getOpacity: function(_id){
+    var _this, _opacity, _try_opacity, _getStyle;
+    _this = ELEM;
+    _getStyle = _this.getStyle;
+    // old safari (1.x):
+    if (_opacity = _getStyle(_id,'-khtml-opacity')) {
+      return parseFloat(_opacity);
+    }
+    // old mozilla (ff 1.0 and below):
+    if (_opacity = _getStyle(_id,'-moz-opacity')) {
+      return parseFloat(_opacity);
+    }
+    _try_opacity = _getStyle(_id,'opacity',true);
+    if (_opacity = _try_opacity || (_try_opacity==0)) {
+      return parseFloat(_opacity);
+    }
+    if (_opacity = (_this._elements[_id].currentStyle['filter'] || '').match(/alpha\(opacity=(.*)\)/)) {
+      if(_opacity[1]) {
+        return parseFloat(_opacity[1]) / 100;
+      }
+    }
+    return 1.0;
+  },
+  
+  setOpacity: function(_id, _value){
+    var _this = ELEM;
+    if (_value == 1 && _this._is_ie) {
+      _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter', true).replace(/alpha\([^\)]*\)/gi,''));
+    } else {  
+      if(_value < 0.00001){
+        _value = 0;
+      }
+      if(_this._is_ie) {
+        _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter',true).replace(/alpha\([^\)]*\)/gi,'')+'alpha(opacity='+_value*100+')');
+      } else {
+        _this._elements[_id].style.setProperty('opacity',_value,'');
+      }
+    }
+  },
+  
+  getIntStyle: function(_id,_key){
+    var _value = ELEM.getStyle(_id,_key);
+    return parseInt(_value,10);
+  },
+  setBoxCoords: function(_id,_coords){
+    ELEM.setStyle(_id,'left',_coords[0]+'px');
+    ELEM.setStyle(_id,'top',_coords[1]+'px');
+    ELEM.setStyle(_id,'width',_coords[2]+'px');
+    ELEM.setStyle(_id,'height',_coords[3]+'px');
+  },
+  
+  getExtraWidth: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id,'padding-left')+_int(_id,'padding-right')+_int(_id,'border-left-width')+_int(_id,'border-right-width');
+  },
+  
+  getExtraHeight: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id,'padding-top')+_int(_id,'padding-bottom')+_int(_id,'border-top-width')+_int(_id,'border-bottom-width');
+  },
+  
+  setFPS: function(_fps){
+    ELEM._minDelay = 1000/_fps;
+    if(ELEM._minDelay<ELEMTickerInterval){
+      ELEM._minDelay=ELEMTickerInterval;
+    }
+    /*
+    if(ELEM._is_ie6){
+      if(ELEM._minDelay<200){
+        ELEM._minDelay=200;
+      }
+      if(ELEMTickerInterval<200){
+        ELEMTickerInterval=200;
+      }
+    }
+    */
+  },
+  setSlowness: function(_slowness){
+    // we should replace this with an
+    // actual browser speed benchmark
+    ELEM._slowness = _slowness;
+  },
+  setIdleDelay: function(_idleDelay){
+    ELEM._idleDelay = _idleDelay;
+  },
+  
+  _ieFixesNeeded: false,
+  flushLoop: function(_delay){
+    //console.log('flushLoop('+_delay+')');
+    var _this=ELEM; _this._flushLoopCount++;
+    if(_this._is_ie6&&(_this._flushLoopCount%5==0)&&_this._ieFixesNeeded){
+      //window.status = 'traversetree0:'+_this._flushLoopCount;
+      iefix._traverseTree();
+      _this._ieFixesNeeded=false;
+    }
+    clearTimeout(_this._timer);
+    if(_this._flushing){
+      _delay *= 2;
+      _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_delay);
+      return;
+    } else {
+      if(!_this._needFlush){
+        // goto sleep mode
+        if(_this._is_ie6&&_this._ieFixesNeeded){
+          //window.status = 'traversetree1:'+_this._flushLoopCount;
+          iefix._traverseTree();
+          _this._ieFixesNeeded=false;
+        }
+        _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_this._idleDelay);
+        return;
+      }
+      _delay = parseInt(_this._slowness*(_this._flushTime/_this._flushCounter), ELEMTickerInterval);
+      if(_delay<_this._minDelay||!_delay){_delay=_this._minDelay;}
+      _this._flushing = true;
+      _this._timer = setTimeout('ELEM.flushLoop('+_delay+');',_delay);
+    }
+    _this._flushTime -= new Date().getTime();
+    var _loopMaxL, _currTodo, i, _styleTodo;
+    _elemTodo=_this._elemTodo;
+    _loopMaxL=_elemTodo.length;
+    _currTodo=_elemTodo.splice(0,_loopMaxL);
+    //console.log('flushing:');
+    var _flushStartTime = new Date().getTime();
+    for(i=0;i<_loopMaxL;i++){
+      _this._flushLoopFlushed++;
+      var _id = _currTodo.pop();
+      _this._elemTodoH[_id]=false;
+      _this._flushStyleCache(_id);
+      _this._flushAttrCache(_id);
+    }
+    /*
+    if(_this._is_ie6&&_this._ieFixesNeeded){
+      window.status = 'traversetree2:'+_this._flushLoopCount;
+      iefix._traverseTree();
+      _this._ieFixesNeeded=false;
+    }*/
+    _this._flushCounter++;
+    _this._flushTime += new Date().getTime();
+    if(_this._elemTodo.length==0&&_this._needFlush){
+      _this._needFlush=false;
+    }
+    //console.log('flush took '+(new Date().getTime()-_flushStartTime));
+    _this._flushing = false;
+  },
+  _flushAttrCache: function(_id){
+    var _this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id],
+        _elem=_this._elements[_id],//_elemP=_elem.setAttribute,
+        _key,_val,i,_iMax=_attrTodo.length,_currTodo=_attrTodo.splice(0,_iMax);
+    for(i=0;i!=_iMax;i++){
+      _key=_currTodo.pop();
+      _val=_attrCache[_key];
+      //console.log('id:'+_id+' key:'+_key+' val:'+_val);
+      //console.log(_elem);
+      //console.log('real val:'+_this.getAttr(_id,_key,true));
+      _elem.setAttribute(_key,_val);
+      //_elem[_key]=_val;
+    }
+  },
+  getAttr: function(_id,_key,_bypass){
+    var _this=ELEM,_attrVal=_this._attrCache[_id][_key],_val;
+    //console.log('_attrVal:'+_attrVal);
+    if(_attrVal!==undefined&&!_bypass){return _attrVal;}
+    var _elem=_this._elements[_id];
+    if(_elem.getAttribute(_key)==null){
+      _elem[_key]='';
+    }
+    _val=_elem.getAttribute(_key);
+    //console.log(_val+'=getAttr(id:'+_id+', key:'+_key+')');
+    _this._attrCache[_id][_key]=_val;
+    return _val;
+  },
+  setAttr: function(_id,_key,_value,_bypass){
+    var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
+    _differs=_value!=_this.getAttr(_id,_key);
+    if(_differs){
+      _attrCache[_key]=_value;
+      if(_bypass){_this._elements[_id].setAttribute(_key,_value);}
+      else{
+        if(_attrTodo.indexOf(_key)==-1){_attrTodo.push(_key);}
+        if(!_this._elemTodoH[_id]){
+          _this._elemTodo.push(_id);
+          _this._elemTodoH[_id]=true;
+          _this._checkNeedFlush();
+        }
+      }
+    }
+  },
+  delAttr: function(_id,_key){
+    var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
+    delete _attrCache[_key];
+    _this._elements[_id].removeAttribute(_key);
+    if(_attrTodo.indexOf(_key)!=-1){_attrTodo.splice(_attrTodo.indexOf(_key,1));}
+    if(_this._elemTodoH[_id]){
+      _this._elemTodo.splice(_this._elemTodo.indexOf(_id,1));
+      _this._elemTodoH[_id]=false;
+      _this._checkNeedFlush();
+    }
+  },
+  
+  // class name functions mostly ripped from moo.fx's prototype.lite.js
+  hasClassName: function(_elemId, _className) {
+    //_element = $(_element);
+    var _element = ELEM.get(_elemId);
+    if (!_element) return;
+    
+    var _hasClass = false;
+    var _classNames = _element.className.split(' ');
+    
+    for(var i = 0; i < _classNames.length; i++) {
+      if (_classNames[i] == _className) {
+        _hasClass = true;
+      }
+    }
+    
+    return _hasClass;
+  },
+  
+  addClassName: function(_elemId, _className) {
+    //_element = $(_element);
+    var _element = ELEM.get(_elemId);
+    if (!_element) return;
+    
+    ELEM.removeClassName(_elemId, _className);
+    _element.className += ' ' + _className;
+  },
+  
+  removeClassName: function(_elemId, _className) {
+    //_element = $(_element);
+    var _element = ELEM.get(_elemId);
+    if (!_element) return;
+    
+    var _newClassName = '';
+    var _classNames = _element.className.split(' ');
+    
+    for(var i = 0; i < _classNames.length; i++) {
+      if (_classNames[i] != _className){
+        if (i > 0) _newClassName += ' ';
+        _newClassName += _classNames[i];
+      }
+    }
+    
+    _element.className = _newClassName;
+  },
+  
+  _checkNeedFlush: function(){
+    var _this=ELEM;
+    if(!_this._needFlush){
+      _this._needFlush=true;
+      if(!_this._flushing){
+        clearTimeout(_this._timer);
+        _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+');',_this._minDelay);
+      }
+    }
+  },
+  
+/***
+  // sets style key to value of id, bypass sets immediately
+  printStats: function(){
+    var _this=ELEM,i=0,_tagName,_tagLen,_countIn,_countOut,_allCountOut=0;
+    if(_this._enableRecycler){
+      console.log('Recycler efficiency:');
+      _recycler=_this._recycler;
+      for(;i!=_recycler._tagNames.length;i++){
+        _tagName=_recycler._tagNames[i];
+        console.log(' tagName: '+_tagName);
+        _tagLen=_recycler[_tagName].length;
+        console.log('   length  : '+_tagLen);
+        _countIn=_recycler[_tagName]._countIn;
+        console.log('   countIn : '+_countIn);
+        _countOut=_recycler[_tagName]._countOut;
+        _allCountOut+=_countOut;
+        console.log('   countOut: '+_countOut);
+        console.log('--------------------------------');
+      }
+    }
+    console.log('================================');
+    console.log('Flushing efficiency:');
+    console.log('  total real time spent: '+_this._flushTime+'ms');
+    console.log('  total times called:    '+_this._flushLoopCount);
+    console.log('  total times flushed:   '+_this._flushCounter);
+    console.log('  total items flushed:   '+_this._flushLoopFlushedCount);
+    console.log('  total real style sets: '+_this._flushStylCount);
+    console.log('================================');
+    console.log('setStyle efficiency:');
+    console.log('  total times called:    '+_this._setStyleCount);
+    console.log('  total times non-cache: '+_this._setStyleDiffCount);
+    console.log('================================');
+    console.log('getStyle efficiency:');
+    console.log('  total times called:    '+_this._getStyleCount);
+    console.log('  total times non-cache: '+_this._getStyleMissCount);
+    console.log('================================');
+    console.log('Summary:');
+    if(_this._enableRecycler){
+      console.log('  recycler saved '+(_allCountOut)+' of '+_this._makeCount+' ('+Math.round(_allCountOut/_this._makeCount*100)+'%) document.createElement calls');
+    }
+    console.log('  style buffer saved '+(_this._setStyleDiffCount-_this._flushStylCount)+' of '+_this._setStyleDiffCount+' ('+Math.round(((_this._setStyleDiffCount-_this._flushStylCount)/_this._setStyleDiffCount)*100)+'%) non-cached DOM style sets');
+    console.log('  style cache saved '+(_this._setStyleCount-_this._setStyleDiffCount)+' of '+_this._setStyleCount+' ('+Math.round(((_this._setStyleCount-_this._setStyleDiffCount)/_this._setStyleCount)*100)+'%) DOM style sets');
+    console.log('  style cache saved '+(_this._getStyleCount-_this._getStyleMissCount)+' of '+_this._getStyleCount+' ('+Math.round(((_this._getStyleCount-_this._getStyleMissCount)/_this._getStyleCount)*100)+'%) DOM style gets');
+    console.log('  style buffer and cache saved '+(_this._setStyleCount-_this._flushStylCount)+' of '+_this._setStyleCount+' ('+Math.round(((_this._setStyleCount-_this._flushStylCount)/_this._setStyleCount)*100)+'%) total DOM style sets');
+  },
+***/
+  setStyle: function(_id,_key,_value,_bypass){
+    var _this=ELEM,_cached=_this._styleCache[ _id ],
+        _elems=_this._elements,_differs,_styleTodo;
+    _this._setStyleCount++;
+    if(_cached===undefined){
+      _this._initCache(_id);
+      var _cached = _this._styleCache[ _id ];
+    }
+    //console.log('setStyle(id:',_id,',key:',_key,',value:',_value,')');
+    _differs=_value!==_cached[_key];//;_this.getStyle(_id,_key);
+    if(_differs){
+      _this._setStyleDiffCount++;
+      _cached[_key]=_value;
+      if(_bypass){
+        if(_key=='opacity'){_this.setOpacity(_id,_value);}
+        else{_this._is_ie?(_elems[_id].style.setAttribute(_key.replace(/((-)([a-z])(\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4;}),_cached[_key])):(_elems[_id].style.setProperty(_key,_cached[_key],''));}
+        if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}
+      } else {
+        _elemTodoH=_this._elemTodoH;
+        _styleTodo=_this._styleTodo[_id];
+        if(_styleTodo.indexOf(_key)==-1){_styleTodo.push(_key);}
+        if(!_elemTodoH[_id]){
+          _this._elemTodo.push(_id);
+          _elemTodoH[_id]=true;
+          _this._checkNeedFlush();
+        }
+      }
+    }
+  },
+  
+  // creates a new dom node inside _targetId
+  // _tagName is a string (eg 'div', 'span' or 'img'
+  // returns id
+  // _target defaults to document.body's id: 0
+  // _tagName defaults to 'div'
+  make: function(_targetId,_tagName){
+    if( _targetId === undefined ){
+      _targetId = 0;
+    }
+    if( _tagName === undefined ){
+      _tagName = 'DIV';
+    } else {
+      _tagName = _tagName.toUpperCase();
+    }
+    var _this=ELEM,_elem,_id;
+    _this._makeCount++;
+    if(_this._enableRecycler){
+      if(_this._recycler[_tagName]){
+        if(_this._recycler[_tagName].length!=0){
+          // Recycle the id of a previously deleted element
+          _id = _this._recycler[_tagName].pop();
+          _this._recycler[_tagName]._countOut++;
+          _elem = _this._elements[_id];
+          //_elem.innerHTML='';
+          /*
+          if(_elem.tagName!=_tagName){
+            _elem.outerHTML='<'+_tagName+'></'+_tagName+'>';
+          }
+          */
+          if(_this._blockElems.indexOf(','+_tagName+',')!=-1){
+            _this.setCSS(_id,'display:block;');
+          } else {
+            _this.setCSS(_id,'display:inline;');
+          }
+          _this.append(_id,_targetId);
+          return _id;
+        }
+      }
+    }
+    _elem = document.createElement(_tagName);
+    _this._elements[_targetId].appendChild(_elem);
+    _id = _this._add(_elem);
+    _this._initCache(_id);
+    return _id;
+  },
+  
+  windowSize: function(){
+    var _w, _h;
+    _w = (window.innerWidth) ? window.innerWidth : document.documentElement.clientWidth;
+    _h = (window.innerHeight) ? window.innerHeight : document.documentElement.clientHeight;
+    return [_w,_h];
+  },
+  
+  _init: function(){
+    var _this=ELEM,_cmdStr, _cmdResult;
+    var _getStyleTmpl = [
+      // idx   source
+      /*  0 */ "ELEM.getStyle=function(_id,_key,_bypass){",
+      /*  1 */   "var _this=ELEM,_cached=_this._styleCache[_id],_retval;_this._getStyleCount++;",
+      /*  2 */   "if((_cached[_key]===undefined)||_bypass){",
+      /*  3 */     "if(!_bypass){_this._getStyleMissCount++;}",
+      /*  4 */     "if((_key=='opacity')&&_bypass){_retval=_this.getOpacity(_id);}",
+      /*  5 */     "else{",
+      
+            /*  idx:6 for non-ie */
+      /*  6 */       "_retval=document.defaultView.getComputedStyle(_this._elements[_id],null).getPropertyValue(_key);",
+      
+            /*  idx:7,8,9 for ie */
+      /*  7 */       "_camelName=_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){",
+      /*  8 */         "return $3.toUpperCase()+$4});",
+      /*  9 */       "_retval=_this._elements[_id].currentStyle[_camelName];",
+      
+      /* 10 */     "}_cached[_key]=_retval;",
+      /* 11 */   "}return _cached[_key];};"
+    ];
+    if(_this._is_ie){
+      _getStyleTmpl.splice(6,1);
+    } else {
+      _getStyleTmpl.splice(7,3);
+    }
+    eval(_getStyleTmpl.join(''));
+    
+    var _flushStyleCacheTmpl = [
+      // idx   source
+      /*  0 */ "ELEM._flushStyleCache=function(_id){",
+      /*  1 */   "var _this=ELEM,_styleTodo=_this._styleTodo[_id],_cached=_this._styleCache[_id],_elem=_this._elements[_id],_elemS,_loopMaxP,_cid,_key,_currTodo,_retval;",
+      /*  2 */   "if(!_elem){return;}",
+      /*  3 */   "_elemS=_elem.style;",
+      /*  4 */   "_loopMaxP=_styleTodo.length;",
+      /*  5 */   "_currTodo=_styleTodo.splice(0,_loopMaxP);",
+      /*  6 */   "for(_cid=0;_cid!=_loopMaxP;_cid++){",
+      /*  7 */     "_key=_currTodo.pop();_this._flushStylCount++;",
+      /*  8 */     "if(_key=='opacity'){_retval=_this.getOpacity(_id,_cached[_key]);}else{",
+            /*  idx:  9 for ie */
+
+                     //"alert(_cached[_key]);eval('_elemS.'+_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4})+'=\"'+_cached[_key]+'\";');}}};",
+                     //"_elemS.cssText+=_key+':'+_cached[_key]+';';}}};",
+                     //"var _keyIE=_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4});\nalert(_keyIE);\n_elemS[_keyIE]=_cached[_key];}}};",
+      /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
+
+            /*  idx: 10 for non-ie */
+      /* 10 */       "console.log('elemS:',_elemS,'key:',_key,'val:',_cached[_key]);_elemS.setProperty(_key,_cached[_key],'');}}};"
+    ];
+    if(_this._is_ie){
+      _flushStyleCacheTmpl.pop();
+    } else {
+      _flushStyleCacheTmpl.splice(9,1);
+    }
+    eval(_flushStyleCacheTmpl.join(''));
+    
+    _this.bind(document.body);
+    
+    // creates an 'trash' for div elements
+    if(_this._enableRecycler){
+      _this._trashId = _this.make(0,'div');
+      _this.setCSS(_this._trashId,"display:none;visibility:hidden;");
+      _this.setAttr(_this._trashId,'id','trashcan_'+_this._trashId);
+    }
+    
+    _this._timer = setTimeout('ELEM.flushLoop('+_this._minDelay+')',_this._minDelay);
+    
+    if(!_this._domLoadQueue){return;}
+    
+    while(_this._domLoadQueue.length!=0){
+      _cmdStr = _this._domLoadQueue.shift();
+      if(typeof _cmdStr == 'string'){
+        _cmdResult = eval(_cmdStr);
+        if(typeof _cmdResult == 'string'){
+          _this._domLoadQueue.push( _cmdResult );
+        }
+      }
+    }
+    _this._initDone = true;
+  },
+  
+  _warmup: function(){
+    _this = ELEM;
+    _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")==-1)?true:false;
+    _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!=-1)?true:false;
+    _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;
+    _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;
+    _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;
+    _this._is_ff3=(navigator.userAgent.indexOf("Firefox/3.")!=-1)?true:false;
+    _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;
+    BROWSER_TYPE = {
+      opera:    _this._is_opera,
+      safari:   _this._is_safari,
+      firefox:  _this._is_ff,
+      ie:  _this._is_ie,
+      ie6: _this._is_ie6,
+      ie7: _this._is_ie7,
+      firefox3: _this._is_ff3
+    };
+    _this._domWaiter();
+  },
+  // adds items to eval after the dom is done:
+  _domLoader: function(_cmdStr){
+    var _this = ELEM;
+    if(typeof _cmdStr == 'string'){
+      if(_this._initDone==true){
+        eval(_cmdStr);
+      } else {
+        _this._domLoadQueue.push(_cmdStr);
+      }
+    }
+  },
+  _domWaiter: function(){
+    var _isloaded = false;
+    var _this = ELEM;
+    // A hack for ie (ripped from DomLoaded.js)
+    // http://www.cherny.com/demos/onload/domloaded.js
+    if(_this._is_ie){
+      var _ie_proto = "javascript:void(0)";
+      if (location.protocol == "https:"){
+        _ie_proto = "src=//0";
+      }
+      document.write("<scr"+"ipt id=__ie_onload defer src=" + _ie_proto + "><\/scr"+"ipt>");
+      var _ie_script = document.getElementById("__ie_onload");
+      _ie_script.onreadystatechange = function(){
+        if(this.readyState == "complete"){
+          ELEM._domLoadStatus = true;
+          ELEM._init();
+          delete ELEM._domLoadQueue;
+          clearTimeout( ELEM._domLoadTimer );
+          delete ELEM._domLoadTimer;
+        }
+      };
+      // the event will trigger on ie, so we don't have to keep on polling:
+      return;
+    }
+    
+    // Safari / KHTML readyness detection:
+    else if((/KHTML|WebKit/i.test(navigator.userAgent)) &&
+            (/loaded|complete/.test(document.readyState))) {
+      _this._domLoadStatus = true;
+    }
+    
+    // Works for Mozilla:
+    else if(document.body){
+      _this._domLoadStatus = true;
+    }
+    
+    if(!_this._domLoadStatus){
+      _this._domLoadTimer = setTimeout('ELEM._domWaiter()',ELEMTickerInterval*10);
+    } else {
+      _this._init();
+      delete _this._domLoadQueue;
+      clearTimeout(_this._domLoadTimer);
+      delete _this._domLoadTimer;
+    }
+  }
+};
+ELEM._constructor();
+LOAD = ELEM._domLoader;
+ELEM._warmup();
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+// Caching mid-level event listener abstraction
+Event = {
+  element: function(e){return e.target||e.srcElement;},
+  pointerX: function(e){return e.pageX||e.clientX+document.documentElement.scrollLeft;},
+  pointerY: function(e){return e.pageY||e.clientY+document.documentElement.scrollTop;},
+  stop: function(e){
+    if(e.preventDefault){e.preventDefault();e.stopPropagation();}
+    else{e.returnValue=false;e.cancelBubble=true;}
+  },
+  isLeftClick: function(e){
+    // IE: left 1, middle 4, right 2
+    if(ELEM._is_ie||ELEM._is_safari){return(e.button==1);}
+    else{return(e.button==0);}
+  },
+  observers: false,
+  _observeAndCache: function(_elem,_name,_function,_useCapture){
+    if(!Event.observers){Event.observers=[];}
+    if(_elem.addEventListener){
+      this.observers.push([_elem,_name,_function,_useCapture]);
+      _elem.addEventListener(_name,_function,_useCapture);
+    }
+    else if(_elem.attachEvent){
+      this.observers.push([_elem,_name,_function,_useCapture]);
+      _elem.attachEvent("on"+_name,_function);
+    }
+  },
+  unloadCache: function(){
+    if(!Event.observers){return;}
+    var i,l=Event.observers.length;
+    for(i=0;i<l;i++){Event.stopObserving.apply(this,Event.observers[0]);}
+    Event.observers=false;
+  },
+  observe: function(_elem,_name,_function,_useCapture){
+    _useCapture=_useCapture||false;
+    Event._observeAndCache(_elem,_name,_function,_useCapture);
+  },
+  stopObserving: function(_elem,_name,_function,_useCapture){
+    _useCapture=_useCapture||false;
+    if(_elem.removeEventListener){_elem.removeEventListener(_name,_function,_useCapture);}
+    else if(detachEvent){_elem.detachEvent("on"+_name,_function);}
+    var i=0; while(i<Event.observers.length){
+      var eo=Event.observers[i];
+      if(eo&&eo[0]==_elem&&eo[1]==_name&&eo[2]==_function&&eo[3]==_useCapture){Event.observers[i]=null;Event.observers.splice(i,1);}
+      else{i++;}
+    }
+  },
+  // ascii symbols:
+  KEY_BACKSPACE:8,KEY_TAB:9,KEY_RETURN:13,KEY_ESC:27,KEY_LEFT:37,KEY_UP:38,KEY_RIGHT:39,
+  KEY_DOWN:40,KEY_DELETE:46,KEY_HOME:36,KEY_END:35,KEY_PAGEUP:33,KEY_PAGEDOWN:34
+};
+
+// IE memory cleanup:
+if(ELEM._is_ie){Event.observe(window,"unload",Event.unloadCache,false);}
+
+_defaultFocusOptions = {
+  mouseMove:  false,
+  mouseDown:  false,
+  click:      false,
+  mouseUp:    false,
+  draggable:  false,
+  droppable:  false,
+  keyDown:    false,
+  keyUp:      false,
+  mouseWheel: false,
+  isDragged:  false,
+  textEnter:  false
+};
+
+// "Event Manager"
+EVENT = {
+  status:[false,false,0,0,[],false,false,false],
+  button1:0,button2:1,crsrX:2,crsrY:3,keysDown:4,
+  altKeyDown:5,ctrlKeyDown:6,shiftKeyDown:7,
+  start: function() {
+    var _globalEventTargetElement, _eventMap, i, _this=EVENT;
+    if(ELEM._is_ie){_globalEventTargetElement=document;}
+    else{_globalEventTargetElement=window;}
+    _eventMap = [
+      ['mousemove',   EVENT.mouseMove],
+      ['mouseup',     EVENT.mouseUp],
+      ['mousedown',   EVENT.mouseDown],
+      ['click',       EVENT.click],
+      ['keyup',       EVENT.keyUp],
+      ['keydown',     EVENT.keyDown],
+      ['keypress',    EVENT.keyPress],
+      ['contextmenu', EVENT.contextMenu],
+      ['resize',      EVENT.resize],
+      ['mousewheel',  EVENT.mouseWheel]
+    ];
+    for(i=0;i!=_eventMap.length;i++){Event.observe(_globalEventTargetElement,_eventMap[i][0],_eventMap[i][1]);}
+    if(window.addEventListener){window.addEventListener('DOMMouseScroll',EVENT.mouseWheel,false);}
+    //window.onmousewheel=document.onmousewheel=EVENT.mouseWheel;
+    _this.listeners=[];      // keep elemId buffer of all listeners
+    _this.focused=[];        // keep elemId buffer of all focused listeners
+    _this.resizeListeners=[]; // list of resize-event listeners
+    _this.coordListeners=[]; // global mouse movement listeners
+    _this.focusOptions={};   // keep property lists by elemId
+    _this.dragItems=[];      // elemId of currently dragged items
+    _this.hovered=[];        // items currently under the mouse cursor
+    _this.hoverInterval=50;  // 50 means send hover events at most with 50ms intervals
+    _this.hoverTimer=new Date().getTime(); // Time since last hover event triggered
+    _this.topmostDroppable=null; // the currently hovered element accepting droppable items
+    _this.textEnterCtrls=[];  // ID of controls with textfields
+    // position caching benefits performance, see coordCacheFlush
+    _this._coordCache=[];
+    _this._coordCacheFlag=true;
+    _this._lastCoordFlushTimeout=null;
+    
+    _this.activeControl = null; // control that currently has the focus
+    _this._lastKeyDown = null;  // the most recent keypress
+  },
+  // flushes the position cache by elemId, if no elemId is specified, everything is flushed
+  coordCacheFlush: function(_elemId){
+    if(_elemId){EVENT._coordCache[_elemId]=null;}
+    else{EVENT._coordCache=[];}
+  },
+  // registers the View instance _ctrl by event listener flags in _focusOptions
+  reg: function(_ctrl,_focusOptions){
+    var _elemId,_elem,_this=EVENT,_propIn;
+    // Binds the class to the element (so it can be called on the event)
+    _elemId=_ctrl.elemId;
+    _elem=ELEM.get(_elemId);
+    if(ELEM._is_ie){_elem.setAttribute('ctrl',_ctrl);}
+    else{_elem.ctrl=_ctrl;}
+    _this.listeners[_elemId]=true;
+    _this.focused[_elemId]=false;
+    for(var _propIn in _defaultFocusOptions){
+      if(_focusOptions[_propIn]===undefined){
+        _focusOptions[_propIn] = _defaultFocusOptions[_propIn];
+      }
+    }
+    _this.focusOptions[_elemId]=_focusOptions;
+    var _coordListenIdx=_this.coordListeners.indexOf(_elemId);
+    if(_focusOptions.mouseMove){
+      if(_coordListenIdx==-1){
+        _this.coordListeners.push(_elemId);
+    } }
+    else if(_coordListenIdx!=-1){
+      _this.coordListeners.splice(_coordListenIdx,1);
+    }
+    //console.log('focusOptions:',_focusOptions);
+    //console.log('focusOptions.textEnter: ',_focusOptions.textEnter);
+    if(_focusOptions.textEnter){
+      if(_this.textEnterCtrls.indexOf(_ctrl.viewId)==-1){
+        _this.textEnterCtrls.push(_ctrl.viewId);
+      }
+    }
+    if(_focusOptions.resize){
+      if(_this.resizeListeners.indexOf(_ctrl.viewId)==-1){
+        _this.resizeListeners.push(_ctrl.viewId);
+      }
+    }
+    Event.observe(_elem,'mouseover',_this._mouseOver);
+  },
+  // unregisters the View instance _ctrl event listeners
+  unreg: function(_ctrl){
+    var _this=EVENT,_elemId,_elem;
+    if(_ctrl===this.activeControl){_this.changeActiveControl(null);}
+    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    this.listeners[_elemId]=false;
+    this.focused[_elemId]=false;
+    this._coordCache[_elemId]=null;
+    var _textEnterIndex=_this.textEnterCtrls.indexOf(_ctrl.viewId);
+    if(_textEnterIndex!=-1){
+      _this.textEnterCtrls.splice(_textEnterIndex,1);
+    }
+    
+    var _resizeIndex=_this.resizeListeners.indexOf(_ctrl.viewId);
+    if(_resizeIndex!=-1){
+      _this.resizeListeners.splice(_resizeIndex,1);
+    }
+    Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+  },
+  
+  resize: function(e){
+    var i=0,_this=EVENT,_ctrlID,_ctrl;
+    for(;i<_this.resizeListeners.length;i++){
+      _ctrlID=_this.resizeListeners[i];
+      _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.onResize){_ctrl.onResize();}
+    }
+  },
+  
+  // element-specific over/out handler
+  _mouseOver: function(e) {
+    if(!Event.element){return;}
+    var _that=Event.element(e);
+    while(_that&&_that.ctrl===undefined){_that=_that.parentNode;}
+    if(!_that){return;}
+    var _this=_that.ctrl;
+    EVENT.focus(_this);
+    Event.stop(e);
+  },
+  
+  // element-specific over/out handler
+  _mouseOut: function(e) {
+    if(!Event.element){return;}
+    var _that=Event.element(e);
+    while(_that&&_that.ctrl===undefined){_that=_that.parentNode;}
+    if(!_that){return;}
+    var _this=_that.ctrl;
+    EVENT.blur(_this);
+    Event.stop(e);
+  },
+  
+  // stops mouseover listening and starts mouseout listening,
+  // sends a focus() call to the ctrl
+  focus: function(_ctrl){
+    var _this=EVENT,_elemId,_elem;
+    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    if(_this.focused[_elemId]==false&&_this.focusOptions[_elemId].isDragged==false){
+      Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+      Event.observe(_elem,'mouseout',_this._mouseOut);
+      _this.focused[_elemId]=true;
+      if(_ctrl['focus']){_ctrl.focus();}
+    }
+  },
+  // stops mouseout listening and starts mouseover listening,
+  // sends a blur() call to the ctrl
+  blur: function(_ctrl) {
+    var _this=EVENT,_elemId,_elem;
+    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    if(_this.focused[_elemId]==true&&_this.focusOptions[_elemId].isDragged==false){
+      Event.stopObserving(_elem,'mouseout',_this._mouseOut);
+      Event.observe(_elem,'mouseover',_this._mouseOver);
+      _this.focused[_elemId]=false;
+      if(_ctrl['blur']){_ctrl.blur();}
+    }
+  },
+  
+  //// Event listeners:
+  
+  // tracks mouse movement,
+  // sends doDrag, mouseMove, onHoverEnd, onHoverStart pseudo-events
+  mouseMove: function(e) {
+    var _this=EVENT,x,y,_currentlyDragging;
+    // current position
+    x=Event.pointerX(e);
+    y=Event.pointerY(e);
+    _this.status[_this.crsrX]=x;
+    _this.status[_this.crsrY]=y;
+    _currentlyDragging = _this.flushMouseMove(x,y);
+    _this._modifiers(e); // might work
+    if(_currentlyDragging){Event.stop(e);} // Only prevent default action when we are dragging something.
+  },
+  
+  flushMouseMove: function(x,y){
+    var _this=EVENT,x,y,_currentlyDragging,i,j,_elemId,_ctrl;
+    clearTimeout(_this._lastCoordFlushTimeout);
+    // drag detect flag
+    _currentlyDragging=false;
+    // send doDrag event to all drag-interested ctrls
+    for(i=0;i!=_this.dragItems.length;i++){
+      _elemId=_this.dragItems[i];
+      _this.focusOptions[_elemId].ctrl.doDrag(x,y);
+      _this.coordCacheFlush(_elemId);
+      _currentlyDragging=true;
+    }
+    
+    // Check which items are under the mouse coordinates now.
+    if(new Date().getTime()>_this.hoverTimer+_this.hoverInterval) {
+      // sends mouseMove pseudo-events to ctrls interested
+      for(i=0;i!=_this.coordListeners.length;i++){
+        _elemId=_this.coordListeners[i];_ctrl=_this.focusOptions[_elemId].ctrl;
+        _ctrl.mouseMove(x,y);
+      }
+      _this._updateHoverItems();
+      // sends drag&drop pseudo-events
+      var _wasTopmostDroppable;
+      for(i=0;i!=_this.dragItems.length;i++){
+        // Find the current droppable while dragging.
+        _wasTopmostDroppable=_this.topmostDroppable;
+        _this.topmostDroppable=null;
+        _elemId=_this.dragItems[i];_ctrl=_this.focusOptions[_elemId].ctrl;
+        // Check for a drop target from the currently hovered items
+        var _hoverIndex, _dropCtrl;
+        for(j=0;j!=_this.hovered.length;j++){
+          _hoverIndex=_this.hovered[j];
+          if(_hoverIndex!=_elemId&&_this.focusOptions[_hoverIndex].ctrl){
+            _dropCtrl=_this.focusOptions[_hoverIndex].ctrl;
+            if(!_this.topmostDroppable|| // First time
+              _dropCtrl.zIndex()>_this.topmostDroppable.zIndex() || // Z beaten
+              _dropCtrl.supr===_this.topmostDroppable){ // subview
+              if(_this.focusOptions[_dropCtrl.elemId].droppable){
+                _this.topmostDroppable=_dropCtrl; // Finally, the item must accept drop events.
+        } } } }
+        
+        // Topmost item has changed, send onHoverStart or onHoverEnd to the droppable.
+        if(_wasTopmostDroppable!=_this.topmostDroppable){
+          if(_wasTopmostDroppable){_wasTopmostDroppable.onHoverEnd(_ctrl);}
+          if(_this.topmostDroppable){_this.topmostDroppable.onHoverStart(_ctrl);}
+      } }
+      _this.hoverTimer = new Date().getTime();
+    }
+    else {
+      _this._lastCoordFlushTimeout=setTimeout('EVENT.flushMouseMove('+x+','+y+');',_this.hoverInterval);
+    }
+    return _currentlyDragging;
+  },
+  
+  // Loop through all registered items and store indices of elements that are currenly under
+  // the mouse cursor in .hovered array. Uses cached position and dimensions value when possible.
+  _updateHoverItems: function() {
+    var _this=EVENT,x,y,i,_ctrl,_elem,_pos,_size,_coords;
+    _this.hovered=[];
+    x=_this.status[_this.crsrX];
+    y=_this.status[_this.crsrY];
+    for(i=0;i!=_this.listeners.length;i++) {
+      if(!_this.listeners[i]||!_this.focusOptions[i].ctrl){continue;}
+      _ctrl=_this.focusOptions[i].ctrl;_elem=ELEM.get(i);
+      if(!_this._coordCacheFlag||!_this._coordCache[i]){
+        _pos=ELEM.getVisiblePosition(_ctrl.elemId);   // [x,y]
+        _size=ELEM.getVisibleSize(_ctrl.elemId); // [w,h]
+        _this._coordCache[i]=[_pos[0],_pos[1],_size[0],_size[1]];
+      }
+      _coords=_this._coordCache[i];
+      // Is the mouse pointer inside the element's rectangle?
+      if (x>=_coords[0]&&x<=_coords[0]+_coords[2]&&y>=_coords[1]&&y<=_coords[1]+_coords[3]){
+        _this.hovered.push(i);
+    } }
+  },
+  
+  
+  // tracks mouse clicks,
+  // sends mouseDown and startDrag pseudo-events
+  mouseDown: function(e,_isLeftButton){
+    var _this=EVENT,_didStartDrag,x,y,i,_newActiveControl,_startDragElementIds,_mouseDownElementIds;
+    _this._modifiers(e);
+    _didStartDrag=false;
+    if(_isLeftButton===undefined){_isLeftButton=Event.isLeftClick(e);}
+    if(_isLeftButton){_this.status[_this.button1]=true;}
+    else{_this.status[_this.button2]=true;} // bug??
+    x=_this.status[_this.crsrX];y=_this.status[_this.crsrY];
+    // Unset the active control when clicking on anything.
+    _newActiveControl=null;
+    // The startDrag and mouseDown event receivers are first collected into
+    // these arrays and the events are sent after the active control status has
+    // been changed.
+    _startDragElementIds=[];
+    _mouseDownElementIds=[];
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        // Set the active control to the currently focused item.
+        if(_this.focusOptions[i].ctrl.enabled){_newActiveControl=_this.focusOptions[i].ctrl;}
+        if((_this.focusOptions[i].draggable==true)&&_this.dragItems.indexOf(i)==-1){_startDragElementIds.push(i);}
+        else if(_this.focusOptions[i].mouseDown==true){_mouseDownElementIds.push(i);}
+    } }
+    // Handle the active control selection.
+    //console.log('EVENT.mouseDown, newActiveControl:',_newActiveControl.type,_newActiveControl.enabled);
+    if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
+    // Call the mouseDown and startDrag events after the active control change has been handled.
+    for(i=0;i!=_startDragElementIds.length;i++){
+      _this.dragItems.push(_startDragElementIds[i]);
+      //console.log('_startDragElementIds',_startDragElementIds);
+      //console.log('_this.focusOptions',_this.focusOptions);
+      //console.log('_this.focusOptions['+_startDragElementIds[i]+']',_this.focusOptions[_startDragElementIds[i]]);
+      _this.focusOptions[_startDragElementIds[i]].ctrl.startDrag(x,y);
+      _didStartDrag=true;
+    }
+    
+    var _stopEvent=_mouseDownElementIds.length;
+    for(i=0;i!=_mouseDownElementIds.length;i++){
+      if(_this.focusOptions[_mouseDownElementIds[i]].ctrl.mouseDown(x,y,_isLeftButton)){_stopEvent--;}
+    }
+    if(_didStartDrag){
+      // Remove possible selections.
+      document.body.focus();
+      // Prevent text selection in MSIE when dragging starts.
+      _this._storedOnSelectStart=document.onselectstart;
+      document.onselectstart=function(){return false;};
+    }
+    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
+    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    return true;
+  },
+  
+  click: function(e,_isLeftButton){
+    var _this=EVENT,x,y,i,_newActiveControl,_clickElementIds;
+    _this._modifiers(e);
+    if(_isLeftButton===undefined){_isLeftButton=Event.isLeftClick(e);}
+    if(_isLeftButton){_this.status[_this.button1]=true;}
+    else{_this.status[_this.button2]=true;} // bug???
+    x=_this.status[_this.crsrX];y=_this.status[_this.crsrY];
+    // Unset the active control when clicking on anything.
+    _newActiveControl=null;
+    // The startDrag and mouseDown event receivers are first collected into
+    // these arrays and the events are sent after the active control status has
+    // been changed.
+    _clickElementIds=[];
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        // Set the active control to the currently focused item.
+        if(_this.focusOptions[i].ctrl.enabled){
+          _newActiveControl=_this.focusOptions[i].ctrl;
+        }
+        if(_this.focusOptions[i].click==true){
+          _clickElementIds.push(i);
+        }
+    } }
+    // Handle the active control selection.
+    if(_newActiveControl){_this.changeActiveControl(_newActiveControl);}
+    var _stopEvent=_clickElementIds.length;
+    for(i=0;i!=_clickElementIds.length;i++){
+      if(_this.focusOptions[_clickElementIds[i]].ctrl.click(x,y,_isLeftButton)){_stopEvent--;}
+    }
+    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
+    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    //if(_this.hovered.length!=0){Event.stop(e);}
+    return true;
+  },
+  
+  // changes active ctrl,
+  // previous active ctrl gets the _lostActiveStatus pseudo-event,
+  // the new active ctrl gets the _gainedActiveStatus pseudo-event
+  changeActiveControl: function(_ctrl){
+    //console.log('EVENT.changeActiveControl: ',_ctrl);
+    var _this=EVENT,_prevActiveCtrl;
+    // Store the currently active control so we can inform it, if it no longer is the active control.
+    _prevActiveCtrl=_this.activeControl;
+    // Did the active control change?
+    if(_ctrl!=_prevActiveCtrl){
+      if(_prevActiveCtrl){
+        // Previously active control just lost the active status.
+        _prevActiveCtrl.active=false;
+        _prevActiveCtrl._lostActiveStatus(_ctrl);
+      }
+      _this.activeControl=null;
+      if(_ctrl){
+        // A new control gained the active status.
+        _ctrl.active = true;
+        _this.activeControl = _ctrl;
+        _ctrl._gainedActiveStatus(_prevActiveCtrl);
+    } }
+  },
+  
+  
+  // tracks mouse up events,
+  // sends onHoverEnd, onDrop, mouseUp, endDrag
+  mouseUp: function(e){
+    var _this=EVENT,_didEndDrag,x,y,_elemId,_ctrl,i;
+    _this._modifiers(e);
+    _didEndDrag=false;
+    _isLeftButton=Event.isLeftClick(e); // might not work?
+    _this.status[_this.button1]=false;
+    _this.status[_this.button2]=false;
+    x=_this.status[_this.crsrX];
+    y=_this.status[_this.crsrY];
+    // Send endDrag for the currently dragged items even when they don't have focus, and clear the drag item array.
+    for(i=0;i!=_this.dragItems.length;i++){
+      _elemId=_this.dragItems[i];
+      _ctrl=_this.focusOptions[_elemId].ctrl;
+      _ctrl.endDrag(x,y);
+      _didEndDrag=true;
+      // If the mouse slipped off the dragged item before the mouse button was released, blur the item manually
+      _this._updateHoverItems();
+      if (_this.hovered.indexOf(_elemId)==-1){_this.blur(_ctrl);}
+      // If there is a drop target in the currently hovered items, send onDrop to it.
+      if (_this.topmostDroppable) {
+        // Droppable found at the release point.
+        _this.topmostDroppable.onHoverEnd(_ctrl);
+        _this.topmostDroppable.onDrop(_ctrl);
+        _this.topmostDroppable=null;
+    } }
+    _this.dragItems=[];
+    // Restore MSIE's ability to select text after dragging has ended.
+    if(_didEndDrag){document.onselectstart=_this._storedOnSelectStart;}
+    // Check for mouseUp listeners.
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        if(_this.focusOptions[i].mouseUp==true){
+          _this.focusOptions[i].ctrl.mouseUp(x,y,_isLeftButton);
+    } } }
+    return true;
+  },
+  
+  
+  // tracks key presses,
+  // sends keyDown pseudo-events to active items that are interested
+  keyDown: function(e){
+    var _this=EVENT,_theKeyCode;
+    _this._modifiers(e);
+    _theKeyCode=e.keyCode;
+    if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyDown==true){
+      Event.stop(e);
+      // Workaround for msie rapid fire keydown
+      if(_this._lastKeyDown!=_theKeyCode){_this.activeControl.keyDown(_theKeyCode);}
+    }
+    // Insert key to the realtime array, remove in keyUp
+    if(_this.status[_this.keysDown].indexOf(_theKeyCode)==-1){_this.status[_this.keysDown].push(_theKeyCode);}
+    _this._lastKeyDown=_theKeyCode;
+  },
+  
+  
+  // tracks key releases,
+  // sends keyUp pseudo-events to active items that are interested
+  keyUp: function(e){
+    var _this=EVENT,_theKeyCode,_keycodeindex;
+    _this._modifiers(e);
+    _theKeyCode=e.keyCode;
+    _this._lastKeyDown=null;
+    //console.log('EVENT.keyUp: ',_this.textEnterCtrls);
+    //console.log(_this.textEnterCtrls);
+    for(var i=0;i!=_this.textEnterCtrls.length;i++){
+      var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.textEnter){_ctrl.textEnter();}
+    }
+    if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyUp==true){
+      _this.activeControl.keyUp(_theKeyCode);
+    }
+    // Remove the key from the realtime array, inserted in keyDown
+    _keyCodeIndex=_this.status[_this.keysDown].indexOf(_theKeyCode);
+    if(_keyCodeIndex!=-1){_this.status[_this.keysDown].splice(_keyCodeIndex,1);}
+  },
+  
+  // prevents this event (key being hold down; we don't want repetitions)
+  keyPress: function(e){
+    var _this=EVENT;
+    if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyDown==true){Event.stop(e);}
+  },
+  
+  
+  // tracks mouse wheel events,
+  // sends mouseWheel pseudo-events
+  mouseWheel: function(e) {
+    var _this=EVENT,_delta,i;
+    _delta=0;
+    if(!e){e=window.event;}
+    if(e.wheelDelta){
+      _delta=e.wheelDelta/120; 
+      if(window.opera){_delta=-_delta;}
+    }
+    else if(e.detail){
+      _delta=-e.detail/3;
+    }
+    for(i=0;i!=_this.focused.length;i++){
+      if(_this.focused[i]==true){
+        if(_this.focusOptions[i].mouseWheel==true){
+          Event.stop(e);_this.focusOptions[i].ctrl.mouseWheel(_delta);
+    } } }
+  },
+  
+  /// Alternative right button detection, wraps mousedown
+  contextMenu: function(e){
+    EVENT.mouseDown(e, false);
+    Event.stop(e);
+  },
+  
+  /// Handle the event modifiers.
+  _modifiers: function(e){
+    var _this=EVENT;
+    _this.status[_this.altKeyDown] = e.altKey;
+    _this.status[_this.ctrlKeyDown] = e.ctrlKey;
+    _this.status[_this.shiftKeyDown] = e.shiftKey;
+  }
+  
+};
+
+/** Starts the only instance
+  */
+LOAD('EVENT.start();');
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/**
+*** This File is a part of AppSpace
+***
+*** Copyright (c) 2007 Juha-Jarmo Heinonen
+***                    juha-jarmo.heinonen@sorsacode.com
+**/
+
+// Encoder / Decoder facility
+
+/** IMPROVED FROM: **/
+/*
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+
+ * vBulletin Usage: md5hash(input,output)
+ * Recommend: input = password input field; output = hidden field
+
+ */
+
+
+SHA = {
+  /* hex output format. 0 - lowercase; 1 - uppercase        */
+  _hexcase: 0,
+  hexCase: function(){
+    return SHA._hexcase;
+  },
+  setHexCase: function(_case){
+    SHA._hexcase = _case;
+  },
+  
+  /* base-64 pad character. "=" for strict RFC compliance   */
+  _b64pad: "=",
+  base64Pad: function(){
+    return SHA._b64pad;
+  },
+  setBase64Pad: function(_pad){
+    SHA._b64pad = _pad;
+  },
+  
+  /* bits per input character. 8 - ASCII; 16 - Unicode      */
+  _chrsz: 8,
+  chrsz: function(){
+    return SHA._chrsz;
+  },
+  setChrsz: function(_bits){
+    SHA._chrsz = _bits;
+  },
+  
+/*
+ * These are the functions you'll usually want to call
+ * They take string arguments and return either hex or base-64 encoded strings
+ */
+  hexSHA1: function(_s){
+    var _this=SHA;
+    return _this._binb2hex(
+      _this._coreSHA1(
+        _this._str2binb(_s),
+        _s.length * _this._chrsz
+      )
+    );
+  },
+  b64SHA1: function(_s){
+    var _this=SHA;
+    return _this._binb2b64(
+      _this._coreSHA1(
+        _this._str2binb(_s),
+        _s.length * _this._chrsz
+      )
+    );
+  },
+  strSHA1: function(_s){
+    var _this=SHA;
+    return _this._binb2str(
+      _this._coreSHA1(
+        _this._str2binb(_s),
+        _s.length * _this._chrsz
+      )
+    );
+  },
+  hexHmacSHA1: function(_key, _data){
+    var _this=SHA;
+    return _this._binb2hex(
+      _this._coreHmacSHA1(_key, _data)
+    );
+  },
+  b64HmacSHA1: function(_key, _data){
+    var _this=SHA;
+    return _this._binb2b64(
+      _this._coreHmacSHA1(_key, _data)
+    );
+  },
+  strHmacSHA1: function(_key, _data){
+    var _this=SHA;
+    return _this._binb2str(
+      _this._coreHmacSHA1(_key, _data)
+    );
+  },
+  
+  str2Base64: function(_str){
+    var _this=SHA;
+    return _this._binb2b64(_this._str2binb(_str));
+  },
+  
+  /*
+   * Perform a simple self-test to see if the VM is working
+   */
+  test: function(){
+    return SHA.hexSHA1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+  },
+
+  /*
+   * Calculate the SHA-1 of an array of big-endian words, and a bit length
+   */
+  _coreSHA1: function(_x, _len){
+    var _this=SHA;
+    /* append padding */
+    _x[_len >> 5] |= 0x80 << (24 - _len % 32);
+    _x[((_len + 64 >> 9) << 4) + 15] = _len;
+
+    var _w = new Array(80),
+        _a =  1732584193,
+        _b = -271733879,
+        _c = -1732584194,
+        _d =  271733878,
+        _e = -1009589776,
+        i, _olda, _oldb, _oldc, _oldd, _olde,
+        j, _t;
+
+    for(i = 0; i < _x.length; i += 16){
+      _olda = _a;
+      _oldb = _b;
+      _oldc = _c;
+      _oldd = _d;
+      _olde = _e;
+
+      for(j = 0; j < 80; j++){
+        if(j < 16){
+          _w[j] = _x[i + j];
+        }
+        else {
+          _w[j] = _this._rol(_w[j-3] ^ _w[j-8] ^ _w[j-14] ^ _w[j-16], 1);
+        }
+        _t = _this._safeAdd(_this._safeAdd(_this._rol(_a, 5), _this._sha1FT(j, _b, _c, _d)),
+             _this._safeAdd(_this._safeAdd(_e, _w[j]), _this._sha1KT(j)));
+        _e = _d;
+        _d = _c;
+        _c = _this._rol(_b, 30);
+        _b = _a;
+        _a = _t;
+      }
+
+      _a = _this._safeAdd(_a, _olda);
+      _b = _this._safeAdd(_b, _oldb);
+      _c = _this._safeAdd(_c, _oldc);
+      _d = _this._safeAdd(_d, _oldd);
+      _e = _this._safeAdd(_e, _olde);
+    }
+    return [_a, _b, _c, _d, _e];
+
+  },
+
+  /*
+   * Perform the appropriate triplet combination function for the current
+   * iteration
+   */
+  _sha1FT: function(_t, _b, _c, _d) {
+    if(_t < 20){
+      return (_b & _c) | ((~_b) & _d);
+    }
+    if(_t < 40){
+      return _b ^ _c ^ _d;
+    }
+    if(_t < 60){
+      return (_b & _c) | (_b & _d) | (_c & _d);
+    }
+    return _b ^ _c ^ _d;
+  },
+
+  /*
+   * Determine the appropriate additive constant for the current iteration
+   */
+  _sha1KT: function(_t){
+    return (_t < 20) ?  1518500249 : (_t < 40) ?  1859775393 :
+           (_t < 60) ? -1894007588 : -899497514;
+  },
+
+  /*
+   * Calculate the HMAC-SHA1 of a key and some data
+   */
+  _coreHmacSHA1: function(_key, _data){
+    var _this=SHA,
+        _bkey = _this._str2binb(_key),
+        _ipad = new Array(16),
+        _opad = new Array(16),
+        i, _hash;
+    if(_bkey.length > 16){
+      _bkey = _this._coreSHA1(_bkey, _key.length * _this._chrsz);
+    }
+    for(i = 0; i  < 16; i++){
+      _ipad[i] = _bkey[i] ^ 0x36363636;
+      _opad[i] = _bkey[i] ^ 0x5C5C5C5C;
+    }
+    
+    _hash = _this._coreSHA1(_ipad.concat(_this._str2binb(_data)), 512 + _data.length * _this._chrsz);
+    return _this._coreSHA1(_opad.concat(_hash), 512 + 160);
+  },
+
+  /*
+   * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+   * to work around bugs in some JS interpreters.
+   */
+  _safeAdd: function(_x, _y){
+    var _lsw = (_x & 0xFFFF) + (_y & 0xFFFF),
+        _msw = (_x >> 16) + (_y >> 16) + (_lsw >> 16);
+    return (_msw << 16) | (_lsw & 0xFFFF);
+  },
+
+  /*
+   * Bitwise rotate a 32-bit number to the left.
+   */
+  _rol: function(_num, _cnt){
+    return (_num << _cnt) | (_num >>> (32 - _cnt));
+  },
+  
+  /*
+   * Convert an 8-bit or 16-bit string to an array of big-endian words
+   * In 8-bit function, characters >255 have their hi-byte silently ignored.
+   */
+  _str2binb: function(_str){
+    var _this=SHA,
+        _bin = [],
+        _mask = (1 << _this._chrsz) - 1,
+        _strLenChrSZ = _str.length * _this._chrsz,
+        i;
+    for(i = 0; i < _strLenChrSZ; i += _this._chrsz){
+      _bin[i>>5] |= (_str.charCodeAt(i / _this._chrsz) & _mask) << (32 - _this._chrsz - i%32);
+    }
+    return _bin;
+  },
+
+  /*
+   * Convert an array of big-endian words to a string
+   */
+  _binb2str: function(_bin){
+    var _this=SHA,
+        _str = "",
+        _mask = (1 << _this._chrsz) - 1,
+        i,
+        _binLen32 = _bin.length * 32,
+        _32chrsz = 32 - _this._chrsz;
+    for(i = 0; i < _binLen32; i += _this._chrsz){
+      _str += String.fromCharCode((_bin[i>>5] >>> (_32chrsz - i%32)) & _mask);
+    }
+    return _str;
+  },
+
+  /*
+   * Convert an array of big-endian words to a hex string.
+   */
+  _binb2hex: function(_binarray){
+    var _this=SHA,
+        _hexTab = _this._hexcase ? "0123456789ABCDEF" : "0123456789abcdef",
+        _str = "",
+        i,
+        _binLen = _binarray.length * 4;
+    for(i = 0; i < _binLen; i++){
+      _str += _hexTab.charAt((_binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
+              _hexTab.charAt((_binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+    }
+    return _str;
+  },
+
+  /*
+   * Convert an array of big-endian words to a base-64 string
+   */
+  _binb2b64: function(_binarray){
+    var _this=SHA,
+        _tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+        _str = "",
+        i,
+        _binLen = _binarray.length * 4,
+        _t1, _t2, _3,
+        _triplet,
+        j,
+        _binLen32 = _binarray.length * 32;
+    for(i = 0; i < _binLen; i += 3){
+      _t1 = (((_binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16);
+      _t2 = (((_binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 );
+      _t3 = ((_binarray[i+2 >> 2] >> 8 * (3 - (i+2)%4)) & 0xFF);
+      _triplet = (_t1 | _t2 | _t3);
+      for(j = 0; j < 4; j++){
+        if(i * 8 + j * 6 > _binLen32){
+          _str += _this._b64pad;
+        }
+        else {
+          _str += _tab.charAt((_triplet >> 6*(3-j)) & 0x3F);
+        }
+      }
+    }
+    return _str;
+  }
+};
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HTransporter
+  *
+  * *Simple mid-level AJAX communication system.*
+  *
+  * Designed as single instance, depends on <HValueManager>.
+  *
+  * When implementing the server part:
+  *  - feed it with raw javascript
+  *  - override ses_id as early as possible with your own session id, this tells the clients apart.
+  *  - change the syncDelay depending on how fast you want the client to poll the server (a value in ms)
+  *  - you may refer to 't' as the HTransporter's namespace.
+  *
+  * Sample initialization sequence:
+  * > HTransporter.ses_id    = 'nhHOZ8Zo64Wfo';
+  * > HTransporter.syncDelay = 400;
+  * > HTransporter.url_base = '/ui';
+  *
+  * See Also:
+  *  <HValueManager.toXML>
+  **/
+
+/* int: HTransportURL
+ *
+ * Tells the <HTransporter> which url/path to start polling.
+ * - "global"
+ * - Override it with your server's path or url before the document is loaded.
+ */
+HTransportURL = false;
+
+/* int: HTransportPoll
+ *
+ * Tells the <HTransporter> whether to use polling (true) or to sync values only
+ * when there's something on the client-side to sync (false).
+ * - "global"
+ * - Defaults to true (polling), override it with false before the document is
+ *   loaded if you don't want polling.
+ */
+HTransportPoll = true;
+
+/* str: HFailPageUrl
+ *
+ * Url or uri where the the client goes, if a communication error is encountered.
+ */
+HFailPageUrl = '/';
+HTransporterMaxRetryCount = 60;     // 60 retries
+HTransporterMaxRetryTime  = 60000; // 60 seconds
+HTransporterRetryDelay    = 1000; // 1 second
+
+// Retarded debug mode for "special" browsers
+HTransporterDebug = false;
+
+/* vars: Instance variables
+ *  url_base  - The URL (or path) that the requests are sent to
+ *  ses_id    - A value that is the reported in each request by the key 'ses_id'
+ *  syncDelay - An integer value (in ms) that the client waits before starting the next request
+ */
+HTransporter = Base.extend({
+  
+  constructor: null,
+  
+  start: function(_url_base){
+    var _this = HTransporter;
+    _this.url_base  = _url_base;
+    _this.ses_id    = 0;
+    _this.err_msg   = '';
+    _this.isBusy    = false;
+    _this.syncNum   = 0;
+    _this.syncDelay = 100;
+    
+    _this.prevData  = '';
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    
+    _this.pollMode  = HTransportPoll;
+    _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+  },
+  
+  setPollMode: function(_flag) {
+    HTransporter.pollMode = _flag;
+  },
+  
+  failure: function(resp){
+    //console.log('failure');
+    var _currFailAge = HTransporterMaxRetryTime+(new Date().getTime()),
+        _this = HTransporter;
+    clearTimeout(_this.req_timeout);
+    if(_this.firstFail==0){
+      _this.isBusy = false;
+      _this.firstFail=(new Date().getTime());
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else if((_this.failCount<HTransporterMaxRetryCount)&&(_this.firstFail<_currFailAge)){
+      _this.isBusy = false;
+      _this.failCount++;
+      window.status = 'Communications error, retry attempt '+_this.failCount+' of '+HTransporterMaxRetryCount+'...';
+    }
+    else {
+      // If the connection fails, automatically try to reload the page.
+      window.status = 'Communications error, reloading page...';
+      location.href = HFailPageUrl;
+      _this.isBusy = true;
+    }
+    //console.log('fail..retry');
+    _this.req_timeout = setTimeout('HTransporter.sync();',HTransporterRetryDelay);
+  },
+  
+  respond: function(resp){
+    var _respText = resp.responseText,
+        _this = HTransporter;
+    try {
+      _this.err_msg = '';
+      eval(_respText); 
+    }
+    catch(e) {
+      if(HTransporterDebug){
+        console.log(e);
+        console.log(e.description);
+      }
+      _this.err_msg = '&err_msg='+e+" - "+e.description;
+      _this.failure(resp);
+    }
+    _this.prevData  = '';
+    if(_this.failCount!=0){window.status='';}
+    _this.failCount = 0;
+    _this.firstFail = 0;
+    _this.isBusy = false;
+    if(_this.pollMode){
+      _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+    }
+  },
+  
+  sync: function(){
+    var _this = HTransporter,
+        _valid_delay = ((_this.syncDelay>0)||(_this.syncDelay==0));
+    // Negative syncDelay stops transporter.
+    if(_valid_delay && _this.url_base){
+      if(!_this.isBusy){
+        _this.isBusy = true;
+        if(_this.prevData!=''){
+          _syncData = _this.prevData;
+          //console.log('syncData0:',_syncData);
+        }
+        else {
+          _syncData = HValueManager.toXML();
+          _this.prevData = _syncData;
+          //console.log('syncData1:',_syncData);
+        }
+        if(""!=_syncData || _this.pollMode) {
+          _this.syncNum++;
+          HVM.isGetting=true;
+          req_args = {
+            onSuccess: function(resp){_this.respond(resp);},
+            onFailure: function(resp){_this.failure(resp);},
+            method:    'post',
+            postBody:  'ses_id='+_this.ses_id+_this.err_msg+_syncData
+          };
+          try{
+            _this.req  = new Ajax.Request( _this.url_base, req_args );
+            HVM.isGetting=false;
+          }
+          catch(e){
+            window.status = 'conn error:'+e;
+            HVM.isGetting=false;
+            _this.failure(null);
+          }
+        }
+        else {
+          _this.isBusy = false;
+        }
+      }
+    }
+  },
+  
+  stop: function() {
+    clearTimeout(_this.req_timeout);
+  }
+  
+});
+
+LOAD("HTransporter.start(HTransportURL);");
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HValueManager
+  *
+  * *Simple value syncronization system.*
+  * 
+  * Designed as single instance, depends on <HValue> and <HControl>.
+  *
+  * The system relies heavily on <HValue> instances.
+  * It allows easy value syncronization between the server and client components.
+  * <HTransporter> makes <toXML> calls whenever it's making a server poll to send
+  * changed data to the server as XML, accessable by the 'HSyncData' request key.
+  *
+  * See Also:
+  *  <HValue> <HTransporter> <HControl>
+  *
+  * Simple usage example:
+  *  > var myApp = new HApplication(100);
+  *  > var myTextCtrl1 = new HTextControl(new HRect(100,100,356,118),myApp,'',"Hello, I'm a textcontrol!");
+  *  > myTextCtrl1.draw();
+  *  > var myTextCtrl2 = new HTextControl(new HRect(120,100,356,138),myApp,'',"Hi, I'm also a textcontrol!");
+  *  > myTextCtrl2.draw();
+  *  > var myNewHValue = new HValue('foo123', "Hi, I am an example value.");
+  *  > myNewValue.bind( myTextCtrl1 );
+  *  > myNewValue.bind( myTextCtrl2 );
+  *  > HValueManager.set('foo123',"Hi, I am the new replacement value!");
+  *  > var myXMLChanged = HValueManager.toXML();
+  **/
+
+HValueManager = HClass.extend({
+  constructor: null,
+  
+/** vars: Instance variables
+  *
+  * values - Array, contains all values currently managed, accessible by <HValue> id:s
+  * tosync - Array, contains changed values that need to be reported to the remote side via <HTransporter>
+  * isSending - flag, is set to true when <HTransporter> is busy.
+  *
+  **/
+  values: {},
+  tosync: [],
+  isSending: false,
+  isGetting: false,
+  
+/*** method: add
+  ** 
+  ** Adds a new <HValue> bound to the value of id into the value index of <HValueManager>.
+  ** These values will then then be automatically syncronized between components
+  ** and other compatible instances, like server-side value management. Most
+  ** likely to be called from inside a <HValue> constructor.
+  **
+  ** Parameters:
+  **  _id - An id for the value, doesn't really matter at the client-side as long as it is unique. Matters for server-side. Could be int or str, depending on the server implementation.
+  **  _obj - A <HValue> object instance, usually *this* inside constructors of <HValue>-compatible classes.
+  **
+  ** See also:
+  **  <set> <del> <HValue.constructor>
+  ***/
+  add: function(_id,_obj){
+    this.values[_id] = _obj;
+  },
+  
+/*** method: set
+  **
+  ** Sets a new *container value* to the <HValue> object by calling the bound <HValue> by its id.
+  **
+  ** Parameters:
+  **  _id - The <HValue>-instance id to be modified.
+  **  _value - The container value (NOT a <HValue>)
+  **
+  ** See also:
+  **  <add> <del> <HValue.set> <HControl.setValue>
+  ***/
+  set: function(_id,_value){
+    this.values[_id].set(_value);
+  },
+  
+  s: function(_id,_value){
+    this.values[_id].s(_value);
+  },
+  
+/*** method: del
+  **
+  ** Deletes the <HValue> by id from the value management system.
+  **
+  ** Parameters:
+  **  _id - The <HValue>-instance id to be deleted.
+  **
+  ** See also:
+  **  <add> <set> <HValue>
+  ***/
+  del: function(_id){
+    var _thisVal  = this.values[_id],
+        _valViews = _thisVal.views,
+        _viewNum  = 0,
+        _thisView = null;
+    for(;_viewNum<_valViews.length;_viewNum++){
+      _thisView = _valViews[_viewNum];
+      _thisView.valueObj = new HDummyValue(0,_thisVal.value);
+    }
+    this.values[_id] = null;
+  },
+  
+/*** method: changed
+  **
+  ** Reports the <HValue> to <HValueManager> as a changed object.
+  ** It adds a reference to the <HValue>, unless the value is changed via <HTransporter>.
+  ** 
+  ** There is no need to call it manually, except when creating a new <HValue> -compatible
+  ** object from the scratch. Value-classes call changed whenever the change needs
+  ** to be reported elsewhere.
+  **
+  ** Parameters:
+  **  _theObj - The <HValue> -instance object to list as changed.
+  **
+  ** See also:
+  **  <isGetting> <tosync> <set>
+  ***/
+  changed: function(_theObj){
+    if(this.isGetting==false){
+      if(this.tosync.indexOf(_theObj.id)==-1){
+        this.tosync.push(_theObj.id);
+      }
+      var _t=HTransporter;
+      if(!_t.pollMode){
+        clearTimeout(_t.req_timeout);
+        _t.req_timeout = setTimeout('HTransporter.sync();',_t.syncDelay);
+      }
+    }
+  },
+  
+/*** method: toXML
+  **
+  ** Outputs all changed values to XML.
+  **
+  ** See also:
+  **  <HTransporter>
+  ***/
+  toXML: function(){
+    var _postBody = '&HSyncData=';
+    if(!this.isSending){
+      this.isSending = true;
+      var _synclen = this.tosync.length;
+      if(_synclen==0){
+        this.isSending = false;
+        return '';
+      }
+      var _syncvalueArr = [],_i;
+      for(_i=0;_i<_synclen;_i++){
+        var _syncid = this.tosync.shift();
+        var _syncobj = this.values[_syncid];
+        _syncvalueArr.push( _syncobj.toXML(_i) );
+      }
+      var _syncvalues = _syncvalueArr.join('');
+      // version: 8000 + himle svn revision at modification time
+      _postBody += '<hsyncvalues version="8118">'+_syncvalues+'</hsyncvalues>';
+      this.isSending = false;
+    }
+    return _postBody;
+  },
+  
+  // Backwards-compatibility:
+  output: function(){
+    return this.toXML();
+  }
+});
+
+// HVM is a shortcut to HValueManager
+HVM = HValueManager;
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HValue
+  **
+  ** Data that needs to be syncronized between components or remote clients should be implemented as HValues.
+  ** If client-side validation and type-checking is needed, it should be implemented by subclassing HValue.
+  **
+  ** vars: Instance variables
+  **  id - Value Id, used by the whole value management system to identify individual values.
+  **  type - '[HValue]'
+  **  value - The container/"payload" data value itself.
+  **  views - A list of Components that uses this value. 
+  **          Used for automatic value syncronization between components.
+  **
+  ** Usage example:
+  **  > var myApp = new HApplication(100);
+  **  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
+  **  > mySlider.draw();
+  **  > var myValue = new HValue(123,100.0);
+  **  > myValue.bind(mySlider);
+  **
+  ** See also:
+  **  <HValueManager> <HControl>
+  ***/
+
+
+HValue = HClass.extend({
+/** constructor: constructor
+  *
+  * Parameters:
+  *   _id - The source id (ideally set by server, should be unique)
+  *   _value - The initial data 
+  **/
+  constructor: function(_id,_value){
+    this.id    = _id;
+    this.type  = '[HValue]';
+    this.value = _value;
+    this.views = [];
+    HValueManager.add(_id,this);
+  },
+  
+/** method: set
+  * 
+  * Replaces the data of the value. Extend this, if you need validation etc.
+  *
+  * Parameters:
+  *  _value - The new data to replace the old data with.
+  *
+  * See also:
+  *  <HControl.setValue> <HValueManager.set>
+  **/
+  set: function(_value){
+    if(_value != this.value){
+      this.value = _value;
+      HValueManager.changed(this);
+      this.refresh();
+    }
+  },
+  
+/** method: s
+  * 
+  * Just as <set>, but doesn't re-notify the server about the change.
+  *
+  **/
+  s: function(_value){
+    this.value = _value;
+    this.refresh();
+  },
+  
+/** method: get
+  *
+  * Return the data, synonymous to the <value> instance variable
+  *
+  * Returns:
+  *  The value instance variable (the data "payload")
+  *
+  * See also:
+  *  <HValue.value>
+  **/
+  get: function(){
+    return this.value;
+  },
+  
+/** method: bind
+  *
+  * Bind a component to the value, use to attach HValues to components derived from HControl.
+  *
+  * Parameters:
+  *  _viewObj - Any component that is derived from HControl *or* any class 
+  *             that responds to setValueObj and setValue methods.
+  *
+  * See also:
+  *  <unbind> <HControl.setValueObj>
+  *
+  **/
+  bind: function(_viewObj){
+    if(_viewObj===undefined){
+      throw("HValueBindError: _viewObj is undefined!");
+    }
+    //if(this.views.indexOf(_viewObj)==-1){
+      this.views.push(_viewObj);
+      _viewObj.setValueObj( this );
+    //}
+  },
+  
+/** method: unbind
+  *
+  * Detach a component bound to this value.
+  *
+  * Parameters:
+  *  _viewObj - Any component that is derived from HControl *or* any class 
+  *             that responds to setValueObj and setValue methods.
+  *
+  * See also:
+  *  <bind>
+  *
+  **/
+  unbind: function(_viewObj){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _tryObj = this.views[_viewNum];
+      if(_tryObj===_viewObj){
+        this.views.splice(_viewNum);
+        return;
+      }
+    }
+  },
+  
+  release: function(_viewObj){
+    return this.unbind(_viewObj);
+  },
+  
+/** method: refresh
+  *
+  * Calls the setValue method all components bound to this HValue.
+  *
+  * See also:
+  *  <HControl.setValue>
+  **/
+  refresh: function(){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _viewObj = this.views[_viewNum];
+      if(_viewObj.value != this.value){
+        if(!_viewObj._valueIsBeingSet){
+          _viewObj._valueIsBeingSet=true;
+          _viewObj.setValue( this.value );
+          _viewObj._valueIsBeingSet=false;
+        }
+      }
+    }
+  },
+  
+/** method: toXML
+  *
+  * Responsible for generating the xml representation of the value object.
+  *
+  * Parameter:
+  *  _i - The sequence number of the item, generated by HValueManager.
+  *
+  * Returns:
+  *  A XML string with meta-info about the object
+  *
+  * See Also:
+  *  <HValueManager.toXML>
+  *
+  * Samples:
+  * > <b id="996">1</b>'
+  * > <b id="996">0</b>'
+  * > <f id="997">123.321</f>'
+  * > <i id="997">123</i>'
+  * > <s id="PnG_aXSutjPoeqgi02mXOVA9HQWREvprkkeW">c3RyaW5nAAA=</s>'
+  **/
+  toXML: function(_i){
+    var _syncid = this.id.toString();
+    //var _synctype = this.type.slice(1,-1).toLowerCase();
+    var _syncvalue = this.value;
+    var _syncjstype = (typeof _syncvalue).slice(0,1);
+    var _syncescvalue;
+    
+    if (_syncjstype == 's'){ // string
+      _syncescvalue = _syncvalue.toString();
+      _syncescvalue = SHA.str2Base64( _syncescvalue );
+    }
+    else if (_syncjstype == 'n'){ // number
+      if (Math.ceil(_syncvalue) === Math.floor(_syncvalue) === _syncvalue) {
+        _syncjstype = 'i'; // integer
+        _syncescvalue = parseInt(_syncvalue,10).toString();
+      }
+      else {
+        _syncjstype = 'f'; // float
+        _syncescvalue = parseFloat(_syncvalue).toString();
+      }
+    }
+    else if (_syncjstype == 'b'){ // boolean
+      if(_syncvalue){_syncescvalue='1';}
+      else{_syncescvalue='0';}
+    }
+    else {
+      try{
+        if(console&&console.log){
+          console.log('syncvalue type error');
+          console.log('  syncid:',_syncid);
+          console.log('  syncjstype:',_syncjstype);
+          console.log('  typeof:',(typeof _syncvalue));
+          console.log('  syncvalue:',_syncvalue);
+        }
+      }
+      catch(e){
+        alert('value error, syncid:'+_syncid+' syncjstype:'+_syncjstype+' typeof:'+(typeof _syncvalue)+' syncvalue:'+_syncvalue);
+      }
+      return '';
+    }
+    
+    return '<'+_syncjstype+' id="'+_syncid+'">'+_syncescvalue+'</'+_syncjstype+'>';
+  }
+  
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+
+JSLoader = Base.extend({
+  
+  constructor: function(_uri){
+    this._loadedJS = [];
+    this.uri  = _uri;
+    this._req = null;
+    //this._currJS = [];
+  },
+  
+  _okay: function(_resp){
+    //var _loadedJS = jsLoader._currJS.shift();
+    //console.log('resp: ',_resp);
+    //console.log('loadedJS: ',_loadedJS);
+    //console.log('jsLoader.loadedJS: ',jsLoader._loadedJS);
+    //console.log('jsLoader.currJS: ',jsLoader._currJS);
+    eval(_resp.responseText);
+  }, 
+  
+  load: function(_jsName,_fullURL){
+    if((jsLoader._loadedJS.indexOf(_jsName)!=-1) && (_fullURL === undefined)) {
+      return;
+    }
+
+    if (_fullURL) {
+      document.write('<script type="text/javascript" src="'+_jsName+'"><'+'/script>');
+    } else {
+      req_args = {
+        onSuccess:    function(resp){jsLoader._okay(resp);},
+        onFailure:    function(resp){window.status="failed to load js: "+jsLoader._currJS;},
+        method:       'get',
+        asynchronous: false
+      };
+      var _url = this.uri+_jsName+'.js';
+      this._req = new Ajax.Request( _url, req_args );
+      this._loadedJS.push(_jsName);
+    }
+  }
+  
+});
+
+LOAD("jsLoader = new JSLoader('/H/js/');");
+
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+HValueMatrixComponentExtension = {
+  componentBehaviour: ['view','control','matrix'],
+  constructor: function(_rect, _parent, _options) {
+    this.base(_rect, _parent, _options);
+    this.setValueMatrix();
+  },
+  setValueMatrix: function(){
+    if(!this.parent.valueMatrix){
+      this.parent.valueMatrix = new HValueMatrix();
+    }
+    this.valueMatrixIndex = this.parent.valueMatrix.addControl(this);
+  },
+  click: function(){
+    if (this.parent.valueMatrix instanceof HValueMatrix) {
+      this.parent.valueMatrix.setValue( this.valueMatrixIndex );
+    }
+  }
+};
+
+HValueMatrix = HClass.extend({
+  constructor: function(){
+    // An array to hold member components
+    this.ctrls = [];
+    // The index of the value member chosen
+    this.value = -1;
+    this.valueObj = new HDummyValue();
+  },
+  
+  setValueObj: function(_valueObj){
+    this.valueObj = _valueObj;
+    this.setValue(_valueObj.value);
+  },
+  
+  setValue: function(_index){
+    if(_index!=this.value){
+      // Set the previous value object to false (reflects to its container component(s))
+      if(this.value != -1){
+        this.ctrls[this.value].setValue(false);
+      }
+      if(_index != -1){
+        this.valueObj.set(_index);
+        // Store the new index as the currently active value
+        this.value = _index;
+        // Set the new value object to true (reflects to its container component(s))
+        if(_index<this.ctrls.length){
+          this.ctrls[_index].setValue(true);
+        }
+      }
+    }
+  },
+  
+  addControl: function(_ctrl) {
+    this.ctrls.push(_ctrl);
+    var _newIndex = this.ctrls.length-1;
+    if(_ctrl.value){
+      this.setValue(_newIndex);
+    }
+    return _newIndex;
+  }
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HPoint
+  *
+  * Point objects represent points on a two-dimensional coordinate grid. The
+  * object's coordinates are stored as public x and y data members.
+  *
+  * vars: Instance Variables
+  *  type - '[HPoint]'
+  *  x - The X coordinate of the point
+  *  y - The Y coordinate of the point
+  *
+  * See also:
+  *  <HRect>
+  **/
+HPoint = HClass.extend({
+
+/** constructor: constructor
+  *
+  * Creates a new Point object that corresponds to the point (x, y), or that's
+  * copied from point. If no coordinate values are assigned, the Point's
+  * location is indeterminate.
+  *
+  * Parameter (by using a <HPoint> instance):
+  *  point - Another <HPoint> or other compatible structure.
+  *
+  * Parameters (by using separate numeric coordinates):
+  *  x, y - Separate coordinates
+  *
+  * Initialization examlpes:
+  * > var myPoint = new HPoint(100,200);
+  * > var mySameCoordPoint = new HPoint( myPoint );
+  **/
+  constructor: function() {
+    this.type = '[HPoint]';
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    }
+    else if (_args.length == 2) {
+      this._constructorValues(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorPoint(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+
+  },
+  _constructorDefault: function() {
+    this.x = null;
+    this.y = null;
+  },
+  _constructorValues: function(x, y) {
+    this.x = x;
+    this.y = y;
+  },
+  _constructorPoint: function(_point) {
+    this.x = _point.x;
+    this.y = _point.y;
+  },
+  
+/** method: set
+  *
+  * Sets the Point's x and y coordinates.
+  *
+  * Parameters:
+  *  x - The new X coordinate of the point
+  *  y - The new Y coordinate of the point
+  **/
+  set: function() {
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    }
+    else if (_args.length == 2) {
+      this._constructorValues(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorPoint(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+  },
+  
+/** method: constrainTo
+  *
+  * Ensures that the Point lies within rect. If it's already contained in the
+  * rectangle, the Point is unchanged; otherwise, it's moved to the rect's
+  * nearest edge.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to constrain to.
+  *
+  * See also:
+  *  <HRect>
+  **/
+  constrainTo: function(_rect) {
+    
+    if (this.x < _rect.left) {
+        this.x = _rect.left;
+    }
+    if (this.y < _rect.top) {
+      this.y = _rect.top;
+    }
+    if (this.x > _rect.right) {
+      this.x = _rect.right;
+    }
+    if (this.y > _rect.bottom) {
+      this.y = _rect.bottom;
+    }
+    
+  },
+  
+/** method: add
+  *
+  * Creates and returns a new Point that adds the given Point and this Point
+  * together. The new object's x coordinate is the sum of the operands' x
+  * values; its y value is the sum of the operands' y values.
+  *
+  * Parameter (with HPoint):
+  *  _point - An <HPoint> to add to.
+  *
+  * Parameters (with coordinates):
+  *  _x - An X-coordinate to add to.
+  *  _y - An Y-coordinate to add to.
+  *
+  * Returns:
+  *  A new <HPoint>.
+  *
+  * See also:
+  *  <subtract> <equals>
+  **/
+  add: function(_point) {
+    _args = arguments;
+    if((_args.length==1)&&(_args[0].type==this.type)){
+      _point = _args[0];
+      return new HPoint( (this.x + _point.x), (this.y + _point.y) );
+    }
+    else if(_args.length==2){
+      return new HPoint( (this.x + _args[0]), (this.y + _args[1]) );
+    } else {
+      return new HPoint( 0, 0 );
+    }
+  },
+  
+  
+/** method: subtract
+  *
+  * Creates and returns a new Point that subtracts the given Point from this
+  * Point. The new object's x coordinate is the difference between the
+  * operands' x values; its y value is the difference between the operands'
+  * y values.
+  *
+  * Parameter (with HPoint):
+  *  _point - An <HPoint> to subtract from.
+  *
+  * Parameters (with coordinates):
+  *  _x - An X-coordinate to subtract from.
+  *  _y - An Y-coordinate to subtract from.
+  *
+  * Returns:
+  *  A new <HPoint>.
+  *
+  * See also:
+  *  <add> <equals>
+  **/
+  subtract: function(){
+    _args = arguments;
+    if((_args.length==1)&&(_args[0].type==this.type)){
+      _point = _args[0];
+      return new HPoint( this.x-_point.x, this.y-_point.y );
+    }
+    else if(_args.length==2){
+      return new HPoint( this.x-_args[0], this.y-_args[1] );
+    } else {
+      return new HPoint( 0, 0 );
+    }
+  },
+  
+  
+/** method: equals
+  *
+  * Returns true if the two objects' point exactly coincide.
+  *
+  * Parameter:
+  *  _point - A <HPoint> to compare to.
+  *
+  * Returns:
+  *  The result; true or false.
+  *
+  * See also:
+  *  <subtract> <add>
+  **/
+  equals: function(_point) {
+    return ( this.x == _point.x && this.y == _point.y );
+  }
+
+
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HRect
+  *
+  * A Rect object represents a rectangle. Rects are used throughout the
+  * Components to define the frames of windows, views, bitmaps even the 
+  * screen itself. A HRect is defined by its four sides, expressed as the public
+  * data members left, top, right, and bottom.
+  *
+  * If you change a component's rect, you should call its <HView.drawRect> method.
+  *
+  * vars: Instance Variables
+  *  type - '[HRect]'
+  *  top - The position of the rect's top side (from parent top)
+  *  left - The position of the rect's left side (from parent left)
+  *  bottom - The position of the rect's bottom side (from parent top)
+  *  right - The position of the rect's right side (from parent left)
+  *  leftTop - A <HPoint> representing the coordinate of the rect's *left top corner*
+  *  leftBottom - A <HPoint> representing the coordinate of the rect's *left bottom corner*
+  *  rightTop - A <HPoint> representing the coordinate of the rect's *right top corner*
+  *  rightBottom - A <HPoint> representing the coordinate of the rect's *right bottom corner*
+  *  width - The width of the rect.
+  *  height - The height of the rect.
+  *
+  * See also:
+  *  <HPoint> <HView> <HView.drawRect>
+  **/  
+HRect = HClass.extend({
+
+/** constructor: constructor
+  *
+  * Initializes a Rect as four sides, as two diametrically opposed corners,
+  * or as a copy of some other Rect object. A rectangle that's not assigned
+  * any initial values is invalid, until a specific assignment is made, either
+  * through a set() function or by setting the object's data members directly.
+  *
+  * Parameter (using a <HRect> instance):
+  *  rect - Another <HRect>.
+  *
+  * Parameters (using two <HPoint> instances):
+  *  leftTop, rightBottom - Coordinates of the *left top corner* and *right bottom corner*.
+  *
+  * Parameters (using separate Numeric coordinates):
+  *  left, top, right, bottom - Coordinates of the *sides*.
+  *
+  * Initialization examples:
+  * > var myLeftTopPoint = new HPoint(100,200);
+  * > var myBottomRightPoint = new HPoint(300,400);
+  * > var myRectFromOppositeCornerPoints = new HRect( myLeftTopPoint, myBottomRightPoint );
+  * > var myRectFromSideCoordinates = new HRect(100,200,300,400);
+  * > var myRectFromAnotherRect = new HRect( myRectFromEdgeCoordinates );
+  **/
+  constructor: function() {
+    this.type = '[HRect]';
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    } else if (_args.length == 4) {
+      this._constructorSides(_args[0],_args[1],_args[2],_args[3]);
+    }
+    else if (_args.length == 2) {
+      this._constructorPoint(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorRect(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _constructorDefault: function() {
+    this.top = 0;
+    this.left = 0;
+    this.bottom = -1;
+    this.right = -1;
+  },
+  _constructorSides: function(_left, _top, _right, _bottom) {
+    this.top = _top;
+    this.left = _left;
+    this.bottom = _bottom;
+    this.right = _right;
+  },
+  _constructorPoint: function(_leftTop, _rightBottom) {
+    this.top = _leftTop.y;
+    this.left = _leftTop.x;
+    this.bottom = _rightBottom.y;
+    this.right = _rightBottom.x;
+  },
+  _constructorRect: function(_rect) {
+    this.top = _rect.top;
+    this.left = _rect.left;
+    this.bottom = _rect.bottom;
+    this.right = _rect.right;
+  },
+
+/** method: updateSecondaryValues
+  *
+  * You should call this on the instance to update secondary values, like
+  * width and height, if you change a primary (left/top/right/bottom) value
+  * straight through the property.
+  *
+  * *Do not change properties other than the primaries through properties.*
+  *
+  * *Use the accompanied methods instead.*
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  updateSecondaryValues: function() {
+    /**
+      * isValid is true if the Rect's right side is greater than or equal to its left
+      * and its bottom is greater than or equal to its top, and false otherwise.
+      * An invalid rectangle can't be used to define an interface area (such as
+      * the frame of a view or window).
+      */
+    this.isValid = ( this.right >= this.left && this.bottom >= this.top );
+    
+    /**
+      *
+      * The Point-returning functions return the coordinates of one of the
+      * rectangle's four corners. 
+      */
+    this.leftTop = new HPoint(this.left, this.top);
+    this.leftBottom = new HPoint(this.left, this.bottom);
+    this.rightTop = new HPoint(this.right, this.top);
+    this.rightBottom = new HPoint(this.right, this.bottom);
+    
+    /**
+      * The width and height of a Rect's rectangle, as returned through these
+      * properties.
+      */
+    this.width = (this.right - this.left);
+    this.height = (this.bottom - this.top);
+  },
+  
+/** method: set
+  *
+  * Sets the object's rectangle by defining the coordinates of all four
+  * sides.
+  *
+  * The other set...() functions move one of the rectangle's corners to the
+  * Point argument; the other corners and sides are modified concomittantly.
+  *
+  * *None of these methods prevents you from creating an invalid rectangle.*
+  *
+  * Parameters:
+  *  _left - The coordinate of the left side.
+  *  _top - The coordinate of the top side.
+  *  _right - The coordinate of the right side.
+  *  _bottom - The coordinate of the bottom side.
+  *
+  * See also:
+  *  <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  set: function() {
+    var _args=arguments;
+    
+    if (_args.length === 0) {
+      this._constructorDefault();
+    } else if (_args.length == 4) {
+      this._constructorSides(_args[0],_args[1],_args[2],_args[3]);
+    }
+    else if (_args.length == 2) {
+      this._constructorPoint(_args[0],_args[1]);
+    }
+    else if (_args.length == 1) {
+      this._constructorRect(_args[0]);
+    }
+    else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  
+/** method: setLeft
+  *
+  * Moves the rect's left side to a new coordinate.
+  *
+  * Parameter:
+  *  _left - The new left side coordinate (in px)
+  *
+  **/
+  setLeft: function(_left){
+    this.left = _left;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setRight
+  *
+  * Moves the rect's right side to a new coordinate.
+  *
+  * Parameter:
+  *  _right - The new right side coordinate (in px)
+  *
+  **/
+  setRight: function(_right){
+    this.right = _right;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setTop
+  *
+  * Moves the rect's top side to a new coordinate.
+  *
+  * Parameter:
+  *  _top - The new top side coordinate (in px)
+  *
+  **/
+  setTop: function(_top){
+    this.top = _top;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setBottom
+  *
+  * Moves the rect's bottom side to a new coordinate.
+  *
+  * Parameter:
+  *  _bottom - The new bottom side coordinate (in px)
+  *
+  **/
+  setBottom: function(_bottom){
+    this.bottom = _bottom;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setLeftTop
+  *
+  * Moves the rects left and top sides to a new point. Affects the position,
+  * width and height.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  setLeftTop: function(_point) {
+    this.left=_point.x;
+    this.top=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setLeftBottom
+  *
+  * Moves the rects left and bottom sides to a new point. Affects the left
+  * position, width and height.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  setLeftBottom: function(_point) {
+    this.left=_point.x;
+    this.bottom=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setRightTop
+  *
+  * Moves the rects right and top sides to a new point. Affects the top
+  * position, width and height.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightBottom> <setWidth> <setHeight> <setSize>
+  **/
+  setRightTop: function(_point) {
+    this.right=_point.x;
+    this.top=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setRightBottom
+  *
+  * Moves the rects right and bottom sides to a new point. Affects the width
+  * and height. Does not affect the position.
+  *
+  * Parameter:
+  *  _point - A <HPoint> instance to mode the sides to.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setWidth> <setHeight> <setSize>
+  **/
+  setRightBottom: function(_point) {
+    this.right=_point.x;
+    this.bottom=_point.y;
+    this.updateSecondaryValues();
+  },
+  
+/** method: setWidth
+  *
+  * Moves the rects right side to a new coordinate. Does not affect the position.
+  *
+  * Parameter:
+  *  _width - A numeric value representing the new target width of the rect.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setHeight> <setSize>
+  **/
+  setWidth: function(_width){
+    this.right = this.left + _width;
+    this.updateSecondaryValues();
+  },
+
+/** method: setHeight
+  *
+  * Moves the rects bottom side to a new coordinate. Does not affect the position.
+  *
+  * Parameter:
+  *  _height - A numeric value representing the new target height of the rect.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setSize>
+  **/
+  setHeight: function(_height){
+    this.bottom = this.top + _height;
+    this.updateSecondaryValues();
+  },
+
+/** method: setSize
+  *
+  * Moves the rects right and bottom sides to new coordinates. Does not affect the position.
+  *
+  * Parameter (by separate numeric values):
+  *  _width - A numeric value representing the new target width of the rect.
+  *  _height - A numeric value representing the new target height of the rect.
+  *
+  * Parameter (by <HPoint> used as "HSize"):
+  *  _point.x - A numeric value representing the new target width of the rect.
+  *  _point.y - A numeric value representing the new target height of the rect.
+  *
+  * See also:
+  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight>
+  **/
+  setSize: function(){
+    var _args=arguments;
+    // Using width and height:
+    if (_args.length === 2) {
+      _width = _args[0];
+      _height = _args[1];
+    }
+    // Using a point:
+    else if (_args.length === 1) {
+      _width = _args.x;
+      _height = _args.y;
+    }
+    this.right = this.left + _width;
+    this.bottom = this.top + _height;
+    this.updateSecondaryValues();
+  },
+  
+/** method: intersects
+  *
+  * Returns true if the Rect has any area even a corner or part 
+  * of a side in common with rect, and false if it doesn't.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to intersect this rect with
+  *
+  * Returns:
+  *  A Boolean (true/false) depending on the result.
+  *
+  * See also:
+  *  <contains> <equals> <intersection> <union>
+  **/
+  intersects: function(_rect) {
+    return (
+      ((_rect.left >= this.left && _rect.left <= this.right) ||
+        (_rect.right >= this.left && _rect.right <= this.right)) && 
+      ((_rect.top >= this.top && _rect.top <= this.bottom) ||
+        (_rect.bottom >= this.top && _rect.bottom <= this.bottom)));
+  },
+  
+/** method: contains
+  *
+  * Returns true if point or rect lies entirely within the Rect's
+  * rectangle (and false if not). A rectangle contains the points that lie
+  * along its edges; for example, two identical rectangles contain each other.
+  * 
+  * Also works with <HPoint> instances.
+  *
+  * Parameter:
+  *  _obj - A <HRect> or <HPoint> to check the containment with.
+  *
+  * Returns:
+  *  A Boolean (true/false) depending on the result.
+  *
+  * See also:
+  *  <intersects> <equals> <intersection> <union>
+  **/
+  contains: function(_obj) {
+    if(_obj instanceof HPoint) {
+      return this._containsPoint(_obj);
+    }
+    else if(_obj instanceof HRect) {
+      return this._containsRect(_obj);
+    }
+    else {
+      throw "Wrong argument type.";
+    }
+  },
+  _containsPoint: function(_point) {
+    return ( _point.x >= this.left && _point.x <= this.right &&
+             _point.y >= this.top && _point.y <= this.bottom );
+  },
+  _containsRect: function(_rect) {
+    return ( _rect.left >= this.left && _rect.right <= this.right &&
+             _rect.top >= this.top && _rect.bottom <= this.bottom );
+  },
+  
+/** method: insetBy
+  *
+  * Insets the sides of the Rect's rectangle by x units (left and
+  * right sides) and y units (top and bottom). Positive inset values shrink
+  * the rectangle; negative values expand it. Note that both sides of each
+  * pair moves the full amount. For example, if you inset a Rect by (4,4), the
+  * left side moves (to the right) four units and the right side moves (to the
+  * left) four units (and similarly with the top and bottom).
+  *
+  * Parameter (using a <HPoint>):
+  *  point - A <HPoint> to inset by.
+  *
+  * Parameter (using separate x and y coordinates):
+  *  x, y - Numeric coordinates to inset by.
+  *
+  * See also:
+  *  <offsetBy> <offsetTo> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
+  **/
+  insetBy: function() {
+    var _args=arguments;
+    if (_args.length === 1) {
+      this._insetByPoint(_args[0]);
+    } else if (_args.length == 2) {
+      this._insetByXY(_args[0],_args[1]);
+    } else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _insetByPoint: function(_point) {
+    this._insetByXY(_point.x, _point.y);
+  },
+  _insetByXY: function(x, y) {
+    this.left += x;
+    this.top += y;
+    this.right -= x;
+    this.bottom -= y;
+  },
+  
+/** method: offsetBy
+  *
+  * Moves the Rect horizontally by x units and vertically by y
+  * units. The rectangle's size doesn't change.
+  *
+  * Parameter (using a <HPoint>):
+  *  point - A <HPoint> to offset by.
+  *
+  * Parameter (using separate x and y coordinates):
+  *  x, y - Numeric coordinates to offset by.
+  *
+  * See also:
+  *  <insetBy> <offsetTo> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
+  **/
+  offsetBy: function() {
+    var _args=arguments;
+    if (_args.length === 1) {
+      this._offsetByPoint(_args[0]);
+    } else if (_args.length == 2) {
+      this._offsetByXY(_args[0],_args[1]);
+    } else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _offsetByPoint: function(_point) {
+    this._offsetByXY(_point.x, _point.y);
+  },
+  _offsetByXY: function(x, y) {
+    this.left += x;
+    this.top += y;
+    this.right += x;
+    this.bottom += y;
+  },
+  
+/** method: offsetTo
+  *
+  * Moves the Rect to the location (x,y).
+  *
+  * Parameter (using a <HPoint>):
+  *  point - A <HPoint> to offset to.
+  *
+  * Parameter (using separate x and y coordinates):
+  *  x, y - Numeric coordinates to offset to.
+  *
+  * See also:
+  *  <insetBy> <offsetBy> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
+  **/
+  offsetTo: function() {
+    var _args=arguments;
+    if (_args.length === 1) {
+      this._offsetToPoint(_args[0]);
+    } else if (_args.length == 2) {
+      this._offsetToXY(_args[0],_args[1]);
+    } else {
+      throw "Invalid number of arguments.";
+    }
+    this.updateSecondaryValues();
+  },
+  _offsetToPoint: function(_point) {
+    this._offsetToXY(_point.x, _point.y);
+  },
+  _offsetToXY: function(x, y) {
+    this.right += x-this.left;
+    this.left = x;
+    this.bottom += y-this.top;
+    this.top = y;
+  },
+  
+/** method: equals
+  *
+  * Returns true if the two objects' rectangles exactly coincide.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to compare to.
+  *
+  * Returns:
+  *  A Boolean (true/false) depending on the result.
+  *
+  * See also:
+  *  <intersects> <contains> <intersection> <union>
+  **/
+  equals: function(_rect) {
+    return (this.left == _rect.left && this.top == _rect.top &&
+            this.right == _rect.right && this.bottom == _rect.bottom);
+  },
+  
+/** method: intersection
+  *
+  * Creates and returns a new Rect that's the intersection of this Rect and
+  * the specified Rect. The new Rect encloses the area that the two Rects have
+  * in common. If the two Rects don't intersect, the new Rect will be invalid.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to compare to.
+  *
+  * Returns:
+  *  A new <HRect> instance.
+  *
+  * See also:
+  *  <intersects> <contains> <equals> <union>
+  **/
+  intersection: function(_rect) {
+    return new HRect(
+       Math.max(this.left, _rect.left), Math.max(this.top, _rect.top),
+       Math.min(this.right, _rect.right), Math.min(this.bottom, _rect.bottom)
+    );
+  },
+  
+/** method: union
+  *
+  * Creates and returns a new Rect that minimally but completely encloses the
+  * area defined by this Rect and the specified Rect.
+  *
+  * Parameter:
+  *  _rect - A <HRect> instance to compare to.
+  *
+  * Returns:
+  *  A new <HRect> instance.
+  *
+  * See also:
+  *  <intersects> <contains> <equals> <intersection>
+  **/
+  union: function(_rect) {
+    return new HRect(
+      Math.min(this.left, _rect.left), Math.min(this.top, _rect.top),
+      Math.max(this.right, _rect.right), Math.max(this.bottom, _rect.bottom)
+    );
+  },
+  
+  // Compability with HRectValue (dummy methods)
+  bind: function(_obj){},
+  unbind: function(_obj){}
+  
+});
+
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+
+/** class: HSystem
+  *
+  * *Simple application householding system.*
+  * 
+  * Designed as single instance.
+  *
+  * HSystem is used to keep <HApplication> instances in order.
+  * HApplication itself calls HSystem, so there is no real need to access
+  * HSystem itself besides its <HSystem.stopApp>, <HSystem.startApp>, 
+  * <HSystem.reniceApp> and <HSystem.killApp> methods.
+  *
+  * HSystem works as the root of the component hierachy and currently offers
+  * only <HApplication> management. Useful for implementing taskbars/docks etc.
+  *
+  * var: HDefaultApplicationInterval
+  *  - Defines the default ms interval of polling.
+  *  - Defaults to 100 (ms)
+  *  - Change it before <Element Manager.onloader> is started.
+  *  - Has no effect after the system is initialized.
+  *
+  * vars: Instance variables
+  *  type - '[HSystem]'
+  *  apps - A list of Applications running. 
+  *  defaultInterval - The default application priority.
+  *
+  * See Also:
+  *  <HApplication>
+  *
+  * Usage example:
+  *  > var MyApp = new HApplication();
+  *  > myAppId = MyApp.appId;
+  *  > HSystem.reniceApp(myAppId, 10);
+  *  > HSystem.killApp(myAppId);
+  **/
+
+
+HDefaultApplicationInterval=20;
+HSystemTickerInterval=10;
+HSystem = HClass.extend({
+  
+  // Single instance; has no constructor
+  constructor: null,
+  
+  type: '[HSystem]',
+    
+  // An array of HApplication instances, index is the appId
+  apps: [],
+  
+  // An array (in the same order as apps): holds priority values
+  appPriorities: [],
+  
+  // An array (in the same order as apps): holds busy statuses
+  busyApps: [],
+  
+  // An array (in the same order as apps): holds Timeout values
+  appTimers: [],
+  
+  // This array holds free app id:s
+  freeAppIds: [],
+  
+  defaultInterval: HDefaultApplicationInterval,
+  
+  // The Z-order of applications. All the array handling is done by
+  // HApplication and HView instances.
+  viewsZOrder: [],
+  
+  // This is the internal "clock" counter. Gets updated on every process tick.
+  ticks: 0,
+  //fix_ie: false,
+  
+  // Time in milliseconds how long to wait for an application to finish before
+  // terminating it when the application is killed.
+  maxAppRunTime: 5000,
+  
+/*** method: scheduler
+  **
+  ** Calls applications, uses the divmod as a prioritizer.
+  **
+  ***/
+  scheduler: function(){
+    if ((this.ticks % 10) == 0 && this.fix_ie) {
+      //_traverseTree();
+    }
+    // Loop through all applications:
+    for( var _appId=0; _appId<this.apps.length; _appId++ ){
+      // Check, if the application exists:
+      if( this.apps[ _appId ] ){
+        // Check, if the application is busy:
+        if( !this.busyApps[ _appId ] ){
+          // Check, if the tick count matches the priority of the app:
+          if( (this.ticks % this.appPriorities[ _appId ]) == 0 ){
+            // Set the app busy, the app itself should "unbusy" itself, when the idle call is done.
+            // That happens in <HApplication._startIdle>
+            
+            // If the app is not busy, then make a idle call:
+            this.appTimers[ _appId ] = setTimeout('if (HSystem.apps[' + _appId +
+             ']) {HSystem.apps['+_appId+']._startIdle();}',10);
+          }
+        }
+      }
+    }
+  },
+  
+  
+/*** method: ticker
+  **
+  ** Calls the scheduler and then calls itself.
+  **
+  ***/
+  ticker: function(){
+    // Increment the tick counter:
+    this.ticks++;
+    this.scheduler();
+    this._tickTimeout = setTimeout('HSystem.ticker();',HSystemTickerInterval);
+  },
+  
+  
+/*** method: addApp
+  **
+  ** Called from inside the <HApplication> constructor.
+  ** Binds an app and gives it a unique id.
+  **
+  ** Parameters:
+  **  _app - Usually *this* inside the HApplication constructor, is the app namespace.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
+  **
+  ** Returns:
+  **  The application unique id.
+  **
+  ** See also:
+  **  <HApplication>
+  ***/
+  addApp: function(_app, _priority){
+    
+    if(this.freeAppIds.length > 1024){
+      var _appId = this.freeAppIds.shift();
+      this.apps[_appId] = _app;
+    } else {
+      this.apps.push(_app);
+      var _appId = this.apps.length-1;
+    }
+    
+    // sets self as parent
+    _app.parent  = this;
+    _app.parents = [this];
+    
+    _app.appId = _appId;
+    
+    this.startApp(_appId, _priority);
+    
+    return _appId;
+  },
+  
+/*** method: startApp
+  **
+  ** Starts polling an app instance (and its components).
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
+  **
+  ** See also:
+  **  <HApplication.start> <HSystem.stopApp> <HSystem.reniceApp>
+  ***/
+  startApp: function(_appId,_priority){
+    if(_priority===undefined){
+      _priority = this.defaultInterval;
+    }
+    this.appPriorities[ _appId ] = _priority;
+    this.busyApps[_appId] = false;
+  },
+  
+/*** method: stopApp
+  **
+  ** Stops polling an app instance (and its components).
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **
+  ** See also:
+  **  <HApplication.stop> <HSystem.startApp> <HSystem.reniceApp>
+  ***/
+  stopApp: function(_appId){
+    this.busyApps[_appId] = true;
+  },
+  
+/*** method: reniceApp
+  **
+  ** Changes the priority of the app. Calls <stopApp> and <startApp>.
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
+  **
+  ** See also:
+  **  <HSystem.stopApp> <HSystem.startApp>
+  ***/
+  reniceApp: function(_appId,_priority){
+    this.appPriorities[ _appId ] = _priority;
+  },
+  
+/*** method: killApp
+  **
+  ** Stops polling and deletes an app instance (and its components).
+  **
+  ** Parameters:
+  **  _appId - The unique id of the app.
+  **
+  ** See also:
+  **  <HApplication.die> <HSystem.stopApp>
+  ***/
+  killApp: function(_appId, _forced){
+    if( !_forced ){
+      var _startedWaiting = new Date().getTime();
+      while( this.busyApps[ _appId ] == true ) {
+        /* Waiting for the app to finish its idle loop... */
+        if (new Date().getTime() > _startedWaiting + this.maxAppRunTime) {
+          break;
+        }
+      }
+    }
+    this.busyApps[_appId] = true;
+    
+    this.apps[ _appId ].destroyAllViews();
+    delete this.apps[ _appId ];
+    this.apps[ _appId ] = null;
+    
+    this.freeAppIds.push( _appId );
+  },
+  
+  views: [],
+  _freeViewIds: [],
+  addView: function(_view){
+    var _newId;
+    if(this._freeViewIds.length==0){
+      _newId = this.views.length;
+      this.views.push(_view);
+    }
+    else {
+      _newId = this._freeViewIds.pop();
+      this.views[_newId] = _view;
+    }
+    return _newId;
+  },
+  delView: function(_viewId){
+    this.views[_viewId] = null;
+    this._freeViewIds.push(_viewId);
+  },
+  
+  activeWindowId: 0,
+  windowFocus: function(_view){
+    var _activeWindowId = this.activeWindowId,
+        _views = this.views,
+        _viewId = _view.viewId;
+    if(_views[_activeWindowId]){
+      if (_views[_activeWindowId]["windowBlur"]) {
+        _views[_activeWindowId].windowBlur();        
+      }
+    }
+    this.activeWindowId=_viewId;
+    _view.bringToFront();
+    _view.windowFocus();
+  }
+  
+});
+
+// Starts the ticking:
+LOAD('HSystem.ticker();');
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HApplication
+  *
+  * *Simple application template.*
+  *
+  * Depends on <HSystem>
+  *
+  * HApplication instances are good namespaces to bind your client-side logic to.
+  * Feel free to extend HApplication to suit your needs. The primary default
+  * purpose is root-level component (<HView>) management and being the
+  * root controller for <onIdle> events.
+  *
+  * vars: Instance variables
+  *  type - '[HApplication]'
+  *  views - A list of child components bound to it through <HView>
+  *  parent - Usually <HSystem>
+  *  parents - An array containing parents, usually just <HSystem>
+  *  appId - The unique id of the app
+  *  isBusy - A flag that is true when the app is doing <onIdle> events or stopped.
+  *
+  * See Also:
+  *  <HSystem> <HView>
+  *
+  * Usage example:
+  *  > var myApp = new HApplication(10);
+  *  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
+  *  > mySlider.draw();
+  *  > myApp.die();
+  **/
+HApplication = HClass.extend({
+  componentBehaviour: ['app'],
+/** constructor: constructor
+  *
+  * Parameter (optional):
+  *  _priority - An integer value (in ms) used for <onIdle> polling events.
+  **/
+  constructor: function(_priority){
+    
+    // storage for views
+    this.views = [];
+    
+    // storage for dom element id's in view, not utilized in HApplication by default
+    this.markupElemIds = [];
+    
+    // Views in Z order. The actual Z data is stored in HSystem, this is just a
+    // reference to that array.
+    this.viewsZOrder = HSystem.viewsZOrder;
+    // Finalize initialization via HSystem
+    HSystem.addApp(this,_priority);
+  },
+  
+/** method: buildParents
+  *
+  * Used by addView to build a parents array of parent classes.
+  *
+  **/
+  buildParents: function(_viewId){
+    var _view = HSystem.views[_viewId];
+    _view.parent = this;
+    _view.parents = [];
+    for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
+      _view.parents.push(this.parents[_parentNum]);
+    }
+    _view.parents.push(this);
+  },
+  
+/** method: addView
+  *
+  * Adds a view to the app, <HView> defines an indentical structure for subviews.
+  *
+  * Called from inside the HView constructor and should be automatic for all 
+  * components that accept the 'parent' parameter, usually the second argument,
+  * after the <HRect>.
+  *
+  * Parameter:
+  *  _view - Usually *this* inside <HView>-derivate components.
+  *
+  * Returns:
+  *  The parent view specific view id.
+  *
+  * See also:
+  *  <HView.addView> <removeView> <destroyView> <die>
+  **/
+  addView: function(_view) {
+
+    var _viewId = HSystem.addView(_view);
+    this.views.push(_viewId);
+    
+    this.buildParents(_viewId);
+    this.viewsZOrder.push(_viewId);
+    
+    return _viewId;
+  },
+  
+/** method: removeView
+  *
+  * Call this if you need to remove a child view from its parent without
+  * destroying its element, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to another.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <addView> <HView.addView> <destroyView> <die>
+  **/
+  removeView: function(_viewId){
+    HSystem.views[_viewId].remove();
+  },
+
+/** method: destroyView
+  *
+  * Call this if you need to remove a child view from its parent, destroying its
+  * child elements recursively and removing all DOM elements too.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <addView> <HView.addView> <removeView> <die>
+  **/
+  destroyView: function(_viewId){
+    HSystem.views[_viewId].die();
+  },
+  
+/** method: die
+  *
+  * Stops this application and destroys all the views currently in this
+  * application.
+  *
+  * See also:
+  *  <HSystem.killApp> <destroyView>
+  **/
+  die: function(){
+    HSystem.killApp(this.appId, false);
+  },
+  
+  
+/** method: destroyAllViews
+  *
+  * Deletes all the views added to this application but doesn't stop the
+  * application itself.
+  *
+  * See also:
+  *  <addView> <HView.addView> <removeView> <destroyView> <die>
+  **/
+  destroyAllViews: function(){
+    var i, _viewId;
+    for (i = 0; i < this.views.length; i++) {
+      _viewId = this.views[i];
+      HSystem.views[_viewId].die();
+    }
+  },
+  
+  
+  // calls the idle method of each view
+  _pollViews: function(){
+    var i, _viewId, _view;
+    for(i=0;i<this.views.length;i++){
+      _viewId = this.views[i];
+      _view = HSystem.views[_viewId];
+      if((_view!==null)&&(_view['onIdle']!==undefined)){
+        _view.onIdle();
+      }
+    }
+  },
+  
+/** method: startIdle
+  *
+  * Gets called by HSystem, is a separate method to make onIdle() extensions more failure resistant.
+  * Do not override or change!
+  *
+  **/
+  _startIdle: function(){
+    HSystem.busyApps[ this.appId ] = true;
+    this.onIdle();
+    this._pollViews();
+    HSystem.busyApps[ this.appId ] = false;
+  },
+  
+/** event: onIdle
+  *
+  * Extend this method, if you are going to perform regular actions in a app.
+  * Polled with the 'priority' interval timer given to <start>.
+  *
+  * *Very useful for 'slow, infinite loops' that don't take all the client browser machine CPU cycles.*
+  *
+  * See also:
+  *  <start> <renice> <HSystem.reniceApp>
+  **/
+  onIdle: function(){
+    /* Your code here */
+  }
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HThemeManager
+  **
+  ** A single instance class.
+  **
+  ** The theme manager knows the name of the currently loaded theme and handles
+  ** the loading of theme specific markup snippets and style declarations.
+  **
+  ** vars: Instance variables
+  **  themePath - Relative path to the components' top directory. 
+  **  currentTheme - The name of the theme currently in use. Initially the
+  **    default unnamed theme is used.
+  **  usesComponentDir - True when the components are separated in their own
+  **    directories, usually when using the source/development version. False
+  **    when the components are all in same directory. This is the case in the
+  **    release build.
+  **
+  ** See also:
+  **  <HView> <HMarkupView>
+  ***/
+
+HDefaultThemePath = '/H/themes';
+HDefaultThemeName = 'default';
+HNoComponentCSS = [];
+HThemeHasIE6GifsInsteadOfPng = [];
+
+/** HDefaultThemeMode:
+  *
+  *  0 = Pre-built mode
+  *  1 = Post-built mode
+  *
+  */
+HThemeMode = 1;
+
+HThemeManager = HClass.extend({
+  
+  constructor: null,
+  
+  init: function(){
+    
+    // Default root path of the themes path, should contain at least the default theme.
+    this.themePath = HDefaultThemePath;
+    
+    // Hash map of loaded template markup (html templates), by theme.
+    // componentName is used as the secondary key.
+    this._tmplCache = {};
+    
+    // Hash map of loaded css templates, by theme.
+    // componentName is used as the secondary key.
+    this._cssCache = {};
+    
+    // The currently selected default theme name.
+    this.currentTheme = HDefaultThemeName;
+  },
+  
+  setThemePath: function( _path ){
+    this.themePath = _path;
+  },
+  
+  // Error messages, should be refined.
+  _errTemplateNotFound: function( _url ) {
+    console.log( "ERROR: Template Not Found: '" + _url + "' ");
+  },
+  _errTemplateFailure: function( _url ) {
+    console.log( "ERROR: Template Failure: '" + _url + "' ");
+  },
+  _errTemplateException: function( _url ) {
+    console.log( "ERROR: Template Exception: '" + _url + "' ");
+  },
+  
+/** method: fetch
+  *
+  * Loads a template file and returns its contents.
+  * If errors occurred, calls the error management functions.
+  *
+  * Parameters:
+  *  _url - A valid local file path or http url pointing to the resource to load.
+  *  _contentType - An optional parameter, specifies the content type wanted, defaults to text/html.
+  *
+  * Returns:
+  *  The contents of the path.
+  */
+  fetch: function( _url, _contentType ) {
+    var _result;
+    if( !_contentType ){
+      var _contentType = 'text/html; charset=UTF-8';
+    }
+    var _req = new Ajax.Request(_url, {
+      method:    'GET',
+      
+      onSuccess: function( _xhr ) {
+        _result   = _xhr.responseText;
+      },
+      
+      on404:        function(){ HThemeManager._errTemplateNotFound(  _url ); },
+      onFailure:    function(){ HThemeManager._errTemplateFailure(   _url ); },
+      onException:  function(){ HThemeManager._errTemplateException( _url ); },
+      
+      asynchronous: false,
+      contentType:  _contentType
+    });
+    
+    _req.onStateChange();
+    
+    return _result;
+  },
+  
+  
+/** method: getThemeGfxPath
+  *
+  * Returns the theme/component -specific path, called from inside css
+  * themes, a bit kludgy approach to tell the theme grapics file paths. 
+  */
+  getThemeGfxPath: function() {
+    var _themeName      = this._cssEvalParams[0],
+        _componentName  = this._cssEvalParams[1],
+        _themePath      = this._cssEvalParams[2],
+        _pkgName        = this._cssEvalParams[3],
+        _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    return this._joinPath( _urlPrefix, 'gfx' );
+  },
+  
+/** method: getCssFilePath
+  *
+  * Returns the theme/component -specific graphics file path with proper css wrappers.
+  * Used from inside css themes, a bit kludgy approach to tell the file name path.
+  *
+  * Parameters:
+  *  _fileName - The File name to load.
+  *
+  */
+  getCssFilePath: function( _fileName ){
+    var _themeName      = this._cssEvalParams[0];
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+      return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
+    }
+    else {
+      return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName )+"')";
+    }
+  },
+  
+/** method: loadCSS
+  *
+  * Loads a css file based on the given url (or file path).
+  * Evaluates the css data.
+  * Makes sure the browser uses the data for component styles.
+  *
+  * Parameter:
+  *  _url - A valid url that points to a valid css file.
+  *
+  * Returns:
+  *  The source of the url.
+  */
+  loadCSS: function( _url ) {
+    var _contentType = 'text/css';
+    var _cssText = this.fetch( _url, _contentType );
+    
+    // Don't try to do anything with empty or invalid css data:
+    if (!_cssText || _cssText == "") {
+      return;
+    }
+    
+    // Evaluate the css text
+    _cssText = this._bindCSSVariables( _cssText );
+    
+    var _style, _styleSheet, _head;
+    
+    if(ELEM._is_ie) {
+      // Internet Explorer (at least 6.x; check what 7.x does)
+      _style         = document.createStyleSheet();
+      _style.cssText = _cssText;
+    }
+    
+    else {
+      // Common, standard <style> tag generation in <head>
+      _style        = document.createElement( "style" );
+      _style.type   = _contentType;
+      _style.media  = "all";
+      
+      _head = document.getElementsByTagName('head')[0];
+      _head.appendChild(_style);
+      
+      if (navigator.userAgent.indexOf('KHTML') != -1) {
+        // Work-around for safari
+        var _cssTextElement = document.createTextNode(_cssText);
+        _style.appendChild(_cssTextElement);
+      }
+      else {
+        // This works for others (add more checks, if problems with new browsers)
+        _style.innerHTML = _cssText;
+      }
+    }
+  },
+  
+  _addSlash: function( _str ){
+    if( _str[ _str.length-1 ] != '/' ){
+      _str += '/';
+    }
+    return _str;
+  },
+  
+  _joinPath: function( _str1, _str2 ){
+    return this._addSlash( _str1 ) + _str2;
+  },
+  
+  // Makes a common url prefix for template files
+  _urlPrefix: function( _themeName, _componentName, _themePath, _pkgName ) {
+    
+    var _path = _themePath;
+    
+    // Usually null
+    if( _themePath === null ) {
+      _path = this.themePath;
+    }
+    
+    // Pre-Build Path Format
+    if( HThemeMode == 0 ) {
+      if( _pkgName ){
+        _path = this._joinPath( _path, _pkgName );
+      }
+      // When using a component specific theme path, skip the standard directory
+      // structure and use the path directly.
+      if( _themePath === null ) {
+        _path = this._joinPath( _path, _componentName );
+        _path = this._joinPath( _path, 'themes' );
+      }
+      _path = this._joinPath( _path, _themeName );
+    }
+    
+    // Post-Build Path Format
+    else if( HThemeMode == 1 ) {
+      _path = this._joinPath( _path, _themeName );
+    }
+    
+    return _path;
+  },
+  
+  // Makes a valid css template url
+  _cssUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
+    this._cssEvalParams = [_themeName, _componentName, _themePath, _pkgName];
+    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _cssSuffix = this._joinPath( 'css', _componentName+'.css' );
+    var _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
+    return _cssUrl;
+  },
+  
+  // Makes a valid html template url
+  _markupUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
+    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _htmlSuffix = this._joinPath( 'html', _componentName+'.html' );
+    var _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
+    return _htmlUrl;
+  },
+  
+/** method: loadMarkup
+  *
+  * Loads HTML templates of components. Handles caching independently and intelligently.
+  *
+  * Parameters:
+  *  _themeName     - The name of the template to use.
+  *  _componentName - The name of the component template (css/html) to load.
+  *  _themePath     - (Optional) parameter to override the global theme path.
+  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
+  *
+  * Returns:
+  *  The Pre-Evaluated HTML Template.
+  *
+  **/
+  loadMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
+    if( !this._tmplCache[_themeName] ){
+      this._tmplCache[_themeName] = {};
+    }
+    var _cached = this._tmplCache[_themeName][_componentName];
+    
+    if (null === _cached || undefined === _cached) { 
+      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName );
+      _cached = this.fetch( _markupUrl );
+      // Save an empty string to template cache to prevent repeated failing
+      // requests.
+      if (null === _cached || undefined === _cached) {
+        _cached = "";
+      }
+      this._tmplCache[_themeName][_componentName] = _cached;
+    }
+    return _cached;
+  },
+  
+/** method: getMarkup
+  *
+  * Loads CSS and HTML templates of components. Called from <HView._loadMarkup>.
+  * Returns the HTML Template as text.
+  * Manages file caches independently and intelligently.
+  *
+  * Parameters:
+  *  _themeName     - The name of the template to use.
+  *  _componentName - The name of the component template (css/html) to load.
+  *  _themePath     - (Optional) parameter to override the global theme path.
+  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
+  *
+  * Returns:
+  *  The Pre-Evaluated HTML Template.
+  *
+  **/
+  getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
+    
+    /* Load Theme-Specific CSS: */
+    if (!this._cssCache[_themeName]){
+      var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
+      this._cssCache[_themeName] = {};
+      this.loadCSS( _commonCssUrl );
+    }
+    
+    /* Load Component-Specific CSS, unless configured to only load the common css: */
+    if(HNoComponentCSS.indexOf(_themeName)==-1){
+      //console.log('HNoComponentCSS:',HNoComponentCSS,',  indexOf:',HNoComponentCSS.indexOf(_themeName),',  themeName:',_themeName, ',  componentName:', _componentName, ',  themePath:',_themePath,',  pkgName:',_pkgName);
+      if (!this._cssCache[_themeName][_componentName]){
+        var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
+        this._cssCache[_themeName][_componentName] = true;
+        this.loadCSS( _componentCssUrl );
+      }
+    }
+    
+    /* Load/Return Component-Specific HTML: */
+    return this.loadMarkup( _themeName, _componentName, _themePath, _pkgName );
+  },
+  
+  
+/** method: _componentGfxPath
+  *
+  * Called via HView to determine the valid path prefix to aid
+  * finding theme- and component-specific image files.
+  *
+  * Returns:
+  *   A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
+  *
+  **/
+  _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
+    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+    var _url = this._joinPath( _urlPrefix, 'gfx' );
+    return _url;
+  },
+  _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+      return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName.replace('.png','-ie6.gif') );
+    }
+    return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName );
+  },
+  
+  
+  getThemeGfxFile: function( _fileName ) {
+    
+    return this.getThemeGfxPath() + _fileName;
+    
+  },
+  
+  
+/** method: setTheme
+  * 
+  * Sets the active theme.
+  * 
+  * Parameters:
+  *  _theme - The name of the theme to be set as the active theme.
+  *
+  **/
+  setTheme: function(_theme) {
+    this.currentTheme = _theme;
+  },
+  
+/** method: restoreDefaultTheme
+  *
+  * Sets the default theme ( HDefaultTheme ) to be the active theme.
+  **/
+  restoreDefaultTheme: function() {
+    this.setTheme( HDefaultThemeName );
+  },
+  
+/** regexp: _variable_match
+  *
+  * A regular expression to match the template evaluation syntax: #{stuff_to_evaluate}
+  **/
+  _variable_match: new RegExp(/#\{([^\}]*)\}/),
+  
+/** method: _bindCSSVariables
+  *
+  * Evaluates the _variable_match regular expression for the string _markup.
+  *
+  * Parameters:
+  *  _cssTmpl - The css template file to be evaluated. 
+  *
+  * Returns:
+  *  An evaluated CSS Template.
+  **/
+  _bindCSSVariables: function( _cssTmpl ) {
+    while ( this._variable_match.test( _cssTmpl ) ) {  
+      _cssTmpl = _cssTmpl.replace(  this._variable_match, eval( RegExp.$1 )  );
+    }
+    return _cssTmpl;
+  }
+  
+});
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/*** class: HMarkupView
+  **
+  ** Serves as a mixin class for classes that need to draw markup but don't
+  ** inherit from the HView.
+  **
+  ** vars: Instance variables
+  **  markup - The markup from the component's HTML template.
+  **
+  ** See also:
+  **  <HView>
+  ***/
+HMarkupView = HClass.extend({
+
+/** method: bindMarkupVariables
+  * 
+  * Evaluates the pieces of code defined in the markup template marked with
+  * syntax #{}.
+  * Can't use } characters in the code though. This might need another look...
+  * 
+  * Places the resulting markup in the instance variable.
+  * 
+  **/
+  bindMarkupVariables: function() {
+    
+    var _markup = this.markup;
+    
+    while ( HMarkupView._assignment_match.test(_markup) ) {  
+      _markup = _markup.replace( HMarkupView._assignment_match, this.evalMarkupVariable(RegExp.$1,true) );
+    }
+    while ( HMarkupView._variable_match.test(_markup) ) {  
+      _markup = _markup.replace( HMarkupView._variable_match, this.evalMarkupVariable(RegExp.$1) );
+    }
+    
+    this.markup = _markup;
+  },
+  
+  evalMarkupVariable: function(_strToEval,_isAssignment){
+    try {
+      var _ID     = this.elemId.toString(),
+          _WIDTH  = this.rect.width,
+          _HEIGHT = this.rect.height,
+          _result = eval(_strToEval);
+      if(_isAssignment){
+        return '';
+      }
+      if(_result===undefined){
+        return '';
+      }
+      else {
+        return _result;
+      }
+    }
+    catch(e) {
+      return '';
+    }
+  },
+  
+/** method: toggleCSSClass
+  * 
+  * Sets or unsets the _cssClass into a DOM element that goes by the ID
+  * _elementId.
+  * 
+  * Parameters:
+  *  _elementId - ID of the DOM element, or the element itself, to be modified.
+  *  _cssClass - Name of the CSS class to be added or removed.
+  *  _setOn - Boolean value that tells should the CSS class be added or removed.
+  * 
+  **/
+  toggleCSSClass: function(_elementId, _cssClass, _setOn) {
+    if(_elementId) {
+      
+      var _has_class = ELEM.hasClassName(_elementId, _cssClass);
+      
+      if (_setOn) {
+        if (!_has_class) {
+          ELEM.addClassName(_elementId, _cssClass);
+        }
+      }
+      else {
+        if (_has_class) {
+          ELEM.removeClassName(_elementId, _cssClass);
+        }
+      }
+
+    }
+
+  }
+
+},{
+  _variable_match: new RegExp(/#\{([^\}]*)\}/),
+  _assignment_match: new RegExp(/\$\{([^\}]*)\}/)
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HView
+  *
+  * Abstract foundation class for all visual components.
+  *
+  * Depends on <HApplication> <HMarkupView>
+  *
+  * HView instances are the simplest component type. HViews don't respond to 
+  * events, they don't have a visible visual representation (just an invisible
+  * '<div>' element), but offers the common visual methods of most components.
+  *
+  * Feel free to extend HView to suit your needs.
+  * However, extend <HControl> instead if you are going to make an active component.
+  *
+  * vars: Instance variables (common for almost all components)
+  *  type - '[HView]' normally, '[HSubview]' if the parent is also a HView
+  *
+  *  views - A list of child components bound.
+  *  viewId - The view index id of this view (parent specific, will change to system-wide uniqueness)
+  *  drawn  - A flag that is true after draw is called the first time (the DOM element exists after that)
+  *  elemId - The <Element Manager> compatible element index id of the main <div> DOM element of the view. Exists after <draw> is called.
+  *  parent - The parent of the view structure
+  *  parents - An array containing parents, up to <HApplication> and <HSystem>
+  *  appId - The unique id of the app that contains the view
+  *  app - References the <HApplication> instance at the root of the view structure
+  *
+  *  rect - The <HRect> instance that defines the coordinates and dimensions of the view. Call <drawRect> for changes to a rect property to take effect.
+  *
+  *  theme - The theme chosen to render the component with.
+  *  preserveTheme - Boolean, won't change the theme on the fly if true and the global theme changes. Defaults to false.
+  *  optimizeWidthOnRefresh - Boolean, true (default) when <optimizeWidth> should be called whenever <refresh> gets called.
+  *  
+  *  isHidden - Boolean flag, true if set to hidden. Defaults to false (visible)
+  *
+  *  viewZOrder - The order of subviews in the Z-dimension.
+  *
+  * See Also:
+  *  <HSystem> <HApplication> <HControl>
+  *
+  * Usage example:
+  *  > var myApp = new HApplication(100);
+  *  > var myView = new HView( new HRect(100,100,200,200), myApp );
+  *  > myView.draw();
+  *  > myView.setStyle('background-color','#660000');
+  *  > var mySubview = new HView( new HRect(50,50,100,100), myView );
+  *  > mySubview.draw();
+  *  > mySubview.setStyle('background-color','#ffcc00');
+  *  > mySubview.setStyle('border','1 px solid #ffffff');
+  **/
+HView = HClass.extend({
+  
+  // This property should be overridden in custom made components. It's like a
+  // theme path, but points to the location of a component specific themes. The
+  // directory structure must be the same as in the release version's themes
+  // directory.
+  themePath:   null,
+  
+  // In pre-build mode, this is the prefix of the directory that contains a set of components.
+  packageName: null,
+  
+  // Uses absolute positioning by default
+  isAbsolute: true,
+  
+  // flags, sets positioning mode
+  flexRight:  false,
+  flexLeft:   true,
+  flexTop:    true,
+  flexBottom: false,
+  
+  // ints, positioning mode offsets
+  flexRightOffset:  0,
+  //rect.left: flexLeftOffset:   0,
+  //rect.top:  flexTopOffset:    0,
+  flexBottomOffset: 0,
+  
+  // Component behaviour tells other classes what to expect of the component's api and visual behaviour.
+  componentBehaviour: ['view'],
+  
+/** constructor: constructor
+  *
+  * Constructs the logic part of a <HView>.
+  * The view still needs to be drawn on screen. To do that, call <draw> after
+  * subcomponents of the view are initialized.
+  *
+  * Parameters:
+  *  _rect - An instance of <HRect>, defines the position and size of views.
+  *  _parent - Another <HView> -compatible instance, like <HApplication>, <HControl> and derived component classes.
+  *
+  * See also:
+  *  <HApplication.addView> <draw> <drawRect> <refresh> <setRect> <drawMarkup> <HControl.draw>
+  **/
+  constructor: function(_rect, _parent) {
+    // Moved these to the top to ensure safe themeing operation
+    if(this.theme===undefined){
+      this.theme = HThemeManager.currentTheme;
+      this.preserveTheme = false;
+    }
+    else {
+      this.preserveTheme = true;
+    }
+    
+    
+    // Used for smart template elements (resizing)
+    
+    this.optimizeWidthOnRefresh = true;
+    
+    // adds the parentClass as a "super" object
+    this.parent = _parent;
+    
+    this.viewId = this.parent.addView(this);
+    // the parent addView method adds this.parents
+    
+    this.appId = this.parent.appId;
+    this.app = HSystem.apps[this.appId];
+    
+    // subview-ids, index of HView-derived objects that are found in HSystem.views[viewId]
+    this.views = [];
+    
+    // Subviews in Z order.
+    this.viewsZOrder = [];
+    
+    // Keep the view (and its subviews) hidden until its drawn.
+    this._createElement();
+    
+    // Set the geometry
+    this.setRect(_rect);
+    this.isHidden = true;
+    
+    this.drawn = false;
+    
+    this._cachedLeft = _rect.left;
+    this._cachedTop = _rect.top;
+    
+    // Additional DOM element bindings are saved into this array so they can be
+    // deleted from the element manager when the view gets destroyed.
+    this._domElementBindings = [];
+    
+    if(!this.isinherited) {
+      this.draw();
+      this.show();
+    }
+  },
+  
+  setFlexRight: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexRight = _flag;
+    if(_px===undefined){_px=0;}
+    this.flexRightOffset = _px;
+  },
+  setFlexLeft: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexLeft = _flag;
+    if(_px!==undefined){
+      this.rect.setLeft(_px);
+    }
+  },
+  setFlexTop: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexTop = _flag;
+    if(_px!==undefined){
+      this.rect.setTop(_px);
+    }
+  },
+  setFlexBottom: function(_flag,_px){
+    if(_flag===undefined){_flag=true;}
+    this.flexBottom = _flag;
+    if(_px===undefined){_px=0;}
+    this.flexBottomOffset = _px;
+  },
+  setAbsolute: function(_flag){
+    if(_flag===undefined){_flag=true;}
+    this.isAbsolute = _flag;
+  },
+  setRelative: function(_flag){
+    if(_flag===undefined){_flag=true;}
+    this.isAbsolute = (!_flag);
+  },
+  
+/** method: getThemeGfxPath
+  *
+  * Used by from html theme templates to get the theme-specific image path.
+  *
+  * Returns:
+  *  The theme image directory of the current theme.
+  *
+  * See also:
+  *  <HThemeManager._componentGfxPath>
+  **/
+  getThemeGfxPath: function() {
+    if( this.preserveTheme ){
+      _themeName = this.theme;
+    } else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath, this.packageName );
+  },
+  getThemeGfxFile: function( _fileName ) {
+    if( this.preserveTheme ){
+      _themeName = this.theme;
+    } else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, this.packageName, _fileName );
+  },
+  
+  // provided solely for component extendability:
+  _makeElem: function(_parentElemId){
+    this.elemId = ELEM.make(_parentElemId,'div');
+  },
+  // provided solely for component extendability:
+  _setCSS: function(_additional){
+      var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
+      if(this.isAbsolute){
+        _cssStyle += 'position:absolute;';
+      } else {
+        _cssStyle += 'position:relative;';
+      }
+      _cssStyle += _additional;
+      ELEM.setCSS(this.elemId,_cssStyle);
+  },
+  
+  _getParentElemId: function(){
+    var _parentElemId;
+    // if the parent does not have an element:
+    if(this.parent.elemId === undefined) {
+      _parentElemId = 0;
+    }
+    // if a subview element is defined in the template, use it:
+    else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){
+      _parentElemId = this.parent.markupElemIds['subview'];
+    }
+    // otherwise, use main elemId
+    else {
+      _parentElemId = this.parent.elemId;
+    }
+    return _parentElemId;
+  },
+  
+  // create the dom element
+  _createElement: function() {
+    if(!this.elemId) {
+      
+      this._makeElem(this._getParentElemId());
+      this._setCSS('');
+      
+      // Theme name == CSS class name
+      if(this.preserveTheme){
+        ELEM.addClassName( this.elemId, this.theme );
+      }
+      else {
+        ELEM.addClassName( this.elemId, HThemeManager.currentTheme );
+      }
+    }
+  },
+  
+/** method: drawRect
+  *
+  * Sets the correct properties for elements after changes in the <rect> instance object.
+  * Effectively updates the visual representation to match the state of <rect>.
+  *
+  * See also:
+  *  <draw> <drawMarkup> <refresh> <setRect> <HRect>
+  **/
+  drawRect: function() {
+    if (!this.parent || !this.rect.isValid) {
+      return;
+    }
+    
+    this.drawn = true;
+    
+    var _elemId = this.elemId;
+    var _rect = this.rect;
+    
+    ELEM.setStyle( _elemId, 'left', this.flexLeft?(_rect.left+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'top', this.flexTop?(_rect.top+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'right', this.flexRight?(this.flexRightOffset+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'bottom', this.flexBottom?(this.flexBottomOffset+'px'):'auto', true);
+    ELEM.setStyle( _elemId, 'width', (this.flexLeft&&this.flexRight)?'auto':(_rect.width+'px'), true);
+    ELEM.setStyle( _elemId, 'height', (this.flexTop&&this.flexBottom)?'auto':(_rect.height+'px'), true);
+    
+    if(this.flexLeft&&this.flexRight){
+      ELEM.setStyle( _elemId, 'min-width', _rect.width+'px', true);
+    }
+    if(this.flexTop&&this.flexBottom){
+      ELEM.setStyle( _elemId, 'min-height', _rect.height+'px', true);
+    }
+    
+    // Show the rectangle once it gets created, unless visibility was set to
+    // hidden in the constructor.
+    if(undefined === this.isHidden || this.isHidden == false) {
+      ELEM.setStyle( _elemId, 'visibility', 'inherit', true);
+    }
+    
+    ELEM.setStyle( _elemId, 'display', 'block', true);
+    
+    this._updateZIndex();
+    
+    if (this._cachedLeft != _rect.left || this._cachedTop != _rect.top) {
+      this.invalidatePositionCache();
+      this._cachedLeft = _rect.left;
+      this._cachedTop = _rect.top;
+    }
+    
+    // right, bottom, opacity and png-transparency
+    /*
+    if (ELEM._is_ie6 && !this.ie_resizefixadded) {
+      iefix._traverseTree(ELEM.get(this.elemId));
+      this.ie_resizefixadded = true;
+      HSystem.fix_ie = true;
+    }
+    */
+  },
+  
+  /**
+    * These methods update the z-index property of the actual element(s).
+    * _updateZIndex updates this object only and it is used when the object is
+    * initially drawn. _updateZIndexAllSiblings updates this object and all its
+    * siblings. This is useful when modifying this object's z-order affects
+    * other elements too.
+    */
+  _updateZIndex: function() {
+    ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
+  },
+  _updateZIndexAllSiblings: function() {
+    var _views = this.parent.viewsZOrder;
+    for (var i = 0; i < _views.length; i++) {
+      ELEM.setStyle(HSystem.views[_views[i]].elemId, 'z-index', i);
+    }
+  },
+  
+/** method: draw
+  *
+  * Initializes the visual representation of the object, should call at least <drawRect>.
+  *
+  * *When extending <HView>, override this method, don't extend it.*
+  *
+  * See also:
+  *  <drawRect> <drawMarkup> <refresh> <HRect>
+  **/
+  draw: function() {
+    var _isDrawn = this.drawn;
+    this.drawRect();
+    if(!_isDrawn&&(this.componentName!==undefined)){
+      this.drawMarkup();
+    }
+    this.refresh();
+  },
+  
+  // Loads the markup from theme manager. If this.preserveTheme is set to true,
+  // the this.theme is used for loading the markup. Otherwise the currently
+  // active theme is used.
+  _loadMarkup: function() {
+    var _themeName;
+    if (this.preserveTheme) {
+      _themeName = this.theme;
+    }
+    else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    this.markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+  },
+  
+/** method: drawMarkup
+  *
+  * Replaces the *contents* of the view's DOM element with html from the theme specific html file.
+  *
+  * See also:
+  *  <HThemeManager> <bindMarkupVariables> <drawRect> <draw> <refresh>
+  **/
+  markupElemNames: ['bg', 'label', 'state', 'control', 'value', 'subview'],
+  drawMarkup: function() {
+    ELEM.setStyle(this.elemId, 'display', 'none', true);
+    
+    this._loadMarkup();
+    
+    this.bindMarkupVariables();
+    ELEM.setHTML(this.elemId, this.markup);
+    
+    this.markupElemIds = {};
+    for(var i=0; i < this.markupElemNames.length; i++ ) {
+      var _partName = this.markupElemNames[ i ],
+          _elemName = _partName + this.elemId,
+          _htmlIdMatch = ' id="' + _elemName + '"';
+      if( this.markup.indexOf( _htmlIdMatch ) != -1 ) {
+        this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
+      }
+    }
+    
+    ELEM.setStyle(this.elemId, 'display', 'block' );
+    
+    // right, bottom, opacity and png-transparency
+    /*
+    if (ELEM._is_ie6 && !this.ie_htmlresizefixadded) {
+      iefix._traverseTree(ELEM.get(this.elemId));
+      this.ie_htmlresizefixadded = true;
+      HSystem.fix_ie = true;
+    }
+    */
+  },
+  
+/** method: setHTML
+  *
+  * Replaces the contents of the view's DOM element with custom html.
+  *
+  * Parameters:
+  *  _html - The HTML (string-formatted) to replace the content with.
+  **/
+  setHTML: function( _html ) {
+    ELEM.setHTML( this.elemId, _html );
+  },
+  
+/** method: refresh
+  *
+  * This method should be extended in order to redraw only specific parts. The
+  * base implementation calls <optimizeWidth> when optimizeWidthOnRefresh is set
+  * to true.
+  *
+  * See also:
+  *  <HThemeManager> <drawRect> <drawMarkup> <draw>
+  **/
+  refresh: function() {
+    if(this.drawn) {
+      // this.drawn is checked here so the rectangle doesn't get drawn by the
+      // constructor when setRect() is initially called.
+      this.drawRect();
+    }
+    if(this.optimizeWidthOnRefresh) {
+      this.optimizeWidth();
+    }
+  },
+
+/** method: setRect
+  *
+  * Replaces the <rect> of the component with a new <HRect> instance and
+  * then refreshes the display.
+  *
+  * Parameter:
+  *  _rect - The new <HRect> instance to replace the old <rect> instance with.
+  **/
+  setRect: function(_rect) {
+    if (this.rect) {
+      this.rect.unbind(this);
+    }
+    this.rect = _rect;
+    this.rect.bind(this);
+    this.refresh();
+  },
+  
+/** method: setStyle
+  *
+  * Sets any arbitary style of the main DOM element of the component.
+  * Utilizes <Element Manager>'s drawing queue/cache to perform the action, 
+  * thus working efficiently even when called frequently.
+  *
+  * Parameters:
+  *  _name - The style name (css syntax, eg. 'background-color')
+  *  _value - The style value (css syntax, eg. 'rgb(255,0,0)')
+  *
+  * See also:
+  *  <Element Manager.styl_set> <style> <elemId>
+  **/
+  setStyle: function(_name, _value, _cacheOverride) {
+    if (!this.elemId) {
+      return;
+    }
+    ELEM.setStyle(this.elemId, _name, _value, _cacheOverride);
+  },
+
+/** method: style
+  *
+  * Returns a style of the main DOM element of the component.
+  * Utilizes <Element Manager>'s cache to perform the action, thus working
+  * efficiently even when called frequently.
+  *
+  * Parameters:
+  *  _name - The style name (css syntax, eg. 'background-color')
+  *
+  * Returns:
+  *  The style property value (css syntax, eg. 'rgb(255,0,0)')
+  *
+  * See also:
+  *  <Element Manager.styl_get> <setStyle> <elemId>
+  **/
+  style: function(_name) {
+    if (!this.elemId) {
+      return;
+    }
+    return ELEM.getStyle(this.elemId, _name);
+  },
+  
+/** method: setStyleForPart
+  *
+  * Sets a style for a specified markup element that has been bound to this
+  * view.
+  *
+  * Parameters:
+  *  _partName - The identifier of the markup element.
+  *  _name - The style name
+  *  _value - The style value
+  *
+  * See also:
+  *  <setStyle> <styleForPart>
+  **/
+  setStyleForPart: function(_partName, _name, _value, _cacheOverride) {
+    if (!this.markupElemIds[_partName]) {
+      return;
+    }
+    ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+  },
+  
+/** method: styleForPart
+  *
+  * Returns a style of a specified markup element that has been bound to this
+  * view.
+  *
+  * Parameters:
+  *  _partName - The identifier of the markup element.
+  *  _name - The style name
+  *
+  * See also:
+  *  <style> <SetStyleForPart>
+  **/
+  styleForPart: function(_partName, _name) {
+    if (!this.markupElemIds[_partName]) {
+      return;
+    }
+    ELEM.getStyle(this.markupElemIds[_partName], _name);
+  },
+
+/** method: hide
+  *
+  * Hides the component's main DOM element (and its children).
+  *
+  * See also:
+  *  <show> <toggle>
+  **/
+  hide: function() {
+    if(!this.isHidden) {
+      this.setStyle('visibility', 'hidden');
+      this.setStyle('display', 'none');
+      this.isHidden = true;
+    }
+  },
+  
+/** method: show
+  *
+  * Restores the visibility of the component's main DOM element (and its children).
+  *
+  * See also:
+  *  <hide> <toggle>
+  **/
+  show: function() {
+    if(this.isHidden) {
+      this.setStyle('visibility', 'inherit');
+      this.setStyle('display', 'block');
+      this.isHidden = false;
+    }
+  },
+  
+/** method: toggle
+  *
+  * Toggles between <hide> and <show>.
+  *
+  * See also:
+  *  <hide> <show>
+  **/
+  toggle: function() {
+    if(this.isHidden) {
+      this.show();
+    } else {
+      this.hide();
+    }
+  },
+  
+/** method: remove
+  *
+  * Call this if you need to remove a component from its parent's <views> array without
+  * destroying the DOM element itself, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to another.
+  *
+  * See also:
+  *  <HApplication.removeView> <addView> <destroy> <die>
+  **/
+  remove: function() {
+    if( this.parent ) {
+      
+      var _viewZIdx = this.parent.viewsZOrder.indexOf(this.viewId),
+          _viewPIdx = this.parent.views.indexOf(this.viewId);
+      
+      this.parent.views.splice(_viewPIdx,1);
+      HSystem.delView(this.viewId);
+      
+      // Drop the z-order from the parent's array
+      this.parent.viewsZOrder.splice( _viewZIdx, 1 );
+      
+      // Make sure the z-order array stays solid.
+      this._updateZIndexAllSiblings();
+      
+      // Since were not in the parent's array anymore, we don't need a reference
+      // to that object.
+      this.parent  = null;
+      this.parents = [];
+    }
+  },
+  
+/** method: die
+  *
+  * Deletes the component and all its children.
+  * Should normally be called from the parent.
+  *
+  * See also:
+  *  <HApplication.die> <addView> <remove> <die> <Element Manager.elem_del>
+  **/
+  die: function() {
+    // Delete the children first.
+    var i=0, _childViewId;
+    for (; i < this.views.length; i++) {
+      _childViewId = this.views[i];
+      this.destroyView(_childViewId);
+    }
+    // Remove this object's bindings, except the DOM element.
+    this.remove();
+    // Remove the DOM element bindings.
+    for (i = 0; i < this._domElementBindings.length; i++) {
+      ELEM.del(this._domElementBindings[i]);
+    }
+    this._domElementBindings = [];
+    
+    this.drawn = false;
+    console.log(this.elemId);
+    
+    // Remove the DOM object itself
+    ELEM.del(this.elemId);
+    
+    delete this.rect;
+    
+  },
+  
+  // Idle poller (recursive)
+  onIdle: function() {
+    for(var i = 0; i < this.views.length; i++) {
+      HSystem.views[this.views[i]].onIdle();
+    }
+  },
+  
+/** method: buildParents
+  *
+  * Used by addView to build a parents array of parent classes.
+  *
+  **/
+  buildParents: function(_viewId){
+    var _view = HSystem.views[_viewId];
+    _view.parent = this;
+    _view.parents = [];
+    for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
+      _view.parents.push(this.parents[_parentNum]);
+    }
+    _view.parents.push(this);
+  },
+  
+/** method: addView
+  *
+  * Adds a sub-view/component to the view.
+  *
+  * Called from inside the HView constructor and should be automatic for all 
+  * components that accept the 'parent' parameter, usually the second argument,
+  * after the <HRect>.
+  *
+  * May also be used to attach a freely floating component (removed with <remove>)
+  * to another component.
+  *
+  * Parameter:
+  *  _view - Usually *this* inside <HView>-derivate components.
+  *
+  * Returns:
+  *  The view id.
+  *
+  * See also:
+  *  <HApplication.addView> <remove> <die>
+  **/
+  addView: function(_view) {
+    var _viewId = HSystem.addView(_view);
+    this.views.push(_viewId);
+    
+    this.buildParents(_viewId);
+    this.viewsZOrder.push(_viewId);
+    
+    return _viewId;
+  },
+  
+/** method: removeView
+  *
+  * Call this if you need to remove a child view from this view without
+  * destroying its element, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to another.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <remove> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
+  **/
+  removeView: function(_viewId) {
+    HSystem.views[_viewId].remove();
+  },
+  
+/** method: destroyView
+  *
+  * Call this if you need to remove a child view from this view, destroying its
+  * child elements recursively and removing all DOM elements too.
+  *
+  * Parameters:
+  *  _viewId - The parent-specific view id. Actually an array index.
+  *
+  * See also:
+  *  <remove> <removeView> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
+  **/
+  destroyView: function(_viewId) {
+    HSystem.views[_viewId].die();
+  },
+  
+/** method: bounds
+  *
+  *  Returns bounds rectangle that defines the size and coordinate system
+  *  of the component. This should be identical to the rectangle used in
+  *  constructing the object, unless it has been changed after construction.
+  *
+  * Returns:
+  *  A new <HRect> instance with identical values to this component's rect.
+  *
+  * See also:
+  *  <resizeTo> <resizeBy> <offsetTo> <offsetBy> <HRect> <rect>
+  **/
+  bounds: function() {
+    // Could be cached.
+    var _bounds = new HRect(this.rect);
+    
+    _bounds.right -= _bounds.left;
+    _bounds.left = 0;
+    _bounds.bottom -= _bounds.top;
+    _bounds.top = 0;
+    
+    return _bounds;
+  },
+  
+  
+/** method: resizeBy
+  *
+  * This method resizes the view, without moving its left and top sides.
+  * It adds horizontal coordinate units to the width and vertical units to
+  * the height of the view.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  *
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters:
+  *  _horizonal - Horizonal units to add to the width (negative units subtract)
+  *  _vertical - Vertical units to add to the height (negative units subtract)
+  *
+  * See also:
+  *  <resizeTo> <offsetTo> <offsetBy> <HRect> <rect> <bounds>
+  **/
+  resizeBy: function(_horizontal, _vertical) {
+    var _rect = this.rect;
+    _rect.right += _horizontal;
+    _rect.bottom += _vertical;
+    _rect.updateSecondaryValues();
+    this.drawRect();
+  },
+
+/** method: resizeTo
+  *
+  * This method makes the view width units wide
+  * and height units high. This method adjust the right and bottom
+  * components of the frame rectangle accordingly.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  * 
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters:
+  *  _width - The new width of the view.
+  *  _height - The new height of the view.
+  *
+  * See also:
+  *  <resizeBy> <offsetTo> <offsetBy> <HRect> <rect> <bounds>
+  **/
+  resizeTo: function(_width, _height) {
+    var _rect = this.rect;
+    _rect.right = _rect.left + _width;
+    _rect.bottom = _rect.top + _height;
+    _rect.updateSecondaryValues();
+    this.drawRect();
+  },
+
+/** method: offsetTo
+  *
+  * This method moves the view to a new coordinate. It adjusts the 
+  * left and top components of the frame rectangle accordingly.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  * 
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters (using component numeric values):
+  *  _x - The new x-coordinate of the view.
+  *  _y - The new y-coordinate of the view.
+  *
+  * Parameters (using a <HPoint> instance):
+  *  _point - The new coordinate point of the view.
+  *
+  * See also:
+  *  <resizeBy> <resizeTo> <offsetBy> <HRect.offsetTo> <rect> <bounds>
+  **/
+  offsetTo: function() {
+    this.rect.offsetTo.apply(this.rect, arguments);
+    this.drawRect();
+  },
+  
+/** method: moveTo
+  *
+  * Alias method for <offsetTo>
+  *
+  **/
+  moveTo: function() {
+    this.offsetTo.apply(this, arguments);
+  },
+  
+/** method: offsetBy
+  *
+  * This method re-positions the view without changing its size.
+  * It adds horizontal coordinate units to the x coordinate and vertical
+  * units to the y coordinate of the view.
+  * 
+  * Since a View's frame rectangle must be aligned on screen pixels, only
+  * integral values should be passed to this method. Values with
+  * fractional components will be rounded to the nearest whole integer.
+  *
+  * If the View is attached to a window, this method causes its parent view
+  * to be updated, so the View is immediately displayed in its new size. If it
+  * doesn't have a parent or isn't attached to a window, this method
+  * merely alter its frame and bounds rectangle.
+  *
+  * Parameters:
+  *  _horizonal - Horizonal units to change the x coordinate (negative units subtract)
+  *  _vertical - Vertical units to add to change the y coordinate (negative units subtract)
+  *
+  * See also:
+  *  <resizeTo> <offsetTo> <resizeBy> <HRect> <rect> <bounds>
+  **/
+  offsetBy: function(_horizontal, _vertical) {
+    this.rect.offsetBy(_horizontal, _vertical);
+    this.drawRect();
+  },
+  
+/** method: moveBy
+  *
+  * Alias method for <offsetBy>
+  *
+  **/
+  moveBy: function() {
+    this.offsetBy.apply(this, arguments);
+  },
+
+/** method: bringToFront
+  *
+  * Brings the view to the front by changing its Z-Index.
+  *
+  * See also:
+  *  <sendToBack> <zIndex>
+  **/
+  bringToFront: function() {
+    if (!this.parent) {
+      return;
+    }
+    var _index = this.zIndex();
+    this.parent.viewsZOrder.splice(_index, 1);
+    this.parent.viewsZOrder.push(this.viewId);
+    this._updateZIndexAllSiblings();
+  },
+
+/** method: sendToBack
+  *
+  * Sends the view to the back by changing its Z-Index.
+  *
+  * See also:
+  *  <bringToFront> <zIndex>
+  **/
+  sendToBack: function() {
+    if (!this.parent) {
+      return;
+    }
+    var _index = this.zIndex();
+    this.parent.viewsZOrder.splice(_index, 1);
+    this.parent.viewsZOrder.splice(0, 0, this.viewId); // Hmmm?
+    this._updateZIndexAllSiblings();
+  },
+
+/** method: sendToBack
+  *
+  * Use this method to get the Z-Index of itself.
+  *
+  * Returns:
+  *  The current Z-Index value.
+  *
+  * See also:
+  *  <bringToFront> <sendToBack>
+  **/
+  zIndex: function() {
+    if (!this.parent) {
+      return;
+    }
+    // Returns the z-order of this item as seen by the parent.
+    return this.parent.viewsZOrder.indexOf(this.viewId);
+  },
+  
+/** method: stringWidth
+  *
+  * Measures the characters encoded in length bytes of the string - or,
+  * if no length is specified, the entire string up to the null character,
+  * '0', which terminates it. The return value totals the width of all the
+  * characters in coordinate units; it's the length of the baseline required
+  * to draw the string.
+  *
+  * Parameters:
+  * _string - The string to measure.
+  * _length - (optional) How many characters to count.
+  * _elemId - (optional) The element ID where the temporary string is created
+  *   in.
+  *
+  * Returns:
+  * The width in pixels required to draw a string in the font.
+  *
+  */
+  stringWidth: function(_string, _length, _elemId) {
+    if (_length !== undefined && _length != null) {
+      _string = _string.substring(0, _length);
+    }
+    if (_elemId === undefined || _elemId == null) {
+      _elemId = this.elemId;
+    }
+    
+    var _stringElem = ELEM.make(_elemId);
+    ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;white-space:nowrap;");
+    ELEM.setHTML(_stringElem, _string);
+    var _width=0,_height=0;
+    if (ELEM._is_ie6 || ELEM._is_ie7 || ELEM._is_opera) {
+      _width = parseInt( ELEM.get(_stringElem).offsetWidth, 10 );
+      if (arguments[3]) {
+        _height = parseInt( ELEM.get(_stringElem).offsetHeight, 10 );
+      }
+    } else {
+      _width = parseInt( ELEM.get(_stringElem).clientWidth, 10 );
+      // for some reason, firefox 3 text wrapping rules seem to
+      // differ for the same text widths from time to time, so
+      // let's add a 1px safety margin for it.
+      if(ELEM._is_ff3){
+        _width += 1;
+      }
+      if (arguments[3]) {
+        _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 );
+      }
+    }
+    ELEM.del(_stringElem);
+    if (arguments[3]) {
+      return [_width, _height];
+    } else {
+      return _width;
+    }
+  },
+  
+/** method: pageX
+  *
+  * Returns:
+  *  The X coordinate that has the scrolled position calculated.
+  **/
+  pageX: function() {
+    var _x = 0;
+    var _elem = this;
+    while(_elem) {
+      if(_elem.elemId && _elem.rect) {
+        _x += ELEM.get(_elem.elemId).offsetLeft;
+        _x -= ELEM.get(_elem.elemId).scrollLeft;
+      }
+      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
+        _x += ELEM.get(_elem.markupElemIds.subview).offsetLeft;
+        _x -= ELEM.get(_elem.markupElemIds.subview).scrollLeft;
+      }
+      _elem = _elem.parent;
+    }
+    return _x;
+  },
+  
+/** method: pageY
+  *
+  * Returns:
+  *  The Y coordinate that has the scrolled position calculated.
+  **/
+  pageY: function() {
+    var _y = 0;
+    var _elem = this;
+    while(_elem) {
+      if(_elem.elemId && _elem.rect) {
+        _y += ELEM.get(_elem.elemId).offsetTop;
+        _y -= ELEM.get(_elem.elemId).scrollTop;
+      }
+      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
+        _y += ELEM.get(_elem.markupElemIds.subview).offsetTop;
+        _y -= ELEM.get(_elem.markupElemIds.subview).scrollTop;
+      }
+      _elem = _elem.parent;
+    }
+    return _y;
+  },
+  
+/** method: pageLocation
+  *
+  * Returns:
+  *  The HPoint that has the scrolled position calculated.
+  **/
+  pageLocation: function() {
+    return new HPoint(this.pageX(), this.pageY());
+  },
+  
+/** method: optimizeWidth
+  * 
+  * An abstract method that derived classes may implement, if they are able to
+  * resize themselves so that their content fits nicely inside.
+  * 
+  */
+  optimizeWidth: function() {
+
+  },
+  
+  
+/** method: invalidatePositionCache
+  * 
+  * Invalidates event manager's element position cache for this view and its
+  * subviews. Actual functionality is implemented in HControl.
+  * 
+  * See also:
+  *   <HControl.invalidatePositionCache> <EventManager.invalidatePositionCache>
+  * 
+  */
+  invalidatePositionCache: function() {
+    for(var i=0; i<this.views.length; i++) {
+      HSystem.views[this.views[i]].invalidatePositionCache();
+    }
+  },
+  
+  
+/** method: bindDomElement
+  * 
+  * Binds a DOM element to the element manager's cache. This is a wrapper for
+  * the <Element Manager.elem_bind> that keeps track of the bound elements and
+  * frees them from the element manager when the view is destroyed.
+  * 
+  * Parameters:
+  *   _domElementId - The value of the DOM element's id attribute that is to be
+  *                   bound to the element cache.
+  * 
+  * Returns:
+  *   The element index id of the bound element.
+  * 
+  * See also: 
+  *   <unbindDomElement> <Element Manager.elem_bind>
+  */
+  bindDomElement: function(_domElementId) {
+    var _cacheId = ELEM.bindId(_domElementId);
+    if (_cacheId) {
+      this._domElementBindings.push(_cacheId);
+    }
+    return _cacheId;
+  },
+  
+  
+/** method: unbindDomElement
+  * 
+  * Removes a DOM element from the element manager's cache. This is a wrapper
+  * for the <Element Manager.elem_del>. This is used for safely removing DOM
+  * nodes from the cache.
+  * 
+  * Parameters:
+  *   _elementId - The id of the element in the element manager's cache that is
+  *                to be removed from the cache.
+  * 
+  * See also: 
+  *   <bindDomElement> <Element Manager.elem_del>
+  */
+  unbindDomElement: function(_elementId) {
+    var _indexOfElementId = this._domElementBindings.indexOf(_elementId);
+    if (_indexOfElementId > -1) {
+      ELEM.del(_elementId);
+      this._domElementBindings.splice(_indexOfElementId, 1);
+    }
+  },
+  
+  
+/** method: animateTo
+  * 
+  * Moves the view smoothly into another location and/or size. The
+  * onAnimationStart event on the view gets called when the animation starts.
+  * 
+  * Parameters:
+  *   _obj - An instance of <HPoint> or <HRect>, depending on the desired 
+  *          animation result. When a point is passed, the view is moved in
+  *          that position. When a rect is passed, the view can also be resized
+  *          with or without moving to different coordinates.
+  *   _duration - (optional) The duration of the animation in milliseconds. The
+  *               default duration is 500 ms.
+  *   _fps - (optional) The frame rate for the animation. The default fps is 50.
+  * 
+  * See also: 
+  *   <stopAnimation> <onAnimationStart> <onAnimationEnd> <onAnimationCancel>
+  */
+  animateTo: function(_obj, _duration, _fps) {
+    
+    // Redirect the method call to _animateTo(HRect).
+    if(_obj instanceof HPoint) {
+      var _rect = new HRect(_obj, _obj);
+      _rect.setSize(this.rect.width, this.rect.height);
+      this._animateTo(_rect, _duration);
+    }
+    else if(_obj instanceof HRect) {
+      this._animateTo(_obj, _duration);
+    }
+    else {
+      throw "Wrong argument type.";
+    }
+    
+  },
+  
+  
+/** method: stopAnimation
+  * 
+  * Stops the current animation for this view. If the view is not being
+  * animated, this method has no effect.  The onAnimationEnd event on the view
+  * gets called when the animation finishes (reaches the end position/size), but
+  * onAnimationCancel gets called when this method is called while the animation
+  * is still in action.
+  * 
+  * See also: 
+  *   <animateTo> <onAnimationStart> <onAnimationEnd> <onAnimationCancel>
+  */
+  stopAnimation: function() {
+    if (this._animateInterval) {
+      // Stop the animation interval only if it has been set.
+      window.clearInterval(this._animateInterval);
+      this._animateInterval = null;
+      
+      // Update the rect after the new position and size have been reached.
+      var _left   = parseInt(this.style('left'), 10),
+          _top    = parseInt(this.style('top'), 10),
+          _width  = parseInt(this.style('width'), 10),
+          _height = parseInt(this.style('height'), 10);
+      this.rect.set(_left, _top, _left + _width, _top + _height);
+      this.drawRect();
+      
+      if (this._animationDone) {
+        this.onAnimationEnd();
+      }
+      else {
+        this.onAnimationCancel();
+      }
+      
+    }
+  },
+  
+  
+  // Private method.
+  // Starts the animation with the target _rect.
+  _animateTo: function(_rect, _duration, _fps) {
+    
+    if (null === _duration || undefined === _duration) {
+      _duration = 500; // default duration is half second
+    }
+    if (null === _fps || undefined === _fps || _fps < 1) {
+      _fps = 50; // default fps
+    }
+    
+    // Don't start another animation until the current animation has stopped.
+    if (!this._animateInterval) {
+      
+      this._animationDone = false;
+      this.onAnimationStart();
+      
+      var _startTime = new Date().getTime();
+      
+      var _that = this;
+      // Start the animation interval. It will be cleared when the view reaches
+      // its destination.
+      this._animateInterval = window.setInterval(
+        function() {
+          _that._animateStep({
+            startTime: _startTime,
+            duration: _duration,
+            // Linear transition effect.
+            transition: function(t, b, c, d) { return c * t / d + b; },
+            props: [{
+              prop: 'left',
+              from: _that.rect.left,
+              to: _rect.left,
+              unit: 'px'
+            },{
+              prop: 'top',
+              from: _that.rect.top,
+              to: _rect.top,
+              unit: 'px'
+            },{
+              prop: 'width',
+              from: _that.rect.width,
+              to: _rect.width,
+              unit: 'px'
+            },{
+              prop: 'height',
+              from: _that.rect.height,
+              to: _rect.height,
+              unit: 'px'
+            }]
+          });
+        }, Math.round(1000 / _fps)
+      );
+    }
+    
+  },
+  
+  
+  // Private method.
+  // Moves the view for one step. This gets called repeatedly when the animation
+  // is happening.
+  _animateStep: function(_obj) {
+    
+    var _time = new Date().getTime();
+    if (_time < _obj.startTime + _obj.duration) {
+      var _cTime = _time - _obj.startTime;
+      
+      // Handle all the defined properties.
+      for (var i = 0; i < _obj.props.length; i++) {
+        var _from = _obj.props[i].from;
+        var _to = _obj.props[i].to;
+        
+        if (_from != _to) {
+          // The value of the property at this time.
+          var _propNow = _obj.transition(_cTime, _from, (_to - _from),
+            _obj.duration);
+          this.setStyle(_obj.props[i].prop, _propNow + _obj.props[i].unit);
+        }
+      }
+      
+    } else {
+      // Animation is done, clear the interval and finalize the animation.
+      for (var i = 0; i < _obj.props.length; i++) {
+        this.setStyle(_obj.props[i].prop,
+          _obj.props[i].to + _obj.props[i].unit);
+      }
+      this._animationDone = true;
+      this.stopAnimation();
+    }
+    
+  },
+  
+  
+/** event: onAnimationStart
+  *
+  * Extend the onAnimationStart method, if you want to do something special 
+  * when this view starts animating.
+  *
+  * See also:
+  *  <onAnimationEnd> <onAnimationCancel>
+  **/
+  onAnimationStart: function() {
+    
+  },
+  
+  
+/** event: onAnimationEnd
+  *
+  * Extend the onAnimationEnd method, if you want to do something special 
+  * when an animation on this view is finished.
+  *
+  * See also:
+  *  <onAnimationStart> <onAnimationCancel>
+  **/
+  onAnimationEnd: function() {
+    
+  },
+  
+  
+/** event: onAnimationCancel
+  *
+  * Extend the onAnimationCancel method, if you want to do something special 
+  * when an animation on this view gets cancelled.
+  *
+  * See also:
+  *  <onAnimationStart> <onAnimationEnd>
+  **/
+  onAnimationCancel: function() {
+    
+  }
+  
+  
+});
+
+HView.implement(HMarkupView);
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2006-2007 Helmi Technologies Inc.
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+/** class: HControl
+  *
+  * Abstract foundation class for all active visual components that implement events and values.
+  *
+  * Feel free to extend HControl to suit your needs. See any component for extension reference.
+  *
+  * vars: Instance variables (common for almost all components)
+  *  type - '[HControl]'
+  *  label - The visual value of a component. See <setLabel>.
+  *  action - A function reference to call in certain situations.
+  *  events - A structure that tells what events to bind.
+  *  enabled - The enabled/disabled flag. See <setEnabled>.
+  *  value - The current value of a component. See <setValue>.
+  *  valueObj - The current <HValue>-compatible object. Do not set directly. Holds reference to the bound <HValue> instance. Set with <HValue.bind>.
+  *  minValue - The minimum allowed value, when the component utilizes value ranges. See <setValueRange>.
+  *  maxValue - The maximum allowed value, when the component utilizes value ranges. See <setValueRange>.
+  *  active - A boolean value that shows whether this control is currently active or not. Control gets active when the user clicks on it.
+  *
+  * Extends:
+  *  <HView>
+  *
+  * See Also:
+  *  <HSystem> <HApplication> <HView> <HValue> <HEventManager>
+  *
+  **/
+HControl = HView.extend({
+  
+  componentBehaviour: ['view','control'],
+/** constructor: constructor
+  *
+  * The first two parameters are the same as with <HView>, but additionally
+  * sets the label and events.
+  *
+  * Parameters:
+  *  _rect - The rectangle of the component. See <HView.constructor>.
+  *  _parentClass - The parent component of the component. See <HView.constructor>.
+  *  _options - (optional) All other parameters. See <HComponentDefaults>.
+  *
+  **/
+  refreshOnValueChange: true,
+  refreshOnLabelChange: true,
+  constructor: function(_rect, _parentClass, _options) {
+    
+    // Use empty options if none supplied. Change this within components.
+    if(!_options) {
+      _options = {};
+    }
+    
+    // Construct and extend the options object on the fly.
+    var options = new (HComponentDefaults.extend(_options));
+    this.options = options;
+    
+    // HView.constructor:
+    if(this.isinherited) {
+      this.base(_rect, _parentClass);
+    }
+    else {
+      this.isinherited = true;
+      this.base(_rect, _parentClass);
+      this.isinherited = false;
+    }
+    
+    // Assign these variables from options.
+    var _label = options.label;
+    this.setLabel(_label);
+    
+    var _events = options.events;
+    this.setEvents(_events);
+    
+    if(this.options.valueObj){
+      this.setValueObj(this.options.valueObj);
+    }
+    if(!this.valueObj) {
+      this.setValueObj(new HDummyValue());
+    }
+    if((this.value===undefined)&&(options.value!==undefined)) {
+      this.setValue(options.value);
+    }
+    
+    // Check if a value range is defined
+    var _isValueRange = (_options.minValue || _options.maxValue);
+    // Also call setValueRange in that case.
+    if(_isValueRange) {
+      this.setValueRange(options.value, options.minValue, options.maxValue);
+    }
+    
+    this.setEnabled(options.enabled);
+    
+    this.action = options.action;
+    
+    // Initial visibility.
+    if(options.visible) {
+      this.show();
+    }
+    else {
+      this.hide();
+    }
+    
+    if(!this.isinherited) {
+      this.draw();
+    }
+  },
+  
+/** method: setAction
+  *
+  * Actions are specified as function calls to components. These are usually used as defineable external function calls.
+  *
+  * Parameters:
+  *  _action - A function reference, the number of parameters the receiver function should take depends on the component.
+  *
+  * Examples:
+  *  > myComponent.setAction(alert);
+  *  > myComponent.setAction(function(param){window.status='param given: '+param});
+  *
+  **/
+  setAction: function(_action) {
+    this.action = _action;
+  },
+  
+/** method: die
+  *
+  * Unregisters events before destroying the view.
+  *
+  * See also:
+  *  <HView.die>
+  **/
+  die: function() {
+    if(this.valueObj){
+      this.valueObj.unbind(this);
+      delete this.valueObj;
+    }
+    EVENT.unreg(this);
+    this.base();
+  },
+  
+/** method: setLabel
+  *
+  * Sets the label on a control component: the text that's displayed, for
+  * example, in the <HButton>. Actual functionality is implemented in component
+  * templates and component <refresh> method extensions.
+  *
+  * Parameters:
+  *  _label - The text the component should display.
+  *
+  **/
+  setLabel: function(_label) {
+    this.label = _label;
+    this.options.label = _label;
+    this.refresh();
+  },
+  
+/** method: setEnabled
+  *
+  * Enables the Control if the enabled flag is true, and disables
+  * it if enabled is false.
+  * Typically, a disabled Control also won't post messages or respond
+  * to mouse and keyboard manipulation.
+  *
+  * Parameters:
+  *  _flag - Boolean; true enables, false disables.
+  *
+  * See also:
+  *  <events> <HEventManager.register> <HEventManager.unreg>
+  *
+  **/
+  setEnabled: function(_flag) {
+    
+    // Enable/disable the children first.
+    for (var i = 0; i < this.views.length; i++) {
+      HSystem.views[this.views[i]].setEnabled(_flag);
+    }
+    
+    if (this.enabled === _flag) {
+      // No change in enabled status, do nothing.
+      return;
+    }
+    
+    this.enabled = _flag;
+    
+    if(_flag) {
+      EVENT.reg(this, this.events);
+    }
+    else {
+      EVENT.unreg(this);
+    }
+    
+    // Toggle the CSS class: enabled/disabled
+    this.toggleCSSClass(this.elemId, HControl.CSS_ENABLED, this.enabled);
+    this.toggleCSSClass(this.elemId, HControl.CSS_DISABLED, !this.enabled);
+  },
+  
+/** method: setValue
+  *
+  * Assigns the object a new value. Extend it, if your component needs to do
+  * something whenever the value changes.
+  *
+  * Parameter:
+  *  _value - The new value. Allowed values depend on the component type 
+  *           and other usage of the bound <HValue> instance.
+  *
+  * See also:
+  *  <setValueRange> <HValue> <HValueManager> <refresh>
+  *
+  **/
+  setValue: function(_value) {
+    if(_value === undefined){return;}
+    if(!this.valueObj){return;}
+    if(_value !== this.value) {
+      this.value = _value;
+      this.valueObj.set(this.value);
+      this.refresh();
+    }
+  },
+  
+/** method: setValueObj
+  *
+  * Binds an <HValue>-compatible instance to the component's valueObj. Also 
+  * calls <setValue>. It should not be called from user code, instead use <HValue.bind>.
+  *
+  * Parameter:
+  *  _aValueObj - The new value object.
+  *
+  * See also:
+  *  <setValue> <setValueRange> <HValue.bind> <HValue.unbind> <HValueManager>
+  **/
+  setValueObj: function(_HValue) {
+    this.valueObj = _HValue;
+    this.setValue(_HValue.value);
+  },
+  
+/** method: setValueRange
+  *
+  * Assigns the object a new value range. Used for sliders etc. Calls 
+  * <setValue> with the value given.
+  *
+  * Parameters:
+  *  _value - The new <value> to be set to the component's <HValue>-compatible instance.
+  *  _minValue - The new minimum <value> limit. See <minValue>.
+  *  _maxValue - The new maximum <value> limit. See <maxValue>.
+  *
+  * See also:
+  *  <setValue> <HValue> <minValue> <maxValue> <HValueManager> <refresh>
+  **/
+  setValueRange: function(_value, _minValue, _maxValue) {
+    this.minValue = _minValue;
+    this.maxValue = _maxValue;
+    _value = (_value < _minValue) ? _minValue : _value;
+    _value = (_value > _maxValue) ? _maxValue : _value;
+    this.setValue(_value);
+    this.refresh();
+  },
+  
+  refreshValue: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.value){
+        ELEM.setHTML(this.markupElemIds.value,this.value);
+      }
+    }
+  },
+  refreshLabel: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds.label){
+        ELEM.setHTML(this.markupElemIds.label,this.label);
+      }
+    }
+  },
+  refresh: function(){
+    this.base();
+    if(this.drawn){
+      if(this.refreshOnValueChange){
+        this.refreshValue();
+      }
+      if(this.refreshOnLabelChange){
+        this.refreshLabel();
+      }
+    }
+  },
+  
+  
+/** method: setEvents
+  *
+  * Sets the events the control should listen to. Event bindings happen 
+  * automatically through <HEventManager>.
+  *
+  * *NOTE* Currently, click and drag events conflict, if both are set simultaneously.
+  *
+  * Parameter:
+  *  _events - A {key: flag} hash structure, sets events based on the keys and the flag.
+  *
+  * Pre-Defined event types (used as the key name):
+  *  mouseMove - flag, start listening to global mousemove events
+  *  mouseDown - flag, start listening to mousedown events when the component has focus
+  *  mouseUp   - flag, start listening to mouseup events when the component has focus
+  *  mouseWheel   - flag, start listening to mousewheel events when the component has focus
+  *  draggable - flag, start listening to dragging events when the component has focus
+  *  droppable - flag, start listening to dropping events when the component has focus
+  *  keyDown - flag, start listening to keydown events when the component has focus
+  *  keyUp - flag, start listening to keyup events when the component has focus
+  *
+  * Pre-defined event handler methods, extend in component code:
+  *   focus - Called when the component gets focus
+  *   blur - Called when the component loses focus
+  *   mouseDown - Called when the mouse button is pushed down
+  *   mouseUp - Called when the mouse button is released
+  *   mouseWheel - Called when the mouse wheel is used
+  *   startDrag - Called when the mouse button is pressed (and item is draggable)
+  *   endDrag - Called when the mouse button is released (and item is draggable)
+  *   doDrag - Called when the mouse is moved and mouse button is down (and item is draggable)
+  *   onDrop - Called when a draggable item is released on the droppable
+  *   onHoverStart - Called when a draggable item is moved over the droppable
+  *   onHoverEnd - Called when a draggable item is moved out of the droppable
+  *   keyDown - Called when the user presses a key, and the control is active
+  *   keyUp - Called when the user releases a key, and the control is active
+  *   gainedActiveStatus - Called when the component gets activated.
+  *   lostActiveStatus - Called when the component gets deactivated.
+  *
+  * See also:
+  *  <HEventManager.focusOptions> <focus> <blur> <mouseDown> <mouseUp> <mouseWheel> <startDrag> <endDrag> <doDrag> <onDrop> <onHoverStart> <onHoverEnd>
+  **/
+  setEvents: function(_events) {
+    if(!this.events) {
+      var _eventsClass = HClass.extend({
+        mouseMove:  false,
+        mouseDown:  false,
+        mouseUp:    false,
+        draggable:  false,
+        droppable:  false,
+        keyDown:    false,
+        keyUp:      false,
+        mouseWheel: false,
+        textEnter:  false,
+        click:      false
+      });
+      this.events = new _eventsClass;
+    }
+    if(_events) {
+      this.events.extend( _events );
+    }
+    this.events.ctrl = this;
+    EVENT.focusOptions[this.elemId] = this.events;
+    var _mmoveStatus = this.events.mouseMove;
+    var _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
+    if (_mmoveStatus && (_mmoveIndex==-1)){
+      EVENT.coordListeners.push(this.elemId);
+    } else if ((!_mmoveStatus) && (_mmoveIndex!=-1)){
+      EVENT.coordListeners.splice(_mmoveIndex,1);
+    }
+    //if(this.events.textEnter){
+    //  EVENT.
+    //}
+    
+    /// The following boolean must be set:
+    this.isDragged = false;
+  },
+
+/** method: setMouseMove
+  *
+  * Alternative flag setter for the <mouseDown> event type. If set to true, 
+  * starts listening to <mouseDown> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseDown> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setMouseMove: function(_flag) {
+    this.events.mouseMove = _flag;
+    this.setEvents();
+  },
+
+/** method: setClickable
+  *
+  * Alternative flag setter for the <click> event type. If set to true, 
+  * starts listening to <click> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <click> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setClickable: function(_flag) {
+    this.events.click = _flag;
+    this.setEvents();
+  },
+  
+/** method: setMouseDown
+  *
+  * Alternative flag setter for the <mouseDown> event type. If set to true, 
+  * starts listening to <mouseDown> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseDown> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <mouseDown> <setEvents> <HEventManager>
+  **/
+  setMouseDown: function(_flag) {
+    this.events.mouseDown = _flag;
+    this.setEvents();
+  },
+  
+/** method: setMouseUp
+  *
+  * Alternative flag setter for the <mouseUp> event type. If set to true, 
+  * starts listening to <mouseUp> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseUp> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <mouseUp> <setEvents> <HEventManager>
+  **/
+  setMouseUp: function(_flag) {
+    this.events.mouseUp = _flag;
+    this.setEvents();
+  },
+  
+/** method: setMouseWheel
+  *
+  * Alternative flag setter for the <mouseWheel> event type. If set to true, 
+  * starts listening to <mouseWheel> events when the component has <focus>.
+  *
+  * Parameters:
+  *  _flag - Set the <mouseWheel> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <setEvents> <HEventManager>
+  **/
+  setMouseWheel: function(_flag) {
+    this.events.mouseWheel = _flag;
+    this.setEvents();
+  },
+  
+/** method: setDraggable
+  *
+  * Alternative flag setter for the <startDrag>, <onDrag> and <endDrag> event
+  * types. If set to true, starts listening to these events when the component
+  * has focus.
+  *
+  * Parameters:
+  *  _flag - Set the <startDrag>, <doDrag> and <endDrag> event listening 
+  *          on/off (true/false) for the component instance.
+  *
+  * See also:
+  *  <startDrag> <doDrag> <endDrag> <setEvents> <HEventManager>
+  **/
+  setDraggable: function(_flag) {
+    this.events.draggable = _flag;
+    this.setEvents();
+  },
+  
+/** method: setDroppable
+  *
+  * Alternative flag setter for the <onHoverStart>, <onDrop> and <onHoverEnd> event
+  * types. If set to true, starts listening to these events when the component
+  * has focus.
+  *
+  * Parameters:
+  *  _flag - Set the <onHoverStart>, <onDrop> and <onHoverEnd> event listening 
+  *          on/off (true/false) for the component instance.
+  *
+  * See also:
+  *  <onHoverStart> <onDrop> <onHoverEnd> <setEvents> <HEventManager>
+  **/
+  setDroppable: function(_flag) {
+    this.events.droppable = _flag;
+    this.setEvents();
+  },
+  
+  
+/** method: setKeyDown
+  *
+  * Alternative flag setter for the <keyDown> event type. If set to true, 
+  * starts listening to <keyDown> events when the component is active.
+  *
+  * Parameters:
+  *  _flag - Set the <keyDown> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <keyDown> <setKeyUp> <setEvents> <HEventManager>
+  **/
+  setKeyDown: function(_flag) {
+    this.events.keyDown = _flag;
+    this.setEvents();
+  },
+  
+  
+/** method: setKeyUp
+  *
+  * Alternative flag setter for the <keyUp> event type. If set to true, 
+  * starts listening to <keyUp> events when the component is active.
+  *
+  * Parameters:
+  *  _flag - Set the <keyUp> event listening on/off (true/false) for
+  *          the component instance.
+  *
+  * See also:
+  *  <keyUp> <setKeyDown> <setEvents> <HEventManager>
+  **/
+  setKeyUp: function(_flag) {
+    this.events.keyUp = _flag;
+    this.setEvents();
+  },
+  
+  
+  setTextEnter: function(_flag) {
+    this.events.textEnter = _flag;
+    this.setEvents();
+  },
+  textEnter: function() {
+    
+  },
+  
+/** event: focus
+  *
+  * Implement/extend the focus method, if you want to do something special when
+  * the focus is gained.
+  *
+  * Called when the component gets focus.
+  *
+  * See also:
+  *  <blur> <HEventManager> <setEvents>
+  **/
+  focus: function() {
+   /* Example:
+    this.hasFocus = true;
+   */
+  },
+  
+/** event: blur
+  *
+  * Implement/extend the blur method, if you want to do something special when
+  * the focus is lost.
+  *
+  * Called when the component loses focus.
+  *
+  * See also:
+  *  <focus> <HEventManager> <setEvents>
+  **/
+  blur: function() {
+   /* Example:
+    this.hasFocus = false;
+   */
+  },
+  
+  
+/** event: gainedActiveStatus
+  *
+  * Implement/extend this if you want to do something special when the control gets
+  * activated.
+  *
+  * Parameters:
+  *  _lastActiveControl - A reference to the control that was active before this
+  *                       control became active. Can be null if there was no
+  *                       active control.
+  *
+  * See also:
+  *  <lostActiveStatus> <HEventManager> <setEvents>
+  **/
+  gainedActiveStatus: function(_lastActiveControl) {
+    
+  },
+  // A low-level handler, don't extend this.
+  _gainedActiveStatus: function(_lastActiveControl) {
+    if(this.enabled) {
+      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, true);
+    }
+    this.gainedActiveStatus(_lastActiveControl);
+  },
+  
+  
+/** event: lostActiveStatus
+  *
+  * Implement/extend this if you want to do something special when the control loses its
+  * active status.
+  *
+  * Parameters:
+  *  _newActiveControl - A reference to the control that became the currently
+  *                      active control. Can be null if there is no active
+  *                      control.
+  *
+  * See also:
+  *  <gainedActiveStatus> <HEventManager> <setEvents>
+  **/
+  lostActiveStatus: function(_newActiveControl) {
+    
+  },
+  // A low-level handler, don't extend this.
+  
+  _lostActiveStatus: function(_newActiveControl) {
+    if(this.enabled) {
+      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, false);
+    }
+    this.lostActiveStatus(_newActiveControl);
+  },
+  
+  
+/** event: mouseDown
+  *
+  * Implement/extend the mouseDown method, if you want to do something special 
+  * when the mouse button is pressed down and the component instance has focus.
+  *
+  * Parameters:
+  *  _x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  _y - The vertical coordinate units (px) of the mouse cursor position.
+  *  _leftButton - Flag, is false when the right mouse button was pressed. *Do not rely on it*
+  *
+  * See also:
+  *  <setMouseDown> <mouseUp> <HEventManager> <setEvents>
+  **/
+  mouseMove: function(_x, _y) {
+   /* Example:
+    this.hasMouseDown = true;
+    this.mouseDownCoords  = new HPoint(_x,_y);
+   */
+  },
+  
+  
+/** event: mouseDown
+  *
+  * Implement/extend the mouseDown method, if you want to do something special 
+  * when the mouse button is pressed down and the component instance has focus.
+  *
+  * Parameters:
+  *  _x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  _y - The vertical coordinate units (px) of the mouse cursor position.
+  *  _leftButton - Flag, is false when the right mouse button was pressed. *Do not rely on it*
+  *
+  * See also:
+  *  <setMouseDown> <mouseUp> <HEventManager> <setEvents>
+  **/
+  mouseDown: function(_x, _y, _leftButton) {
+   /* Example:
+    this.hasMouseDown = true;
+    this.mouseDownCoords  = new HPoint(_x,_y);
+   */
+  },
+  
+  
+/** event: mouseUp
+  *
+  * Implement/extend the mouseUp method, if you want to do something special 
+  * when the mouse button is released and the component instance has focus.
+  *
+  * This is the preferred method to extend when you want click functionality
+  * for a component.
+  *
+  * Parameters:
+  *  _x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  _y - The vertical coordinate units (px) of the mouse cursor position.
+  *  _leftButton - Flag, is false when the right mouse button was pressed. *Do not rely on it*
+  *
+  * See also:
+  *  <setMouseUp> <mouseDown> <HEventManager> <setEvents>
+  **/
+  mouseUp: function(_x, _y, _leftButton) {
+   /* Example:
+    this.hasMouseDown = false;
+    this.mouseUpCoords  = new HPoint(_x,_y);
+   */
+  },
+  
+/** event: mouseWheel
+  *
+  * Implement/extend the mouseWheel method, if you want to do something special 
+  * when the mouse wheel is used and the component instance has focus.
+  *
+  * Parameters:
+  *  _delta - Scrolling delta, the wheel angle change. If delta is positive,
+  *   wheel was scrolled up. Otherwise, it was scrolled down.
+  *
+  * See also:
+  *  <setMouseWheel> <HEventManager> <setEvents>
+  **/
+  mouseWheel: function(_delta) {
+   /* Example:
+    if (_delta > 0)
+      msg = "Moving up!";
+    else 
+      msg = "Going down...";
+   */
+  },
+  
+/** event: startDrag
+  *
+  * Extend the startDrag method, if you want to do something special 
+  * when the user starts a dragging event.
+  *
+  * This is the preferred method to extend if you want <mouseDown> functionality
+  * for a draggable component.
+  *
+  * Parameters:
+  *  x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  y - The vertical coordinate units (px) of the mouse cursor position.
+  *
+  * See also:
+  *  <endDrag> <doDrag> <onDrop> <mouseDown> <HEventManager> <setEvents>
+  **/
+  startDrag: function(x, y) {
+    this.isDragged = true; // must be set to work
+   /* Example:
+    this.originX = x-parseInt(prop_get(this.elemId,'left'));
+    this.originY = y-parseInt(prop_get(this.elemId,'top'));
+   */
+  },
+  
+/** event: doDrag
+  *
+  * Extend the doDrag method, if you want to do something special 
+  * when the user is performing a dragging event. Called whenever the 
+  * mouse cursor moves.
+  *
+  * Parameters:
+  *  x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  y - The vertical coordinate units (px) of the mouse cursor position.
+  *
+  * See also:
+  *  <startDrag> <endDrag> <onDrop> <HEventManager> <setEvents>
+  **/
+  doDrag: function(x, y) {
+   /* Example:
+    prop_set(this.elemId,'left',(x-this.originX)+'px');
+    prop_set(this.elemId,'top',(y-this.originY)+'px');
+   */
+  },
+  
+/** event: endDrag
+  *
+  * Extend the endDrag method, if you want to do something special 
+  * when the user ends a dragging event.
+  *
+  * This is the preferred method to extend if you want <mouseUp> functionality
+  * for a draggable component.
+  *
+  * Parameters:
+  *  x - The horizonal coordinate units (px) of the mouse cursor position.
+  *  y - The vertical coordinate units (px) of the mouse cursor position.
+  *
+  * See also:
+  *  <startDrag> <doDrag> <onDrop> <mouseUp> <HEventManager> <setEvents>
+  **/
+  endDrag: function(x, y) {
+    this.isDragged = false; // must be un-set to work
+    this.invalidatePositionCache();
+   /* Example:
+   */
+  },
+
+/** event: onDrop
+  *
+  * Extend the onDrop method, if you want to do something special 
+  * when the user is performing a drop event. Called when a dragged component instance
+  * is dropped on another component instance.
+  *
+  * Parameter:
+  *  obj - The dragged component object.
+  *
+  * See also:
+  *  <onHoverStart> <onHoverEnd> <endDrag> <HEventManager> <setEvents>
+  **/
+  onDrop: function(obj) {
+    
+  },
+
+/** event: onHoverStart
+  *
+  * Extend the onHoverStart method, if you want to do something special 
+  * when a dragged component instance is dragged over a droppable component instance.
+  *
+  * Parameter:
+  *  obj - The dragged component object.
+  *
+  * See also:
+  *  <onDrop> <onHoverEnd> <doDrag> <HEventManager> <setEvents>
+  **/
+  onHoverStart: function(obj) {
+    
+  },
+  
+  
+/** event: onHoverEnd
+  *
+  * Extend the onHoverEnd method, if you want to do something special 
+  * when a dragged component instance is dragged from a droppable component instance.
+  *
+  * Parameter:
+  *  obj - The dragged component object.
+  *
+  * See also:
+  *  <onDrop> <onHoverStart> <doDrag> <HEventManager> <setEvents>
+  **/
+  onHoverEnd: function(obj) {
+    
+  },
+  
+  
+/** event: keyDown
+  *
+  * Implement/extend the keyDown method, if you want to do something special 
+  * when a key is pressed down and the component is active.
+  *
+  * Parameters:
+  *  _keycode - The keycode of the key that was pressed down.
+  *
+  * See also:
+  *  <setKeyDown> <keyUp> <HEventManager> <setEvents>
+  **/
+  keyDown: function(_keycode) {
+    
+  },
+  
+  
+/** event: keyUp
+  *
+  * Implement/extend the keyUp method, if you want to do something special 
+  * when a key is released and the component is active.
+  *
+  * Parameters:
+  *  _keycode - The keycode of the key that was released.
+  *
+  * See also:
+  *  <setKeyUp> <keyDown> <HEventManager> <setEvents>
+  **/
+  keyUp: function(_keycode) {
+    
+  },
+  
+  
+  /***** DON'T TOUCH _mouseOver, IT IS A LOW-LEVEL HANDLER, use focus() instead *****/
+  _mouseOver: function(e) {
+    if (!Event.element) {
+      return;
+    }
+    var _that = Event.element(e);
+    while(_that && _that.ctrl === undefined) {
+      _that = _that.parentNode;
+    }
+    if (!_that) {
+      return;
+    }
+    var _this = _that.ctrl;
+
+    EVENT.focus(_this);
+    Event.stop(e);
+  },
+  
+  /***** DON'T TOUCH _mouseOut, IT IS A LOW-LEVEL HANDLER, use blur() instead *****/
+  _mouseOut: function(e) {
+    if (!Event.element) {
+      return;
+    }
+    var _that = Event.element(e);
+    while(_that && _that.ctrl === undefined) {
+      _that = _that.parentNode;
+    }
+    if (!_that) {
+      return;
+    }
+    var _this = _that.owner;
+    
+    EVENT.blur(_this);
+    Event.stop(e);
+  },
+  
+  
+/** method: invalidatePositionCache
+  *
+  * Forces retrieving this control's DOM element position directly rather than
+  * using the cached version when the position is needed by the <HEventManager>.
+  * Child controls are invalidated recursively by <HView>.
+  *
+  * See also:
+  *   <HEventManager.invalidatePositionCache>
+  * 
+  **/
+  invalidatePositionCache: function() {
+    this.base();
+    EVENT.coordCacheFlush(this.elemId);
+  }
+  
+  
+},{
+  
+  
+  // Class methods and properties
+  
+  stopPropagation: function(event) {
+    if (event.stopPropagation) { 
+      event.stopPropagation(); 
+    } else {
+      event.cancelBubble = true;
+    }
+  },
+  
+  H_CONTROL_ON:  1,
+  H_CONTROL_OFF: 0,
+  
+  // CSS class names for different statuses.
+  CSS_DISABLED: "disabled",
+  CSS_ENABLED:  "enabled",
+  CSS_ACTIVE:   "active"
+  
+});
+
+/** class: HDummyValue
+  *
+  * A HDummyValue is just a placeholder for <HValue> values. HDummyValue
+  * is a light-weight alternative that doesn't implement any actual <HValue>
+  * functionality, but implements the essential methods that keep <HControl> happy.
+  * It's the default value type for components not bound to real <HValue> instances.
+  *
+  * See also:
+  *  <HValue> <HControl> <HValueManager>
+  *
+  **/
+HDummyValue = HClass.extend({
+/** constructor: constructor
+  *
+  * HDummyValue is initialized just like a real <HValue>.
+  *
+  * Parameters:
+  *  _id - Any string or integer, just a placeholder for <HValue.id>
+  *  _value - Any valid js object, just as for <HValue.value>
+  *
+  **/
+  constructor: function(_id, _value) {
+    this.id = _id;
+    this.value = _value;
+  },
+
+/** method: set
+  *
+  * Parameter:
+  *  _value - Sets a new instance payload value.
+  *
+  **/
+  set: function(_value) {
+    this.value = _value;
+  },
+
+/** method: get
+  *
+  * Returns:
+  *  The instance payload value.
+  *
+  **/
+  get: function() {
+    return this.value;
+  },
+  
+  bind: function( _theObj ){
+  },
+  
+  unbind: function( _theObj ){
+  }
+});
+
+
+/** class: HComponentDefaults
+  *
+  * Define default setting here. Will be used, when no or invalid constructor options are supplied.
+  *
+  * vars: Settable Control-level defaults, override on construction
+  *  label - The visual value of the component
+  **/
+HComponentDefaults = HClass.extend({
+  
+  // The visual value of a component:
+  label:    "Untitled",
+  visible:  true,
+  
+  // A structure that tells what events to bind.
+  /*
+  
+  valid sample (the default): {
+    mouseDown:  false,
+    mouseUp:    false,
+    draggable:  false,
+    droppable:  false,
+    keyDown:    false,
+    keyUp:      false,
+    mouseWheel: false
+  }
+  
+  */
+  // See <HControl.setEvents>.
+  events:   {},
+  
+  // The default value. See <HControl.setValue>
+  value:    0,
+  
+  // The default action, See <HControl.setAction>
+  action:   function(){},
+  
+  // The enabled/disabled flag. See <HControl.setEnabled>
+  enabled:  true,
+  active:   false,
+  
+  // Value Range -related
+  minValue: -2147483648, // signed 32bit
+  maxValue:  2147483648 // signed 32bit
+  
+});
+
+/***  HIMLE RIA SYSTEM
+  ** 
+  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  ** 
+  **  This program is free software; you can redistribute it and/or modify it under the terms
+  **  of the GNU General Public License as published by the Free Software Foundation;
+  **  either version 2 of the License, or (at your option) any later version. 
+  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  **  See the GNU General Public License for more details. 
+  **  You should have received a copy of the GNU General Public License along with this program;
+  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  ***/
+
+HDynControl = HControl.extend({
+  componentName: 'dyncontrol',
+  componentBehaviour: ['view','control','window'],
+  constructor: function( _rect, _parent, _options ){
+    if(!_options) {
+      _options={};
+    }
+    var _defaults = HClass.extend({
+      minSize:   [24,54],
+      maxSize:   [16000,9000],
+      resizeW:   1,
+      resizeE:   1,
+      resizeN:   1,
+      resizeS:   1,
+      resizeNW:  [ 1, 1 ],
+      resizeNE:  [ 1, 1 ],
+      resizeSW:  [ 1, 1 ],
+      resizeSE:  [ 1, 1 ],
+      noResize:  false
+    });
+    _options = new (_defaults.extend(_options))();
+    if(_options.noResize){
+      _options.minSize = [_rect.width,_rect.height];
+      _options.maxSize = [_rect.width,_rect.height];
+      _options.resizeW = 0;
+      resizeE = 0;
+      resizeN = 0;
+      resizeS = 0;
+      resizeNW = [0,0];
+      resizeNE = [0,0];
+      resizeSW = [0,0];
+      resizeSE = [0,0];
+    }
+    if(this.isinherited) {
+      this.base(_rect, _parent, _options);
+    }
+    else {
+      this.isinherited = true;
+      this.base(_rect, _parent, _options);
+      this.isinherited = false;
+    }
+    this.presrveTheme = true;
+    this.setDraggable(true);
+    this._initActionFns();
+    this._initActionFlag();
+    if(!this.isinherited) {
+      this.draw();
+    }
+  },
+  drawRect: function(_leftChange,_topChange){
+    if(this.rect.width <this.options.minSize[0]){
+      var _dw=0-(this.options.minSize[0]-this.rect.width);
+      this.rect.setWidth( this.options.minSize[0]);
+      if(_leftChange){
+        this.rect.offsetBy( _dw, 0 );
+      }
+    }
+    else if(this.rect.width >this.options.maxSize[0]){
+      var _dw=0-(this.options.maxSize[0]-this.rect.width);
+      this.rect.setWidth( this.options.maxSize[0]);
+      if(_leftChange){
+        this.rect.offsetBy( _dw, 0 );
+      }
+    }
+    if(this.rect.height<this.options.minSize[1]){
+      var _dh=0-(this.options.minSize[1]-this.rect.height);
+      this.rect.setHeight(this.options.minSize[1]);
+      if(_topChange){
+        this.rect.offsetBy( 0, _dh );
+      }
+    }
+    else if(this.rect.height>this.options.maxSize[1]){
+      var _dh=0-(this.options.maxSize[1]-this.rect.height);
+      this.rect.setHeight(this.options.maxSize[1]);
+      if(_topChange){
+        this.rect.offsetBy( 0, _dh );
+      }
+    }
+    this.base();
+  },
+  draw: function(){
+    var _isDrawn = this.drawn;
+    this.base();
+    if(!_isDrawn){
+      this.buildStructure();
+    }
+  },
+  buildStructure: function(){
+    
+  },
+  _diffPoint: function(_x,_y){
+    return this._prevPoint.subtract(_x,_y);
+  },
+  
+  dynResizeNW: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setLeftTop(_this.rect.leftTop.subtract(_dp));
+    _this.drawRect(1,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeNE: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setRightTop(_this.rect.rightTop.subtract(_dp));
+    _this.drawRect(0,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeSW: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setLeftBottom(_this.rect.leftBottom.subtract(_dp));
+    _this.drawRect(1,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeSE: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setRightBottom(_this.rect.rightBottom.subtract(_dp));
+    _this.drawRect(0,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeW: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setLeft(_this.rect.left-_dp.x);
+    _this.drawRect(1,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeE: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setRight(_this.rect.right-_dp.x);
+    _this.drawRect(0,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeN: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setTop(_this.rect.top-_dp.y);
+    _this.drawRect(0,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynResizeS: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.setBottom(_this.rect.bottom-_dp.y);
+    _this.drawRect(0,0);
+    _this._prevPoint.set(_x,_y);
+  },
+  dynDrag: function(_this,_x,_y){
+    var _dp = _this._diffPoint(_x,_y);
+    _this.rect.offsetTo(_this.rect.leftTop.subtract(_dp));
+    _this.drawRect(1,1);
+    _this._prevPoint.set(_x,_y);
+  },
+  _initActionFns: function(){
+    this._actionFns = [];
+    var i, _this = this,
+    _resizeNW=0,_resizeNE=1,_resizeSW=2,_resizeSE=3,
+    _resizeW =4, _resizeE=5, _resizeN=6, _resizeS=7, _drag=8,
+    _actionFns=this._actionFns;
+    _actionFns[_resizeNW] = _this.dynResizeNW;
+    _actionFns[_resizeNE] = _this.dynResizeNE;
+    _actionFns[_resizeSW] = _this.dynResizeSW;
+    _actionFns[_resizeSE] = _this.dynResizeSE;
+    
+    _actionFns[_resizeW] = _this.dynResizeW;
+    _actionFns[_resizeE] = _this.dynResizeE;
+    _actionFns[_resizeN] = _this.dynResizeN;
+    _actionFns[_resizeS] = _this.dynResizeS;
+    
+    _actionFns[_drag] = _this.dynDrag;
+  },
+  _initActionFlag: function(){
+    this._actionFlag = -1;
+    this._actionRects = [];
+    var i,_rr,
+    _opts=this.options, _rect=this.rect,
+    _rectRules = [
+      // corners:
+      [0,0,_opts.resizeNW[0],_opts.resizeNW[1]], // NW
+      [_rect.width-_opts.resizeNE[0],0,_rect.width,_opts.resizeNE[1]], // NE
+      [0,_rect.height-_opts.resizeSW[1],_opts.resizeSW[0],_rect.height], // SW
+      [_rect.width-_opts.resizeSE[0],_rect.height-_opts.resizeSE[1],_rect.width,_rect.height], // SE
+      // borders:
+      [0,_opts.resizeN,_opts.resizeW,_rect.height-_opts.resizeS], // W
+      [_rect.width-_opts.resizeE,_opts.resizeN,_rect.width,_rect.height-_opts.resizeS], // E
+      [_opts.resizeW,0,_rect.width-_opts.resizeE,_opts.resizeN], // N
+      [_opts.resizeW,_rect.height-_opts.resizeS,_rect.width-_opts.resizeE,_rect.height], // S
+      // drag-area:
+      [_opts.resizeW,_opts.resizeN,_rect.width-_opts.resizeE,_rect.height-_opts.resizeS]
+    ];
+    for(i=0;i!=9;i++){
+      _rr = _rectRules[i];
+      this._actionRects.push( new HRect(_rr[0],_rr[1],_rr[2],_rr[3]) );
+    }
+  },
+  _detectActionFlag: function(){
+    var i,
+    _actionPoint = this._startPoint.subtract(this.rect.left,this.rect.top),
+    _actionRects = this._actionRects;
+    for(i=0;i!=9;i++){
+      if(_actionRects[i].contains(_actionPoint)){
+        this._actionFlag=i;
+        return;
+      }
+    }
+  },
+  startDrag: function(_x,_y,_isLeft){
+    this._startPoint = new HPoint(_x,_y);
+    this._prevPoint  = new HPoint(_x,_y);
+    this._startRect  = new HRect( this.rect );
+    this._detectActionFlag();
+    if(this._actionFlag==8){
+      this.setStyle('cursor','move');
+    }
+    this.bringToFront();
+    this.doDrag(_x,_y,_isLeft);
+  },
+  doDrag: function(_x,_y,_isLeft){
+    if(this._actionFlag!=-1){
+      this._actionFns[this._actionFlag](this,_x,_y);
+    }
+  },
+  endDrag: function(_x,_y,_isLeft){
+    this.doDrag(_x,_y,_isLeft);
+    if(this._actionFlag==8){
+      this.setStyle('cursor','default');
+    }
+    this._initActionFlag();
+  }
+});

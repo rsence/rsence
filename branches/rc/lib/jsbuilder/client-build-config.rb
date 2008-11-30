@@ -15,49 +15,107 @@
 $_INC_NAME = 'js.inc'
 
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','controls','servermessage','iefix']
+$_PACKAGE_NAMES = ['core','comm','controls','table','servermessage','iefix','richtext']
 $_PACKAGES = {
+  
+  ## The core package contains everything needed
+  ## to run the framework, except the default controls
   'core' => [
+    
+    # HClass
     'class',
+    
+    # Default settings and misc patches
     'common',
+    
+    # The "Ajax" object
     'ajax',
+    
+    # The ELEM handler
     'elem',
+    
+    # The EVENT handler
     'event',
+    
+    # SHA1 / MD5 / BASE64 encoder/decoder collection
     'sha',
+    
+    # Server communication package
     'transporter','valuemanager','value','jsloader',
+    
+    # Multi-control-single-value controller
     'valuematrix',
+    
+    # geometry
     'point','rect',
+    
+    # ui foundation
     'system','application','thememanager','markupview','view','control',
     'dyncontrol'
   ],
   
-  'controls' => [
-    'button','checkbox','radiobutton',
-    'stringview','textcontrol','textarea','slider','vslider',
-    'progressbar','progressindicator','imageview','splitview','stepper',
-    'passwordcontrol','divider','validatorview','window','tab',
-    'uploader'
+  # Stand-alone Server communication package
+  'comm' => [
+    'class','ajax',
+    'transporter','valuemanager','value','jsloader'
   ],
   
+  ## The default set of controls
+  'controls' => [
+    
+    # theme up to date:
+    'button','checkbox','radiobutton',
+    'stringview','textcontrol',
+    'uploader',
+    
+    # theme outdated:
+    'textarea','slider','vslider',
+    'progressbar','progressindicator','imageview','splitview','stepper',
+    'passwordcontrol','divider','validatorview','window','tab','imagebutton'
+  ],
+  
+  ## Table is such a big set of classes we include it separate from other controls
+  'table' => [
+    'databuffer','tablevalue','tableheadercolumn','tableheaderview',
+    'tablecornerview','tablecolumn','tablecontrol'
+  ],
+  
+  ## Rich text editing
+  'richtext' => [
+    'stylebutton','stylebuttonbar','richtextbar','richtextview','richtextcontrol'
+  ],
+  
+  ## Application to invoke when a client/server error is encountered ("Reload" dialog)
   'servermessage' => [
     'reloadapp'
   ],
   
+  ## Collection of IE6 -related fixes
   'iefix' => [
     'iefix'
   ]
 }
 
+# All in one -package
+$_PACKAGE_NAMES.push('allinone')
+$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['table'] + $_PACKAGES['richtext']
+
+
+# Themes to include
 $_THEMES = ['default']
 
 # BASEPATH COMES FROM THE .sh FILE
-$_SRC_PATH = [ File.join(BASEPATH,'..') ]
-$_REL_PATH = ARGV[0]
+$_SRC_PATH = [ File.join(BASEPATH,'src') ]
+
+if ARGV.empty?
+  $_REL_PATH = File.join( BASEPATH, 'client' )
+else
+  $_REL_PATH = ARGV[0]
+end
 
 $_HTMLTIDY_CONF_PATH= File.join(BASEPATH,'conf','htmltidy.config')
 
-# REPLACEMENT ("COMPRESSION") PREFIX
-#REPL_PREFIX = '_'
+# REPLACEMENT "COMPRESSION" PREFIX
 $_REPL_PREFIX= '_'
 
 $_NO_OBFUSCATION = ARGV.include?('-noo')

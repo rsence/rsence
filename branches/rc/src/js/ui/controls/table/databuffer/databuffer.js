@@ -42,10 +42,10 @@ HDataBuffer = HClass.extend({
     return this._endRow + this._length;
   },
   lowerLimit: function() {
-    return this._startBufferRow + parseInt(this._length / 2);
+    return this._startBufferRow + parseInt(this._length / 2, 10);
   },
   upperLimit: function() {
-    return this._startBufferRow + (this._bufferLenth-1)*(this._endRow - this._startRow) - parseInt(this._length / 2);
+    return this._startBufferRow + (this._bufferLenth-1)*(this._endRow - this._startRow) - parseInt(this._length / 2, 10);
   },
   endBufferStartRow: function() {
     return (this._bufferLenth - 1) * this._length;
@@ -73,9 +73,9 @@ HDataBuffer = HClass.extend({
   },
   getNewUpBufferIndexes: function(_startIndex) {
     if (_startIndex == 0) {
-      return [2*this._length,this._length]
+      return [2*this._length,this._length];
     } else if (_startIndex == 2*this._length) {
-      return [this._length,0]
+      return [this._length,0];
     } else if (_startIndex == this._length) {
       return [0,2*this._length];
     }

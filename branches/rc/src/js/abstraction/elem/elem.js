@@ -179,12 +179,6 @@ ELEM = {
     if(_elemTodoIdx!=-1){
       _this._elemTodo.splice(_elemTodoIdx,1);
     }
-    //try{_elem.innerHTML='';}catch(e){}
-    //_this.setAttr(_id,'id','',true);
-    //console.log('ret');_this._flushing=false;return;
-    //_this.delAttr(_id,'id');
-    //_this.delAttr(_id,'ctrl');
-    
     _this._initCache(_id);
     if(_this._enableRecycler){
       _recycler._countIn++;
@@ -353,7 +347,6 @@ ELEM = {
   
   _ieFixesNeeded: false,
   flushLoop: function(_delay){
-    //console.log('flushLoop('+_delay+')');
     var _this=ELEM; _this._flushLoopCount++;
     if(_this._is_ie6&&(_this._flushLoopCount%5==0)&&_this._ieFixesNeeded){
       //window.status = 'traversetree0:'+_this._flushLoopCount;
@@ -386,7 +379,6 @@ ELEM = {
     _elemTodo=_this._elemTodo;
     _loopMaxL=_elemTodo.length;
     _currTodo=_elemTodo.splice(0,_loopMaxL);
-    //console.log('flushing:');
     var _flushStartTime = new Date().getTime();
     for(i=0;i<_loopMaxL;i++){
       _this._flushLoopFlushed++;
@@ -406,7 +398,6 @@ ELEM = {
     if(_this._elemTodo.length==0&&_this._needFlush){
       _this._needFlush=false;
     }
-    //console.log('flush took '+(new Date().getTime()-_flushStartTime));
     _this._flushing = false;
   },
   _flushAttrCache: function(_id){
@@ -416,23 +407,18 @@ ELEM = {
     for(i=0;i!=_iMax;i++){
       _key=_currTodo.pop();
       _val=_attrCache[_key];
-      //console.log('id:'+_id+' key:'+_key+' val:'+_val);
-      //console.log(_elem);
-      //console.log('real val:'+_this.getAttr(_id,_key,true));
       _elem.setAttribute(_key,_val);
       //_elem[_key]=_val;
     }
   },
   getAttr: function(_id,_key,_bypass){
     var _this=ELEM,_attrVal=_this._attrCache[_id][_key],_val;
-    //console.log('_attrVal:'+_attrVal);
     if(_attrVal!==undefined&&!_bypass){return _attrVal;}
     var _elem=_this._elements[_id];
     if(_elem.getAttribute(_key)==null){
       _elem[_key]='';
     }
     _val=_elem.getAttribute(_key);
-    //console.log(_val+'=getAttr(id:'+_id+', key:'+_key+')');
     _this._attrCache[_id][_key]=_val;
     return _val;
   },
@@ -574,7 +560,6 @@ ELEM = {
       _this._initCache(_id);
       var _cached = _this._styleCache[ _id ];
     }
-    //console.log('setStyle(id:',_id,',key:',_key,',value:',_value,')');
     _differs=_value!==_cached[_key];//;_this.getStyle(_id,_key);
     if(_differs){
       _this._setStyleDiffCount++;
@@ -697,7 +682,7 @@ ELEM = {
       /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
 
             /*  idx: 10 for non-ie */
-      /* 10 */       "console.log('elemS:',_elemS,'key:',_key,'val:',_cached[_key]);_elemS.setProperty(_key,_cached[_key],'');}}};"
+      /* 10 */       "_elemS.setProperty(_key,_cached[_key],'');}}};"
     ];
     if(_this._is_ie){
       _flushStyleCacheTmpl.pop();

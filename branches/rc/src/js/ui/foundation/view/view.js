@@ -641,12 +641,9 @@ HView = HClass.extend({
     this._domElementBindings = [];
     
     this.drawn = false;
-    console.log(ELEM.get(this.elemId));
     
     // Remove the DOM object itself
     ELEM.del(this.elemId);
-    
-    console.log('died');
     
     delete this.rect;
     
