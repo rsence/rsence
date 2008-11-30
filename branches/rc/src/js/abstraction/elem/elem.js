@@ -513,6 +513,8 @@ ELEM = {
       }
     }
   },
+  
+/***
   // sets style key to value of id, bypass sets immediately
   printStats: function(){
     var _this=ELEM,i=0,_tagName,_tagLen,_countIn,_countOut,_allCountOut=0;
@@ -557,6 +559,7 @@ ELEM = {
     console.log('  style cache saved '+(_this._getStyleCount-_this._getStyleMissCount)+' of '+_this._getStyleCount+' ('+Math.round(((_this._getStyleCount-_this._getStyleMissCount)/_this._getStyleCount)*100)+'%) DOM style gets');
     console.log('  style buffer and cache saved '+(_this._setStyleCount-_this._flushStylCount)+' of '+_this._setStyleCount+' ('+Math.round(((_this._setStyleCount-_this._flushStylCount)/_this._setStyleCount)*100)+'%) total DOM style sets');
   },
+***/
   setStyle: function(_id,_key,_value,_bypass){
     var _this=ELEM,_cached=_this._styleCache[ _id ],
         _elems=_this._elements,_differs,_styleTodo;

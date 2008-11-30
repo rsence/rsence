@@ -149,34 +149,34 @@ HTableControl = HControl.extend({
     }
     
     // calculates first and last visible rows
-    var _startingRow = this._rowAtPoint(new HPoint(0,this._scrollRect.top));
-    var _endingRow = this._rowAtPoint(new HPoint(0,this._scrollRect.bottom));
-    var _startingColumn, _endingColumn;
+    var _startRow = this._rowAtPoint(new HPoint(0,this._scrollRect.top));
+    var _endRow = this._rowAtPoint(new HPoint(0,this._scrollRect.bottom));
+    var _startColumn, _endColumn;
     var _xPos = this._scrollRect.left;
     var i = 0;
-    // starting column
+    // start column
     while (i < this._tableColumns.length && _xPos > this._columnOrigins[i]) {
       i++;
     }
-    _startingColumn = i-1;
+    _startColumn = i-1;
     // happens when _xPos == 0
-    if (_startingColumn==-1) {
-      _startingColumn = 0;
+    if (_startColumn==-1) {
+      _startColumn = 0;
     }
     var _xPos = this._scrollRect.right;
-    // ending column
+    // end column
     while (i < this._tableColumns.length && _xPos > this._columnOrigins[i]) {
       i++;
     }
-    _endingColumn = i-1;
-        if (_endingColumn==-1) {
-      _endingColumn = this._tableColumns.length-1;
+    _endColumn = i-1;
+        if (_endColumn==-1) {
+      _endColumn = this._tableColumns.length-1;
     }
     
     var _partRowsUpdated = false;
     var _partUpRowsUpdated = false;
     var _allRowsUpdated = false;
-    for (var i = _startingColumn; i <= _endingColumn; i++) {
+    for (var i = _startColumn; i <= _endColumn; i++) {
         // creates visible HTableColumn it not created
         if ( this._tableColumns[i].created == false) {
           var _columnRect =  new HRect(
@@ -221,7 +221,7 @@ HTableControl = HControl.extend({
         
         if (this._dataRowBufferInitialized[i] == false) {
         
-          this._initializeRows(i, _startingRow, _endingRow);
+          this._initializeRows(i, _startRow, _endRow);
           this._dataRowBufferInitialized[i] = true;
         }
         
@@ -249,10 +249,10 @@ HTableControl = HControl.extend({
         
         
         // is within the buffer
-        if (!this._reloading && this._dataRowBufferIndex <= _startingRow && _startingRow < this._dataRowBufferIndex + this.tableViewDefaults.bufferLength * this._dataBufferViewLength) {//check correct limits
+        if (!this._reloading && this._dataRowBufferIndex <= _startRow && _startRow < this._dataRowBufferIndex + this.tableViewDefaults.bufferLength * this._dataBufferViewLength) {//check correct limits
           var _dataBuffer = new HDataBuffer(
-            _startingRow,
-            _endingRow,
+            _startRow,
+            _endRow,
             this._dataRowBufferIndex,
             this._dataRowBufferEndIndex,
             this._dataBufferViewLength
@@ -262,7 +262,7 @@ HTableControl = HControl.extend({
           var _rowUpperLimit = _dataBuffer.upperLimit();
           // at the lower end
           // remember to handle other rows too
-          if (_startingRow > _rowUpperLimit) {
+          if (_startRow > _rowUpperLimit) {
             _partRowsUpdated = true;
             // rows are moved this location
             var _start = this._dataStartBufferIndex;
@@ -282,7 +282,7 @@ HTableControl = HControl.extend({
             
             
             
-          } else if (_startingRow <= _rowLowerLimit) {
+          } else if (_startRow <= _rowLowerLimit) {
             
             _partUpRowsUpdated = true;
             var _start = this._dataEndBufferIndex;
@@ -305,15 +305,15 @@ HTableControl = HControl.extend({
           
           _allRowsUpdated = true;
           // lets reset things
-          var _dataBuffer = new HDataBuffer(_startingRow, _endingRow,0,0,this._dataBufferViewLength);
-          var _startingBufferRow = _dataBuffer.startingRow();
-          var _endingBufferRow = _dataBuffer.endingRow();
+          var _dataBuffer = new HDataBuffer(_startRow, _endRow,0,0,this._dataBufferViewLength);
+          var _startBufferRow = _dataBuffer.startRow();
+          var _endBufferRow = _dataBuffer.endRow();
           var _start = 0;
-          var _yPos = _startingBufferRow * this.options.rowHeight;
+          var _yPos = _startBufferRow * this.options.rowHeight;
           this._updateView(
             _start,
-            _startingBufferRow,
-            _startingBufferRow + this._dataBufferViewLength*3,
+            _startBufferRow,
+            _startBufferRow + this._dataBufferViewLength*3,
             i,
             _yPos,
             _tableColumn
@@ -326,7 +326,7 @@ HTableControl = HControl.extend({
       // below cannot be updated before all the columns have been handled
       // update the buffer index when all the rows have been updated
       if (_partRowsUpdated == true) {
-        var _dataBuffer = new HDataBuffer(_startingRow, _endingRow,0,0,this._dataBufferViewLength);
+        var _dataBuffer = new HDataBuffer(_startRow, _endRow,0,0,this._dataBufferViewLength);
         var _indexes = _dataBuffer.getNewDownBufferIndexes(this._dataStartBufferIndex);
         this._dataStartBufferIndex = _indexes[0];
         this._dataEndBufferIndex = _indexes[1];
@@ -337,7 +337,7 @@ HTableControl = HControl.extend({
       
       // update the buffer index when all the rows have been updated
       if (_partUpRowsUpdated == true) {
-        var _dataBuffer = new HDataBuffer(_startingRow, _endingRow,0,0,this._dataBufferViewLength);
+        var _dataBuffer = new HDataBuffer(_startRow, _endRow,0,0,this._dataBufferViewLength);
         var _indexes = _dataBuffer.getNewUpBufferIndexes(this._dataStartBufferIndex);
         this._dataStartBufferIndex = _indexes[0];
         this._dataEndBufferIndex = _indexes[1];
@@ -345,13 +345,13 @@ HTableControl = HControl.extend({
         this._dataRowBufferIndex -= this._dataBufferViewLength;
       }
       if (_allRowsUpdated == true) {
-        var _dataBuffer = new HDataBuffer(_startingRow, _endingRow,0,0,this._dataBufferViewLength);
+        var _dataBuffer = new HDataBuffer(_startRow, _endRow,0,0,this._dataBufferViewLength);
         this._dataStartBufferIndex = 0;
         this._dataEndBufferIndex = _dataBuffer.endBufferStartRow();
-        this._dataRowBufferIndex = _startingRow - this._dataBufferViewLength;
+        this._dataRowBufferIndex = _startRow - this._dataBufferViewLength;
       }
       // tells to the htablevalue where the view area and the buffer is
-      this.data.updateBuffer(_startingRow,_endingRow);
+      this.data.updateBuffer(_startRow,_endRow);
   },
   _updateView: function(_start, _startRealRow, _endRealRow, _columnIndex, _locationY, _item) {
     var _value;
@@ -368,19 +368,19 @@ HTableControl = HControl.extend({
       _start++;
     }
   },
-  _initializeRows: function(_columnIndex, _startingRow, _endingRow) {
+  _initializeRows: function(_columnIndex, _startRow, _endRow) {
     
     var _tableColumn = this.tableColumns[_columnIndex];
     if (!this._dataBufferViewLength) {
-      this._dataBufferViewLength = _endingRow - _startingRow;
+      this._dataBufferViewLength = _endRow - _startRow;
     }
-    var _dataBuffer = new HDataBuffer(_startingRow, _endingRow,0,0,this._dataBufferViewLength);
-    var _startingBufferRow = _dataBuffer.startingRow();
-    var _endingBufferRow = _dataBuffer.endingRow();
+    var _dataBuffer = new HDataBuffer(_startRow, _endRow,0,0,this._dataBufferViewLength);
+    var _startBufferRow = _dataBuffer.startRow();
+    var _endBufferRow = _dataBuffer.endRow();
     
-    this._dataRowBufferIndex = _startingBufferRow;//buffer start
-    this._dataRowBufferEndIndex = _endingBufferRow;//buffer end
-    var _yPos = _startingBufferRow * this.options.rowHeight;
+    this._dataRowBufferIndex = _startBufferRow;//buffer start
+    this._dataRowBufferEndIndex = _endBufferRow;//buffer end
+    var _yPos = _startBufferRow * this.options.rowHeight;
     
     // this._dataStartBufferIndex = 0;
     this._dataEndBufferIndex = _dataBuffer.endBufferStartRow();
@@ -391,7 +391,7 @@ HTableControl = HControl.extend({
       _dataView = ITextControl
     }
     var _view, _viewRect, _value;
-    for (var _rowIndex=_startingBufferRow;_rowIndex<_endingBufferRow;_rowIndex++) {
+    for (var _rowIndex=_startBufferRow;_rowIndex<_endBufferRow;_rowIndex++) {
       _value = this.data.getCell(this,_rowIndex,this._tableColumns[_columnIndex].index);
       _value = (_value) ? _value : "1";
       _viewRect = new HRect(0,_yPos,_tableColumn.rect.width,_yPos + this.options.rowHeight);
