@@ -35,10 +35,7 @@ HWindow = HDynControl.extend({
   componentName:      'window',
   constructor: function(_rect,_parentApp,_options){
     if(_parentApp.componentBehaviour[0]!='app'){
-      console.log(
-        "Himle.ComponentParentError",
-        "HWindow parent must be an HApplication instance!"
-      );
+      throw( "Himle.ComponentParentError: HWindow parent must be an HApplication instance!" );
     }
     if(!_options) {
       _options={};
@@ -54,7 +51,8 @@ HWindow = HDynControl.extend({
       resizeNE:  [ 2, 2 ],
       resizeSW:  [ 2, 2 ],
       resizeSE:  [ 16, 16 ],
-      noResize:  false
+      noResize:  false,
+      closeButton: false
     });
     _options = new (_defaults.extend(_options))();
     if(_options.noResize){
@@ -70,7 +68,6 @@ HWindow = HDynControl.extend({
       resizeSE = [0,0];
     }
     this.base(_rect,_parentApp,_options);
-    this.windowView = this; // backwards-compatibility, will go away!
     HSystem.windowFocus(this);
   },
   gainedActiveStatus: function(){
@@ -83,6 +80,9 @@ HWindow = HDynControl.extend({
   windowBlur: function(){
     this.toggleCSSClass(this.elemId, 'inactive', true);
     this.setStyle('cursor','default');
+  },
+  windowClose: function(){
+    this.die();
   }
 });
 

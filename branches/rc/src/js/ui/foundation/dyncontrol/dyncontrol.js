@@ -19,9 +19,14 @@ HDynControl = HControl.extend({
     if(!_options) {
       _options={};
     }
+    var _winSize = ELEM.windowSize();
     var _defaults = HClass.extend({
+      minX:      0,
+      minY:      0,
+      maxX:      _winSize[0],
+      maxY:      _winSize[1],
       minSize:   [24,54],
-      maxSize:   [16000,9000],
+      maxSize:   [_winSize[0],_winSize[1]],
       resizeW:   1,
       resizeE:   1,
       resizeN:   1,
@@ -53,7 +58,7 @@ HDynControl = HControl.extend({
       this.base(_rect, _parent, _options);
       this.isinherited = false;
     }
-    this.presrveTheme = true;
+    this.preserveTheme = true;
     this.setDraggable(true);
     this._initActionFns();
     this._initActionFlag();
@@ -61,36 +66,37 @@ HDynControl = HControl.extend({
       this.draw();
     }
   },
-  drawRect: function(_leftChange,_topChange){
-    if(this.rect.width <this.options.minSize[0]){
-      var _dw=0-(this.options.minSize[0]-this.rect.width);
-      this.rect.setWidth( this.options.minSize[0]);
+  _checkConstraints: function(_leftChange,_topChange){
+    var _this = this, _rect = _this.rect, _options = _this.options;
+    if(_rect.width < _options.minSize[0]){
+      var _dw=0-(_options.minSize[0]-_rect.width);
+      _rect.setWidth( _options.minSize[0]);
       if(_leftChange){
-        this.rect.offsetBy( _dw, 0 );
+        _rect.offsetBy( _dw, 0 );
       }
     }
-    else if(this.rect.width >this.options.maxSize[0]){
-      var _dw=0-(this.options.maxSize[0]-this.rect.width);
-      this.rect.setWidth( this.options.maxSize[0]);
+    else if(_rect.width > _options.maxSize[0]){
+      var _dw=0-(_options.maxSize[0]-_rect.width);
+      _rect.setWidth( _options.maxSize[0]);
       if(_leftChange){
-        this.rect.offsetBy( _dw, 0 );
+        _rect.offsetBy( _dw, 0 );
       }
     }
-    if(this.rect.height<this.options.minSize[1]){
-      var _dh=0-(this.options.minSize[1]-this.rect.height);
-      this.rect.setHeight(this.options.minSize[1]);
+    if(_rect.height < _options.minSize[1]){
+      var _dh=0-(_options.minSize[1]-_rect.height);
+      _rect.setHeight(_options.minSize[1]);
       if(_topChange){
-        this.rect.offsetBy( 0, _dh );
+        _rect.offsetBy( 0, _dh );
       }
     }
-    else if(this.rect.height>this.options.maxSize[1]){
-      var _dh=0-(this.options.maxSize[1]-this.rect.height);
-      this.rect.setHeight(this.options.maxSize[1]);
+    else if(_rect.height > _options.maxSize[1]){
+      var _dh=0-(_options.maxSize[1]-_rect.height);
+      _rect.setHeight(_options.maxSize[1]);
       if(_topChange){
-        this.rect.offsetBy( 0, _dh );
+        _rect.offsetBy( 0, _dh );
       }
     }
-    this.base();
+    _this.drawRect();
   },
   draw: function(){
     var _isDrawn = this.drawn;
@@ -103,62 +109,53 @@ HDynControl = HControl.extend({
     
   },
   _diffPoint: function(_x,_y){
-    return this._prevPoint.subtract(_x,_y);
+    return this._startPoint.subtract(_x,_y);
   },
   
   dynResizeNW: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setLeftTop(_this.rect.leftTop.subtract(_dp));
-    _this.drawRect(1,1);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setLeftTop(_this._startRect.leftTop.subtract(_dp));
+    _this._checkConstraints(1,1);
   },
   dynResizeNE: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setRightTop(_this.rect.rightTop.subtract(_dp));
-    _this.drawRect(0,1);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setRightTop(_this._startRect.rightTop.subtract(_dp));
+    _this._checkConstraints(0,1);
   },
   dynResizeSW: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setLeftBottom(_this.rect.leftBottom.subtract(_dp));
-    _this.drawRect(1,0);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setLeftBottom(_this._startRect.leftBottom.subtract(_dp));
+    _this._checkConstraints(1,0);
   },
   dynResizeSE: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setRightBottom(_this.rect.rightBottom.subtract(_dp));
-    _this.drawRect(0,0);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setRightBottom(_this._startRect.rightBottom.subtract(_dp));
+    _this._checkConstraints(0,0);
   },
   dynResizeW: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setLeft(_this.rect.left-_dp.x);
-    _this.drawRect(1,0);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setLeft(_this._startRect.left-_dp.x);
+    _this._checkConstraints(1,0);
   },
   dynResizeE: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setRight(_this.rect.right-_dp.x);
-    _this.drawRect(0,0);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setRight(_this._startRect.right-_dp.x);
+    _this._checkConstraints(0,0);
   },
   dynResizeN: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setTop(_this.rect.top-_dp.y);
-    _this.drawRect(0,1);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setTop(_this._startRect.top-_dp.y);
+    _this._checkConstraints(0,1);
   },
   dynResizeS: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.setBottom(_this.rect.bottom-_dp.y);
-    _this.drawRect(0,0);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.setBottom(_this._startRect.bottom-_dp.y);
+    _this._checkConstraints(0,0);
   },
   dynDrag: function(_this,_x,_y){
     var _dp = _this._diffPoint(_x,_y);
-    _this.rect.offsetTo(_this.rect.leftTop.subtract(_dp));
-    _this.drawRect(1,1);
-    _this._prevPoint.set(_x,_y);
+    _this.rect.offsetTo(_this._startRect.leftTop.subtract(_dp));
+    _this._checkConstraints(1,1);
   },
   _initActionFns: function(){
     this._actionFns = [];
@@ -215,7 +212,6 @@ HDynControl = HControl.extend({
   },
   startDrag: function(_x,_y,_isLeft){
     this._startPoint = new HPoint(_x,_y);
-    this._prevPoint  = new HPoint(_x,_y);
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
     if(this._actionFlag==8){
