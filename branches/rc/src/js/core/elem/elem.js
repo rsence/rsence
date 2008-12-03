@@ -185,7 +185,9 @@ ELEM = {
     } else {
       _this._freeElemIds.push(_id);
       var _parentNode = _elem.parentNode;
-      _parentNode.removeChild(_elem);
+      if(_parentNode!==null){
+        _parentNode.removeChild(_elem);
+      }
       _elem = null;
       _this._elements[_id] = null;
     }
