@@ -110,7 +110,14 @@ ComponentSampler = HApplication.extend({
     this.window = new HWindow(
       new HRect(100,101,740,501),
       this, {
-        label: 'Component Sampler'
+        label: 'Component Sampler',
+        minSize: [420,320],
+        maxSize: [800,600],
+        resizeW: 3,
+        resizeE: 3,
+        resizeN: 3,
+        resizeS: 3,
+        closeButton: true
       }
     );
     
