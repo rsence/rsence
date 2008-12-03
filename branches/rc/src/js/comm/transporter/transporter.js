@@ -69,7 +69,7 @@ HTransporterDebug = false;
  *  ses_id    - A value that is the reported in each request by the key 'ses_id'
  *  syncDelay - An integer value (in ms) that the client waits before starting the next request
  */
-HTransporter = Base.extend({
+HTransporter = HClass.extend({
   
   constructor: null,
   

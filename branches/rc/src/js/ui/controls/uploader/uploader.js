@@ -80,7 +80,7 @@ HUploader = HControl.extend({
     }
   },
   refreshValue: function(){
-    if(!(typeof this.value == 'string')){return;}
+    if(typeof this.value != 'string'){return;}
     if(this.value.indexOf(':::')<1){return;}
     var _stateAndKey = this.value.split(':::');
     if(_stateAndKey.length!=2){

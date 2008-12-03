@@ -96,6 +96,11 @@ $_PACKAGES = {
   ]
 }
 
+# Backwards compatibility
+$_PACKAGE_NAMES.push('basic')
+$_PACKAGES['basic'] = $_PACKAGES['controls']
+
+
 # All in one -package
 $_PACKAGE_NAMES.push('allinone')
 $_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['table'] + $_PACKAGES['richtext']
