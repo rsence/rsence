@@ -15,8 +15,12 @@
   #  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
   ###
 
+require 'rubygems'
+require 'json'
+
 BINPATH  = File.split( File.expand_path( __FILE__ ) )[0]
 BASEPATH = File.split(BINPATH)[0]
+PARENT_PATH = File.split(BASEPATH)[0]
 BUILDER_BINPATH = File.join(BASEPATH,'lib','jsbuilder','bin')
 CONFPATH = File.join(BASEPATH,'conf')
 $LOAD_PATH << CONFPATH
@@ -27,10 +31,47 @@ require 'jsbuilder/platform_bins'
 require 'jsbuilder/client-build-config'
 require 'jsbuilder/js_builder'
 
-# if local custom client build override:
+# standard build configuration
 if File.exist? File.join(CONFPATH,'client-build-config.rb')
-  require 'conf/client-build-config'
+  require File.join(CONFPATH,'client-build-config')
 end
 
-JSBuilder.new.run
+# local custom build configuration override:
+if File.exist?(File.join(PARENT_PATH,'conf','client-build-config.rb'))
+  require File.join(PARENT_PATH,'conf','client-build-config')
+end
+
+# compile client package
+js_builder = JSBuilder.new
+js_builder.run
+
+# compile "all-in-one" css and html resources
+$_THEMES.each do |theme_name|
+  html_templates = js_builder.html( theme_name )
+  html2js_themes = []
+  css_templates = []
+  theme_css_path_prefix = File.join( $_REL_PATH, 'themes', theme_name, 'css' )
+  html_templates.each do |tmpl_name,tmpl_html|
+    html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
+    theme_css_template_path = File.join( theme_css_path_prefix, tmpl_name+'.css' )
+    if File.exist?( theme_css_template_path )
+      css_templates.push( File.read( theme_css_template_path ) )
+    end
+  end
+  theme_html_js  = "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "};"
+  theme_html_js += "HNoComponentCSS.push(#{theme_name.to_json});"
+  theme_html_js += "HNoCommonCSS.push(#{theme_name.to_json});"
+  theme_html_js += "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
+  theme_html_js = js_builder.pre_convert(theme_html_js)
+  theme_html_js_path = File.join( $_DESTINATION_PATH, theme_name+'_theme.js' )
+  theme_html_gz_path = File.join( $_DESTINATION_PATH, theme_name+'_theme.gz' )
+  js_builder.save_file( theme_html_js_path, theme_html_js )
+  js_builder.gzip_file( theme_html_js_path, theme_html_gz_path )
+  theme_css_path = File.join( theme_css_path_prefix, theme_name+'_theme.css' )
+  js_builder.save_file( theme_css_path, css_templates.join("\n") )
+  theme_css_path_gz = File.join( theme_css_path+'.gz' )
+  js_builder.gzip_file( theme_css_path, theme_css_path_gz )
+end
+
+
 

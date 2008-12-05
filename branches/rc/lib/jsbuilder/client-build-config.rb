@@ -13,7 +13,7 @@
   ###
 
 $_INC_NAME = 'js.inc'
-
+$_DONT_PACK_UNDEFINED = false
 # sorted by output order:
 $_PACKAGE_NAMES = ['core','comm','controls','table','servermessage','iefix','richtext']
 $_PACKAGES = {

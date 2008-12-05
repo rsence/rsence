@@ -28,6 +28,9 @@ class JSBuilder
     if dst_size > 0
       percent1 = (100*(jsc_size/dst_size.to_f)).to_i.to_s + '%'
       percent2 = (100*(gz_size/dst_size.to_f)).to_i.to_s + '%'
+    else
+      percent1 = '-'
+      percent2 = '-'
     end
     jsc_name = jsc_path.split('/')[-1]
     puts  "#{jsc_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(3)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(3)}"
@@ -241,6 +244,7 @@ class JSBuilder
       item_name = File.split(src_name)[1]
       
       unless @release_order.include?(item_name)
+        next if $_DONT_PACK_UNDEFINED
         puts  "no order defined: #{item_name}"
         pkg_name = read_file( releasefilepath ).strip
         #puts "pkg_name: #{pkg_name.inspect}"

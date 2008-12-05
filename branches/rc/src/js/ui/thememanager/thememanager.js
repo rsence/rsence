@@ -36,6 +36,7 @@
 HDefaultThemePath = '/H/themes';
 HDefaultThemeName = 'default';
 HNoComponentCSS = [];
+HNoCommonCSS = [];
 HThemeHasIE6GifsInsteadOfPng = [];
 
 /** HDefaultThemeMode:
@@ -318,7 +319,7 @@ HThemeManager = HClass.extend({
   getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
     
     /* Load Theme-Specific CSS: */
-    if (!this._cssCache[_themeName]){
+    if(!this._cssCache[_themeName] && (HNoCommonCSS.indexOf(_themeName)==-1)){
       var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
       this._cssCache[_themeName] = {};
       this.loadCSS( _commonCssUrl );
