@@ -1,68 +1,88 @@
-.default .textcontrol {
-  cursor: pointer;
+
+.textcontrol_input {
   position: absolute;
-  left: 0px; right: 0px; top: 0px; bottom: 0px;
-  text-align: center;
   display: block;
-  white-space: nowrap;
-  width: auto;
-  padding: 0;
-}
-.default .textcontrol .state {
-  position: absolute;
-  left: 1px; right: 1px; top: 1px; bottom: 1px;
-  border: 1px solid #fff;
-  line-height: 0px;
-  background-color: #f0f0f0;
-}
-.default .textcontrol #corner {
-  position: absolute; background-color: #fff;
-  line-height: 1px; width:1px; height: 1px;
-}
-.default .textcontrol .bg {
-  position: absolute;
-  left: 0px; right: 0px; top: 0px; bottom: 0px;
-  padding: 1px;
-  border: 1px solid #ccc;
-}
-.enabled .textcontrol #border {
-  background-color: #aaa;
-}
-.active > .textcontrol #border {
-  background-color: #fb9;
-}
-.default .textcontrol .corner {
-  position: absolute; background-color: #fff;
-  line-height: 1px; width:1px; height: 1px;
-}
-.default .textcontrol .corner-nw {
-  left: 0px; top: 0px;
-}
-.default .textcontrol .corner-ne {
-  right: 0px; top: 0px;
-}
-.default .textcontrol .corner-sw {
-  left: 0px; bottom: 0px;
-}
-.default .textcontrol .corner-se {
-  right: 0px; bottom: 0px;
-}
-.default .textcontrol .vertical-middle {
-  position:absolute;
-  left:0px;top:50%;right:0px;
-}
-.default .textcontrol input {
-  position: absolute;
-  left: 1px; right: 1px; top: 1px; bottom: 1px;
-  line-height: 13px; vertical-align: middle; height: 15px;
-  border: 0;
-  padding-left: 4px; padding-right: 4px;
+  left: -2px; top: -2px;
+  right: -2px; bottom: -2px;
   background-color: transparent;
-  font-size: 11px;
-  font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
-  color: #666;
+  vertical-align: middle;
+  padding-left: 4px;
+  padding-top: 2px;
+  border: 0px transparent solid;
 }
 
-.disabled .textcontrol {
-  opacity: 0.75;
+.textcontrol_bg {
+  position: absolute;
+  left: 2px; top: 2px; right: 2px; bottom: 2px;
+  background-color: #fff;
 }
+
+
+
+.textcontrol_ne, .textcontrol_nw, .textcontrol_se, .textcontrol_sw {
+  position: absolute;
+  width: 7px; height: 7px;
+  background-repeat: no-repeat;
+  background-image: #{this.getCssFilePath('textcontrol_parts1.png')};
+}
+
+.textcontrol_nw {
+  left: 0px; top: 0px;
+  background-position: 0px 0px;
+}
+
+.textcontrol_ne {
+  right: 0px; top: 0px;
+  background-position: -7px 0px;
+}
+
+.textcontrol_sw {
+  left: 0px; bottom: 0px;
+  background-position: 0px -7px;
+}
+
+.textcontrol_se {
+  right: 0px; bottom: 0px;
+  background-position: -7px -7px;
+}
+
+
+
+.textcontrol_w, .textcontrol_e {
+  position: absolute;
+  width: 7px; top: 7px; bottom: 7px;
+  background-repeat: repeat-y;
+  background-image: #{this.getCssFilePath('textcontrol_parts3.png')};
+}
+
+.textcontrol_w {
+  left: 0px;
+  background-position: 0px 0px;
+}
+
+.textcontrol_e {
+  right: 0px;
+  background-position: -7px 0px;
+}
+
+
+
+.textcontrol_n, .textcontrol_s {
+  position: absolute;
+  height: 7px; left: 7px; right: 7px;
+  background-repeat: repeat-x;
+  background-image: #{this.getCssFilePath('textcontrol_parts2.png')};
+}
+
+.textcontrol_n {
+  top: 0px;
+  background-position: 0px 0px;
+}
+
+.textcontrol_s {
+  bottom: 0px;
+  background-position: 0px -7px;
+}
+
+
+

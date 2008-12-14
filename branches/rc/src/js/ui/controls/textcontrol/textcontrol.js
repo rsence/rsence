@@ -41,8 +41,47 @@ HTextControl = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect, _parentClass, _options) {
+    this.styleDefaults();
     this.base(_rect, _parentClass, _options);
     this.setTextEnter(true);
+  },
+  
+  styleDefaults: function(){
+    // replace with integer pixel offsets in the template, if used.
+    // [-2,-2,-2,-2] for -2px offsets on each edge (left, top, right, bottom)
+    // these are used for re-calculating the size of the input element
+    this.inputFieldOffsets = false;
+    
+  },
+  
+  onIdle: function(){
+    this.base();
+    if(this['markupElemIds']!==undefined){
+      if(this.markupElemIds.value) {
+        if(this.inputFieldOffsets){
+          var _size   = ELEM.getSize(this.elemId),
+              _width  = _size[0],
+              _height = _size[1],
+              _left   = this.inputFieldOffsets[0],
+              _top    = this.inputFieldOffsets[1],
+              _right  = this.inputFieldOffsets[2],
+              _bottom = this.inputFieldOffsets[3],
+              _input  = this.markupElemIds.value,
+              _inputWidth = (_width-_right-_left),
+              _inputHeight = (_height-_bottom-_top);
+          
+          ELEM.setStyle(_input,'left',_left+'px');
+          ELEM.setStyle(_input,'top',_right+'px');
+          ELEM.setStyle(_input,'width',_inputWidth+'px');
+          ELEM.setStyle(_input,'height',_inputHeight+'px');
+          
+          if(BROWSER_TYPE.safari){
+            ELEM.setStyle(_input,'line-height',(_inputHeight)+'px');
+          }
+          
+        }
+      }
+    }
     
   },
   
@@ -76,8 +115,7 @@ HTextControl = HControl.extend({
   textEnter: function(){
     if(this['markupElemIds']===undefined){return;}
     var _value = ELEM.get(this.markupElemIds.value).value;
-    //console.log('textEnter, this.value:',this.value,' elem value:',_value);
-    if(_value!=this.value){
+    if(_value != this.value){
       this.setValue(_value);
     }
   }
