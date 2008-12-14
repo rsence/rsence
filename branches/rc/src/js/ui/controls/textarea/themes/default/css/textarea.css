@@ -60,9 +60,6 @@
   font-size: 11px;
   font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
   color: #666;
-  
-  /* This fixes an odd issue with MSIE7 and transparent element's click through effect. (Hidden from other browsers.) */
-  #{is_ie7?"background-image: url('"+ this.getThemeGfxPath() + "blank.gif');":""}
 }
 
 .disabled .textarea {
