@@ -117,7 +117,9 @@ ComponentSampler = HApplication.extend({
         resizeE: 3,
         resizeN: 3,
         resizeS: 3,
-        closeButton: true
+        closeButton: true,
+        collapseButton: true,
+        zoomButton: true
       }
     );
     

@@ -32,14 +32,23 @@
   *
   **/
 HWindow = HDynControl.extend({
+  
   componentName:      'window',
+  
+  // HWindow has a few extra options, like the close/collapse/zoom buttons, see below
   constructor: function(_rect,_parentApp,_options){
+    
+    // the parent of HWindow has to be an HApplication instance
     if(_parentApp.componentBehaviour[0]!='app'){
       throw( "Himle.ComponentParentError: HWindow parent must be an HApplication instance!" );
     }
+    
+    
     if(!_options) {
       _options={};
     }
+    
+    
     var _defaults = HClass.extend({
       minSize:   [96,54],
       maxSize:   [16000,9000],
@@ -52,7 +61,15 @@ HWindow = HDynControl.extend({
       resizeSW:  [ 2, 2 ],
       resizeSE:  [ 16, 16 ],
       noResize:  false,
-      closeButton: false
+      
+      // set to true, if you want a close box for the window
+      closeButton: false,
+      
+      // set to true, if you want a collapse (minimize) button for the window
+      collapseButton: false,
+      
+      // set to true, if you want a zoom (maximize/restore) button for the window
+      zoomButton: false
     });
     _options = new (_defaults.extend(_options))();
     if(_options.noResize){
@@ -70,19 +87,37 @@ HWindow = HDynControl.extend({
     this.base(_rect,_parentApp,_options);
     HSystem.windowFocus(this);
   },
+  
+  // Reports to HSystem that this window has the focus and the previously active window needs to blur
   gainedActiveStatus: function(){
     HSystem.windowFocus(this);
   },
+  
+  // HSystem calls this method, whenever this window is allowed to be focused
   windowFocus: function(){
     this.toggleCSSClass(this.elemId, 'inactive', false);
     this.setStyle('cursor','move');
   },
+  
+  // HSystem calls this method, whenever this window needs to lose its focus (another window focused)
   windowBlur: function(){
     this.toggleCSSClass(this.elemId, 'inactive', true);
     this.setStyle('cursor','default');
   },
+  
+  // This method gets called, whenever the close button has been clicked
   windowClose: function(){
-    this.die();
+    this.die(); // extend this to this.app.die(), if your app needs to die instead of just the window
+  },
+  
+  // This method gets called, whenever the collapse (minimize) button has been clicked
+  windowCollapse: function(){
+    // extend with your app-specific behaviour
+  },
+  
+  // This method gets called, whenever the zoom (maximize/restore) button has been clicked
+  windowZoom: function(){
+    // extend with your app-specific behaviour
   }
 });
 

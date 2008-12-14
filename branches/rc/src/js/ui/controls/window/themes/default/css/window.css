@@ -13,7 +13,10 @@
 .window_body_edge_bottom,
 .window_label,
 .window_controls,
-.window_subview {
+.window_subview,
+.window_controls_close,
+.window_controls_collapse,
+.window_controls_zoom {
   position: absolute;
   display: block;
   overflow: hidden;
@@ -156,5 +159,54 @@
   right: 0px; bottom: 0px; width: 16px; height: 16px;
   cursor: sw-resize;
 }
+
+.window_controls_close,
+.window_controls_collapse,
+.window_controls_zoom {
+  top: 6px; width: 15px; height: 15px;
+  background-image: #{this.getCssFilePath('window_buttons.png')};
+}
+
+.window_controls_close {
+  left: 8px;
+  background-position: 0px 0px;
+}
+
+.window_controls:hover .window_controls_close {
+  background-position: 0px -15px;
+}
+
+.window_controls:hover .window_controls_close:active {
+  background-position: 0px -30px;
+}
+
+
+.window_controls_collapse {
+  left: 27px;
+  background-position: -30px 0px;
+}
+
+.window_controls:hover .window_controls_collapse {
+  background-position: -30px -15px;
+}
+
+.window_controls:hover .window_controls_collapse:active {
+  background-position: -30px -30px;
+}
+
+
+.window_controls_zoom {
+  left: 46px;
+  background-position: -15px 0px;
+}
+
+.window_controls:hover .window_controls_zoom {
+  background-position: -15px -15px;
+}
+
+.window_controls:hover .window_controls_zoom:active {
+  background-position: -15px -30px;
+}
+
 
 

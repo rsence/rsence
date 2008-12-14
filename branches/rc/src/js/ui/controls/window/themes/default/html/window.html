@@ -12,6 +12,6 @@
   <div class="window_body_corner_right"></div>
 </div>
 <div class="window_label" id="label#{_ID}">#{this.label}</div>
-<div class="window_controls" id="control#{_ID}">#{this.options.closeButton?'<div class="window_controls_close" onclick="HSystem.views['+this.viewId+'].die();">X</div>':''}</div>
+<div class="window_controls" id="control#{_ID}">#{this.options.closeButton?'<div class="window_controls_close" onclick="HSystem.views['+this.viewId+'].windowClose();"></div>':''}#{this.options.collapseButton?'<div class="window_controls_collapse" onclick="HSystem.views['+this.viewId+'].windowCollapse();"></div>':''}#{this.options.zoomButton?'<div class="window_controls_zoom" onclick="HSystem.views['+this.viewId+'].windowZoom();"></div>':''}</div>
 <div class="window_subview" id="subview#{_ID}"></div>
 <div class="window_resize"></div>
