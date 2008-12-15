@@ -269,6 +269,10 @@ HSystem = HClass.extend({
   
   activeWindowId: 0,
   windowFocus: function(_view){
+    if(!_view){
+      this.activeWindowId=0;
+      return;
+    }
     var _activeWindowId = this.activeWindowId,
         _views = this.views,
         _viewId = _view.viewId;
