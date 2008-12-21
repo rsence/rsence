@@ -137,7 +137,7 @@ class PluginManager
       @@curr_plugin_path = File.join(plugin_dir,plugin_name)
       
       # checks that the plugin is a dir
-      is_dir = FileTest.directory?( @@curr_plugin_path )
+      is_dir = File.directory?( @@curr_plugin_path )
       next unless is_dir
       
       # expects to find a 'plugin_dir/plugin_name/plugin_name.rb' file

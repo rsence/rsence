@@ -67,15 +67,18 @@ class Transporter
     # Creates the msg object, also checks or creates a new session; verifies session keys and such
     msg = $SESSION.init_msg( request, response, cookies )
     
+    response_success = true
+    
     # If the client encounters an error, display error message
     if request.query.has_key?('err_msg')
+      response_success = false
       client_error_msg = request.query['err_msg'].inspect
       puts "\nCLIENT ERROR:\n#{client_error_msg}\n" if $DEBUG_MODE
       xhr_error_handler(msg,:client_error,client_error_msg)
     end
     
     # If the session is valid, continue:
-    if msg.ses_valid
+    if msg.ses_valid and response_success
       
       # If cookies are true, it means the url base needs to
       # be changed from /hello to /x to prevent further cookie juggling.
@@ -92,6 +95,7 @@ class Transporter
         begin
           $VALUES.xhr( msg, syncdata_str )
         rescue => e
+          response_success = false
           xhr_error_handler( msg, :valuemanager_xhr_error, e.message )
           xhr_traceback_handler( e, "Transporter::ValueManagerXHRError: $VALUES.xhr failed." )
         end
@@ -101,6 +105,7 @@ class Transporter
       begin
         $VALUES.validate( msg )
       rescue => e
+        response_success = false
         xhr_error_handler( msg, :valuemanager_validate_error, e.message )
         xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: $VALUES.validate failed." )
       end
@@ -111,6 +116,7 @@ class Transporter
         begin
           $PLUGINS.delegate( 'restore_ses', msg )
         rescue => e
+          response_success = false
           xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: $PLUGINS.delegate 'restore_ses' failed." )
         end
@@ -118,6 +124,7 @@ class Transporter
         begin
           $PLUGINS.delegate( 'init_ses', msg )
         rescue => e
+          response_success = false
           xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: $PLUGINS.delegate 'init_ses' failed." )
         end
@@ -127,6 +134,7 @@ class Transporter
       begin
         $PLUGINS.idle( msg )
       rescue => e
+        response_success = false
         xhr_error_handler( msg, :plugin_idle_error, e.message )
         xhr_traceback_handler( e, "Transporter::PluginIdleError: $PLUGINS.idle failed." )
       end
@@ -135,13 +143,14 @@ class Transporter
       begin
         $VALUES.sync_client( msg )
       rescue => e
+        response_success = false
         xhr_error_handler( msg, :valuemanager_sync_client_error, e.message )
         xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: $VALUES.sync_client failed." )
       end
       
-      msg.response_success = true
-      
     end
+    
+    msg.response_success = response_success
     
     msg.response_done()
   end

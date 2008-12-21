@@ -509,7 +509,6 @@ ComponentSampler = HApplication.extend({
     this.win2.red.bringToFront();
     this.win2.blu.sendToBack();
     
-    
   }
 });
 

@@ -139,47 +139,40 @@ class Message
     @response.status = 200
     
     if not @response_success
-      puts "msg: @response_success == false" if $DEBUG_MODE
-      err_outp = [
+      
+      buffer = [
         "HTransporter.ses_id='#{@ses_key}';",
         @error_js,
         "HTransporter.restoreSyncDelay=HTransporter.syncDelay;",
         "HTransporter.syncDelay=-1;"
-      ].join("\r\n")
-      puts "msg: error outp = #{err_outp.inspect}"
-      ## flush the output
-      if @do_gzip
-        puts "do_gzip" if $DEBUG_MODE
-        outp = GZString.new('')
-        gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-        gzwriter.write( err_outp )
-        gzwriter.close
-      else
-        puts "no_gzip" if $DEBUG_MODE
-        outp = err_outp
-      end
-      @response['content-size'] = outp.size
-      @response.body = outp
+      ]
+      
     else
       
+      buffer = @buffer
+      
       if @ses_key
-        @buffer.unshift( "HTransporter.ses_id='#{@ses_key}';" )
+        buffer.unshift( "HTransporter.ses_id='#{@ses_key}';" )
       end
       
-      ## flush the output
-      if @do_gzip
-        puts "do_gzip" if $DEBUG_MODE
-        outp = GZString.new('')
-        gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-        gzwriter.write( @buffer.join("\r\n") )
-        gzwriter.close
-      else
-        puts "no_gzip" if $DEBUG_MODE
-        outp = @buffer.join("\r\n")
-      end
-      @response['content-size'] = outp.size
-      @response.body = outp
+      
     end
+    
+    ## flush the output
+    if @do_gzip
+      puts "do_gzip" if $DEBUG_MODE
+      outp = GZString.new('')
+      gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
+      gzwriter.write( buffer.join("\r\n") )
+      gzwriter.close
+    else
+      puts "no_gzip" if $DEBUG_MODE
+      outp = buffer.join("\r\n")
+    end
+    
+    @response['content-size'] = outp.size
+    @response.body = outp
+    
     @response_sent = true
   end
   
