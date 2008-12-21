@@ -190,7 +190,7 @@ class SessionManager < SessionStorage
   ## Displays error message and stops the client
   def stop_client_with_message( msg, title='Unknown Issue', descr='No issue description given.', uri='/' )
     msg.error_msg( [
-      "jsLoader.load('basic');",
+      "jsLoader.load('controls');",
       "jsLoader.load('servermessage');",
       "reloadApp = new ReloadApp( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
     ].join("\r\n") )
