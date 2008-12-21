@@ -117,7 +117,9 @@ HSystem = HClass.extend({
       }
     }
     
-    if(this._updateZIndexOfChildrenBuffer.length!=0){this._flushUpdateZIndexOfChilden();}
+    if(this._updateZIndexOfChildrenBuffer.length!=0){
+      this._flushUpdateZIndexOfChilden();
+    }
     
   },
   
@@ -294,18 +296,75 @@ HSystem = HClass.extend({
     }
   },
   
-  _flushUpdateZIndexOfChilden: function(){
-    var j=0; _buffer=this._updateZIndexOfChildrenBuffer;
-    for(;j!=_buffer.length;j++){
-      var _viewId = _buffer.unshift(),
-        _views = this.views[_viewId].viewsZOrder,
-        _viewlen = _views.length,_setStyl=ELEM.setStyle,
-        _sysViews = this.views, _viewId, _view, _elemIdStr = 'elemId', _zIdxStr = 'z-index',
-        i=0;
-      for(;i!=_viewlen;i++){
-        _viewId = _views[i];
-        _view = _sysViews[_viewId];
-        _setStyl(_view[_elemIdStr], _zIdxStr, i);
+  _flushUpdateZIndexOfChilden: function() {
+    
+    var j=0, // buffer index
+        
+        // reference to the HSystem namespace
+        _this = HSystem,
+        
+        // reference to the buffer
+        _buffer = this._updateZIndexOfChildrenBuffer,
+        
+        // the length of the buffer
+        _bufLen = _buffer.length;
+        
+    // loop buffer length times to get the items
+    for ( ; j < _bufLen; j++ ) {
+      
+      
+      // get and remove view the view id from the z-index flush status buffer:
+      var _viewId = _buffer.shift(),
+          
+          // reference to the view's z-index array or the system root-level views if _viewId is 0
+          _views = ((_viewId === null)?(_this.viewsZOrder):(_this.views[ _viewId ].viewsZOrder)),
+          
+          // the length of the view's z-index array
+          _viewLen = _views.length,
+          
+          // reference to the setStyle method of the element manager
+          _setStyl = ELEM.setStyle,
+          
+          // reference to HSystem.views (collection of all views, by index)
+          _sysViews = _this.views,
+          
+          
+      // assign variables for use inside the inner loop:
+          
+          // the viewId of the view to be updated
+          _subViewId,
+          
+          // the view itself with the viewId above
+          _view,
+          
+          // the elemId property, used as a [] -lookup in the loop
+          _elemIdStr = 'elemId',
+          
+          // the css property name
+          _zIdxStr = 'z-index',
+          
+          // the loop index
+          i=0,
+          
+          // the element id of the view
+          _elemId;
+      
+      // end of var declarations
+      
+      // loop through all subviews and update the indexes:
+      for ( ; i < _viewLen; i++ ) {
+        
+        // get the viewId to be updated based on the z-index array
+        _subViewId = _views[ i ];
+        
+        // reference to the view itself
+        _view = _sysViews[ _subViewId ];
+        
+        // the element id of the view
+        _elemId = _view[ _elemIdStr ];
+        
+        // do the element manager call itself to update the dom property
+        _setStyl( _elemId, _zIdxStr, i );
       }
     }
   }

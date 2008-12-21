@@ -335,9 +335,7 @@ HView = HClass.extend({
   _updateZIndex: function() {
     // doing this via HSystem shaves 10% off the view creation time
     //ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
-    if(this.parent.viewId){
-      HSystem.updateZIndexOfChildren(this.parent.viewId);
-    }
+    HSystem.updateZIndexOfChildren(this.viewId);
   },
   
   /**
@@ -348,9 +346,7 @@ HView = HClass.extend({
     *
     **/
   _updateZIndexAllSiblings: function() {
-    if(this.parent.viewId){
-      HSystem.updateZIndexOfChildren(this.parent.viewId);
-    }
+    HSystem.updateZIndexOfChildren(this.parent.viewId);
   },
   
 /** method: draw
@@ -941,8 +937,8 @@ HView = HClass.extend({
       return;
     }
     var _index = this.zIndex();
-    this.parent.viewsZOrder.splice(_index, 1);
-    this.parent.viewsZOrder.splice(0, 0, this.viewId); // Hmmm?
+    this.parent.viewsZOrder.splice(_index, 1); // removes this index from the arr
+    this.parent.viewsZOrder.splice(0, 0, this.viewId); // unshifts viewId
     this._updateZIndexAllSiblings();
   },
 

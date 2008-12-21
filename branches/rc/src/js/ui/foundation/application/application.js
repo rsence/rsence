@@ -50,6 +50,10 @@ HApplication = HClass.extend({
   **/
   constructor: function(_priority){
     
+    // Special null viewId for HApplication instances,
+    // they share a system-level root view; the document object
+    this.viewId = null;
+    
     // storage for views
     this.views = [];
     
@@ -59,6 +63,7 @@ HApplication = HClass.extend({
     // Views in Z order. The actual Z data is stored in HSystem, this is just a
     // reference to that array.
     this.viewsZOrder = HSystem.viewsZOrder;
+    
     // Finalize initialization via HSystem
     HSystem.addApp(this,_priority);
   },

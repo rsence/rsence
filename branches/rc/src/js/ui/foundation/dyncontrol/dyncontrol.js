@@ -217,7 +217,6 @@ HDynControl = HControl.extend({
     if(this._actionFlag==8){
       this.setStyle('cursor','move');
     }
-    this.bringToFront();
     this.doDrag(_x,_y,_isLeft);
   },
   doDrag: function(_x,_y,_isLeft){
