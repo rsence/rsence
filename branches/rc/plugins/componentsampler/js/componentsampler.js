@@ -506,6 +506,8 @@ ComponentSampler = HApplication.extend({
     this.win2.grn.setStyle('background-color','green');
     this.win2.blu = HView.nu( HRect.nu(40,40,70,70), this.win2 );
     this.win2.blu.setStyle('background-color','blue');
+    this.win2.blu2 = HView.nu( HRect.nu(40,40,700,700), this.win2 );
+    this.win2.blu2.setStyle('background-color','blue');
     this.win2.red.bringToFront();
     this.win2.blu.sendToBack();
     

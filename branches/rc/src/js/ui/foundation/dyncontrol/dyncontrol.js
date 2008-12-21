@@ -13,7 +13,6 @@
   ***/
 
 HDynControl = HControl.extend({
-  componentName: 'dyncontrol',
   componentBehaviour: ['view','control','window'],
   constructor: function( _rect, _parent, _options ){
     if(!_options) {
@@ -159,6 +158,10 @@ HDynControl = HControl.extend({
   },
   _initActionFns: function(){
     this._actionFns = [];
+    this._actionCrsr = [
+      'nw-resize', 'ne-resize', 'sw-resize', 'se-resize',
+      'w-resize', 'e-resize', 'n-resize', 's-resize', 'move'
+    ];
     var i, _this = this,
     _resizeNW=0,_resizeNE=1,_resizeSW=2,_resizeSE=3,
     _resizeW =4, _resizeE=5, _resizeN=6, _resizeS=7, _drag=8,
@@ -174,6 +177,7 @@ HDynControl = HControl.extend({
     _actionFns[_resizeS] = _this.dynResizeS;
     
     _actionFns[_drag] = _this.dynDrag;
+    
   },
   _initActionFlag: function(){
     this._actionFlag = -1;
@@ -206,6 +210,7 @@ HDynControl = HControl.extend({
     for(i=0;i!=9;i++){
       if(_actionRects[i].contains(_actionPoint)){
         this._actionFlag=i;
+        this.setStyle('cursor',this._actionCrsr[i]);
         return;
       }
     }
@@ -214,9 +219,6 @@ HDynControl = HControl.extend({
     this._startPoint = new HPoint(_x,_y);
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
-    if(this._actionFlag==8){
-      this.setStyle('cursor','move');
-    }
     this.doDrag(_x,_y,_isLeft);
   },
   doDrag: function(_x,_y,_isLeft){
@@ -226,9 +228,7 @@ HDynControl = HControl.extend({
   },
   endDrag: function(_x,_y,_isLeft){
     this.doDrag(_x,_y,_isLeft);
-    if(this._actionFlag==8){
-      this.setStyle('cursor','default');
-    }
+    this.setStyle('cursor','default');
     this._initActionFlag();
   }
 });

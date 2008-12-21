@@ -20,7 +20,7 @@
   position: absolute;
   display: block;
   overflow: hidden;
-  cursor: default;
+  cursor: inherit;
   background-repeat: no-repeat;
 }
 
@@ -155,9 +155,17 @@
   left: 2px; top: 26px; right: 2px; bottom: 2px;
 }
 
-.window_resize {
-  right: 0px; bottom: 0px; width: 16px; height: 16px;
-  cursor: sw-resize;
+.window_resize_se {
+  position: absolute;
+  right: 0px; bottom: 0px; width: 13px; height: 13px;
+  cursor: se-resize;
+  z-index: 10000;
+  background-position: -59px -35px;
+  background-image: #{this.getCssFilePath('window_parts1.png')};
+}
+
+.inactive .window_resize_se {
+  background-position: -59px -83px;
 }
 
 .window_controls_close,
@@ -207,6 +215,4 @@
 .window_controls:hover .window_controls_zoom:active {
   background-position: -15px -30px;
 }
-
-
 
