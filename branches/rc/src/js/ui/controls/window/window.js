@@ -96,7 +96,6 @@ HWindow = HDynControl.extend({
   // HSystem calls this method, whenever this window is allowed to be focused
   windowFocus: function(){
     this.toggleCSSClass(this.elemId, 'inactive', false);
-    this.setStyle('cursor','move');
   },
   
   // HSystem calls this method, whenever this window needs to lose its focus (another window focused)
