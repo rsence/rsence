@@ -582,6 +582,12 @@ HControl = HView.extend({
   **/
   gainedActiveStatus: function(_lastActiveControl) {
     
+    if ( HWindowFocusBehaviour === 1 ) {
+      if ( this.parents[2].componentBehaviour.indexOf('window') !== -1 ) {
+        this.parents[2].gainedActiveStatus();
+      }
+    }
+    
   },
   // A low-level handler, don't extend this.
   _gainedActiveStatus: function(_lastActiveControl) {

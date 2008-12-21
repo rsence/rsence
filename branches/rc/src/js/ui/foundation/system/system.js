@@ -52,6 +52,19 @@
 
 HDefaultApplicationInterval=20;
 HSystemTickerInterval=10;
+
+
+/** global: HWindowFocusBehaviour
+  *
+  * When the focus behaviour is 1, clicking on any subview brings
+  * the window to front, if attached to a HWindow instance.
+  * If the behaviour is 0, only direct clicks on the HWindow controls
+  * brings the window to front.
+  *
+  **/
+HWindowFocusBehaviour = 1;
+
+
 HSystem = HClass.extend({
   
   // Single instance; has no constructor

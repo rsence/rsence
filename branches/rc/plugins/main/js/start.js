@@ -68,15 +68,14 @@ SesWatcher = HApplication.extend({
   }
 });
 
-/***
-
-// Additional settings of HThemeManager and HMarkupView,
-// for themes built with special optimizations.
-
-// Adds a theme without component-specific css (only common.css)
-HNoComponentCSS.push('puppies');
-
-// Adds a theme that has an image-ie6.gif for every image.png
-HThemeHasIE6GifsInsteadOfPng.push('flowers');
-
-***/
+/** global: HWindowFocusBehaviour
+  *
+  * When the focus behaviour is 1, clicking on any subview brings
+  * the window to front, if attached to a HWindow instance.
+  * If the behaviour is 0, only direct clicks on the HWindow controls
+  * brings the window to front.
+  *
+  * It defaults to 1 as of 2008-12-22
+  *
+  **/
+// HWindowFocusBehaviour = 1;

@@ -61,6 +61,7 @@
   *  > mySubview.setStyle('background-color','#ffcc00');
   *  > mySubview.setStyle('border','1 px solid #ffffff');
   **/
+
 HView = HClass.extend({
   
   // This property should be overridden in custom made components. It's like a
