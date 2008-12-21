@@ -107,8 +107,8 @@ ComponentSampler = HApplication.extend({
     in the title bar of the HWindow.
     
     */
-    this.window = new HWindow(
-      new HRect(100,101,740,501),
+    this.window = HWindow.nu(
+      HRect.nu(100,101,740,501),
       this, {
         label: 'Component Sampler',
         minSize: [420,320],
@@ -152,12 +152,12 @@ ComponentSampler = HApplication.extend({
     interaction events.
     
     */
-    this.tabs = new (HTab.extend({
+    this.tabs = (HTab.extend({
         flexRight: true,
         flexBottom: true,
         flexRightOffset: 16,
         flexBottomOffset: 16
-      }))(
+    })).nu(
       new HRect(16,16,116,116),
       this.window
     );
@@ -205,11 +205,11 @@ ComponentSampler = HApplication.extend({
     see below why.
     
     */
-    this.introText = new (HStringView.extend({
+    this.introText = (HStringView.extend({
       flexRight:  true,  flexRightOffset:  8,
       flexBottom: true,  flexBottomOffset: 8
-    }))(
-      new HRect(8,8,16,16),
+    })).nu(
+      HRect.nu(8,8,16,16),
       this.introTab, {
         label: '',
         value: 'Setting the text of the component..'
@@ -241,7 +241,7 @@ ComponentSampler = HApplication.extend({
     as a 'HRect' "template"
     
     */
-    var _buttonRect = new HRect(8,8,168,32);
+    var _buttonRect = HRect.nu(8,8,168,32);
     
     /*
     
@@ -262,8 +262,8 @@ ComponentSampler = HApplication.extend({
     HComponentDefaults.visible = false;
     
     */
-    this.button1 = new HButton(
-      new HRect(_buttonRect),
+    this.button1 = HButton.nu(
+      HRect.nu(_buttonRect),
       this.buttonsTab, {
         label: 'HButton enabled'
       }
@@ -289,8 +289,8 @@ ComponentSampler = HApplication.extend({
     it won't respond to user interaction.
     
     */
-    this.button2 = new HButton(
-      new HRect(_buttonRect),
+    this.button2 = HButton.nu(
+      HRect.nu(_buttonRect),
       this.buttonsTab, {
         label: 'HButton disabled',
         enabled: false
@@ -309,8 +309,8 @@ ComponentSampler = HApplication.extend({
     
     */
     _buttonRect.offsetBy(-180,32);
-    this.checkbox1 = new HCheckbox(
-      new HRect(_buttonRect),
+    this.checkbox1 = HCheckbox.nu(
+      HRect.nu(_buttonRect),
       this.buttonsTab, {
         label: 'HCheckbox',
         value: true
@@ -331,8 +331,8 @@ ComponentSampler = HApplication.extend({
     
     */
     _buttonRect.offsetBy(180,0);
-    this.checkbox2 = new HCheckbox(
-      new HRect(_buttonRect),
+    this.checkbox2 = HCheckbox.nu(
+      HRect.nu(_buttonRect),
       this.buttonsTab, {
         label: 'HCheckbox disabled',
         enabled: false,
@@ -348,7 +348,7 @@ ComponentSampler = HApplication.extend({
     
     */
     _buttonRect.offsetBy(-180,32);
-    var _radioGroupARect = new HRect(_buttonRect);
+    var _radioGroupARect = HRect.nu(_buttonRect);
     _radioGroupARect.setHeight(60);
     _radioGroupARect.setWidth(360);
     _radioGroupARect.offsetBy(-4,-4);
@@ -365,7 +365,7 @@ ComponentSampler = HApplication.extend({
     All components are derived from HView.
     
     */
-    this.radioGroupA = new HView(
+    this.radioGroupA = HView.nu(
       _radioGroupARect,
       this.buttonsTab
     );
@@ -384,32 +384,32 @@ ComponentSampler = HApplication.extend({
     HRadioButton instances.
     
     */
-    var _radioButtonRect = new HRect(_buttonRect);
+    var _radioButtonRect = HRect.nu(_buttonRect);
     _radioButtonRect.offsetTo(4,4);
-    this.radiobuttonA1 = new HRadioButton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonA1 = HRadioButton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupA, {
         label: 'HRadiobutton A1'
       }
     );
     _radioButtonRect.offsetBy(180,0);
-    this.radiobuttonA2 = new HRadiobutton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonA2 = HRadiobutton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupA, {
         label: 'HRadiobutton A2'
       }
     );
     
     _radioButtonRect.offsetBy(-180,30);
-    this.radiobuttonA3 = new HRadioButton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonA3 = HRadioButton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupA, {
         label: 'HRadiobutton A3'
       }
     );
     _radioButtonRect.offsetBy(180,0);
-    this.radiobuttonA4 = new HRadiobutton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonA4 = HRadiobutton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupA, {
         label: 'HRadiobutton A4 (disabled)',
         enabled: false,
@@ -440,27 +440,27 @@ ComponentSampler = HApplication.extend({
     
     */
     _buttonRect.offsetBy(0,64);
-    var _radioGroupBRect = new HRect(_buttonRect);
+    var _radioGroupBRect = HRect.nu(_buttonRect);
     _radioGroupBRect.setHeight(60);
     _radioGroupBRect.setWidth(360);
     _radioGroupBRect.offsetBy(-4,-4);
-    this.radioGroupB = new HView(
+    this.radioGroupB = HView.nu(
       _radioGroupBRect,
       this.buttonsTab
     );
     this.radioGroupB.setStyle('border','1px solid #999');
     
-    var _radioButtonRect = new HRect(_buttonRect);
+    var _radioButtonRect = HRect.nu(_buttonRect);
     _radioButtonRect.offsetTo(4,4);
-    this.radiobuttonB1 = new HRadioButton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonB1 = HRadioButton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupB, {
         label: 'HRadiobutton B1'
       }
     );
     _radioButtonRect.offsetBy(180,0);
-    this.radiobuttonB2 = new HRadiobutton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonB2 = HRadiobutton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupB, {
         label: 'HRadiobutton B2',
         value: true
@@ -468,15 +468,15 @@ ComponentSampler = HApplication.extend({
     );
     
     _radioButtonRect.offsetBy(-180,30);
-    this.radiobuttonB3 = new HRadioButton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonB3 = HRadioButton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupB, {
         label: 'HRadiobutton B3'
       }
     );
     _radioButtonRect.offsetBy(180,0);
-    this.radiobuttonB4 = new HRadiobutton(
-      new HRect(_radioButtonRect),
+    this.radiobuttonB4 = HRadiobutton.nu(
+      HRect.nu(_radioButtonRect),
       this.radioGroupB, {
         label: 'HRadiobutton B4 (disabled)',
         enabled: false
@@ -487,9 +487,9 @@ ComponentSampler = HApplication.extend({
     _buttonRect.offsetBy(0,64);
     
     // upload control, uses special value messaging, see the plugins for details
-    var _uploadRect = new HRect(_buttonRect);
+    var _uploadRect = HRect.nu(_buttonRect);
     _uploadRect.setWidth(320);
-    this.uploader = new HUploader(
+    this.uploader = HUploader.nu(
       _uploadRect,
       this.buttonsTab, {
         events: {
@@ -499,7 +499,15 @@ ComponentSampler = HApplication.extend({
     );
     HVM.values[this.valueIds.upload1].bind(this.uploader);
     
-    
+    this.win2 = HWindow.nu( HRect.nu(8,8,128,119), this, { closeButton: true, label: 'zIndexes' } );
+    this.win2.red = HView.nu( HRect.nu(10,10,40,40), this.win2 );
+    this.win2.red.setStyle('background-color','red');
+    this.win2.grn = HView.nu( HRect.nu(25,25,55,55), this.win2 );
+    this.win2.grn.setStyle('background-color','green');
+    this.win2.blu = HView.nu( HRect.nu(40,40,70,70), this.win2 );
+    this.win2.blu.setStyle('background-color','blue');
+    this.win2.red.bringToFront();
+    this.win2.blu.sendToBack();
     
     
   }

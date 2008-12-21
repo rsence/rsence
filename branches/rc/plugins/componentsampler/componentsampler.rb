@@ -1,7 +1,6 @@
 
 class ComponentSampler < Plugin
   def init_ses(msg)
-    include_js( msg, ['controls'] )
     msg.reply require_js_once(msg,'componentsampler')
     unless msg.session.has_key?(:componentsampler)
       msg.session[:componentsampler] = {
@@ -20,7 +19,8 @@ class ComponentSampler < Plugin
   def init_ui(msg)
     mses = msg.session[:main]
     cses = msg.session[:componentsampler]
-    mses[:delayed_calls].push(%{
+    include_js( msg, ['controls','default_theme'] )
+    msg.reply(%{
       componentSampler = new ComponentSampler({
         main_tabs: #{cses[:main_tabs].val_id.to_json},
         checkbox1: #{cses[:checkbox1].val_id.to_json},
