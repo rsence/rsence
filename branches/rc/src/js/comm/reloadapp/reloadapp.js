@@ -73,6 +73,7 @@ ReloadApp = HApplication.extend({
       { label: 'Reload', events: {click:true} }
     );
     
+    /*
     var _ignoreButton = new (HButton.extend({
       click: function(){
         HTransporter.syncDelay = HTransporter.restoreSyncDelay;
@@ -84,6 +85,7 @@ ReloadApp = HApplication.extend({
       this._alertWindow,
       { label: 'Ignore', events: {click:true} }
     );
+    */
     HTransporter.stop();
   },
   onIdle: function(){
