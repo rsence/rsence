@@ -55,7 +55,7 @@ ComponentSampler = HApplication.extend({
     itself doesn't exist yet.
     
     */
-    this.base();
+    this.base(10);
     
     /*
     
@@ -68,6 +68,32 @@ ComponentSampler = HApplication.extend({
     */
     this.valueIds = _valueIds;
     
+    if(window['ComponentSamplerX']&&window['ComponentSamplerY']) {
+      var _createWinButtonRect = HRect.nu(ComponentSamplerX,ComponentSamplerY,ComponentSamplerX+160,ComponentSamplerY+23);
+    } else {
+      var _createWinButtonRect = HRect.nu(8,8,168,31);
+    }
+    this.createWindowButton = HButton.extend({
+      click: function(){
+        this.setEnabled(false);
+        this.origRect = HRect.nu( this.rect );
+        this.animateTo( HRect.nu(100,101,740,501), 200 );
+      },
+      onAnimationEnd: function(){
+        this.app.createWindow();
+        this.hide();
+      },
+      restoreButton: function(){
+        this.setRect( this.origRect );
+        this.setEnabled( true );
+        this.show();
+      }
+    }).nu(_createWinButtonRect,this,{label:'Start ComponentSampler'});
+    this.createWindowButton.setClickable(true);
+    
+  },
+  
+  createWindow: function(){
     /*
     
     Then, we create a new instance of 'HWindow'. It's just
@@ -122,6 +148,15 @@ ComponentSampler = HApplication.extend({
         zoomButton: true
       }
     );
+    
+    this.window.windowClose = function(){
+      this.animateTo(HRect.nu(this.app.createWindowButton.origRect),300);
+    };
+    
+    this.window.onAnimationEnd = function(){
+      this.app.createWindowButton.restoreButton();
+      this.die();
+    };
     
     /*
     
@@ -499,17 +534,75 @@ ComponentSampler = HApplication.extend({
     );
     HVM.values[this.valueIds.upload1].bind(this.uploader);
     
-    this.win2 = HWindow.nu( HRect.nu(8,8,128,119), this, { closeButton: true, label: 'zIndexes' } );
-    this.win2.red = HView.nu( HRect.nu(10,10,40,40), this.win2 );
-    this.win2.red.setStyle('background-color','red');
-    this.win2.grn = HView.nu( HRect.nu(25,25,55,55), this.win2 );
-    this.win2.grn.setStyle('background-color','green');
-    this.win2.blu = HView.nu( HRect.nu(40,40,70,70), this.win2 );
-    this.win2.blu.setStyle('background-color','blue');
-    this.win2.blu2 = HView.nu( HRect.nu(40,40,700,700), this.win2 );
-    this.win2.blu2.setStyle('background-color','blue');
-    this.win2.red.bringToFront();
-    this.win2.blu.sendToBack();
+    _buttonRect.offsetBy(0,32);
+    
+    this.testZIndexButton = (HButton.extend({
+      die: function(){
+        var _testWinIdx=0, _testWinLen=this.testWins.length, _win;
+        for(;_testWinIdx<_testWinLen;_testWinIdx++){
+          _win = this.testWins.shift();
+          if(!_win.destroyed){
+            _win.die();
+          }
+        }
+        this.base();
+      }
+    })).nu( HRect.nu( _buttonRect ), this.buttonsTab );
+    this.testZIndexButton.setLabel( 'Open Window' );
+    this.testZIndexButton.setClickable( true );
+    this.testZIndexButton.testWins = [];
+    this.testZIndexButton.click = function(){
+      var _winIdx = this.testWins.length;
+      this.testWins.push(
+        HWindow.nu( HRect.nu(8,8,128,119), this.app, { closeButton: true, label: 'test '+_winIdx } )
+      );
+      var _win = this.testWins[ _winIdx ];
+      _win.red = HView.nu( HRect.nu(10,10,40,40), _win );
+      _win.red.setStyle('background-color','red');
+      _win.grn = HView.nu( HRect.nu(25,25,55,55), _win );
+      _win.grn.setStyle('background-color','green');
+      _win.blu = HView.nu( HRect.nu(40,40,70,70), _win );
+      _win.blu.setStyle('background-color','blue');
+      _win.red.bringToFront();
+      _win.blu.sendToBack();
+    };
+    
+    _buttonRect.offsetBy(0,32);
+    
+    this.memLeakButton = HButton.extend({
+      testOn: false,
+      testCount: 0,
+      testWin: false,
+      click: function(){
+        if(this.testOn){
+          this.setLabel('Memleak test off');
+          this.testOn=false;
+          this.testCount=0;
+          HSystem.reniceApp(this.app.appId,10);
+        }
+        else {
+          this.setLabel('Memleak test on');
+          this.testOn=true;
+          HSystem.reniceApp(this.app.appId,1);
+        }
+        return true;
+      },
+      onIdle: function(){
+        this.setLabel('Memleak test off: '+HSystem.ticks);
+        if(!this.testOn){
+          return;
+        }
+        this.testCount++;
+        this.setLabel('Memleak test on: '+HSystem.ticks);
+        if(this.testWin){
+          this.testWin.die();
+          this.testWin = null;
+        }
+        this.testWin = HWindow.nu(HRect.nu(8,8,130,100), this.app, {label:'testwin'+this.testCount, closeButton: true});
+        var testWinBtn = HButton.nu(HRect.nu(8,8,64,32), this.testWin, {label:'Button'});
+      }
+    }).nu( HRect.nu(_buttonRect), this.buttonsTab, { label:'Memory Leak?' } );
+    this.memLeakButton.setClickable( true );
     
   }
 });

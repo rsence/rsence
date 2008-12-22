@@ -644,16 +644,18 @@ HView = HClass.extend({
   *  <HApplication.die> <addView> <remove> <die> <Element Manager.elem_del>
   **/
   die: function() {
+    // hide self, makes destruction seem faster
+    this.hide();
     // Delete the children first.
-    var i=0, _childViewId;
-    for (; i < this.views.length; i++) {
-      _childViewId = this.views[i];
+    var _childViewId;
+    while (this.views.length != 0) {
+      _childViewId = this.views[0];
       this.destroyView(_childViewId);
     }
     // Remove this object's bindings, except the DOM element.
     this.remove();
     // Remove the DOM element bindings.
-    for (i = 0; i < this._domElementBindings.length; i++) {
+    for (var i = 0; i < this._domElementBindings.length; i++) {
       ELEM.del(this._domElementBindings[i]);
     }
     this._domElementBindings = [];
@@ -664,7 +666,11 @@ HView = HClass.extend({
     ELEM.del(this.elemId);
     
     delete this.rect;
-    
+    var _this = this;
+    for( var i in _this ){
+      _this[i] = null;
+      delete _this[i];
+    }
   },
   
   // Idle poller (recursive)

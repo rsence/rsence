@@ -257,8 +257,8 @@ HSystem = HClass.extend({
     this.busyApps[_appId] = true;
     
     this.apps[ _appId ].destroyAllViews();
-    delete this.apps[ _appId ];
     this.apps[ _appId ] = null;
+    delete this.apps[ _appId ];
     
     this.freeAppIds.push( _appId );
   },
