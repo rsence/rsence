@@ -148,6 +148,11 @@ class Transporter
         xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: $VALUES.sync_client failed." )
       end
       
+    else
+      
+      # session is not valid, the error was set in SessionManager
+      response_success = false
+      
     end
     
     msg.response_success = response_success
