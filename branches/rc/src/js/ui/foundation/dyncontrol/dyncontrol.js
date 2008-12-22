@@ -220,15 +220,18 @@ HDynControl = HControl.extend({
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
     this.doDrag(_x,_y,_isLeft);
+    return true; // prevents text selection
   },
   doDrag: function(_x,_y,_isLeft){
     if(this._actionFlag!=-1){
       this._actionFns[this._actionFlag](this,_x,_y);
     }
+    return true; // prevents text selection
   },
   endDrag: function(_x,_y,_isLeft){
     this.doDrag(_x,_y,_isLeft);
     this.setStyle('cursor','default');
     this._initActionFlag();
+    return true; // prevents text selection
   }
 });
