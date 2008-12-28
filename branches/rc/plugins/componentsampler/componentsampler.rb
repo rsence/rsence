@@ -8,7 +8,11 @@ class ComponentSampler < Plugin
         :checkbox2 => HValue.new(msg,true),
         :radio_a   => HValue.new(msg,3),
         :radio_b   => HValue.new(msg,1),
-        :upload1   => HValue.new(msg,'')
+        :upload1   => HValue.new(msg,''),
+        :text1     => HValue.new(msg,'Sample Text'),
+        :text2     => HValue.new(msg,"Multi-\nline\ntext"),
+        :num1      => HValue.new(msg,50),
+        :num2      => HValue.new(msg,0.5)
       }
     end
     setup_upload(msg,msg.session[:componentsampler][:upload1])

@@ -23,7 +23,7 @@
   **
   ***/
   
-HStepper = HButton.extend({
+HStepper = HControl.extend({
   
   componentName: "stepper",
 
@@ -59,7 +59,7 @@ HStepper = HButton.extend({
     this.interval = _options.interval;
     this._tmplLabelPrefix = "stepperlabel";
     
-    this.border = ((_rect.bottom - _rect.top)/2 + _rect.top);	// calculate a middle border of a stepper
+    this.border = parseInt(_rect.height/2,10);	// calculate a middle border of a stepper
     
     if(!this.isinherited){
       this.draw();
@@ -77,8 +77,10 @@ HStepper = HButton.extend({
   },   
   mouseDown: function(_x,_y,_isLeftButton){
     this.setMouseUp(true);
+    _y -= ELEM.getVisiblePosition(this.elemId)[1];
     var temp = this;
-    if (_y < this.border){
+    console.log('y:',_y,' border:',this.border);
+    if (_y > this.border){
         this.stepUp(this.value);
         // works when a button is held down (repeater)  
         this.counter = setInterval(function(){temp.stepUp(temp.value);},this.interval);	
@@ -98,11 +100,11 @@ HStepper = HButton.extend({
   keyDown: function(_keycode) {
     this.setKeyUp(true);
     var temp = this;
-    if (_keycode == Event.KEY_UP) {
+    if (_keycode == Event.KEY_DOWN) {
       this.stepUp(this.value);
       this.counter = setInterval(function(){temp.stepUp(temp.value);},this.interval);	
     }
-    else if (_keycode == Event.KEY_DOWN) {
+    else if (_keycode == Event.KEY_UP) {
       this.stepDown(this.value);
       this.counter = setInterval(function(){temp.stepUp(temp.value);},this.interval);
     }
@@ -113,7 +115,7 @@ HStepper = HButton.extend({
   },
   
   mouseWheel: function(_delta) {
-    if (_delta > 0) {
+    if (_delta < 0) {
       this.stepUp(this.value);
     }
     else {
