@@ -1,7 +1,6 @@
 
 class ComponentSampler < Plugin
   def init_ses(msg)
-    msg.reply require_js_once(msg,'componentsampler')
     unless msg.session.has_key?(:componentsampler)
       msg.session[:componentsampler] = {
         :main_tabs => HValue.new(msg,0),
@@ -20,16 +19,35 @@ class ComponentSampler < Plugin
     mses = msg.session[:main]
     cses = msg.session[:componentsampler]
     include_js( msg, ['controls','default_theme'] )
+    msg.reply "HimleSampler = {};" # creates the (initially) empty js namespace of the sampler
+    himlesampler_modules = [
+      'sampler_dock',
+      'sampler_window',
+      'sampler_tabs',
+      'sampler_intro',
+      'sampler_buttons',
+      'sampler_text',
+      'sampler_numeric',
+      'sampler_progress',
+      'sampler_media'
+    ]
+    himlesampler_modules.each do |module_name|
+      msg.reply require_js_once(msg,'modules/'+module_name)
+    end
+    msg.reply require_js_once( msg, 'componentsampler' )
     msg.reply(%{
-      componentSampler = new ComponentSampler({
-        main_tabs: #{cses[:main_tabs].val_id.to_json},
-        checkbox1: #{cses[:checkbox1].val_id.to_json},
-        checkbox2: #{cses[:checkbox2].val_id.to_json},
-        radio_a:   #{cses[:radio_a].val_id.to_json},
-        radio_b:   #{cses[:radio_b].val_id.to_json},
-        upload1:   #{cses[:upload1].val_id.to_json}
+      HimleSampler.app = HimleSampler.SamplerApp.nu({
+        main_tabs: HVM.values[#{cses[:main_tabs].val_id.to_json}],
+        checkbox1: HVM.values[#{cses[:checkbox1].val_id.to_json}],
+        checkbox2: HVM.values[#{cses[:checkbox2].val_id.to_json}],
+        radio_a:   HVM.values[#{cses[:radio_a].val_id.to_json}],
+        radio_b:   HVM.values[#{cses[:radio_b].val_id.to_json}],
+        upload1:   HVM.values[#{cses[:upload1].val_id.to_json}]
       });
     })
+    
+    msg.reply "HimleSampler.app.createWindowButton.click();"
+    
   end
   def handle_upload(msg,hvalue)
     
