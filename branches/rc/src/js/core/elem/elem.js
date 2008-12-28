@@ -245,8 +245,7 @@ ELEM = {
   },
 
   getVisiblePosition: function(_id){
-    var x,y,_elem,_this,_this=ELEM,
-    x=0,y=0,_elem=_this._elements[_id];
+    var _this,_this=ELEM,x=0,y=0,_elem=_this._elements[_id];
     while(_elem!==document){
       x+=_elem.offsetLeft;y+=_elem.offsetTop;
       x-=_elem.scrollLeft;y-=_elem.scrollTop;
