@@ -80,8 +80,7 @@ HSlider = HControl.extend({
     
     this.refreshOnValueChange = false;
     
-    // These are overridden in vertical slider.
-    this._knobPrefix = 'sliderknob';
+    // This is overridden in vertical slider.
     this._isVertical = false;
     
     if(!this.isinherited){
@@ -102,10 +101,10 @@ HSlider = HControl.extend({
   **/
   setValue: function(_value) {
     if (_value < this.minValue) {
-      _value = this.minValue;
+      var _value = this.minValue;
     }
     if (_value > this.maxValue) {
-      _value = this.maxValue;
+      var _value = this.maxValue;
     }
     this.base(_value);
     if(this._knobElemId){
@@ -143,8 +142,7 @@ HSlider = HControl.extend({
   *  <HControl.startDrag>
   **/
   startDrag: function(_x,_y){
-    var _element = ELEM.get(this.elemId);
-    var _originalPosition = helmi.Element.getPageLocation(_element, true);
+    var _originalPosition = ELEM.getVisiblePosition(this.elemId, true);
     this._originX = _originalPosition[0];
     this._originY = _originalPosition[1];
     
@@ -185,8 +183,8 @@ HSlider = HControl.extend({
     _x -= this._originX;
     _y -= this._originY;
     
-    _rawVal = this._isVertical?_y:_x;
-    _value = this._pos2value(_rawVal);
+    var _rawVal = this._isVertical?_y:_x;
+    var _value = this._pos2value(_rawVal);
     this.setValue(_value);
   },
   
@@ -271,7 +269,7 @@ HSlider = HControl.extend({
     else {
       _valueChange = 0.05;
     }
-    _value = (this.maxValue - this.minValue) * _valueChange;
+    var _value = (this.maxValue - this.minValue) * _valueChange;
     this.setValue( this.value + _value);
   },
   
@@ -289,7 +287,7 @@ HSlider = HControl.extend({
     
     if (this._moving && this.active) {
       
-      _value = (this.maxValue - this.minValue) * _valueChange;
+      var _value = (this.maxValue - this.minValue) * _valueChange;
       
       this.setValue( this.value + _value);
     
@@ -308,7 +306,7 @@ HSlider = HControl.extend({
   
   // private method
   _initKnob: function() {
-    this._knobElemId = this.bindDomElement(this._knobPrefix+this.elemId);
+    this._knobElemId = this.markupElemIds.control;
     this.drawKnobPos();
   },
   
@@ -317,21 +315,21 @@ HSlider = HControl.extend({
   _value2px: function() {
     var _elem = ELEM.get(this._knobElemId);
     if(this._isVertical){
-      _pxrange  = this.rect.height - parseInt( _elem.offsetHeight, 10 );
+      var _pxrange  = this.rect.height - parseInt( _elem.offsetHeight, 10 );
     } else {
-      _pxrange  = this.rect.width - parseInt( _elem.offsetWidth, 10 );
+      var _pxrange  = this.rect.width - parseInt( _elem.offsetWidth, 10 );
     }
-    _intvalue = _pxrange * (
+    var _intvalue = _pxrange * (
       (this.value-this.minValue) / (this.maxValue - this.minValue)
     );
-    _pxvalue = parseInt(_intvalue, 10)+'px';
+    var _pxvalue = parseInt(_intvalue, 10)+'px';
     return _pxvalue;
   },
   
   
   // private method
   _pos2value: function(_mousePos) {
-    _relPos = this._isVertical?(_mousePos):(_mousePos);
+    var _relPos = this._isVertical?(_mousePos):(_mousePos);
     if(_relPos < 0){_relPos = 0;}
     if(this._isVertical){
       if(_relPos > this.rect.height){
@@ -349,8 +347,8 @@ HSlider = HControl.extend({
   
   // private method
   drawKnobPos: function() {
-    _whichprop = this._isVertical?'top':'left';
-    _propval   = this._value2px();
+    var _whichprop = this._isVertical?'top':'left';
+    var _propval   = this._value2px();
     ELEM.setStyle(this._knobElemId,_whichprop,_propval);
   }
   

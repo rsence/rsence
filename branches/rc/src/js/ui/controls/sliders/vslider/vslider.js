@@ -57,13 +57,10 @@ HVSlider = HSlider.extend({
       this.base(_rect,_parentClass,_options);
       this.isinherited = false;
     }
-
     
-    this.type = '[HVSlider]';
-    
-    // These override the HSlider properties.
-    this._knobPrefix = 'vsliderknob';
+    // This overrides the HSlider property.
     this._isVertical = true;
+    
     if(!this.isinherited){
       this.draw();
     }
