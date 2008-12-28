@@ -36,14 +36,7 @@ class ComponentSampler < Plugin
     end
     msg.reply require_js_once( msg, 'componentsampler' )
     msg.reply(%{
-      HimleSampler.app = HimleSampler.SamplerApp.nu({
-        main_tabs: HVM.values[#{cses[:main_tabs].val_id.to_json}],
-        checkbox1: HVM.values[#{cses[:checkbox1].val_id.to_json}],
-        checkbox2: HVM.values[#{cses[:checkbox2].val_id.to_json}],
-        radio_a:   HVM.values[#{cses[:radio_a].val_id.to_json}],
-        radio_b:   HVM.values[#{cses[:radio_b].val_id.to_json}],
-        upload1:   HVM.values[#{cses[:upload1].val_id.to_json}]
-      });
+      HimleSampler.app = HimleSampler.SamplerApp.nu(#{extract_hvalues_from_hash( cses )});
     })
     
     msg.reply "HimleSampler.app.createWindowButton.click();"

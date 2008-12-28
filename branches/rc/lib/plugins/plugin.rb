@@ -166,6 +166,17 @@ private
     end
   end
   
+  # Utility method for HValue reference extraction from ruby to js hashes.
+  def extract_hvalues_from_hash( ses_hash )
+    js_references = []
+    ses_hash.each_key do |key_name|
+      if ses_hash[key_name].class == HValue
+        js_references.push( "#{key_name.to_s}: HVM.values['#{ses_hash[key_name].val_id}']" )
+      end
+    end
+    return "{#{js_references.join(', ')}}"
+  end
+  
   # Himle dependency reader, just supply it 
   # with everything you need, it keeps track of
   # what's loaded.
