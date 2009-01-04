@@ -63,8 +63,8 @@ $_THEMES.each do |theme_name|
   theme_html_js += "HNoCommonCSS.push(#{theme_name.to_json});"
   theme_html_js += "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
   theme_html_js = js_builder.pre_convert(theme_html_js)
-  theme_html_js_path = File.join( $_DESTINATION_PATH, theme_name+'_theme.js' )
-  theme_html_gz_path = File.join( $_DESTINATION_PATH, theme_name+'_theme.gz' )
+  theme_html_js_path = File.join( $_REL_PATH, 'js', theme_name+'_theme.js' )
+  theme_html_gz_path = File.join( $_REL_PATH, 'js', theme_name+'_theme.gz' )
   js_builder.save_file( theme_html_js_path, theme_html_js )
   js_builder.gzip_file( theme_html_js_path, theme_html_gz_path )
   theme_css_path = File.join( theme_css_path_prefix, theme_name+'_theme.css' )
