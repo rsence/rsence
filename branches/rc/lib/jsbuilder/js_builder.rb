@@ -138,7 +138,7 @@ class JSBuilder
     outp_file.close
   end
   def read_file(path)
-    filehandle = open(path)
+    filehandle = open(path,'rb')
     filedata   = filehandle.read
     filehandle.close
     return filedata
@@ -211,9 +211,8 @@ class JSBuilder
             tgt_file_gfx = File.join( tgt_path_theme, 'gfx', src_gfx_filename )
             if File.exist?( src_file_gfx ) and File.exist?( tgt_file_gfx )
               File.delete( tgt_file_gfx )
-            else
-              cp_file( src_file_gfx, tgt_file_gfx )
             end
+            cp_file( src_file_gfx, tgt_file_gfx )
           end
         end
       end
@@ -432,6 +431,9 @@ class JSBuilder
       end
     end
     do_compress()
+    
+    save_file( File.join( @js_dst_dir, 'built' ), Time.now.to_i.to_s )
+    
   end
   
 end
