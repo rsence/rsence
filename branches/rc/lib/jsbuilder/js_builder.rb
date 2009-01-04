@@ -423,7 +423,7 @@ class JSBuilder
     end
     
     @destination_files = {} # rename to package_products
-    @pkg_info.each_key do |package_name|
+    @packages.each do |package_name|
       @pkg_info[package_name].each do |bundle_name|
         if @bundles_found.has_key?( bundle_name )
           @destination_files[ package_name ] = [] unless @destination_files.has_key?( package_name )
