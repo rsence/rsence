@@ -21,7 +21,7 @@
   ** after the handle is in active mode. There are two types of sliders: vertical and horizontal. 
   ** Naturally, sliders are commonly used as colour mixers, volume controls, 
   ** graphical equalizers and seekers in media applications. 
-  ** A typical slider is a drag-able knob along vertical or horizontal line. 
+  ** A typical slider is a drag-able thumb along vertical or horizontal line. 
   ** Slider view or theme can be changed; the helmiTheme is used by default.
   **
   ** vars: Instance variables
@@ -44,37 +44,56 @@ HSlider = HControl.extend({
   *
   * Parameters:
   *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
+  *   _parent - The parent view that this control is to be inserted in.
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
-  constructor: function(_rect,_parentClass,_options) {
+  constructor: function(_rect,_parent,_options) {
 
+    // Makes sure there is at least an empty options block
     if (!_options) {
       _options = {};
     }
-    _options.events = {
-      mouseDown: false,
-      mouseUp:   false,
-      draggable: true,
-      keyDown: true, 
-      keyUp: true, 
-      mouseWheel: true
-    };
-
-    // Default range values.
-    var _defaults = Base.extend({
+    
+    // Makes sure the default events for HStepper are enabled
+    if (!_options.events) {
+      _options.events = {
+        mouseDown: false,
+        mouseUp:   false,
+        draggable: true,
+        keyDown: true, 
+        keyUp: true, 
+        mouseWheel: true
+      };
+    }
+    
+    // Makes sure some other optional options are at some sane defaults
+    _options = HClass.extend({
+      
+      // The smallest allowed value
       minValue: 0,
-      maxValue: 1
-    });
-    _defaults = _defaults.extend(_options);
-    _options = new _defaults();
+      
+      // The biggest allowed value
+      maxValue: 1,
+      
+      // Interval in milliseconds for repeat
+      repeatDelay: 300,
+      
+      // Interval in milliseconds for repeat
+      repeatInterval: 50
+      
+    }).extend(
+      
+      // Include user-specified overrides to options
+      _options
+      
+    ).nu(); // new instance of the HClass as _options
     
     if(this.isinherited){
-      this.base(_rect,_parentClass,_options);
+      this.base(_rect,_parent,_options);
     }
     else {
       this.isinherited = true;
-      this.base(_rect,_parentClass,_options);
+      this.base(_rect,_parent,_options);
       this.isinherited = false;
     }
     
@@ -91,7 +110,7 @@ HSlider = HControl.extend({
   
 /** method: setValue
   * 
-  * Sets the current value of the object and moves the slider knob to the correct position.
+  * Sets the current value of the object and moves the slider thumb to the correct position.
   * 
   * Parameters:
   *   _value - A numeric value to be set to the object.
@@ -107,8 +126,8 @@ HSlider = HControl.extend({
       var _value = this.maxValue;
     }
     this.base(_value);
-    if(this._knobElemId){
-      this.drawKnobPos();
+    if(this._thumbElemId){
+      this.drawThumbPos();
     }
   },
   
@@ -123,7 +142,7 @@ HSlider = HControl.extend({
     if(!this.drawn) {
       this.drawRect();
       this.drawMarkup();
-      this._initKnob();
+      this._initThumb();
     }
     this.refresh();
   },
@@ -131,7 +150,7 @@ HSlider = HControl.extend({
   
 /** event: startDrag
   * 
-  * This gets called automatically when the user starts to drag the slider knob.
+  * This gets called automatically when the user starts to drag the slider thumb.
   * Extend this method if you want something special to happen when the dragging starts.
   * 
   * Parameters:
@@ -152,7 +171,7 @@ HSlider = HControl.extend({
   
 /** event: endDrag
   * 
-  * This gets called automatically when the user stops dragging the slider knob.
+  * This gets called automatically when the user stops dragging the slider thumb.
   * Extend this method if you want something special to happen when the dragging ends.
   * 
   * Parameters:
@@ -169,7 +188,7 @@ HSlider = HControl.extend({
   
 /** event: doDrag
   * 
-  * This gets called periodically while the user drags the slider knob.
+  * This gets called periodically while the user drags the slider thumb.
   * Extend this method if you want something special to happen while dragging.
   * 
   * Parameters:
@@ -192,7 +211,7 @@ HSlider = HControl.extend({
 /** event: keyDown
   * 
   * This gets called when the user presses a key down while this control is 
-  * active. The default behaviour is to move the knob with arrow keys, page up,
+  * active. The default behaviour is to move the thumb with arrow keys, page up,
   * page down, home and end.
   * 
   * Parameters:
@@ -202,32 +221,32 @@ HSlider = HControl.extend({
   *  <HControl.keyDown>
   **/
   keyDown: function(_keycode) {
-    // Arrow keys move the knob 5% at a time.
+    // Arrow keys move the thumb 5% at a time.
     if ( (_keycode == Event.KEY_LEFT && !this._isVertical) ||
-      (_keycode == Event.KEY_UP && this._isVertical) ) {
-      this._moving = true;
-      this._moveKnob(-0.05);
-    }
-    else if ( (_keycode == Event.KEY_RIGHT && !this._isVertical) ||
       (_keycode == Event.KEY_DOWN && this._isVertical) ) {
       this._moving = true;
-      this._moveKnob(0.05);
+      this._moveThumb(-0.05);
     }
-    // Home key moves the knob to the beginning and end key to the end.
+    else if ( (_keycode == Event.KEY_RIGHT && !this._isVertical) ||
+      (_keycode == Event.KEY_UP && this._isVertical) ) {
+      this._moving = true;
+      this._moveThumb(0.05);
+    }
+    // Home key moves the thumb to the beginning and end key to the end.
     else if (_keycode == Event.KEY_HOME) {
       this.setValue(this.minValue);
     }
     else if (_keycode == Event.KEY_END) {
       this.setValue(this.maxValue);
     }
-    // Page up and page down keys move the knob 25% at a time.
-    else if (_keycode == Event.KEY_PAGEUP) {
-      this._moving = true;
-      this._moveKnob(-0.25);
-    }
+    // Page up and page down keys move the thumb 25% at a time.
     else if (_keycode == Event.KEY_PAGEDOWN) {
       this._moving = true;
-      this._moveKnob(0.25);
+      this._moveThumb(-0.25);
+    }
+    else if (_keycode == Event.KEY_PAGEUP) {
+      this._moving = true;
+      this._moveThumb(0.25);
     }
     
     
@@ -269,20 +288,23 @@ HSlider = HControl.extend({
     else {
       _valueChange = 0.05;
     }
+    if ( this._isVertical ) {
+      _valueChange = 0 - _valueChange; // reverse vertical value change orientation
+    }
     var _value = (this.maxValue - this.minValue) * _valueChange;
     this.setValue( this.value + _value);
   },
   
   
   // private method
-  _moveKnob: function(_valueChange, _rate) {
+  _moveThumb: function(_valueChange, _rate) {
     
     if (!_rate) {
-      // If the key is held down, wait for a while before actually pulsating.
-      _rate = 300;
+      // If the key is held down, wait for a while before starting repeat.
+      _rate = this.options.repeatDelay;
     }
-    else if (_rate == 300) {
-      _rate = 50;
+    else if (_rate == this.options.repeatDelay) {
+      _rate = this.options.repeatInterval;
     }
     
     if (this._moving && this.active) {
@@ -292,12 +314,12 @@ HSlider = HControl.extend({
       this.setValue( this.value + _value);
     
       var _that = this;
-      if (this._knobMoveTimeout) {
-        window.clearTimeout(this._knobMoveTimeout);
-        this._knobMoveTimeout = null;
+      if (this._thumbMoveTimeout) {
+        window.clearTimeout(this._thumbMoveTimeout);
+        this._thumbMoveTimeout = null;
       }
-      this._knobMoveTimeout = window.setTimeout(function(){
-        _that._moveKnob(_valueChange, _rate);
+      this._thumbMoveTimeout = window.setTimeout(function(){
+        _that._moveThumb(_valueChange, _rate);
       }, _rate);
     }
 
@@ -305,15 +327,15 @@ HSlider = HControl.extend({
   
   
   // private method
-  _initKnob: function() {
-    this._knobElemId = this.markupElemIds.control;
-    this.drawKnobPos();
+  _initThumb: function() {
+    this._thumbElemId = this.markupElemIds.control;
+    this.drawThumbPos();
   },
   
   
   // private method
   _value2px: function() {
-    var _elem = ELEM.get(this._knobElemId);
+    var _elem = ELEM.get(this._thumbElemId);
     if(this._isVertical){
       var _pxrange  = this.rect.height - parseInt( _elem.offsetHeight, 10 );
     } else {
@@ -322,6 +344,9 @@ HSlider = HControl.extend({
     var _intvalue = _pxrange * (
       (this.value-this.minValue) / (this.maxValue - this.minValue)
     );
+    if ( this._isVertical ) {
+      _intvalue = _pxrange - _intvalue;
+    }
     var _pxvalue = parseInt(_intvalue, 10)+'px';
     return _pxvalue;
   },
@@ -329,27 +354,26 @@ HSlider = HControl.extend({
   
   // private method
   _pos2value: function(_mousePos) {
-    var _relPos = this._isVertical?(_mousePos):(_mousePos);
-    if(_relPos < 0){_relPos = 0;}
+    if(_mousePos < 0){_mousePos = 0;}
     if(this._isVertical){
-      if(_relPos > this.rect.height){
-        _relPos = this.rect.height;
+      if(_mousePos > this.rect.height){
+        _mousePos = this.rect.height;
       }
-      return this.minValue + ((_relPos / this.rect.height) * (this.maxValue - this.minValue));
+      return this.maxValue - ((_mousePos / this.rect.height) * (this.maxValue - this.minValue));
     } else {
-      if(_relPos > this.rect.width){
-        _relPos = this.rect.width;
+      if(_mousePos > this.rect.width){
+        _mousePos = this.rect.width;
       }
-      return this.minValue + ((_relPos / this.rect.width) * (this.maxValue - this.minValue));
+      return this.minValue + ((_mousePos / this.rect.width) * (this.maxValue - this.minValue));
     }
   },
   
   
   // private method
-  drawKnobPos: function() {
+  drawThumbPos: function() {
     var _whichprop = this._isVertical?'top':'left';
     var _propval   = this._value2px();
-    ELEM.setStyle(this._knobElemId,_whichprop,_propval);
+    ELEM.setStyle(this._thumbElemId,_whichprop,_propval);
   }
   
 });
