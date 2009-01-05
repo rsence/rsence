@@ -321,12 +321,6 @@ class JSBuilder
   ## REITERATE!
   def do_compress
     @conv_used = {}
-    # save the js files
-    @destination_files.each_key do |dst_path|
-      dst_data = @destination_files[dst_path]
-      save_file(dst_path, dst_data)
-    end
-    # /save the js files
     conv_ids()           # make short unique strings to be used as replacement patterns
     mkconvcount()        # calculate the order of occurrences (biggest first)
     minimize_data()      # do the actual compression
