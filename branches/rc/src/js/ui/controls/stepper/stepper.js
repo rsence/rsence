@@ -17,111 +17,219 @@
   **
   ** HStepper is a control unit made of two adjacent buttons with up and down arrows 
   ** to select the previous or next of a set of contiguous values. 
-  ** Normally, a stepper works in combination with a textbox. 
-  ** Steppers are similar to comboboxes in functionality (choosing one from a range of values), 
-  ** except for that steppers do not have a drop-down list.
-  **
+  ** Normally, a HStepper instance works in combination with a HTextControl or a HStringView instance.
   ***/
-  
+
 HStepper = HControl.extend({
   
   componentName: "stepper",
-
-  constructor: function(_rect,_parentClass,_options) {
+  
+  constructor: function(_rect,_parent,_options) {
     
+    // Makes sure there is at least an empty options block
     if (!_options) {
       _options = {};
     }
-    _options.events = {
-      mouseDown: true,
-      keyDown: true,
-      mouseWheel: true
-    };
-
-    // Default options.
-    var _defaults = Base.extend({
+    
+    // Makes sure the default events for HStepper are enabled
+    if (!_options.events) {
+      _options.events = {
+        mouseDown:  true,
+        keyDown:    true,
+        mouseWheel: true
+      };
+    }
+    
+    // Makes sure some other optional options are at some sane defaults
+    _options = HClass.extend({
+      
+      // The smallest allowed value
       minValue: 0,
-      value: 0,
-      interval: 500
-    });
-    _defaults = _defaults.extend(_options);
-    _options = new _defaults();
+      
+      // The biggest allowed value
+      maxValue: 100,
+      
+      // Amount of to step, defaults to +/- 1
+      stepSize: 1,
+      
+      // Interval in milliseconds for repeat
+      repeatInterval: 200,
+      
+      // Boolean to control wrap-around behaviour
+      wrapAround: false
+      
+    }).extend(
+      
+      // Include user-specified overrides to options
+      _options
+      
+    ).nu(); // new instance of the HClass as _options
     
-    if(this.isinherited){
-      this.base(_rect,_parentClass,_options);
+    this.base( _rect, _parent, _options );
+    
+  },
+  
+  // Setter for wrap-around behaviour
+  setWrapAround: function(_on){
+    this.options.wrapAround = _on;
+  },
+  
+  // Makes sure the value is in its boundaries and either wrap-around
+  // to min/max or revert to the current value
+  _checkValueBoundaries: function(_value){
+    
+    // checks for boundaries
+    var _this     = this,
+        _options  = _this.options,
+        _minVal   = _options.minValue,
+        _maxVal   = _options.maxValue,
+        _tooSmall = _value<_minVal,
+        _tooBig   = _value>_maxVal,
+        _overflow = ( _tooSmall || _tooBig );
+    
+    // The value is ok, just return it as it is
+    if (!_overflow) {
+      return _value;
+    }
+    
+    
+    /// Handle the overflow condition:
+    
+    // Wrap around uses min/max as new value as either is reached
+    if (_options.wrapAround) {
+      if (_tooSmall) {
+        return _maxVal;
+      }
+      else {
+        return _minVal;
+      }
+    }
+    // Any other condition means we just revert the changes
+    else {
+      return _this.value;
+    }
+    
+  },
+  
+  // Adds the step size to the value
+  stepUp: function(){
+    this.setValue(
+      this._checkValueBoundaries(
+        this.value + this.options.stepSize
+      )
+    );
+  },
+  
+  // Subtracts the step size from the value
+  stepDown: function(){
+    this.setValue(
+      this._checkValueBoundaries(
+        this.value - this.options.stepSize
+      )
+    );
+  },
+  
+  // Returns an action string for the setInterval in _setRepeatInterval
+  _repeatIntervalStr: function( _up ){
+    return [
+      'HSystem.views[',
+      this.viewId,
+      '].step',
+      (_up?'Up':'Down'),
+      '();'
+    ].join('');
+  },
+  
+  // Background-offset of the state images up/down,
+  // overrideable in the html template
+  bgStateUp: '0px -23px',
+  bgStateDown: '0px -46px',
+  
+  // enables the up/down effect in the image based on the _up boolean (true means up, false means down)
+  _bgStateOn: function( _up ){
+    ELEM.setStyle(this.markupElemIds.state,'background-position',_up?this.bgStateUp:this.bgStateDown);
+  },
+  
+  // reverts the up/down effect
+  _bgStateOff: function(){
+    ELEM.setStyle(this.markupElemIds.state,'background-position','');
+  },
+  
+  // Starts the repeating stepping up or down (when the mouse button or a arrow key is down)
+  _setRepeatInterval: function( _up ){
+    var _this    = this,
+        _options = _this.options;
+    _this._bgStateOn( _up );
+    if (_up) {
+      _this.stepUp();
+      _this._repeatInterval = setInterval( _this._repeatIntervalStr(1), _options.repeatInterval );
     }
     else {
-      this.isinherited = true;
-      this.base(_rect,_parentClass,_options);
-      this.isinherited = false;
+      _this.stepDown();
+      _this._repeatInterval = setInterval( _this._repeatIntervalStr(0), _options.repeatInterval );
     }
-    
-    this.interval = _options.interval;
-    this._tmplLabelPrefix = "stepperlabel";
-    
-    this.border = parseInt(_rect.height/2,10);	// calculate a middle border of a stepper
-    
-    if(!this.isinherited){
-      this.draw();
-    }
-  }, 
-  stepUp: function(_value){
-    _value--;
-    _value=(_value<this.minValue)?this.maxValue:_value;
-    this.setValue(_value);
   },
-  stepDown: function(_value){
-    _value++;
-    _value=(_value>this.maxValue)?this.minValue:_value;
-    this.setValue(_value);
-  },   
-  mouseDown: function(_x,_y,_isLeftButton){
+  
+  // Stops the repeating stepping up or down enabled in _setRepeatInterval
+  _clearRepeatInterval: function(){
+    this._bgStateOff();
+    clearInterval( this._repeatInterval );
+  },
+  
+  // Checks where the mouseDown happened and adjusts the stepper up/down based on that
+  mouseDown: function( x, y ){
     this.setMouseUp(true);
-    _y -= ELEM.getVisiblePosition(this.elemId)[1];
-    var temp = this;
-    console.log('y:',_y,' border:',this.border);
-    if (_y > this.border){
-        this.stepUp(this.value);
-        // works when a button is held down (repeater)  
-        this.counter = setInterval(function(){temp.stepUp(temp.value);},this.interval);	
-    } else {
-        this.stepDown(this.value);
-        // works when a button is held down (repeater)
-        this.counter = setInterval(function(){temp.stepDown(temp.value);},this.interval);	
-    }    
+    this._setRepeatInterval(  ( y - ELEM.getVisiblePosition( this.elemId )[1] ) <= 11  );
   },
-  mouseUp: function(_x,_y,_isLeftButton){
-    clearInterval(this.counter);
+  
+  // Stops the repeating stepping, when the mouse button goes up
+  mouseUp: function(){
+    this._clearRepeatInterval();
   },
+  
+  // Stops the repeating stepping, when the control becomes inactive
   blur: function(){
-    clearInterval(this.counter);
+    this._clearRepeatInterval();
   },
   
-  keyDown: function(_keycode) {
+  // adjusts stepping up/down based on the arrow key pressed.
+  // up and right arrow keys steps the value up, down and left steps the value down
+  keyDown: function( _keyCode ) {
     this.setKeyUp(true);
-    var temp = this;
-    if (_keycode == Event.KEY_DOWN) {
-      this.stepUp(this.value);
-      this.counter = setInterval(function(){temp.stepUp(temp.value);},this.interval);	
+    var _keyDown  = (_keyCode == Event.KEY_DOWN),
+        _keyUp    = (_keyCode == Event.KEY_UP),
+        _keyLeft  = (_keyCode == Event.KEY_LEFT),
+        _keyRight = (_keyCode == Event.KEY_RIGHT),
+        _arrowKey = (_keyDown || _keyUp || _keyLeft || _keyRight);
+    if (_arrowKey) {
+      this._setRepeatInterval( (_keyUp || _keyRight) );
     }
-    else if (_keycode == Event.KEY_UP) {
-      this.stepDown(this.value);
-      this.counter = setInterval(function(){temp.stepUp(temp.value);},this.interval);
+    else if (_keyCode == Event.KEY_HOME) {
+      this.setValue(this.options.minValue);
+    }
+    else if (_keyCode == Event.KEY_END) {
+      this.setValue(this.options.maxValue);
+    }
+    // Page up and page down keys act just like arrow up/down.
+    else if (_keyCode == Event.KEY_PAGEUP) {
+      this._setRepeatInterval( 1 );
+    }
+    else if (_keyCode == Event.KEY_PAGEDOWN) {
+      this._setRepeatInterval( 0 );
     }
   },
   
-  keyUp: function(_keycode){
-    clearInterval(this.counter);
+  // stops the repeating when a key goes up
+  keyUp: function(){
+    this._clearRepeatInterval();
   },
   
+  // steps the value up/down based on the mouse scroll wheel
   mouseWheel: function(_delta) {
-    if (_delta < 0) {
-      this.stepUp(this.value);
-    }
-    else {
-      this.stepDown(this.value);
-    }
+    (_delta>0)?this.stepUp():this.stepDown();
   }
+  
+  
 });
 
 
