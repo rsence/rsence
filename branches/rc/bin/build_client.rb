@@ -42,7 +42,7 @@ if File.exist?(File.join(PARENT_PATH,'conf','client-build-config.rb'))
 end
 
 # compile client package
-js_builder = JSBuilder.new
+js_builder = JSBuilder.new( $_SRC_PATH, $_REL_PATH, $_THEMES, $_PACKAGES, $_PACKAGE_NAMES )
 js_builder.run
 
 # compile "all-in-one" css and html resources
