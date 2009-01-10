@@ -25,6 +25,7 @@ module Himle
 module Client
 
 require 'jsbuilder/jsmin/jsmin'
+require 'jsbuilder/jscompress/jscompress'
 
 class JSBuilder
   def setup_dirs
@@ -81,6 +82,8 @@ class JSBuilder
   
   def initialize( src_dirs=false, dst_dir=false, theme_names=false, pkg_info=false, packages=false )
     
+    @use_jscompress = ARGV.include?('--jscompress')
+    
     # src_dirs is supposed to be an array of js source directories
     if src_dirs
       @src_dirs = src_dirs
@@ -126,6 +129,9 @@ class JSBuilder
     
     # constructs the jsmin instance
     @jsmin = JSMin.new
+    
+    # constructs the jscompress instance
+    @jscompress = JSCompress.new
     
     # contains a list of js names found (by default all names beginning with an underscore; '_' )
     @hints = []
@@ -252,7 +258,9 @@ class JSBuilder
     if has_themes
       cp_theme( bundle_path, bundle_name )
     end
-    add_hints( js_data ) unless DEBUG_MODE or $_NO_OBFUSCATION
+    unless @use_jscompress
+      add_hints( js_data ) unless DEBUG_MODE or $_NO_OBFUSCATION
+    end
   end
   
   def find_bundles( src_dir )
@@ -321,8 +329,10 @@ class JSBuilder
   ## REITERATE!
   def do_compress
     @conv_used = {}
-    conv_ids()           # make short unique strings to be used as replacement patterns
-    mkconvcount()        # calculate the order of occurrences (biggest first)
+    unless @use_jscompress
+      conv_ids()           # make short unique strings to be used as replacement patterns
+      mkconvcount()        # calculate the order of occurrences (biggest first)
+    end
     minimize_data()      # do the actual compression
   end
   
@@ -379,6 +389,7 @@ class JSBuilder
   
   ### REITERATE!
   def pre_convert(jsc_data)
+    return @jscompress.compress( jsc_data ) if @use_jscompress
     # replace names in conv in the most common -> least common order of conv_ids
     @conv_used.keys.each do |conv_from|
       conv_to = @conv_used[conv_from]
