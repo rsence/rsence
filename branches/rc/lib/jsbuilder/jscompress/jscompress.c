@@ -8,13 +8,13 @@
  */
 
 
+#include <stdlib.h>
 #include "ruby.h"
 
 
-static VALUE jscompress_initialize(VALUE self)
-{
-	return self;
-}
+static char **reserved;
+static int nreserved;
+static int *reserved_indexes;
 
 
 static inline int isvarchr(int c)
@@ -143,6 +143,28 @@ static void tree_add(const char *name)
 	}		
 }
 
+/* qsort and bsearch compare function */
+static int cmp_str(const void *p1, const void *p2)
+{
+	const char * const *s1 = p1;
+	const char * const *s2 = p2;
+
+	return strcmpv(*s1, *s2);
+}
+
+static int cmp_int(const void *p1, const void *p2)
+{
+	const int *i1 = p1;
+	const int *i2 = p2;
+
+	return *i1 > *i2;
+}
+
+static int is_reserved(const char *str)
+{
+	 return bsearch(&str, reserved, nreserved, sizeof(*reserved), cmp_str) != 0;
+}
+
 /* scan the string, and build a dictionary tree of variables */
 static void jscompress_scan(const char *s, int len)
 {
@@ -155,11 +177,14 @@ static void jscompress_scan(const char *s, int len)
 		/* start of a variable, add it to variable tree */
 		if (c == '_' && invar == 0) {
 			invar = 1;
-			tree_add(s);
+	
+			if (!is_reserved(s))
+				tree_add(s);
 		}
 		invar = isvarchr(c);
 	}
 }
+
 
 /* input: index; output: characters 0..Z, 00..ZZ, ... */
 static int jscompress_generate_name(char *dest, int x)
@@ -197,6 +222,27 @@ static int jscompress_generate_name(char *dest, int x)
 	return len;
 }
 
+/* reverse of upper function */
+static int jscompress_index_from_name(const char *name)
+{
+	const int count = ('9'-'0'+1)+('z'-'a'+1)+('Z'-'A'+1);
+	int x = 0;
+	char c = *name++;
+
+	if (c >= '0' && c <= '9')
+		x += c - '0';
+	else if (c >= 'a'&& c <= 'z')
+		x += c - 'a' + ('9'-'0'+1);
+	else
+		x += c - 'A' + ('9'-'0'+1) + ('z'-'a'+1);
+
+	if (isvarchr(*name)) {
+		x += count * (1+jscompress_index_from_name(name));
+	}
+
+	return x;
+}
+
 /* replace variable names with shorter ones */
 static int jscompress_replace(char *_dest, const char *s, int len)
 {
@@ -215,11 +261,14 @@ static int jscompress_replace(char *_dest, const char *s, int len)
 			int varlen;
 
 			invar = 1;
-			var = tree_find(tree_node_arr, s);
 
-			varlen = jscompress_generate_name(dest, var->index);
-			dest += varlen;
-			s += strlenv(s);
+			if (!is_reserved(s)) {
+				var = tree_find(tree_node_arr, s);
+
+				varlen = jscompress_generate_name(dest, var->index);
+				dest += varlen;
+				s += strlenv(s);
+			}
 		}
 		invar = isvarchr(c);
 	}
@@ -252,6 +301,8 @@ static VALUE jscompress(VALUE self, VALUE str)
 	int len = RSTRING(str)->len;
 	char *dest;
 	int dest_len;
+	int off;
+	int res_idx;
 
 	tree_node_arr_count = 0;
 	tree_node_arr_size = 0;
@@ -270,8 +321,17 @@ static VALUE jscompress(VALUE self, VALUE str)
 	/* sort words descending by occurence */
 	qsort(tree_node_arr, tree_node_arr_count, sizeof(tree_node_arr[0]),
 			jscompress_cmp_count);
-	for (i=0; i<tree_node_arr_count; i++)
-		tree_node_arr[i].index = i;
+
+	/* mark word indexes and offset them, so reserved names are not used */
+	off = 0;
+	res_idx = 0;
+	for (i=0; i<tree_node_arr_count; i++) {
+		if (reserved_indexes[res_idx] == i + off) {
+			res_idx++;
+			off++;
+		}
+		tree_node_arr[i].index = i + off;
+	}
 
 	/* restore original tree node positions in array */
 	qsort(tree_node_arr, tree_node_arr_count, sizeof(tree_node_arr[0]),
@@ -295,11 +355,51 @@ static VALUE jscompress(VALUE self, VALUE str)
 	return ret_str;
 }
 
+
+static VALUE jscompress_initialize(VALUE self, VALUE res)
+{
+	int i;
+
+	nreserved = RARRAY(res)->len;
+	reserved = ALLOC_N(char *, nreserved);
+	reserved_indexes = ALLOC_N(int, nreserved+1);
+
+	/* prepare reserved identifiers for lookups */
+	for (i=0; i<nreserved; i++) {
+		VALUE str = RARRAY(res)->ptr[i];
+		int len = RSTRING(str)->len;
+		const char *var = RSTRING(str)->ptr+1;
+		int var_len = strlenv(var);
+
+		reserved[i] = ALLOC_N(char, len);
+		memcpy(reserved[i], var, len-1);
+		reserved[i][len-1] = '\0';
+
+		/* >62**4 variables, no way this happens
+		 * variables with extra '_' can't clash with our generated ones */
+		if (var_len > 4 || memchr(var, '_', var_len) != NULL)
+			reserved_indexes[i] = INT_MAX;
+		else
+			reserved_indexes[i] = jscompress_index_from_name(var);
+
+	}
+	reserved_indexes[i] = INT_MAX;
+
+	/* sort reserved names, so we can bsearch them */
+	qsort(reserved, nreserved, sizeof(*reserved), cmp_str);
+
+	/* asc sort of name indexes */
+	qsort(reserved_indexes, nreserved, sizeof(*reserved_indexes), cmp_int);
+
+	return self;
+}
+
+
 static VALUE cl;
 
 void Init_jscompress()
 {
 	cl = rb_define_class("JSCompress", rb_cObject);
-	rb_define_method(cl, "initialize", jscompress_initialize, 0);
+	rb_define_method(cl, "initialize", jscompress_initialize, 1);
 	rb_define_method(cl, "compress", jscompress, 1);
 }
