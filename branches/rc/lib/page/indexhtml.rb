@@ -42,6 +42,7 @@ class IndexHtml
   
   def initialize
     
+    @client_rev = $FILECACHE.client_rev
     @deps = []
     index_html_file = open($config[:sys_path]+'/lib/page/index.html','rb')
     @index_html_src = index_html_file.read
@@ -62,6 +63,7 @@ class IndexHtml
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
+    @index_html.gsub!('__CLIENT_REV__',@client_rev)
     
     deps_src = ''
     @deps.each do |dep|
@@ -77,6 +79,7 @@ class IndexHtml
     puts "re-buffering client files"
     begin
       $FILECACHE.check_scan
+      @client_rev = $FILECACHE.client_rev
     rescue => e
       #$SESSION.stop_client_with_message( msg,
       #  @config[:messages][:filecache_error][:title],

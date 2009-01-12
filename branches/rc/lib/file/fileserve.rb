@@ -61,6 +61,13 @@ class FileServe
     ## Requested type of client resource (js/themes)
     req_type = request_path[2]
     
+    if not ['js','themes'].include? req_type
+      puts "req_type: #{req_type.inspect}, request_path: #{request_path.inspect}"
+      req_rev = req_type
+      req_type = request_path[3]
+      request_path.delete_at(2)
+    end
+    
     ## Special rules for the special browser
     if request.path.include?('.htc')
       req_file = request_path[3]
@@ -137,14 +144,29 @@ class FileServe
       # Get the theme resource identifier
       req_file  = request_path[5]
       
-      if not $FILECACHE.theme_cache.has_key?( theme_name )
+      # checks for theme name
+      has_theme = $FILECACHE.theme_cache.has_key?( theme_name )
+      
+      # checks for theme part (css/html/gfx)
+      has_theme_part = has_theme and $FILECACHE.theme_cache[theme_name].has_key?( theme_part )
+      
+      # checks for theme file
+      has_theme_file = has_theme_part and $FILECACHE.theme_cache[theme_name][theme_part].has_key?( req_file )
+      
+      if not has_theme_file and theme_file == 'common.css'
+        response.status = 200
+        response.content_type = 'text/css'
+        response.body = ''
+      end
+      
+      if not has_theme
         response.status = 404
         response.body   = '404 - Theme Not Found'
         puts "Theme not found, avail: #{$FILECACHE.theme_cache.inspect}" if $DEBUG_MODE
-      elsif not $FILECACHE.theme_cache[theme_name].has_key?( theme_part )
+      elsif not has_theme_part
         response.status = 503
         response.body   = '503 - Invalid Theme Part Request'
-      elsif not $FILECACHE.theme_cache[theme_name][theme_part].has_key?( req_file )
+      elsif not has_theme_file
         response.status = 404
         response.body   = '404 - Theme Resource Not Found'
         puts "File not found, avail: #{$FILECACHE.theme_cache[theme_name][theme_part].keys.inspect}" if $DEBUG_MODE

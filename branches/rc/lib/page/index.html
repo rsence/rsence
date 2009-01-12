@@ -39,12 +39,14 @@ body {
 
 </style>
 __SCRIPT_DEPS__
-<script type="text/javascript" src="/H/js/core.js"></script>
+<script type="text/javascript" src="/H/__CLIENT_REV__/js/core.js"></script>
 <!--[if lt IE 7]>
-<script type="text/javascript" src="/H/js/iefix.js"></script>
+<script type="text/javascript" src="/H/__CLIENT_REV__/js/iefix.js"></script>
 <![endif]-->
 <script type="text/javascript">
 
+HCLIENT_REV = '__CLIENT_REV__';
+HThemeManager.themePath = '/H/__CLIENT_REV__/themes';
 HTransportURL = '/hello';
 HTransporter.syncDelay = 0;
 

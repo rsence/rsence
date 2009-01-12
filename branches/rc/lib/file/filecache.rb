@@ -31,7 +31,7 @@ module Server
 =end
 class FileCache
   
-  attr_reader :busy_scanning, :scan_time, :js_cache, :theme_cache, :gz_cache
+  attr_reader :busy_scanning, :scan_time, :js_cache, :theme_cache, :gz_cache, :client_rev
   
   # A lock flag for preventing different threads from
   # scanning simultaneously in debug mode
@@ -39,6 +39,7 @@ class FileCache
   
   # Initially, scan.
   def initialize
+    @client_rev = 0
     scan_dirs
   end
   
@@ -74,6 +75,8 @@ class FileCache
     
     # Root path of the compiled js client framework
     ui_path = $config[:client_parts][:js]
+    
+    @client_rev = File.read( File.join( ui_path, 'built' ) ).strip
     
     # Clean hash for js data and properties
     js_cache = {}
