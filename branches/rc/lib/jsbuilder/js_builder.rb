@@ -336,10 +336,18 @@ class JSBuilder
     end
   end
   
+  def build_indexes
+    @destination_files.each_key do | package_name |
+      @jscompress.build_indexes( @destination_files[ package_name ].join('') )
+    end
+  end
+  
   ## REITERATE!
   def do_compress
     @conv_used = {}
-    unless @use_jscompress
+    if @use_jscompress
+      build_indexes
+    else
       conv_ids()           # make short unique strings to be used as replacement patterns
       mkconvcount()        # calculate the order of occurrences (biggest first)
     end
@@ -449,6 +457,10 @@ class JSBuilder
     
     save_file( File.join( @js_dst_dir, 'built' ), Time.now.to_i.to_s )
     
+  end
+  
+  def flush
+    @jscompress.free_indexes
   end
   
 end

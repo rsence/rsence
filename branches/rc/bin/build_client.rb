@@ -73,5 +73,5 @@ $_THEMES.each do |theme_name|
   js_builder.gzip_file( theme_css_path, theme_css_path_gz )
 end
 
-
+js_builder.flush
 
