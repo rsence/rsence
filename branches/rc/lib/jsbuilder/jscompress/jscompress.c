@@ -265,9 +265,12 @@ static int jscompress_replace(char *_dest, const char *s, int len)
 			if (!is_reserved(s)) {
 				var = tree_find(tree_node_arr, s);
 
-				varlen = jscompress_generate_name(dest, var->index);
-				dest += varlen;
-				s += strlenv(s);
+				/* error out if identifier is not found? */
+				if (strcmpv(var->var, s) == 0) {
+					varlen = jscompress_generate_name(dest, var->index);
+					dest += varlen;
+					s += strlenv(s);
+				}
 			}
 		}
 		invar = isvarchr(c);
@@ -293,14 +296,11 @@ static int jscompress_cmp_arr_index(const void *p1, const void *p2)
 	return n1->arr_index - n2->arr_index;
 }
 
-static VALUE jscompress(VALUE self, VALUE str)
+static VALUE jscompress_build_indexes(VALUE self, VALUE str)
 {
-	VALUE ret_str;
 	int i;
 	const char *s = RSTRING(str)->ptr;
 	int len = RSTRING(str)->len;
-	char *dest;
-	int dest_len;
 	int off;
 	int res_idx;
 
@@ -337,24 +337,38 @@ static VALUE jscompress(VALUE self, VALUE str)
 	qsort(tree_node_arr, tree_node_arr_count, sizeof(tree_node_arr[0]),
 			jscompress_cmp_arr_index);
 
+	return Qnil;
+}
+
+static VALUE jscompress(VALUE self, VALUE str)
+{
+	VALUE ret_str;
+	char *dest;
+	int dest_len;
+
 	/* since we use minimal variables, destination is always smaller than source */
-	dest = malloc(len);
+	dest = malloc(RSTRING_LEN(str));
 	if (!dest) {
 		free(tree_node_arr);
 		rb_raise(rb_eNoMemError, "%s: malloc failed", __func__);
 	}
 
 	/* replace variables with shorter versions */
-	dest_len = jscompress_replace(dest, s, len);
+	dest_len = jscompress_replace(dest, RSTRING_PTR(str), RSTRING_LEN(str));
 
 	ret_str = rb_str_new(dest, dest_len);
 
 	free(dest);
-	free(tree_node_arr);
 
 	return ret_str;
 }
 
+static VALUE jscompress_free_indexes(VALUE self)
+{
+	free(tree_node_arr);
+
+	return Qnil;
+}
 
 static VALUE jscompress_initialize(VALUE self, VALUE res)
 {
@@ -401,5 +415,7 @@ void Init_jscompress()
 {
 	cl = rb_define_class("JSCompress", rb_cObject);
 	rb_define_method(cl, "initialize", jscompress_initialize, 1);
+	rb_define_method(cl, "build_indexes", jscompress_build_indexes, 1);
 	rb_define_method(cl, "compress", jscompress, 1);
+	rb_define_method(cl, "free_indexes", jscompress_free_indexes, 0);
 }
