@@ -80,9 +80,11 @@ class JSBuilder
   end
   
   
-  def initialize( src_dirs=false, dst_dir=false, theme_names=false, pkg_info=false, packages=false )
+  def initialize( src_dirs=false, dst_dir=false,
+                  theme_names=false, pkg_info=false,
+                  packages=false, reserved_names=false )
     
-    @use_jscompress = ARGV.include?('--jscompress')
+    @use_jscompress = true #ARGV.include?('--jscompress')
     
     # src_dirs is supposed to be an array of js source directories
     if src_dirs
@@ -120,8 +122,16 @@ class JSBuilder
     if packages
       @packages = packages
     else
-      warn "JSBuilder WARNING: no pkg_info specified, instead trying: $_PACKAGE_NAMES: #{$_PACKAGE_NAMES.inspect}"
+      warn "JSBuilder WARNING: no packages specified, instead trying: $_PACKAGE_NAMES: #{$_PACKAGE_NAMES.inspect}"
       @packages = $_PACKAGE_NAMES
+    end
+    
+    # reserved_names is supposed to be a list of reserved words (words that shouldn't be compressed)
+    if reserved_names
+      @reserved_names = reserved_names
+    else
+      warn "JSBuilder WARNING: no reserved_names specified, instead trying: $_RESERVED_NAMES: #{$_RESERVED_NAMES.inspect}"
+      @reserved_names = $_RESERVED_NAMES
     end
     
     # makes sure the specified dirs are ok
@@ -131,7 +141,7 @@ class JSBuilder
     @jsmin = JSMin.new
     
     # constructs the jscompress instance
-    @jscompress = JSCompress.new
+    @jscompress = JSCompress.new( @reserved_names )
     
     # contains a list of js names found (by default all names beginning with an underscore; '_' )
     @hints = []
@@ -227,7 +237,7 @@ class JSBuilder
   
   def add_hints( js_data )
     js_data.gsub(/[^a-zA-Z0-9_](_[a-zA-Z0-9_]+?)[^a-zA-Z0-9_]/) do
-      unless $_RESERVED_NAMES.include?( $1 )
+      unless @reserved_names.include?( $1 )
         @hints.push( $1 ) unless @hints.include?( $1 )
         @conversion_stats[ $1 ] = 0 unless @conversion_stats.include?( $1 )
         @conversion_stats[ $1 ] += 1
