@@ -3,7 +3,6 @@
   # Himle Server -- http://himle.org/
   #
   # Copyright (C) 2008 Juha-Jarmo Heinonen
-  # Copyright (C) 2006-2007 Helmi Technologies Inc.
   #
   # This file is part of Himle Server.
   #
