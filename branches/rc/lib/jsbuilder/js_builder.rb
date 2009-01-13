@@ -356,7 +356,7 @@ class JSBuilder
   
   ## REITERATE!
   def minimize_data
-    puts  "Package.......................:   Size | Compressed | GZIPed"
+    puts  "Package.......................:   Size |  Compressed |  GZIPed"
     @destination_files.each_key do | package_name |
       jsc_path = File.join( @js_dst_dir, package_name+'.js')
       if DEBUG_MODE
@@ -402,7 +402,7 @@ class JSBuilder
       percent2 = '-'
     end
     jsc_name = jsc_path.split('/')[-1]
-    puts  "#{jsc_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(3)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(3)}"
+    puts  "#{jsc_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(4)}"
   end
   
   ### REITERATE!
