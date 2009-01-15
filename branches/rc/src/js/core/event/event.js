@@ -537,17 +537,19 @@ EVENT = {
   // tracks mouse wheel events,
   // sends mouseWheel pseudo-events
   mouseWheel: function(e) {
-    var _this=EVENT,_delta,i;
-    _delta=0;
+    var _this=EVENT,_delta=0,i=0;
     if(!e){e=window.event;}
     if(e.wheelDelta){
       _delta=e.wheelDelta/120; 
-      if(window.opera){_delta=-_delta;}
+      _delta=-_delta;
     }
     else if(e.detail){
       _delta=-e.detail/3;
     }
-    for(i=0;i!=_this.focused.length;i++){
+    if(BROWSER_TYPE.opera){
+      _delta=0-_delta;
+    }
+    for(;i!=_this.focused.length;i++){
       if(_this.focused[i]==true){
         if(_this.focusOptions[i].mouseWheel==true){
           Event.stop(e);_this.focusOptions[i].ctrl.mouseWheel(_delta);
