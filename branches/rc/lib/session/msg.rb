@@ -38,13 +38,7 @@ Major clean-up in 2008-05-07.
 
 =end
 
-## Uncomment, when Rack supports chunked transfers
-require 'zlib'
-
-class GZString < String
-  alias write <<
-end
-
+require 'util/gzstring'
 
 class Message
   
