@@ -26,6 +26,9 @@ module Client
 
 require 'jsbuilder/jsmin/jsmin'
 require 'jsbuilder/jscompress/jscompress'
+require 'jsbuilder/html_min/html_min'
+
+require 'util/gzstring'
 
 class JSBuilder
   def setup_dirs
@@ -80,127 +83,135 @@ class JSBuilder
   end
   
   
-  def initialize( src_dirs=false, dst_dir=false,
-                  theme_names=false, pkg_info=false,
-                  packages=false, reserved_names=false )
-    
-    @use_jscompress = true #ARGV.include?('--jscompress')
+  def initialize( src_dirs, dst_dir, theme_names, pkg_info, packages, reserved_names )
     
     # src_dirs is supposed to be an array of js source directories
-    if src_dirs
-      @src_dirs = src_dirs
-    else
-      warn "JSBuilder WARNING: no src_dir specified, instead trying: $_SRC_PATH: #{$_SRC_PATH.inspect}"
-      @src_dirs = $_SRC_PATH
-    end
+    @src_dirs = src_dirs
     
     # dst_dir is supposed to be the path to the build destination
-    if dst_dir
-      @dst_dir = dst_dir
-    else
-      warn "JSBuilder WARNING: no dst_dir specified, instead trying: $_REL_PATH: #{$_REL_PATH.inspect}"
-      @dst_dir = $_REL_PATH
-    end
+    @dst_dir = dst_dir
     
     # theme_names is supposed to be an array of theme names to include in the build
-    if theme_names
-      @theme_names = theme_names
-    else
-      warn "JSBuilder WARNING: no theme_names specified, instead trying: $_THEMES: #{$_THEMES.inspect}"
-      @theme_names = $_THEMES
-    end
+    @theme_names = theme_names
     
     # pkg_info is supposed to be a hash of js package name definitions by pkg_name
-    if pkg_info
-      @pkg_info = pkg_info
-    else
-      warn "JSBuilder WARNING: no pkg_info specified, instead trying: $_PACKAGES: #{$_PACKAGES.inspect}"
-      @pkg_info = $_PACKAGES
-    end
+    @pkg_info = pkg_info
     
     # packages is supposed to be a list of js package name definitions to include
-    if packages
-      @packages = packages
-    else
-      warn "JSBuilder WARNING: no packages specified, instead trying: $_PACKAGE_NAMES: #{$_PACKAGE_NAMES.inspect}"
-      @packages = $_PACKAGE_NAMES
-    end
+    @packages = packages
     
     # reserved_names is supposed to be a list of reserved words (words that shouldn't be compressed)
-    if reserved_names
-      @reserved_names = reserved_names
-    else
-      warn "JSBuilder WARNING: no reserved_names specified, instead trying: $_RESERVED_NAMES: #{$_RESERVED_NAMES.inspect}"
-      @reserved_names = $_RESERVED_NAMES
-    end
+    @reserved_names = reserved_names
     
     # makes sure the specified dirs are ok
     setup_dirs
     
-    # constructs the jsmin instance
+    # JSMin removes js white-space (makes the source shorter)
     @jsmin = JSMin.new
     
-    # constructs the jscompress instance
+    # JSCompress compresses js by "obfuscating" 
+    # all variables beginning with an underscore "_",
+    # eg. "_this" -> "_0", except
+    # those specified in the @reserved_names array
     @jscompress = JSCompress.new( @reserved_names )
+    
+    # HTMLMin compresses css and html by removing whitespace
+    @html_min = HTMLMin.new
+    
+    # contains a list of theme gfx extensions allowed
+    @gfx_formats = ['.jpg','.gif','.png','.swf']
     
     # contains a list of js names found (by default all names beginning with an underscore; '_' )
     @hints = []
     
+    # compression strategy ( fastest vs smallest )
+    #@gz_strategy = Zlib::BEST_SPEED
+    @gz_strategy = Zlib::BEST_COMPRESSION
+    
   end
   
-  def save_file(outp_path,outp_data)
-    outp_file = open(outp_path,'wb')
-    outp_file.write(outp_data)
+  def save_file( outp_path, outp_data )
+    outp_file = open( outp_path, 'wb' )
+    outp_file.write( outp_data )
     outp_file.close
   end
-  def read_file(path)
-    filehandle = open(path,'rb')
+  
+  def read_file( path )
+    filehandle = open( path, 'rb' )
     filedata   = filehandle.read
     filehandle.close
     return filedata
   end
   
-  ### REITERATE!
-  def cp_file(src_path,dst_path)
-    if RUBY_PLATFORM.include? "mswin32"
-      `copy #{src_path.gsub('/',"\\")} #{dst_path.gsub('/',"\\")}`
-    else
-      save_file(dst_path,read_file(src_path))
-    end
+  def cp_file( src_path, dst_path )
+    file_data = read_file( src_path )
+    save_file( dst_path, file_data )
+    return file_data.size
   end
   
-  ### REITERATE!
-  def cp_css_tidy_file(src_path,dst_path)
-    cp_file(src_path,dst_path)
-    gzip_file(dst_path,dst_path+'.gz') unless $_NO_GZIP
+  def cp_html( src_path, dst_path )
+    if $_NO_WHITESPACE_REMOVAL
+      html_data = read_file( src_path )
+    else
+      html_data = @html_min.minimize( read_file( src_path ) )
+    end
+    save_file( dst_path, html_data )
+    unless $_NO_GZIP
+      gz_html = gzip_string( html_data )
+      save_file( dst_path+'.gz', gz_html )
+    end
+    return html_data
+  end
+  alias cp_css cp_html
+  
+  def gzip_string( string )
+    gz_string = GZString.new('')
+    gz_writer = Zlib::GzipWriter.new( gz_string, @gz_strategy )
+    gz_writer.write( string )
+    gz_writer.close
+    return gz_string
   end
   
-  ### REITERATE!
-  def cp_html_tidy_file(src_path,dst_path)
-    if RUBY_PLATFORM.include? "mswin32"
-      save_file(dst_path,read_file(src_path))
-    else
-      save_file(dst_path,`#{HTMLTIDY} "#{src_path}"`.gsub("\n",""))
-    end
-    gzip_file(dst_path,dst_path+'.gz') unless $_NO_GZIP
+  def gzip_file( src, dst )
+    gz_data = gzip_string( read_file( src ) )
+    save_file( dst, gz_data )
   end
   
-  ### REITERATE!
-  def gzip_file(src,dst)
-    if RUBY_PLATFORM.include? "mswin32"
-      `#{GZIP} -c #{src.gsub('/',"\\")} > #{dst.gsub('/',"\\")}`
-    else
-      gz_data = `#{GZIP} -c #{src}`
-      save_file(dst,gz_data)
+  def cp_gfx( src_path_theme, tgt_path_theme )
+    
+    gfx_size = 0
+    
+    src_files_gfx = File.join( src_path_theme, 'gfx' )
+    
+    if File.exist?( src_files_gfx )
+      Dir.entries( src_files_gfx ).each do |src_gfx_filename|
+        src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
+        if @gfx_formats.include?( src_file_gfx[-4..-1] )
+          tgt_file_gfx = File.join( tgt_path_theme, 'gfx', src_gfx_filename )
+          if File.exist?( src_file_gfx ) and File.exist?( tgt_file_gfx )
+            File.delete( tgt_file_gfx )
+          end
+          gfx_size += cp_file( src_file_gfx, tgt_file_gfx )
+        end
+      end
     end
+    
+    return gfx_size
+    
   end
   
   # processes theme-related files
-  def cp_theme(bundle_dir,bundle_name)
+  def cp_theme( bundle_dir, bundle_name )
     
     @theme_names.each do |theme_name|
       
-      tgt_path_theme = File.join( @dst_dir, 'themes', theme_name )
+      @theme_sizes[ theme_name ] = {
+        :css  => [0,0],
+        :html => [0,0],
+        :gfx  => 0
+      } unless @theme_sizes.has_key?( theme_name )
+      
+      tgt_path_theme = File.join( @themes_dst_dir, theme_name )
       src_path_theme = File.join( bundle_dir, 'themes', theme_name )
       
       tgt_file_css = File.join( tgt_path_theme, 'css', bundle_name+'.css' )
@@ -210,38 +221,21 @@ class JSBuilder
       src_file_html = File.join( src_path_theme, 'html', bundle_name+'.html' )
       
       if File.exist?( src_file_css )
-        cp_css_tidy_file(src_file_css,tgt_file_css)
+        css_data = cp_css( src_file_css, tgt_file_css )
+        @theme_sizes[   theme_name ][:css][0] += File.stat( src_file_css ).size
+        @theme_sizes[   theme_name ][:css][1] += css_data.size
+        @css_by_theme[  theme_name ][ bundle_name ] = css_data
       end
-      
       if File.exist?( src_file_html )
-        cp_html_tidy_file( src_file_html, tgt_file_html )
-        @html_by_theme[theme_name][bundle_name] = read_file(tgt_file_html)
+        html_data = cp_html( src_file_html, tgt_file_html )
+        @theme_sizes[   theme_name ][:html][0] += File.stat( src_file_html ).size
+        @theme_sizes[   theme_name ][:html][1] += html_data.size
+        @html_by_theme[ theme_name ][ bundle_name ] = html_data
       end
       
-      src_files_gfx = File.join( src_path_theme, 'gfx' )
+      gfx_size = cp_gfx( src_path_theme, tgt_path_theme )
+      @theme_sizes[   theme_name ][:gfx] += gfx_size
       
-      if File.exist?(src_files_gfx)
-        Dir.entries( src_files_gfx ).each do |src_gfx_filename|
-          src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
-          if ['.jpg','.gif','.png','.swf'].include?(src_file_gfx[-4..-1])
-            tgt_file_gfx = File.join( tgt_path_theme, 'gfx', src_gfx_filename )
-            if File.exist?( src_file_gfx ) and File.exist?( tgt_file_gfx )
-              File.delete( tgt_file_gfx )
-            end
-            cp_file( src_file_gfx, tgt_file_gfx )
-          end
-        end
-      end
-    end
-  end
-  
-  def add_hints( js_data )
-    js_data.gsub(/[^a-zA-Z0-9_](_[a-zA-Z0-9_]+?)[^a-zA-Z0-9_]/) do
-      unless @reserved_names.include?( $1 )
-        @hints.push( $1 ) unless @hints.include?( $1 )
-        @conversion_stats[ $1 ] = 0 unless @conversion_stats.include?( $1 )
-        @conversion_stats[ $1 ] += 1
-      end
     end
   end
   
@@ -255,7 +249,7 @@ class JSBuilder
       exit
     end
     unless @destinations.include?( bundle_name )
-      warn "JSBuilder WARNING: bundle name #{bundle_name.inspect} does not belong to any package, skipping.."
+      warn "JSBuilder WARNING: bundle name #{bundle_name.inspect} does not belong to any package, skipping.." if ARGV.include?('-d')
       return
     end
     js_data = read_file( File.join( bundle_path, bundle_name+'.js' ) )
@@ -267,9 +261,6 @@ class JSBuilder
     }
     if has_themes
       cp_theme( bundle_path, bundle_name )
-    end
-    unless @use_jscompress
-      add_hints( js_data ) unless DEBUG_MODE or $_NO_OBFUSCATION
     end
   end
   
@@ -299,100 +290,62 @@ class JSBuilder
     
   end
   
-  ## REITERATE!
-  def conv_ids
-    conv_tmp = []
-    # 0..9
-    48.upto(57)  {|val|conv_tmp.push(val.chr)}
-    # a..z
-    97.upto(122) {|val|conv_tmp.push(val.chr)}
-    # A..Z
-    65.upto(90)  {|val|conv_tmp.push(val.chr)}
-    # double them up..
-    @conv_ids  = []
-    @conv_used = {}
-    conv_tmp.each do |pri_chr|
-      @conv_ids.push($_REPL_PREFIX+pri_chr)
-    end
-    conv_tmp.each do |pri_chr|
-      conv_tmp.each do |sec_chr|
-        @conv_ids.push($_REPL_PREFIX+pri_chr+sec_chr)
-      end
-    end
-    # well, 3906 conv_ids should be enough for everyone ;)
-  end
-  
-  ## REITERATE!
-  def mkconvcount
-    conv_amt_name = {}
-    @conversion_stats.each do |conv_name,conv_amt|
-      conv_amt_name[conv_amt] = [] unless conv_amt_name.has_key?(conv_amt)
-      conv_amt_name[conv_amt].push(conv_name)
-    end
-    conv_amt_name.keys.sort.reverse.each do |conv_amt|
-      conv_amt_name[conv_amt].sort.each do |conv_name|
-        @conv_used[conv_name] = @conv_ids.shift
-      end
-    end
-  end
-  
   def build_indexes
     @destination_files.each_key do | package_name |
-      @jscompress.build_indexes( @destination_files[ package_name ].join('') )
+      @jscompress.build_indexes( @destination_files[ package_name ] )
     end
   end
   
-  ## REITERATE!
   def do_compress
-    @conv_used = {}
-    if @use_jscompress
-      build_indexes
-    else
-      conv_ids()           # make short unique strings to be used as replacement patterns
-      mkconvcount()        # calculate the order of occurrences (biggest first)
-    end
-    minimize_data()      # do the actual compression
+    build_indexes
+    minimize_data
   end
   
-  ## REITERATE!
   def minimize_data
-    puts  "Package.......................:   Size |  Compressed |  GZIPed"
+    unless ARGV.include? '-nv'
+      puts  "Package.......................:   Size |  Compressed |  GZIPed"
+      puts  "                              :        |             |"
+    end
     @destination_files.each_key do | package_name |
       jsc_path = File.join( @js_dst_dir, package_name+'.js')
-      if DEBUG_MODE
-        jsc_data = @destination_files[package_name].join('')
-      elsif $_NO_OBFUSCATION and not $_NO_WHITESPACE_REMOVAL
-        jsc_data = @jsmin.convert(@destination_files[package_name].join(''))
-      else
-        if $_NO_WHITESPACE_REMOVAL
-          jsc_data = pre_convert(@destination_files[package_name].join(''))
-        else
-          jsc_data = pre_convert( @jsmin.convert( @destination_files[package_name].join('') ) )
+      
+      jsc_data = @destination_files[package_name]
+      
+      unless DEBUG_MODE
+        unless $_NO_OBFUSCATION
+          jsc_data = @jsmin.convert( jsc_data )
+        end
+        unless $_NO_WHITESPACE_REMOVAL
+          jsc_data = pre_convert( jsc_data )
         end
       end
       
-      save_file(jsc_path,jsc_data)
+      save_file( jsc_path, jsc_data )
       
       unless $_NO_GZIP
-        gz_path = jsc_path.gsub('.js','.gz')
-        gzip_file(jsc_path,gz_path)
+        gz_path = jsc_path
+        gz_path[-3..-1] = '.gz'
+        gz_data = gzip_string( jsc_data )
+        save_file( gz_path, gz_data )
       end
       
-      print_stat( package_name )
+      unless ARGV.include? '-nv'
+        js_size  = @destination_files[ package_name ].size
+        jsc_size = jsc_data.size
+        
+        if $_NO_GZIP
+          gz_size  = -1
+        else
+          gz_size  = gz_data.size
+        end
+        
+        print_stat( package_name, js_size, jsc_size, gz_size )
+      end
+      
     end
   end
   
-  ### REITERATE!
-  def print_stat( package_name )
-    jsc_path = File.join( @js_dst_dir, package_name+'.js' )
-    gz_path = File.join( @js_dst_dir, package_name+'.gz' )
-    dst_size = @destination_files[package_name].join.size
-    jsc_size = File.stat(jsc_path).size
-    if $_NO_GZIP
-      gz_size  = -1
-    else
-      gz_size  = File.stat( gz_path).size
-    end
+  def print_stat( package_name, dst_size, jsc_size, gz_size )
     percent = 'n/a'
     if dst_size > 0
       percent1 = (100*(jsc_size/dst_size.to_f)).to_i.to_s + '%'
@@ -401,33 +354,28 @@ class JSBuilder
       percent1 = '-'
       percent2 = '-'
     end
-    jsc_name = jsc_path.split('/')[-1]
-    puts  "#{jsc_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(4)}"
+    puts  "#{package_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(4)}"
   end
   
-  ### REITERATE!
   def pre_convert(jsc_data)
-    return @jscompress.compress( jsc_data ) if @use_jscompress
-    # replace names in conv in the most common -> least common order of conv_ids
-    @conv_used.keys.each do |conv_from|
-      conv_to = @conv_used[conv_from]
-      jsc_data.gsub!(eval("/\\b(#{conv_from})\\b/"),conv_to)
-    end
-    jsc_data.gsub!(/\\\n([\ ]*)/,'')
-    return jsc_data
+    return @jscompress.compress( jsc_data )
   end
   
-  # returns html theme piece for special case optimization (REITERATE!!!)
-  def html(theme_name); @html_by_theme[theme_name]; end
-  
+  # returns html theme piece for special case optimization
+  def html( theme_name ); @html_by_theme[ theme_name ]; end
+  def css(  theme_name ); @css_by_theme[  theme_name ]; end
   
   def run
     
     # hash of bundles per bundle name per theme; @html_by_theme[theme_name][bundle_name] = bundle_data
     @html_by_theme = {}
+    @css_by_theme  = {}
     @theme_names.each do | theme_name |
       @html_by_theme[ theme_name ] = {}
+      @css_by_theme[  theme_name ] = {}
     end
+    
+    @theme_sizes = {}
     
     # hash of bundle -> package mappings (reverse @pkg_info)
     @destinations = {}
@@ -453,9 +401,82 @@ class JSBuilder
         end
       end
     end
+    @destination_files.each do | package_name, package_array |
+      package_data = package_array.join('')
+      @destination_files[ package_name ] = package_data
+    end
+    
     do_compress()
+    build_themes()
     
     save_file( File.join( @js_dst_dir, 'built' ), Time.now.to_i.to_s )
+    
+  end
+  
+  def build_themes
+    unless ARGV.include? '-nv'
+      puts
+      puts  "Theme name and part...........:   Orig |  Compressed |  GZIPed"
+      puts  "                              :        |             |"
+    end
+    # compile "all-in-one" css and html resources
+    @theme_names.each do |theme_name|
+      
+      
+      html_templates = @html_by_theme[ theme_name ]
+      css_templates  = @css_by_theme[  theme_name ]
+      
+      html2js_themes = []
+      
+      theme_css_dir = File.join( @themes_dst_dir, theme_name, 'css' )
+      
+      html_templates.each do |tmpl_name,tmpl_html|
+        html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
+      end
+      
+      theme_html_js_arr = []
+      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "};"
+      theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json});"
+      theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json});"
+      theme_html_js_arr.push "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
+      
+      theme_html_js = pre_convert( theme_html_js_arr.join('') )
+      
+      theme_html_js_path = File.join( @js_dst_dir, theme_name+'_theme.js' )
+      
+      save_file( theme_html_js_path, theme_html_js )
+      
+      unless $_NO_GZIP
+        theme_html_gz_path = theme_html_js_path
+        theme_html_gz_path[-3..-1] = '.gz'
+        
+        theme_html_gz = gzip_string( theme_html_js )
+        
+        save_file( theme_html_gz_path, theme_html_gz )
+      end
+      
+      unless ARGV.include? '-nv'
+        print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.size )
+      end
+      
+      theme_css_path = File.join( theme_css_dir, theme_name+'_theme.css' )
+      
+      theme_css_template_data = css_templates.values.join("\n")
+      
+      save_file( theme_css_path, theme_css_template_data )
+      
+      unless $_NO_GZIP
+        theme_css_path_gz = theme_css_path+'.gz'
+        theme_css_template_data_gz = gzip_string( theme_css_template_data )
+        save_file( theme_css_path_gz, theme_css_template_data_gz )
+      end
+      
+      unless ARGV.include? '-nv'
+        print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.size )
+        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], 0, 0 )
+      end
+      
+    end
     
   end
   
