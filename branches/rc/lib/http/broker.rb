@@ -37,6 +37,10 @@ require 'http/restful'
 class Broker
   include RestfulDispatcher
   
+  def uri_match( uri )
+    # TODO
+  end
+  
   ## Post requests are always xhr requests
   def post
     

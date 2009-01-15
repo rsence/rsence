@@ -174,6 +174,7 @@ class PluginManager
   # Tells all plugins to open the files or databases they need.
   def open
     delegate_soap( :open )
+    delegate_servlet( :open )
     delegate( 'open' )
   end
   
@@ -185,12 +186,14 @@ class PluginManager
   # Tells all plugins to flush their data.
   def flush
     delegate_soap( :flush )
+    delegate_servlet( :flush )
     delegate( 'flush' )
   end
   
   # Tells all plugins that they are about to be terminated.
   def close
     delegate_soap( :close )
+    delegate_servlet( :close )
     delegate( 'close' )
   end
   
@@ -213,6 +216,10 @@ class PluginManager
     @@soap_plugins.each do |method_hash|
       method_hash[ method_name ].call
     end
+  end
+  
+  def delegate_servlet( method_name )
+    ## TODO
   end
   
   ### Check if each plugin handles +method+, and if so, call it, passing +args+ as a parameter
