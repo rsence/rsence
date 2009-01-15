@@ -33,6 +33,9 @@ require 'http/soap/soapserve'
 # soap_plugin includes a SOAPPlugin class, that includes plug-and-play SOAP access
 require 'plugins/soap_plugin'
 
+# servlet includes the ServletPlugin class, for handling any requests / responses
+require 'plugins/servlet'
+
 module Himle
 module Server
 
@@ -174,7 +177,7 @@ class PluginManager
   # Tells all plugins to open the files or databases they need.
   def open
     delegate_soap( :open )
-    delegate_servlet( :open )
+    delegate_servlet( 'open' )
     delegate( 'open' )
   end
   
@@ -186,14 +189,14 @@ class PluginManager
   # Tells all plugins to flush their data.
   def flush
     delegate_soap( :flush )
-    delegate_servlet( :flush )
+    delegate_servlet( 'flush' )
     delegate( 'flush' )
   end
   
   # Tells all plugins that they are about to be terminated.
   def close
     delegate_soap( :close )
-    delegate_servlet( :close )
+    delegate_servlet( 'close' )
     delegate( 'close' )
   end
   
@@ -202,6 +205,7 @@ class PluginManager
     flush
     close
     @@plugins = {}
+    @@servlets = []
     scan
     open
   end
@@ -218,8 +222,53 @@ class PluginManager
     end
   end
   
-  def delegate_servlet( method_name )
-    ## TODO
+  @@servlets = []
+  def match_servlet_uri( uri, request_type=:get )
+    match_score = {}
+    @@servlets.each_with_index do | servlet, i |
+      if servlet.match( uri, request_type )
+        score = servlet.score
+        match_score[ score ] = [] unless match_score.has_key? score
+        match_score[ score ].push( servlet )
+      end
+    end
+    match_scores = match_score.keys.sort
+    if match_scores.empty?
+      return false
+    else
+      match_servlets = match_score[ match_scores[0] ]
+      return match_servlets[ rand( match_servlets.size ) ]
+    end
+  end
+  
+  def match_servlet( request_type, request, response, session )
+    match_plugin = match_servlet_uri( request.fullpath, request_type )
+    if match_plugin
+      if request_type == :get
+        match_plugin.get( request, response, session )
+      elsif request_type == :get
+        match_plugin.post( request, response, session )
+      else
+        return false
+      end
+      return true
+    else
+      return false
+    end
+  end
+  
+  def delegate_servlet( method_name, *args )
+    @@servlets.each do |servlet|
+      if servlet.respond_to? method_name
+        servlet.method( method_name ).call( *args )
+      end
+    end
+  end
+  
+  def PluginManager.add_servlet( servlet )
+    idx = @@servlets.size
+    @@servlets.push( servlet )
+    return idx
   end
   
   ### Check if each plugin handles +method+, and if so, call it, passing +args+ as a parameter

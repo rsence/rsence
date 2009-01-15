@@ -28,41 +28,46 @@ module Server
 #  should match its uri. Alternatively just a string, but
 #  that needs to be an exact match.
 #  servlet_plug = ServletPlugin.new
-#  servlet_plug.register_GET( /\/about\/.*/ )
-#  servlet_plug.register_POST( '/mailsender' )
+#  servlet_plug.register_get( /\/about\/.*/ )
+#  servlet_plug.register_post( '/mailsender' )
 #  servlet_plug.register( /\/feedback\/.*/ )
 class ServletPlugin
   
+  
   def initialize
     @path = PluginManager.curr_plugin_path
+    register
     init
   end
   
-  ### Registers a GET listener for the uri_match string or regex
-  def register_GET( uri_match )
+  attr_reader :servlet_id
+  def register
     
-  end
-  
-  ### Registers a POST listener for the uri_match string or regex
-  def register_POST( uri_match )
+    ## registers itself as a soap servant
+    @servlet_id = PluginManager.add_servlet( self )
     
-  end
-  
-  ### Registers both a GET and POST listener for the uri_match string or regex
-  def register( uri_match )
-    register_GET( uri_match )
-    register_POST( uri_match )
+    
   end
   
   ## Extendables
   
+  # return true to match, false to not match
+  def match( uri, request_type=:get )
+    return false
+  end
+  
+  # if match, return score (lower is better)
+  def score
+    return 100
+  end
+  
   # Extend to do any GET request processing
-  def do_GET( req, res, ses )
+  def get( req, res, ses )
     
   end
   
   # Extend to do any POST request processing
-  def do_POST( req, res, ses )
+  def post( req, res, ses )
     
   end
   

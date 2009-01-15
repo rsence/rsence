@@ -54,7 +54,7 @@ require 'file/fileserve'
 require 'file/ticketserve'
 
 # IndexHtml builds the default page at '/'
-require 'page/indexhtml'
+# require 'page/indexhtml' # getting replaced by the servletplugin functionality
 
 # ValueManager syncronizes value objects
 require 'values/valuemanager'
@@ -235,8 +235,11 @@ class HimleServe < Himle::Server::Daemon::Base
     $FILESERVE   = $config[:fileserve]
     $config[:ticketserve]     = TicketServe.new
     $TICKETSERVE = $config[:ticketserve]
-    $config[:indexhtml]       = IndexHtml.new
-    $INDEXHTML   = $config[:indexhtml]
+    
+    # indexhtml functionality going to servlet
+    #$config[:indexhtml]       = IndexHtml.new
+    #$INDEXHTML   = $config[:indexhtml]
+    
     $config[:valuemanager]    = ValueManager.new
     $VALUES      = $config[:valuemanager]
     $config[:sessionmanager]  = SessionManager.new

@@ -34,6 +34,13 @@ class Transporter
     @config = $config[:transporter_conf]
   end
   
+  def servlet( request_type, request, response )
+    #msg = $SESSION.init_msg( request, response, true )
+    #session = msg.session
+    session = {}
+    $PLUGINS.match_servlet( request_type, request, response, session )
+  end
+  
   ## handles incoming SOAP requests
   def soap(request, response)
     PluginManager.soap( request, response )

@@ -37,10 +37,6 @@ require 'http/restful'
 class Broker
   include RestfulDispatcher
   
-  def uri_match( uri )
-    # TODO
-  end
-  
   ## Post requests are always xhr requests
   def post
     
@@ -72,13 +68,17 @@ class Broker
     elsif uri[0..2] == '/U/'
       puts "/U: #{uri.inspect}" if $DEBUG_MODE
       $TICKETSERVE.upload( @request, @response )
+    ## servlet matching
     else
-      puts "/404: #{uri.inspect}" if $DEBUG_MODE
-      @response.status = 404
-      err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
-      @response['content-type'] = 'text/html; charset=UTF-8'
-      @response['content-size'] = err404.size.to_s
-      @response.body = err404
+      uri_matched = $TRANSPORTER.servlet( :post, @request, @response )
+      unless uri_matched
+        puts "/404: #{uri.inspect}" if $DEBUG_MODE
+        @response.status = 404
+        err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
+        @response['content-type'] = 'text/html; charset=UTF-8'
+        @response['content-size'] = err404.size.to_s
+        @response.body = err404
+      end
     end
     
   end
@@ -130,19 +130,17 @@ class Broker
       @response['content-size'] = http_body.size.to_s
       @response.body = http_body
     
-    ## default index html page
-    elsif uri == '/'
-      puts "/: #{uri.inspect} (#{ua})" if $DEBUG_MODE
-      $INDEXHTML.get( @request, @response )
-    
-    ## all other get -requests load the 404 html page 
+    ## servlet matching
     else
-      puts "/404: #{uri.inspect}" if $DEBUG_MODE
-      @response.status = 404
-      err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
-      @response['content-type'] = 'text/html; charset=UTF-8'
-      @response['content-size'] = err404.size.to_s
-      @response.body = err404
+      uri_matched = $TRANSPORTER.servlet( :get, @request, @response )
+      unless uri_matched
+        puts "/404: #{uri.inspect}" if $DEBUG_MODE
+        @response.status = 404
+        err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
+        @response['content-type'] = 'text/html; charset=UTF-8'
+        @response['content-size'] = err404.size.to_s
+        @response.body = err404
+      end
     end
     
   end
