@@ -18,6 +18,8 @@
 require 'rubygems'
 require 'json'
 
+DEBUG_MODE = ARGV.include?( '-d' )
+
 BINPATH  = File.split( File.expand_path( __FILE__ ) )[0]
 BASEPATH = File.split(BINPATH)[0]
 PARENT_PATH = File.split(BASEPATH)[0]
@@ -27,7 +29,6 @@ $LOAD_PATH << CONFPATH
 $LOAD_PATH << File.join(BASEPATH,'lib')
 Dir.chdir(BASEPATH)
 
-require 'jsbuilder/platform_bins'
 require 'jsbuilder/client-build-config'
 require 'jsbuilder/js_builder'
 
