@@ -44,34 +44,5 @@ end
 # compile client package
 js_builder = JSBuilder.new( $_SRC_PATH, $_REL_PATH, $_THEMES, $_PACKAGES, $_PACKAGE_NAMES, $_RESERVED_NAMES )
 js_builder.run
-
-# compile "all-in-one" css and html resources
-$_THEMES.each do |theme_name|
-  html_templates = js_builder.html( theme_name )
-  html2js_themes = []
-  css_templates = []
-  theme_css_path_prefix = File.join( $_REL_PATH, 'themes', theme_name, 'css' )
-  html_templates.each do |tmpl_name,tmpl_html|
-    html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
-    theme_css_template_path = File.join( theme_css_path_prefix, tmpl_name+'.css' )
-    if File.exist?( theme_css_template_path )
-      css_templates.push( File.read( theme_css_template_path ) )
-    end
-  end
-  theme_html_js  = "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "};"
-  theme_html_js += "HNoComponentCSS.push(#{theme_name.to_json});"
-  theme_html_js += "HNoCommonCSS.push(#{theme_name.to_json});"
-  theme_html_js += "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
-  theme_html_js = js_builder.pre_convert(theme_html_js)
-  theme_html_js_path = File.join( $_REL_PATH, 'js', theme_name+'_theme.js' )
-  theme_html_gz_path = File.join( $_REL_PATH, 'js', theme_name+'_theme.gz' )
-  js_builder.save_file( theme_html_js_path, theme_html_js )
-  js_builder.gzip_file( theme_html_js_path, theme_html_gz_path )
-  theme_css_path = File.join( theme_css_path_prefix, theme_name+'_theme.css' )
-  js_builder.save_file( theme_css_path, css_templates.join("\n") )
-  theme_css_path_gz = File.join( theme_css_path+'.gz' )
-  js_builder.gzip_file( theme_css_path, theme_css_path_gz )
-end
-
 js_builder.flush
 
