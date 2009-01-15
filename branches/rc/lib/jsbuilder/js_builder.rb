@@ -281,13 +281,53 @@ class JSBuilder
       # otherwise, descend into the sub-directory:
       else
         dir_entries.each do | dir_entry |
-          next if dir_entry[0].chr == '.'
+          # don't descend into themes or hidden dirs:
+          next if dir_entry[0].chr == '.' or dir_entry == 'themes'
           sub_dir = File.join( src_dir, dir_entry )
           find_bundles( sub_dir ) if File.directory?( sub_dir )
         end
       end
     end
     
+  end
+  
+  def find_newer( src_dir, newer_than )
+    if File.exist?( src_dir ) and File.directory?( src_dir )
+      Dir.entries( src_dir ).each do | dir_entry |
+        next if dir_entry[0].chr == '.'
+        sub_dir = File.join( src_dir, dir_entry )
+        if File.directory?( sub_dir )
+          find_newer( sub_dir, newer_than )
+        else
+          if newer_than < File.stat( sub_dir ).mtime.to_i
+            puts "File changed: #{sub_dir}"
+            return true
+          end
+        end
+      end
+    end
+    return false
+  end
+  
+  def bundle_changes( newer_than )
+    @bundles_found.each do | bundle_name, bundle_info |
+      bundle_path = bundle_info[:path]
+      is_newer = find_newer( bundle_path, newer_than )
+      return true if is_newer
+    end
+    return false
+  end
+  
+  def autorun
+    while true
+      newest = read_file( File.join( @js_dst_dir, 'built' ) ).to_i
+      puts "waiting for changes..."
+      until bundle_changes( newest )
+        sleep 3
+      end
+      flush
+      run
+    end
   end
   
   def build_indexes

@@ -44,5 +44,9 @@ end
 # compile client package
 js_builder = JSBuilder.new( $_SRC_PATH, $_REL_PATH, $_THEMES, $_PACKAGES, $_PACKAGE_NAMES, $_RESERVED_NAMES )
 js_builder.run
+if ARGV.include? '-auto'
+  js_builder.autorun
+end
 js_builder.flush
+
 
