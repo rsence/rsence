@@ -48,7 +48,7 @@ HSlider = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect,_parent,_options) {
-
+    
     // Makes sure there is at least an empty options block
     if (!_options) {
       _options = {};
@@ -334,7 +334,7 @@ HSlider = HControl.extend({
 
   },
   
-  
+  thumbSize: 21,
   // private method
   _initThumb: function() {
     this._thumbElemId = this.markupElemIds.control;
@@ -344,11 +344,10 @@ HSlider = HControl.extend({
   
   // private method
   _value2px: function() {
-    var _elem = ELEM.get(this._thumbElemId);
     if(this._isVertical){
-      var _pxrange  = this.rect.height - parseInt( _elem.offsetHeight, 10 );
+      var _pxrange  = this.rect.height - this.thumbSize;
     } else {
-      var _pxrange  = this.rect.width - parseInt( _elem.offsetWidth, 10 );
+      var _pxrange  = this.rect.width - this.thumbSize;
     }
     var _intvalue = _pxrange * (
       (this.value-this.minValue) / (this.maxValue - this.minValue)
@@ -363,17 +362,22 @@ HSlider = HControl.extend({
   
   // private method
   _pos2value: function(_mousePos) {
-    if(_mousePos < 0){_mousePos = 0;}
     if(this._isVertical){
-      if(_mousePos > this.rect.height){
-        _mousePos = this.rect.height;
-      }
-      return this.maxValue - ((_mousePos / this.rect.height) * (this.maxValue - this.minValue));
+      var _pxrange  = this.rect.height - this.thumbSize;
     } else {
-      if(_mousePos > this.rect.width){
-        _mousePos = this.rect.width;
-      }
-      return this.minValue + ((_mousePos / this.rect.width) * (this.maxValue - this.minValue));
+      var _pxrange  = this.rect.width - this.thumbSize;
+    }
+    _mousePos -= (this.thumbSize/2);
+    if(_mousePos < 0){
+      _mousePos = 0;
+    }
+    if(_mousePos > _pxrange){
+      _mousePos = _pxrange;
+    }
+    if(this._isVertical){
+      return this.maxValue - ((_mousePos / _pxrange) * (this.maxValue - this.minValue));
+    } else {
+      return this.minValue + ((_mousePos / _pxrange) * (this.maxValue - this.minValue));
     }
   },
   
