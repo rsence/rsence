@@ -79,7 +79,15 @@ HSlider = HControl.extend({
       repeatDelay: 300,
       
       // Interval in milliseconds for repeat
-      repeatInterval: 50
+      repeatInterval: 50,
+      
+      // Inverse Scrollwheel axis:
+      // As there is only one scrollwheel event, sideways
+      // scrolling doesn't work logically for horizonal
+      // scrollbars by default, so set this to true to
+      // have horizonal sliders work logically
+      // with sideways scrolling, where supported.
+      inverseAxis: false
       
     }).extend(
       
@@ -283,14 +291,15 @@ HSlider = HControl.extend({
   mouseWheel: function(_delta) {
     var _valueChange;
     if (_delta > 0) {
-      _valueChange = -0.05;
-    }
-    else {
       _valueChange = 0.05;
     }
-    if ( this._isVertical ) {
-      _valueChange = 0 - _valueChange; // reverse vertical value change orientation
+    else {
+      _valueChange = -0.05;
     }
+    if ( this.options.inverseAxis ) {
+      _valueChange = 0 - _valueChange;
+    }
+    
     var _value = (this.maxValue - this.minValue) * _valueChange;
     this.setValue( this.value + _value);
   },
