@@ -37,7 +37,7 @@ class IndexHtmlPlugin < ServletPlugin
   end
   
   def score
-    return 0
+    return 1000 # allows overriding with anything with a score below 0
   end
   
   def set_deps( deps )
