@@ -327,6 +327,7 @@ class JSBuilder
       end
       flush
       run
+      `say "Autobuild complete!"` if ARGV.include?('-say')
     end
   end
   
