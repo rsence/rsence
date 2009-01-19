@@ -112,6 +112,10 @@ class Main < Plugin
     ses[:main][:title_loading] = true
   end
   
+  def delayed_call(msg,args)
+    msg.session[:main][:delayed_calls].push( args )
+  end
+  
   # called on every request of an
   # active, valid session
   def idle(msg)
