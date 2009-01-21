@@ -44,6 +44,7 @@ module RestfulDispatcher
     dispatcher = dispatcher_class.new( request, response )
     dispatcher.send(request_method)
     content_type = dispatcher.content_type
+    response.header['Content-Length'] = response.body.size.to_s unless response.header.has_key?('Content-Length')
     return [response.status, response.header, response.body]
   end
   
@@ -51,7 +52,7 @@ module RestfulDispatcher
     @dispatcher ||= Class.new(self.class) do
       attr_accessor :content_type
       def initialize(request,response)
-        @request = request
+        @request  = request
         @response = response
       end
     end

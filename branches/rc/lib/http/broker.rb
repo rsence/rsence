@@ -76,7 +76,7 @@ class Broker
         @response.status = 404
         err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
         @response['content-type'] = 'text/html; charset=UTF-8'
-        @response['content-size'] = err404.size.to_s
+        @response['content-length'] = err404.size.to_s
         @response.body = err404
       end
     end
@@ -127,7 +127,7 @@ class Broker
       @response.status = 200
       http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
       @response['content-type'] = 'text/html; charset=UTF-8'
-      @response['content-size'] = http_body.size.to_s
+      @response['content-length'] = http_body.size.to_s
       @response.body = http_body
     
     ## servlet matching
@@ -138,7 +138,7 @@ class Broker
         @response.status = 404
         err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
         @response['content-type'] = 'text/html; charset=UTF-8'
-        @response['content-size'] = err404.size.to_s
+        @response['content-length'] = err404.size.to_s
         @response.body = err404
       end
     end

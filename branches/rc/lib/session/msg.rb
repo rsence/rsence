@@ -164,7 +164,7 @@ class Message
       outp = buffer.join("\r\n")
     end
     
-    @response['content-size'] = outp.size
+    @response['content-length'] = outp.size
     @response.body = outp
     
     @response_sent = true

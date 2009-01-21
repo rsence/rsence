@@ -114,7 +114,7 @@ class IndexHtmlPlugin < ServletPlugin
     
     response.status = 200
     response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-size'] = @content_size
+    response['content-length'] = @content_size
     
     response.body = @index_html
   end

@@ -38,7 +38,7 @@ class Response
     @body[0] = ''
     @status = 200
     @header = {
-      'content-type' => 'text/plain'
+      'Content-Type' => 'text/plain'
     }
   end
   def body=(body_data)
@@ -49,13 +49,16 @@ class Response
     @body.join
   end
   def content_type=(new_content_type)
-    @header['content-type'] = new_content_type
+    @header['Content-Type'] = new_content_type
   end
   def content_type
-    @header['content-type']
+    @header['Content-Type']
+  end
+  def camelize( header_key )
+    header_key.capitalize.gsub(/\-([a-z])/) { '-'+$1.upcase }
   end
   def []=(header_key,header_val)
-    @header[header_key.downcase] = header_val.to_s
+    @header[camelize( header_key )] = header_val.to_s
   end
   def status=(new_val)
     @status = new_val.to_i
