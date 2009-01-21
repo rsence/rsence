@@ -62,7 +62,6 @@ class FileServe
     req_type = request_path[2]
     
     if not ['js','themes'].include? req_type
-      puts "req_type: #{req_type.inspect}, request_path: #{request_path.inspect}"
       req_rev = req_type
       req_type = request_path[3]
       request_path.delete_at(2)
