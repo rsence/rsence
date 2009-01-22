@@ -246,7 +246,7 @@ class PluginManager
     if match_plugin
       if request_type == :get
         match_plugin.get( request, response, session )
-      elsif request_type == :get
+      elsif request_type == :post
         match_plugin.post( request, response, session )
       else
         return false
