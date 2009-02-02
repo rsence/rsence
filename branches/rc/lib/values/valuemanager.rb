@@ -55,9 +55,10 @@ class ValueManager
     @value_parsers['f'] = FloatValueParser.new
     @value_parsers['i'] = IntValueParser.new
     @value_parsers['s'] = StringValueParser.new
+    @value_parsers['a'] = ArrayValueParser.new
     
     # the version is checked to ensure client and server are compatible
-    @value_implementation_version = 8118 # 8000+revision
+    @value_implementation_version = 8453 # 8000+revision
     
     ## 'Unique' Random String generator for HValue keys (passed on to the client)
     @randgen = RandomGenerator.new( @config[:key_length], @config[:buffer_size] )

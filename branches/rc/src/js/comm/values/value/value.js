@@ -162,6 +162,22 @@ HValue = HClass.extend({
     }
   },
   
+  _formatType: function(_sync_value){
+    var _syncjstype = (typeof _sync_value).slice(0,1);
+    if (_syncjstype == 's'){ // string
+      return ['s', SHA.str2Base64( _sync_value )];
+    }
+    else if (_syncjstype == 'n'){ // number
+      if (Math.ceil(_sync_value) === Math.floor(_sync_value)) {
+        return ['i',parseInt(_sync_value,10).toString()];
+      }
+      else {
+        return ['f',parseFloat(_sync_value).toString()];
+      }
+    }
+    return [ _syncjstype, _sync_value ];
+  },
+  
 /** method: toXML
   *
   * Responsible for generating the xml representation of the value object.
@@ -176,54 +192,80 @@ HValue = HClass.extend({
   *  <HValueManager.toXML>
   *
   * Samples:
-  * > <b id="996">1</b>'
-  * > <b id="996">0</b>'
-  * > <f id="997">123.321</f>'
-  * > <i id="997">123</i>'
-  * > <s id="PnG_aXSutjPoeqgi02mXOVA9HQWREvprkkeW">c3RyaW5nAAA=</s>'
+  * > <b id="xyz">1</b>'
+  * > <b id="xyz">0</b>'
+  * > <f id="xyz">123.321</f>'
+  * > <i id="xyz">123</i>'
+  * > <s id="xyz">c3RyaW5nAAA=</s>'
+  * > <a id="xyz">WzEsImZvbyIse2ZvbzoiYmFyIn1d</a>
   **/
   toXML: function(_i){
-    var _syncid = this.id.toString();
-    //var _synctype = this.type.slice(1,-1).toLowerCase();
-    var _syncvalue = this.value;
-    var _syncjstype = (typeof _syncvalue).slice(0,1);
-    var _syncescvalue;
+    var _syncid = this.id.toString(),
+        _sync_value = this.value,
+        _formatted = this._formatType( _sync_value ),
+        _syncjstype = _formatted[0],
+        _extra_attr = '',
+        _sync_esc_value = _formatted[1];
     
-    if (_syncjstype == 's'){ // string
-      _syncescvalue = _syncvalue.toString();
-      _syncescvalue = SHA.str2Base64( _syncescvalue );
-    }
-    else if (_syncjstype == 'n'){ // number
-      if (Math.ceil(_syncvalue) === Math.floor(_syncvalue) === _syncvalue) {
-        _syncjstype = 'i'; // integer
-        _syncescvalue = parseInt(_syncvalue,10).toString();
+    if (_syncjstype == 'b'){ // boolean
+      if(_sync_value){
+        _sync_esc_value='1';
       }
-      else {
-        _syncjstype = 'f'; // float
-        _syncescvalue = parseFloat(_syncvalue).toString();
+      else{
+        _sync_esc_value='0';
       }
     }
-    else if (_syncjstype == 'b'){ // boolean
-      if(_syncvalue){_syncescvalue='1';}
-      else{_syncescvalue='0';}
-    }
-    else {
-      try{
-        if(console&&console.log){
-          console.log('syncvalue type error');
-          console.log('  syncid:',_syncid);
-          console.log('  syncjstype:',_syncjstype);
-          console.log('  typeof:',(typeof _syncvalue));
-          console.log('  syncvalue:',_syncvalue);
+    else if (_syncjstype == 'o' && (_sync_value instanceof Array)){ // array (only flat arrays supported)
+      _syncjstype = 'a';
+      _extra_attr = ' len="'+_sync_value.length+'"';
+      _sync_esc_value = '[';
+      var i = 0,
+          _data_at_idx,
+          _data,
+          _type;
+      for(;i<_sync_value.length;i++){
+        _data_at_idx = this._formatType(_sync_value[i]);
+        _type = _data_at_idx[0];
+        _data = _data_at_idx[1];
+        if( _type == 'i' || _type == 'f' || _type == 'b' ){
+          _sync_esc_value += _data;
+        }
+        else if(_type == 's'){
+          _sync_esc_value += '"'+_data+'"';
+        }
+        else {
+          try{
+            console.log('unsupported array value error');
+            console.log('  syncid:',_syncid);
+            console.log('  typeof:',(typeof _data));
+            console.log('  syncvalue:',_data);
+          }
+          catch(e){
+            alert('unsupported array value error, syncid:'+_syncid+' typeof:'+(typeof _data)+' syncvalue:'+_data);
+          }
+          return '';
+        }
+        if( i+1 != _sync_value.length ){
+          _sync_esc_value += ',';
         }
       }
+      _sync_esc_value += ']';
+    }
+    else if (_syncjstype != 'i' && _syncjstype != 'f' && _syncjstype != 's') {
+      try{
+        console.log('syncvalue type error');
+        console.log('  syncid:',_syncid);
+        console.log('  syncjstype:',_syncjstype);
+        console.log('  typeof:',(typeof _sync_value));
+        console.log('  syncvalue:',_sync_value);
+      }
       catch(e){
-        alert('value error, syncid:'+_syncid+' syncjstype:'+_syncjstype+' typeof:'+(typeof _syncvalue)+' syncvalue:'+_syncvalue);
+        alert('value error, syncid:'+_syncid+' syncjstype:'+_syncjstype+' typeof:'+(typeof _sync_value)+' syncvalue:'+_sync_value);
       }
       return '';
     }
     
-    return '<'+_syncjstype+' id="'+_syncid+'">'+_syncescvalue+'</'+_syncjstype+'>';
+    return '<'+_syncjstype+' id="'+_syncid+'"'+_extra_attr+'>'+_sync_esc_value+'</'+_syncjstype+'>';
   }
   
 });

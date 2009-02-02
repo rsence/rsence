@@ -320,11 +320,53 @@ class StringValueParser < ValueParser
       end
       return val_data
     end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.to_json}" if $DEBUG_MODE
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
     return @default_value
   end
 end
 
+## Flat, simple Array value parser (arrays encoded as strings, then decoded usin JSON.parse)
+## <a id='xyz'>WzEsImZvbyIse2ZvbzoiYmFyIn1d</a>
+class ArrayValueParser < ValueParser
+  
+  ## defaults to ''
+  def initialize( default_value=[] )
+    super
+  end
+  
+  ## parses base64-encoded string data from the client: <s id='xyz'>d898gD98guadbaxDDgd</s>
+  def process_data( msg, hvalue_xml )
+    val_data = hvalue_xml.text
+    #puts val_data.inspect
+    if val_data != nil
+      len = hvalue_xml.attributes['len'].to_i
+      arr_data_raw = JSON.parse( val_data )
+      #puts arr_data_raw.inspect
+      if arr_data_raw.size != len
+        puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
+        return @default_value
+      end
+      arr_data = []
+      arr_data_raw.each do |data_item|
+        data_item_class = data_item.class
+        if String == data_item_class
+          data_item = data_item.unpack('m*')[0] # base64
+          while data_item[-1].chr == "\000"
+            data_item.chop!
+          end          
+        elsif not [Float,Fixnum,Bignum,TrueClass,FalseClass].include?( data_item_class )
+          puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
+          return @default_value
+        end
+        arr_data.push( data_item )
+      end
+      #puts arr_data.inspect
+      return arr_data
+    end
+    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
+    return @default_value
+  end
+end
 
 end
 end

@@ -160,13 +160,13 @@ HValueManager = HClass.extend({
       }
       var _syncvalueArr = [],_i;
       for(_i=0;_i<_synclen;_i++){
-        var _syncid = this.tosync.shift();
-        var _syncobj = this.values[_syncid];
+        var _syncid = this.tosync.shift(),
+            _syncobj = this.values[_syncid];
         _syncvalueArr.push( _syncobj.toXML(_i) );
       }
       var _syncvalues = _syncvalueArr.join('');
       // version: 8000 + himle svn revision at modification time
-      _postBody += '<hsyncvalues version="8118">'+_syncvalues+'</hsyncvalues>';
+      _postBody += '<hsyncvalues version="8453">'+_syncvalues+'</hsyncvalues>';
       this.isSending = false;
     }
     return _postBody;
