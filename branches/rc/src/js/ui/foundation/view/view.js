@@ -465,7 +465,7 @@ HView = HClass.extend({
   **/
   setRect: function(_rect) {
     if (this.rect) {
-      this.rect.unbind(this);
+      this.rect.release(this);
     }
     this.rect = _rect;
     this.rect.bind(this);

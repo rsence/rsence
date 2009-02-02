@@ -39,7 +39,6 @@
   *  <HPoint> <HView> <HView.drawRect>
   **/  
 HRect = HClass.extend({
-
 /** constructor: constructor
   *
   * Initializes a Rect as four sides, as two diametrically opposed corners,
@@ -597,9 +596,34 @@ HRect = HClass.extend({
     );
   },
   
-  // Compability with HRectValue (dummy methods)
-  bind: function(_obj){},
-  unbind: function(_obj){}
+  // HValue and HView support
+  valueObj: null,
+  viewIds: [],
+  bind: function(_view){
+    if(this.viewIds.indexOf(_view.viewId) != -1){
+      this.viewIds.push( _view.viewId );
+    }
+  },
+  release: function(_view){
+    var _viewIdx = this.viewIds.indexOf(_view.viewId);
+    if(_viewIdx != -1){
+      this.viewIds.splice( _viewIdx, 1 );
+    }
+  },
+  setValueObj: function(_valueObj){
+    this.valueObj = _valueObj;
+  },
+  setValue: function(_value,_srcViewId){
+    if(this.valueObj){
+      this.valueObj.set(_value);
+    }
+    this.set(_value[0],_value[1],_value[2],_value[3]);
+    var i=0, _viewId;
+    for(;i<this.viewIds.length;i++){
+      _viewId = this.viewIds[i];
+      HSystem.views[_viewId].drawRect();
+    }
+  }
   
 });
 
