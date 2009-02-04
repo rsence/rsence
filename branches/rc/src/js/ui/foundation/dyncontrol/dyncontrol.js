@@ -107,52 +107,52 @@ HDynControl = HControl.extend({
   buildStructure: function(){
     
   },
-  _diffPoint: function(_x,_y){
-    return this._startPoint.subtract(_x,_y);
+  _diffPoint: function(x,y){
+    return this._startPoint.subtract(x,y);
   },
   
-  dynResizeNW: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeNW: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setLeftTop(_this._startRect.leftTop.subtract(_dp));
     _this._checkConstraints(1,1);
   },
-  dynResizeNE: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeNE: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setRightTop(_this._startRect.rightTop.subtract(_dp));
     _this._checkConstraints(0,1);
   },
-  dynResizeSW: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeSW: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setLeftBottom(_this._startRect.leftBottom.subtract(_dp));
     _this._checkConstraints(1,0);
   },
-  dynResizeSE: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeSE: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setRightBottom(_this._startRect.rightBottom.subtract(_dp));
     _this._checkConstraints(0,0);
   },
-  dynResizeW: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeW: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setLeft(_this._startRect.left-_dp.x);
     _this._checkConstraints(1,0);
   },
-  dynResizeE: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeE: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setRight(_this._startRect.right-_dp.x);
     _this._checkConstraints(0,0);
   },
-  dynResizeN: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeN: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setTop(_this._startRect.top-_dp.y);
     _this._checkConstraints(0,1);
   },
-  dynResizeS: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynResizeS: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.setBottom(_this._startRect.bottom-_dp.y);
     _this._checkConstraints(0,0);
   },
-  dynDrag: function(_this,_x,_y){
-    var _dp = _this._diffPoint(_x,_y);
+  dynDrag: function(_this,x,y){
+    var _dp = _this._diffPoint(x,y);
     _this.rect.offsetTo(_this._startRect.leftTop.subtract(_dp));
     _this._checkConstraints(1,1);
   },
@@ -215,21 +215,40 @@ HDynControl = HControl.extend({
       }
     }
   },
-  startDrag: function(_x,_y,_isLeft){
-    this._startPoint = new HPoint(_x,_y);
+  startDrag: function(x,y,_isLeft){
+    var _parent = this.parent;
+    if(_parent.elemId){
+      x-=_parent.pageX();
+      y-=_parent.pageY();
+    }
+    this._startPoint = new HPoint(x,y);
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
-    this.doDrag(_x,_y,_isLeft);
-    return true; // prevents text selection
-  },
-  doDrag: function(_x,_y,_isLeft){
     if(this._actionFlag!=-1){
-      this._actionFns[this._actionFlag](this,_x,_y);
+      this._actionFns[this._actionFlag](this,x,y);
     }
     return true; // prevents text selection
   },
-  endDrag: function(_x,_y,_isLeft){
-    this.doDrag(_x,_y,_isLeft);
+  doDrag: function(x,y,_isLeft){
+    var _parent = this.parent;
+    if(_parent.elemId){
+      x-=_parent.pageX();
+      y-=_parent.pageY();
+    }
+    if(this._actionFlag!=-1){
+      this._actionFns[this._actionFlag](this,x,y);
+    }
+    return true; // prevents text selection
+  },
+  endDrag: function(x,y,_isLeft){
+    var _parent = this.parent;
+    if(_parent.elemId){
+      x-=_parent.pageX();
+      y-=_parent.pageY();
+    }
+    if(this._actionFlag!=-1){
+      this._actionFns[this._actionFlag](this,x,y);
+    }
     this.setStyle('cursor','default');
     this._initActionFlag();
     return true; // prevents text selection
