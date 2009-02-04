@@ -335,6 +335,13 @@ EVENT = {
     } }
   },
   
+  // call externally to start dragging another element
+  startDragging: function(_ctrl){
+    var _this=EVENT;
+    _this.dragItems.push(_ctrl.elemId);
+    _this.changeActiveControl(_ctrl);
+    _ctrl.startDrag(_this.status[_this.crsrX],_this.status[_this.crsrY]);
+  },
   
   // tracks mouse clicks,
   // sends mouseDown and startDrag pseudo-events
@@ -503,6 +510,10 @@ EVENT = {
     // Insert key to the realtime array, remove in keyUp
     if(_this.status[_this.keysDown].indexOf(_theKeyCode)==-1){_this.status[_this.keysDown].push(_theKeyCode);}
     _this._lastKeyDown=_theKeyCode;
+    for(var i=0;i!=_this.textEnterCtrls.length;i++){
+      var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.textEnter){_ctrl.textEnter();}
+    }
   },
   
   
@@ -515,16 +526,16 @@ EVENT = {
     _this._lastKeyDown=null;
     //console.log('EVENT.keyUp: ',_this.textEnterCtrls);
     //console.log(_this.textEnterCtrls);
-    for(var i=0;i!=_this.textEnterCtrls.length;i++){
-      var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
-      if(_ctrl.textEnter){_ctrl.textEnter();}
-    }
     if(_this.activeControl&&_this.focusOptions[_this.activeControl.elemId].keyUp==true){
       _this.activeControl.keyUp(_theKeyCode);
     }
     // Remove the key from the realtime array, inserted in keyDown
     _keyCodeIndex=_this.status[_this.keysDown].indexOf(_theKeyCode);
     if(_keyCodeIndex!=-1){_this.status[_this.keysDown].splice(_keyCodeIndex,1);}
+    for(var i=0;i!=_this.textEnterCtrls.length;i++){
+      var _ctrlID=_this.textEnterCtrls[i], _ctrl=HSystem.views[_ctrlID];
+      if(_ctrl.textEnter){_ctrl.textEnter();}
+    }
   },
   
   // prevents this event (key being hold down; we don't want repetitions)
