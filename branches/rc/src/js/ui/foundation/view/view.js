@@ -46,7 +46,7 @@
   *  
   *  isHidden - Boolean flag, true if set to hidden. Defaults to false (visible)
   *
-  *  viewZOrder - The order of subviews in the Z-dimension.
+  *  viewsZOrder - The order of subviews in the Z-dimension.
   *
   * See Also:
   *  <HSystem> <HApplication> <HControl>
@@ -931,6 +931,89 @@ HView = HClass.extend({
     this.parent.viewsZOrder.push(this.viewId);
     this._updateZIndexAllSiblings();
   },
+  
+/** method: bringToFrontOf
+  *
+  * Brings itself to the front of the given view by changing its Z-Index.
+  * Only works on sibling views.
+  *
+  * Parameters:
+  *  _view - The view to bring to the front of.
+  *
+  * Returns:
+  *  Success code. (true for success, false for no success)
+  *
+  **/
+  bringToFrontOf: function(_view){
+    if(this.parent.viewId != _view.parent.viewId){
+      return false;
+    }
+    this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
+    this.parent.viewsZOrder.splice( _view.zIndex()+1, 0, this.viewId); // sets itself in front of to _view
+    this._updateZIndexAllSiblings();
+    return true;
+  },
+  
+/** method: sendToBackOf
+  *
+  * Sends itself to the back of the given view by changing its Z-Index.
+  * Only works on sibling views.
+  *
+  * Parameters:
+  *  _view - The view to send to the back of.
+  *
+  * Returns:
+  *  Success code. (true for success, false for no success)
+  *
+  **/
+  sendToBackOf: function(_view){
+    if(this.parent.viewId != _view.parent.viewId){
+      return false;
+    }
+    this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
+    this.parent.viewsZOrder.splice( _view.zIndex(), 0, this.viewId); // sets itself in back of to _view
+    this._updateZIndexAllSiblings();
+    return true;
+  },
+  
+/** method: sendBackward
+  *
+  * Sends itself one step backward by changing its Z-Index.
+  *
+  * Returns:
+  *  Success code. (true for success, false for no success)
+  *
+  **/
+  sendBackward: function(){
+    var _index = this.zIndex();
+    if(_index===0){
+      return false;
+    }
+    this.parent.viewsZOrder.splice( _index, 1 ); // removes selfs index from the array
+    this.parent.viewsZOrder.splice( _index-1, 0, this.viewId); // moves selfs position to one step less than where it was
+    this._updateZIndexAllSiblings();
+    return true;
+  },
+  
+/** method: bringForward
+  *
+  * Brings itself one step forward by changing its Z-Index.
+  *
+  * Returns:
+  *  Success code. (true for success, false for no success)
+  *
+  **/
+  bringForward: function(){
+    var _index = this.zIndex();
+    if(_index===this.parent.viewsZOrder.length-1){
+      return false;
+    }
+    this.parent.viewsZOrder.splice( _index, 1 ); // removes selfs index from the array
+    this.parent.viewsZOrder.splice( _index+1, 0, this.viewId); // moves selfs position to one step more than it was
+    this._updateZIndexAllSiblings();
+    return true;
+  },
+  
 
 /** method: sendToBack
   *
