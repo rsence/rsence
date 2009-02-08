@@ -41,7 +41,7 @@ ELEM.setStyle(0,'background-color','#ffffff');
 ELEM.setStyle(0,'overflow','auto');
 
 // Sets the theme path to the path FileServe responds to:
-HThemeManager.setThemePath('/H/themes');
+HThemeManager.setThemePath('/H/'+HCLIENT_REV+'/themes');
 
 // Deletes the initial "Loading, please wait..." -message
 ELEM.del(ELEM.bindId('loading'));
