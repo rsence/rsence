@@ -297,7 +297,7 @@ class JSBuilder
         next if dir_entry[0].chr == '.'
         sub_dir = File.join( src_dir, dir_entry )
         if File.directory?( sub_dir )
-          find_newer( sub_dir, newer_than )
+          return true if find_newer( sub_dir, newer_than )
         else
           if newer_than < File.stat( sub_dir ).mtime.to_i
             puts "File changed: #{sub_dir}"
