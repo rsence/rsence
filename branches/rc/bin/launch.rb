@@ -40,8 +40,8 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
   puts
   puts "Params:"
   puts " --trace-js               Write content of msg.reply calls to stdout."
-  puts " --root-path /path        Define the path to rsence.org server, defaults to 'bin'"
-  puts " --client-path /path      Define the path to rsence.org client, defaults to '../client'"
+  puts " --root-path /path        Define the path to rsence server, defaults to 'bin'"
+  puts " --client-path /path      Define the path to rsence client, defaults to '../client'"
   puts " --port 80                Define the http port to use, defaults to '8001'"
   puts " --addr 127.0.0.1         Define the IPv4 address to bind to, defaults to '0.0.0.0' (all)"
   puts " --server ebb             Choose http server, valid choices:"

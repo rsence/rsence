@@ -84,10 +84,10 @@ module Daemon
   
   class Base
     def self.pid_fn
-      File.join(PIDPATH, "#{name.downcase}.pid")
+      File.join(PIDPATH, "rsence.pid")
     end
     def self.log_fn
-      File.join(LOGPATH, "#{name.downcase}")
+      File.join(LOGPATH, "rsence")
     end
     def self.daemonize
       Controller.daemonize(self)

@@ -254,13 +254,13 @@ $config = {
       :db   => 'mysql'
     },
     
-    # auth_setup is the mysql connection rsence.org uses
+    # auth_setup is the mysql connection rsence uses
     # to handle session tables. It's obligatory.
     :auth_setup => {
       :host => '127.0.0.1',
-      :user => 'rsence.org',
+      :user => 'rsence',
       :pass => 'bbJNhmtwtOBu6',
-      :db   => 'rsence.org'
+      :db   => 'rsence'
     }
   
   },

@@ -185,7 +185,7 @@ class ConfigWizard
 #{cdiff([:database,:root_setup,:pass])}$config[:database][:root_setup][:pass] = #{@conf[:database][:root_setup][:pass].inspect}
 #{cdiff([:database,:root_setup,:db])}$config[:database][:root_setup][:db] = #{@conf[:database][:root_setup][:db].inspect}
   
-# auth_setup is the mysql connection rsence.org uses
+# auth_setup is the mysql connection rsence uses
 # to handle session tables. It's obligatory.
 #{cdiff([:database,:auth_setup,:host])}$config[:database][:auth_setup][:host] = #{@conf[:database][:auth_setup][:host].inspect}
 #{cdiff([:database,:auth_setup,:user])}$config[:database][:auth_setup][:user] = #{@conf[:database][:auth_setup][:user].inspect}
@@ -245,7 +245,7 @@ class ConfigWizard
     puts " Database configuration"
     puts 
     puts "  Riassence Core should ideally have permissions"
-    puts "  to create the the rsence.org account and database."
+    puts "  to create the the rsence account and database."
     puts
     puts "  This feature requires an mysql account with "
     puts "  sufficient privileges of creating databases,"
@@ -280,7 +280,7 @@ class ConfigWizard
     puts
     puts "  It runs in restricted mode and will be created automatically."
     puts
-    puts " The default rsence.org account is configured as:"
+    puts " The default rsence account is configured as:"
     puts
     puts " Hostname: #{@conf[:database][:auth_setup][:host].inspect}"
     puts " Username: #{@conf[:database][:auth_setup][:user].inspect}"

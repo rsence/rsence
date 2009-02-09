@@ -46,7 +46,7 @@ class ComponentSampler < Plugin
     cses = msg.session[:componentsampler]
     include_js( msg, ['controls','default_theme'] )
     msg.reply "RSampler = {};" # creates the (initially) empty js namespace of the sampler
-    rsence.orgsampler_modules = [
+    rsencesampler_modules = [
       'sampler_dock',
       'sampler_window',
       'sampler_tabs',
@@ -57,7 +57,7 @@ class ComponentSampler < Plugin
       'sampler_progress',
       'sampler_media'
     ]
-    rsence.orgsampler_modules.each do |module_name|
+    rsencesampler_modules.each do |module_name|
       msg.reply require_js_once(msg,'modules/'+module_name)
     end
     msg.reply require_js_once( msg, 'componentsampler' )

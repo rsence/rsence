@@ -311,7 +311,7 @@ class SessionManager < SessionStorage
     ## it, when it expires.
     ses_cookie_max_age = @config[:timeout_secs]
     
-    ## Only match the handshaking address of rsence.org,
+    ## Only match the handshaking address of rsence,
     ## prevents unneccessary cookie-juggling in xhr's
     ses_cookie_path    = '/hello'
     

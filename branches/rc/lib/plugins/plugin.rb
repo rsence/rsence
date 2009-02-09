@@ -26,7 +26,7 @@ module Riassence
 module Server
 
 =begin
-Plugin is an abstract class for rsence.org server-side application logic.
+Plugin is an abstract class for rsence server-side application logic.
 =end
 class Plugin
   

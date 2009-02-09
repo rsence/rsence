@@ -88,7 +88,7 @@ module Upload
         done_value = "2:::#{ticket_id}"
         ## Insert basic data about the upload and get its key
         upload_id = @db.q(%{
-          insert into rsence.org_uploads
+          insert into rsence_uploads
             (ses_id,ticket_id,upload_date,upload_done,file_name,file_size,file_mime,file_data)
           values
             (#{ses_id},#{ticket_id.inspect},#{Time.now.to_i},0,#{hexlify(file_filename)},#{file_size},#{file_mimetype.inspect},'')
@@ -106,9 +106,9 @@ module Upload
           file_chunksize = file_chunk.size
           file_readcount += file_chunksize
           #puts "#{file_readcount} < #{file_size}"
-          @db.q("update rsence.org_uploads set file_data = concat(file_data,#{hexlify(file_chunk)}) where id = #{upload_id}")
+          @db.q("update rsence_uploads set file_data = concat(file_data,#{hexlify(file_chunk)}) where id = #{upload_id}")
         end
-        @db.q("update rsence.org_uploads set upload_done = 1 where id = #{upload_id}")
+        @db.q("update rsence_uploads set upload_done = 1 where id = #{upload_id}")
         #puts "insert done"
       end
       #puts "upload almost done"
@@ -138,7 +138,7 @@ module Upload
     if @upload_slots[:uploaded].has_key?(ticket_id)
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         if with_data
-          row_datas = @db.q("select upload_date,upload_done,file_name,file_size,file_mime,file_data from rsence.org_uploads where id = #{row_id}")
+          row_datas = @db.q("select upload_date,upload_done,file_name,file_size,file_mime,file_data from rsence_uploads where id = #{row_id}")
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
@@ -152,7 +152,7 @@ module Upload
             uploads.push(row_hash)
           end
         else
-          row_datas = @db.q("select upload_date,upload_done,file_name,file_size,file_mime from rsence.org_uploads where id = #{row_id}")
+          row_datas = @db.q("select upload_date,upload_done,file_name,file_size,file_mime from rsence_uploads where id = #{row_id}")
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
@@ -173,7 +173,7 @@ module Upload
   
   def del_upload( ticket_id, row_id )
     @upload_slots[:uploaded][ticket_id].delete(row_id)
-    @db.q("delete from rsence.org_uploads where id = #{row_id}")
+    @db.q("delete from rsence_uploads where id = #{row_id}")
   end
   
   # removes uploaded files
@@ -186,15 +186,15 @@ module Upload
     if @upload_slots[:uploaded].has_key?( ticket_id )
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         @upload_slots[:uploaded][ticket_id].delete( row_id )
-        @db.q("delete from rsence.org_uploads where id = #{row_id}")
+        @db.q("delete from rsence_uploads where id = #{row_id}")
       end
       @upload_slots[:uploaded].delete( ticket_id )
     end
     if @upload_slots[:by_id].has_key?( ticket_id )
       @upload_slots[:by_id].delete( ticket_id )
     end
-    @db.q("delete from rsence.org_uploads where ticket_id = #{hexlify(ticket_id)}")
-    @db.q("delete from rsence.org_uploads where ses_id = #{ses_id}")
+    @db.q("delete from rsence_uploads where ticket_id = #{hexlify(ticket_id)}")
+    @db.q("delete from rsence_uploads where ses_id = #{ses_id}")
   end
   
   def upload_key(msg,value_key,max_size=1000000,mime_allow=/(.*?)\/(.*?)/,allow_multi=true)
