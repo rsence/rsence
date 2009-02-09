@@ -59,7 +59,11 @@ class SessionStorage
     @config = $config[:session_conf]
     
     # Check database connectivity and load stored sessions from the database
-    db_init_mysql()
+    
+    @mysql_fail = (not db_init_mysql())
+    
+    @int_counter = 0 if @mysql_fail
+    
   end
   
   ## Checks database connectivity and loads stored sessions from the database
@@ -80,8 +84,8 @@ class SessionStorage
     rescue DBI::InterfaceError => e
       puts "mysql driver not loaded, error: #{e}"
       puts "  "+e.backtrace.join("\n  ")
-      puts "exit."
-      exit
+      puts "mysql driver failed to initialize, continuing without session storage support."
+      return false
     rescue => e
       puts "root setup failed, reason: #{e.inspect}"
       puts "root_setup failed, using auth_setup" if $DEBUG_MODE
@@ -216,16 +220,20 @@ class SessionStorage
     else
       restore_sessions()
     end
+    
+    return true
   end
   
   ## Deletes all rows from himle_session as well as himle_uploads
   def reset_sessions
+    return if @mysql_fail
     @db.q("delete from himle_session")
     @db.q("delete from himle_uploads")
   end
   
   ## Restores all saved sessions from db to ram
   def restore_sessions
+    return if @mysql_fail
     puts "Restoring sessions..." if $DEBUG_MODE
     @db.q("select * from himle_session").each do |ses_row|
       ses_id = ses_row['id']
@@ -246,6 +254,7 @@ class SessionStorage
   
   ## Stores all sessions to db from ram
   def store_sessions
+    return if @mysql_fail
     puts "Storing sessions..." if $DEBUG_MODE
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
@@ -275,6 +284,10 @@ class SessionStorage
   
   ## Returns a new, unique session identifier by storing the params to the database
   def new_ses_id( cookie_key, ses_key, timeout_secs, user_id=0 )
+    if @mysql_fail
+      @int_counter += 1
+      return @int_counter
+    end
     return @db.q( "insert into himle_session (cookie_key, ses_key, ses_timeout, user_id) values (#{hexlify(cookie_key)},#{hexlify(ses_key)}, #{timeout_secs},#{user_id})" )
   end
   
@@ -295,6 +308,8 @@ class SessionStorage
     
     # Removes all ticket-based storage bound to the session
     $TICKETSERVE.expire_ses( ses_id )
+    
+    return if @mysql_fail
     
     # Deletes the session's row from the database
     @db.q( "delete from himle_session where id = #{ses_id}" )

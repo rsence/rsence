@@ -25,6 +25,14 @@
 #
 #  This file tests the existence of all dependencies in one place
 
+if RUBY_VERSION == '1.9.1'
+  # Work-around for rack 0.9.1
+  class String 
+    alias each each_line unless ''.respond_to?(:each) 
+  end
+  
+end
+
 require 'rubygems'
 [ 'highline',
   'rack',
@@ -42,9 +50,19 @@ require 'rubygems'
       gem dep
     rescue Gem::LoadError
       # gem name to require string conversions:
-      dep = 'dbd/Mysql' if dep == 'dbd-mysql'
-      dep = 'RMagick'   if dep == 'rmagick'
-      require dep
+      if dep == 'dbd-mysql'
+        dep = 'dbd/Mysql' if dep == 'dbd-mysql'
+        begin
+          require dep
+        rescue LoadError
+          puts "dbd-myql failed, continue? (y/N)"
+          answer = $stdin.gets.strip.downcase
+          exit unless answer[0].chr == 'y'
+        end
+      else
+        dep = 'RMagick'   if dep == 'rmagick'
+        require dep
+      end
     end
   elsif dep.class == Array
     begin

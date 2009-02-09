@@ -28,7 +28,16 @@
 require 'plugins/plugin'
 
 # soapserve contains an extended hsoaplet for pluginmanager usage
-require 'http/soap/soapserve'
+begin
+  require 'http/soap/soapserve'
+  SKIP_SOAPSERVE = true
+rescue RegexpError
+  # happens with soap4r-1.5.8 on ruby-1.9.1:
+  puts "soap4r failed, continue? (y/N)"
+  answer = $stdin.gets.strip.downcase
+  exit unless answer[0].chr == 'y'
+  SKIP_SOAPSERVE = true
+end
 
 # soap_plugin includes a SOAPPlugin class, that includes plug-and-play SOAP access
 require 'plugins/soap_plugin'
@@ -96,6 +105,7 @@ class PluginManager
   
   ### initializes soapserve
   def init_soapserve
+    return if SKIP_SOAPSERVE == true
     @@soap_serve = SOAP::SOAPServe.new
   end
   
