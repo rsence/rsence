@@ -1,16 +1,16 @@
 /***
-  ** Himle Client -- http://himle.org/
+  ** Riassence Core -- http://rsence.org/
   **
-  ** Copyright (C) 2008 Juha-Jarmo Heinonen
+  ** Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   **
-  ** This file is part of Himle Client.
+  ** This file is part of Riassence Core.
   **
-  ** Himle Client is free software: you can redistribute it and/or modify
+  ** Riassence Core is free software: you can redistribute it and/or modify
   ** it under the terms of the GNU General Public License as published by
   ** the Free Software Foundation, either version 3 of the License, or
   ** (at your option) any later version.
   **
-  ** Himle Client is distributed in the hope that it will be useful,
+  ** Riassence Core is distributed in the hope that it will be useful,
   ** but WITHOUT ANY WARRANTY; without even the implied warranty of
   ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ** GNU General Public License for more details.

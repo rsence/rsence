@@ -1,20 +1,20 @@
 # -* coding: UTF-8 -*-
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   # 
   # Influenced by rbot's plugins.rb by Tom Gilbert (BSD License)
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   # Copyright (C) 2006-2007 Helmi Technologies Inc.
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
-  # Himle Server is free software: you can redistribute it and/or modify
+  # Riassence Core is free software: you can redistribute it and/or modify
   # it under the terms of the GNU General Public License as published by
   # the Free Software Foundation, either version 3 of the License, or
   # (at your option) any later version.
   #
-  # Himle server is distributed in the hope that it will be useful,
+  # Riassence Core is distributed in the hope that it will be useful,
   # but WITHOUT ANY WARRANTY; without even the implied warranty of
   # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   # GNU General Public License for more details.
@@ -45,7 +45,7 @@ require 'plugins/soap_plugin'
 # servlet includes the ServletPlugin class, for handling any requests / responses
 require 'plugins/servlet'
 
-module Himle
+module Riassence
 module Server
 
 =begin

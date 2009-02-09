@@ -1,6 +1,6 @@
 
 
-HimleSampler.SamplerProgress = {
+RSampler.SamplerProgress = {
 };
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-himle_dir = File.split(File.split( File.expand_path( __FILE__ ) )[0])[0]
-lib_dir = File.join( himle_dir, 'lib' )
+rsence_dir = File.split(File.split( File.expand_path( __FILE__ ) )[0])[0]
+lib_dir = File.join( rsence_dir, 'lib' )
 
 puts "Building randgen.."
 randgen_dir = File.join( lib_dir, 'util', 'randgen_c'  )

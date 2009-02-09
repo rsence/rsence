@@ -1,17 +1,17 @@
 # -* coding: UTF-8 -*-
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
-  # Himle Server is free software: you can redistribute it and/or modify
+  # Riassence Core is free software: you can redistribute it and/or modify
   # it under the terms of the GNU General Public License as published by
   # the Free Software Foundation, either version 3 of the License, or
   # (at your option) any later version.
   #
-  # Himle server is distributed in the hope that it will be useful,
+  # Riassence Core is distributed in the hope that it will be useful,
   # but WITHOUT ANY WARRANTY; without even the implied warranty of
   # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   # GNU General Public License for more details.
@@ -185,7 +185,7 @@ class ConfigWizard
 #{cdiff([:database,:root_setup,:pass])}$config[:database][:root_setup][:pass] = #{@conf[:database][:root_setup][:pass].inspect}
 #{cdiff([:database,:root_setup,:db])}$config[:database][:root_setup][:db] = #{@conf[:database][:root_setup][:db].inspect}
   
-# auth_setup is the mysql connection himle uses
+# auth_setup is the mysql connection rsence.org uses
 # to handle session tables. It's obligatory.
 #{cdiff([:database,:auth_setup,:host])}$config[:database][:auth_setup][:host] = #{@conf[:database][:auth_setup][:host].inspect}
 #{cdiff([:database,:auth_setup,:user])}$config[:database][:auth_setup][:user] = #{@conf[:database][:auth_setup][:user].inspect}
@@ -244,8 +244,8 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " Database configuration"
     puts 
-    puts "  Himle should ideally have permissions"
-    puts "  to create the the himle account and database."
+    puts "  Riassence Core should ideally have permissions"
+    puts "  to create the the rsence.org account and database."
     puts
     puts "  This feature requires an mysql account with "
     puts "  sufficient privileges of creating databases,"
@@ -275,12 +275,12 @@ class ConfigWizard
       end
     end
     puts
-    puts "  The Himle account is used for Himle session storage "
-    puts "  and is also the default database for plugins."
+    puts "  The \"Limited\" account is used for session storage "
+    puts "  and it is also the default database for plugins."
     puts
     puts "  It runs in restricted mode and will be created automatically."
     puts
-    puts " The default himle account is configured as:"
+    puts " The default rsence.org account is configured as:"
     puts
     puts " Hostname: #{@conf[:database][:auth_setup][:host].inspect}"
     puts " Username: #{@conf[:database][:auth_setup][:user].inspect}"
@@ -291,16 +291,16 @@ class ConfigWizard
     is_correct = nil
     is_correct = yesno(true) until is_correct != nil
     unless is_correct
-      @conf[:database][:auth_setup][:host] = ask("MySQL Himle Hostname (or IP address)?") do |q|
+      @conf[:database][:auth_setup][:host] = ask("MySQL Limited Hostname (or IP address)?") do |q|
         q.default = @conf[:database][:auth_setup][:host]
       end
-      @conf[:database][:auth_setup][:user] = ask("MySQL Himle Username?") do |q|
+      @conf[:database][:auth_setup][:user] = ask("MySQL Limited Username?") do |q|
         q.default = @conf[:database][:auth_setup][:user]
       end
-      @conf[:database][:auth_setup][:pass] = ask("MySQL Himle Password?") do |q|
+      @conf[:database][:auth_setup][:pass] = ask("MySQL Limited Password?") do |q|
         q.default = @conf[:database][:auth_setup][:pass]
       end
-      @conf[:database][:auth_setup][:db] = ask("MySQL Himle Database?") do |q|
+      @conf[:database][:auth_setup][:db] = ask("MySQL Limited Database?") do |q|
         q.default = @conf[:database][:auth_setup][:db]
       end
     end
@@ -315,7 +315,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " HTTP Server configuration"
     puts 
-    puts "  Himle runs its HTTP Server as:"
+    puts "  Riassence Core runs its HTTP Server as:"
     puts
     puts "  Server: #{@conf[:http_server][:rack_require].inspect}"
     puts " Address: #{@conf[:http_server][:bind_address].inspect}"

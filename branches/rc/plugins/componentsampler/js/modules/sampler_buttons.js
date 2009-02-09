@@ -1,5 +1,5 @@
 
-HimleSampler.SamplerButtons = {
+RSampler.SamplerButtons = {
   
   createButtonsTabContents: function(){
     /*

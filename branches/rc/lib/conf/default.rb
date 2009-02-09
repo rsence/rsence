@@ -1,17 +1,17 @@
 # -* coding: UTF-8 -*-
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
-  # Himle Server is free software: you can redistribute it and/or modify
+  # Riassence Core is free software: you can redistribute it and/or modify
   # it under the terms of the GNU General Public License as published by
   # the Free Software Foundation, either version 3 of the License, or
   # (at your option) any later version.
   #
-  # Himle server is distributed in the hope that it will be useful,
+  # Riassence Core is distributed in the hope that it will be useful,
   # but WITHOUT ANY WARRANTY; without even the implied warranty of
   # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   # GNU General Public License for more details.
@@ -194,17 +194,17 @@ $config = {
   ## IndexHtml settings:
   :indexhtml_conf => {
     ## The initial index.html page <title>
-    :loading_title  => 'Himle Loading...',
+    :loading_title  => 'Loading...',
     
     ## The initialized html page <title>
-    :loaded_title   => 'Himle',
+    :loaded_title   => 'Ready',
   },
   
   ## Session-related settings
   :session_conf => {
     
     ## The comment string in the session cookie
-    :ses_cookie_comment => "Himle session key (just for your convenience)",
+    :ses_cookie_comment => "Riassence Core session key (just for your convenience)",
     
     ## Disposable keys, when enabled, changes the session id on each xhr
     :disposable_keys    => true,
@@ -254,13 +254,13 @@ $config = {
       :db   => 'mysql'
     },
     
-    # auth_setup is the mysql connection himle uses
+    # auth_setup is the mysql connection rsence.org uses
     # to handle session tables. It's obligatory.
     :auth_setup => {
       :host => '127.0.0.1',
-      :user => 'himle',
+      :user => 'rsence.org',
       :pass => 'bbJNhmtwtOBu6',
-      :db   => 'himle'
+      :db   => 'rsence.org'
     }
   
   },

@@ -1,5 +1,5 @@
 
-HimleSampler.SamplerText = {
+RSampler.SamplerText = {
   
 };
 

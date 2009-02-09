@@ -1,18 +1,18 @@
 # -* coding: UTF-8 -*-
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   # Copyright (C) 2006-2007 Helmi Technologies Inc.
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
-  # Himle Server is free software: you can redistribute it and/or modify
+  # Riassence Core is free software: you can redistribute it and/or modify
   # it under the terms of the GNU General Public License as published by
   # the Free Software Foundation, either version 3 of the License, or
   # (at your option) any later version.
   #
-  # Himle server is distributed in the hope that it will be useful,
+  # Riassence Core is distributed in the hope that it will be useful,
   # but WITHOUT ANY WARRANTY; without even the implied warranty of
   # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   # GNU General Public License for more details.
@@ -31,7 +31,7 @@ require 'db/mysql'
 ## HValue class for session restoration
 require 'values/hvalue'
 
-module Himle
+module Riassence
 module Server
 
 =begin
@@ -71,14 +71,14 @@ class SessionStorage
     
     ## modify these settings in the config to match your system:
     root_setup = $config[:database][:root_setup] # 'root' access account of mysql
-    auth_setup = $config[:database][:auth_setup] # himle-isolated account of mysql
+    auth_setup = $config[:database][:auth_setup] # rsence.org-isolated account of mysql
     
-    ## checks/creates himle database or fails (in that case you have to set up the database manually)
+    ## checks/creates rsence.org database or fails (in that case you have to set up the database manually)
     begin
       db_root = MySQLAbstractor.new(root_setup, root_setup[:db])
       db_root.open
       unless db_root.dbs.include?( auth_setup[:db] )
-        puts "Creating himle session database #{auth_setup[:db].inspect}..." if $DEBUG_MODE
+        puts "Creating rsence.org session database #{auth_setup[:db].inspect}..." if $DEBUG_MODE
         db_root.q( "create database #{auth_setup[:db]} default charset=utf8" )
       end
     rescue DBI::InterfaceError => e
@@ -92,12 +92,12 @@ class SessionStorage
       db_root = false
     end
     
-    ## tests auth_setup permissions by creating and dropping himle_test
+    ## tests auth_setup permissions by creating and dropping rsence.org_test
     db_auth = MySQLAbstractor.new(auth_setup, auth_setup[:db])
     begin
-      has_privileges = (db_auth.q("drop table if exists himle_test") == 0)
-      has_privileges = (db_auth.q("create table himle_test (id int primary key auto_increment)") == 0) and has_privileges
-      has_privileges = (db_auth.q("drop table if exists himle_test") == 0) and has_privileges
+      has_privileges = (db_auth.q("drop table if exists rsence.org_test") == 0)
+      has_privileges = (db_auth.q("create table rsence.org_test (id int primary key auto_increment)") == 0) and has_privileges
+      has_privileges = (db_auth.q("drop table if exists rsence.org_test") == 0) and has_privileges
     rescue => e
       puts "privilege test failed, reason: #{e.inspect}"
       has_privileges = false
@@ -129,12 +129,12 @@ class SessionStorage
     # closes the root db connection, if necessary
     db_root.close() if db_root
     
-    ## Creates the 'himle_session' table, if necessary
+    ## Creates the 'rsence.org_session' table, if necessary
     ## This table is used to store sessions
-    unless @db.tables.include?('himle_session')
+    unless @db.tables.include?('rsence.org_session')
       puts "Creating session table..." if $DEBUG_MODE
       @db.q( %{
-        create table himle_session (
+        create table rsence.org_session (
           id int primary key auto_increment,
           cookie_key char(252) character set utf8 null,
           ses_key char(84),
@@ -147,20 +147,20 @@ class SessionStorage
       }.gsub("\n",' ').squeeze(' ') )
     end
     
-    ## Creates the 'himle_version' table, if necessary
+    ## Creates the 'rsence.org_version' table, if necessary
     ## This table is used to check for the need of future database upgrades
-    unless @db.tables.include?('himle_version')
+    unless @db.tables.include?('rsence.org_version')
       puts "Creating version info table..." if $DEBUG_MODE
-      @db.q( "create table himle_version ( version int primary key not null default 0)" )
-      @db.q( "insert into himle_version ( version ) values (270)" )
+      @db.q( "create table rsence.org_version ( version int primary key not null default 0)" )
+      @db.q( "insert into rsence.org_version ( version ) values (270)" )
     end
     
-    ## Creates the 'himle_uploads' table, if necessary
+    ## Creates the 'rsence.org_uploads' table, if necessary
     ## This table is used for storing temporary uploads before processing
-    unless @db.tables.include?('himle_uploads')
+    unless @db.tables.include?('rsence.org_uploads')
       puts "Creating uploads table..." if $DEBUG_MODE
       @db.q( %{
-        create table himle_uploads (
+        create table rsence.org_uploads (
           id int primary key auto_increment,
           ses_id int not null,
           upload_date int not null,
@@ -172,26 +172,26 @@ class SessionStorage
           file_data mediumblob
         ) default character set utf8
       }.gsub("\n",' ').squeeze(' ') )
-      @db.q( "update himle_version set version = 270" )
-      himle_version = 270
+      @db.q( "update rsence.org_version set version = 270" )
+      rsence.org_version = 270
     end
-    himle_version = @db.q("select version from himle_version")[0]['version'].to_i
+    rsence.org_version = @db.q("select version from rsence.org_version")[0]['version'].to_i
     
     # updates the uploads-table, if it was created in revision 249:
-    if himle_version < 252
-      @db.q( "alter table himle_uploads add column upload_done tinyint not null default 0" )
-      @db.q( "alter table himle_uploads add column upload_date int not null" )
-      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null character set utf8" )
-      @db.q( "alter table himle_uploads add column file_name varchar(255) not null character set utf8" )
-      @db.q( "alter table himle_uploads drop column file_uploaded" )
-      @db.q( "update himle_version set version = 270" )
-      himle_version = 270
+    if rsence.org_version < 252
+      @db.q( "alter table rsence.org_uploads add column upload_done tinyint not null default 0" )
+      @db.q( "alter table rsence.org_uploads add column upload_date int not null" )
+      @db.q( "alter table rsence.org_uploads add column ticket_id varchar(255) not null character set utf8" )
+      @db.q( "alter table rsence.org_uploads add column file_name varchar(255) not null character set utf8" )
+      @db.q( "alter table rsence.org_uploads drop column file_uploaded" )
+      @db.q( "update rsence.org_version set version = 270" )
+      rsence.org_version = 270
     end
-    if himle_version < 254
-      @db.q( "alter table himle_uploads add column ticket_id varchar(255) not null character set utf8" )
-      @db.q( "alter table himle_uploads add column file_name varchar(255) not null character set utf8" )
-      @db.q( "update himle_version set version = 270" )
-      himle_version = 270
+    if rsence.org_version < 254
+      @db.q( "alter table rsence.org_uploads add column ticket_id varchar(255) not null character set utf8" )
+      @db.q( "alter table rsence.org_uploads add column file_name varchar(255) not null character set utf8" )
+      @db.q( "update rsence.org_version set version = 270" )
+      rsence.org_version = 270
     end
     
     utf8util = MySQL_UTF8_Util.new(@db)
@@ -199,18 +199,18 @@ class SessionStorage
     db_is_utf8 = utf8util.is_database_utf8?(auth_setup[:db])
     
     ## Convert column definitions and data to utf-8
-    if himle_version < 270 or not db_is_utf8
+    if rsence.org_version < 270 or not db_is_utf8
       
       puts "Converting tables to utf8" if $DEBUG_MODE
       
-      utf8util.convert_table_to_utf8('himle_session',['cookie_key','ses_key'])
-      utf8util.convert_table_to_utf8('himle_uploads',['file_mime','ticket_id','file_name'])
+      utf8util.convert_table_to_utf8('rsence.org_session',['cookie_key','ses_key'])
+      utf8util.convert_table_to_utf8('rsence.org_uploads',['file_mime','ticket_id','file_name'])
       
       puts "Converting database to utf8" if $DEBUG_MODE
       utf8util.convert_database_to_utf8(auth_setup[:db])
       
-      @db.q( "update himle_version set version = 270" )
-      himle_version = 270
+      @db.q( "update rsence.org_version set version = 270" )
+      rsence.org_version = 270
     end
     
     ## 
@@ -224,23 +224,23 @@ class SessionStorage
     return true
   end
   
-  ## Deletes all rows from himle_session as well as himle_uploads
+  ## Deletes all rows from rsence.org_session as well as rsence.org_uploads
   def reset_sessions
     return if @mysql_fail
-    @db.q("delete from himle_session")
-    @db.q("delete from himle_uploads")
+    @db.q("delete from rsence.org_session")
+    @db.q("delete from rsence.org_uploads")
   end
   
   ## Restores all saved sessions from db to ram
   def restore_sessions
     return if @mysql_fail
     puts "Restoring sessions..." if $DEBUG_MODE
-    @db.q("select * from himle_session").each do |ses_row|
+    @db.q("select * from rsence.org_session").each do |ses_row|
       ses_id = ses_row['id']
       #puts "ses_id = #{ses_id.inspect}"
       ses_data_dump = ses_row['ses_data']
       if ses_data_dump == nil
-        @db.q("delete from himle_session where id = #{ses_id}")
+        @db.q("delete from rsence.org_session where id = #{ses_id}")
       else
         ses_data = Marshal.restore( ses_data_dump )
         ses_key = ses_data[:ses_key]
@@ -260,12 +260,12 @@ class SessionStorage
       ses_data = @sessions[ ses_id ]
       #puts ses_data.inspect
       ses_data_dump = Marshal.dump( ses_data )
-      @db.q("update himle_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}")
-      @db.q("update himle_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}")
-      @db.q("update himle_session set user_id = #{ses_data[:user_id]} where id=#{ses_id}")
-      @db.q("update himle_session set ses_data = #{hexlify(ses_data_dump)} where id=#{ses_id}")
-      @db.q("update himle_session set ses_timeout = #{ses_data[:timeout]}")
-      @db.q("update himle_session set ses_stored = #{Time.now.to_i} where id=#{ses_id}")
+      @db.q("update rsence.org_session set cookie_key = #{hexlify(ses_data[:cookie_key])} where id=#{ses_id}")
+      @db.q("update rsence.org_session set ses_key = #{hexlify(ses_data[:ses_key])} where id=#{ses_id}")
+      @db.q("update rsence.org_session set user_id = #{ses_data[:user_id]} where id=#{ses_id}")
+      @db.q("update rsence.org_session set ses_data = #{hexlify(ses_data_dump)} where id=#{ses_id}")
+      @db.q("update rsence.org_session set ses_timeout = #{ses_data[:timeout]}")
+      @db.q("update rsence.org_session set ses_stored = #{Time.now.to_i} where id=#{ses_id}")
     end
   end
   
@@ -288,7 +288,7 @@ class SessionStorage
       @int_counter += 1
       return @int_counter
     end
-    return @db.q( "insert into himle_session (cookie_key, ses_key, ses_timeout, user_id) values (#{hexlify(cookie_key)},#{hexlify(ses_key)}, #{timeout_secs},#{user_id})" )
+    return @db.q( "insert into rsence.org_session (cookie_key, ses_key, ses_timeout, user_id) values (#{hexlify(cookie_key)},#{hexlify(ses_key)}, #{timeout_secs},#{user_id})" )
   end
   
   ## Expires a session by its identifier
@@ -312,7 +312,7 @@ class SessionStorage
     return if @mysql_fail
     
     # Deletes the session's row from the database
-    @db.q( "delete from himle_session where id = #{ses_id}" )
+    @db.q( "delete from rsence.org_session where id = #{ses_id}" )
     
   end
   

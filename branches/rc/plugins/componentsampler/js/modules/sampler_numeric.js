@@ -1,5 +1,5 @@
 
-HimleSampler.SamplerNumeric = {
+RSampler.SamplerNumeric = {
   createNumericTabContents: function(){
     
     var _helperRect = HRect.nu( 8,8 , 29,263 );

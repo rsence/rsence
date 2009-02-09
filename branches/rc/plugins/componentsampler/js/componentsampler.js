@@ -1,20 +1,20 @@
 
 // The application body, methods are implemented in separate "modules".
-HimleSampler.SamplerApp = HApplication.extend({
+RSampler.SamplerApp = HApplication.extend({
   constructor: function(_values){
     this.base(10);
     this.values = _values;
     this.createDock();
   }
 });
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerDock     );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerWindow   );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerTabs     );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerIntro    );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerButtons  );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerText     );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerNumeric  );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerProgress );
-HimleSampler.SamplerApp.implement( HimleSampler.SamplerMedia    );
+RSampler.SamplerApp.implement( RSampler.SamplerDock     );
+RSampler.SamplerApp.implement( RSampler.SamplerWindow   );
+RSampler.SamplerApp.implement( RSampler.SamplerTabs     );
+RSampler.SamplerApp.implement( RSampler.SamplerIntro    );
+RSampler.SamplerApp.implement( RSampler.SamplerButtons  );
+RSampler.SamplerApp.implement( RSampler.SamplerText     );
+RSampler.SamplerApp.implement( RSampler.SamplerNumeric  );
+RSampler.SamplerApp.implement( RSampler.SamplerProgress );
+RSampler.SamplerApp.implement( RSampler.SamplerMedia    );
 
 

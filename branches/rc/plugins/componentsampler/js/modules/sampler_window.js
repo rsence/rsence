@@ -1,5 +1,5 @@
 
-HimleSampler.SamplerWindow = {
+RSampler.SamplerWindow = {
   
   createWindow: function() {
     this.window = HWindow.nu(

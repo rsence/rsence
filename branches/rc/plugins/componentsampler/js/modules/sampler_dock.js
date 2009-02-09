@@ -2,7 +2,7 @@
 /** The SamplerDock module block implements a zooming
 *** button to open the sampler window.
 **/
-HimleSampler.SamplerDock = {
+RSampler.SamplerDock = {
   
   createDockButtons: function() {
     

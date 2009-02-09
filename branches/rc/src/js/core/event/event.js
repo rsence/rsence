@@ -1,7 +1,7 @@
-/***  HIMLE RIA SYSTEM
+/***  Riassence Core
   ** 
-  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
-  **  Copyright (C) 2007 Juha-Jarmo Heinonen <o@sorsacode.com>
+  **  Copyright (C) 2008 Riassence Inc http://rsence.org/
+  **  Copyright (C) 2007 Juha-Jarmo Heinonen <jjh@riassence.com>
   ** 
   **  This program is free software; you can redistribute it and/or modify it under the terms
   **  of the GNU General Public License as published by the Free Software Foundation;

@@ -2,18 +2,18 @@
 # -* coding: UTF-8 -*-
 
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
-  # Himle Server is free software: you can redistribute it and/or modify
+  # Riassence Core is free software: you can redistribute it and/or modify
   # it under the terms of the GNU General Public License as published by
   # the Free Software Foundation, either version 3 of the License, or
   # (at your option) any later version.
   #
-  # Himle server is distributed in the hope that it will be useful,
+  # Riassence Core is distributed in the hope that it will be useful,
   # but WITHOUT ANY WARRANTY; without even the implied warranty of
   # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   # GNU General Public License for more details.
@@ -32,17 +32,17 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
   puts "Usage: #{__FILE__} command [params]"
   puts
   puts "command is one of:"
-  puts " status     Tells if Himle Server is running or not"
-  puts " start      Starts Himle Server"
-  puts " stop       Stops Himle Server"
-  puts " restart    Restarts Himle Server"
-  puts " save       Saves Himle Server session data"
+  puts " status     Tells if Riassence Core is running or not"
+  puts " start      Starts Riassence Core"
+  puts " stop       Stops Riassence Core"
+  puts " restart    Restarts Riassence Core"
+  puts " save       Saves Riassence Core session data"
   puts " help       This text"
   puts
   puts "Params:"
   puts " --trace-js               Write content of msg.reply calls to stdout."
-  puts " --root-path /path        Define the path to himle server, defaults to 'bin'"
-  puts " --client-path /path      Define the path to himle client, defaults to '../client'"
+  puts " --root-path /path        Define the path to rsence.org server, defaults to 'bin'"
+  puts " --client-path /path      Define the path to rsence.org client, defaults to '../client'"
   puts " --port 80                Define the http port to use, defaults to '8001'"
   puts " --addr 127.0.0.1         Define the IPv4 address to bind to, defaults to '0.0.0.0' (all)"
   puts " --server ebb             Choose http server, valid choices:"
@@ -71,7 +71,7 @@ end
 ## Dependencies / dependency check:
 require 'conf/dependencies'
 
-## HimleDaemon controls
+## Riassence Daemon controls
 require 'daemon/daemon'
-Himle::Server::HimleServe.daemonize
+Riassence::Server::HTTPDaemon.daemonize
 

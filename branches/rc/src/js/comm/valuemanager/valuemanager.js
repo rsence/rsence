@@ -1,6 +1,6 @@
-/***  HIMLE RIA SYSTEM
+/***  Riassence Core
   ** 
-  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2008 Riassence Inc http://rsence.org/
   **  Copyright (C) 2006-2007 Helmi Technologies Inc.
   ** 
   **  This program is free software; you can redistribute it and/or modify it under the terms
@@ -165,7 +165,7 @@ HValueManager = HClass.extend({
         _syncvalueArr.push( _syncobj.toXML(_i) );
       }
       var _syncvalues = _syncvalueArr.join('');
-      // version: 8000 + himle svn revision at modification time
+      // version: 8000 + rsence.org svn revision at modification time
       _postBody += '<hsyncvalues version="8453">'+_syncvalues+'</hsyncvalues>';
       this.isSending = false;
     }

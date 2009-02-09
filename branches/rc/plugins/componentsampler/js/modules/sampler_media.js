@@ -1,5 +1,5 @@
 
-HimleSampler.SamplerMedia = {
+RSampler.SamplerMedia = {
 };
 
 

@@ -1,6 +1,6 @@
-/***  HIMLE RIA SYSTEM
+/***  Riassence Core
   ** 
-  **  Copyright (C) 2008 HIMLE GROUP http://himle.sorsacode.com/
+  **  Copyright (C) 2008 Riassence Inc http://rsence.org/
   **  Copyright (C) 2006-2007 Helmi Technologies Inc.
   ** 
   **  This program is free software; you can redistribute it and/or modify it under the terms

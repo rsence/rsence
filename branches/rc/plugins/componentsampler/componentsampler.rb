@@ -23,8 +23,8 @@ class ComponentSampler < Plugin
     mses = msg.session[:main]
     cses = msg.session[:componentsampler]
     include_js( msg, ['controls','default_theme'] )
-    msg.reply "HimleSampler = {};" # creates the (initially) empty js namespace of the sampler
-    himlesampler_modules = [
+    msg.reply "RSampler = {};" # creates the (initially) empty js namespace of the sampler
+    rsence.orgsampler_modules = [
       'sampler_dock',
       'sampler_window',
       'sampler_tabs',
@@ -35,15 +35,15 @@ class ComponentSampler < Plugin
       'sampler_progress',
       'sampler_media'
     ]
-    himlesampler_modules.each do |module_name|
+    rsence.orgsampler_modules.each do |module_name|
       msg.reply require_js_once(msg,'modules/'+module_name)
     end
     msg.reply require_js_once( msg, 'componentsampler' )
     msg.reply(%{
-      HimleSampler.app = HimleSampler.SamplerApp.nu(#{extract_hvalues_from_hash( cses )});
+      RSampler.app = RSampler.SamplerApp.nu(#{extract_hvalues_from_hash( cses )});
     })
     
-    msg.reply "HimleSampler.app.createWindowButton.click();"
+    msg.reply "RSampler.app.createWindowButton.click();"
     
   end
   def handle_upload(msg,hvalue)

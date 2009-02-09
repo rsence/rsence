@@ -1,17 +1,17 @@
 # -* coding: UTF-8 -*-
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
-  # Himle Server is free software: you can redistribute it and/or modify
+  # Riassence Core is free software: you can redistribute it and/or modify
   # it under the terms of the GNU General Public License as published by
   # the Free Software Foundation, either version 3 of the License, or
   # (at your option) any later version.
   #
-  # Himle server is distributed in the hope that it will be useful,
+  # Riassence Core is distributed in the hope that it will be useful,
   # but WITHOUT ANY WARRANTY; without even the implied warranty of
   # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   # GNU General Public License for more details.
@@ -72,7 +72,7 @@ require 'transporter/transporter'
 require 'http/broker'
 
 
-module Himle
+module Riassence
 module Server
 
 # adapted from:
@@ -107,7 +107,7 @@ module Daemon
     
     def self.print_status(daemon)
       is_running = self.status(daemon)
-      puts "Himle is #{'not ' unless is_running}running"
+      puts "Riassence Core is #{'not ' unless is_running}running"
     end
     
     ## Status is not entirely reliable
@@ -145,7 +145,7 @@ module Daemon
     def self.start(daemon)
       is_running = self.status(daemon)
       if is_running
-        puts "Himle is already running. Try restart."
+        puts "Riassence Core is already running. Try restart."
         exit
       elsif not is_running and File.file?(daemon.pid_fn)
         puts "Stale pid file, removing.."
@@ -190,14 +190,14 @@ module Daemon
       end
       sleep 1
       if self.status(daemon)
-        puts "Himle is running now."
+        puts "Riassence Core is running now."
       else
-        puts "Himle did not start, please check the logfile."
+        puts "Riassence Core did not start, please check the logfile."
       end
     end
     def self.save(daemon)
       if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is Himle started?"
+        puts "Pid file not found. Is Riassence Core started?"
         exit
       end
       pid = open(daemon.pid_fn,'r').read.to_i
@@ -211,14 +211,14 @@ module Daemon
     def self.stop(daemon)
       self.save(daemon)
       if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is Himle started?"
+        puts "Pid file not found. Is Riassence Core started?"
         exit
       end
       pid = PidFile.recall(daemon)
       FileUtils.rm(daemon.pid_fn)
       begin
         pid && Process.kill("TERM", pid)
-        puts "Himle is stopped now."
+        puts "Riassence Core is stopped now."
       rescue
         puts "Error, no such pid (#{pid}) running"
       end
@@ -226,7 +226,7 @@ module Daemon
   end
 end
 
-class HimleServe < Himle::Server::Daemon::Base
+class HTTPDaemon < Riassence::Server::Daemon::Base
   def self.start
     
     $config[:filecache]       = FileCache.new

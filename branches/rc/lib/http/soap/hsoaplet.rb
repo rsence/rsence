@@ -1,11 +1,11 @@
 
 # -* coding: UTF-8 -*-
 ###
-  # Himle Server -- http://himle.org/
+  # Riassence Core -- http://rsence.org/
   #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen
+  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
   #
-  # This file is part of Himle Server.
+  # This file is part of Riassence Core.
   #
 #####
   #
@@ -43,7 +43,6 @@ module SOAP
 module RPC
 
 ##### Handles SOAP Requests fed via the process method.
-   ## Tested only with Himle running 'thin 0.8.2' on 'RACK 0.4.0'; your mileage may wary
 class HSoaplet
   
   ### Feed with a custom Router instance do define your namespace. It uses the class name by default.

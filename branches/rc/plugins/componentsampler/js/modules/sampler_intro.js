@@ -1,5 +1,5 @@
 
-HimleSampler.SamplerIntro = {
+RSampler.SamplerIntro = {
   createIntroTabContents: function(){
     /*
     
@@ -34,7 +34,7 @@ HimleSampler.SamplerIntro = {
     
     */
     var _introHTML = '';
-    _introHTML += "<b>Welcome to Himle Component Sampler!</b><br /><br />";
+    _introHTML += "<b>Welcome to Riassence Core Component Sampler!</b><br /><br />";
     _introHTML += "This a simple showcase displaying standard components.<br /><br />";
     _introHTML += "You may already have noticed the <b><code>HWindow</code></b> -component.<br />";
     _introHTML += "Its purpose is to be a draggable and resizable container for other components.<br /><br />";

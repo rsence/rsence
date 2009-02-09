@@ -1,4 +1,4 @@
-module Himle
+module Riassence
 module Server
 module TicketService
 module Common
@@ -69,7 +69,7 @@ module Common
       },
       # processed uploads
       :uploaded => {
-        # same key as :by_id  himle_uploads:id
+        # same key as :by_id  rsence.org_uploads:id
         # 'test123'  =>       [37483,37546,38759]
       },
       # upload ids by session id
@@ -83,7 +83,7 @@ module Common
       :ses_ids => {}
     }
     
-    auth_setup = $config[:database][:auth_setup] # himle-isolated account of mysql
+    auth_setup = $config[:database][:auth_setup] # rsence.org-isolated account of mysql
     @db = MySQLAbstractor.new(auth_setup, auth_setup[:db])
     
   end
