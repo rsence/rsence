@@ -49,7 +49,10 @@ class IndexHtmlPlugin < ServletPlugin
     @client_rev = $FILECACHE.client_rev
     @deps = []
     @index_html_src = file_read( 'tmpl/index.html' )
-    @loading_gif_id = $TICKETSERVE.serve_rsrc( file_read( 'img/loading.gif' ), 'image/gif' )
+    loading_gif_h = File.open( File.join( @path, 'img/loading.gif' ), 'rb' )
+    loading_gif = loading_gif_h.read
+    loading_gif_h.close
+    @loading_gif_id = $TICKETSERVE.serve_rsrc( loading_gif, 'image/gif' )
     render_index_html
   end
   
