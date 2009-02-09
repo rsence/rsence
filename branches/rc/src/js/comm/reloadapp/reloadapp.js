@@ -1,16 +1,24 @@
-/***  Riassence Core
-  ** 
-  **  Copyright (C) 2008 Riassence Inc http://rsence.org/
-  ** 
-  **  This program is free software; you can redistribute it and/or modify it under the terms
-  **  of the GNU General Public License as published by the Free Software Foundation;
-  **  either version 2 of the License, or (at your option) any later version. 
-  **  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-  **  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  **  See the GNU General Public License for more details. 
-  **  You should have received a copy of the GNU General Public License along with this program;
-  **  if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-  ***/
+/**
+  * Riassence Core -- http://rsence.org/
+  *
+  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
+  *
+  * This file is part of Riassence Core.
+  *
+  * Riassence Core is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *
+  * Riassence Core is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  *
+  **/
 
 ReloadApp = HApplication.extend({
   constructor: function( _windowTitle, _windowMessage, _destinationUrl ){
@@ -32,9 +40,9 @@ ReloadApp = HApplication.extend({
     if(_alertX<10){_alertX = 10;}
     if(_alertY<10){_alertY = 10;}
     
-    var _alertRect   = new HRect( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight );
+    var _alertRect   = HRect.nu( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight );
     
-    this._alertWindow = new HWindow(
+    this._alertWindow = HWindow.nu(
       _alertRect,
       this, {
         label: _windowTitle,
@@ -44,21 +52,21 @@ ReloadApp = HApplication.extend({
       }
     );
     
-    var _alertMessageTitleBox = new HView( new HRect( 10, 10, 370, 32 ), this._alertWindow );
+    var _alertMessageTitleBox = HView.nu( HRect.nu( 10, 10, 370, 32 ), this._alertWindow );
     _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
     _alertMessageTitleBox.setStyle('font-size','18px');
     _alertMessageTitleBox.setStyle('font-weight','bold');
     _alertMessageTitleBox.setStyle('color','#000');
     _alertMessageTitleBox.setHTML( _windowTitle );
     
-    var _alertMessageBox = new HView( new HRect( 10, 48, 370, 230 ), this._alertWindow );
+    var _alertMessageBox = HView.nu( HRect.nu( 10, 48, 370, 230 ), this._alertWindow );
     _alertMessageBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
     _alertMessageBox.setStyle('font-size','13px');
     _alertMessageBox.setStyle('overflow','auto');
     _alertMessageBox.setStyle('color','#000');
     _alertMessageBox.setHTML( _windowMessage );
     
-    var _reloadButton = new (HButton.extend({
+    var _reloadButton = HButton.extend({
       click: function(){
         if((!this.app._destinationUrl)||(this.app._destinationUrl=='/')){
           document.location.reload(true);
@@ -67,21 +75,21 @@ ReloadApp = HApplication.extend({
           location.href = this.app._destinationUrl;
         }
       }
-    }))(
-      new HRect(300, 234, 370, 258 ),
+    }).nu(
+      HRect.nu(300, 234, 370, 258 ),
       this._alertWindow,
       { label: 'Reload', events: {click:true} }
     );
     
     /*
-    var _ignoreButton = new (HButton.extend({
+    var _ignoreButton = HButton.extend({
       click: function(){
         HTransporter.syncDelay = HTransporter.restoreSyncDelay;
         HTransporter.start(HTransporter.url_base);
         this.app.die();
       }
-    }))(
-      new HRect(10, 234, 70, 258 ),
+    }).nu(
+      HRect.nu(10, 234, 70, 258 ),
       this._alertWindow,
       { label: 'Ignore', events: {click:true} }
     );
@@ -96,5 +104,5 @@ ReloadApp = HApplication.extend({
 });
 /** USAGE: 
 jsLoader.load('servermessage');
-reloadApp = new ReloadApp( 'Session Timeout', 'Your session has timed out', '/' );
+reloadApp = ReloadApp.nu( 'Session Timeout', 'Your session has timed out', '/' );
 **/

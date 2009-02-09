@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # -* coding: UTF-8 -*-
-
 ###
   # Riassence Core -- http://rsence.org/
   #

@@ -3,7 +3,7 @@
   # Riassence Core -- http://rsence.org/
   #
   # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  # Copyright (C) 2006-2007 Helmi Technologies Inc.
+  # Copyright (C) 2006 Helmi Technologies Inc.
   #
   # This file is part of Riassence Core.
   #

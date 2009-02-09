@@ -2,7 +2,7 @@
 ###
   # Riassence Core -- http://rsence.org/
   #
-  # Copyright 2003, 2004, 2005, 2007, 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
+  # Copyright (C) 2003 Juha-Jarmo Heinonen <jjh@riassence.com>
   #
   # This file is part of Riassence Core.
   #
