@@ -213,6 +213,22 @@ HControl = HView.extend({
     this.toggleCSSClass(this.elemId, HControl.CSS_DISABLED, !this.enabled);
   },
   
+  
+  valueDiffers: function(_value){
+    if((_value instanceof Array) && (this.value instanceof Array)){
+      for(var i=0;i<_value.length;i++){
+        if(_value[i] !== this.value[i]){
+          return true;
+        }
+      }
+      return false;
+    }
+    else {
+      return (_value !== this.value);
+    }
+  },
+
+  
 /** method: setValue
   *
   * Assigns the object a new value. Extend it, if your component needs to do
@@ -229,9 +245,9 @@ HControl = HView.extend({
   setValue: function(_value) {
     if(_value === undefined){return;}
     if(!this.valueObj){return;}
-    if(_value !== this.value) {
+    if(this.valueDiffers(_value)) {
       this.value = _value;
-      this.valueObj.set(this.value);
+      this.valueObj.set(_value);
       this.refresh();
     }
   },

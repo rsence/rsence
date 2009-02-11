@@ -71,10 +71,24 @@ HValue = HClass.extend({
   *  <HControl.setValue> <HValueManager.set>
   **/
   set: function(_value){
-    if(_value != this.value){
+    if(this.differs(_value)){
       this.value = _value;
       HValueManager.changed(this);
       this.refresh();
+    }
+  },
+  
+  differs: function(_value){
+    if((_value instanceof Array) && (this.value instanceof Array)){
+      for(var i=0;i<_value.length;i++){
+        if(_value[i] !== this.value[i]){
+          return true;
+        }
+      }
+      return false;
+    }
+    else {
+      return (_value !== this.value);
     }
   },
   
