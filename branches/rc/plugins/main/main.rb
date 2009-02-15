@@ -128,6 +128,8 @@ class Main < Plugin
     ## the client from choking on itself
     if mses[:boot] == 0
       
+      msg.reply('HTransporterDebug=true;') if $DEBUG_MODE
+      
       ## js/start.js includes the client's initial settings
       msg.reply require_js_once(msg,'start')
       

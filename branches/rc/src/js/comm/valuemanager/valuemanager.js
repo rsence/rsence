@@ -60,7 +60,6 @@ HValueManager = HClass.extend({
   **/
   values: {},
   tosync: [],
-  isSending: false,
   isGetting: false,
   
 /*** method: add
@@ -138,16 +137,18 @@ HValueManager = HClass.extend({
   **  <isGetting> <tosync> <set>
   ***/
   changed: function(_theObj){
-    if(this.isGetting==false){
-      if(this.tosync.indexOf(_theObj.id)==-1){
-        this.tosync.push(_theObj.id);
-      }
-      var _t=HTransporter;
-      if(!_t.pollMode){
-        clearTimeout(_t.req_timeout);
-        _t.req_timeout = setTimeout('HTransporter.sync();',_t.syncDelay);
-      }
+    if(this.tosync.indexOf(_theObj.id)===-1){
+      this.tosync.push(_theObj.id);
+      this.syncDone();
     }
+  },
+  
+  syncDone: function(){
+    var _t=HTransporter;
+    if((this.tosync.length!=0)&&(!_t.pollMode)){
+      _t.reSync();
+    }
+    //console.log('syncDone:',this.tosync);
   },
   
 /*** method: toXML
@@ -158,31 +159,24 @@ HValueManager = HClass.extend({
   **  <HTransporter>
   ***/
   toXML: function(){
-    var _postBody = '&HSyncData=';
-    if(!this.isSending){
-      this.isSending = true;
-      var _synclen = this.tosync.length;
-      if(_synclen==0){
-        this.isSending = false;
-        return '';
-      }
-      var _syncvalueArr = [],_i;
-      for(_i=0;_i<_synclen;_i++){
-        var _syncid = this.tosync.shift(),
-            _syncobj = this.values[_syncid];
-        _syncvalueArr.push( _syncobj.toXML(_i) );
-      }
-      var _syncvalues = _syncvalueArr.join('');
-      // version: 8000 + rsence.org svn revision at modification time
-      _postBody += '<hsyncvalues version="8453">'+_syncvalues+'</hsyncvalues>';
-      this.isSending = false;
+    var _postBody = '&HSyncData=',
+        _syncvalueArr = [],
+        i = 0,
+        _syncid,
+        _syncobj,
+        _syncvalues;
+    if(this.tosync.length==0){
+      return '';
     }
+    for(;i<this.tosync.length;i++){
+      _syncid = this.tosync.shift();
+      _syncobj = this.values[_syncid];
+      _syncvalueArr.push( _syncobj.toXML(i) );
+    }
+    _syncvalues = _syncvalueArr.join('');
+    // version: 8000 + rsence.org svn revision at modification time
+    _postBody += '<hsyncvalues version="8453">'+_syncvalues+'</hsyncvalues>';
     return _postBody;
-  },
-  
-  // Backwards-compatibility:
-  output: function(){
-    return this.toXML();
   }
 });
 

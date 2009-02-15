@@ -94,6 +94,8 @@ HTransporter = HClass.extend({
     _this.failCount = 0;
     _this.firstFail = 0;
     
+    _this.response = [];
+    
     _this.pollMode  = HTransportPoll;
     _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
   },
@@ -107,6 +109,7 @@ HTransporter = HClass.extend({
     var _currFailAge = HTransporterMaxRetryTime+(new Date().getTime()),
         _this = HTransporter;
     clearTimeout(_this.req_timeout);
+    _this.req_timeout = false;
     if(_this.firstFail==0){
       _this.isBusy = false;
       _this.firstFail=(new Date().getTime());
@@ -133,7 +136,7 @@ HTransporter = HClass.extend({
         _this = HTransporter;
     try {
       _this.err_msg = '';
-      eval(_respText); 
+      eval(_respText);
     }
     catch(e) {
       if(HTransporterDebug){
@@ -143,6 +146,28 @@ HTransporter = HClass.extend({
       _this.err_msg = '&err_msg='+e+" - "+e.description;
       _this.failure(resp);
     }
+    var _err = false;
+    for(var _bufIdx=0; _bufIdx<_this.response.length; _bufIdx++ ){
+      try {
+        eval( _this.response[_bufIdx] );
+      }
+      catch(e) {
+        var _err_debug = ' --- index: '+_bufIdx+', contents: =->'+_this.response[_bufIdx]+'<-=';
+        if(HTransporterDebug){
+          console.log(e);
+          console.log(e.description);
+          console.log(_err_debug);
+        }
+        if(!_err){
+          _this.err_msg = '&err_msg='+e+' - '+e.description+_err_debug;
+          _err = true;
+        }
+        else {
+          _this.err_msg += ' ---- '+e+' - '+e.description+_err_debug;
+        }
+      }
+    }
+    
     _this.prevData  = '';
     if(_this.failCount!=0){window.status='';}
     _this.failCount = 0;
@@ -153,25 +178,33 @@ HTransporter = HClass.extend({
     }
   },
   
+  reSync: function(){
+    var _this = HTransporter;
+    clearTimeout(_this.req_timeout);
+    _this.req_timeout = setTimeout('HTransporter.sync();',_this.syncDelay);
+  },
+  
   sync: function(){
     var _this = HTransporter,
         _valid_delay = ((_this.syncDelay>0)||(_this.syncDelay==0));
     // Negative syncDelay stops transporter.
     if(_valid_delay && _this.url_base){
-      if(!_this.isBusy){
+      if(_this.isBusy){
+        _this.reSync();
+      }
+      else {
         _this.isBusy = true;
         if(_this.prevData!=''){
           _syncData = _this.prevData;
           //console.log('syncData0:',_syncData);
         }
         else {
-          _syncData = HValueManager.toXML();
+          _syncData = HVM.toXML();
           _this.prevData = _syncData;
           //console.log('syncData1:',_syncData);
         }
         if(""!=_syncData || _this.pollMode) {
           _this.syncNum++;
-          HVM.isGetting=true;
           req_args = {
             onSuccess: function(resp){_this.respond(resp);},
             onFailure: function(resp){_this.failure(resp);},
@@ -180,23 +213,25 @@ HTransporter = HClass.extend({
           };
           try{
             _this.req  = new Ajax.Request( _this.url_base, req_args );
-            HVM.isGetting=false;
           }
           catch(e){
             window.status = 'conn error:'+e;
-            HVM.isGetting=false;
             _this.failure(null);
           }
         }
         else {
           _this.isBusy = false;
         }
+        _this.req_timeout = false;
+        HVM.syncDone();
       }
     }
   },
   
   stop: function() {
+    _this = HTransporter;
     clearTimeout(_this.req_timeout);
+    _this.req_timeout = false;
   }
   
 });

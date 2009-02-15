@@ -126,6 +126,10 @@ class Message
     #response_done
   end
   
+  def buf_json(buffer)
+    "HTransporter.response=#{buffer.to_json};"
+  end
+  
   ## called to flush buffer
   def response_done
     return if @response_sent
@@ -154,14 +158,12 @@ class Message
     
     ## flush the output
     if @do_gzip
-      puts "do_gzip" if $DEBUG_MODE
       outp = GZString.new('')
       gzwriter = Zlib::GzipWriter.new(outp,Zlib::BEST_SPEED)
-      gzwriter.write( buffer.join("\r\n") )
+      gzwriter.write( buf_json(buffer) )
       gzwriter.close
     else
-      puts "no_gzip" if $DEBUG_MODE
-      outp = buffer.join("\r\n")
+      outp = buf_json(buffer)
     end
     
     @response['content-length'] = outp.size
