@@ -33,9 +33,7 @@ begin
   SKIP_SOAPSERVE = true
 rescue RegexpError
   # happens with soap4r-1.5.8 on ruby-1.9.1:
-  puts "soap4r failed, continue? (y/N)"
-  answer = $stdin.gets.strip.downcase
-  exit unless answer[0].chr == 'y'
+  puts "soap4r failed; /SOAP will not work!"
   SKIP_SOAPSERVE = true
 end
 
