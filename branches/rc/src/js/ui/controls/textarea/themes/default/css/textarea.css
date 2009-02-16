@@ -60,6 +60,7 @@
   font-size: 11px;
   font-family: Trebuchet MS, Verdana, Arial, Helvetica, sans-serif;
   color: #666;
+  #{BROWSER_TYPE.ff?'width: 98%; height: 98%;':''}
 }
 
 .disabled .textarea {

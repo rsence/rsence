@@ -9,6 +9,7 @@
   padding-left: 4px;
   padding-top: 2px;
   border: 0px transparent solid;
+  #{BROWSER_TYPE.ff?'width: 98%; height: 98%;':''}
 }
 
 .textcontrol_bg {
