@@ -35,7 +35,7 @@
 
 .hslider_thumb {
   position: absolute;
-  left: 33%; top: 0px; height: 21px; width: 21px;
+  top: 0px; height: 21px; width: 21px;
   background-position: 0px 0px;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }

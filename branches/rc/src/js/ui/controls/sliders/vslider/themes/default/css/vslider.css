@@ -35,7 +35,7 @@
 
 .vslider_thumb {
   position: absolute;
-  top: 33%; left: 0px; width: 21px; height: 21px;
+  left: 0px; width: 21px; height: 21px;
   background-position: 0px 0px;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }
