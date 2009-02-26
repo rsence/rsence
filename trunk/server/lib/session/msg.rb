@@ -158,7 +158,7 @@ class Message
         puts "no_gzip" if $DEBUG_MODE
         outp = err_outp
       end
-      @response['content-size'] = outp.size
+      @response['Content-Length'] = outp.size
       @response.body = outp
     else
       
@@ -177,7 +177,7 @@ class Message
         puts "no_gzip" if $DEBUG_MODE
         outp = @buffer.join("\r\n")
       end
-      @response['content-size'] = outp.size
+      @response['Content-Length'] = outp.size
       @response.body = outp
     end
     @response_sent = true

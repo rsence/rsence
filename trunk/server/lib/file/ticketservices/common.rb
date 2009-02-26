@@ -349,7 +349,7 @@ module Common
     res.status = 200
     
     res['Content-Type'] = content_type
-    res['Content-Size'] = content_size
+    res['Content-Length'] = content_size
     
     res['Date'] = httime( Time.now )
     res['Expires'] = httime(Time.now+$config[:cache_expire])

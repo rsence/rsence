@@ -106,7 +106,7 @@ module Upload
     
     response.status = 200
     response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-size'] = response_body.size.to_s
+    response['Content-Length'] = response_body.size.to_s
     response.body = response_body
   end
   

@@ -10,7 +10,7 @@ module Favicon
     favicon_data = @raw_uris['favicon.ico']
     
     res['Content-Type'] = favicon_data[0]
-    res['Content-Size'] = favicon_data[1]
+    res['Content-Length'] = favicon_data[1]
     
     res['Date'] = httime( Time.now )
     res.body = favicon_data[2]

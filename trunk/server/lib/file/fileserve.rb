@@ -113,13 +113,13 @@ class FileServe
         if support_gzip and not is_safari and not is_msie
           #response['Transfer-Encoding'] = 'chunked,gzip'
           response['Last-Modified'] = $FILECACHE.gz_cache[ req_file ][1]
-          response['Content-Size'] = $FILECACHE.gz_cache[ req_file ][2]
+          response['Content-Length'] = $FILECACHE.gz_cache[ req_file ][2]
           response['Content-Encoding'] = 'gzip'
           response.body   = $FILECACHE.gz_cache[ req_file ][0]+"\r\n\r\n"
         else
         
           response['Last-Modified'] = $FILECACHE.js_cache[ req_file ][1]
-          response['Content-Size'] = $FILECACHE.js_cache[ req_file ][2]
+          response['Content-Length'] = $FILECACHE.js_cache[ req_file ][2]
           response.body = $FILECACHE.js_cache[ req_file ][0]
         
         end
@@ -165,7 +165,7 @@ class FileServe
         support_gzip = false if theme_part == 'gfx'
         if support_gzip and not is_safari and not is_msie
           response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
-          response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
+          response['Content-Length'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
           response['Content-Encoding'] = 'gzip'
           response.body   = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
         else
@@ -178,7 +178,7 @@ class FileServe
           end
         
           response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][1]
-          response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
+          response['Content-Length'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
           response.body = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][0]
           
         end

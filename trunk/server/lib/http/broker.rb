@@ -73,7 +73,7 @@ class Broker
       @response.status = 404
       err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
       @response['content-type'] = 'text/html; charset=UTF-8'
-      @response['content-size'] = err404.size.to_s
+      @response['Content-Length'] = err404.size.to_s
       @response.body = err404
     end
     
@@ -123,7 +123,7 @@ class Broker
       @response.status = 200
       http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
       @response['content-type'] = 'text/html; charset=UTF-8'
-      @response['content-size'] = http_body.size.to_s
+      @response['Content-Length'] = http_body.size.to_s
       @response.body = http_body
     
     ## default index html page
@@ -137,7 +137,7 @@ class Broker
       @response.status = 404
       err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
       @response['content-type'] = 'text/html; charset=UTF-8'
-      @response['content-size'] = err404.size.to_s
+      @response['Content-Length'] = err404.size.to_s
       @response.body = err404
     end
     

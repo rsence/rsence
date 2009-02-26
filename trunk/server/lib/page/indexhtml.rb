@@ -125,7 +125,7 @@ class IndexHtml
     
     response.status = 200
     response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-size'] = @content_size
+    response['Content-Length'] = @content_size
     
     response.body = @index_html
     
