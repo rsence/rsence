@@ -30,6 +30,10 @@ require 'rack'
 require $config[:http_server][:rack_require]
 
 # methods that return rack handlers
+def rack_fuzed_handler
+  require 'http/fuzed/rack_fuzed'
+  Rack::Handler::Fuzed
+end
 def rack_webrick_handler; Rack::Handler::WEBrick; end
 def rack_ebb_handler;     Rack::Handler::Ebb;     end
 def rack_thin_handler;    Rack::Handler::Thin;    end
@@ -37,6 +41,7 @@ def rack_mongrel_handler; Rack::Handler::Mongrel; end
 
 # Selects handler for Rack
 $config[:http_server][:rack_handler] = self.method({
+  'fuzed'   => :rack_fuzed_handler,
   'webrick' => :rack_webrick_handler,
   'ebb'     => :rack_ebb_handler,
   'thin'    => :rack_thin_handler,

@@ -332,9 +332,11 @@ class JSBuilder
   end
   
   def build_indexes
+    indexes = []
     @destination_files.each_key do | package_name |
-      @jscompress.build_indexes( @destination_files[ package_name ] )
+      indexes.push( @destination_files[ package_name ] )
     end
+    @jscompress.build_indexes( indexes.join("\n") )
   end
   
   def do_compress
