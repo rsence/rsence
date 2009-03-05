@@ -142,5 +142,8 @@ $_RESERVED_NAMES= [
   ## template stuff:
   '_ID', '_WIDTH', '_HEIGHT',
   
+  ## other (obvious) non-compressibles:
+  '_'
+  
 ]
 
