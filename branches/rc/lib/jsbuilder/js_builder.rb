@@ -150,11 +150,14 @@ class JSBuilder
   end
   
   def cp_html( src_path, dst_path )
-    if $_NO_WHITESPACE_REMOVAL
-      html_data = read_file( src_path )
-    else
-      html_data = @html_min.minimize( read_file( src_path ) )
+    
+    html_data = read_file( src_path )
+    unless DEBUG_MODE
+      unless $_NO_WHITESPACE_REMOVAL
+        html_data = @html_min.minimize( html_data )
+      end
     end
+    
     save_file( dst_path, html_data )
     unless $_NO_GZIP
       gz_html = gzip_string( html_data )
@@ -483,7 +486,15 @@ class JSBuilder
       theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json});"
       theme_html_js_arr.push "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
       
-      theme_html_js = pre_convert( theme_html_js_arr.join('') )
+      theme_html_js = theme_html_js_arr.join('')
+      unless DEBUG_MODE
+        unless $_NO_OBFUSCATION
+          theme_html_js = @jsmin.convert( theme_html_js )
+        end
+        unless $_NO_WHITESPACE_REMOVAL
+          theme_html_js = pre_convert( theme_html_js )
+        end
+      end
       
       theme_html_js_path = File.join( @js_dst_dir, theme_name+'_theme.js' )
       
