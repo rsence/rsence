@@ -72,6 +72,19 @@ static int strcmpv(const char *s1, const char *s2)
 	return 0;
 }
 
+static char *strdupv(const char *s)
+{
+	int len = strlenv(s);
+	char *r = malloc(len+1);
+
+	if (!r)
+		rb_raise(rb_eNoMemError, "malloc failed in %s", __func__);
+
+	memcpy(r, s, len+1);
+
+	return r;
+}
+
 /* tree functions, used to build a dictionary */
 /* tree_find returns the matching node, or if no match, the closest node */
 static struct tree_node *tree_find(struct tree_node *root, const char *name)
@@ -140,7 +153,8 @@ static void tree_add(const char *name)
 
 	if (me) {
 		me->left = me->right = -1;
-		me->var = name;
+//		me->var = name;
+		me->var = strdupv(name);
 		me->count = 1;
 	}		
 }
@@ -372,6 +386,11 @@ static VALUE jscompress(VALUE self, VALUE str)
 
 static VALUE jscompress_free_indexes(VALUE self)
 {
+	int i;
+
+	for (i=0; i<tree_node_arr_count; i++)
+		free((char*)tree_node_arr[i].var);
+
 	free(tree_node_arr);
 
 	tree_node_arr_count = 0;
