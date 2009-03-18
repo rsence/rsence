@@ -38,6 +38,8 @@ static const int tree_node_arr_inc = 256;	/* allocate this many tree nodes at on
 static int tree_node_arr_count;			/* this many nodes are full */
 static int tree_node_arr_size;			/* place for this many nodes */
 
+static int reserved_indexes_already_matched;	/* how many of the reserved words are already in the index */
+
 
 /* string functions, except they're end-of-var terminated, not just '\0' */
 static int strlenv(const char *s)
@@ -249,6 +251,7 @@ static int jscompress_replace(char *_dest, const char *s, int len)
 	const char *end = s + len;
 	int invar = 0; /* currently parsing a variable */
 	char *dest = _dest;
+	int maxlen = len * 1.9;
 
 	while (s < end) {
 		char c = *s++;
@@ -274,6 +277,9 @@ static int jscompress_replace(char *_dest, const char *s, int len)
 			}
 		}
 		invar = isvarchr(c);
+
+		if (dest - _dest > maxlen)
+			rb_raise(rb_eException, "%s: destination larger than source", __func__);
 	}
 
 	return dest - _dest;
@@ -303,10 +309,7 @@ static VALUE jscompress_build_indexes(VALUE self, VALUE str)
 	int len = RSTRING(str)->len;
 	int off;
 	int res_idx;
-
-	tree_node_arr_count = 0;
-	tree_node_arr_size = 0;
-	tree_node_arr = NULL;
+	int old_arr_count = tree_node_arr_count;
 
 	if (isvarchr(s[len-1]))
 	        rb_raise(rb_eException, "%s: last character of file is variable char?", __func__);
@@ -315,27 +318,28 @@ static VALUE jscompress_build_indexes(VALUE self, VALUE str)
 	jscompress_scan(s, len);
 
 	/* remember original positions of tree node in array */
-	for (i=0; i<tree_node_arr_count; i++)
+	for (i=old_arr_count; i<tree_node_arr_count; i++)
 		tree_node_arr[i].arr_index = i;
 
 	/* sort words descending by occurence */
-	qsort(tree_node_arr, tree_node_arr_count, sizeof(tree_node_arr[0]),
-			jscompress_cmp_count);
+	qsort(&tree_node_arr[old_arr_count], tree_node_arr_count-old_arr_count,
+			sizeof(tree_node_arr[0]), jscompress_cmp_count);
 
 	/* mark word indexes and offset them, so reserved names are not used */
-	off = 0;
+	off = reserved_indexes_already_matched;
 	res_idx = 0;
-	for (i=0; i<tree_node_arr_count; i++) {
+	for (i=old_arr_count; i<tree_node_arr_count; i++) {
 		if (reserved_indexes[res_idx] == i + off) {
 			res_idx++;
 			off++;
 		}
 		tree_node_arr[i].index = i + off;
 	}
+	reserved_indexes_already_matched = off;
 
 	/* restore original tree node positions in array */
-	qsort(tree_node_arr, tree_node_arr_count, sizeof(tree_node_arr[0]),
-			jscompress_cmp_arr_index);
+	qsort(&tree_node_arr[old_arr_count], tree_node_arr_count-old_arr_count,
+			sizeof(tree_node_arr[0]), jscompress_cmp_arr_index);
 
 	return Qnil;
 }
@@ -346,8 +350,11 @@ static VALUE jscompress(VALUE self, VALUE str)
 	char *dest;
 	int dest_len;
 
+	if (!tree_node_arr)
+	        rb_raise(rb_eException, "%s: indexes not built", __func__);
+
 	/* since we use minimal variables, destination is always smaller than source */
-	dest = malloc(RSTRING_LEN(str));
+	dest = malloc(RSTRING_LEN(str) * /*FIXME*/ 2);
 	if (!dest) {
 		free(tree_node_arr);
 		rb_raise(rb_eNoMemError, "%s: malloc failed", __func__);
@@ -366,6 +373,11 @@ static VALUE jscompress(VALUE self, VALUE str)
 static VALUE jscompress_free_indexes(VALUE self)
 {
 	free(tree_node_arr);
+
+	tree_node_arr_count = 0;
+	tree_node_arr_size = 0;
+	tree_node_arr = NULL;
+	reserved_indexes_already_matched = 0;
 
 	return Qnil;
 }
