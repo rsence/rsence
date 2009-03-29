@@ -90,17 +90,19 @@ class IndexHtmlPlugin < ServletPlugin
       end
     end
     
-    puts "re-scanning plugins."
-    begin
-      $PLUGINS.rescan()
-    rescue => e
-      puts "=="*40 if $DEBUG_MODE
-      puts "IndexHtml::PluginsRescanError: $PLUGINS.rescan failed."
-      if $DEBUG_MODE
-        puts "--"*40
-        puts e.message
-        puts "  #{e.backtrace.join("\n  ")}"
-        puts "=="*40
+    unless ARGV.include?('-no-rescan')
+      puts "re-scanning plugins."
+      begin
+        $PLUGINS.rescan()
+      rescue => e
+        puts "=="*40 if $DEBUG_MODE
+        puts "IndexHtml::PluginsRescanError: $PLUGINS.rescan failed."
+        if $DEBUG_MODE
+          puts "--"*40
+          puts e.message
+          puts "  #{e.backtrace.join("\n  ")}"
+          puts "=="*40
+        end
       end
     end
     
@@ -113,7 +115,7 @@ class IndexHtmlPlugin < ServletPlugin
   ## If $DEBUG_MODE is active, re-renders page and reloads filecache.
   def get(request, response, session)
     
-    debug_rescan if $DEBUG_MODE and not ARGV.include?('-no-rescan')
+    debug_rescan if $DEBUG_MODE
     
     response.status = 200
     response['content-type'] = 'text/html; charset=UTF-8'
