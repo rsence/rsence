@@ -160,6 +160,8 @@ class FileCache
     # release lock
     @busy_scanning = false
     
+    puts "New client build found and loaded."
+    `say "New client build found and loaded."` if ARGV.include?('-say')
   end
   
   # Checks, if the client is newer than the cached
