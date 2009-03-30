@@ -90,7 +90,13 @@ HTextControl = HControl.extend({
         }
       }
     }
-    
+  },
+  
+  setStyle: function(_name, _value, _cacheOverride) {
+    if (!this['markupElemIds']||!this.markupElemIds['value']) {
+      return;
+    }
+    ELEM.setStyle(this.markupElemIds.value, _name, _value, _cacheOverride);
   },
   
 /** method: setEnabled
