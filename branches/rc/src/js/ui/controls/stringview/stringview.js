@@ -45,6 +45,12 @@ HStringView = HControl.extend({
   componentName: "stringview",
   componentBehaviour: ['view','control','text'],
   
+  setStyle: function(_name, _value, _cacheOverride) {
+    if (!this['markupElemIds']||!this.markupElemIds['value']) {
+      return;
+    }
+    ELEM.setStyle(this.markupElemIds.value, _name, _value, _cacheOverride);
+  },
   refreshLabel: function() {
     if(this.markupElemIds) {
       if(this.markupElemIds.value) {
