@@ -109,8 +109,13 @@ EVENT = {
       ['resize',      EVENT.resize],
       ['mousewheel',  EVENT.mouseWheel]
     ];
-    for(i=0;i!=_eventMap.length;i++){Event.observe(_globalEventTargetElement,_eventMap[i][0],_eventMap[i][1]);}
-    if(window.addEventListener){window.addEventListener('DOMMouseScroll',EVENT.mouseWheel,false);}
+    for(i=0;i!=_eventMap.length;i++){
+      Event.observe(_globalEventTargetElement,_eventMap[i][0],_eventMap[i][1]);
+    }
+    if(window.addEventListener){
+      window.addEventListener('DOMMouseScroll',EVENT.mouseWheel,false);
+      window.addEventListener('resize',EVENT.resize,false);
+    }
     //window.onmousewheel=document.onmousewheel=EVENT.mouseWheel;
     _this.listeners=[];      // keep elemId buffer of all listeners
     _this.focused=[];        // keep elemId buffer of all focused listeners
