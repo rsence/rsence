@@ -1076,41 +1076,34 @@ HView = HClass.extend({
   * The width in pixels required to draw a string in the font.
   *
   */
-  stringWidth: function(_string, _length, _elemId) {
-    if (_length !== undefined && _length != null) {
+  stringSize: function(_string, _length, _elemId, _wrap, _extraCss) {
+    if (_length || _length === 0) {
       _string = _string.substring(0, _length);
     }
-    if (_elemId === undefined || _elemId == null) {
+    if (!_elemId && _elemId !== 0) {
       _elemId = this.elemId;
+    }
+    if (!_extraCss) {
+      _extraCss = '';
+    }
+    if (!_wrap){
+      _extraCss += 'white-space:nowrap;';
     }
     
     var _stringElem = ELEM.make(_elemId);
-    ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;white-space:nowrap;");
+    ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
-    var _width=0,_height=0;
-    if (ELEM._is_ie6 || ELEM._is_ie7 || ELEM._is_opera) {
-      _width = parseInt( ELEM.get(_stringElem).offsetWidth, 10 );
-      if (arguments[3]) {
-        _height = parseInt( ELEM.get(_stringElem).offsetHeight, 10 );
-      }
-    } else {
-      _width = parseInt( ELEM.get(_stringElem).clientWidth, 10 );
-      // for some reason, firefox 3 text wrapping rules seem to
-      // differ for the same text widths from time to time, so
-      // let's add a 1px safety margin for it.
-      if(ELEM._is_ff3){
-        _width += 1;
-      }
-      if (arguments[3]) {
-        _height = parseInt( ELEM.get(_stringElem).clientHeight, 10 );
-      }
-    }
+    var _visibleSize=ELEM.getVisibleSize(_stringElem);
     ELEM.del(_stringElem);
-    if (arguments[3]) {
-      return [_width, _height];
-    } else {
-      return _width;
-    }
+    return _visibleSize;
+  },
+  
+  stringWidth: function(_string, _length, _elemId, _extraCss){
+    return this.stringSize(_string, _length, _elemId, false, _extraCss)[0];
+  },
+  
+  stringHeight: function(_string, _length, _elemId, _extraCss){
+    return this.stringSize(_string, _length, _elemId, true, _extraCss)[1];
   },
   
 /** method: pageX
