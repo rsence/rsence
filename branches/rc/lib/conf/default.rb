@@ -43,6 +43,12 @@ $config = {
   ## Path to the server root (containing lib, rsrc etc..)
   :dir_root    => SERVER_PATH,
   
+  ## Index html parameters (to replace the index with your own etc)
+  :index_html => {
+    :index_tmpl => 'tmpl/index.html', # template file path relative to the plugin dir
+    :deps       => []                 # list of js src's to pre-load 
+  },
+  
   ## Path to the client root (containing js and themes dirs)
   :client_root => CLIENT_PATH,
   

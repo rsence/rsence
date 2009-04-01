@@ -40,15 +40,15 @@ class IndexHtmlPlugin < ServletPlugin
     return 1000 # allows overriding with anything with a score below 0
   end
   
-  def set_deps( deps )
-    @deps = deps
-    render_index_html
-  end
+  #def set_deps( deps )
+  #  @deps = deps
+  #  render_index_html
+  #end
   
   def open
     @client_rev = $FILECACHE.client_rev
-    @deps = []
-    @index_html_src = file_read( 'tmpl/index.html' )
+    #@deps = []
+    @index_html_src = file_read( $config[:index_html][:index_tmpl] )
     loading_gif_h = File.open( File.join( @path, 'img/loading.gif' ), 'rb' )
     loading_gif = loading_gif_h.read
     loading_gif_h.close
@@ -65,7 +65,7 @@ class IndexHtmlPlugin < ServletPlugin
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     
     deps_src = ''
-    @deps.each do |dep|
+    $config[:index_html][:deps].each do |dep|
       deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
     end
     @index_html.gsub!('__SCRIPT_DEPS__',deps_src)
