@@ -130,6 +130,7 @@ class Main < Plugin
       
       msg.reply('HTransporterDebug=true;') if $DEBUG_MODE
       
+      msg.reply("ELEM.setStyle(0,'background-color','#{$config[:main_plugin][:bg_color]}');")
       ## js/start.js includes the client's initial settings
       msg.reply require_js_once(msg,'start')
       
@@ -144,7 +145,7 @@ class Main < Plugin
     elsif mses[:boot] == 1
       
       # 5000ms = 5secs
-      msg.reply "sesWatcher = new SesWatcher(5000,'#{mses[:client_time].val_id}');"
+      msg.reply "sesWatcher = new SesWatcher(#{$config[:main_plugin][:server_poll_interval]},'#{mses[:client_time].val_id}');"
       
       # Delegates the init_ui method to each plugin to signal bootstrap completion.
       $PLUGINS.delegate( 'init_ui', msg )

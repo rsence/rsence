@@ -37,7 +37,6 @@ ELEMTickerInterval=50;
 ELEM.setFPS(20);
 
 // Changes the documentElement properties of the web page.
-ELEM.setStyle(0,'background-color','#ffffff');
 ELEM.setStyle(0,'overflow','auto');
 
 // Sets the theme path to the path FileServe responds to:

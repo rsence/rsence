@@ -49,6 +49,11 @@ $config = {
     :deps       => []                 # list of js src's to pre-load 
   },
   
+  :main_plugin => {
+    :bg_color              => '#ffffff', # the color of the web page after loading is done
+    :server_poll_interval  => 10000      # how many milliseconds to wait before doing an idle poll
+  },
+  
   ## Path to the client root (containing js and themes dirs)
   :client_root => CLIENT_PATH,
   
