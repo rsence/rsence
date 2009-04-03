@@ -60,7 +60,7 @@ $_PACKAGES = {
     
     # ui foundation
     'system','application','thememanager',
-    'markupview','view',
+    'markupview','morphanimation','view',
     'eventresponder','valueresponder',
     'control',
     'dummyvalue','controldefaults',
