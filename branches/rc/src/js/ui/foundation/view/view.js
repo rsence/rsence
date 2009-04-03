@@ -370,10 +370,24 @@ HView = HClass.extend({
   draw: function() {
     var _isDrawn = this.drawn;
     this.drawRect();
-    if(!_isDrawn&&(this.componentName!==undefined)){
-      this.drawMarkup();
+    if(!_isDrawn){
+      if(this['componentName']!==undefined){
+        this.drawMarkup();
+      }
+      this.drawSubviews();
     }
     this.refresh();
+  },
+  
+/** method: drawSubviews
+  *
+  * Called once, when the layout of the view is initially drawn.
+  *
+  * Doesn't do anything by itself, but provides an extension point for making
+  * subviews.
+  *
+  **/
+  drawSubviews: function(){
   },
   
   // Loads the markup from theme manager. If this.preserveTheme is set to true,
