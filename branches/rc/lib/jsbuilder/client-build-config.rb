@@ -59,7 +59,11 @@ $_PACKAGES = {
     'point','rect',
     
     # ui foundation
-    'system','application','thememanager','markupview','view','control',
+    'system','application','thememanager',
+    'markupview','view',
+    'eventresponder','valueresponder',
+    'control',
+    'dummyvalue','controldefaults',
     'dyncontrol'
   ],
   

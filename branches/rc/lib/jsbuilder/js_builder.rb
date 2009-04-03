@@ -280,15 +280,13 @@ class JSBuilder
       # if src_dir is detected as a bundle, handle it in add_bundle
       if is_bundle
         add_bundle( dir_name, src_dir, dir_entries )
-      
-      # otherwise, descend into the sub-directory:
-      else
-        dir_entries.each do | dir_entry |
-          # don't descend into themes or hidden dirs:
-          next if dir_entry[0].chr == '.' or dir_entry == 'themes'
-          sub_dir = File.join( src_dir, dir_entry )
-          find_bundles( sub_dir ) if File.directory?( sub_dir )
-        end
+      end
+      # descend into the sub-directory:
+      dir_entries.each do | dir_entry |
+        # don't descend into themes or hidden dirs:
+        next if dir_entry[0].chr == '.' or dir_entry == 'themes'
+        sub_dir = File.join( src_dir, dir_entry )
+        find_bundles( sub_dir ) if File.directory?( sub_dir )
       end
     end
     
