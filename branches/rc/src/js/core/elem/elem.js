@@ -148,10 +148,27 @@ ELEM = {
   setHTML: function(_id,_html){
     try {
       var _this=ELEM;
+      if(!_this._elements[_id]){
+        return;
+      }
       if(!((typeof _html === 'string')||(typeof _html === 'number'))){
         return;
       }
       _this._elements[_id].innerHTML = _html;
+    } catch(e) {}
+    //_this._initCache(_id);
+  },
+  
+  // gets inner html of element
+  getHTML: function(_id){
+    try {
+      var _this=ELEM;
+      if(_this._elements[_id]){
+        return _this._elements[_id].innerHTML;
+      }
+      else {
+        return '';
+      }
     } catch(e) {}
     //_this._initCache(_id);
   },

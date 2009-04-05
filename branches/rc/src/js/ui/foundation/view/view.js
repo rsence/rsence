@@ -551,9 +551,14 @@ HView = HClass.extend({
   **/
   setStyleForPart: function(_partName, _name, _value, _cacheOverride) {
     if (!this.markupElemIds[_partName]) {
+      console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return;
     }
     ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+  },
+  setStyleForPart: function(_partName, _name, _value, _cacheOverride ){
+    console.log('Warning: setStyleForPart is deprecated. Use setStyleOfPart instead.');
+    this.styleOfPart( _partName, _name, _value, _cacheOverride );
   },
   
 /** method: styleForPart
@@ -568,11 +573,44 @@ HView = HClass.extend({
   * See also:
   *  <style> <SetStyleForPart>
   **/
-  styleForPart: function(_partName, _name) {
+  styleOfPart: function(_partName, _name) {
     if (!this.markupElemIds[_partName]) {
+      console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      return '';
+    }
+    return ELEM.getStyle(this.markupElemIds[_partName], _name);
+  },
+  styleForPart: function(_partName, _name){
+    console.log('Warning: styleForPart is deprecated. Use styleOfPart instead.');
+    return this.styleOfPart( _partName, _name );
+  },
+  
+  setMarkupOfPart: function( _partName, _value ) {
+    if (!this.markupElemIds[_partName]) {
+      console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return;
     }
-    ELEM.getStyle(this.markupElemIds[_partName], _name);
+    ELEM.setHTML( this.markupElemIds[_partName], _value );
+  },
+  
+/** method: styleForPart
+  *
+  * Returns a style of a specified markup element that has been bound to this
+  * view.
+  *
+  * Parameters:
+  *  _partName - The identifier of the markup element.
+  *  _name - The style name
+  *
+  * See also:
+  *  <style> <SetStyleForPart>
+  **/
+  markupOfPart: function(_partName) {
+    if (!this.markupElemIds[_partName]) {
+      console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      return '';
+    }
+    ELEM.getHTML(this.markupElemIds[_partName]);
   },
 
 /** method: hide
