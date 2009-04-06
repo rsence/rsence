@@ -61,11 +61,6 @@ HTextControl = HControl.extend({
     }
   },
   
-  // replace with integer pixel offsets in the template, if used.
-  // [-2,-2,-2,-2] for -2px offsets on each edge (left, top, right, bottom)
-  // these are used for re-calculating the size of the input element
-  inputFieldOffsets: false,
-  
   drawSubviews: function(){
     if(this['markupElemIds']!==undefined){
       if(this.markupElemIds['label']!==undefined) {

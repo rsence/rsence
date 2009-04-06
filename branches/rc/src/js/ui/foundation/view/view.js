@@ -622,8 +622,10 @@ HView = HClass.extend({
   **/
   hide: function() {
     if(!this.isHidden) {
-      this.setStyle('visibility', 'hidden');
-      this.setStyle('display', 'none');
+      var _setStyl = ELEM.setStyle,
+          _elemId  = this.elemId;
+      _setStyl(_elemId,'visibility', 'hidden');
+      _setStyl(_elemId,'display', 'none');
       this.isHidden = true;
     }
   },
@@ -637,8 +639,10 @@ HView = HClass.extend({
   **/
   show: function() {
     if(this.isHidden) {
-      this.setStyle('visibility', 'inherit');
-      this.setStyle('display', 'block');
+      var _setStyl = ELEM.setStyle,
+          _elemId  = this.elemId;
+      _setStyl(_elemId,'visibility', 'inherit');
+      _setStyl(_elemId,'display', 'block');
       this.isHidden = false;
     }
   },
