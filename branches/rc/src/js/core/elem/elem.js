@@ -25,10 +25,13 @@ BROWSER_TYPE = {
   ie:  false,
   ie6: false,
   ie7: false,
+  ie8: false,
   opera: false,
   safari: false,
+  chrome: false, // will also register itself as safari
   firefox: false,
-  firefox2: false
+  firefox2: false,
+  firefox3: false
 };
 
 ELEM = {
@@ -745,17 +748,23 @@ ELEM = {
     _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")==-1)?true:false;
     _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!=-1)?true:false;
     _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;
+    _this._is_ie8=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 8")!=-1)?true:false;
     _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;
+    _this._is_chrome=(navigator.userAgent.indexOf("Chrome")!=-1)?true:false;
     _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;
+    _this._is_ff2=(navigator.userAgent.indexOf("Firefox/2.")!=-1)?true:false;
     _this._is_ff3=(navigator.userAgent.indexOf("Firefox/3.")!=-1)?true:false;
     _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;
     BROWSER_TYPE = {
       opera:    _this._is_opera,
       safari:   _this._is_safari,
-      firefox:  _this._is_ff,
+      chrome:   _this._is_chrome,
       ie:  _this._is_ie,
       ie6: _this._is_ie6,
       ie7: _this._is_ie7,
+      ie8: _this._is_ie8,
+      firefox:  _this._is_ff,
+      firefox2: _this._is_ff2,
       firefox3: _this._is_ff3
     };
     _this._domWaiter();

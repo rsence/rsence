@@ -49,44 +49,70 @@ HTextControl = HControl.extend({
   *   _options - (optional) All other parameters. See <HComponentDefaults>.
   **/
   constructor: function(_rect, _parentClass, _options) {
-    this.styleDefaults();
     this.base(_rect, _parentClass, _options);
     this.setTextEnter(true);
   },
   
-  styleDefaults: function(){
-    // replace with integer pixel offsets in the template, if used.
-    // [-2,-2,-2,-2] for -2px offsets on each edge (left, top, right, bottom)
-    // these are used for re-calculating the size of the input element
-    this.inputFieldOffsets = false;
-    
+  refreshLabel: function(){
+    if(this['markupElemIds']!==undefined){
+      if(this.markupElemIds['label']!==undefined){
+        ELEM.setAttr(this.markupElemIds.label,'title',this.label);
+      }
+    }
   },
   
-  onIdle: function(){
-    this.base();
+  // replace with integer pixel offsets in the template, if used.
+  // [-2,-2,-2,-2] for -2px offsets on each edge (left, top, right, bottom)
+  // these are used for re-calculating the size of the input element
+  inputFieldOffsets: false,
+  
+  drawSubviews: function(){
     if(this['markupElemIds']!==undefined){
-      if(this.markupElemIds.value) {
-        if(this.inputFieldOffsets){
-          var _size   = ELEM.getSize(this.elemId),
-              _width  = _size[0],
-              _height = _size[1],
-              _left   = this.inputFieldOffsets[0],
-              _top    = this.inputFieldOffsets[1],
-              _right  = this.inputFieldOffsets[2],
-              _bottom = this.inputFieldOffsets[3],
-              _input  = this.markupElemIds.value,
-              _inputWidth = (_width-_right-_left),
-              _inputHeight = (_height-_bottom-_top);
-          
-          ELEM.setStyle(_input,'left',_left+'px');
-          ELEM.setStyle(_input,'top',_right+'px');
-          ELEM.setStyle(_input,'width',_inputWidth+'px');
-          ELEM.setStyle(_input,'height',_inputHeight+'px');
-          
-          if(BROWSER_TYPE.safari){
-            ELEM.setStyle(_input,'line-height',(_inputHeight)+'px');
+      if(this.markupElemIds['label']!==undefined) {
+        var _size   = ELEM.getVisibleSize( this.elemId ),
+            _width  = _size[0],
+            _height = _size[1],
+            _input  = this.markupElemIds.value,
+            _label  = this.markupElemIds.label;
+        if(BROWSER_TYPE.firefox){
+          ELEM.setStyle(_input,'padding-top','0px');
+          ELEM.setStyle(_input,'padding-left','0px');
+          ELEM.setStyle(_label,'left','2px');
+          ELEM.setStyle(_label,'top','2px');
+          ELEM.setStyle(_label,'right','2px');
+          ELEM.setStyle(_label,'bottom','2px');
+        }
+        else if(BROWSER_TYPE.ie7){
+          ELEM.setStyle(_input,'left','2px');
+          ELEM.setStyle(_input,'top','2px');
+          ELEM.setStyle(_input,'padding-top','0px');
+          ELEM.setStyle(_input,'padding-left','0px');
+          ELEM.setStyle(_input,'padding-right','8px');
+          ELEM.setStyle(_input,'padding-bottom','0px');
+          ELEM.setStyle(_input,'width',(_width-4)+'px');
+          ELEM.setStyle(_input,'height',(_height-4)+'px');
+          ELEM.setStyle(_label,'left','0px');
+          ELEM.setStyle(_label,'top','0px');
+          ELEM.setStyle(_label,'right','0px');
+          ELEM.setStyle(_label,'bottom','0px');
+        }
+        else if(BROWSER_TYPE.safari||BROWSER_TYPE.chrome){
+          ELEM.setStyle(_input,'width','auto');
+          ELEM.setStyle(_input,'height','auto');
+          ELEM.setStyle(_input,'left','-2px');
+          ELEM.setStyle(_input,'top','-2px');
+          if (BROWSER_TYPE.chrome) {
+            ELEM.setStyle(_input,'right','0px');
+            ELEM.setStyle(_input,'bottom','0px');
           }
-          
+          else {
+            ELEM.setStyle(_input,'right','-2px');
+            ELEM.setStyle(_input,'bottom','-2px');
+          }
+          ELEM.setStyle(_label,'left','0px');
+          ELEM.setStyle(_label,'top','0px');
+          ELEM.setStyle(_label,'right','0px');
+          ELEM.setStyle(_label,'bottom','0px');
         }
       }
     }

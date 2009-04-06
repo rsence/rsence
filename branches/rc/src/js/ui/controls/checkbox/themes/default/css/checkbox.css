@@ -8,7 +8,7 @@
   left: 0px; top: 0px; right: 0px;
   cursor: pointer;
 }
-.disabled > .checkbox_control {
+#{BROWSER_TYPE.ie6?'.disabled .checkbox_control':'.disabled > .checkbox_control'} {
   cursor: default;
 }
 .checkbox_state {
@@ -18,30 +18,30 @@
   background-image: #{this.getCssFilePath('checkbox_parts1.png')};
 }
 
-.enabled > .unchecked > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.enabled .unchecked .checkbox_state':'.enabled > .unchecked > .checkbox_state'} {
   background-position: -24px 0px;
 }
-.enabled > .unchecked:hover > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.enabled .unchecked:hover .checkbox_state':'.enabled > .unchecked:hover > .checkbox_state'} {
   background-position: -24px -24px;
 }
-.enabled > .unchecked:active > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.enabled .unchecked:active .checkbox_state':'.enabled > .unchecked:active > .checkbox_state'} {
   background-position: -24px -48px;
 }
 
-.enabled > .checked > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.enabled .checked .checkbox_state':'.enabled > .checked > .checkbox_state'} {
   background-position: 0px 0px;
 }
-.enabled > .checked:hover > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.enabled .checked:hover .checkbox_state':'.enabled > .checked:hover > .checkbox_state'} {
   background-position: 0px -24px;
 }
-.enabled > .checked:active > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.enabled .checked:active .checkbox_state':'.enabled > .checked:active > .checkbox_state'} {
   background-position: 0px -48px;
 }
 
-.disabled > .unchecked > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.disabled .unchecked .checkbox_state':'.disabled > .unchecked > .checkbox_state'} {
   background-position: -24px -72px;
 }
-.disabled > .checked > .checkbox_state {
+#{BROWSER_TYPE.ie6?'.disabled .checked .checkbox_state':'.disabled > .checked > .checkbox_state'} {
   background-position: 0px -72px;
 }
 
@@ -53,13 +53,13 @@
   font-size: 12px;
   color: #333;
 }
-.disabled > .checkbox_control > .checkbox_label {
+#{BROWSER_TYPE.ie6?'.disabled .checkbox_control .checkbox_label':'.disabled > .checkbox_control > .checkbox_label'} {
   color: #999;
 }
-.enabled > .checkbox_control:hover > .checkbox_label {
+#{BROWSER_TYPE.ie6?'.enabled .checkbox_control:hover .checkbox_label':'.enabled > .checkbox_control:hover > .checkbox_label'} {
   color: #000;
 }
-.enabled > .checkbox_control:active > .checkbox_label {
+#{BROWSER_TYPE.ie6?'.enabled .checkbox_control:active .checkbox_label':'.enabled > .checkbox_control:active > .checkbox_label'} {
   color: #000;
 }
 

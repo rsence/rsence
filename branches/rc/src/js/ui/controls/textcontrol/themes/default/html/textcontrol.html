@@ -1,5 +1,3 @@
-${if(BROWSER_TYPE.firefox3||BROWSER_TYPE.firefox){console.log('ff');this.inputFieldOffsets=[-2,4,-2,-2];}}
-
 <div class="textcontrol_bg"></div>
 
 <div class="textcontrol_n"></div>
@@ -12,4 +10,6 @@ ${if(BROWSER_TYPE.firefox3||BROWSER_TYPE.firefox){console.log('ff');this.inputFi
 <div class="textcontrol_se"></div>
 <div class="textcontrol_sw"></div>
 
-<input type="text" class="textcontrol_input" id="value#{_ID}" value="#{this.value}" />
+<div id="label#{_ID}" title="#{this.label}" class="textcontrol_input_parent">
+  <input type="text" class="textcontrol_input" id="value#{_ID}" value="#{this.value}" />
+</div>
