@@ -36,8 +36,9 @@
   **  <HControl> <HTextControl>
   ***/
 HPasswordControl = HTextControl.extend({
-  
-  componentName: "passwordcontrol"
-
+  drawMarkup: function(){
+    this.base();
+    ELEM.get(this.markupElemIds.value).type = 'password';
+  }
 });
 
