@@ -158,6 +158,7 @@ class MySQL_UTF8_Util
   
   ## Utility method for converting strings to hexadecimal
   def hexlify( str )
+    "''" if str.empty?
     "0x#{str.unpack('H*')[0]}"
   end
   
