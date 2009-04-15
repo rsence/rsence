@@ -187,12 +187,9 @@ HDynControl = HControl.extend({
     _actionFns[_drag] = _this.dynDrag;
     
   },
-  _initActionFlag: function(){
-    this._actionFlag = -1;
-    this._actionRects = [];
-    var i,_rr,
-    _opts=this.options, _rect=this.rect,
-    _rectRules = [
+  makeRectRules: function(){
+    var _opts=this.options, _rect=this.rect;
+    return [
       // corners:
       [0,0,_opts.resizeNW[0],_opts.resizeNW[1]], // NW
       [_rect.width-_opts.resizeNE[0],0,_rect.width,_opts.resizeNE[1]], // NE
@@ -206,6 +203,11 @@ HDynControl = HControl.extend({
       // drag-area:
       [_opts.resizeW,_opts.resizeN,_rect.width-_opts.resizeE,_rect.height-_opts.resizeS]
     ];
+  },
+  _initActionFlag: function(){
+    this._actionFlag = -1;
+    this._actionRects = [];
+    var i,_rr,_rectRules = this.makeRectRules();
     for(i=0;i!=9;i++){
       _rr = _rectRules[i];
       this._actionRects.push( new HRect(_rr[0],_rr[1],_rr[2],_rr[3]) );

@@ -38,16 +38,9 @@ HWindow = HDynControl.extend({
   // HWindow has a few extra options, like the close/collapse/zoom buttons, see below
   constructor: function(_rect,_parentApp,_options){
     
-    // the parent of HWindow has to be an HApplication instance
-    if(_parentApp.componentBehaviour[0]!='app'){
-      throw( "Riassence Core.ComponentParentError: HWindow parent must be an HApplication instance!" );
-    }
-    
-    
     if(!_options) {
       _options={};
     }
-    
     
     var _defaults = HClass.extend({
       minSize:   [96,54],
@@ -61,6 +54,10 @@ HWindow = HDynControl.extend({
       resizeSW:  [ 6, 6 ],
       resizeSE:  [ 16, 16 ],
       noResize:  false,
+      
+      // set to true, if you want all of the window area to be draggable.
+      // false means only the titlebar is draggable
+      fullWindowMove: false,
       
       // set to true, if you want a close box for the window
       closeButton: false,
@@ -86,6 +83,29 @@ HWindow = HDynControl.extend({
     }
     this.base(_rect,_parentApp,_options);
     HSystem.windowFocus(this);
+  },
+  
+  // overrides the drag rules to adapt to the !fullWindowMove as well
+  // as disabling draggability in window button areas.
+  makeRectRules: function(){
+    var _this = this,
+        _rectRules = _this.base(),
+        _rect = _this.rect,
+        _opts = _this.options,
+        _leftPx=_opts.resizeW;
+    if(!_opts.fullWindowMove){
+      if(_opts.zoomButton){
+        _leftPx = 61;
+      }
+      else if(_opts.collapseButton){
+        _leftPx = 46;
+      }
+      else if(_opts.closeButton){
+        _leftPx = 27;
+      }
+      _rectRules[8] = [_leftPx,_opts.resizeN,_rect.width-_opts.resizeE,25];
+    }
+    return _rectRules;
   },
   
   // Reports to HSystem that this window has the focus and the previously active window needs to blur
