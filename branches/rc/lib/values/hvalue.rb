@@ -314,7 +314,7 @@ class StringValueParser < ValueParser
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
     if val_data != nil
-      val_data = Iconv.iconv('utf-8','utf-16',val_data.unpack('m*')[0])[0]
+      val_data = Iconv.iconv('utf-8','utf-16be',val_data.unpack('m*')[0])[0]
       while val_data[-1].chr == "\000"
         val_data.chop!
       end
