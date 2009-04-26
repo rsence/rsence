@@ -314,7 +314,7 @@ class StringValueParser < ValueParser
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
     if val_data != nil
-      val_data = val_data.unpack('m*')[0] # base64
+      val_data = Iconv.iconv('utf-8','utf-16',val_data.unpack('m*')[0])[0]
       while val_data[-1].chr == "\000"
         val_data.chop!
       end
@@ -337,11 +337,9 @@ class ArrayValueParser < ValueParser
   ## parses base64-encoded string data from the client: <s id='xyz'>d898gD98guadbaxDDgd</s>
   def process_data( msg, hvalue_xml )
     val_data = hvalue_xml.text
-    #puts val_data.inspect
     if val_data != nil
       len = hvalue_xml.attributes['len'].to_i
       arr_data_raw = JSON.parse( val_data )
-      #puts arr_data_raw.inspect
       if arr_data_raw.size != len
         puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
         return @default_value
@@ -350,17 +348,16 @@ class ArrayValueParser < ValueParser
       arr_data_raw.each do |data_item|
         data_item_class = data_item.class
         if String == data_item_class
-          data_item = data_item.unpack('m*')[0] # base64
+          data_item = Iconv.iconv('utf-8','utf-16',data_item.unpack('m*')[0])[0]
           while data_item[-1].chr == "\000"
             data_item.chop!
-          end          
+          end
         elsif not [Float,Fixnum,Bignum,TrueClass,FalseClass].include?( data_item_class )
           puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
           return @default_value
         end
         arr_data.push( data_item )
       end
-      #puts arr_data.inspect
       return arr_data
     end
     puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE

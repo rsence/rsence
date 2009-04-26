@@ -69,7 +69,7 @@ Ajax.Request = HClass.extend({
       method: "post",
       asynchronous: true,
       contentType: "application/x-www-form-urlencoded",
-      encoding: "UTF-8",
+      encoding: "utf-8",
       parameters: ""
     });
     _defaults = _defaults.extend(_options);

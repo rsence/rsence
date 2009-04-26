@@ -65,7 +65,7 @@ SHA = {
   },
   
   /* bits per input character. 8 - ASCII; 16 - Unicode      */
-  _chrsz: 8,
+  _chrsz: 16,
   chrsz: function(){
     return SHA._chrsz;
   },
