@@ -36,6 +36,9 @@
   *
   **/
 HButton = HControl.extend({
-  componentName: 'button'
+  componentName: 'button',
+  setStyle: function(_name, _value){
+    ELEM.setStyle(this.markupElemIds.label,_name,_value);
+  }
 });
 
