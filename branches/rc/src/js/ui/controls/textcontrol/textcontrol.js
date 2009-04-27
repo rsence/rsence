@@ -138,7 +138,13 @@ HTextControl = HControl.extend({
       ELEM.setAttr(this.markupElemIds.value,'disabled',!this.enabled);
     }
   },
-  
+  hasTextFocus: false,
+  textFocus: function(){
+    this.hasTextFocus = true;
+  },
+  textBlur: function(){
+    this.hasTextFocus = false;
+  },
   refreshValue: function(){
     if(this.markupElemIds){
       if(this.markupElemIds.value){
@@ -146,10 +152,12 @@ HTextControl = HControl.extend({
       }
     }
   },
-  
+  validateText: function(_value){
+    return _value;
+  },
   textEnter: function(){
     if(this['markupElemIds']===undefined){return;}
-    var _value = ELEM.get(this.markupElemIds.value).value;
+    var _value = this.validateText(ELEM.get(this.markupElemIds.value).value);
     if(_value != this.value.toString()){
       this.setValue(_value);
     }

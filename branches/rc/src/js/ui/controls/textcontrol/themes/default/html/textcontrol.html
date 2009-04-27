@@ -11,5 +11,8 @@
 <div class="textcontrol_sw"></div>
 
 <div id="label#{_ID}" title="#{this.label}" class="textcontrol_input_parent">
-  <input type="text" class="textcontrol_input" id="value#{_ID}" value="#{this.value}" />
+  <input type="text" class="textcontrol_input" 
+    onfocus="HSystem.views[#{this.viewId}].textFocus();" 
+    onblur="HSystem.views[#{this.viewId}].textBlur();" 
+    id="value#{_ID}" value="#{this.value}" />
 </div>
