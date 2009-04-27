@@ -48,8 +48,10 @@
   *  > var myXMLChanged = HValueManager.toXML();
   **/
 
-HValueManager = HClass.extend({
-  constructor: null,
+HValueManagerClass = HClass.extend({
+  constructor: function(){
+    this.SHA = SHAClass.nu(16);
+  },
   
 /** vars: Instance variables
   *
@@ -179,7 +181,7 @@ HValueManager = HClass.extend({
     return _postBody;
   }
 });
-
+HValueManager = HValueManagerClass.nu();
 // HVM is a shortcut to HValueManager
 HVM = HValueManager;
 

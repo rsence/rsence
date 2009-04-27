@@ -187,7 +187,7 @@ HValue = HClass.extend({
   _formatType: function(_sync_value){
     var _syncjstype = (typeof _sync_value).slice(0,1);
     if (_syncjstype == 's'){ // string
-      var _str64 = SHA.str2Base64( _sync_value );
+      var _str64 = HVM.SHA.str2Base64( _sync_value );
       return ['s', _str64];
     }
     else if (_syncjstype == 'n'){ // number

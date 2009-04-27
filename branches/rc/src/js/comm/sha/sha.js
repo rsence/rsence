@@ -45,32 +45,39 @@
  */
 
 
-SHA = {
+SHAClass = HClass.extend({
+  
+  constructor: function(_chrsz){
+    if(_chrsz){
+      this.setChrsz(_chrsz);
+    }
+  },
+  
   /* hex output format. 0 - lowercase; 1 - uppercase        */
   _hexcase: 0,
   hexCase: function(){
-    return SHA._hexcase;
+    return this._hexcase;
   },
   setHexCase: function(_case){
-    SHA._hexcase = _case;
+    this._hexcase = _case;
   },
   
   /* base-64 pad character. "=" for strict RFC compliance   */
   _b64pad: "=",
   base64Pad: function(){
-    return SHA._b64pad;
+    return this._b64pad;
   },
   setBase64Pad: function(_pad){
-    SHA._b64pad = _pad;
+    this._b64pad = _pad;
   },
   
   /* bits per input character. 8 - ASCII; 16 - Unicode      */
-  _chrsz: 16,
+  _chrsz: 8,
   chrsz: function(){
-    return SHA._chrsz;
+    return this._chrsz;
   },
   setChrsz: function(_bits){
-    SHA._chrsz = _bits;
+    this._chrsz = _bits;
   },
   
 /*
@@ -78,7 +85,7 @@ SHA = {
  * They take string arguments and return either hex or base-64 encoded strings
  */
   hexSHA1: function(_s){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2hex(
       _this._coreSHA1(
         _this._str2binb(_s),
@@ -87,7 +94,7 @@ SHA = {
     );
   },
   b64SHA1: function(_s){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2b64(
       _this._coreSHA1(
         _this._str2binb(_s),
@@ -96,7 +103,7 @@ SHA = {
     );
   },
   strSHA1: function(_s){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2str(
       _this._coreSHA1(
         _this._str2binb(_s),
@@ -105,26 +112,26 @@ SHA = {
     );
   },
   hexHmacSHA1: function(_key, _data){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2hex(
       _this._coreHmacSHA1(_key, _data)
     );
   },
   b64HmacSHA1: function(_key, _data){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2b64(
       _this._coreHmacSHA1(_key, _data)
     );
   },
   strHmacSHA1: function(_key, _data){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2str(
       _this._coreHmacSHA1(_key, _data)
     );
   },
   
   str2Base64: function(_str){
-    var _this=SHA;
+    var _this=this;
     return _this._binb2b64(_this._str2binb(_str));
   },
   
@@ -132,14 +139,14 @@ SHA = {
    * Perform a simple self-test to see if the VM is working
    */
   test: function(){
-    return SHA.hexSHA1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
+    return this.hexSHA1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
   },
 
   /*
    * Calculate the SHA-1 of an array of big-endian words, and a bit length
    */
   _coreSHA1: function(_x, _len){
-    var _this=SHA;
+    var _this=this;
     /* append padding */
     _x[_len >> 5] |= 0x80 << (24 - _len % 32);
     _x[((_len + 64 >> 9) << 4) + 15] = _len;
@@ -215,7 +222,7 @@ SHA = {
    * Calculate the HMAC-SHA1 of a key and some data
    */
   _coreHmacSHA1: function(_key, _data){
-    var _this=SHA,
+    var _this=this,
         _bkey = _this._str2binb(_key),
         _ipad = new Array(16),
         _opad = new Array(16),
@@ -254,7 +261,7 @@ SHA = {
    * In 8-bit function, characters >255 have their hi-byte silently ignored.
    */
   _str2binb: function(_str){
-    var _this=SHA,
+    var _this=this,
         _bin = [],
         _mask = (1 << _this._chrsz) - 1,
         _strLenChrSZ = _str.length * _this._chrsz,
@@ -269,7 +276,7 @@ SHA = {
    * Convert an array of big-endian words to a string
    */
   _binb2str: function(_bin){
-    var _this=SHA,
+    var _this=this,
         _str = "",
         _mask = (1 << _this._chrsz) - 1,
         i,
@@ -285,7 +292,7 @@ SHA = {
    * Convert an array of big-endian words to a hex string.
    */
   _binb2hex: function(_binarray){
-    var _this=SHA,
+    var _this=this,
         _hexTab = _this._hexcase ? "0123456789ABCDEF" : "0123456789abcdef",
         _str = "",
         i,
@@ -301,7 +308,7 @@ SHA = {
    * Convert an array of big-endian words to a base-64 string
    */
   _binb2b64: function(_binarray){
-    var _this=SHA,
+    var _this=this,
         _tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
         _str = "",
         i,
@@ -326,4 +333,7 @@ SHA = {
     }
     return _str;
   }
-};
+});
+
+SHA = SHAClass.nu(16);
+
