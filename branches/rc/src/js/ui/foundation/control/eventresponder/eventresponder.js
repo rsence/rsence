@@ -264,6 +264,12 @@ HEventResponder = HClass.extend({
     
   },
   
+  setClick: function(_flag) {
+    this.events.click = _flag;
+    this.setEvents();
+  },
+  click: function(x,y,_isRightButton){},
+  
 /** event: focus
   *
   * Implement/extend the focus method, if you want to do something special when
