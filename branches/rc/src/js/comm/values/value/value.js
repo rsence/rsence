@@ -57,7 +57,16 @@ HValue = HClass.extend({
     this.type  = '[HValue]';
     this.value = _value;
     this.views = [];
-    HValueManager.add(_id,this);
+    HVM.add(_id,this);
+  },
+  
+  die: function(){
+    for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
+      var _tryObj = this.views[_viewNum];
+      _tryObj.setValueObj( HDummyValue.nu() );
+      this.views.splice(_viewNum);
+    }
+    HVM.del(this.id);
   },
   
 /** method: set
@@ -73,7 +82,7 @@ HValue = HClass.extend({
   set: function(_value){
     if(this.differs(_value)){
       this.value = _value;
-      HValueManager.changed(this);
+      HVM.changed(this);
       this.refresh();
     }
   },
@@ -132,10 +141,10 @@ HValue = HClass.extend({
     if(_viewObj===undefined){
       throw("HValueBindError: _viewObj is undefined!");
     }
-    //if(this.views.indexOf(_viewObj)==-1){
+    if(this.views.indexOf(_viewObj)==-1){
       this.views.push(_viewObj);
       _viewObj.setValueObj( this );
-    //}
+    }
   },
   
 /** method: unbind
