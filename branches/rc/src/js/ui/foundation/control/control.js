@@ -57,71 +57,68 @@ HControl = HView.extend({
   *
   * Parameters:
   *  _rect - The rectangle of the component. See <HView.constructor>.
-  *  _parentClass - The parent component of the component. See <HView.constructor>.
+  *  _parent - The parent component of the component. See <HView.constructor>.
   *  _options - (optional) All other parameters. See <HComponentDefaults>.
   *
   **/
   refreshOnValueChange: true,
   refreshOnLabelChange: true,
-  constructor: function(_rect, _parentClass, _options) {
+  constructor: function(_rect, _parent, _options) {
     
     // Use empty options if none supplied. Change this within components.
     if(!_options) {
       _options = {};
     }
     
-    // Construct and extend the options object on the fly.
-    var options = new (HComponentDefaults.extend(_options));
-    this.options = options;
+    var _isValueRange = (_options.minValue || _options.maxValue),
+        _options = HComponentDefaults.extend(_options).nu(),
+        _label = _options.label,
+        _events = _options.events,
+        _this = this;
+    
+    _this.options = _options;
     
     // HView.constructor:
-    if(this.isinherited) {
-      this.base(_rect, _parentClass);
+    if(_this.isinherited) {
+      _this.base(_rect, _parent);
     }
     else {
-      this.isinherited = true;
-      this.base(_rect, _parentClass);
-      this.isinherited = false;
+      _this.isinherited = true;
+      _this.base(_rect, _parent);
+      _this.isinherited = false;
     }
     
-    // Assign these variables from options.
-    var _label = options.label;
-    this.setLabel(_label);
+    _this.setLabel(_label);
     
-    var _events = options.events;
-    this.setEvents(_events);
+    _this.setEvents(_events);
     
-    if(this.options.valueObj){
-      this.setValueObj(this.options.valueObj);
+    if(_options.valueObj){
+      _this.valueObj = _options.valueObj;
     }
-    if(!this.valueObj) {
-      this.setValueObj(new HDummyValue());
+    if(!_this.valueObj) {
+      _this.valueObj = HDummyValue.nu();
     }
-    if((this.value===undefined)&&(options.value!==undefined)) {
-      this.setValue(options.value);
+    if((_this.value===undefined)&&(_options.value!==undefined)) {
+      _this.setValue(_options.value);
     }
-    
-    // Check if a value range is defined
-    var _isValueRange = (_options.minValue || _options.maxValue);
-    // Also call setValueRange in that case.
     if(_isValueRange) {
-      this.setValueRange(options.value, options.minValue, options.maxValue);
+      _this.setValueRange(this.value, _options.minValue, _options.maxValue);
     }
     
-    this.setEnabled(options.enabled);
+    _this.setEnabled(_options.enabled);
     
-    this.action = options.action;
+    _this.action = _options.action;
     
     // Initial visibility.
-    if(options.visible) {
-      this.show();
+    if(_options.visible) {
+      _this.show();
     }
     else {
-      this.hide();
+      _this.hide();
     }
     
-    if(!this.isinherited) {
-      this.draw();
+    if(!_this.isinherited) {
+      _this.draw();
     }
   },
   
@@ -149,12 +146,13 @@ HControl = HView.extend({
   *  <HView.die>
   **/
   die: function() {
-    if(this.valueObj){
-      this.valueObj.unbind(this);
-      delete this.valueObj;
+    var _this = this;
+    if(_this.valueObj){
+      _this.valueObj.unbind(_this);
+      delete _this.valueObj;
     }
-    EVENT.unreg(this);
-    this.base();
+    EVENT.unreg(_this);
+    _this.base();
   },
   
 /** method: setLabel
@@ -168,9 +166,10 @@ HControl = HView.extend({
   *
   **/
   setLabel: function(_label) {
-    this.label = _label;
-    this.options.label = _label;
-    this.refresh();
+    var _this = this;
+    _this.label = _label;
+    _this.options.label = _label;
+    _this.refresh();
   },
   
 /** method: setEnabled
@@ -189,28 +188,35 @@ HControl = HView.extend({
   **/
   setEnabled: function(_flag) {
     
+    var _this = this,
+        _elemId = this.elemId,
+        _sysViews = HSystem.views,
+        i = 0,
+        _views = _this.views,
+        _viewsLen = _views.length;
+    
     // Enable/disable the children first.
-    for (var i = 0; i < this.views.length; i++) {
-      HSystem.views[this.views[i]].setEnabled(_flag);
+    for (; i < _viewsLen; i++) {
+      _sysViews[_views[i]].setEnabled(_flag);
     }
     
-    if (this.enabled === _flag) {
+    if (_this.enabled === _flag) {
       // No change in enabled status, do nothing.
       return;
     }
     
-    this.enabled = _flag;
+    _this.enabled = _flag;
     
     if(_flag) {
-      EVENT.reg(this, this.events);
+      EVENT.reg(_this, _this.events);
     }
     else {
       EVENT.unreg(this);
     }
     
     // Toggle the CSS class: enabled/disabled
-    this.toggleCSSClass(this.elemId, HControl.CSS_ENABLED, this.enabled);
-    this.toggleCSSClass(this.elemId, HControl.CSS_DISABLED, !this.enabled);
+    _this.toggleCSSClass(_elemId, HControl.CSS_ENABLED, _flag);
+    _this.toggleCSSClass(_elemId, HControl.CSS_DISABLED, !_flag);
   },
   
   
