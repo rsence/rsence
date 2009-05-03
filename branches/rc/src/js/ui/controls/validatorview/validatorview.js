@@ -31,24 +31,18 @@ HValidatorView = HControl.extend({
   **/
   constructor: function(_rect, _parent, _options) {
     if(_options !== undefined){
-      if(_options.valueField !== undefined){
+      if(_options.valueField && _options.valueField.componentBehaviour[1] == 'control'){
         _rect.offsetTo(
           _options.valueField.rect.right,
           _options.valueField.rect.top
         );
       }
     }
-    if(this.isinherited) {
-      this.base(_rect, _parent, _options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parent, _options);
-      this.isinherited = false;
-    }
-    if(!this.isinherited) {
-      this.draw();
-    }
+    this.base(_rect, _parent, _options);
+  },
+  
+  drawSubviews: function(){
+    this.setStyle('background-image',"url('"+this.getThemeGfxFile('validator.png')+"')");
   },
   
 /** method: setValue
@@ -59,35 +53,24 @@ HValidatorView = HControl.extend({
   *  _flag - True to set the status to selected, false to set to unselected.
   **/
   setValue: function(_flag) {
-    if (null === _flag || undefined === _flag) {
+    if (!_flag && _flag !== false) {
       _flag = false;
     }
     this.base(_flag);
   },
   
-  refresh: function(){
-    this.base();
-    this._updateValidatorState();
-  },
-  
-  // Private method. Toggles the validator status.
-  _updateValidatorState: function() {
-    var _x=0, _y=0;
-    
-    this.setStyle('background-image',"url('"+this.getThemeGfxFile('validator.png')+"')");
-    this.setStyle('background-repeat','no-repeat');
-    
-    if(this.enabled==false){ _y = -21; }
-    if(this.value==true){
-      _x = -21;
-      _title = '';
-    } else {
-      _title = this.value;
-    }
-    
-    ELEM.setAttr(this.elemId,'title',_title);
-    
-    this.setStyle('background-position',_x+'px '+_y+'px');
+  refreshValue: function(){
+    var _this = this,
+        _value = _this.value,
+        _trueValue = _value === true,
+        _x = _trueValue?-21:0,
+        _y = _this.enabled?0:-21,
+        _title = _trueValue?'':_value,
+        _setStyle = ELEM.setStyle,
+        _elemId = _this.elemId;
+    _setStyle(_elemId,'background-repeat','no-repeat');
+    ELEM.setAttr(_elemId,'title',_title);
+    _setStyle(_elemId,'background-position',_x+'px '+_y+'px');
   }
 
   
