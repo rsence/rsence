@@ -120,6 +120,7 @@ HValueManagerClass = HClass.extend({
       _thisView = _valViews[_viewNum];
       _thisView.valueObj = new HDummyValue(0,_thisVal.value);
     }
+    _valViews = [];
     this.values[_id] = null;
   },
   
