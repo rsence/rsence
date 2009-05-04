@@ -214,6 +214,8 @@ $config = {
   ## Session-related settings
   :session_conf => {
     
+    :mysql_backend => true,
+    
     ## The comment string in the session cookie
     :ses_cookie_comment => "Riassence Core session key (just for your convenience)",
     
@@ -300,6 +302,11 @@ $config = {
         :uri   => '/'
       }
     }
+  },
+  
+  :daemon => {
+    :pid_fn => File.join(PIDPATH, "rsence.pid"),
+    :log_fn => File.join(LOGPATH, "rsence")
   }
   
 }
