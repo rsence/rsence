@@ -89,10 +89,10 @@ module Daemon
   
   class Base
     def self.pid_fn
-      File.join(PIDPATH, "rsence.pid")
+      $config[:daemon][:pid_fn]
     end
     def self.log_fn
-      File.join(LOGPATH, "rsence")
+      $config[:daemon][:log_fn]
     end
     def self.daemonize
       Controller.daemonize(self)
