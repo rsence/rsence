@@ -59,8 +59,11 @@ class SessionStorage
     @config = $config[:session_conf]
     
     # Check database connectivity and load stored sessions from the database
-    
-    @mysql_fail = (not db_init_mysql())
+    if @config[:mysql_backend]
+      @mysql_fail = (not db_init_mysql())
+    else
+      @mysql_fail = true
+    end
     
     @int_counter = 0 if @mysql_fail
     
