@@ -48,7 +48,17 @@ class Main < Plugin
       # built-in support for signing out, deletes the
       # server-side session and reloads the page
       if virtual_uri == '/sign_out'
-        msg.reply( 'HTransporter.stop();location.href="/";if(BROWSER_TYPE.safari){reloadTimeout=setTimeout("location.reload(true);",100);};' )
+        msg.reply( %{
+          HTransporter.stop();
+          location.href="/";
+        } )
+        #
+        # Should not be required on recent safari versions
+        #
+        #  if(BROWSER_TYPE.safari){
+        #    reloadTimeout=setTimeout("location.reload(true);",100);
+        #  }
+        #
         msg.expire_session()
       end
       
