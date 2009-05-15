@@ -15,6 +15,7 @@ InflationCalc = HApplication.extend({
         HStringView.nu( HRect.nu(260,152,280,175),this,{value:'%'});
         HSlider.extend({
           setValue: function(value){
+            if(isNaN(value)){return;}
             this.base(Math.round(value*10)/10);
           }
         }).nu(HRect.nu(270,150,410,170),this,{valueObj:this.app.values.percent,minValue:-20,maxValue:20});
