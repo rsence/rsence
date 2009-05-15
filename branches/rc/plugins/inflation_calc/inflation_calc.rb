@@ -8,11 +8,19 @@ class InflationCalc < Plugin
       years = 0-years
       ses[:years].set(msg,years)
     end
-    rate = 1-(percent*0.01)
     if years > 100
       years = 100
       ses[:years].set(msg,100)
     end
+    if percent > 20
+      percent = 20
+      ses[:percent].set(msg,20)
+    end
+    if percent < -20
+      percent = -20
+      ses[:percent].set(msg,-20)
+    end
+    rate = 1-(percent*0.01)
     result_future = []
     result_past   = []
     calc_future = money
