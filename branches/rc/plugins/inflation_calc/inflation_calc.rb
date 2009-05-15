@@ -4,21 +4,33 @@ class InflationCalc < Plugin
     percent = ses[:percent].data.to_f
     money = ses[:money].data.to_i
     years = ses[:years].data.to_i
-    if years < 0
-      years = 0-years
+    money_max =  100_000_000_000_000
+    money_min = -100_000_000_000_000
+    if money < money_min
+      money = money_min
+      ses[:money].set(msg,money)
+    elsif money > money_max
+      money = money_max
+      ses[:money].set(msg,money)
+    end
+    years_min = 1
+    years_max = 100
+    if years < years_min
+      years = years_min
+      ses[:years].set(msg,years)
+    elsif years > years_max
+      years = years_max
       ses[:years].set(msg,years)
     end
-    if years > 100
-      years = 100
-      ses[:years].set(msg,100)
+    percent_min = -20
+    percent_max = 20
+    if percent > percent_max
+      percent = percent_max
+      ses[:percent].set(msg,percent)
     end
-    if percent > 20
-      percent = 20
-      ses[:percent].set(msg,20)
-    end
-    if percent < -20
-      percent = -20
-      ses[:percent].set(msg,-20)
+    if percent < percent_min
+      percent = percent_min
+      ses[:percent].set(msg,percent)
     end
     rate = 1-(percent*0.01)
     result_future = []

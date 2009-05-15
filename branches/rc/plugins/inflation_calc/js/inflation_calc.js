@@ -6,10 +6,9 @@ InflationCalc = HApplication.extend({
       flexRight: true, flexBottom: true,
       drawSubviews: function(){
         this.setStyle('background-color','#ccc');
-        this.setStyle('overflow','auto');
         HStringView.nu( HRect.nu(80,20,400,120),this,{value:'<h1>Inflation calculator</h1>'});
         HStringView.nu( HRect.nu(80,122,220,145),this,{value:'<b>Current value:</b>'});
-        HTextControl.nu(HRect.nu(220,120,280,140),this,{valueObj:this.app.values.money,events:{textEnter:true}});
+        HTextControl.nu(HRect.nu(220,120,330,140),this,{valueObj:this.app.values.money,events:{textEnter:true}});
         HStringView.nu( HRect.nu(80,152,220,175),this,{value:'<b>Inflation rate:</b>'});
         HTextControl.nu(HRect.nu(220,150,260,170),this,{valueObj:this.app.values.percent,events:{textEnter:true}});
         HStringView.nu( HRect.nu(260,152,280,175),this,{value:'%'});
@@ -20,7 +19,7 @@ InflationCalc = HApplication.extend({
           }
         }).nu(HRect.nu(270,150,410,170),this,{valueObj:this.app.values.percent,minValue:-20,maxValue:20});
         HStringView.nu( HRect.nu(80,182,220,205),this,{value:'<b>Number of years:</b>'});
-        HTextControl.nu(HRect.nu(220,180,280,200),this,{valueObj:this.app.values.years,events:{textEnter:true}});
+        HTextControl.nu(HRect.nu(220,180,260,200),this,{valueObj:this.app.values.years,events:{textEnter:true}});
         HStringView.nu( HRect.nu(80,220,200,240),this,{value:'<b>Future value:</b>'});
         HStringView.nu( HRect.nu(280,220,400,240),this,{value:'<b>Past value:</b>'});
         var SimpleTable = HControl.extend({
@@ -28,11 +27,16 @@ InflationCalc = HApplication.extend({
           drawSubviews: function(){
             this.setStyle('background-color','#eee');
             this.setStyle('overflow','auto');
+            this.setStyle('overflow-y','scroll');
             this.setStyle('border','1px solid #999');
             this.setStyle('font-size','11px');
             this.setStyle('font-family','arial,sans-serif');
             this.setStyle('text-align','right');
+            this.setStyle('line-height','20px');
+            this.setStyle('vertical-align','middle');
           },
+          leftColStyle: 'position:absolute;display:block;left:0px;width:30px;padding-right:8px;height:20px;',
+          rightColStyle: 'position:absolute;overflow:hidden;text-overflow:ellipsis;display:block;border-left:1px solid #ccc;left:38px;padding-right:6px;width:90px;height:20px;',
           refreshTableElems: function(){
             if(this['tableElems']===undefined){
               this.tableElems = [];
@@ -44,9 +48,9 @@ InflationCalc = HApplication.extend({
             for(;i<maxLen;i++){
               if(i >= tableElemsLen){
                 elemId_col1 = ELEM.make(this.elemId);
-                ELEM.setCSS(elemId_col1,'position:absolute;display:block;left:0px;width:30px;height:20px;');
+                ELEM.setCSS(elemId_col1,this.leftColStyle);
                 elemId_col2 = ELEM.make(this.elemId);
-                ELEM.setCSS(elemId_col2,'position:absolute;display:block;border-left:1px solid #ccc;left:38px;width:55px;height:20px;');
+                ELEM.setCSS(elemId_col2,this.rightColStyle);
                 row = [elemId_col1,elemId_col2];
                 this.tableElems[i] = row;
               }
@@ -59,19 +63,21 @@ InflationCalc = HApplication.extend({
           },
           refreshValue: function(){
             this.refreshTableElems();
-            var row, i=0;
+            var row, i=0, colors=['#eee','#ddd'];
             for(;i<this.value.length;i++){
               row = this.tableElems[i];
               ELEM.setStyle(row[0],'top',(i*20)+'px');
               ELEM.setStyle(row[1],'top',(i*20)+'px');
+              ELEM.setStyle(row[0],'background-color',colors[i%2]);
+              ELEM.setStyle(row[1],'background-color',colors[i%2]);
               ELEM.setHTML(row[0],i+1);
               ELEM.setHTML(row[1],this.value[i]);
             }
           }
         });
-        SimpleTable.nu(HRect.nu( 80,240,200,500),this,{valueObj:this.app.values.result_future});
-        SimpleTable.nu(HRect.nu(280,240,400,500),this,{valueObj:this.app.values.result_past  });
+        SimpleTable.nu(HRect.nu( 80,240,230,500),this,{valueObj:this.app.values.result_future});
+        SimpleTable.nu(HRect.nu(250,240,400,500),this,{valueObj:this.app.values.result_past  });
       }
-    }).nu(HRect.nu(0,0,1,1),this);
+    }).nu(HRect.nu(0,0,408,508),this);
   }
 });
