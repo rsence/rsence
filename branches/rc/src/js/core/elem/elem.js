@@ -97,15 +97,20 @@ ELEM = {
   // adds an element reference
   // returns its id
   _add: function(_elem){
-    var _id, _this, _elements;
-    _this = ELEM;
-    _elements = _this._elements;
-    
-    // Adds the element to the cache
-    _elements.push(_elem);
-    // Get cache size == serial id
-    _id = _elements.length-1;
-    
+    var _id,
+        _this = ELEM,
+        _elements = _this._elements,
+        _hasFreeElemIds = (_this._freeElemIds.length!==0);
+    if(_hasFreeElemIds){
+      _id = _this._freeElemIds.pop();
+      _elements[_id] = _elem;
+    }
+    else {
+      // Adds the element to the cache
+      _elements.push(_elem);
+      // Get cache size == serial id
+      _id = _elements.length-1;
+    }
     return _id;
   },
   
