@@ -40,6 +40,9 @@ HValueResponder = HClass.extend({
   
   valueDiffers: function(_value){
     if((_value instanceof Array) && (this.value instanceof Array)){
+      if(_value.length != this.value.length){
+        return true;
+      }
       for(var i=0;i<_value.length;i++){
         if(_value[i] !== this.value[i]){
           return true;
