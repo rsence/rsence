@@ -88,12 +88,20 @@ HControl = HView.extend({
       _this.isinherited = false;
     }
     
-    _this.setLabel(_label);
+    // Initial visibility.
+    if(_options.visible) {
+      _this.show();
+    }
+    else {
+      _this.hide();
+    }
     
+    _this.setLabel(_label);
     _this.setEvents(_events);
+    _this.setEnabled(_options.enabled);
     
     if(_options.valueObj){
-      _this.valueObj = _options.valueObj;
+      _options.valueObj.bind(_this);
     }
     if(!_this.valueObj) {
       _this.valueObj = HDummyValue.nu();
@@ -103,18 +111,6 @@ HControl = HView.extend({
     }
     if(_isValueRange) {
       _this.setValueRange(this.value, _options.minValue, _options.maxValue);
-    }
-    
-    _this.setEnabled(_options.enabled);
-    
-    _this.action = _options.action;
-    
-    // Initial visibility.
-    if(_options.visible) {
-      _this.show();
-    }
-    else {
-      _this.hide();
     }
     
     if(!_this.isinherited) {
