@@ -21,7 +21,7 @@ InflationCalc = HApplication.extend({
         HStringView.nu( HRect.nu(80,182,220,205),this,{value:'<b>Number of years:</b>'});
         HTextControl.nu(HRect.nu(220,180,260,200),this,{valueObj:this.app.values.years,events:{textEnter:true}});
         HStringView.nu( HRect.nu(80,220,200,240),this,{value:'<b>Future value:</b>'});
-        HStringView.nu( HRect.nu(280,220,400,240),this,{value:'<b>Past value:</b>'});
+        HStringView.nu( HRect.nu(250,220,400,240),this,{value:'<b>Past value:</b>'});
         var SimpleTable = HControl.extend({
           flexBottom: true, flexBottomOffset: 8,
           drawSubviews: function(){
