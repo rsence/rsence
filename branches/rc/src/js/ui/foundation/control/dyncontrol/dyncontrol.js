@@ -105,16 +105,6 @@ HDynControl = HControl.extend({
     }
     _this.drawRect();
   },
-  draw: function(){
-    var _isDrawn = this.drawn;
-    this.base();
-    if(!_isDrawn){
-      this.buildStructure();
-    }
-  },
-  buildStructure: function(){
-    
-  },
   _diffPoint: function(x,y){
     return this._startPoint.subtract(x,y);
   },
