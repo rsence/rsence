@@ -549,7 +549,7 @@ HView = HClass.extend({
   * See also:
   *  <setStyle> <styleForPart>
   **/
-  setStyleForPart: function(_partName, _name, _value, _cacheOverride) {
+  setStyleOfPart: function(_partName, _name, _value, _cacheOverride) {
     if (!this.markupElemIds[_partName]) {
       console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return;
