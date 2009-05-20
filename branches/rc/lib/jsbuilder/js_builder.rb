@@ -115,6 +115,15 @@ class JSBuilder
     # those specified in the @reserved_names array
     @jscompress = JSCompress.new( @reserved_names )
     
+    begin
+      require 'rubygems'
+      require 'cssmin'
+      @css_min = true
+    rescue LoadError => e
+      puts "cssmin not installed. install cssmin (gem install cssmin) to improve the css minifiying."
+      @css_min = false
+    end
+    
     # HTMLMin compresses css and html by removing whitespace
     @html_min = HTMLMin.new
     
@@ -165,7 +174,26 @@ class JSBuilder
     end
     return html_data
   end
-  alias cp_css cp_html
+  
+  def cp_css( src_path, dst_path )
+    
+    css_data = read_file( src_path )
+    unless DEBUG_MODE
+      unless $_NO_WHITESPACE_REMOVAL
+        css_data = @html_min.minimize( css_data )
+        if @css_min
+          css_data = CSSMin.minify( css_data )
+        end
+      end
+    end
+    
+    save_file( dst_path, css_data )
+    unless $_NO_GZIP
+      gz_css = gzip_string( css_data )
+      save_file( dst_path+'.gz', gz_css )
+    end
+    return css_data
+  end
   
   def gzip_string( string )
     gz_string = GZString.new('')
@@ -347,8 +375,8 @@ class JSBuilder
   
   def minimize_data
     unless ARGV.include? '-nv'
-      puts  "Package.......................:   Size |  Compressed |  GZIPed"
-      puts  "                              :        |             |"
+      puts  "JS Package....................:  Original |   Minimized |  Compressed"
+      puts  "                              :           |             |"
     end
     @destination_files.each_key do | package_name |
       jsc_path = File.join( @js_dst_dir, package_name+'.js')
@@ -398,7 +426,15 @@ class JSBuilder
       percent1 = '-'
       percent2 = '-'
     end
-    puts  "#{package_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(6)} | #{jsc_size.to_s.rjust(6)} #{percent1.ljust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.ljust(4)}"
+    if jsc_size == -1
+      jsc_size = ''
+      percent1 = ''
+    end
+    if gz_size == -1
+      gz_size  = ''
+      percent2 = ''
+    end
+    puts  "#{package_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(9)} | #{jsc_size.to_s.rjust(6)} #{percent1.rjust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.rjust(4)}"
   end
   
   def pre_convert(jsc_data)
@@ -460,8 +496,8 @@ class JSBuilder
   def build_themes
     unless ARGV.include? '-nv'
       puts
-      puts  "Theme name and part...........:   Orig |  Compressed |  GZIPed"
-      puts  "                              :        |             |"
+      puts  "Theme name and part...........:  Original |   Minimized |  Compressed"
+      puts  "                              :           |             |"
     end
     # compile "all-in-one" css and html resources
     @theme_names.each do |theme_name|
@@ -525,7 +561,7 @@ class JSBuilder
       
       unless ARGV.include? '-nv'
         print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.size )
-        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], 0, 0 )
+        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
       end
       
     end
