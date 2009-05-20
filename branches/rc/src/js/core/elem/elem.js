@@ -320,7 +320,7 @@ ELEM = {
     if (_value == 1 && _this._is_ie) {
       _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter', true).replace(/alpha\([^\)]*\)/gi,''));
     } else {  
-      if(_value < 0.00001){
+      if(_value < 0.01){
         _value = 0;
       }
       if(_this._is_ie) {
@@ -705,7 +705,7 @@ ELEM = {
       /*  5 */   "_currTodo=_styleTodo.splice(0,_loopMaxP);",
       /*  6 */   "for(_cid=0;_cid!=_loopMaxP;_cid++){",
       /*  7 */     "_key=_currTodo.pop();_this._flushStylCount++;",
-      /*  8 */     "if(_key=='opacity'){_retval=_this.getOpacity(_id,_cached[_key]);}else{",
+      /*  8 */     "if(_key=='opacity'){_retval=_this.setOpacity(_id,_cached[_key]);}else{",
             /*  idx:  9 for ie */
 
                      //"alert(_cached[_key]);eval('_elemS.'+_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4})+'=\"'+_cached[_key]+'\";');}}};",
