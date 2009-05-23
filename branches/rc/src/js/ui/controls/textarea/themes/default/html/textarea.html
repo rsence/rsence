@@ -1,11 +1,18 @@
-<div class="textarea">
-  <div class="state"></div>
-  <img class="bg" id="bg#{ _ID }" width="#{_WIDTH-4}" height="#{_HEIGHT-4}" alt="" src="#{this.getThemeGfxFile('scaledbg-gradient-light.png')}" />
-  <div id="corner" class="corner-nw">&nbsp;</div>
-  <div id="corner" class="corner-ne">&nbsp;</div>
-  <div id="corner" class="corner-sw">&nbsp;</div>
-  <div id="corner" class="corner-se">&nbsp;</div>
-  <textarea id="textcontrol#{_ID}"></textarea>
+<div class="textcontrol_bg"></div>
+
+<div class="textcontrol_n"></div>
+<div class="textcontrol_s"></div>
+<div class="textcontrol_w"></div>
+<div class="textcontrol_e"></div>
+
+<div class="textcontrol_nw"></div>
+<div class="textcontrol_ne"></div>
+<div class="textcontrol_se"></div>
+<div class="textcontrol_sw"></div>
+
+<div id="label#{_ID}" title="#{this.label}" class="textcontrol_input_parent">
+  <textarea class="textcontrol_input" 
+    onfocus="HSystem.views[#{this.viewId}].textFocus();" 
+    onblur="HSystem.views[#{this.viewId}].textBlur();" 
+    id="value#{_ID}">#{this.value}</textarea>
 </div>
-#{this.addResizeableElement( ['bg'+_ID, -4, -4] )}
-#{this.addResizeableElement( ['textcontrol'+_ID, -6, -4] )}
