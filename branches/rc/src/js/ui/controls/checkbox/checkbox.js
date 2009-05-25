@@ -44,6 +44,10 @@ HCheckbox = HButton.extend({
     this.setValue(!this.value);
   },
   
+  setStyle: function(_name,_value,_bypass){
+    this.setStyleOfPart('label',_name,_value,_bypass);
+  },
+  
   // Toggles the checked/unchecked css-class status
   // according to the trueness of the value.
   refreshValue: function(){

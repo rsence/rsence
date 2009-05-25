@@ -46,7 +46,7 @@
 }
 
 .checkbox_label {
-  left: 24px; right: 0px; top: 0px;
+  left: 24px; right: 0px; top: 2px;
   height: 20px; line-height: 21px;
   text-align: left; vertical-align: middle;
   font-family: Arial, sans-serif;
