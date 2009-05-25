@@ -117,7 +117,7 @@ HTextControl = HControl.extend({
     if (!this['markupElemIds']||!this.markupElemIds['value']) {
       return;
     }
-    ELEM.setStyleOfPart('value', _name, _value, _cacheOverride);
+    this.setStyleOfPart('value', _name, _value, _cacheOverride);
   },
   
 /** method: setEnabled
