@@ -97,7 +97,7 @@ EVENT = {
   // disable to improve performance when no droppability checks are needed:
   enableDroppableChecks: true,
   startDroppable: function(){
-    var _this = ELEM;
+    var _this = EVENT;
     _this.hovered=[];        // items currently under the mouse cursor
     _this.hoverInterval=50;  // 50 means send hover events at most with 50ms intervals
     _this.hoverTimer=new Date().getTime(); // Time since last hover event triggered
