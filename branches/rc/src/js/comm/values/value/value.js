@@ -57,7 +57,9 @@ HValue = HClass.extend({
     this.type  = '[HValue]';
     this.value = _value;
     this.views = [];
-    HVM.add(_id,this);
+    if(_id){
+      HVM.add(_id,this);
+    }
   },
   
   die: function(){
@@ -66,7 +68,9 @@ HValue = HClass.extend({
       _tryObj.setValueObj( HDummyValue.nu() );
       this.views.splice(_viewNum);
     }
-    HVM.del(this.id);
+    if(this.id){
+      HVM.del(this.id);
+    }
   },
   
 /** method: set
@@ -82,7 +86,9 @@ HValue = HClass.extend({
   set: function(_value){
     if(this.differs(_value)){
       this.value = _value;
-      HVM.changed(this);
+      if(this.id){
+        HVM.changed(this);
+      }
       this.refresh();
     }
   },
