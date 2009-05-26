@@ -95,15 +95,16 @@ EVENT = {
   altKeyDown:5,ctrlKeyDown:6,shiftKeyDown:7,
   
   // disable to improve performance when no droppability checks are needed:
-  enableDroppableChecks:true,
+  enableDroppableChecks: true,
   startDroppable: function(){
+    var _this = ELEM;
     _this.hovered=[];        // items currently under the mouse cursor
     _this.hoverInterval=50;  // 50 means send hover events at most with 50ms intervals
     _this.hoverTimer=new Date().getTime(); // Time since last hover event triggered
   },
   
   start: function() {
-    var _globalEventTargetElement, _eventMap, i, _this=EVENT;
+    var _globalEventTargetElement, _eventMap, i=0, _this=EVENT;
     if(ELEM._is_ie){_globalEventTargetElement=document;}
     else{_globalEventTargetElement=window;}
     _eventMap = [
@@ -118,7 +119,7 @@ EVENT = {
       ['resize',      EVENT.resize],
       ['mousewheel',  EVENT.mouseWheel]
     ];
-    for(i=0;i!=_eventMap.length;i++){
+    for(;i!=_eventMap.length;i++){
       Event.observe(_globalEventTargetElement,_eventMap[i][0],_eventMap[i][1]);
     }
     if(window.addEventListener){
