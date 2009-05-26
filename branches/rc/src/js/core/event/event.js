@@ -93,6 +93,15 @@ EVENT = {
   status:[false,false,0,0,[],false,false,false],
   button1:0,button2:1,crsrX:2,crsrY:3,keysDown:4,
   altKeyDown:5,ctrlKeyDown:6,shiftKeyDown:7,
+  
+  // disable to improve performance when no droppability checks are needed:
+  enableDroppableChecks:true,
+  startDroppable: function(){
+    _this.hovered=[];        // items currently under the mouse cursor
+    _this.hoverInterval=50;  // 50 means send hover events at most with 50ms intervals
+    _this.hoverTimer=new Date().getTime(); // Time since last hover event triggered
+  },
+  
   start: function() {
     var _globalEventTargetElement, _eventMap, i, _this=EVENT;
     if(ELEM._is_ie){_globalEventTargetElement=document;}
@@ -123,9 +132,11 @@ EVENT = {
     _this.coordListeners=[]; // global mouse movement listeners
     _this.focusOptions={};   // keep property lists by elemId
     _this.dragItems=[];      // elemId of currently dragged items
-    _this.hovered=[];        // items currently under the mouse cursor
-    _this.hoverInterval=50;  // 50 means send hover events at most with 50ms intervals
-    _this.hoverTimer=new Date().getTime(); // Time since last hover event triggered
+    
+    if(_this.enableDroppableChecks){
+      _this.startDroppable();
+    }
+    
     _this.topmostDroppable=null; // the currently hovered element accepting droppable items
     _this.textEnterCtrls=[];  // ID of controls with textfields
     // position caching benefits performance, see coordCacheFlush
@@ -284,43 +295,48 @@ EVENT = {
       _currentlyDragging=true;
     }
     
-    // Check which items are under the mouse coordinates now.
-    if(new Date().getTime()>_this.hoverTimer+_this.hoverInterval) {
-      // sends mouseMove pseudo-events to ctrls interested
-      for(i=0;i!=_this.coordListeners.length;i++){
-        _elemId=_this.coordListeners[i];_ctrl=_this.focusOptions[_elemId].ctrl;
-        _ctrl.mouseMove(x,y);
+    if(_this.enableDroppableChecks){
+      // Check which items are under the mouse coordinates now.
+      if(new Date().getTime()>_this.hoverTimer+_this.hoverInterval) {
+        // sends mouseMove pseudo-events to ctrls interested
+        for(i=0;i!=_this.coordListeners.length;i++){
+          _elemId=_this.coordListeners[i];_ctrl=_this.focusOptions[_elemId].ctrl;
+          _ctrl.mouseMove(x,y);
+        }
+        if(_this.enableDroppableChecks){
+          _this._updateHoverItems();
+        }
+        // sends drag&drop pseudo-events
+        var _wasTopmostDroppable;
+        for(i=0;i!=_this.dragItems.length;i++){
+          // Find the current droppable while dragging.
+          _wasTopmostDroppable=_this.topmostDroppable;
+          _this.topmostDroppable=null;
+          _elemId=_this.dragItems[i];_ctrl=_this.focusOptions[_elemId].ctrl;
+          
+          // Check for a drop target from the currently hovered items
+          var _hoverIndex, _dropCtrl;
+          for(j=0;j!=_this.hovered.length;j++){
+            _hoverIndex=_this.hovered[j];
+            if(_hoverIndex!=_elemId&&_this.focusOptions[_hoverIndex].ctrl){
+              _dropCtrl=_this.focusOptions[_hoverIndex].ctrl;
+              if(!_this.topmostDroppable|| // First time
+                _dropCtrl.zIndex()>_this.topmostDroppable.zIndex() || // Z beaten
+                _dropCtrl.supr===_this.topmostDroppable){ // subview
+                if(_this.focusOptions[_dropCtrl.elemId].droppable){
+                  _this.topmostDroppable=_dropCtrl; // Finally, the item must accept drop events.
+          } } } }
+          
+          // Topmost item has changed, send onHoverStart or onHoverEnd to the droppable.
+          if(_wasTopmostDroppable!=_this.topmostDroppable){
+            if(_wasTopmostDroppable){_wasTopmostDroppable.onHoverEnd(_ctrl);}
+            if(_this.topmostDroppable){_this.topmostDroppable.onHoverStart(_ctrl);}
+        } }
+        _this.hoverTimer = new Date().getTime();
       }
-      _this._updateHoverItems();
-      // sends drag&drop pseudo-events
-      var _wasTopmostDroppable;
-      for(i=0;i!=_this.dragItems.length;i++){
-        // Find the current droppable while dragging.
-        _wasTopmostDroppable=_this.topmostDroppable;
-        _this.topmostDroppable=null;
-        _elemId=_this.dragItems[i];_ctrl=_this.focusOptions[_elemId].ctrl;
-        // Check for a drop target from the currently hovered items
-        var _hoverIndex, _dropCtrl;
-        for(j=0;j!=_this.hovered.length;j++){
-          _hoverIndex=_this.hovered[j];
-          if(_hoverIndex!=_elemId&&_this.focusOptions[_hoverIndex].ctrl){
-            _dropCtrl=_this.focusOptions[_hoverIndex].ctrl;
-            if(!_this.topmostDroppable|| // First time
-              _dropCtrl.zIndex()>_this.topmostDroppable.zIndex() || // Z beaten
-              _dropCtrl.supr===_this.topmostDroppable){ // subview
-              if(_this.focusOptions[_dropCtrl.elemId].droppable){
-                _this.topmostDroppable=_dropCtrl; // Finally, the item must accept drop events.
-        } } } }
-        
-        // Topmost item has changed, send onHoverStart or onHoverEnd to the droppable.
-        if(_wasTopmostDroppable!=_this.topmostDroppable){
-          if(_wasTopmostDroppable){_wasTopmostDroppable.onHoverEnd(_ctrl);}
-          if(_this.topmostDroppable){_this.topmostDroppable.onHoverStart(_ctrl);}
-      } }
-      _this.hoverTimer = new Date().getTime();
-    }
-    else {
-      _this._lastCoordFlushTimeout=setTimeout('EVENT.flushMouseMove('+x+','+y+');',_this.hoverInterval);
+      else {
+        _this._lastCoordFlushTimeout=setTimeout('EVENT.flushMouseMove('+x+','+y+');',_this.hoverInterval);
+      }
     }
     return _currentlyDragging;
   },
@@ -404,7 +420,9 @@ EVENT = {
       document.onselectstart=function(){return false;};
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
-    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    if(this.enableDroppableChecks){
+      if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    }
     return true;
   },
   
@@ -438,7 +456,9 @@ EVENT = {
       if(_this.focusOptions[_clickElementIds[i]].ctrl.click(x,y,_isLeftButton)){_stopEvent--;}
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
-    if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    if(_this.enableDroppableChecks){
+      if((_stopEvent==0)&&(_this.hovered.length!=0)&&(_newActiveControl&&(_newActiveControl.textElemId===false))){Event.stop(e);}
+    }
     //if(_this.hovered.length!=0){Event.stop(e);}
     return true;
   },
@@ -486,8 +506,10 @@ EVENT = {
       _ctrl.endDrag(x,y);
       _didEndDrag=true;
       // If the mouse slipped off the dragged item before the mouse button was released, blur the item manually
-      _this._updateHoverItems();
-      if (_this.hovered.indexOf(_elemId)==-1){_this.blur(_ctrl);}
+      if(_this.enableDroppableChecks){
+        _this._updateHoverItems();
+        if (_this.hovered.indexOf(_elemId)==-1){_this.blur(_ctrl);}
+      }
       // If there is a drop target in the currently hovered items, send onDrop to it.
       if (_this.topmostDroppable) {
         // Droppable found at the release point.
