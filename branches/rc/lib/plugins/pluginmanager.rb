@@ -281,7 +281,8 @@ class PluginManager
   
   ### Check if each plugin handles +method+, and if so, call it, passing +args+ as a parameter
   def delegate(method, *args)
-    @@plugins.values.uniq.each do |plugin|
+    @@plugins.keys.sort.each do |plugin_name|
+      plugin = @@plugins[plugin_name]
       puts "delegating method #{method.inspect} to plugin #{plugin.names.inspect}" if ARGV.include?('--trace-delegate')
       if plugin.respond_to?(method)
         plugin.send( method, *args )

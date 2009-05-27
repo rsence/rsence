@@ -138,7 +138,7 @@ module Daemon
       when 'stop'
         self.stop(daemon)
       when 'restart'
-        self.stop(daemon)
+        self.stop(daemon,true)
         self.start(daemon)
       when 'save'
         self.save(daemon)
@@ -191,18 +191,24 @@ module Daemon
             exit
           end
         end
+        Signal.trap('HUP') {
+          daemon.restart
+        }
         daemon.start
       end
-      sleep 1
-      if self.status(daemon)
-        puts "Riassence Core is running now."
-      else
+      timeout = Time.now + 10
+      sleep 0.01 until self.status(daemon) or timeout < Time.now
+      
+      if timeout < Time.now
         puts "Riassence Core did not start, please check the logfile."
+      else
+        puts "Riassence Core is running now."
       end
     end
-    def self.save(daemon)
+    def self.save(daemon,is_restart=false)
       if !File.file?(daemon.pid_fn)
         puts "Pid file not found. Is Riassence Core started?"
+        return if is_restart
         exit
       end
       pid = open(daemon.pid_fn,'r').read.to_i
@@ -213,10 +219,11 @@ module Daemon
         puts "Error, no such pid (#{pid}) running"
       end
     end
-    def self.stop(daemon)
-      self.save(daemon)
+    def self.stop(daemon,is_restart=false)
+      self.save(daemon,is_restart)
       if !File.file?(daemon.pid_fn)
         puts "Pid file not found. Is Riassence Core started?"
+        return if is_restart
         exit
       end
       pid = PidFile.recall(daemon)
@@ -233,7 +240,6 @@ end
 
 class HTTPDaemon < Riassence::Server::Daemon::Base
   def self.start
-    
     $config[:filecache]       = FileCache.new
     $FILECACHE   = $config[:filecache]
     $config[:fileserve]       = FileServe.new
@@ -263,24 +269,17 @@ class HTTPDaemon < Riassence::Server::Daemon::Base
     $BROKER      = $config[:broker]
     
     yield $BROKER if block_given?
-    ['INT', 'TERM', 'KILL'].each do |signal|
-      trap(signal) {
-        $PLUGINS.shutdown
-        $SESSION.shutdown
-      }
-    end
-    ['HUP'].each do |signal|
-      trap(signal) {
-        self.stop
-        sleep 1
-        self.start
-      }
-    end
-    # should be daemonized, also should redirect the stdout to log files.
+    
+  end
+  def self.restart
+    self.stop
+    $BROKER = nil
+    $config[:broker] = nil
+    self.start
   end
   def self.stop
-    $PLUGINS.shutdown
-    $SESSION.shutdown
+    $PLUGINS.shutdown if $PLUGINS
+    $SESSION.shutdown if $SESSION
   end
 end
 
