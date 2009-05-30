@@ -41,7 +41,7 @@ JSLoader = HClass.extend({
   
   _fail: function(_resp){
     var _this = this;
-    console.log("failed to load js: "+_this.uri+_jsName+'.js');
+    console.log("failed to load js: "+_resp.url);
   },
   
   load: function(_jsName){
