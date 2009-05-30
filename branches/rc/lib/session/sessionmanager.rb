@@ -346,7 +346,7 @@ class SessionManager < SessionStorage
     ## client needs to be initialized.
     ## The client's ses_id is the server's ses_key.
     if not request.query.has_key?( 'ses_id' )
-      return false
+      return Message.new( request, response )
     else
       
       ## get the ses_key from the request query:
