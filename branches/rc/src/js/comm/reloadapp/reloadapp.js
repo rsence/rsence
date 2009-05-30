@@ -21,79 +21,87 @@
   **/
 
 ReloadApp = HApplication.extend({
-  constructor: function( _windowTitle, _windowMessage, _destinationUrl ){
-    
-    this.base();
-    
-    this._destinationUrl = _destinationUrl;
-    
+  reload: function(){
+    var _url = this._url;
+    if((!_url)||(_url=='/')){
+      window.location.reload(true);
+    }
+    else {
+      window.location.href = _url;
+    }
+  },
+  reset_session: function(){
+    window.location.hash = '/sign_out';
+    window.location.reload(true);
+  },
+  constructor: function( _title, _message, _url ){
+    var _this = this;
+    _this.base();
+    _this._title = _title;
+    _this._message = _message;
+    _this._url = _url;
     var _winWidth  = ELEM.windowSize()[0],
         _winHeight = ELEM.windowSize()[1],
         _halfWidth = parseInt(_winWidth/2,10),
         _halfHeight = parseInt(_winHeight/2,10),
-    
         _alertWidth  = 400,
         _alertHeight = 300,
         _alertX      = _halfWidth - 200,
         _alertY      = _halfHeight - 150;
-    
     if(_alertX<10){_alertX = 10;}
     if(_alertY<10){_alertY = 10;}
-    
-    var _alertRect   = HRect.nu( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight );
-    
-    this._alertWindow = HWindow.nu(
-      _alertRect,
-      this, {
-        label: _windowTitle,
+    HWindow.extend({
+      drawSubviews: function(){
+        var _this = this,
+            _elemId = _this.markupElemIds['subview'],
+            _alertIcon = ELEM.make( _elemId ),
+            _alertTitle = ELEM.make( _elemId ),
+            _alertMessage = ELEM.make( _elemId ),
+            _iconUrl = _this.getThemeGfxFile('reloadapp_warning.png');
+        console.log(_iconUrl);
+        _this.setStyle('font-family','Arial, sans-serif');
+        _this.setStyle('color','#000');
+        _this.setStyle('font-size','13px');
+        ELEM.setCSS(_alertIcon,'position:absolute;left:8px;top:8px;width:48px;height:48px;background-image:url('+_iconUrl+');');
+        ELEM.setCSS(_alertTitle,'position:absolute;left:64px;top:8px;width:300px;height:24px;line-height:24px;vertical-align:middle;text-align:center;font-weight:bold;overflow:hidden;text-overflow:ellipsis;line-wrap:nowrap;');
+        ELEM.setHTML(_alertTitle,_this.app._title);
+        ELEM.setCSS(_alertMessage,'position:absolute;left:64px;top:42px;width:332px;height:186px;border-bottom:1px dotted #999;line-height:17px;vertical-align:middle;overflow:auto;');
+        ELEM.setHTML(_alertMessage,_this.app._message);
+        HButton.extend({
+          click: this.app.reload
+        }).nu(
+          HRect.nu(280, 234, 380, 258 ),
+          _this, {
+            label: 'Reload',
+            events: {
+              click: true
+            }
+          }
+        );
+        HButton.extend({
+          click: this.app.reset_session
+        }).nu(
+          HRect.nu(20, 234, 170, 258 ),
+          _this, {
+            label: 'Reset session',
+            events: {
+              click: true
+            }
+          }
+        );
+      }
+    }).nu(
+      HRect.nu( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight ),
+      _this, {
+        label: _title,
         minSize: [_alertWidth,_alertHeight],
         maxSize: [_alertWidth,_alertHeight],
-        enabled: true
+        enabled: true,
+        closeButton: true,
+        noResize: true
       }
     );
     
-    var _alertMessageTitleBox = HView.nu( HRect.nu( 10, 10, 370, 32 ), this._alertWindow );
-    _alertMessageTitleBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
-    _alertMessageTitleBox.setStyle('font-size','18px');
-    _alertMessageTitleBox.setStyle('font-weight','bold');
-    _alertMessageTitleBox.setStyle('color','#000');
-    _alertMessageTitleBox.setHTML( _windowTitle );
-    
-    var _alertMessageBox = HView.nu( HRect.nu( 10, 48, 370, 230 ), this._alertWindow );
-    _alertMessageBox.setStyle('font-family','Trebuchet MS, Arial, sans-serif');
-    _alertMessageBox.setStyle('font-size','13px');
-    _alertMessageBox.setStyle('overflow','auto');
-    _alertMessageBox.setStyle('color','#000');
-    _alertMessageBox.setHTML( _windowMessage );
-    
-    var _reloadButton = HButton.extend({
-      click: function(){
-        if((!this.app._destinationUrl)||(this.app._destinationUrl=='/')){
-          document.location.reload(true);
-        }
-        else {
-          location.href = this.app._destinationUrl;
-        }
-      }
-    }).nu(
-      HRect.nu(300, 234, 370, 258 ),
-      this._alertWindow,
-      { label: 'Reload', events: {click:true} }
-    );
-    
-    /*
-    var _ignoreButton = HButton.extend({
-      click: function(){
-        HTransporter.syncDelay = HTransporter.restoreSyncDelay;
-        HTransporter.start(HTransporter.url_base);
-        this.app.die();
-      }
-    }).nu(
-      HRect.nu(10, 234, 70, 258 ),
-      this._alertWindow,
-      { label: 'Ignore', events: {click:true} }
-    );
-    */
     HTransporter.stop();
   },
   onIdle: function(){
