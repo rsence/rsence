@@ -132,7 +132,7 @@ HTransporter = HClass.extend({
   },
   
   respond: function(resp){
-    var _respText = resp.responseText,
+    var _respText = resp.X.responseText,
         _this = HTransporter;
     try {
       _this.err_msg = '';
@@ -205,14 +205,16 @@ HTransporter = HClass.extend({
         }
         if(""!=_syncData || _this.pollMode) {
           _this.syncNum++;
-          req_args = {
-            onSuccess: function(resp){_this.respond(resp);},
-            onFailure: function(resp){_this.failure(resp);},
-            method:    'post',
-            postBody:  'ses_id='+_this.ses_id+_this.err_msg+_syncData
-          };
           try{
-            _this.req  = new Ajax.Request( _this.url_base, req_args );
+            COMM.request(
+              _this.url_base, {
+                onSuccess: _this.respond,
+                onFailure: _this.failure,
+                method: 'POST',
+                async: true,
+                body: 'ses_id='+_this.ses_id+_this.err_msg+_syncData
+              }
+            );
           }
           catch(e){
             window.status = 'conn error:'+e;

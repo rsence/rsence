@@ -108,22 +108,18 @@ HThemeManager = HClass.extend({
     if( !_contentType ){
       var _contentType = 'text/html; charset=UTF-8';
     }
-    var _req = new Ajax.Request(_url, {
-      method:    'GET',
-      
-      onSuccess: function( _xhr ) {
-        _result   = _xhr.responseText;
-      },
-      
-      on404:        function(){ HThemeManager._errTemplateNotFound(  _url ); },
-      onFailure:    function(){ HThemeManager._errTemplateFailure(   _url ); },
-      onException:  function(){ HThemeManager._errTemplateException( _url ); },
-      
-      asynchronous: false,
-      contentType:  _contentType
-    });
-    
-    _req.onStateChange();
+    COMM.request(
+      _url, {
+        onSuccess: function( resp ){
+          _result = resp.X.responseText;
+        },
+        on404:        function(resp){ HThemeManager._errTemplateNotFound(  resp.url ); },
+        onFailure:    function(resp){ HThemeManager._errTemplateFailure(   resp.url ); },
+        onException:  function(resp){ HThemeManager._errTemplateException( resp.url ); },
+        method: 'GET',
+        async: false
+      }
+    );
     
     return _result;
   },

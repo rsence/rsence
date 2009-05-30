@@ -36,9 +36,14 @@ JSLoader = HClass.extend({
     if(_this._okayed){
       return;
     }
-    eval(_resp.responseText);
+    eval(_resp.X.responseText);
     _this._okayed = true;
   }, 
+  
+  _fail: function(_resp){
+    var _this = this;
+    console.log("failed to load js: "+_this.uri+_jsName+'.js');
+  },
   
   load: function(_jsName,_fullURL){
     var _this = this;
@@ -48,14 +53,14 @@ JSLoader = HClass.extend({
     if (_fullURL) {
       document.write('<scr'+'ipt type="text/javascript" src="'+_jsName+'"><'+'/scr'+'ipt>');
     } else {
-      var _req_args = {
-        onSuccess:    function(resp){_this._okay(resp);},
-        onFailure:    function(resp){window.status="failed to load js: "+_this.uri+_jsName+'.js';},
-        method:       'get',
-        asynchronous: false
-      };
-      var _url = this.uri+_jsName+'.js';
-      _this._req = new Ajax.Request( _url, _req_args );
+      COMM.request(
+        this.uri+_jsName+'.js', {
+          onSuccess: _this._okay,
+          onFailure: _this._fail,
+          method: 'GET',
+          async: false
+        }
+      );
       _this._loadedJS.push(_jsName);
       _this._okayed = false;
     }

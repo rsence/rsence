@@ -38,8 +38,6 @@ $_PACKAGES = {
     'common',
     
     # The "Ajax" object
-    'ajax',
-    
     # The ELEM handler
     'elem',
     
@@ -50,7 +48,7 @@ $_PACKAGES = {
     'sha',
     
     # Server communication package
-    'transporter','valuemanager','value','jsloader',
+    'comm','transporter','valuemanager','value','jsloader',
     
     # Multi-control-single-value controller
     'valuematrix',
@@ -69,7 +67,7 @@ $_PACKAGES = {
   
   # Stand-alone Server communication package
   'comm' => [
-    'class','ajax',
+    'class','comm',
     'transporter','valuemanager','value','jsloader'
   ],
   
@@ -130,8 +128,6 @@ if ARGV.empty?
 else
   $_REL_PATH = ARGV[0]
 end
-
-$_HTMLTIDY_CONF_PATH= File.join(BASEPATH,'conf','htmltidy.config')
 
 # REPLACEMENT "COMPRESSION" PREFIX
 $_REPL_PREFIX= '_'
