@@ -27,7 +27,6 @@ JSLoader = HClass.extend({
     var _this = this;
     _this._loadedJS = [];
     _this.uri  = _uri;
-    _this._req = null;
     _this._okayed = false;
   },
   
@@ -45,30 +44,26 @@ JSLoader = HClass.extend({
     console.log("failed to load js: "+_this.uri+_jsName+'.js');
   },
   
-  load: function(_jsName,_fullURL){
+  load: function(_jsName){
     var _this = this;
-    if((_this._loadedJS.indexOf(_jsName)!=-1) && (_fullURL === undefined)) {
+    if((_this._loadedJS.indexOf(_jsName)!=-1)) {
       return;
     }
-    if (_fullURL) {
-      document.write('<scr'+'ipt type="text/javascript" src="'+_jsName+'"><'+'/scr'+'ipt>');
-    } else {
-      COMM.request(
-        this.uri+_jsName+'.js', {
-          onSuccess: _this._okay,
-          onFailure: _this._fail,
-          method: 'GET',
-          async: false
-        }
-      );
-      _this._loadedJS.push(_jsName);
-      _this._okayed = false;
-    }
+    COMM.request(
+      _this.uri+_jsName+'.js', {
+        onSuccess: _this._okay,
+        onFailure: _this._fail,
+        method: 'GET',
+        async: false
+      }
+    );
+    _this._loadedJS.push(_jsName);
+    _this._okayed = false;
   }
   
 });
 
-RUN("jsLoader = new JSLoader('/H/'+HCLIENT_REV+'/js/');");
+RUN("jsLoader = JSLoader.nu('/H/'+HCLIENT_REV+'/js/');");
 
 
 
