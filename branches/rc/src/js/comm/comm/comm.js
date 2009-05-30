@@ -47,7 +47,7 @@ eval(
 // converts arrays to valid query strings.
 // example:
 //    ['productId',100,'customerName','J-J Heinonen']
-// -> 'productId=100&customerId=J-J%20Heinonen'
+// -> 'productId=100&customerName=J-J%20Heinonen'
 COMM._arrayToQueryString = function(_params){
   var i = 0,
       _length = _params.length,
@@ -132,7 +132,7 @@ COMM.request = function(_url,_options){
   };
   if(_method == 'POST'){
     _headers['Content-Type'] = _contentType + '; charset=' + _charset;
-    _body = _options.body?_options.body:'';
+    var _body = _options.body?_options.body:'';
     _headers['Content-Length'] = _body.length.toString();
     for(var _header in _headers){
       _this.X.setRequestHeader(_header,_headers[_header]);
