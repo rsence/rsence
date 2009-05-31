@@ -24,7 +24,6 @@
 
 require 'rubygems'
 require 'json'
-require 'sha1'
 
 ## Shared messaging-object:
 require 'session/msg'
@@ -38,11 +37,15 @@ require 'session/sessionstorage'
 module Riassence
 module Server
 
+require 'digest/sha1'
+
 =begin
 SessionManager does session creation, validation, expiration and storage duties.
 It's quite transparent.
 =end
 class SessionManager < SessionStorage
+  
+  include Digest
   
   ## Makes everything ready to run
   def initialize
