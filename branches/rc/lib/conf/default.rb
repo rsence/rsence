@@ -134,6 +134,10 @@ $config = {
   
   ## Transporter settings:
   :transporter_conf => {
+    
+    ## The HApplication priority of the client, when actively polling.
+    :client_poll_priority => 60,
+    
     ## Message strings
     :messages => {
       

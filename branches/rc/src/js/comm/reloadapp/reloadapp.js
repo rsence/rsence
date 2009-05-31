@@ -31,8 +31,17 @@ ReloadApp = HApplication.extend({
     }
   },
   reset_session: function(){
-    window.location.hash = '/sign_out';
-    window.location.reload(true);
+    COMM.request(
+      '/hello/goodbye', {
+        method: 'POST',
+        body: ('ses_key='+COMM.Session.ses_key),
+        async: false,
+        onSuccess: function(){
+          window.location.href = '/';
+          window.location.reload(true);
+        },
+        onFailure: function(){}
+    });
   },
   constructor: function( _title, _message, _url ){
     var _this = this;
@@ -58,7 +67,6 @@ ReloadApp = HApplication.extend({
             _alertTitle = ELEM.make( _elemId ),
             _alertMessage = ELEM.make( _elemId ),
             _iconUrl = _this.getThemeGfxFile('reloadapp_warning.png');
-        console.log(_iconUrl);
         _this.setStyle('font-family','Arial, sans-serif');
         _this.setStyle('color','#000');
         _this.setStyle('font-size','13px');
@@ -102,7 +110,7 @@ ReloadApp = HApplication.extend({
       }
     );
     
-    HTransporter.stop();
+    COMM.Transporter.stop = true;
   },
   onIdle: function(){
     if(this._alertWindow){

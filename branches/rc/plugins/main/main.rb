@@ -20,6 +20,20 @@
   # along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #
   ###
+class SessionTimeout < ServletPlugin
+  def match( uri, request_type )
+    if request_type == :post and uri == '/hello/goodbye'
+      return true
+    end
+    return false
+  end
+  def post( req, res, ses )
+    msg = $SESSION.init_msg( req, res, true )
+    msg.expire_session();
+    msg.response_done
+  end
+end
+SessionTimeout.new
 
 class Main < Plugin
   
@@ -49,7 +63,7 @@ class Main < Plugin
       # server-side session and reloads the page
       if virtual_uri == '/sign_out'
         msg.reply( %{
-          HTransporter.stop();
+          COMM.Transporter.stop=true;
           location.href="/";
         } )
         #
@@ -138,8 +152,6 @@ class Main < Plugin
     ## the client from choking on itself
     if mses[:boot] == 0
       
-      msg.reply('HTransporterDebug=true;') if $DEBUG_MODE
-      
       msg.reply("ELEM.setStyle(0,'background-color','#{$config[:main_plugin][:bg_color]}');")
       ## js/start.js includes the client's initial settings
       msg.reply require_js_once(msg,'start')
@@ -218,16 +230,16 @@ class Main < Plugin
       end
       
       ## Sets the client into poll mode, unless the :delayed_calls -array is empty
-      if mses[:boot] > 3
+      if mses[:boot] > 1
         if mses[:delayed_calls].empty?
           if mses[:title_loading] == true
             msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].to_json};" )
             mses[:title_loading] = false
           end
-          msg.reply( "HTransporter.setPollMode(false);" )
+          msg.reply( "COMM.Transporter.poll(0);" )
           mses[:poll_mode] = false
         else
-          msg.reply( "HTransporter.setPollMode(true);" )
+          msg.reply( "COMM.Transporter.poll(#{$config[:transporter_conf][:client_poll_priority]});" )
           mses[:poll_mode] = true
         end
       end
@@ -235,13 +247,13 @@ class Main < Plugin
     ## When nothing is delayed and the fifth poll has been made,
     ## sets the client to non-polling-mode, having only HValue
     ## changes trigger new requests.
-    elsif mses[:boot] > 3
+    elsif mses[:boot] > 1
       if msg.session[:main][:poll_mode] == true
         if mses[:title_loading] == true
           msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].to_json};")
           mses[:title_loading] = false
         end
-        msg.reply "HTransporter.setPollMode(false);"
+        msg.reply "COMM.Transporter.poll(0);"
         mses[:poll_mode] = false
       end
     end

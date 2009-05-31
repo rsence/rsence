@@ -127,7 +127,7 @@ class Message
   end
   
   def buf_json(buffer)
-    "HTransporter.response=#{buffer.to_json};"
+    buffer.to_json
   end
   
   ## called to flush buffer
@@ -139,10 +139,11 @@ class Message
     if not @response_success
       
       buffer = [
-        "HTransporter.ses_id='#{@ses_key}';",
-        @error_js,
-        "HTransporter.restoreSyncDelay=HTransporter.syncDelay;",
-        "HTransporter.syncDelay=-1;"
+        "", # empty session key will stop the syncing
+        @error_js
+        #,
+        #"jsLoader.load('controls');jsLoader.load('servermessage');",
+        #"ReloadApp.nu('Message Error','The message was unsuccessful.');"
       ]
       
     else
@@ -150,7 +151,7 @@ class Message
       buffer = @buffer
       
       if @ses_key
-        buffer.unshift( "HTransporter.ses_id='#{@ses_key}';" )
+        buffer.unshift( @ses_key )
       end
       
       

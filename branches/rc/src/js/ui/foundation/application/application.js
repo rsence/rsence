@@ -57,7 +57,7 @@ HApplication = HClass.extend({
   * Parameter (optional):
   *  _priority - An integer value (in ms) used for <onIdle> polling events.
   **/
-  constructor: function(_priority){
+  constructor: function(_priority,_label){
     
     // Special null viewId for HApplication instances,
     // they share a system-level root view; the document object
@@ -75,6 +75,13 @@ HApplication = HClass.extend({
     
     // Finalize initialization via HSystem
     HSystem.addApp(this,_priority);
+    
+    if(_label){
+      this.label = _label;
+    }
+    else{
+      this.label = 'ProcessID='+this.appId;
+    }
   },
   
 /** method: buildParents

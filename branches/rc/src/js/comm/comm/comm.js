@@ -102,7 +102,7 @@ COMM.request = function(_url,_options){
       _this = _options?_options:{},
       
       _method = _options.method?_options.method.toUpperCase():'GET',
-      _async = _options.async?true:false,
+      _async = (_options.async===undefined)?true:_options.async,
       _params = _options.params?_options.params:[],
       _headers = _options.headers?_options.headers:{},
       _contentType = _options.contentType?_options.contentType:'application/x-www-form-urlencoded',

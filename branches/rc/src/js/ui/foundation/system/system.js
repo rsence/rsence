@@ -174,8 +174,8 @@ HSystem = HClass.extend({
   ***/
   addApp: function(_app, _priority){
     
-    if(this.freeAppIds.length > 1024){
-      var _appId = this.freeAppIds.shift();
+    if(this.freeAppIds.length !== 0){
+      var _appId = this.freeAppIds.unshift();
       this.apps[_appId] = _app;
     } else {
       this.apps.push(_app);

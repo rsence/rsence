@@ -37,7 +37,6 @@ $_PACKAGES = {
     # Default settings and misc patches
     'common',
     
-    # The "Ajax" object
     # The ELEM handler
     'elem',
     
@@ -47,8 +46,11 @@ $_PACKAGES = {
     # SHA1 / MD5 / BASE64 encoder/decoder collection
     'sha',
     
+    # Process foundation
+    'system','application',
+    
     # Server communication package
-    'comm','transporter','valuemanager','value','jsloader',
+    'comm','autosync','valuemanager','value','jsloader',
     
     # Multi-control-single-value controller
     'valuematrix',
@@ -57,7 +59,7 @@ $_PACKAGES = {
     'point','rect',
     
     # ui foundation
-    'system','application','thememanager',
+    'thememanager',
     'markupview','morphanimation','view',
     'eventresponder','valueresponder',
     'control',
@@ -67,8 +69,8 @@ $_PACKAGES = {
   
   # Stand-alone Server communication package
   'comm' => [
-    'class','comm',
-    'transporter','valuemanager','value','jsloader'
+    'class','comm','system','application','autosync',
+    'valuemanager','value','jsloader'
   ],
   
   ## The default set of controls
@@ -76,13 +78,12 @@ $_PACKAGES = {
     
     # theme up to date:
     'button','checkbox','radiobutton',
-    'stringview','textcontrol',
+    'stringview','textcontrol','passwordcontrol','textarea',
     'uploader',
     
-    # theme outdated:
-    'textarea','slider','vslider',
+    'slider','vslider',
     'progressbar','progressindicator','imageview','splitview','stepper',
-    'passwordcontrol','divider','validatorview','window','tab','imagebutton'
+    'validatorview','window','tab'
   ],
   
   ## Table is such a big set of classes we include it separate from other controls

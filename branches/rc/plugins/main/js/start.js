@@ -20,9 +20,6 @@
   *
   **/
 
-// The minimum delay between requests in ms:
-HTransporter.syncDelay = 50;
-
 // The HSystem ticker interval in ms:
 HSystemTickerInterval = 50;
 
@@ -34,7 +31,7 @@ ELEMTickerInterval=50;
 
 // Prevents wasting precious cpu-cycles on something
 // a human being can't see.
-ELEM.setFPS(20);
+ELEM.setFPS(25);
 
 // Changes the documentElement properties of the web page.
 ELEM.setStyle(0,'overflow','auto');
@@ -49,9 +46,11 @@ ELEM.del(ELEM.bindId('loading'));
 SesWatcher = HApplication.extend({
   constructor: function( _timeoutSecs, _sesTimeoutValueId ){
     
+    this.label = 'SesWatcher';
+    
     // onIdle is called when HSystem's ticker count % 100 == 0
     // this means it's 5 seconds with HSystemTickerInterval 50
-    this.base(100); 
+    this.base(10); 
     
     // gets the HValue represented by
     // sesTimeoutValueId (:client_time in server)
@@ -67,14 +66,3 @@ SesWatcher = HApplication.extend({
   }
 });
 
-/** global: HWindowFocusBehaviour
-  *
-  * When the focus behaviour is 1, clicking on any subview brings
-  * the window to front, if attached to a HWindow instance.
-  * If the behaviour is 0, only direct clicks on the HWindow controls
-  * brings the window to front.
-  *
-  * It defaults to 1 as of 2008-12-22
-  *
-  **/
-// HWindowFocusBehaviour = 1;

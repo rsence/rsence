@@ -147,9 +147,9 @@ HValueManagerClass = HClass.extend({
   },
   
   syncDone: function(){
-    var _t=HTransporter;
+    var _t=COMM.Transporter;
     if((this.tosync.length!=0)&&(!_t.pollMode)){
-      _t.reSync();
+      _t.sync();
     }
     //console.log('syncDone:',this.tosync);
   },

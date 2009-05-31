@@ -25,6 +25,7 @@
 // part of the url is changed.
 URLResponder = HApplication.extend({
   constructor: function(){
+    this.label = 'URLResponder';
     this.base();
     this.urlMatchers = [];
     this.urlCallBack = [];
@@ -116,7 +117,7 @@ URLResponder = HApplication.extend({
     var _matchStatus = this.checkMatch(_value);
   }
 });
-urlResponder = new URLResponder();
+urlResponder = URLResponder.nu();
 
 
 // URLCatcher sets its associated valueObj to 
@@ -127,6 +128,7 @@ urlResponder = new URLResponder();
 URLCatcher = HApplication.extend({
   
   constructor: function(_url_val_id){
+    this.label = 'URLCatcher';
     this.url_hvalue = HVM.values[_url_val_id];
     this.base(1);
     this.url_hvalue.bind(urlResponder);

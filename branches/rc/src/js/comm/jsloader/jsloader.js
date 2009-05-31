@@ -30,35 +30,30 @@ JSLoader = HClass.extend({
     _this._okayed = false;
   },
   
-  _okay: function(_resp){
-    var _this = this;
-    if(_this._okayed){
-      return;
-    }
-    eval(_resp.X.responseText);
-    _this._okayed = true;
-  }, 
-  
-  _fail: function(_resp){
-    var _this = this;
+  _fail: function(_this,_resp){
     console.log("failed to load js: "+_resp.url);
   },
   
   load: function(_jsName){
-    var _this = this;
-    if((_this._loadedJS.indexOf(_jsName)!=-1)) {
+    var _this = this, _success = false, _respText = '';
+    if((_this._loadedJS.indexOf(_jsName)!==-1)) {
       return;
     }
-    COMM.request(
+    _this._loadedJS.push(_jsName);
+    _this._req = COMM.request(
       _this.uri+_jsName+'.js', {
-        onSuccess: _this._okay,
+        onSuccess: function(_resp){
+          _success = true;
+          _respText = _resp.X.responseText;
+        },
         onFailure: _this._fail,
         method: 'GET',
         async: false
       }
     );
-    _this._loadedJS.push(_jsName);
-    _this._okayed = false;
+    if(_success){
+      eval(_respText);
+    }
   }
   
 });
