@@ -48,6 +48,7 @@ COMM.Transporter = HApplication.extend({
     _this.stop = true;
     _this._serverInterruptElemId = false;
     _this._clientEvalError = false;
+    _this._busyFlushTimeout = false;
     _this.base(1);
   },
   onIdle: function(){
@@ -87,7 +88,14 @@ COMM.Transporter = HApplication.extend({
       ELEM.del(_this._serverInterruptElemId);
       _this._serverInterruptElemId = false;
     };
+    _this._busyFlushTimeout = setTimeout('COMM.Transporter.flushBusy();',50);
+  },
+  flushBusy: function(){
+    var _this = this;
     _this.busy = false;
+    if(HVM.tosync.length!==0){
+      _this.sync();
+    }
   },
   failMessage: function(_title,_message){
     this.stop = true;

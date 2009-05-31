@@ -51,6 +51,8 @@
 HValueManagerClass = HClass.extend({
   constructor: function(){
     this.SHA = SHAClass.nu(16);
+    this.values = {};
+    this.tosync = [];
   },
   
 /** vars: Instance variables
@@ -60,9 +62,6 @@ HValueManagerClass = HClass.extend({
   * isSending - flag, is set to true when <HTransporter> is busy.
   *
   **/
-  values: {},
-  tosync: [],
-  isGetting: false,
   
 /*** method: add
   ** 
@@ -137,21 +136,16 @@ HValueManagerClass = HClass.extend({
   **  _theObj - The <HValue> -instance object to list as changed.
   **
   ** See also:
-  **  <isGetting> <tosync> <set>
+  **  <tosync> <set>
   ***/
   changed: function(_theObj){
     if(this.tosync.indexOf(_theObj.id)===-1){
       this.tosync.push(_theObj.id);
-      this.syncDone();
+      var _t = COMM.Transporter;
+      if(!_t.busy){
+        _t.sync();
+      }
     }
-  },
-  
-  syncDone: function(){
-    var _t=COMM.Transporter;
-    if((this.tosync.length!=0)&&(!_t.pollMode)){
-      _t.sync();
-    }
-    //console.log('syncDone:',this.tosync);
   },
   
 /*** method: toXML

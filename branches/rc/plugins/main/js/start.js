@@ -24,14 +24,14 @@
 HSystemTickerInterval = 50;
 
 // The Element Manager's DOM-update ticker, in ms
-ELEMTickerInterval=50;
+ELEMTickerInterval = 50;
 
 // Another limit for Element Manager,
 // limits frames per seconds of DOM Updates.
 
 // Prevents wasting precious cpu-cycles on something
 // a human being can't see.
-ELEM.setFPS(25);
+ELEM.setFPS(20);
 
 // Changes the documentElement properties of the web page.
 ELEM.setStyle(0,'overflow','auto');
