@@ -297,7 +297,7 @@ class SessionStorage
   ## Expires a session by its identifier
   def expire_session( ses_id )
     
-    
+    return unless @sessions.has_key? ses_id
     ses_data = @sessions[ ses_id ]
     
     # Makes the session invalid for xhr's by deleting its key
