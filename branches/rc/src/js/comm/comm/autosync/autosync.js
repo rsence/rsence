@@ -61,8 +61,8 @@ COMM.Transporter = HApplication.extend({
   },
   getClientEvalError: function(){
     var _this = COMM.Transporter;
-    if(this._clientEvalError){
-      return '&err_msg='+this._clientEvalError;
+    if(_this._clientEvalError){
+      return '&err_msg='+_this._clientEvalError;
     }
     return '';
   },
