@@ -29,7 +29,7 @@ class SessionTimeout < ServletPlugin
   end
   def post( req, res, ses )
     msg = $SESSION.init_msg( req, res, true )
-    msg.expire_session();
+    msg.expire_session()
     msg.response_done
   end
 end
