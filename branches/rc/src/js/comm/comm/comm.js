@@ -133,7 +133,9 @@ COMM.request = function(_url,_options){
   if(_method == 'POST'){
     _headers['Content-Type'] = _contentType + '; charset=' + _charset;
     var _body = _options.body?_options.body:'';
-    _headers['Content-Length'] = BROWSER_TYPE.safari?false:_body.length.toString();
+    if(!BROWSER_TYPE.safari){ // for some reason, safari doesn't like this
+      _headers['Content-Length'] = _body.length.toString();
+    }
     for(var _header in _headers){
       _this.X.setRequestHeader(_header,_headers[_header]);
     }
