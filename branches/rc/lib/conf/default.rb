@@ -220,6 +220,8 @@ $config = {
     
     :mysql_backend => true,
     
+    :session_cookies => true,
+    
     ## The comment string in the session cookie
     :ses_cookie_comment => "Riassence Core session key (just for your convenience)",
     

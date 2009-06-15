@@ -70,6 +70,8 @@ class Transporter
   ## handles incoming XMLHttpRequests from the browser
   def xhr(request, response, cookies=false)
     
+    cookies = false unless $config[:session_conf][:session_cookies]
+    
     # Creates the msg object, also checks or creates a new session; verifies session keys and such
     msg = $SESSION.init_msg( request, response, cookies )
     
