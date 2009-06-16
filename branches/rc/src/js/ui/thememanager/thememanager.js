@@ -171,14 +171,18 @@ HThemeManager = HClass.extend({
   *  The source of the url.
   */
   loadCSS: function( _url ) {
-    var _contentType = 'text/css';
-    var _cssText = this.fetch( _url, _contentType );
+    var _contentType = 'text/css',
+        _cssText = this.fetch( _url, _contentType );
     
     // Don't try to do anything with empty or invalid css data:
     if (!_cssText || _cssText == "") {
       return;
     }
-    
+    this.useCSS( _cssText );
+  },
+  
+  useCSS: function( _cssText ){
+    var _contentType = 'text/css';
     // Evaluate the css text
     _cssText = this._bindCSSVariables( _cssText );
     
@@ -209,6 +213,7 @@ HThemeManager = HClass.extend({
         _style.innerHTML = _cssText;
       }
     }
+
   },
   
   _addSlash: function( _str ){
