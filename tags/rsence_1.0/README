@@ -23,7 +23,7 @@ COMMERCIAL SUPPORT
 INTRODUCTION
 
 The Riassence Core Framework (or casually, just "RSence") is a
-Rich Internet Application Framework with the defining charasteristics:
+Rich Internet Application Framework with the defining characteristics:
  * Thick Client
  * Thin Server
 
@@ -35,7 +35,7 @@ javascript package that communicates asynchronously with the server.
 The client is able to load resources on the fly and needs the server
 essentially just for bootstrapping, session management and data handling.
 The reasoning is that modern web browsers are fairly powerful universal
-layout engines with a safe, sandboxed environment for running client
+layout engines with a safe, sand-boxed environment for running client
 applications.
 One major factor of a good user experience is responsiveness. To achieve that,
 the user interface needs to be controlled where it's displayed.
@@ -49,15 +49,16 @@ One of the first approaches were Java Applets, but these had a tendency of
 long startup times and didn't integrate too well with the rest of the web.
 Flash applications are also separate sandboxes in the web page and as such
 doesn't integrate too well or leverage the capabilities of the browser 
-itself. The Shockwave Flash -plugins is also proprietary and it's not
+itself. The Shockwave Flash -plugin is also proprietary and it's not
 available on all platforms.
 
 Javascript is enabled on almost all web browsers, but used to be a difficult
 platform to build applications on. Writing a desktop-like Javascript GUI
 support framework is not an easy task either and then there are all those
-dreaded browser incompabilities. The Riassence cilent framework addresses
+dreaded browser incompatibilities. The Riassence client framework addresses
 these issues and has been under active development since early 2006.
-It supports 99% of the web browsers out there, including Internet Explorer versions 6 through 8, Firefox, Chrome, Opera, Safari and the majority of
+It supports 99% of the web browsers out there, including Internet Explorer
+versions 6 through 8, Firefox, Chrome, Opera, Safari and the majority of
 mobile browsers in use.
 
 One of the core building blocks is the HClass -class object that enables
@@ -74,12 +75,12 @@ the higher level event interface used by the UI framework. Such high-level
 events include dragging, dropping, clicking, typing, key combinations etc.
 
 The COMM package provides high-level data transfer capabilities and
-automatic client-server session handshaking and transparent, asyncronous
+automatic client-server session handshaking and transparent, asynchronous
 data transfers between client and server.
 
 HSystem is the "Kernel" for process and view control. It provides multitasking
 for processes with features like starting, stopping, destruction and
-priorization.
+prioritization.
 
 HApplication is the basic process model and the root level controller of an
 client-side application. Destructing an HApplication instance destructs its
@@ -94,7 +95,7 @@ shapes by any edge or corner.
 
 The HView class is the high-level foundation building block for building
 user interfaces. Any class that inherits HView gets a high-level UI building
-block with themeability, animation and subview support for free. HViews define
+block with themeability, animation and sub-view support for free. HViews define
 the bounds of all UI components.
 
 The HControl class extends view with support for events, labels, values and
@@ -102,7 +103,8 @@ a multitude of options. All interactive UI components extends HControl.
 
 Riassence Core comes bundled with a full set of essential UI components:
 HButton, HCheckbox, HImageView, HPasswordControl, HRadioButton, HSplitView, 
-HSlider, HVSlider, HStepper, HTextControl, HTextArea, HValidatorView, HProgressbar, HUploader, HStringView, HProgressIndicator, HTab and HWindow.
+HSlider, HVSlider, HStepper, HTextControl, HTextArea, HValidatorView,
+HProgressbar, HUploader, HStringView, HProgressIndicator, HTab and HWindow.
 
 These components share the API of HControl and are useable as-is. They are
 also easily extendable for any specific tasks.
@@ -113,7 +115,7 @@ Thin Server
 Although you can run the client independently without the server, 
 the server is necessary for building complex web applications and doing
 tasks not allowed in the web browser's sandbox. As the client can
-handle the user inteface independently, the server does what a server
+handle the user interface independently, the server does what a server
 needs to do, and does it efficiently.
 
 The main responsibilities of the Riassence server is to avoid tasks the
@@ -121,24 +123,24 @@ client is capable of and emphasize on the tasks the client can't do.
 
 Session management is one of these tasks. Sessions are needed to tell
 the clients apart and to keep the data shared by the client and server
-intact, secure and up to date. Sessions also have a persistent batabase
-backend where the session data is stored. This allows uninterrupted
+intact, secure and up to date. Sessions also have a persistent database
+back-end where the session data is stored. This allows uninterrupted
 operation of the client even if the server becomes unreachable for a while.
 Session keys are by default disposable and use cryptographic hashing (SHA1)
 for key exchange. Data of concurrent sessions are kept separate from each 
 other.
 
-Another important duty of the server is to bridge the sandboxed client
-environtment with the I/O capabilites of the server. Some of these 
+Another important duty of the server is to bridge the sand-boxed client
+environment with the I/O capabilities of the server. Some of these 
 capabilities are access to databases, the filesystem, external interfaces
 and tasks that needs to be done securely.
 
-The server-side controller model is the HPlugin. The plugin does tasks
+The server-side controller model is the Plugin. The plugin does tasks
 like decide which user interfaces to launch, defines session data,
-responds to data changes etc. It's the necessary glue between backend and GUI.
+responds to data changes etc. It's the necessary glue between back-end and GUI.
 
 Plugins are deployed by dropping a plugin bundle into the plugins directory 
-and undeployed by dragging it out of the plugins directory. In 
+and un-deployed by dragging it out of the plugins directory. In 
 debug/development mode, plugins are automatically reloaded. Each plugin is
 initialized as a single instance and user interaction is managed through
 evented messages. Messages are light-weight, disposable objects that provide
@@ -159,7 +161,7 @@ routing schemes.
 
 Currently supported ballast value types are:
  - Boolean
- - Number (interger and float)
+ - Number (integer and float)
  - String
  - Flat array (containing any combinations of data types listed above)
 
