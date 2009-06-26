@@ -73,23 +73,34 @@ static VALUE cRandGen_gen_many( VALUE self, VALUE amount ){
 }
 
 // ruby-side 'initialize' -method
-// NOTE: buffering is just ignored for now and included just for backwards-compatibility
 static VALUE cRandGen_initialize( VALUE self, VALUE target_length ){
   rb_iv_set(self,"@target_length",target_length);
   return self;
 }
 
-// ruby-side 'RandomGenerator' -class
+// NOTE: buffering is just ignored for now and included just for backwards-compatibility
+static VALUE cRandGen_initialize2( VALUE self, VALUE target_length, VALUE buffer_length ){
+  rb_iv_set(self,"@target_length",target_length);
+  return self;
+}
+
+// ruby-side 'RandGen' -class
 VALUE cRandomGenerator;
+// ruby-side 'RandomGenerator' -class (backwards-compatible)
+VALUE cRandomGenerator2;
 void Init_randgen() {
   srand(time(NULL));
+  
   cRandomGenerator = rb_define_class("RandGen", rb_cObject);
   rb_define_method( cRandomGenerator, "initialize", cRandGen_initialize, 1 );
   rb_define_method( cRandomGenerator, "gen", cRandGen_gen, 0 );
   rb_define_method( cRandomGenerator, "gen_many", cRandGen_gen_many, 1 );
+  
+  // compatibility for old class name, its constuctor arguments and methods
+  cRandomGenerator2 = rb_define_class("RandomGenerator", rb_cObject);
+  rb_define_method( cRandomGenerator2, "initialize", cRandGen_initialize2, 2 );
+  // compatibility for old methods
+  rb_define_method( cRandomGenerator2, "get_one", cRandGen_gen, 0 );
+  rb_define_method( cRandomGenerator2, "get", cRandGen_gen_many, 1 );
 }
-
-
-
-
 
