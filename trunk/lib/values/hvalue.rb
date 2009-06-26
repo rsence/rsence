@@ -56,7 +56,7 @@ class HValue
   ## (Re-)Send the client-size representation
   def restore( msg )
     ## Initialize a new client value
-    init_str = "HValue.nu('#{@val_id}', #{@data.to_json});"
+    init_str = "COMM.Values.create(#{@val_id.to_json},#{@data.to_json});"
     msg.reply( init_str )
   end
   
@@ -172,7 +172,7 @@ class HValue
   
   ## tell the client that the value changed
   def to_client( msg )
-    msg.reply "HVM.s( '#{@val_id}', #{@data.to_json} );" 
+    msg.reply "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
   end
   
   ## clean up self
