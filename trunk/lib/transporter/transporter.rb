@@ -98,8 +98,8 @@ class Transporter
       puts "new session." if (msg.new_session or msg.restored_session) and $DEBUG_MODE
       
       ## Pass the client XML to the value manager
-      if request.query.has_key?( 'HSyncData' )
-        syncdata_str = request.query[ 'HSyncData' ]
+      if request.query.has_key?( 'values' )
+        syncdata_str = request.query[ 'values' ]
         begin
           $VALUES.xhr( msg, syncdata_str )
         rescue => e

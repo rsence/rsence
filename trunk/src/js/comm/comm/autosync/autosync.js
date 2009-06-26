@@ -62,7 +62,7 @@ COMM.Transporter = HApplication.extend({
   getClientEvalError: function(){
     var _this = COMM.Transporter;
     if(_this._clientEvalError){
-      return '&err_msg='+_this._clientEvalError;
+       return '&err_msg='+HVM._encodeString(_this._clientEvalError);
     }
     return '';
   },
@@ -81,7 +81,7 @@ COMM.Transporter = HApplication.extend({
         eval(_responseArray[i]);
       }
       catch(e) {
-        _this._clientEvalError = e+" - "+e.description;
+        _this._clientEvalError = e+" - "+e.description+' - '+_responseArray[i];
       }
     }
     if(_this._serverInterruptElemId){
@@ -135,9 +135,10 @@ COMM.Transporter = HApplication.extend({
     }
     this.busy = true;
     var _this = this,
-        _valuesXML = HVM.toXML(),
+        _values = COMM.Values.sync(),
         _sesKey = 'ses_key='+COMM.Session.ses_key,
-        _errorMessage = _this.getClientEvalError();
+        _errorMessage = _this.getClientEvalError(),
+        _body = [_sesKey,_errorMessage,_values?'&values='+_values:''].join('');
     COMM.request(
       _this.url, {
         _this: _this,
@@ -145,7 +146,7 @@ COMM.Transporter = HApplication.extend({
         onFailure: _this.failure,
         method: 'POST',
         async: true,
-        body: [_sesKey,_errorMessage,_valuesXML].join('')
+        body: _body
       }
     );
   }

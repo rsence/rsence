@@ -262,17 +262,17 @@ HThemeManager = HClass.extend({
   // Makes a valid css template url
   _cssUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
     this._cssEvalParams = [_themeName, _componentName, _themePath, _pkgName];
-    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _cssSuffix = this._joinPath( 'css', _componentName+'.css' );
-    var _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
+    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+        _cssSuffix = this._joinPath( 'css', _componentName+'.css' ),
+        _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
     return _cssUrl;
   },
   
   // Makes a valid html template url
   _markupUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
-    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _htmlSuffix = this._joinPath( 'html', _componentName+'.html' );
-    var _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
+    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+        _htmlSuffix = this._joinPath( 'html', _componentName+'.html' ),
+        _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
     return _htmlUrl;
   },
   
@@ -328,15 +328,16 @@ HThemeManager = HClass.extend({
   getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
     
     /* Load Theme-Specific CSS: */
-    if(!this._cssCache[_themeName] && (HNoCommonCSS.indexOf(_themeName)==-1)){
-      var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
+    if(!this._cssCache[_themeName]){
       this._cssCache[_themeName] = {};
-      this.loadCSS( _commonCssUrl );
+      if(HNoCommonCSS.indexOf(_themeName)==-1){
+        var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
+        this.loadCSS( _commonCssUrl );
+      }
     }
     
     /* Load Component-Specific CSS, unless configured to only load the common css: */
     if(HNoComponentCSS.indexOf(_themeName)==-1){
-      //console.log('HNoComponentCSS:',HNoComponentCSS,',  indexOf:',HNoComponentCSS.indexOf(_themeName),',  themeName:',_themeName, ',  componentName:', _componentName, ',  themePath:',_themePath,',  pkgName:',_pkgName);
       if (!this._cssCache[_themeName][_componentName]){
         var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
         this._cssCache[_themeName][_componentName] = true;
@@ -359,8 +360,8 @@ HThemeManager = HClass.extend({
   *
   **/
   _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
-    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _url = this._joinPath( _urlPrefix, 'gfx' );
+    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+        _url = this._joinPath( _urlPrefix, 'gfx' );
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){

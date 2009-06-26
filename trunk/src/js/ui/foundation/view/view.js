@@ -289,40 +289,42 @@ HView = HClass.extend({
       return;
     }
     
-    this.drawn = true;
+    var _this = this,
+        _elemId = _this.elemId,
+        _styl = ELEM.setStyle,
+        _rect = _this.rect;
     
-    var _elemId = this.elemId;
-    var _rect = this.rect;
+    _styl( _elemId, 'left', _this.flexLeft?(_rect.left+'px'):'auto', true);
+    _styl( _elemId, 'top', _this.flexTop?(_rect.top+'px'):'auto', true);
+    _styl( _elemId, 'right', _this.flexRight?(_this.flexRightOffset+'px'):'auto', true);
+    _styl( _elemId, 'bottom', _this.flexBottom?(_this.flexBottomOffset+'px'):'auto', true);
+    _styl( _elemId, 'width', (_this.flexLeft&&_this.flexRight)?'auto':(_rect.width+'px'), true);
+    _styl( _elemId, 'height', (_this.flexTop&&_this.flexBottom)?'auto':(_rect.height+'px'), true);
     
-    ELEM.setStyle( _elemId, 'left', this.flexLeft?(_rect.left+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'top', this.flexTop?(_rect.top+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'right', this.flexRight?(this.flexRightOffset+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'bottom', this.flexBottom?(this.flexBottomOffset+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'width', (this.flexLeft&&this.flexRight)?'auto':(_rect.width+'px'), true);
-    ELEM.setStyle( _elemId, 'height', (this.flexTop&&this.flexBottom)?'auto':(_rect.height+'px'), true);
-    
-    if(this.flexLeft&&this.flexRight){
-      ELEM.setStyle( _elemId, 'min-width', _rect.width+'px', true);
+    if(_this.flexLeft&&_this.flexRight){
+      _styl( _elemId, 'min-width', _rect.width+'px', true);
     }
-    if(this.flexTop&&this.flexBottom){
-      ELEM.setStyle( _elemId, 'min-height', _rect.height+'px', true);
+    if(_this.flexTop&&_this.flexBottom){
+      _styl( _elemId, 'min-height', _rect.height+'px', true);
     }
     
     // Show the rectangle once it gets created, unless visibility was set to
     // hidden in the constructor.
-    if(undefined === this.isHidden || this.isHidden == false) {
-      ELEM.setStyle( _elemId, 'visibility', 'inherit', true);
+    if(undefined === _this.isHidden || _this.isHidden == false) {
+      _styl( _elemId, 'visibility', 'inherit', true);
     }
     
-    ELEM.setStyle( _elemId, 'display', 'block', true);
+    _styl( _elemId, 'display', 'block', true);
     
-    this._updateZIndex();
+    _this._updateZIndex();
     
-    if (this._cachedLeft != _rect.left || this._cachedTop != _rect.top) {
-      this.invalidatePositionCache();
-      this._cachedLeft = _rect.left;
-      this._cachedTop = _rect.top;
+    if (_this._cachedLeft != _rect.left || _this._cachedTop != _rect.top) {
+      _this.invalidatePositionCache();
+      _this._cachedLeft = _rect.left;
+      _this._cachedTop = _rect.top;
     }
+    
+    _this.drawn = true;
     
     // right, bottom, opacity and png-transparency
     /*

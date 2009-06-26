@@ -50,7 +50,7 @@ $_PACKAGES = {
     'system','application',
     
     # Server communication package
-    'comm','autosync','valuemanager','value','jsloader',
+    'comm','autosync','values','value','jsloader',
     
     # Multi-control-single-value controller
     'valuematrix',

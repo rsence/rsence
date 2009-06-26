@@ -392,10 +392,47 @@ HSlider = HControl.extend({
   
   // private method
   drawThumbPos: function() {
-    var _whichprop = this._isVertical?'top':'left';
-    var _propval   = this._value2px();
+    var _whichprop = this._isVertical?'top':'left',
+        _propval   = this._value2px();
     ELEM.setStyle(this._thumbElemId,_whichprop,_propval);
-  }
+    this.setOrientation(this.options['orientation']||this.prevOrientation);
+  },
   
+  prevOrientation: 'c',
+  
+  cssClassPrefix: 'h',
+  
+  setOrientation: function(_orientation) {
+    if(!_orientation){
+      _orientation = 'c';
+    }
+    _orientation = _orientation.toLowerCase();
+    if(_orientation == this.prevOrientation){
+      return false;
+    }
+    if(this['markupElemIds']===undefined){
+      return false;
+    }
+    if(this.markupElemIds['control']===undefined){
+      return false;
+    }
+    var _toggleCSS = this.toggleCSSClass,
+        _ctrlId    = this.markupElemIds.control,
+        _orientations = ['n','s','w','e','c'],
+        _iOrientation = '',
+        _cssClassName = '',
+        _cssClassPrefix = this.cssClassPrefix,
+        _cssClassVert = this._isVertical?'v':'',
+        _activeOrientation = false,
+        i = 0;
+    for(;i<5;i++){
+      _iOrientation = _orientations[i];
+      _activeOrientation = (_orientation==_iOrientation);
+      _cssClassName = (_orientation=='c')?_cssClassPrefix+_cssClassVert+'slider_thumb':_cssClassPrefix+'slider_thumb_'+_iOrientation;
+      _toggleCSS( _ctrlId, _cssClassName, _activeOrientation );
+    }
+    
+    this.prevOrientation = _orientation;
+  }
 });
 
