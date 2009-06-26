@@ -172,7 +172,7 @@ HValue = HClass.extend({
     for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
       var _tryObj = this.views[_viewNum];
       if(_tryObj===_viewObj){
-        this.views.splice(_viewNum);
+        this.views.splice(_viewNum,1);
         return;
       }
     }
