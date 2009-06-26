@@ -68,7 +68,7 @@ module Common
     }
     
     # an randgen instance used for generating ids (84B long)
-    @randgen = RandomGenerator.new( 84, 600 )
+    @randgen = RandGen.new( 84 )
     
     # supported image content types
     @content_types = {
@@ -119,7 +119,7 @@ module Common
   def serve( msg, content, format='PNG', type=:img )
     
     # gets a new, unique identifier
-    ticket_id = @randgen.get_one
+    ticket_id = @randgen.gen
     
     # serve image
     if type == :img

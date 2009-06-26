@@ -22,58 +22,51 @@
   #
   ###
 
+require 'rbconfig'
+require 'fileutils'
+
 rsence_dir = File.split(File.split( File.expand_path( __FILE__ ) )[0])[0]
-lib_dir = File.join( rsence_dir, 'lib' )
+lib_dir = File.join( rsence_dir, 'lib', 'ext' )
+ext_dir = File.join( rsence_dir, 'ext' )
+ruby_exec = RbConfig::CONFIG['ruby_install_name']
+ext_names = ['randgen','jsmin','jscompress','html_min']
 
-puts "Building randgen.."
-randgen_dir = File.join( lib_dir, 'util', 'randgen_c'  )
-Dir.chdir(   randgen_dir )
-[ File.join( randgen_dir, 'Makefile' ),
-  File.join( randgen_dir, 'randgen.bundle' ),
-  File.join( randgen_dir, 'randgen.so' ),
-  File.join( randgen_dir, 'randgen.o' )
-].each do |build_product|
-  File.delete( build_product ) if File.exist?( build_product )
+def extconf_products( src_dir, exclusion = [] )
+  products_found = []
+  Dir.entries( src_dir ).each do |product_file|
+    next if product_file[0].chr == '.'
+    next if product_file == 'extconf.rb'
+    next if exclusion.include? product_file
+    products_found.push( File.join( src_dir, product_file ) )
+  end
+  return products_found
 end
-`ruby extconf.rb`
-`make`
-
-puts "Building jsmin.."
-jsmin_dir   = File.join( lib_dir, 'jsbuilder', 'jsmin' )
-Dir.chdir(   jsmin_dir )
-[ File.join( jsmin_dir, 'Makefile' ),
-  File.join( jsmin_dir, 'jsmin.bundle' ),
-  File.join( jsmin_dir, 'jsmin.so' ),
-  File.join( jsmin_dir, 'jsmin.o' )
-].each do |build_product|
-  File.delete( build_product ) if File.exist?( build_product )
+def cleanup_exts( ext_dir, ext_names )
+  ext_names.each do |ext_name|
+    puts "Cleaning up #{ext_name}.."
+    extconf_products( File.join(ext_dir,ext_name), ["#{ext_name}.c"] ).each do |build_product|
+      File.delete( build_product )
+    end
+  end
 end
-`ruby extconf.rb`
-`make`
-
-puts "Building jscompress.."
-jscompress_dir = File.join( lib_dir, 'jsbuilder', 'jscompress' )
-Dir.chdir(   jscompress_dir )
-[ File.join( jscompress_dir, 'Makefile' ),
-  File.join( jscompress_dir, 'jscompress.bundle' ),
-  File.join( jscompress_dir, 'jscompress.so' ),
-  File.join( jscompress_dir, 'jscompress.o' )
-].each do |build_product|
-  File.delete( build_product ) if File.exist?( build_product )
+cleanup_exts( ext_dir, ext_names )
+def build_exts( ruby_exec, ext_dir, ext_names )
+  old_wd = Dir.pwd
+  ext_names.each do |ext_name|
+    puts "Building #{ext_name}..."
+    Dir.chdir( File.join( ext_dir, ext_name ) )
+    system( "#{ruby_exec} extconf.rb" )
+  end
+  Dir.chdir( old_wd )
 end
-`ruby extconf.rb`
-`make`
-
-puts "Building html_min.."
-html_min_dir   = File.join( lib_dir, 'jsbuilder', 'html_min'   )
-Dir.chdir(   html_min_dir )
-[ File.join( html_min_dir, 'Makefile' ),
-  File.join( html_min_dir, 'html_min.bundle' ),
-  File.join( html_min_dir, 'html_min.so' ),
-  File.join( html_min_dir, 'html_min.o' )
-].each do |build_product|
-  File.delete( build_product ) if File.exist?( build_product )
+build_exts( ruby_exec, ext_dir, ext_names )
+def inst_exts( ext_dir, lib_dir, ext_names )
+  ext_names.each do |ext_name|
+    puts "Installing #{ext_name}..."
+    extconf_products( File.join( ext_dir, ext_name ), ['Makefile',"#{ext_name}.c"] ).each do |ext_product|
+      FileUtils.mv( ext_product, lib_dir )
+    end
+  end
 end
-`ruby extconf.rb`
-`make`
-
+inst_exts( ext_dir, lib_dir, ext_names )
+cleanup_exts( ext_dir, ext_names )

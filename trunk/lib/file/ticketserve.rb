@@ -24,7 +24,7 @@
 require 'rubygems'
 require 'RMagick'
 
-require 'util/randgen'
+require 'ext/randgen'
 
 ## the modules of ticketserve:
 require 'file/ticketservices/common'       # common functionality

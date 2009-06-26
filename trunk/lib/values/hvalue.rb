@@ -63,7 +63,7 @@ class HValue
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
-    @val_id   = $VALUES.randgen.get_one
+    @val_id   = $VALUES.randgen.gen
     
     ## set the data of the hvalue
     set( msg, data, true )

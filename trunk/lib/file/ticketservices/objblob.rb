@@ -44,7 +44,7 @@ end
 module ObjBlob
   def serve_blobobj( msg, blob_obj, no_expire=false )
     # gets a new, unique identifier
-    ticket_id = @randgen.get_one
+    ticket_id = @randgen.gen
     if no_expire
       @raw_uris[ticket_id] = blob_obj
     else

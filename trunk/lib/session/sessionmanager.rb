@@ -29,7 +29,7 @@ require 'json'
 require 'session/msg'
 
 ## Unique random number generator:
-require 'util/randgen'
+require 'ext/randgen'
 
 ## SessionStorage is the superclass of SessionManager
 require 'session/sessionstorage'
@@ -53,7 +53,7 @@ class SessionManager < SessionStorage
     super
     
     ## 'Unique' Random String generator for ses_key:s and cookie_key:s
-    @randgen   = RandomGenerator.new( @config[:key_length], @config[:buffer_size] )
+    @randgen   = RandGen.new( @config[:key_length] )
     
     # regex to match ipv4 addresses
     @ipv4_reg = /^([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[1-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])\.([1][0-9][0-9]|[2][0-5][0-9]|[1-9][0-9]|[0-9])$/
@@ -68,10 +68,10 @@ class SessionManager < SessionStorage
     timeout  = time_now + @config[:timeout_secs]
     
     ## Creates a new session key
-    ses_key    = @randgen.get_one
+    ses_key    = @randgen.gen
     
     ## Creates a new cookie key
-    cookie_key = @randgen.get(@config[:cookie_key_multiplier]).join('')
+    cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
     
     ## Makes a new database row for the session, returns its id
     ses_id     = new_ses_id( cookie_key, ses_key, timeout )
@@ -160,7 +160,7 @@ class SessionManager < SessionStorage
         end
         
         # gets a new ses_key:
-        ses_key = @randgen.get_one
+        ses_key = @randgen.gen
         
         ses_sha = SHA1.hexdigest(ses_key+ses_seed)
         
@@ -258,7 +258,7 @@ class SessionManager < SessionStorage
       if ses_status
         
         # get a new cookie key
-        cookie_key = @randgen.get(@config[:cookie_key_multiplier]).join('')
+        cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
         
         # map the new cookie key to the old session identifier
         @session_cookie_keys[ cookie_key ] = ses_id

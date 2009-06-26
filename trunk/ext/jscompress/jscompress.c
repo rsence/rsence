@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include "ruby.h"
 
-
 static char **reserved;
 static int nreserved;
 static int *reserved_indexes;
@@ -319,8 +318,8 @@ static int jscompress_cmp_arr_index(const void *p1, const void *p2)
 static VALUE jscompress_build_indexes(VALUE self, VALUE str)
 {
 	int i;
-	const char *s = RSTRING(str)->ptr;
-	int len = RSTRING(str)->len;
+	const char *s = RSTRING_PTR(str);
+	int len = RSTRING_LEN(str);
 	int off;
 	int res_idx;
 	int old_arr_count = tree_node_arr_count;
@@ -405,15 +404,15 @@ static VALUE jscompress_initialize(VALUE self, VALUE res)
 {
 	int i;
 
-	nreserved = RARRAY(res)->len;
+	nreserved = RARRAY_LEN(res);
 	reserved = ALLOC_N(char *, nreserved);
 	reserved_indexes = ALLOC_N(int, nreserved+1);
 
 	/* prepare reserved identifiers for lookups */
 	for (i=0; i<nreserved; i++) {
-		VALUE str = RARRAY(res)->ptr[i];
-		int len = RSTRING(str)->len;
-		const char *var = RSTRING(str)->ptr+1;
+		VALUE str = RARRAY_PTR(res)[i];
+		int len = RSTRING_LEN(str);
+		const char *var = RSTRING_PTR(str)+1;
 		int var_len = strlenv(var);
 
 		reserved[i] = ALLOC_N(char, len);

@@ -198,9 +198,9 @@ module Upload
   end
   
   def upload_key(msg,value_key,max_size=1000000,mime_allow=/(.*?)\/(.*?)/,allow_multi=true)
-    key = @randgen.get_one()
+    key = @randgen.gen
     while @upload_slots[:by_id].has_key?(key)
-      key = @randgen.get_one()
+      key = @randgen.gen
     end 
     @upload_slots[:by_id][key] = [mime_allow,max_size,msg.ses_id,value_key,allow_multi]
     @upload_slots[:uploaded][key]  = []

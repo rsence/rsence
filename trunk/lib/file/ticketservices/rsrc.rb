@@ -34,7 +34,7 @@ module Rsrc
   # serves static resources
   def serve_rsrc( content, content_type )
     
-    rsrc_id = @randgen.get_one
+    rsrc_id = @randgen.gen
     #puts "rsrc_id: #{rsrc_id.inspect}"
     
     content_size = content.size.to_s

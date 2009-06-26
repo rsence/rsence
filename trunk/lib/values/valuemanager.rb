@@ -27,7 +27,7 @@
 require 'values/hvalue'
 
 # RandomGenerator produces unique, random values
-require 'util/randgen'
+require 'ext/randgen'
 
 module Riassence
 module Server
@@ -45,7 +45,7 @@ class ValueManager
     @config = $config[:values_conf]
     
     ## 'Unique' Random String generator for HValue keys (passed on to the client)
-    @randgen = RandomGenerator.new( @config[:key_length], @config[:buffer_size] )
+    @randgen = RandGen.new( @config[:key_length] )
     
   end
   
@@ -65,7 +65,7 @@ class ValueManager
       old_ids.each do |old_id|
         
         # make a new id
-        new_id = @randgen.get_one
+        new_id = @randgen.gen
         
         # get the hvalue
         val_obj = ses_values[:by_id][old_id]

@@ -24,7 +24,7 @@
 require 'rubygems'
 require 'highline/import'
 
-require 'util/randgen'
+require 'ext/randgen'
 
 class ConfigWizard
   
@@ -342,7 +342,7 @@ class ConfigWizard
   end
   
   def run( local_config_file_path )
-    @conf[:database][:auth_setup][:pass] = RandomGenerator.new(12,1).get_one
+    @conf[:database][:auth_setup][:pass] = RandGen.new(12).gen
     ask_about_mysql
     ask_about_httpd
     puts

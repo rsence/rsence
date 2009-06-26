@@ -24,9 +24,9 @@
 module Riassence
 module Client
 
-require 'jsbuilder/jsmin/jsmin'
-require 'jsbuilder/jscompress/jscompress'
-require 'jsbuilder/html_min/html_min'
+require 'ext/jsmin'
+require 'ext/jscompress'
+require 'ext/html_min'
 
 require 'util/gzstring'
 

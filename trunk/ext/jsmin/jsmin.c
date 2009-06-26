@@ -287,8 +287,8 @@ static VALUE jsmin_convert(VALUE self, VALUE str)
 {
 	VALUE ret_str;
 
-	src = RSTRING(str)->ptr;
-	src_len = RSTRING(str)->len;
+	src = RSTRING_PTR(str);
+	src_len = RSTRING_LEN(str);
 
 	srci = desti = 0;
 	dest = malloc(src_len);
