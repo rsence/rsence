@@ -1,9 +1,0 @@
-.helmiTheme-tablecolumn {
-  position: absolute;
-  left: 0px; right: 0px;
-  top: 0px; bottom: 0px;
-  border: 1px solid #ccc;
-  border-top: 0;
-  background-color: #f7f7f7;
-  overflow: auto;
-}

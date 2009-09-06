@@ -1,7 +1,0 @@
-.toolboxitem {
-  position: absolute;
-  background-repeat: no-repeat;
-  left: 0px; top: 0px; width: 32px; height: 32px;
-  cursor: pointer;
-  background-image: url('#{this.getThemeGfxFile("toolboxitems.png")}');
-}
