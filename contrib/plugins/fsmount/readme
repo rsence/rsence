@@ -1,0 +1,4 @@
+Generic File System Mounter
+
+INSTALLATION:
+sudo gem install shared-mime-info

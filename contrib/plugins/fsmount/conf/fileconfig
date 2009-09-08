@@ -1,0 +1,5 @@
+#example mounts two directories 
+"/public/": 
+  path: /Users/user1/
+"/public2/":
+  path: /home/user2/
