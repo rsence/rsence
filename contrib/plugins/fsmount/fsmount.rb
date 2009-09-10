@@ -68,9 +68,7 @@ class FSMount < ServletPlugin
       directoryhtml += %{<a href="#{File.join(uri,CGI.escape(dir))}">#{dir}</a><br>}
     end
     
-    
-    res.body = directoryhtml
-    
+    res.body = "<html><head><title>Index of #{uri}</title></head><body>#{directoryhtml}</body><html>"
   end
   
   def serve_file(full_path, res)
