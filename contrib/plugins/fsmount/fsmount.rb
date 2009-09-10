@@ -23,6 +23,7 @@
   
 require 'shared-mime-info'
 require 'yaml'
+require 'cgi'
 class FSMount < ServletPlugin
 
 
@@ -54,14 +55,22 @@ class FSMount < ServletPlugin
     res.body = '404 - Not Found'
   end
   
-  def match( uri, request_type) #tsekkaa yamlista avaimet jotka ovat regexpejä
+  def match( uri, request_type) 
     return (request_type == :get and uri_matches?(uri))
   end
   
-  def html_index(full_path, res)
+  def html_index(full_path, res, uri)
     res.status = 200
-    res['content-type'] = 'text/plain'
-    res.body = Dir.entries(full_path).join("\n")
+    res['content-type'] = 'text/html; charset=UTF-8'
+    directories = Dir.entries(full_path)
+    directoryhtml = ''
+    directories.each do |dir|
+      directoryhtml += %{<a href="#{File.join(uri,CGI.escape(dir))}">#{dir}</a><br>}
+    end
+    
+    
+    res.body = directoryhtml
+    
   end
   
   def serve_file(full_path, res)
@@ -79,7 +88,7 @@ class FSMount < ServletPlugin
   end
   
   def get( req, res, ses)
-    uri = req.fullpath
+    uri = CGI.unescape(req.fullpath)
     unless uri_matches?(uri) 
       error_404(res)
       return
@@ -90,7 +99,7 @@ class FSMount < ServletPlugin
       return
     end
     if File.directory?(full_path)
-      html_index(full_path, res)
+      html_index(full_path, res, uri)
     else
       serve_file(full_path, res)
     end
