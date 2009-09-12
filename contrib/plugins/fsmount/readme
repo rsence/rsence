@@ -1,4 +1,5 @@
 Generic File System Mounter
 
-INSTALLATION:
-sudo gem install shared-mime-info
+DEPENDENCIES:
+Ffiruby-filemagic is used for MIME content-types and such.
+  - Check installation instructions from http://github.com/glongman/ffiruby-filemagic/tree/master

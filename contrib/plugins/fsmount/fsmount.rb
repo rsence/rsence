@@ -20,8 +20,9 @@
   # along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #
   ###
-  
-require 'shared-mime-info'
+
+require 'rubygems'
+require 'ffi_file_magic'
 require 'yaml'
 require 'cgi'
 class FSMount < ServletPlugin
@@ -74,7 +75,8 @@ class FSMount < ServletPlugin
   def serve_file(full_path, res)
     begin
       res.status = 200
-      res['content-type'] = MIME::check(full_path).type
+      filemagic = FFIFileMagic.new(FFIFileMagic::MAGIC_MIME)
+      res['content-type'] = filemagic.file(full_path)
       content = File.read(full_path)
       res['content-length'] = content.length
       res.body = content
