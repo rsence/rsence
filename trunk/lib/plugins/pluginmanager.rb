@@ -163,13 +163,15 @@ class PluginManager
         ## eval the plugin source
         plugin_eval( filename )
       rescue => e
-        puts "=="*40 if $DEBUG_MODE
-        puts "WARN: Plugin #{plugin_name} failed to initialize."
-        if $DEBUG_MODE
-          e_msg = e.message.gsub('(eval):',filename+':')
-          b_trace = e.backtrace.join("\n  ")
-          puts "#{'--'*40}\n#{e_msg}\n  #{b_trace}\n#{'=='*40}"
-        end
+        $stderr.write [
+          "*"*40,
+          "Riassence::Server::PluginManager.scan_plugin_dir(#{plugin_dir})",
+          "plugin: #{plugin_name.inspect}",
+          "#{e.class.to_s}, #{e.message}",
+          "Backtrace:",
+          "\t"+e.backtrace.join("\n\t").gsub('(eval):',File.join(plugin_dir,plugin_name,filename.to_s+'.rb:')),
+          "*"*40
+        ].join("\n")+"\n"
       end
     end
   end
@@ -279,13 +281,36 @@ class PluginManager
     return idx
   end
   
+  def args_clean(args)
+    outp = []
+    args.each do |arg|
+      if arg.class == Message
+        arg = "<#msg..>"
+      end
+      outp.push(arg)
+    end
+    return outp.inspect
+  end
+  
   ### Check if each plugin handles +method+, and if so, call it, passing +args+ as a parameter
   def delegate(method, *args)
     @@plugins.keys.sort.each do |plugin_name|
       plugin = @@plugins[plugin_name]
       puts "delegating method #{method.inspect} to plugin #{plugin.names.inspect}" if ARGV.include?('--trace-delegate')
       if plugin.respond_to?(method)
-        plugin.send( method, *args )
+        begin
+          plugin.send( method, *args )
+        rescue => e
+          $stderr.write [
+            "*"*40,
+            "Riassence::Server::PluginManager.delegate(...)",
+            "plugin: #{plugin_name.inspect}, method: #{method.inspect}, args: #{args_clean(args)}",
+            "#{e.class.to_s}, #{e.message}",
+            "Backtrace:",
+            "\t#{e.backtrace.join("\n\t").gsub('(eval):',"#{plugin}:")}",
+            "*"*40
+          ].join("\n")+"\n"
+        end
       end
     end
   end

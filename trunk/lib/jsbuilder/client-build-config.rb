@@ -24,7 +24,7 @@
 $_INC_NAME = 'js.inc'
 $_DONT_PACK_UNDEFINED = false
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','comm','controls','table','servermessage','iefix','richtext']
+$_PACKAGE_NAMES = ['core','comm','controls','servermessage','iefix','datetime']
 $_PACKAGES = {
   
   ## The core package contains everything needed
@@ -86,17 +86,6 @@ $_PACKAGES = {
     'validatorview','window','tab'
   ],
   
-  ## Table is such a big set of classes we include it separate from other controls
-  'table' => [
-    'databuffer','tablevalue','tableheadercolumn','tableheaderview',
-    'tablecornerview','tablecolumn','tablecontrol'
-  ],
-  
-  ## Rich text editing
-  'richtext' => [
-    'stylebutton','stylebuttonbar','richtextbar','richtextview','richtextcontrol'
-  ],
-  
   ## Application to invoke when a client/server error is encountered ("Reload" dialog)
   'servermessage' => [
     'reloadapp'
@@ -105,6 +94,12 @@ $_PACKAGES = {
   ## Collection of IE6 -related fixes
   'iefix' => [
     'iefix'
+  ],
+  
+  'datetime' => [
+    'datetimevalue',
+    'calendar',
+    'timesheet'
   ]
 }
 
@@ -115,7 +110,7 @@ $_PACKAGES['basic'] = $_PACKAGES['controls']
 
 # All in one -package
 $_PACKAGE_NAMES.push('allinone')
-$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['table'] + $_PACKAGES['richtext']
+$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['datetime']
 
 
 # Themes to include

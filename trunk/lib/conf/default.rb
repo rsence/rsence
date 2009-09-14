@@ -29,7 +29,19 @@ PIDPATH = File.join(SERVER_PATH,'var','run')
 LOGPATH = File.join(SERVER_PATH,'var','log')
 
 ## Client by default is "server/client"
-CLIENT_PATH = ARGV.include?('--client-path')?(ARGV[ARGV.index('--client-path')+1]):File.join( SERVER_PATH, '..', 'client' )
+if ARGV.include?('--client-path')
+  CLIENT_PATH = ARGV[ARGV.index('--client-path')+1]
+else
+  client_path_test1 = File.expand_path( File.join( SERVER_PATH, 'client' ) )
+  client_path_test2 = File.expand_path( File.join( SERVER_PATH, '..', 'client' ) )
+  if File.exist?(client_path_test1)
+    CLIENT_PATH = client_path_test1
+  elsif File.exist?(client_path_test2)
+    CLIENT_PATH = client_path_test2
+  else
+    warn "WARNING: CLIENT_PATH: #{CLIENT_PATH.inspect} not found in standard locations (#{client_path_test1.inspect} or #{client_path_test2.inspect})"
+  end
+end
 
 ## Global configuration hash
 $config = {
@@ -358,5 +370,11 @@ end
 ## Uses the lib paths as search paths
 LIB_PATHS.each do |lib_path|
   $LOAD_PATH << lib_path
+end
+
+unless File.exist?(CLIENT_PATH)
+  $stderr.write("ERROR: CLIENT_PATH: #{CLIENT_PATH.inspect} does not exist!\n")
+  $stderr.write("Unable to continue; exit.\n")
+  exit
 end
 
