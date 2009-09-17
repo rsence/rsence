@@ -84,7 +84,7 @@ class RiassenceCal < Plugin
   end
   alias restore_ses init_ses
   def init_ui(msg)
-    include_js( msg, ['controls','datetime'] )
+    include_js( msg, ['controls','datetime','lists'] )
     msg.reply require_js('rsence_cal')
     ses = msg.session[:rsence_cal]
     msg.reply "rsence_cal = RiassenceCal.nu(#{extract_hvalues_from_hash(ses)});"
