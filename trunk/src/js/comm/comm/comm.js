@@ -54,13 +54,13 @@ COMM._arrayToQueryString = function(_params){
       _queryString = '';
   for(;i<_length;i++){
     _queryString += encodeURIComponent(_params[i]);
-    _queryString += (i===_length-1)?'':(i%2==0)?'=':'&';
+    _queryString += (i===_length-1)?'':(i%2===0)?'=':'&';
   }
   return _queryString;
 };
 
 COMM._stateChange = function(_this){
-  if(_this.X.readyState == 4){
+  if(_this.X.readyState === 4){
     var _status = _this.X.status,
         _responderName = 'on'+_status,
         _success = ((_status >= 200 && _status < 300) || (_status === 0));
@@ -117,8 +117,11 @@ COMM.request = function(_url,_options){
   }
   _this.url = _url;
   _this.X   = _comm._XMLHttpRequest();
-  if(_method == 'GET' && _params.length !== 0){
+  if(_method === 'GET' && _params.length !== 0){
     _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);
+  }
+  if(!_async){
+    console.warn("WARNING: Asynchronous "+_method+" request to "+_url);
   }
   _this.X.open(
     _method,
@@ -130,7 +133,7 @@ COMM.request = function(_url,_options){
   _this.X.onreadystatechange = function(){
     _comm._stateChange(_this);
   };
-  if(_method == 'POST'){
+  if(_method === 'POST'){
     _headers['Content-Type'] = _contentType + '; charset=' + _charset;
     var _body = _options.body?_options.body:'';
     if(!BROWSER_TYPE.safari){ // for some reason, safari doesn't like this
@@ -141,7 +144,7 @@ COMM.request = function(_url,_options){
     }
     _this.X.send(_body);
   }
-  else if(_method == 'GET'){
+  else if(_method === 'GET'){
     _this.X.send(null);
   }
   if(!_async){

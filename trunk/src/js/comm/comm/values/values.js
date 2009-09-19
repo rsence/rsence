@@ -81,13 +81,13 @@ COMM.Values = HClass.extend({
       return _type;
     }
     else if(_type==='o'){
-      if(_obj.constructor == Array){
+      if(_obj.constructor === Array){
         return 'a'; // array
       }
-      else if(_obj.constructor == Object){
+      else if(_obj.constructor === Object){
         return 'h'; // hash
       }
-      else if(_obj.constructor == Date){
+      else if(_obj.constructor === Date){
         return 'd'; // date
       }
       return false;

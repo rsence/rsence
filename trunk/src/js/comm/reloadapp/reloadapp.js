@@ -23,7 +23,7 @@
 ReloadApp = HApplication.extend({
   reload: function(){
     var _url = this._url;
-    if((!_url)||(_url=='/')){
+    if((!_url)||(_url==='/')){
       window.location.reload(true);
     }
     else {

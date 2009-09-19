@@ -310,7 +310,7 @@ HView = HClass.extend({
     
     // Show the rectangle once it gets created, unless visibility was set to
     // hidden in the constructor.
-    if(undefined === _this.isHidden || _this.isHidden == false) {
+    if(undefined === _this.isHidden || _this.isHidden === false) {
       _styl( _elemId, 'visibility', 'inherit', true);
     }
     
@@ -318,7 +318,7 @@ HView = HClass.extend({
     
     _this._updateZIndex();
     
-    if (_this._cachedLeft != _rect.left || _this._cachedTop != _rect.top) {
+    if (_this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
       _this.invalidatePositionCache();
       _this._cachedLeft = _rect.left;
       _this._cachedTop = _rect.top;
@@ -427,7 +427,7 @@ HView = HClass.extend({
       var _partName = this.markupElemNames[ i ],
           _elemName = _partName + this.elemId,
           _htmlIdMatch = ' id="' + _elemName + '"';
-      if( this.markup.indexOf( _htmlIdMatch ) != -1 ) {
+      if( this.markup.indexOf( _htmlIdMatch ) !== -1 ) {
         this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
       }
     }
@@ -687,7 +687,7 @@ HView = HClass.extend({
       
       // frees this view from zindex re-ordering, if added
       var _sysUpdateZIndexOfChildrenBufferIndex = HSystem._updateZIndexOfChildrenBuffer.indexOf( this.viewId );
-      if(_sysUpdateZIndexOfChildrenBufferIndex != -1){
+      if(_sysUpdateZIndexOfChildrenBufferIndex !== -1){
         HSystem._updateZIndexOfChildrenBuffer.splice( _sysUpdateZIndexOfChildrenBufferIndex, 1 );
       }
       
@@ -714,7 +714,7 @@ HView = HClass.extend({
     this.hide();
     // Delete the children first.
     var _childViewId;
-    while (this.views.length != 0) {
+    while (this.views.length !== 0) {
       _childViewId = this.views[0];
       this.destroyView(_childViewId);
     }
@@ -1011,7 +1011,7 @@ HView = HClass.extend({
   *
   **/
   bringToFrontOf: function(_view){
-    if(this.parent.viewId != _view.parent.viewId){
+    if(this.parent.viewId !== _view.parent.viewId){
       return false;
     }
     this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
@@ -1033,7 +1033,7 @@ HView = HClass.extend({
   *
   **/
   sendToBackOf: function(_view){
-    if(this.parent.viewId != _view.parent.viewId){
+    if(this.parent.viewId !== _view.parent.viewId){
       return false;
     }
     this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array

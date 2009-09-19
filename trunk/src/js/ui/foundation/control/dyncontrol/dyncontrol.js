@@ -198,7 +198,7 @@ HDynControl = HControl.extend({
     this._actionFlag = -1;
     this._actionRects = [];
     var i,_rr,_rectRules = this.makeRectRules();
-    for(i=0;i!=9;i++){
+    for(i=0;i!==9;i++){
       _rr = _rectRules[i];
       this._actionRects.push( new HRect(_rr[0],_rr[1],_rr[2],_rr[3]) );
     }
@@ -207,7 +207,7 @@ HDynControl = HControl.extend({
     var i,
     _actionPoint = this._startPoint.subtract(this.rect.left,this.rect.top),
     _actionRects = this._actionRects;
-    for(i=0;i!=9;i++){
+    for(i=0;i!==9;i++){
       if(_actionRects[i].contains(_actionPoint)){
         this._actionFlag=i;
         this.setStyle('cursor',this._actionCrsr[i]);
@@ -224,7 +224,7 @@ HDynControl = HControl.extend({
     this._startPoint = new HPoint(x,y);
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
-    if(this._actionFlag!=-1){
+    if(this._actionFlag!==-1){
       this._actionFns[this._actionFlag](this,x,y);
     }
     return true; // prevents text selection
@@ -235,7 +235,7 @@ HDynControl = HControl.extend({
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
-    if(this._actionFlag!=-1){
+    if(this._actionFlag!==-1){
       this._actionFns[this._actionFlag](this,x,y);
     }
     return true; // prevents text selection
@@ -246,7 +246,7 @@ HDynControl = HControl.extend({
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
-    if(this._actionFlag!=-1){
+    if(this._actionFlag!==-1){
       this._actionFns[this._actionFlag](this,x,y);
     }
     this.setStyle('cursor','default');

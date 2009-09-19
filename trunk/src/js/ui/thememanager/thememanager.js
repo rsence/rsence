@@ -150,7 +150,7 @@ HThemeManager = HClass.extend({
   */
   getCssFilePath: function( _fileName ){
     var _themeName      = this._cssEvalParams[0];
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
       return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
     }
     else {
@@ -175,7 +175,7 @@ HThemeManager = HClass.extend({
         _cssText = this.fetch( _url, _contentType );
     
     // Don't try to do anything with empty or invalid css data:
-    if (!_cssText || _cssText == "") {
+    if (!_cssText || _cssText === "") {
       return;
     }
     this.useCSS( _cssText );
@@ -203,7 +203,7 @@ HThemeManager = HClass.extend({
       _head = document.getElementsByTagName('head')[0];
       _head.appendChild(_style);
       
-      if (navigator.userAgent.indexOf('KHTML') != -1) {
+      if (navigator.userAgent.indexOf('KHTML') !== -1) {
         // Work-around for safari
         var _cssTextElement = document.createTextNode(_cssText);
         _style.appendChild(_cssTextElement);
@@ -217,7 +217,7 @@ HThemeManager = HClass.extend({
   },
   
   _addSlash: function( _str ){
-    if( _str[ _str.length-1 ] != '/' ){
+    if( _str[ _str.length-1 ] !== '/' ){
       _str += '/';
     }
     return _str;
@@ -238,7 +238,7 @@ HThemeManager = HClass.extend({
     }
     
     // Pre-Build Path Format
-    if( HThemeMode == 0 ) {
+    if( HThemeMode === 0 ) {
       if( _pkgName ){
         _path = this._joinPath( _path, _pkgName );
       }
@@ -252,7 +252,7 @@ HThemeManager = HClass.extend({
     }
     
     // Post-Build Path Format
-    else if( HThemeMode == 1 ) {
+    else if( HThemeMode === 1 ) {
       _path = this._joinPath( _path, _themeName );
     }
     
@@ -330,14 +330,14 @@ HThemeManager = HClass.extend({
     /* Load Theme-Specific CSS: */
     if(!this._cssCache[_themeName]){
       this._cssCache[_themeName] = {};
-      if(HNoCommonCSS.indexOf(_themeName)==-1){
+      if(HNoCommonCSS.indexOf(_themeName)===-1){
         var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
         this.loadCSS( _commonCssUrl );
       }
     }
     
     /* Load Component-Specific CSS, unless configured to only load the common css: */
-    if(HNoComponentCSS.indexOf(_themeName)==-1){
+    if(HNoComponentCSS.indexOf(_themeName)===-1){
       if (!this._cssCache[_themeName][_componentName]){
         var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
         this._cssCache[_themeName][_componentName] = true;
@@ -365,7 +365,7 @@ HThemeManager = HClass.extend({
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
       return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName.replace('.png','-ie6.gif') );
     }
     return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName );

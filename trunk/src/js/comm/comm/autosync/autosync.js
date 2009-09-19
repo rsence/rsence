@@ -72,7 +72,7 @@ COMM.Transporter = HApplication.extend({
         i = 1,
         _responseArrayLen = _responseArray.length,
         _sesKey = _responseArray[0];
-    if(_sesKey==''){
+    if(_sesKey === ''){
       console.log('Invalid session, error message should follow...');
     }
     COMM.Session.newKey(_sesKey);

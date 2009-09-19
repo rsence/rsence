@@ -103,7 +103,7 @@ HProgressIndicator = HControl.extend({
     
     if(this._progressbarElemId) {
       
-      if (_value == true && !this._counter) {
+      if (_value === true && !this._counter) {
         var temp = this;
         this._counter = setInterval(function() {
             temp.drawProgress();

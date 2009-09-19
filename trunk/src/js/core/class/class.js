@@ -49,7 +49,7 @@
 var HClass = function() {
   if (arguments.length) {
     var _1stArg = arguments[0];
-    if (this == window) {
+    if (this === window) {
       HClass.prototype.extend.call(_1stArg, arguments.callee.prototype);
     } else {
       this.extend(_1stArg);
@@ -62,11 +62,11 @@ HClass.prototype = {
   // basically internal methods event if can be called safely
   extend: function(_source, _value) {
     var _extend = HClass.prototype.extend;
-    if (arguments.length == 2) {
+    if (arguments.length === 2) {
       var _ancestor = this[_source];
       // only methods are inherited
       if ((_ancestor instanceof Function) && (_value instanceof Function) &&
-          _ancestor.valueOf() != _value.valueOf() && (/\bbase\b/).test(_value)) {
+          _ancestor.valueOf() !== _value.valueOf() && (/\bbase\b/).test(_value)) {
         var _method = _value;
         _value = function() {
           // saves the this.base that is the this.base method of this child
@@ -99,7 +99,7 @@ HClass.prototype = {
         _protected.push("constructor");
       }
       for (var i = 0; (_name = _protected[i]); i++) {
-        if (_source[_name] != _prototype[_name]) {
+        if (_source[_name] !== _prototype[_name]) {
           _extend.call(this, _name, _source[_name]);
         }
       }
@@ -279,7 +279,7 @@ if ([]['indexOf']===undefined) {
     indexOf: function(_anObject){
       var i = 0, l = this.length;
       for (; i < l; i++) {
-        if (this[i] == _anObject) {
+        if (this[i] === _anObject) {
           return i;
         }
       }

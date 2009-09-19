@@ -95,7 +95,7 @@ HValue = HClass.extend({
   
   differs: function(_value){
     if((_value instanceof Array) && (this.value instanceof Array)){
-      if(_value.length != this.value.length){
+      if(_value.length !== this.value.length){
         return true;
       }
       for(var i=0;i<_value.length;i++){
@@ -192,7 +192,7 @@ HValue = HClass.extend({
   refresh: function(){
     for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
       var _viewObj = this.views[_viewNum];
-      if(_viewObj.value != this.value){
+      if(_viewObj.value !== this.value){
         if(!_viewObj._valueIsBeingSet){
           _viewObj._valueIsBeingSet=true;
           _viewObj.setValue( this.value );

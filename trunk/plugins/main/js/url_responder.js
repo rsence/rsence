@@ -47,7 +47,7 @@ URLResponder = HApplication.extend({
   // - callBack is the component registered
   delResponder: function(_matchStr,_callBack){
     _callBack.hide();
-    if(_callBack == this.prevCallBack){
+    if(_callBack === this.prevCallBack){
       this.prevCallBack = false;
       this.prevMatchStr = '';
     }
@@ -79,7 +79,7 @@ URLResponder = HApplication.extend({
   
   // Checks the matchStr agains regular expressions
   checkMatch: function(_matchStr){
-    if(_matchStr==this.prevMatchStr){
+    if(_matchStr === this.prevMatchStr){
       return 0;
     }
     var i=0, _urlMatch, _urlCallBack;
@@ -136,7 +136,7 @@ URLCatcher = HApplication.extend({
   
   onIdle: function(){
     var _href = location.href;
-    if(_href!=this.url_hvalue.value){
+    if(_href!==this.url_hvalue.value){
       this.url_hvalue.set(_href);
     }
   }

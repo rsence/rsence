@@ -94,7 +94,7 @@ HSplitView = HControl.extend({
     this._startView1  = this.splitviews[_index];
     this._startView2  = this.splitviews[_index + 1];
     this._dividerView = _dividerView;
-    if (this.vertical == false) {
+    if (this.vertical === false) {
       this._limit1 = this._startView1.rect.top;
       this._limit2 = this._startView2.rect.bottom - this.dividerWidth;
     } else {
@@ -108,7 +108,7 @@ HSplitView = HControl.extend({
     }
     _x -= this.pageX();
     _y -= this.pageY();
-    if (this.vertical == false) {
+    if (this.vertical === false) {
       var _targetPoint = _y - this._diffPoint.y;
       if (_targetPoint < this._limit1 || _targetPoint > this._limit2) {
         return;
@@ -182,9 +182,9 @@ HSplitView = HControl.extend({
   *
   **/ 
   removeSplitViewItem: function(_item) {
-    if (typeof _item == "object") {
+    if (typeof _item === "object") {
       var _index = this.splitviews.indexOfObject(_item);
-      if (_index != -1) {
+      if (_index !== -1) {
         this.splitviews.splice(_index, 1);
         _item.die();
         this.dividers.splice(_index, 1);
@@ -215,7 +215,7 @@ HSplitView = HControl.extend({
     var _oldTotal;
     var _scale;
     var _running;
-    if (this.vertical == false) {
+    if (this.vertical === false) {
       _newTotal = this.rect.height - this.dividerWidth*(_viewCount - 1);
       _oldTotal = 0;
       for (var i = 0; i < _viewCount; i++) {
@@ -227,7 +227,7 @@ HSplitView = HControl.extend({
       for (var i = 0; i < _viewCount; i++) {
         var _view = this.splitviews[i];
         var _newHeight = _view.rect.height*_scale;
-        if (i == _viewCount - 1) {
+        if (i === _viewCount - 1) {
           _newHeight = Math.floor(_newHeight);
         } else {
           _newHeight = Math.ceil(_newHeight);
@@ -248,7 +248,7 @@ HSplitView = HControl.extend({
       for (var i = 0; i < _viewCount; i++) {
         var _view = this.splitviews[i];
         var _newWidth = _view.rect.width*_scale;
-        if (i == _viewCount - 1) {
+        if (i === _viewCount - 1) {
           _newWidth = Math.floor(_newWidth);
         } else {
           _newWidth = Math.ceil(_newWidth);

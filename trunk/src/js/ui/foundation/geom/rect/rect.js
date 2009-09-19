@@ -76,13 +76,13 @@ HRect = HClass.extend({
     
     if (_args.length === 0) {
       this._constructorDefault();
-    } else if (_args.length == 4) {
+    } else if (_args.length === 4) {
       this._constructorSides(_args[0],_args[1],_args[2],_args[3]);
     }
-    else if (_args.length == 2) {
+    else if (_args.length === 2) {
       this._constructorPoint(_args[0],_args[1]);
     }
-    else if (_args.length == 1) {
+    else if (_args.length === 1) {
       this._constructorRect(_args[0]);
     }
     else {
@@ -179,13 +179,13 @@ HRect = HClass.extend({
     
     if (_args.length === 0) {
       this._constructorDefault();
-    } else if (_args.length == 4) {
+    } else if (_args.length === 4) {
       this._constructorSides(_args[0],_args[1],_args[2],_args[3]);
     }
-    else if (_args.length == 2) {
+    else if (_args.length === 2) {
       this._constructorPoint(_args[0],_args[1]);
     }
-    else if (_args.length == 1) {
+    else if (_args.length === 1) {
       this._constructorRect(_args[0]);
     }
     else {
@@ -457,7 +457,7 @@ HRect = HClass.extend({
     var _args=arguments;
     if (_args.length === 1) {
       this._insetByPoint(_args[0]);
-    } else if (_args.length == 2) {
+    } else if (_args.length === 2) {
       this._insetByXY(_args[0],_args[1]);
     } else {
       throw "Invalid number of arguments.";
@@ -492,7 +492,7 @@ HRect = HClass.extend({
     var _args=arguments;
     if (_args.length === 1) {
       this._offsetByPoint(_args[0]);
-    } else if (_args.length == 2) {
+    } else if (_args.length === 2) {
       this._offsetByXY(_args[0],_args[1]);
     } else {
       throw "Invalid number of arguments.";
@@ -526,7 +526,7 @@ HRect = HClass.extend({
     var _args=arguments;
     if (_args.length === 1) {
       this._offsetToPoint(_args[0]);
-    } else if (_args.length == 2) {
+    } else if (_args.length === 2) {
       this._offsetToXY(_args[0],_args[1]);
     } else {
       throw "Invalid number of arguments.";
@@ -557,8 +557,8 @@ HRect = HClass.extend({
   *  <intersects> <contains> <intersection> <union>
   **/
   equals: function(_rect) {
-    return (this.left == _rect.left && this.top == _rect.top &&
-            this.right == _rect.right && this.bottom == _rect.bottom);
+    return (this.left === _rect.left && this.top === _rect.top &&
+            this.right === _rect.right && this.bottom === _rect.bottom);
   },
   
 /** method: intersection

@@ -166,7 +166,7 @@ HMorphAnimation = HClass.extend({
         var _from = _obj.props[i].from;
         var _to = _obj.props[i].to;
         
-        if (_from != _to) {
+        if (_from !== _to) {
           // The value of the property at this time.
           var _propNow = _obj.transition(_cTime, _from, (_to - _from),
             _obj.duration);

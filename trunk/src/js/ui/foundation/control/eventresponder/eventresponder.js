@@ -85,9 +85,9 @@ HEventResponder = HClass.extend({
     EVENT.focusOptions[this.elemId] = this.events;
     var _mmoveStatus = this.events.mouseMove;
     var _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
-    if (_mmoveStatus && (_mmoveIndex==-1)){
+    if (_mmoveStatus && (_mmoveIndex===-1)){
       EVENT.coordListeners.push(this.elemId);
-    } else if ((!_mmoveStatus) && (_mmoveIndex!=-1)){
+    } else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
       EVENT.coordListeners.splice(_mmoveIndex,1);
     }
     //if(this.events.textEnter){

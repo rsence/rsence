@@ -72,10 +72,10 @@ HTab = HControl.extend({
   },
   setValue: function(_value){
     this.base(_value);
-    if(typeof _value == 'number'){
+    if(typeof _value === 'number'){
       var _index = parseInt(_value,10);
       if(_index<this.tabs.length){
-        if(_index!=this.selectIdx){
+        if(_index!==this.selectIdx){
           this.selectTab(_index);
         }
       }
@@ -114,14 +114,14 @@ HTab = HControl.extend({
     if(_tabIdx instanceof HTabView){
       _tabIdx = _tabIdx.tabIndex;
     }
-    if(this.selectIdx!=-1){
+    if(this.selectIdx!==-1){
       var _tabSelectElemId = this.tabLabels[this.selectIdx],
           _tabSelectViewId = this.tabs[this.selectIdx];
       ELEM.removeClassName(_tabSelectElemId,'item-fg');
       ELEM.addClassName(_tabSelectElemId,'item-bg');
       HSystem.views[_tabSelectViewId].hide();
     }
-    if(_tabIdx!=-1){
+    if(_tabIdx!==-1){
       var _tabLabelElemId = this.tabLabels[_tabIdx],
           _tabViewId = this.tabs[_tabIdx];
       ELEM.removeClassName(_tabLabelElemId,'item-bg');
@@ -150,7 +150,7 @@ HTab = HControl.extend({
     ELEM.setStyle(_tabLabelElemId,this.tabLabelAlign,this.rightmostPx+'px');
     ELEM.setHTML(_tabLabelElemId,_tabLabelHTML);
     this.tabLabelStrings.push(_tabLabel);
-    if(this.tabTriggerLink&&this.tabLabelElementTagName=='a'){
+    if(this.tabTriggerLink&&this.tabLabelElementTagName==='a'){
       ELEM.setAttr(_tabLabelElemId,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
     else if (this.tabTriggerLink){
@@ -160,7 +160,7 @@ HTab = HControl.extend({
       this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
     }
     this.rightmostPx+=_labelWidth;
-    if(this.tabLabelAlign == 'right'){
+    if(this.tabLabelAlign === 'right'){
       ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');
     }
     else if (this.tabLabelFillBg) {
@@ -182,7 +182,7 @@ HTab = HControl.extend({
     _x -= this.pageX();
     _y -= this.pageY();
     if(_y<=this.tabLabelHeight){
-      if (this.tabLabelAlign == 'right') {
+      if (this.tabLabelAlign === 'right') {
         _x = this.rect.width - _x;
       }
       if(_x<=this.rightmostPx){
@@ -206,12 +206,12 @@ HTab = HControl.extend({
     this.tabLabels.splice(_tabIdx,1);
     this.tabLabelBounds.splice(_tabIdx,1);
     this.tabLabelStrings.splice(_tabIdx,1);
-    if(_tabIdx==_selIdx){
+    if(_tabIdx===_selIdx){
       this.selectIdx=-1;
-      if(_tabIdx==0&&this.tabs.length==0){
+      if(_tabIdx===0&&this.tabs.length===0){
         this.selectTab(-1);
       }
-      else if(_tabIdx==(this.tabs.length-1)){
+      else if(_tabIdx===(this.tabs.length-1)){
         this.selectTab(_tabIdx-1);
       }
       else{

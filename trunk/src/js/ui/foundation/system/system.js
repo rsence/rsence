@@ -114,7 +114,7 @@ HSystem = HClass.extend({
   **
   ***/
   scheduler: function(){
-    //if ((this.ticks % 10) == 0 && this.fix_ie) {
+    //if ((this.ticks % 10) === 0 && this.fix_ie) {
       //_traverseTree();
     //}
     
@@ -125,7 +125,7 @@ HSystem = HClass.extend({
         // Check, if the application is busy:
         if( !this.busyApps[ _appId ] ){
           // Check, if the tick count matches the priority of the app:
-          if( (this.ticks % this.appPriorities[ _appId ]) == 0 ){
+          if( (this.ticks % this.appPriorities[ _appId ]) === 0 ){
             // Set the app busy, the app itself should "unbusy" itself, when the idle call is done.
             // That happens in <HApplication._startIdle>
             
@@ -137,7 +137,7 @@ HSystem = HClass.extend({
       }
     }
     
-    if(this._updateZIndexOfChildrenBuffer.length!=0){
+    if(this._updateZIndexOfChildrenBuffer.length!==0){
       this._flushUpdateZIndexOfChilden();
     }
     
@@ -254,7 +254,7 @@ HSystem = HClass.extend({
   killApp: function(_appId, _forced){
     if( !_forced ){
       var _startedWaiting = new Date().getTime();
-      while( this.busyApps[ _appId ] == true ) {
+      while( this.busyApps[ _appId ] === true ) {
         /* Waiting for the app to finish its idle loop... */
         if (new Date().getTime() > _startedWaiting + this.maxAppRunTime) {
           break;
@@ -274,7 +274,7 @@ HSystem = HClass.extend({
   _freeViewIds: [],
   addView: function(_view){
     var _newId;
-    if(this._freeViewIds.length==0){
+    if(this._freeViewIds.length===0){
       _newId = this.views.length;
       this.views.push(_view);
     }
@@ -311,7 +311,7 @@ HSystem = HClass.extend({
   // optimization of zindex buffer, see HView
   _updateZIndexOfChildrenBuffer: [],
   updateZIndexOfChildren: function(_viewId) {
-    if(this._updateZIndexOfChildrenBuffer.indexOf(_viewId)==-1){
+    if(this._updateZIndexOfChildrenBuffer.indexOf(_viewId)===-1){
       this._updateZIndexOfChildrenBuffer.push(_viewId);
     }
   },

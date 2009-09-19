@@ -55,12 +55,12 @@ HValueMatrix = HClass.extend({
   },
   
   setValue: function(_index){
-    if(_index!=this.value){
+    if(_index!==this.value){
       // Set the previous value object to false (reflects to its container component(s))
-      if(this.value != -1){
+      if(this.value !== -1){
         this.ctrls[this.value].setValue(false);
       }
-      if(_index != -1){
+      if(_index !== -1){
         this.valueObj.set(_index);
         // Store the new index as the currently active value
         this.value = _index;
