@@ -214,7 +214,7 @@ HThemeManager = HClass.extend({
       _head = document.getElementsByTagName('head')[0];
       _head.appendChild(_style);
       
-      if (navigator.userAgent.indexOf('KHTML') !== -1) {
+      if (BROWSER_TYPE.safari) {
         // Work-around for safari
         var _cssTextElement = document.createTextNode(_cssText);
         _style.appendChild(_cssTextElement);
@@ -427,7 +427,7 @@ HThemeManager = HClass.extend({
   *  An evaluated CSS Template.
   **/
   _bindCSSVariables: function( _cssTmpl ) {
-    while ( this._variable_match.test( _cssTmpl ) ) {  
+    while ( this._variable_match.test( _cssTmpl ) ) {
       _cssTmpl = _cssTmpl.replace(  this._variable_match, eval( RegExp.$1 )  );
     }
     return _cssTmpl;

@@ -510,15 +510,35 @@ class JSBuilder
       
       theme_css_dir = File.join( @themes_dst_dir, theme_name, 'css' )
       
+      
+      theme_css_path = File.join( theme_css_dir, theme_name+'_theme.css' )
+      
+      theme_css_template_data = css_templates.values.join("\n")
+      
+      save_file( theme_css_path, theme_css_template_data )
+      
+      unless $_NO_GZIP
+        theme_css_path_gz = theme_css_path+'.gz'
+        theme_css_template_data_gz = gzip_string( theme_css_template_data )
+        save_file( theme_css_path_gz, theme_css_template_data_gz )
+      end
+      
+      unless ARGV.include? '-nv'
+        print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.size )
+        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
+      end
+      
       html_templates.each do |tmpl_name,tmpl_html|
         html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
       end
       
       theme_html_js_arr = []
-      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "};"
-      theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json});"
-      theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json});"
-      theme_html_js_arr.push "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
+      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "}; "
+      theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json}); "
+      theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json}); "
+      theme_html_js_arr.push "HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null );"
+      theme_html_js_arr.push "HThemeManager.useCSS(#{theme_css_template_data.to_json}); "
+      #theme_html_js_arr.push "HThemeManager.loadCSS(HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null ));"
       
       theme_html_js = theme_html_js_arr.join('')
       unless DEBUG_MODE
@@ -545,23 +565,6 @@ class JSBuilder
       
       unless ARGV.include? '-nv'
         print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.size )
-      end
-      
-      theme_css_path = File.join( theme_css_dir, theme_name+'_theme.css' )
-      
-      theme_css_template_data = css_templates.values.join("\n")
-      
-      save_file( theme_css_path, theme_css_template_data )
-      
-      unless $_NO_GZIP
-        theme_css_path_gz = theme_css_path+'.gz'
-        theme_css_template_data_gz = gzip_string( theme_css_template_data )
-        save_file( theme_css_path_gz, theme_css_template_data_gz )
-      end
-      
-      unless ARGV.include? '-nv'
-        print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.size )
-        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
       end
       
     end
