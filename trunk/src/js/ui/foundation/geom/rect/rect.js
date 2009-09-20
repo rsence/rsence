@@ -608,13 +608,13 @@ HRect = HClass.extend({
   valueObj: null,
   viewIds: [],
   bind: function(_view){
-    if(this.viewIds.indexOf(_view.viewId) != -1){
+    if(this.viewIds.indexOf(_view.viewId) !== -1){
       this.viewIds.push( _view.viewId );
     }
   },
   release: function(_view){
     var _viewIdx = this.viewIds.indexOf(_view.viewId);
-    if(_viewIdx != -1){
+    if(_viewIdx !== -1){
       this.viewIds.splice( _viewIdx, 1 );
     }
   },

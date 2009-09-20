@@ -121,7 +121,7 @@ COMM.request = function(_url,_options){
     _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);
   }
   if(!_async){
-    console.warn("WARNING: Asynchronous "+_method+" request to "+_url);
+    console.log("WARNING: Synchronous "+_method+" request to "+_url);
   }
   _this.X.open(
     _method,

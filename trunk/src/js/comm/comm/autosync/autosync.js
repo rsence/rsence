@@ -19,6 +19,84 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   *
   **/
+COMM.Queue = HApplication.extend({
+  commandQueue: [],
+  paused: false,
+  constructor: function(){
+    this.base(10);
+  },
+  onIdle: function(){
+    if(!this.paused && (this.commandQueue.length!==0)){
+      this.flush();
+    }
+  },
+  pause: function(){
+    // console.log('pause()');
+    this.paused = true;
+  },
+  resume: function(){
+    // console.log('resume()');
+    this.paused = false;
+    this.flush();
+  },
+  flush: function(){
+    var i = 0,
+        _item,
+        _fun,
+        _arg,
+        _len = this.commandQueue.length;
+    // console.log('flush, items: ',_len);
+    for(;i<_len;i++){
+      if(this.paused){
+        // console.log('paused!');
+        break;
+      }
+      // console.log(i);
+      _item = this.commandQueue.shift();
+      //console.log('item:',_item);
+      if(typeof _item === 'function'){
+        _item();
+      }
+      else {
+        _fun = _item[0];
+        _arg = _item[1];
+        _fun(_arg);
+      }
+    }
+  },
+  unshift: function(_fun,_arg){
+    //console.log('push: fun=',_fun,', arg=',_arg);
+    if(_arg!==undefined){
+      this.commandQueue.unshift([_fun,_arg]);
+    }
+    else {
+      this.commandQueue.unshift(_fun);
+    }
+  },
+  push: function(_fun,_arg){
+    //console.log('push: fun=',_fun,', arg=',_arg);
+    if(_arg!==undefined){
+      this.commandQueue.push([_fun,_arg]);
+    }
+    else {
+      this.commandQueue.push(_fun);
+    }
+  },
+  unshiftEval: function(_evalStr,_arg){
+    var _fun;
+    eval('_fun = function(){'+_evalStr+'}');
+    //console.log('pushEval fun:',_fun);
+    this.unshift(_fun);
+  },
+  pushEval: function(_evalStr){
+    //console.log('pushEval:','function(){'+_evalStr+'}');
+    var _fun;
+    eval('_fun = function(){'+_evalStr+'}');
+    //console.log('pushEval fun:',_fun);
+    this.push(_fun);
+    //console.log('commandQueue length:',this.commandQueue.length);
+  }
+}).nu();
 
 COMM.Session = HClass.extend({
   ses_key: '',
@@ -78,7 +156,8 @@ COMM.Transporter = HApplication.extend({
     COMM.Session.newKey(_sesKey);
     for(;i<_responseArrayLen;i++){
       try {
-        eval(_responseArray[i]);
+        // eval(_responseArray[i]);
+        COMM.Queue.pushEval( _responseArray[i] );
       }
       catch(e) {
         _this._clientEvalError = e+" - "+e.description+' - '+_responseArray[i];
@@ -88,7 +167,9 @@ COMM.Transporter = HApplication.extend({
       ELEM.del(_this._serverInterruptElemId);
       _this._serverInterruptElemId = false;
     };
-    _this._busyFlushTimeout = setTimeout('COMM.Transporter.flushBusy();',50);
+    COMM.Queue.push( function(){COMM.Transporter.flushBusy();} );
+    COMM.Queue.flush();
+    //_this._busyFlushTimeout = setTimeout('COMM.Transporter.flushBusy();',50);
   },
   flushBusy: function(){
     var _this = this;

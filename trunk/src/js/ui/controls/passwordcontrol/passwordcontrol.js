@@ -37,7 +37,7 @@
   ***/
 HPasswordControl = HTextControl.extend({
   // just change input type to password from the default input type=text
-  drawMarkup: function(){
+  drawSubviews: function(){
     this.base();
     ELEM.get(this.markupElemIds.value).type = 'password';
   },

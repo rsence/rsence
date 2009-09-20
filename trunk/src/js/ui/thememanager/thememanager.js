@@ -103,25 +103,35 @@ HThemeManager = HClass.extend({
   * Returns:
   *  The contents of the path.
   */
-  fetch: function( _url, _contentType ) {
-    var _result;
+  fetch: function( _url, _contentType, _callBack, _async ) {
     if( !_contentType ){
-      var _contentType = 'text/html; charset=UTF-8';
+      _contentType = 'text/html; charset=UTF-8';
+    }
+    if(_async){
+      var _callBackFun = function( resp ){
+        _callBack( resp.X.responseText );
+      };
+    }
+    else{
+      // console.log('WARNING: Fetching synchronously using HThemeManager is not recommended. Use pre-packaged themes instead.');
+      var _respText;
+      var _callBackFun = function( resp ){
+        _respText = resp.X.responseText;
+      };
     }
     COMM.request(
       _url, {
-        onSuccess: function( resp ){
-          _result = resp.X.responseText;
-        },
+        onSuccess:    _callBackFun,
         on404:        function(resp){ HThemeManager._errTemplateNotFound(  resp.url ); },
         onFailure:    function(resp){ HThemeManager._errTemplateFailure(   resp.url ); },
         onException:  function(resp){ HThemeManager._errTemplateException( resp.url ); },
         method: 'GET',
-        async: false
+        async: _async
       }
     );
-    
-    return _result;
+    if(!_async){
+      return _respText;
+    }
   },
   
   
@@ -172,15 +182,16 @@ HThemeManager = HClass.extend({
   */
   loadCSS: function( _url ) {
     var _contentType = 'text/css',
-        _cssText = this.fetch( _url, _contentType );
-    
-    // Don't try to do anything with empty or invalid css data:
-    if (!_cssText || _cssText === "") {
-      return;
-    }
-    this.useCSS( _cssText );
+        _cssFun = function(_cssText){
+          // Don't try to do anything with empty or invalid css data:
+          if (!_cssText || _cssText === "") {
+            return;
+          }
+          HThemeManager.useCSS( _cssText );
+        };
+    this.fetch( _url, _contentType, _cssFun, true );
   },
-  
+    
   useCSS: function( _cssText ){
     var _contentType = 'text/css';
     // Evaluate the css text
@@ -297,14 +308,15 @@ HThemeManager = HClass.extend({
     var _cached = this._tmplCache[_themeName][_componentName];
     
     if (null === _cached || undefined === _cached) { 
-      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName );
-      _cached = this.fetch( _markupUrl );
+      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName ),
+          _markup = this.fetch( _markupUrl, null, null, false );
       // Save an empty string to template cache to prevent repeated failing
       // requests.
-      if (null === _cached || undefined === _cached) {
-        _cached = "";
+      if (null === _markup || undefined === _markup) {
+        _markup = "";
       }
-      this._tmplCache[_themeName][_componentName] = _cached;
+      HThemeManager._tmplCache[_themeName][_componentName] = _markup;
+      return _markup;
     }
     return _cached;
   },
@@ -326,7 +338,6 @@ HThemeManager = HClass.extend({
   *
   **/
   getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
-    
     /* Load Theme-Specific CSS: */
     if(!this._cssCache[_themeName]){
       this._cssCache[_themeName] = {};

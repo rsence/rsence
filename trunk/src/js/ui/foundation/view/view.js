@@ -396,14 +396,19 @@ HView = HClass.extend({
   // the this.theme is used for loading the markup. Otherwise the currently
   // active theme is used.
   _loadMarkup: function() {
-    var _themeName;
+    var _themeName, _markup;
     if (this.preserveTheme) {
       _themeName = this.theme;
     }
     else {
       _themeName = HThemeManager.currentTheme;
     }
-    this.markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+    _markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+    if(_markup === false){
+      console.log('Warning: Markup template for "'+this.componentName+'" using theme "'+_themeName+'" not loaded.');
+    }
+    this.markup = _markup;
+    return (_markup !== false);
   },
   
 /** method: drawMarkup
@@ -417,7 +422,8 @@ HView = HClass.extend({
   drawMarkup: function() {
     ELEM.setStyle(this.elemId, 'display', 'none', true);
     
-    this._loadMarkup();
+    // continue processing from here on:
+    var _markupStatus = this._loadMarkup();
     
     this.bindMarkupVariables();
     ELEM.setHTML(this.elemId, this.markup);
@@ -558,10 +564,6 @@ HView = HClass.extend({
     }
     ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
   },
-  setStyleForPart: function(_partName, _name, _value, _cacheOverride ){
-    console.log('Warning: setStyleForPart is deprecated. Use setStyleOfPart instead.');
-    this.styleOfPart( _partName, _name, _value, _cacheOverride );
-  },
   
 /** method: styleForPart
   *
@@ -581,10 +583,6 @@ HView = HClass.extend({
       return '';
     }
     return ELEM.getStyle(this.markupElemIds[_partName], _name);
-  },
-  styleForPart: function(_partName, _name){
-    console.log('Warning: styleForPart is deprecated. Use styleOfPart instead.');
-    return this.styleOfPart( _partName, _name );
   },
   
   setMarkupOfPart: function( _partName, _value ) {
