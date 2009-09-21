@@ -106,13 +106,12 @@ module Common
       :ses_ids => {}
     }
     
-    auth_setup = $config[:database][:auth_setup] # rsence-isolated account of mysql
-    @db = MySQLAbstractor.new(auth_setup, auth_setup[:db])
+    @db = Sequel.connect( $config[:database][:ses_db] )
     
   end
   
   def shutdown
-    @db.close
+    @db.disconnect
   end
   
   # serves files and images

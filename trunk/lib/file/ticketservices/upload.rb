@@ -43,7 +43,7 @@ Upload failure states:
 
 Default upload table:
 
-create table rsence.org_uploads (
+create table rsence_uploads (
   id int primary key auto_increment,
   ses_id int not null,
   upload_date int not null,
@@ -53,6 +53,8 @@ create table rsence.org_uploads (
   file_data mediumblob
 )
 =end
+
+require 'sequel'
 
 module Riassence
 module Server
@@ -84,34 +86,30 @@ module Upload
       elsif not file_size < max_size
         done_value = "-4:::#{ticket_id}"
       else
-        #puts "ok"
         done_value = "2:::#{ticket_id}"
         ## Insert basic data about the upload and get its key
-        upload_id = @db.q(%{
-          insert into rsence_uploads
-            (ses_id,ticket_id,upload_date,upload_done,file_name,file_size,file_mime,file_data)
-          values
-            (#{ses_id},#{ticket_id.inspect},#{Time.now.to_i},0,#{hexlify(file_filename)},#{file_size},#{file_mimetype.inspect},'')
-        })
+        upload_id = @db[:rsence_uploads].insert(
+            :ses_id      => ses_id,
+            :ticket_id   => ticket_id,
+            :upload_date => Time.now.to_i,
+            :upload_done => false,
+            :file_name   => file_filename,
+            :file_size   => file_size,
+            :file_mime   => file_mimetype,
+            :file_data   => ''
+        )
         if not @upload_slots[:uploaded].has_key?(ticket_id)
           @upload_slots[:uploaded][ticket_id] = []
         end
         @upload_slots[:uploaded][ticket_id].push( upload_id )
-        #puts "upload id:#{upload_id.inspect}"
+        
         ## Start a loop to read the tempfile as chunks of the upload into the
         ## database (4k chunks, so mysql won't choke with its default settings)
-        file_readcount = 0
-        while file_readcount < file_size
-          file_chunk = file_data[:tempfile].read(4096)
-          file_chunksize = file_chunk.size
-          file_readcount += file_chunksize
-          #puts "#{file_readcount} < #{file_size}"
-          @db.q("update rsence_uploads set file_data = concat(file_data,#{hexlify(file_chunk)}) where id = #{upload_id}")
-        end
-        @db.q("update rsence_uploads set upload_done = 1 where id = #{upload_id}")
-        #puts "insert done"
+        @db[:rsence_uploads].filter(:id => upload_id).update(
+          :file_data   => file_data[:tempfile].read.to_sequel_blob,
+          :upload_done => true
+        )
       end
-      #puts "upload almost done"
     end
     
     response_body = %{
@@ -138,29 +136,39 @@ module Upload
     if @upload_slots[:uploaded].has_key?(ticket_id)
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         if with_data
-          row_datas = @db.q("select upload_date,upload_done,file_name,file_size,file_mime,file_data from rsence_uploads where id = #{row_id}")
+          row_datas = @db[:rsence_uploads].select(
+            :upload_date, :upload_done, :file_name,
+            :file_size, :file_mime, :file_data
+          ).filter(
+            :id => row_id
+          )
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
-              :date => Time.at(row_data['upload_date']),
-              :done => (row_data['upload_done']==1),
-              :size => row_data['file_size'],
-              :mime => row_data['file_mime'],
-              :name => row_data['file_name'],
-              :data => row_data['file_data']
+              :date => Time.at(row_data[:upload_date]),
+              :done => row_data[:upload_done],
+              :size => row_data[:file_size],
+              :mime => row_data[:file_mime],
+              :name => row_data[:file_name],
+              :data => row_data[:file_data]
             }
             uploads.push(row_hash)
           end
         else
-          row_datas = @db.q("select upload_date,upload_done,file_name,file_size,file_mime from rsence_uploads where id = #{row_id}")
+          row_datas = @db[:rsence_uploads].select(
+            :upload_date, :upload_done, :file_name,
+            :file_size, :file_mime
+          ).filter(
+            :id => row_id
+          )
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
-              :date => Time.at(row_data['upload_date']),
-              :done => (row_data['upload_done']==1),
-              :size => row_data['file_size'],
-              :mime => row_data['file_mime'],
-              :name => row_data['file_name'],
+              :date => Time.at(row_data[:upload_date]),
+              :done => row_data[:upload_done],
+              :size => row_data[:file_size],
+              :mime => row_data[:file_mime],
+              :name => row_data[:file_name],
               :data => nil
             }
             uploads.push(row_hash)
@@ -173,7 +181,7 @@ module Upload
   
   def del_upload( ticket_id, row_id )
     @upload_slots[:uploaded][ticket_id].delete(row_id)
-    @db.q("delete from rsence_uploads where id = #{row_id}")
+    @db[:rsence_uploads].filter( :id => row_id ).delete
   end
   
   # removes uploaded files
@@ -186,15 +194,15 @@ module Upload
     if @upload_slots[:uploaded].has_key?( ticket_id )
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         @upload_slots[:uploaded][ticket_id].delete( row_id )
-        @db.q("delete from rsence_uploads where id = #{row_id}")
+        @db[:rsence_uploads].filter( :id => row_id ).delete
       end
       @upload_slots[:uploaded].delete( ticket_id )
     end
     if @upload_slots[:by_id].has_key?( ticket_id )
       @upload_slots[:by_id].delete( ticket_id )
     end
-    @db.q("delete from rsence_uploads where ticket_id = #{hexlify(ticket_id)}")
-    @db.q("delete from rsence_uploads where ses_id = #{ses_id}")
+    @db[:rsence_uploads].filter( :ticket_id => ticket_id ).delete
+    @db[:rsence_uploads].filter( :ses_id => ses_id ).delete
   end
   
   def upload_key(msg,value_key,max_size=1000000,mime_allow=/(.*?)\/(.*?)/,allow_multi=true)

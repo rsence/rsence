@@ -273,7 +273,7 @@ $config = {
   
   ## Database configuration
   :database => {
-  
+    
     # root_setup should ideally have permissions
     # to create the auth_setup account and database,
     # but if the access fails, it'll fall back to
@@ -336,8 +336,27 @@ LIB_PATHS  = [
 
 ## Create default local configuratation override file, if it does not exist:
 local_config_file_path = File.join(SERVER_PATH,'conf','local_conf.rb')
+
+
 if File.exist?(local_config_file_path)
   require local_config_file_path[0..-4]
+elsif ARGV.include?('--config')
+  conf_file = ARGV[ARGV.index('--config')+1]
+  if conf_file[0].chr != '/'
+    conf_file = File.join( Dir.pwd, conf_file )
+  end
+  if conf_file[-3..-1] != '.rb'
+    warn "WARNING: Only ruby configuration files are supported for now."
+    warn "         Future versions might include YAML support."
+    warn "      -> #{conf_file} ignored."
+  elsif File.exist?( conf_file )
+    # strip the '.rb' suffix
+    conf_file = conf_file[0..-4]
+    require conf_file
+  else
+    warn "ERROR: Configuration file #{conf_file.inspect} not found."
+    exit
+  end
 else
   puts "NOTE:  Local configuration file #{local_config_file_path.inspect}"
   puts "       does not exist, creating a default one."
@@ -347,25 +366,16 @@ else
   local_config_data = conf_wizard.run( local_config_file_path )
 end
 
-if ARGV.include?('--config')
-  conf_file = ARGV[ARGV.index('--config')+1]
-  if conf_file[0].chr != '/'
-    conf_file = File.join( Dir.pwd, conf_file )
-  end
-  unless conf_file[-3..-1] == '.rb'
-    puts "ERROR: Only ruby configuration files are supported for now."
-    puts "       Future versions might include YAML support."
-    exit
-  end
-  if File.exist?( conf_file )
-    # strip the '.rb' suffix
-    conf_file = conf_file[0..-4]
-    require conf_file
-  else
-    puts "ERROR: Configuration file #{conf_file.inspect} not found."
-    exit
-  end
+unless $config[:database].has_key?(:ses_db)
+  warn "WARNING: The database is not configured with a :ses_db url."
+  warn "         You are advised to convert the :root_setup and :auth_setup keys of"
+  warn "         $config[:database] to the new url format."
+  db_auth = $config[:database][:auth_setup]
+  $config[:database][:ses_db] = "mysql://#{db_auth[:user]}:#{db_auth[:pass]}@#{db_auth[:host]}:#{db_auth[:port]}/#{db_auth[:db]}"
+  warn "      -> Performed automatic conversion of :auth_setup as"
+  warn "         $config[:database][:ses_db] = #{$config[:database][:ses_db].inspect}"
 end
+
 
 ## Uses the lib paths as search paths
 LIB_PATHS.each do |lib_path|

@@ -44,7 +44,7 @@ module RestfulDispatcher
     dispatcher = dispatcher_class.new( request, response )
     dispatcher.send(request_method)
     content_type = dispatcher.content_type
-    response.header['Content-Length'] = response.body.size.to_s unless response.header.has_key?('Content-Length')
+    response.header['Content-Length'] = response.body.length.to_s unless response.header.has_key?('Content-Length')
     return [response.status, response.header, response.body]
   end
   
@@ -60,12 +60,12 @@ module RestfulDispatcher
   
   module SingletonMethods
     def start(handler, host, port)
-      handler.run Rack::Lint.new(self.new), :Host => host, :Port => port
+      handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
     end
   end
   
   def self.included(receiver)
-    receiver.extend SingletonMethods
+    receiver.extend( SingletonMethods )
   end
 end
 
