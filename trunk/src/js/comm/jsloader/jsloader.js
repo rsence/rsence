@@ -56,7 +56,7 @@ JSLoader = HClass.extend({
   
 });
 
-RUN("jsLoader = JSLoader.nu('/H/'+HCLIENT_REV+'/js/');");
+RUN("jsLoader = JSLoader.nu(HCLIENT_BASE+'/js/');");
 
 
 

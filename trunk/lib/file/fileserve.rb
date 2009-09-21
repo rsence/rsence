@@ -58,7 +58,9 @@ class FileServe
     end
     
     ## Split path into an array for determining what to serve
-    request_path = request.path.split('/')
+    request_uri = '/'+request.path.match( /^#{$config[:broker_urls][:h]}(.*)$/ )[1]
+    
+    request_path = request_uri.split( '/' )
     
     ## Requested type of client resource (js/themes)
     req_type = request_path[2]

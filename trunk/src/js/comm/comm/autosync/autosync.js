@@ -121,7 +121,7 @@ COMM.Transporter = HApplication.extend({
     var _this = this;
     this.serverLostMessage = 'Server Connection Lost. Retrying.';
     _this.label = 'Transporter';
-    _this.url = '/hello';
+    _this.url = false;
     _this.busy = false;
     _this.stop = true;
     _this._serverInterruptElemId = false;
@@ -232,5 +232,5 @@ COMM.Transporter = HApplication.extend({
     );
   }
 }).nu();
-LOAD('COMM.Transporter.stop=false;COMM.Transporter.sync();');
+LOAD('COMM.Transporter.url=HCLIENT_HELLO;COMM.Transporter.stop=false;COMM.Transporter.sync();');
 

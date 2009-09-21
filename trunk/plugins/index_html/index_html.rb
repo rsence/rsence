@@ -29,7 +29,7 @@
 class IndexHtmlPlugin < ServletPlugin
   
   def match( uri, method )
-    if uri == '/' and method == :get
+    if uri == $config[:indexhtml_conf][:respond_address] and method == :get
       return true
     else
       return false
@@ -63,6 +63,8 @@ class IndexHtmlPlugin < ServletPlugin
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
+    @index_html.gsub!('__CLIENT_BASE__',File.join($config[:broker_urls][:h],@client_rev))
+    @index_html.gsub!('__CLIENT_HELLO__',$config[:broker_urls][:hello])
     
     deps_src = ''
     $config[:index_html][:deps].each do |dep|

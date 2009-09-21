@@ -52,7 +52,7 @@ class TicketServe
   include Riassence::Server::TicketService::Common
   
   include Riassence::Server::TicketService::Rsrc
-  include Riassence::Server::TicketService::File
+  include Riassence::Server::TicketService::TicketFile
   include Riassence::Server::TicketService::Img
   include Riassence::Server::TicketService::Upload
   include Riassence::Server::TicketService::Favicon

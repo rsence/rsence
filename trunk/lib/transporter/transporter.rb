@@ -91,7 +91,7 @@ class Transporter
       # If cookies are true, it means the url base needs to
       # be changed from /hello to /x to prevent further cookie juggling.
       if cookies
-        msg.reply('COMM.Transporter.url="/x";')
+        msg.reply("COMM.Transporter.url=#{$config[:broker_urls][:x].to_json};")
       end
       
       # Appends a 'new session.' message for new sessions in $DEBUG_MODE:

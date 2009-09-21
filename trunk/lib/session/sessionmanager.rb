@@ -202,7 +202,10 @@ class SessionManager < SessionStorage
   end
   
   ## Displays error message and stops the client
-  def stop_client_with_message( msg, title='Unknown Issue', descr='No issue description given.', uri='/' )
+  def stop_client_with_message( msg,
+                                title = 'Unknown Issue',
+                                descr = 'No issue description given.',
+                                uri = $config[:indexhtml_conf][:respond_address] )
     msg.error_msg( [
       "jsLoader.load('controls');",
       "jsLoader.load('servermessage');",
@@ -328,7 +331,7 @@ class SessionManager < SessionStorage
     
     ## Only match the handshaking address of rsence,
     ## prevents unneccessary cookie-juggling in xhr's
-    ses_cookie_path    = '/hello'
+    ses_cookie_path    = $config[:broker_urls][:hello]
     
     ## Formats the cookie to string
     ## (through array, to keep it readable in the source)

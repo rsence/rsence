@@ -41,7 +41,7 @@ module Rsrc
     
     @raw_uris[rsrc_id] = [content_type,content_size,content]
     
-    return "/d/#{rsrc_id}"
+    uri = File.join($config[:broker_urls][:d],rsrc_id)
   end
   
 end
