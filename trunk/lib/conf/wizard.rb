@@ -399,6 +399,24 @@ class ConfigWizard
   end
   
   def run( local_config_file_path )
+    puts
+    puts
+    puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    puts " This RSence instance is not configured."
+    puts
+    puts " To configure, create a configuration file:"
+    puts "  #{local_config_file_path}"
+    puts
+    puts " You may also answer a few simple questions to create"
+    puts " a configuration file template."
+    puts
+    print " Do you want to run the configuration tool, "
+    configure_now = yesno(true) until configure_now != nil
+    unless configure_now
+      puts
+      puts " OK. No configuration at this time. Can't continue; exit."
+      exit
+    end
     @conf[:database][:auth_setup][:pass] = RandGen.new(12).gen
     ask_about_db
     ask_about_httpd
