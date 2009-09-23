@@ -24,7 +24,9 @@
 $_INC_NAME = 'js.inc'
 $_DONT_PACK_UNDEFINED = false
 # sorted by output order:
-$_PACKAGE_NAMES = ['core','comm','controls','servermessage','iefix','datetime','lists']
+$_PACKAGE_NAMES = [ 'core', 'comm', 'controls',
+                    'servermessage', 'iefix', 'datetime',
+                    'lists', 'json_renderer' ]
 $_PACKAGES = {
   
   ## The core package contains everything needed
@@ -104,6 +106,11 @@ $_PACKAGES = {
   
   'lists' => [
     'checkboxlist'
+  ],
+  
+  'json_renderer' => [
+    'json_renderer',
+    'json_renderer_test'
   ]
 }
 
