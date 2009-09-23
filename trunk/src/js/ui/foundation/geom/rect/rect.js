@@ -83,7 +83,12 @@ HRect = HClass.extend({
       this._constructorPoint(_args[0],_args[1]);
     }
     else if (_args.length === 1) {
-      this._constructorRect(_args[0]);
+      if(_args[0] instanceof Array){
+        this._constructorSides(_args[0][0],_args[0][1],_args[0][2],_args[0][3]);
+      }
+      else{
+        this._constructorRect(_args[0]);
+      }
     }
     else {
       throw "Invalid number of arguments.";
