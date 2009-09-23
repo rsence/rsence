@@ -122,7 +122,6 @@ HView = HClass.extend({
       this.preserveTheme = true;
     }
     
-    
     // Used for smart template elements (resizing)
     
     this.optimizeWidthOnRefresh = true;
@@ -173,14 +172,14 @@ HView = HClass.extend({
   setFlexLeft: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexLeft = _flag;
-    if(_px!==undefined){
+    if((_px || _px === 0) && this.rect){
       this.rect.setLeft(_px);
     }
   },
   setFlexTop: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexTop = _flag;
-    if(_px!==undefined){
+    if((_px || _px === 0) && this.rect){
       this.rect.setTop(_px);
     }
   },
@@ -492,12 +491,104 @@ HView = HClass.extend({
   *
   * Parameter:
   *  _rect - The new <HRect> instance to replace the old <rect> instance with.
+  *  _rect - Array format:
+  *    
+  *    with 4 items, then left and top -aligned layout with numeric indexes at:
+  *      0: left
+  *      1: top
+  *      2: width
+  *      3: height
+  *    
+  *    with 6 items, then special layout with indexes at:
+  *      0: left
+  *         - right-aligned layout if null and valid number at index 2 and 4
+  *      1: top
+  *         - bottom-aligned layout if null and valid number at index 3 and 5
+  *      2: width
+  *         - auto-width if null and valid number at index 0 and 4
+  *      4: height
+  *         - auto-height if null and valid number at index 1 and 5
+  *      5: right
+  *         - right-aligned layout if valid number at index 2
+  *         - auto-width if valid number at index 0
+  *      6: bottom
+  *         - bottom-aligned layout if valid number at index 3
+  *                - auto-height if valid number at index 1
   **/
   setRect: function(_rect) {
     if (this.rect) {
       this.rect.release(this);
     }
-    this.rect = _rect;
+    if(_rect instanceof Array){
+      var _arrLen = _rect.length,
+          _throwPrefix = 'HView.setRect: If the HRect instance is replaced by an array, ';
+      if((_arrLen === 4) || (_arrLen === 6)){
+        var _leftOffset   = _rect[0],
+            _topOffset    = _rect[1],
+            _width        = _rect[2],
+            _height       = _rect[3],
+            _rightOffset  = ((_arrLen === 6)?_rect[4]:null),
+            _bottomOffset = ((_arrLen === 6)?_rect[5]:null),
+            _validLeftOffset    = (typeof _leftOffset    === 'number'),
+            _validTopOffset     = (typeof _topOffset     === 'number'),
+            _validRightOffset   = (typeof _rightOffset   === 'number'),
+            _validBottomOffset  = (typeof _bottomOffset  === 'number'),
+            _validWidth   = (typeof _width   === 'number'),
+            _validHeight  = (typeof _height  === 'number'),
+            _right,
+            _bottom;
+        
+        if( (!_validLeftOffset && !_validRightOffset) ||
+            (!_validTopOffset && !_validBottomOffset) ){
+          console.log(_throwPrefix + '(left or top) and (top or bottom) must be specified.');
+        }
+        else if( (!_validWidth   && !(_validLeftOffset && _validRightOffset)) ||
+                 (!_validHeight  && !(_validTopOffset  && _validBottomOffset)) ){
+          console.log(_throwPrefix + 'the (height or width) must be specified unless both (left and top) or (top and bottom) are specified.');
+        }
+        
+        this.setFlexLeft(_validLeftOffset,_leftOffset);
+        this.setFlexTop(_validTopOffset,_topOffset);
+        this.setFlexRight(_validRightOffset,_rightOffset);
+        this.setFlexBottom(_validBottomOffset,_bottomOffset);
+        
+        // default, makes a correct rect
+        if(_validLeftOffset && _validWidth && !_validRightOffset){
+          _right = _leftOffset + _width;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(!_validLeftOffset && _validWidth && _validRightOffset){
+          _leftOffset = 0;
+          _right = _width;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(_validLeftOffset && !_validWidth && _validRightOffset){
+          _right = _leftOffset + _rightOffset;
+        }
+        
+        // default, makes a correct rect
+        if(_validTopOffset && _validHeight && !_validBottomOffset){
+          _bottom = _topOffset + _height;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(!_validTopOffset && _validHeight && _validBottomOffset){
+          _topOffset = 0;
+          _bottom = _height;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(_validTopOffset && !_validWidth && _validBottomOffset){
+          _bottom = _leftOffset + _bottomOffset;
+        }
+        
+        this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
+      }
+      else {
+        console.log(_throwPrefix + 'the length has to be either 4 or 6.');
+      }
+    }
+    else {
+      this.rect = _rect;
+    }
     this.rect.bind(this);
     this.refresh();
   },
