@@ -55,9 +55,12 @@ class HValue
   
   ## (Re-)Send the client-size representation
   def restore( msg )
-    ## Initialize a new client value
-    init_str = "COMM.Values.create(#{@val_id.to_json},#{@data.to_json});"
-    msg.reply_value( init_str )
+    
+    ## Tags itself as a new value from the client's point of view
+    @is_new_to_client = true
+    
+    add_to_sync( msg )
+    
   end
   
   def initialize( msg, data )
@@ -151,6 +154,14 @@ class HValue
     
   end
   
+  def add_to_sync( msg )
+    ## add the id to the values to be syncronized (to client)
+    sync_ids = msg.session[:values][:sync]
+    unless sync_ids.include?( @val_id )
+      sync_ids.push( @val_id )
+    end
+  end
+  
   ## sets the data
   def set( msg, data, dont_tell_client=false )
     
@@ -162,17 +173,21 @@ class HValue
       @sync  = false
       @is_valid = true
       
-      ## add the id to the values to be syncronized (to client)
-      sync_ids = msg.session[:values][:sync]
-      unless sync_ids.include?( @val_id )
-        sync_ids.push( @val_id )
-      end
+      add_to_sync( msg )
     end
   end
   
   ## tell the client that the value changed
   def to_client( msg )
-    msg.reply_value "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
+    if @is_new_to_client
+      ## Initialize a new client value
+      init_str = "COMM.Values.create(#{@val_id.to_json},#{@data.to_json});"
+      msg.reply_value( init_str )
+      @is_new_to_client = false
+    else
+      ## Sets the client value
+      msg.reply_value "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
+    end
   end
   
   ## clean up self
@@ -186,8 +201,8 @@ class HValue
     ## Store the object here
     session_values.delete[ @val_id ]
     
-    if msg
-      msg.reply_value("HVM.del('#{@val_id}');")
+    if msg and not @is_new_to_client
+      msg.reply_value("HVM.del(#{@val_id.to_json});")
     end
   end
   
