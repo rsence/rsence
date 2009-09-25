@@ -57,7 +57,7 @@ class HValue
   def restore( msg )
     ## Initialize a new client value
     init_str = "COMM.Values.create(#{@val_id.to_json},#{@data.to_json});"
-    msg.reply( init_str )
+    msg.reply_value( init_str )
   end
   
   def initialize( msg, data )
@@ -172,7 +172,7 @@ class HValue
   
   ## tell the client that the value changed
   def to_client( msg )
-    msg.reply "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
+    msg.reply_value "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
   end
   
   ## clean up self
@@ -187,7 +187,7 @@ class HValue
     session_values.delete[ @val_id ]
     
     if msg
-      msg.reply("HVM.del('#{@val_id}');")
+      msg.reply_value("HVM.del('#{@val_id}');")
     end
   end
   

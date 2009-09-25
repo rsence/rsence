@@ -117,7 +117,7 @@ class SessionManager < SessionStorage
     @session_cookie_keys[ cookie_key ] = ses_id
     
     ### Tell the client what the new key is
-    msg.reply ses_key
+    msg.ses_key = ses_key
     
     ### Set the session data and id to the message object
     msg.session = ses_data
