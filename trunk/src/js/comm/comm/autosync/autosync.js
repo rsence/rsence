@@ -180,6 +180,7 @@ COMM.Transporter = HApplication.extend({
   },
   failMessage: function(_title,_message){
     this.stop = true;
+    jsLoader.load('default_theme');
     jsLoader.load('controls');
     jsLoader.load('servermessage');
     ReloadApp.nu(_title,_message);
