@@ -207,6 +207,7 @@ class SessionManager < SessionStorage
                                 descr = 'No issue description given.',
                                 uri = $config[:indexhtml_conf][:respond_address] )
     msg.error_msg( [
+      "jsLoader.load('default_theme');",
       "jsLoader.load('controls');",
       "jsLoader.load('servermessage');",
       "ReloadApp.nu( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
