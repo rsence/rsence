@@ -65,7 +65,7 @@ class ConfigWizard
 
 ## The base_url specifies the prefix for all default http responders, except servlets.
 ## NOTE: the default index_html servlet is aware of this parameter.
-#{cdiff[:base_url]}$config[:base_url] = #{@conf[:base_url].inspect}
+#{cdiff([:base_url])}$config[:base_url] = #{@conf[:base_url].inspect}
 
 
 # This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
