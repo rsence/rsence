@@ -54,13 +54,18 @@ COMM.Queue = HApplication.extend({
       // console.log(i);
       _item = this.commandQueue.shift();
       //console.log('item:',_item);
-      if(typeof _item === 'function'){
-        _item();
+      try{
+        if(typeof _item === 'function'){
+          _item();
+        }
+        else {
+          _fun = _item[0];
+          _arg = _item[1];
+          _fun(_arg);
+        }
       }
-      else {
-        _fun = _item[0];
-        _arg = _item[1];
-        _fun(_arg);
+      catch(e){
+        console.log('COMM.Queue; failed to execute the js block: '+_item.toSource()+' reason:'+e);
       }
     }
   },
