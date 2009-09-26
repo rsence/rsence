@@ -36,13 +36,13 @@ JSONRenderer = HClass.extend({
   *  - _parent: The parent view (or app)
   **/
   constructor: function(_data, _parent){
-    if((_data['type'] === 'GUITree') && (_data['version'] === 0.1)){
+    if((_data['type'] === 'GUITree') && ([0.1,0.2].indexOf(_data['version']) !== -1)){
       this.data   = _data;
       this.parent = _parent;
       this.render();
     }
     else{
-      throw("JSONRenderer: Only GUITree 0.1 data can be built at this time.");
+      throw("JSONRenderer: Only GUITree 0.1 and 0.2 data can be built at this time.");
     }
   },
   render: function(){
@@ -50,11 +50,14 @@ JSONRenderer = HClass.extend({
   },
   renderNode: function( _dataNode, _parent ){
     var // Currently only window-level classes are supported
-        _class = window[_dataNode['class']],
+        _className = _dataNode['class'],
+        _hasClass = (_className !== undefined) && (window[_className] !== undefined),
+        _class = _hasClass?(window[_className]):false,
         
         // Currently only HView -derived classes are supported, so 
         // the rect is mandatory.
         _rect = _dataNode['rect'],
+        _hasRect = (_rect !== undefined) && (_rect instanceof Array),
         
         // Checks, if any sub-views are defined.
         _hasSubviews = _dataNode['subviews'] !== undefined,
@@ -64,21 +67,27 @@ JSONRenderer = HClass.extend({
         _hasOptions  = _dataNode['options'] !== undefined,
         _options     = _hasOptions?_dataNode['options']:null,
         
-        // The HView-derived class instance
-        _instance,
+        // The HView-derived class instance, instance is by default the parent
+        _instance = _parent,
         
         // not used yet:
         _subView;
     try{
-      if(_hasOptions){
-        if(_options['valueObjId'] !== undefined){
-          var _valueObjId = _options['valueObjId'];
-          _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+      if(_hasClass){
+        if(_hasOptions){
+          if(_options['valueObjId'] !== undefined){
+            var _valueObjId = _options['valueObjId'];
+            _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+          }
         }
-        _instance = _class.nu(_rect,_parent,_options);
-      }
-      else{
-        _instance = _class.nu(_rect,_parent);
+        // For HApplication -derived classes
+        if(!_hasRect && _hasOptions){
+          _instance = _class.nu(_options);
+        }
+        // For HView and HControl -derived classes
+        else if(_hasRect){
+          _instance = _class.nu(_rect,_parent,_options);
+        }
       }
     }
     catch(e){
