@@ -36,19 +36,17 @@ JSONRenderer = HClass.extend({
   *  - _parent: The parent view (or app)
   **/
   constructor: function(_data, _parent){
-    this.base();
     if((_data['type'] === 'GUITree') && (_data['version'] === 0.1)){
       this.data   = _data;
       this.parent = _parent;
       this.render();
     }
     else{
-      throw("JSONBuilder: Only GUITree 0.1 data can be built at this time.");
+      throw("JSONRenderer: Only GUITree 0.1 data can be built at this time.");
     }
   },
   render: function(){
     this.view = this.renderNode( this.data, this.parent );
-    console.log(this.view);
   },
   renderNode: function( _dataNode, _parent ){
     var // Currently only window-level classes are supported
@@ -71,17 +69,21 @@ JSONRenderer = HClass.extend({
         
         // not used yet:
         _subView;
-    
-    if(_hasOptions){
-      if(_options['valueObjId'] !== undefined){
-        _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+    try{
+      if(_hasOptions){
+        if(_options['valueObjId'] !== undefined){
+          var _valueObjId = _options['valueObjId'];
+          _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+        }
+        _instance = _class.nu(_rect,_parent,_options);
       }
-      _instance = _class.nu(_rect,_parent,_options);
+      else{
+        _instance = _class.nu(_rect,_parent);
+      }
     }
-    else{
-      _instance = _class.nu(_rect,_parent);
+    catch(e){
+      console.log('renderNode error:',e,', rect:',_rect,', class:',_dataNode['class'],', options:', _options);
     }
-    
     // Iterates recursively through all subviews, if specified.
     if(_hasSubviews){
       for( var i = 0; i < _subViews.length; i++ ){
