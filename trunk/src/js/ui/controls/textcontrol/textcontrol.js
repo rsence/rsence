@@ -165,3 +165,35 @@ HTextControl = HControl.extend({
   
 });
 
+HNumericTextControl = HTextControl.extend({
+  mouseWheel: function(_delta){
+    var _value = this.value;
+    _value = _value-((_delta<0)?1:-1);
+    this.setValue(Math.round(this.validateText(_value)));
+  },
+  validateText: function(_value){
+    if(isNaN(_value)){
+      _value = this.value;
+    }
+    _value = parseInt(_value,10);
+    if(_value>this.options.maxValue){
+      _value = this.options.maxValue;
+    }
+    else if(_value<this.options.minValue){
+      _value = this.options.minValue;
+    }
+    if(this['markupElemIds'] && this.markupElemIds['value']){
+      var _elem = ELEM.get(this.markupElemIds.value);
+      if(_elem.value != _value){
+        _elem.value = _value;
+      }
+    }
+    return _value;
+  },
+  setValue: function(_value){
+    this.base(this.validateText(_value));
+  }
+});
+
+
+
