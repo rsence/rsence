@@ -167,10 +167,26 @@ COMM.Values = HClass.extend({
     return '"' + _str + '"';
   },
   _encodeString: function(_str){
-    return unescape( encodeURIComponent( _str ) );
+    var _outStr;
+    try {
+      _outStr = unescape( encodeURIComponent( _str ) );
+    }
+    catch(e) {
+      //console.log('COMM.Values.encodeString failure '+e+' of string '+_str);
+      _outStr = _str;
+    }
+    return _outStr;
   },
   _decodeString: function(_str){
-    return decodeURIComponent( escape( _str ) );
+    var _outStr;
+    try {
+      _outStr = decodeURIComponent( escape( _str ) );
+    }
+    catch(e) {
+      //console.log('COMM.Values.decodeString failure '+e+' of string '+_str);
+      _outStr = _str;
+    }
+    return _outStr;
   },
   encode: function(_obj){
     var _str, _type, _this = this;
