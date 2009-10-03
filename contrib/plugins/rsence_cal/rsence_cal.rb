@@ -63,12 +63,10 @@ class RiassenceCal < Plugin
     time_begin = Time.gm( time.year, time.month, time.mday ).to_i
     time_end   = time_begin + 86400
     ses = msg.session[:rsence_cal]
-    $stderr.write(
     @db[:cal_entries].filter({
-        :calendar_id => ses[:calendar_ids].data,
-        :time_begin => time_begin..time_end
-      }).sql.inspect+"\n" )
-    return []
+      :calendar_id => ses[:calendar_ids].data,
+      :time_begin => time_begin..time_end
+    }).all
   end
   def init_ses(msg)
     time_now = Time.now.to_i
@@ -84,7 +82,7 @@ class RiassenceCal < Plugin
   end
   alias restore_ses init_ses
   def init_ui(msg)
-    include_js( msg, ['controls','datetime','lists'] )
+    include_js( msg, ['default_theme','controls','datetime','lists'] )
     msg.reply require_js('rsence_cal')
     ses = msg.session[:rsence_cal]
     msg.reply "rsence_cal = RiassenceCal.nu(#{extract_hvalues_from_hash(ses)});"
