@@ -67,12 +67,13 @@ HCheckboxList = HControl.extend({
     }
   }),
   refreshValue: function(){
+    var i;
     // destroy extra list
-    for(var i=this.value.length;i<this.listItems.length;i++){
+    for(i=this.value.length;i<this.listItems.length;i++){
       this.listItems[i][0].die();
     }
     var listItemCheckRect = HRect.nu(4,4,this.rect.right-8,28);
-    for(var i=0;i<this.value.length;i++){
+    for(i=0;i<this.value.length;i++){
       if(i>this.listItems.length-1){
         var isSelected = (this.options.cal_ids.value.indexOf(this.value[i].id)!==-1);
         this.listItems.push(
@@ -85,6 +86,7 @@ HCheckboxList = HControl.extend({
             }
           )
         );
+        listItemCheckRect.offsetBy(0,24);
       }
     }
   }
