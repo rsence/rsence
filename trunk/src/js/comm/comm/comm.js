@@ -97,8 +97,6 @@ COMM.request = function(_url,_options){
   //_success,_failure,_method,_async,_params,_headers,_body,_username,_password,_contentType,_charset){
   var _comm = COMM,
       
-      _url = _url,
-      
       _this = _options?_options:{},
       
       _method = _options.method?_options.method.toUpperCase():'GET',
@@ -121,7 +119,7 @@ COMM.request = function(_url,_options){
     _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);
   }
   if(!_async){
-    console.log("WARNING: Synchronous "+_method+" request to "+_url);
+    console.log("WARNING: Synchronous "+_method+" request to "+_url+", these will fail on the Symbian web browser.");
   }
   _this.X.open(
     _method,
@@ -136,9 +134,6 @@ COMM.request = function(_url,_options){
   if(_method === 'POST'){
     _headers['Content-Type'] = _contentType + '; charset=' + _charset;
     var _body = _options.body?_options.body:'';
-    if(!BROWSER_TYPE.safari){ // for some reason, safari doesn't like this
-      _headers['Content-Length'] = _body.length.toString();
-    }
     for(var _header in _headers){
       _this.X.setRequestHeader(_header,_headers[_header]);
     }
