@@ -137,7 +137,7 @@ HValue = HClass.extend({
     if(_viewObj===undefined){
       throw("HValueBindError: _viewObj is undefined!");
     }
-    if(this.views.indexOf(_viewObj)==-1){
+    if(this.views.indexOf(_viewObj)===-1){
       this.views.push(_viewObj);
       _viewObj.setValueObj( this );
     }
