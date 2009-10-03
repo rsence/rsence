@@ -10,28 +10,29 @@
 .calendar_head_prev_month,
 .calendar_head_next_month {
   position: absolute;
-  top: 0px; width: 20px; height: 20px;
-  color: #666;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
+  top: 2px; width: 16px; height: 16px;
+  font-size: 0; line-height: 0;
   line-height: 20px;
-  vertical-align: middle;
-  text-align: center;
   cursor: pointer;
+  background-image: #{this.getCssFilePath('calendar_arrows.png')};
 }
 .calendar_head_prev_month {
-  left: 0px;
+  background-position: 0px 0px;
+  left: 2px;
 }
 .calendar_head_next_month {
-  right: 0px;
+  background-position: -16px 0px;
+  right: 2px;
 }
-.calendar_head_prev_month:hover,
+.calendar_head_prev_month:hover {
+  background-position: 0px -16px;
+}
 .calendar_head_next_month:hover {
-  color: #000;
+  background-position: -16px -16px;
 }
 .calendar_head_prev_month:active,
 .calendar_head_next_month:active {
-  color: #000; background-color: #fff;
+  background-color: #fff;
 }
 .calender_head_month_year {
   position: absolute;
