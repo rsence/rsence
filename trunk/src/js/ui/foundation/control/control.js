@@ -70,9 +70,9 @@ HControl = HView.extend({
       _options = {};
     }
     
-    var _isValueRange = (_options.minValue || _options.maxValue),
-        _options = HComponentDefaults.extend(_options).nu(),
-        _label = _options.label,
+    var _isValueRange = (_options.minValue || _options.maxValue);
+    _options = HComponentDefaults.extend(_options).nu();
+    var _label = _options.label,
         _events = _options.events,
         _this = this;
     
