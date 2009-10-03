@@ -33,9 +33,9 @@ HValueResponder = HClass.extend({
   * See also:
   *  <setValue> <setValueRange> <HValue.bind> <HValue.unbind> <HValueManager>
   **/
-  setValueObj: function(_HValue) {
-    this.valueObj = _HValue;
-    this.setValue(_HValue.value);
+  setValueObj: function(_valueObj) {
+    this.valueObj = _valueObj;
+    this.setValue(_valueObj.value);
   },
   
   valueDiffers: function(_value){
