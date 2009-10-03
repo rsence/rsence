@@ -65,7 +65,12 @@ COMM.Queue = HApplication.extend({
         }
       }
       catch(e){
-        console.log('COMM.Queue; failed to execute the js block: '+_item.toSource()+' reason:'+e);
+        if(BROWSER_TYPE.ie){
+          console.log('COMM.Queue; failed to execute the js block: '+_item+' reason:'+e);
+        }
+        else{
+          console.log('COMM.Queue; failed to execute the js block: '+_item.toSource()+' reason:'+e);
+        }
       }
     }
   },
@@ -150,7 +155,7 @@ COMM.Transporter = HApplication.extend({
     return '';
   },
   success: function(resp){
-    var _this = resp._this,
+    var _this = COMM.Transporter,
         _responseArray = eval(resp.X.responseText),
         i = 1,
         _responseArrayLen = _responseArray.length,
@@ -161,23 +166,23 @@ COMM.Transporter = HApplication.extend({
     COMM.Session.newKey(_sesKey);
     for(;i<_responseArrayLen;i++){
       try {
-        // eval(_responseArray[i]);
         COMM.Queue.pushEval( _responseArray[i] );
       }
       catch(e) {
+        console.log( 'clientError:'+e+" - "+e.description+' - '+_responseArray[i]);
         _this._clientEvalError = e+" - "+e.description+' - '+_responseArray[i];
       }
     }
     if(_this._serverInterruptElemId){
       ELEM.del(_this._serverInterruptElemId);
       _this._serverInterruptElemId = false;
-    };
+    }
     COMM.Queue.push( function(){COMM.Transporter.flushBusy();} );
     COMM.Queue.flush();
     //_this._busyFlushTimeout = setTimeout('COMM.Transporter.flushBusy();',50);
   },
   flushBusy: function(){
-    var _this = this;
+    var _this = COMM.Transporter;
     _this.busy = false;
     if(HVM.tosync.length!==0){
       _this.sync();
@@ -191,7 +196,7 @@ COMM.Transporter = HApplication.extend({
     ReloadApp.nu(_title,_message);
   },
   failure: function(_resp){
-    var _this = _resp._this;
+    var _this = COMM.Transporter;
     // server didn't respond, likely network issue.. retry.
     if(_resp.X.status===0){
       console.log(_this.serverLostMessage);
@@ -229,8 +234,8 @@ COMM.Transporter = HApplication.extend({
     COMM.request(
       _this.url, {
         _this: _this,
-        onSuccess: _this.success,
-        onFailure: _this.failure,
+        onSuccess: COMM.Transporter.success,
+        onFailure: COMM.Transporter.failure,
         method: 'POST',
         async: true,
         body: _body
