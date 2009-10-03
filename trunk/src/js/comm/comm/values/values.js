@@ -76,7 +76,7 @@ COMM.Values = HClass.extend({
     **/
   ],
   type: function(_obj){
-    var _type = (typeof _obj)[0];
+    var _type = (typeof _obj).slice(0,1);
     if(this._builtins.indexOf(_type)!==-1){
       return _type;
     }
