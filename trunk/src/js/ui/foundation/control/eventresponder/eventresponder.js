@@ -90,12 +90,12 @@ HEventResponder = HClass.extend({
     } else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
       EVENT.coordListeners.splice(_mmoveIndex,1);
     }
-    //if(this.events.textEnter){
-    //  EVENT.
-    //}
     
     /// The following boolean must be set:
     this.isDragged = false;
+    
+    
+    return this;
   },
 
 /** method: setMouseMove
@@ -113,6 +113,7 @@ HEventResponder = HClass.extend({
   setMouseMove: function(_flag) {
     this.events.mouseMove = _flag;
     this.setEvents();
+    return this;
   },
 
 /** method: setClickable
@@ -130,6 +131,7 @@ HEventResponder = HClass.extend({
   setClickable: function(_flag) {
     this.events.click = _flag;
     this.setEvents();
+    return this;
   },
   
 /** method: setMouseDown
@@ -147,6 +149,7 @@ HEventResponder = HClass.extend({
   setMouseDown: function(_flag) {
     this.events.mouseDown = _flag;
     this.setEvents();
+    return this;
   },
   
 /** method: setMouseUp
@@ -164,6 +167,7 @@ HEventResponder = HClass.extend({
   setMouseUp: function(_flag) {
     this.events.mouseUp = _flag;
     this.setEvents();
+    return this;
   },
   
 /** method: setMouseWheel
@@ -181,6 +185,7 @@ HEventResponder = HClass.extend({
   setMouseWheel: function(_flag) {
     this.events.mouseWheel = _flag;
     this.setEvents();
+    return this;
   },
   
 /** method: setDraggable
@@ -199,6 +204,7 @@ HEventResponder = HClass.extend({
   setDraggable: function(_flag) {
     this.events.draggable = _flag;
     this.setEvents();
+    return this;
   },
   
 /** method: setDroppable
@@ -217,6 +223,7 @@ HEventResponder = HClass.extend({
   setDroppable: function(_flag) {
     this.events.droppable = _flag;
     this.setEvents();
+    return this;
   },
   
   
@@ -235,6 +242,7 @@ HEventResponder = HClass.extend({
   setKeyDown: function(_flag) {
     this.events.keyDown = _flag;
     this.setEvents();
+    return this;
   },
   
   
@@ -253,12 +261,14 @@ HEventResponder = HClass.extend({
   setKeyUp: function(_flag) {
     this.events.keyUp = _flag;
     this.setEvents();
+    return this;
   },
   
   
   setTextEnter: function(_flag) {
     this.events.textEnter = _flag;
     this.setEvents();
+    return this;
   },
   textEnter: function() {
     
@@ -267,6 +277,7 @@ HEventResponder = HClass.extend({
   setClick: function(_flag) {
     this.events.click = _flag;
     this.setEvents();
+    return this;
   },
   click: function(x,y,_isRightButton){},
   
@@ -641,6 +652,7 @@ HEventResponder = HClass.extend({
   invalidatePositionCache: function() {
     this.base();
     EVENT.coordCacheFlush(this.elemId);
-  }
+    return this;
+}
   
 });

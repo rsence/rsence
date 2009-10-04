@@ -32,31 +32,14 @@
 HComponentDefaults = HClass.extend({
   
   // The visual value of a component:
-  label:    "Untitled",
+  label:    "",
   visible:  true,
   
-  // A structure that tells what events to bind.
-  /*
-  
-  valid sample (the default): {
-    mouseDown:  false,
-    mouseUp:    false,
-    draggable:  false,
-    droppable:  false,
-    keyDown:    false,
-    keyUp:      false,
-    mouseWheel: false
-  }
-  
-  */
   // See <HControl.setEvents>.
   events:   {},
   
   // The default value. See <HControl.setValue>
   value:    0,
-  
-  // The default action, See <HControl.setAction>
-  action:   function(){},
   
   // The enabled/disabled flag. See <HControl.setEnabled>
   enabled:  true,
@@ -64,7 +47,7 @@ HComponentDefaults = HClass.extend({
   
   // Value Range -related
   minValue: -2147483648, // signed 32bit
-  maxValue:  2147483648 // signed 32bit
+  maxValue:  2147483648  // signed 32bit
   
 });
 

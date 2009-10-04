@@ -36,6 +36,7 @@ HValueResponder = HClass.extend({
   setValueObj: function(_valueObj) {
     this.valueObj = _valueObj;
     this.setValue(_valueObj.value);
+    return this;
   },
   
   valueDiffers: function(_value){
@@ -64,6 +65,7 @@ HValueResponder = HClass.extend({
       this.valueObj.set(_value);
       this.refresh();
     }
+    return this;
   }
 
 });
