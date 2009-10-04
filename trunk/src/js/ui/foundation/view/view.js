@@ -585,9 +585,8 @@ HView = HClass.extend({
           _bottom = _height;
         }
         // can't be entirely correct rect unless parent size is calculated
-        else if(_validTopOffset && !_validWidth && _validBottomOffset){
+        else if(_validTopOffset && !_validHeight && _validBottomOffset){
           _bottom = _topOffset + _bottomOffset;
-          console.log('bottom:',_bottom);
         }
         
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
