@@ -109,12 +109,15 @@ HClass.prototype = {
         }
       }
     }
+    // alternative constructor (use instead of the new keywoard)
     this.nu = function() {
-      var _argArr = [], _this=this;
-      for(var i=0;i<arguments.length;i++){
-        _argArr.push('arguments['+i+']');
-      }
-      return eval('new _this('+_argArr.join(',')+')');
+      return new (
+        this.extend( {
+          constructor: function( args ){
+            this.base.apply( this, args );
+          }
+        } )
+      )( arguments );
     };
     return this;
   },
