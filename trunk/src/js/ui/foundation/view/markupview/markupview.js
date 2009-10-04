@@ -55,6 +55,8 @@ HMarkupView = HClass.extend({
     }
     
     this.markup = _markup;
+    
+    return this;
   },
   
   evalMarkupVariable: function(_strToEval,_isAssignment){
@@ -74,6 +76,7 @@ HMarkupView = HClass.extend({
       }
     }
     catch(e) {
+      console.log("Warning, the markup string '"+_strToEval+"' failed evaluation. Reason:"+e+' '+e.description);
       return '';
     }
   },
@@ -104,9 +107,8 @@ HMarkupView = HClass.extend({
           ELEM.removeClassName(_elementId, _cssClass);
         }
       }
-
     }
-
+    return this;
   }
 
 },{
