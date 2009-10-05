@@ -57,12 +57,23 @@ Event = {
     Event._observeAndCache(_elem,_name,_function,_useCapture);
   },
   stopObserving: function(_elem,_name,_function,_useCapture){
+    if(_elem===undefined){
+      console.log('Warning Event.stopObserving of event name: "'+_name+'" called with an undefined elem!');
+      return;
+    }
     _useCapture=_useCapture||false;
-    if(_elem.removeEventListener){_elem.removeEventListener(_name,_function,_useCapture);}
-    else if(detachEvent){_elem.detachEvent("on"+_name,_function);}
-    var i=0; while(i<Event.observers.length){
+    if(_elem['removeEventListener']){
+      _elem.removeEventListener(_name,_function,_useCapture);
+    }
+    else if(detachEvent){
+      _elem.detachEvent("on"+_name,_function);
+    }
+    var i=0;
+    while(i<Event.observers.length){
       var eo=Event.observers[i];
-      if(eo&&eo[0]===_elem&&eo[1]===_name&&eo[2]===_function&&eo[3]===_useCapture){Event.observers[i]=null;Event.observers.splice(i,1);}
+      if(eo&&eo[0]===_elem&&eo[1]===_name&&eo[2]===_function&&eo[3]===_useCapture){
+        Event.observers[i]=null;Event.observers.splice(i,1);
+      }
       else{i++;}
     }
   },
@@ -163,7 +174,7 @@ EVENT = {
     else{_elem.ctrl=_ctrl;}
     _this.listeners[_elemId]=true;
     _this.focused[_elemId]=false;
-    for(var _propIn in _defaultFocusOptions){
+    for(_propIn in _defaultFocusOptions){
       if(_focusOptions[_propIn]===undefined){
         _focusOptions[_propIn] = _defaultFocusOptions[_propIn];
       }
@@ -195,7 +206,8 @@ EVENT = {
   unreg: function(_ctrl){
     var _this=EVENT,_elemId,_elem;
     if(_ctrl===this.activeControl){_this.changeActiveControl(null);}
-    _elemId=_ctrl.elemId;_elem=ELEM.get(_elemId);
+    _elemId=_ctrl.elemId;
+    _elem=ELEM.get(_elemId);
     this.listeners[_elemId]=false;
     this.focused[_elemId]=false;
     this._coordCache[_elemId]=null;
@@ -203,12 +215,13 @@ EVENT = {
     if(_textEnterIndex!==-1){
       _this.textEnterCtrls.splice(_textEnterIndex,1);
     }
-    
     var _resizeIndex=_this.resizeListeners.indexOf(_ctrl.viewId);
     if(_resizeIndex!==-1){
       _this.resizeListeners.splice(_resizeIndex,1);
     }
-    Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+    if(_elem!==undefined){
+      Event.stopObserving(_elem,'mouseover',_this._mouseOver);
+    }
   },
   
   resize: function(e){
@@ -284,7 +297,7 @@ EVENT = {
   },
   
   flushMouseMove: function(x,y){
-    var _this=EVENT,x,y,_currentlyDragging,i,j,_elemId,_ctrl;
+    var _this=EVENT,_currentlyDragging,i,j,_elemId,_ctrl;
     clearTimeout(_this._lastCoordFlushTimeout);
     // drag detect flag
     _currentlyDragging=false;
