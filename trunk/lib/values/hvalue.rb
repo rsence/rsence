@@ -199,7 +199,7 @@ class HValue
     session_values = msg.session[:values][:by_id]
     
     ## Store the object here
-    session_values.delete[ @val_id ]
+    session_values.delete( @val_id )
     
     if msg and not @is_new_to_client
       msg.reply_value("HVM.del(#{@val_id.to_json});")
