@@ -132,12 +132,13 @@ HTab = HControl.extend({
     this.setValue(_tabIdx);
   },
   addTab: function(_tabLabel,_doSelect){
-    var _tabIdx=this.tabs.length,_tabLabelHTML='',
+    var _tabIdx=this.tabs.length,
+        _tabLabelHTML='',
         _labelTextWidth=this.stringWidth(_tabLabel,0),
         _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
-        _tabIdx = this.tabs.length,
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
+    _tabIdx = this.tabs.length;
     if(this.tabLabelNoHTMLPrefix){
       _tabLabelHTML = _tabLabel;
     }
@@ -234,6 +235,19 @@ HTab = HControl.extend({
   }
 });
 
-
+/* HTabItem is a wrapper for creating tabs as subviews when using JSONRenderer.
+ *  - rect is ignored
+ *  - parent is the HTab instance
+ *  - options may contain the following:
+ *    - select: true|false, passed on to addTab
+ *    - label: true|false, passed on to addTab
+ *
+ *  returns a new HTabView instance returned by addTab
+ */
+HTabItem = {
+  nu: function(_rect, _parent, _options){
+    return _parent.addTab( _options.label, _options.select );
+  }
+};
 
 
