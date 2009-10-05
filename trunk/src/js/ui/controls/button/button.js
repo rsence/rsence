@@ -42,3 +42,25 @@ HButton = HControl.extend({
   }
 });
 
+/** class: HClickValueButton
+  *
+  * Simple HButton extension, operates on its value so it's useful
+  * for sending button clicks to the server and the like.
+  * For the value responder, reset the value to 0 when read to make
+  * the button clickable again.
+  *
+  * Value states:
+  *  0: Enabled, clickable
+  *  1: Disabled, clicked
+  *  Other: Disabled, not clickable, not clicked
+  *
+  **/
+HClickValueButton = HButton.extend({
+  refreshValue: function(){
+    this.setEnabled( this.value === 0 );
+  },
+  click: function(){
+    this.setValue(1);
+  }
+});
+
