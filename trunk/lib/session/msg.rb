@@ -126,7 +126,7 @@ class Message
   
   def error_msg( error_js )
     @error_js = error_js
-    #response_done
+    # response_done
   end
   
   def buf_json(buffer)
@@ -136,20 +136,16 @@ class Message
   ## called to flush buffer
   def response_done
     return if @response_sent
-    ## The response status should always be 200 (OK)
-    @response.status = 200
-    
     if not @response_success
+      @response.status = 200
+      #@response.status = 503
       
       buffer = [
-        "", # empty session key will stop the syncing
-        @error_js
-        #,
-        #"jsLoader.load('controls');jsLoader.load('servermessage');",
-        #"ReloadApp.nu('Message Error','The message was unsuccessful.');"
-      ]
-      
+        "" # empty session key will stop the syncing
+      ] + @error_js
     else
+      ## The response status should always be 200 (OK)
+      @response.status = 200
       
       buffer = @value_buffer + @buffer
       if @ses_key

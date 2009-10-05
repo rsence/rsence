@@ -31,11 +31,9 @@ COMM.Queue = HApplication.extend({
     }
   },
   pause: function(){
-    // console.log('pause()');
     this.paused = true;
   },
   resume: function(){
-    // console.log('resume()');
     this.paused = false;
     this.flush();
   },
@@ -45,10 +43,8 @@ COMM.Queue = HApplication.extend({
         _fun,
         _arg,
         _len = this.commandQueue.length;
-    // console.log('flush, items: ',_len);
     for(;i<_len;i++){
       if(this.paused){
-        // console.log('paused!');
         break;
       }
       // console.log(i);
@@ -163,7 +159,9 @@ COMM.Transporter = HApplication.extend({
     if(_sesKey === ''){
       console.log('Invalid session, error message should follow...');
     }
-    COMM.Session.newKey(_sesKey);
+    else {
+      COMM.Session.newKey(_sesKey);
+    }
     for(;i<_responseArrayLen;i++){
       try {
         COMM.Queue.pushEval( _responseArray[i] );
@@ -189,11 +187,12 @@ COMM.Transporter = HApplication.extend({
     }
   },
   failMessage: function(_title,_message){
+    console.log('failMessage?');
     this.stop = true;
-    jsLoader.load('default_theme');
-    jsLoader.load('controls');
-    jsLoader.load('servermessage');
-    ReloadApp.nu(_title,_message);
+    COMM.Queue.push(function(){jsLoader.load('default_theme');});
+    COMM.Queue.push(function(){jsLoader.load('controls');});
+    COMM.Queue.push(function(){jsLoader.load('servermessage');});
+    COMM.Queue.push(function(){ReloadApp.nu(_title,_message);});
   },
   failure: function(_resp){
     var _this = COMM.Transporter;

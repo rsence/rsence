@@ -211,7 +211,7 @@ class SessionManager < SessionStorage
       "jsLoader.load('controls');",
       "jsLoader.load('servermessage');",
       "ReloadApp.nu( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
-    ].join("\r\n") )
+    ] )
   end
   
   ### Checks / Sets cookies
