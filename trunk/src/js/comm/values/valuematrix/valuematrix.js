@@ -28,7 +28,7 @@ HValueMatrixComponentExtension = {
     this.setValueMatrix();
   },
   setValueMatrix: function(){
-    if(!this.parent.valueMatrix){
+    if(this.parent['valueMatrix'] === undefined){
       this.parent.valueMatrix = new HValueMatrix();
     }
     this.valueMatrixIndex = this.parent.valueMatrix.addControl(this);
@@ -37,6 +37,14 @@ HValueMatrixComponentExtension = {
     if (this.parent.valueMatrix instanceof HValueMatrix) {
       this.parent.valueMatrix.setValue( this.valueMatrixIndex );
     }
+  },
+  die: function(){
+    if(this['parent']){
+      if(this.parent['valueMatrix']){
+        this.parent.valueMatrix.release(this);
+      }
+    }
+    this.base();
   }
 };
 
@@ -58,7 +66,9 @@ HValueMatrix = HClass.extend({
     if(_index!==this.value){
       // Set the previous value object to false (reflects to its container component(s))
       if(this.value !== -1){
-        this.ctrls[this.value].setValue(false);
+        if(this.ctrls[this.value]){
+          this.ctrls[this.value].setValue(false);
+        }
       }
       if(_index !== -1){
         this.valueObj.set(_index);
@@ -79,6 +89,13 @@ HValueMatrix = HClass.extend({
       this.setValue(_newIndex);
     }
     return _newIndex;
+  },
+  
+  release: function(_ctrl) {
+    var _index = this.ctrls.indexOf(_ctrl);
+    if(_index !== -1){
+      this.ctrls.splice( _index, 1 );
+    }
   }
 });
 
