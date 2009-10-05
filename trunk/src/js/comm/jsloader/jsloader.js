@@ -35,11 +35,11 @@ JSLoader = HClass.extend({
   },
   
   load: function(_jsName){
-    COMM.Queue.pause();
     var _this = this;
     if((_this._loadedJS.indexOf(_jsName)!==-1)) {
       return;
     }
+    COMM.Queue.pause();
     _this._loadedJS.push(_jsName);
     _this._req = COMM.request(
       _this.uri+_jsName+'.js', {
