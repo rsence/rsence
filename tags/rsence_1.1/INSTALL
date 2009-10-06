@@ -1,0 +1,62 @@
+
+BRIEF INSTALLATION INSTRUCTIONS:
+
+
+1a. Mac OS X:
+ - You will probably need Mac OS X 10.4 Tiger or newer
+ - Install XCode
+ - Install MacPorts
+ - Install a few ports:
+      port install ruby +thread_hooks
+      port install rb-rubygems
+      port install mysql5 +server
+      port install imagemagick +no_x11 +jpeg2 +jbig +mpeg +wmf +lcms +gs +rsvg
+
+
+1b. Debian and Ubuntu Linux (and other similiar apt-based distros):
+ - Install a few packages (and the suggested dependencies):
+      apt-get install build-essential
+      apt-get install ruby-full
+      apt-get install mysql-server
+      apt-get install libmysqlclient15-dev
+      apt-get install rubygems
+      apt-get install rake
+      apt-get install imagemagick
+      apt-get install libmagick9-dev
+
+
+1c. Unix-like systems generally:
+ - Similiar packages as listed above, ymmv.
+
+
+2. Ruby gems:
+ - Install the following gems:
+      gem install rake highline rack thin soap4r rmagick\
+                 json mysql dbi dbb-mysql
+
+2b. Troubleshooting the mysql gem:
+ - On some platforms, the mysql gem might be tricky to compile.
+ - On OSX do this:
+      gem install mysql -- --with-mysql-config=/opt/local/bin/mysql_config5
+
+3. Extract or create a project directory.
+
+4. Extract rsence in the project directory.
+
+5. Build the C-optimized extensions
+ - run bin/build_extensions.rb
+
+6. Build the client packages
+ - run bin/build_client.rb
+
+7. Start the server
+ - run bin/start
+
+8. On the first run, there is a command prompt wizard that creates the
+   conf/local_conf.rb configuration file. Revisit this configuration file
+   to edit more settings.
+
+9. Join the IRC Channel or visit http://rsence.org/ for more information.
+   IRC: #rsence on IRCNet, FreeNode and QuakeNet
+
+
