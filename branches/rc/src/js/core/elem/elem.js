@@ -28,6 +28,7 @@ BROWSER_TYPE = {
   ie8: false,
   opera: false,
   safari: false,
+  symbian: false,
   chrome: false, // will also register itself as safari
   firefox: false,
   firefox2: false,
@@ -90,8 +91,8 @@ ELEM = {
   _fillTrash: function(_count,_tagName){
     if(!ELEM._enableRecycler){return;}
     var _this=ELEM,i=0,_toDel=[],_recycler=_this._initRecycler(_tagName),_trashId=_recycler._trashId;
-    for(;i!=_count;i++){_toDel.push(_this.make(_trashId,_tagName));}
-    for(i=0;i!=_count;i++){_this.del(_toDel[i]);}
+    for(;i!==_count;i++){_toDel.push(_this.make(_trashId,_tagName));}
+    for(i=0;i!==_count;i++){_this.del(_toDel[i]);}
   },
   
   // adds an element reference
@@ -207,7 +208,7 @@ ELEM = {
     }
     
     var _elemTodoIdx=_this._elemTodo.indexOf(_id);
-    if(_elemTodoIdx!=-1){
+    if(_elemTodoIdx!==-1){
       _this._elemTodo.splice(_elemTodoIdx,1);
     }
     _this._initCache(_id);
@@ -249,10 +250,10 @@ ELEM = {
     _this=ELEM,_elem=_this._elements[_id],
     w=_elem.offsetWidth,h=_elem.offsetHeight,
     _parent=_elem.parentNode;
-    while(_parent&&_parent.nodeName.toLowerCase()!='body'){
+    while(_parent&&_parent.nodeName.toLowerCase()!=='body'){
       if(!_this._is_ie){_parentOverflow=document.defaultView.getComputedStyle(_parent,null).getPropertyValue('overflow');}
       else{_parentOverflow=_parent.currentStyle.getAttribute('overflow');}
-      _parentOverflow=_parentOverflow!='visible';
+      _parentOverflow=_parentOverflow!=='visible';
       if(w>_parent.clientWidth&&_parentOverflow){w=_parent.clientWidth-_elem.offsetLeft;}
       if(h>_parent.clientHeight&&_parentOverflow){h=_parent.clientHeight-_elem.offsetTop;}
       _elem=_elem.parentNode;_parent=_elem.parentNode;
@@ -304,7 +305,7 @@ ELEM = {
       return parseFloat(_opacity);
     }
     _try_opacity = _getStyle(_id,'opacity',true);
-    if (_opacity = _try_opacity || (_try_opacity==0)) {
+    if (_opacity = _try_opacity || (_try_opacity===0)) {
       return parseFloat(_opacity);
     }
     if (_opacity = (_this._elements[_id].currentStyle['filter'] || '').match(/alpha\(opacity=(.*)\)/)) {
@@ -317,7 +318,7 @@ ELEM = {
   
   setOpacity: function(_id, _value){
     var _this = ELEM;
-    if (_value == 1 && _this._is_ie) {
+    if (_value === 1 && _this._is_ie) {
       _this._elements[_id].style.setAttribute('filter',_this.getStyle(_id,'filter', true).replace(/alpha\([^\)]*\)/gi,''));
     } else {  
       if(_value < 0.01){
@@ -380,7 +381,7 @@ ELEM = {
   _ieFixesNeeded: false,
   flushLoop: function(_delay){
     var _this=ELEM; _this._flushLoopCount++;
-    if(_this._is_ie6&&(_this._flushLoopCount%5==0)&&_this._ieFixesNeeded){
+    if(_this._is_ie6&&(_this._flushLoopCount%5===0)&&_this._ieFixesNeeded){
       //window.status = 'traversetree0:'+_this._flushLoopCount;
       iefix._traverseTree();
       _this._ieFixesNeeded=false;
@@ -427,7 +428,7 @@ ELEM = {
     }*/
     _this._flushCounter++;
     _this._flushTime += new Date().getTime();
-    if(_this._elemTodo.length==0&&_this._needFlush){
+    if(_this._elemTodo.length===0&&_this._needFlush){
       _this._needFlush=false;
     }
     _this._flushing = false;
@@ -436,7 +437,7 @@ ELEM = {
     var _this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id],
         _elem=_this._elements[_id],//_elemP=_elem.setAttribute,
         _key,_val,i,_iMax=_attrTodo.length,_currTodo=_attrTodo.splice(0,_iMax);
-    for(i=0;i!=_iMax;i++){
+    for(i=0;i!==_iMax;i++){
       _key=_currTodo.pop();
       _val=_attrCache[_key];
       _elem.setAttribute(_key,_val);
@@ -447,7 +448,7 @@ ELEM = {
     var _this=ELEM,_attrVal=_this._attrCache[_id][_key],_val;
     if(_attrVal!==undefined&&!_bypass){return _attrVal;}
     var _elem=_this._elements[_id];
-    if(_elem.getAttribute(_key)==null){
+    if(_elem.getAttribute(_key)===null){
       _elem[_key]='';
     }
     _val=_elem.getAttribute(_key);
@@ -456,12 +457,12 @@ ELEM = {
   },
   setAttr: function(_id,_key,_value,_bypass){
     var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
-    _differs=_value!=_this.getAttr(_id,_key);
+    _differs=_value!==_this.getAttr(_id,_key);
     if(_differs){
       _attrCache[_key]=_value;
       if(_bypass){_this._elements[_id].setAttribute(_key,_value);}
       else{
-        if(_attrTodo.indexOf(_key)==-1){_attrTodo.push(_key);}
+        if(_attrTodo.indexOf(_key)===-1){_attrTodo.push(_key);}
         if(!_this._elemTodoH[_id]){
           _this._elemTodo.push(_id);
           _this._elemTodoH[_id]=true;
@@ -474,7 +475,7 @@ ELEM = {
     var _differs,_this=ELEM,_attrTodo=_this._attrTodo[_id],_attrCache=_this._attrCache[_id];
     delete _attrCache[_key];
     _this._elements[_id].removeAttribute(_key);
-    if(_attrTodo.indexOf(_key)!=-1){_attrTodo.splice(_attrTodo.indexOf(_key,1));}
+    if(_attrTodo.indexOf(_key)!==-1){_attrTodo.splice(_attrTodo.indexOf(_key,1));}
     if(_this._elemTodoH[_id]){
       _this._elemTodo.splice(_this._elemTodo.indexOf(_id,1));
       _this._elemTodoH[_id]=false;
@@ -492,7 +493,7 @@ ELEM = {
     var _classNames = _element.className.split(' ');
     
     for(var i = 0; i < _classNames.length; i++) {
-      if (_classNames[i] == _className) {
+      if (_classNames[i] === _className) {
         _hasClass = true;
       }
     }
@@ -518,7 +519,7 @@ ELEM = {
     var _classNames = _element.className.split(' ');
     
     for(var i = 0; i < _classNames.length; i++) {
-      if (_classNames[i] != _className){
+      if (_classNames[i] !== _className){
         if (i > 0) _newClassName += ' ';
         _newClassName += _classNames[i];
       }
@@ -545,7 +546,7 @@ ELEM = {
     if(_this._enableRecycler){
       console.log('Recycler efficiency:');
       _recycler=_this._recycler;
-      for(;i!=_recycler._tagNames.length;i++){
+      for(;i!==_recycler._tagNames.length;i++){
         _tagName=_recycler._tagNames[i];
         console.log(' tagName: '+_tagName);
         _tagLen=_recycler[_tagName].length;
@@ -597,13 +598,13 @@ ELEM = {
       _this._setStyleDiffCount++;
       _cached[_key]=_value;
       if(_bypass){
-        if(_key=='opacity'){_this.setOpacity(_id,_value);}
+        if(_key==='opacity'){_this.setOpacity(_id,_value);}
         else{_this._is_ie?(_elems[_id].style.setAttribute(_key.replace(/((-)([a-z])(\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4;}),_cached[_key])):(_elems[_id].style.setProperty(_key,_cached[_key],''));}
-        if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}
+        if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!==-1){_this._ieFixesNeeded=true;}}
       } else {
         _elemTodoH=_this._elemTodoH;
         _styleTodo=_this._styleTodo[_id];
-        if(_styleTodo.indexOf(_key)==-1){_styleTodo.push(_key);}
+        if(_styleTodo.indexOf(_key)===-1){_styleTodo.push(_key);}
         if(!_elemTodoH[_id]){
           _this._elemTodo.push(_id);
           _elemTodoH[_id]=true;
@@ -631,18 +632,18 @@ ELEM = {
     _this._makeCount++;
     if(_this._enableRecycler){
       if(_this._recycler[_tagName]){
-        if(_this._recycler[_tagName].length!=0){
+        if(_this._recycler[_tagName].length!==0){
           // Recycle the id of a previously deleted element
           _id = _this._recycler[_tagName].pop();
           _this._recycler[_tagName]._countOut++;
           _elem = _this._elements[_id];
           //_elem.innerHTML='';
           /*
-          if(_elem.tagName!=_tagName){
+          if(_elem.tagName!==_tagName){
             _elem.outerHTML='<'+_tagName+'></'+_tagName+'>';
           }
           */
-          if(_this._blockElems.indexOf(','+_tagName+',')!=-1){
+          if(_this._blockElems.indexOf(','+_tagName+',')!==-1){
             _this.setCSS(_id,'display:block;');
           } else {
             _this.setCSS(_id,'display:inline;');
@@ -674,7 +675,7 @@ ELEM = {
       /*  1 */   "var _this=ELEM,_cached=_this._styleCache[_id],_retval;_this._getStyleCount++;",
       /*  2 */   "if((_cached[_key]===undefined)||_bypass){",
       /*  3 */     "if(!_bypass){_this._getStyleMissCount++;}",
-      /*  4 */     "if((_key=='opacity')&&_bypass){_retval=_this.getOpacity(_id);}",
+      /*  4 */     "if((_key==='opacity')&&_bypass){_retval=_this.getOpacity(_id);}",
       /*  5 */     "else{",
       
             /*  idx:6 for non-ie */
@@ -703,15 +704,15 @@ ELEM = {
       /*  3 */   "_elemS=_elem.style;",
       /*  4 */   "_loopMaxP=_styleTodo.length;",
       /*  5 */   "_currTodo=_styleTodo.splice(0,_loopMaxP);",
-      /*  6 */   "for(_cid=0;_cid!=_loopMaxP;_cid++){",
+      /*  6 */   "for(_cid=0;_cid!==_loopMaxP;_cid++){",
       /*  7 */     "_key=_currTodo.pop();_this._flushStylCount++;",
-      /*  8 */     "if(_key=='opacity'){_retval=_this.setOpacity(_id,_cached[_key]);}else{",
+      /*  8 */     "if(_key==='opacity'){_retval=_this.setOpacity(_id,_cached[_key]);}else{",
             /*  idx:  9 for ie */
 
                      //"alert(_cached[_key]);eval('_elemS.'+_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4})+'=\"'+_cached[_key]+'\";');}}};",
                      //"_elemS.cssText+=_key+':'+_cached[_key]+';';}}};",
                      //"var _keyIE=_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4});\nalert(_keyIE);\n_elemS[_keyIE]=_cached[_key];}}};",
-      /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!=-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
+      /*  9 */       "if(_this._is_ie6){if(iefix._traverseStyleProperties.indexOf(_key)!==-1){_this._ieFixesNeeded=true;}}try{_elemS.setAttribute(_key.replace(/((-)([a-z])(\\w))/g,function($0,$1,$2,$3,$4){return $3.toUpperCase()+$4}),_cached[_key]);}catch(e){}}}};",
 
             /*  idx: 10 for non-ie */
       /* 10 */       "_elemS.setProperty(_key,_cached[_key],'');}}};"
@@ -736,11 +737,11 @@ ELEM = {
     
     if(!_this._domLoadQueue){return;}
     
-    while(_this._domLoadQueue.length!=0){
+    while(_this._domLoadQueue.length!==0){
       _cmdStr = _this._domLoadQueue.shift();
-      if(typeof _cmdStr == 'string'){
+      if(typeof _cmdStr === 'string'){
         _cmdResult = eval(_cmdStr);
-        if(typeof _cmdResult == 'string'){
+        if(typeof _cmdResult === 'string'){
           _this._domLoadQueue.push( _cmdResult );
         }
       }
@@ -750,19 +751,21 @@ ELEM = {
   
   _warmup: function(){
     _this = ELEM;
-    _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")==-1)?true:false;
-    _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!=-1)?true:false;
-    _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!=-1)?true:false;
-    _this._is_ie8=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 8")!=-1)?true:false;
-    _this._is_safari=(navigator.userAgent.indexOf("KHTML")!=-1)?true:false;
-    _this._is_chrome=(navigator.userAgent.indexOf("Chrome")!=-1)?true:false;
-    _this._is_ff=(navigator.userAgent.indexOf("Firefox")!=-1)?true:false;
-    _this._is_ff2=(navigator.userAgent.indexOf("Firefox/2.")!=-1)?true:false;
-    _this._is_ff3=(navigator.userAgent.indexOf("Firefox/3.")!=-1)?true:false;
-    _this._is_opera=(navigator.userAgent.indexOf("Opera")!=-1)?true:false;
+    _this._is_ie=(document.all&&navigator.userAgent.indexOf("Opera")===-1)?true:false;
+    _this._is_ie6=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 6")!==-1)?true:false;
+    _this._is_ie7=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 7")!==-1)?true:false;
+    _this._is_ie8=(_this._is_ie&&navigator.userAgent.indexOf("MSIE 8")!==-1)?true:false;
+    _this._is_safari=(navigator.userAgent.indexOf("KHTML")!==-1)?true:false;
+    _this._is_symbian=(navigator.userAgent.indexOf("SymbianOS")!==-1)?true:false;
+    _this._is_chrome=(navigator.userAgent.indexOf("Chrome")!==-1)?true:false;
+    _this._is_ff=(navigator.userAgent.indexOf("Firefox")!==-1)?true:false;
+    _this._is_ff2=(navigator.userAgent.indexOf("Firefox/2.")!==-1)?true:false;
+    _this._is_ff3=(navigator.userAgent.indexOf("Firefox/3.")!==-1)?true:false;
+    _this._is_opera=(navigator.userAgent.indexOf("Opera")!==-1)?true:false;
     BROWSER_TYPE = {
       opera:    _this._is_opera,
       safari:   _this._is_safari,
+      symbian:  _this._is_symbian,
       chrome:   _this._is_chrome,
       ie:  _this._is_ie,
       ie6: _this._is_ie6,
@@ -777,8 +780,8 @@ ELEM = {
   // adds items to eval after the dom is done:
   _domLoader: function(_cmdStr){
     var _this = ELEM;
-    if(typeof _cmdStr == 'string'){
-      if(_this._initDone==true){
+    if(typeof _cmdStr === 'string'){
+      if(_this._initDone===true){
         eval(_cmdStr);
       } else {
         _this._domLoadQueue.push(_cmdStr);
@@ -792,13 +795,13 @@ ELEM = {
     // http://www.cherny.com/demos/onload/domloaded.js
     if(_this._is_ie){
       var _ie_proto = "javascript:void(0)";
-      if (location.protocol == "https:"){
+      if (location.protocol === "https:"){
         _ie_proto = "src=//0";
       }
       document.write("<scr"+"ipt id=__ie_onload defer src=" + _ie_proto + "><\/scr"+"ipt>");
       var _ie_script = document.getElementById("__ie_onload");
       _ie_script.onreadystatechange = function(){
-        if(this.readyState == "complete"){
+        if(this.readyState === "complete"){
           ELEM._domLoadStatus = true;
           ELEM._init();
           delete ELEM._domLoadQueue;

@@ -238,29 +238,29 @@ HSlider = HControl.extend({
   **/
   keyDown: function(_keycode) {
     // Arrow keys move the thumb 5% at a time.
-    if ( (_keycode == Event.KEY_LEFT && !this._isVertical) ||
-      (_keycode == Event.KEY_DOWN && this._isVertical) ) {
+    if ( (_keycode === Event.KEY_LEFT && !this._isVertical) ||
+      (_keycode === Event.KEY_DOWN && this._isVertical) ) {
       this._moving = true;
       this._moveThumb(-0.05);
     }
-    else if ( (_keycode == Event.KEY_RIGHT && !this._isVertical) ||
-      (_keycode == Event.KEY_UP && this._isVertical) ) {
+    else if ( (_keycode === Event.KEY_RIGHT && !this._isVertical) ||
+      (_keycode === Event.KEY_UP && this._isVertical) ) {
       this._moving = true;
       this._moveThumb(0.05);
     }
     // Home key moves the thumb to the beginning and end key to the end.
-    else if (_keycode == Event.KEY_HOME) {
+    else if (_keycode === Event.KEY_HOME) {
       this.setValue(this.minValue);
     }
-    else if (_keycode == Event.KEY_END) {
+    else if (_keycode === Event.KEY_END) {
       this.setValue(this.maxValue);
     }
     // Page up and page down keys move the thumb 25% at a time.
-    else if (_keycode == Event.KEY_PAGEDOWN) {
+    else if (_keycode === Event.KEY_PAGEDOWN) {
       this._moving = true;
       this._moveThumb(-0.25);
     }
-    else if (_keycode == Event.KEY_PAGEUP) {
+    else if (_keycode === Event.KEY_PAGEUP) {
       this._moving = true;
       this._moveThumb(0.25);
     }
@@ -320,7 +320,7 @@ HSlider = HControl.extend({
       // If the key is held down, wait for a while before starting repeat.
       _rate = this.options.repeatDelay;
     }
-    else if (_rate == this.options.repeatDelay) {
+    else if (_rate === this.options.repeatDelay) {
       _rate = this.options.repeatInterval;
     }
     
@@ -392,10 +392,47 @@ HSlider = HControl.extend({
   
   // private method
   drawThumbPos: function() {
-    var _whichprop = this._isVertical?'top':'left';
-    var _propval   = this._value2px();
+    var _whichprop = this._isVertical?'top':'left',
+        _propval   = this._value2px();
     ELEM.setStyle(this._thumbElemId,_whichprop,_propval);
-  }
+    this.setOrientation(this.options['orientation']||this.prevOrientation);
+  },
   
+  prevOrientation: 'c',
+  
+  cssClassPrefix: 'h',
+  
+  setOrientation: function(_orientation) {
+    if(!_orientation){
+      _orientation = 'c';
+    }
+    _orientation = _orientation.toLowerCase();
+    if(_orientation === this.prevOrientation){
+      return false;
+    }
+    if(this['markupElemIds']===undefined){
+      return false;
+    }
+    if(this.markupElemIds['control']===undefined){
+      return false;
+    }
+    var _toggleCSS = this.toggleCSSClass,
+        _ctrlId    = this.markupElemIds.control,
+        _orientations = ['n','s','w','e','c'],
+        _iOrientation = '',
+        _cssClassName = '',
+        _cssClassPrefix = this.cssClassPrefix,
+        _cssClassVert = this._isVertical?'v':'',
+        _activeOrientation = false,
+        i = 0;
+    for(;i<5;i++){
+      _iOrientation = _orientations[i];
+      _activeOrientation = (_orientation===_iOrientation);
+      _cssClassName = (_orientation==='c')?_cssClassPrefix+_cssClassVert+'slider_thumb':_cssClassPrefix+'slider_thumb_'+_iOrientation;
+      _toggleCSS( _ctrlId, _cssClassName, _activeOrientation );
+    }
+    
+    this.prevOrientation = _orientation;
+  }
 });
 

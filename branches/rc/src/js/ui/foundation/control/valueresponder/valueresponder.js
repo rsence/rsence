@@ -33,26 +33,14 @@ HValueResponder = HClass.extend({
   * See also:
   *  <setValue> <setValueRange> <HValue.bind> <HValue.unbind> <HValueManager>
   **/
-  setValueObj: function(_HValue) {
-    this.valueObj = _HValue;
-    this.setValue(_HValue.value);
+  setValueObj: function(_valueObj) {
+    this.valueObj = _valueObj;
+    this.setValue(_valueObj.value);
+    return this;
   },
   
   valueDiffers: function(_value){
-    if((_value instanceof Array) && (this.value instanceof Array)){
-      if(_value.length != this.value.length){
-        return true;
-      }
-      for(var i=0;i<_value.length;i++){
-        if(_value[i] !== this.value[i]){
-          return true;
-        }
-      }
-      return false;
-    }
-    else {
-      return (_value !== this.value);
-    }
+    return (COMM.Values.encode(_value) !== COMM.Values.encode(this.value));
   },
 
   
@@ -77,6 +65,7 @@ HValueResponder = HClass.extend({
       this.valueObj.set(_value);
       this.refresh();
     }
+    return this;
   }
 
 });

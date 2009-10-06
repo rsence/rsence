@@ -54,16 +54,16 @@ COMM._arrayToQueryString = function(_params){
       _queryString = '';
   for(;i<_length;i++){
     _queryString += encodeURIComponent(_params[i]);
-    _queryString += (i===_length-1)?'':(i%2==0)?'=':'&';
+    _queryString += (i===_length-1)?'':(i%2===0)?'=':'&';
   }
   return _queryString;
 };
 
 COMM._stateChange = function(_this){
-  if(_this.X.readyState == 4){
+  if(_this.X.readyState === 4){
     var _status = _this.X.status,
         _responderName = 'on'+_status,
-        _success = (_status >= 200 && _status < 300);
+        _success = ((_status >= 200 && _status < 300) || (_status === 0));
     _this[_responderName]?_this[_responderName](_this):_success?_this.onSuccess(_this):_this.onFailure(_this);
   }
 };
@@ -97,8 +97,6 @@ COMM.request = function(_url,_options){
   //_success,_failure,_method,_async,_params,_headers,_body,_username,_password,_contentType,_charset){
   var _comm = COMM,
       
-      _url = _url,
-      
       _this = _options?_options:{},
       
       _method = _options.method?_options.method.toUpperCase():'GET',
@@ -117,8 +115,11 @@ COMM.request = function(_url,_options){
   }
   _this.url = _url;
   _this.X   = _comm._XMLHttpRequest();
-  if(_method == 'GET' && _params.length !== 0){
+  if(_method === 'GET' && _params.length !== 0){
     _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);
+  }
+  if(!_async){
+    console.log("WARNING: Synchronous "+_method+" request to "+_url+", these will fail on the Symbian web browser.");
   }
   _this.X.open(
     _method,
@@ -130,18 +131,15 @@ COMM.request = function(_url,_options){
   _this.X.onreadystatechange = function(){
     _comm._stateChange(_this);
   };
-  if(_method == 'POST'){
+  if(_method === 'POST'){
     _headers['Content-Type'] = _contentType + '; charset=' + _charset;
     var _body = _options.body?_options.body:'';
-    if(!BROWSER_TYPE.safari){ // for some reason, safari doesn't like this
-      _headers['Content-Length'] = _body.length.toString();
-    }
     for(var _header in _headers){
       _this.X.setRequestHeader(_header,_headers[_header]);
     }
     _this.X.send(_body);
   }
-  else if(_method == 'GET'){
+  else if(_method === 'GET'){
     _this.X.send(null);
   }
   if(!_async){

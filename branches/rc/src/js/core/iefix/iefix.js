@@ -72,13 +72,13 @@ iefix = {
       while(_parent.offsetParent){
         _parent=_parent.offsetParent;
         if(_parent._resizewidthElements){_parent._resizewidthElements.push(_element);}
-        if(_parent.style.position=="absolute"||_parent.style.position=="fixed"){break;}
+        if(_parent.style.position==="absolute"||_parent.style.position==="fixed"){break;}
       }
       _element._addedResizewidthFix=true;
     }
     if(!_layoutParent._resizewidth){
       _layoutParent.attachEvent("onpropertychange", function(){
-        if(window.event.propertyName=="style.width"){
+        if(window.event.propertyName==="style.width"){
           for (;i<_layoutParent._resizewidthElements.length;i++){
             _this.resizeRight(_layoutParent._resizewidthElements[i]);
           }
@@ -137,7 +137,7 @@ iefix = {
     if(_element.currentStyle===null){return;}
     _left=parseInt(_element.currentStyle.left,10);
     _width=_this.layoutWidth(_element)-parseInt(_element.currentStyle.right,10)-_left;
-    if(parseInt(_element.runtimeStyle.width,10)==_width){return;}
+    if(parseInt(_element.runtimeStyle.width,10)===_width){return;}
     _element.runtimeStyle.width="";
     if(_element.offsetWidth<_width){
       _width-=_this.getBorderWidth(_element)+_this.getPaddingWidth(_element);
@@ -208,15 +208,15 @@ iefix = {
   inlineStyleChanged: function(_element){
     var _this=iefix,_currentStyle;
     _currentStyle=_element.currentStyle;
-    if(_this._noStyleTagNames.indexOf(_element.tagName)!=-1){ return; }
+    if(_this._noStyleTagNames.indexOf(_element.tagName)!==-1){ return; }
     // check if element needs to be positioned from the right
     try{
-      if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.left!="auto"&&_currentStyle.right!="auto"&&_currentStyle.width=="auto"){
+      if((_currentStyle.position==="absolute"||_currentStyle.position==="fixed")&&_currentStyle.left!=="auto"&&_currentStyle.right!=="auto"&&_currentStyle.width==="auto"){
         _this.resizeRight(_element);
       }
     
     // check if element needs to be positioned from the bottom
-      if((_currentStyle.position=="absolute"||_currentStyle.position=="fixed")&&_currentStyle.top!="auto"&&_currentStyle.bottom!="auto"&&_currentStyle.height=="auto"){
+      if((_currentStyle.position==="absolute"||_currentStyle.position==="fixed")&&_currentStyle.top!=="auto"&&_currentStyle.bottom!=="auto"&&_currentStyle.height==="auto"){
         _this.resizeBottom(_element);
         // TODO: needs line height calculation here too for elements smaller than the line height or font size
       }
@@ -232,11 +232,11 @@ iefix = {
     //if(_element.currentStyle.backgroundImage){_this.fixBackgroundImage(_element);}
     
     // check if png needs to be fixed:
-    //if(_element.tagName=="IMG"||(_element.tagName=="INPUT"&&_element.type=="image")){_this.fixImg(_element);}
+    //if(_element.tagName==="IMG"||(_element.tagName==="INPUT"&&_element.type==="image")){_this.fixImg(_element);}
     
     // anti-click-through fix:
     //else 
-    if(_element.style.backgroundColor=='transparent'&&(_element.style.backgroundImage=='none'||!_element.style.backgroundImage)){
+    if(_element.style.backgroundColor==='transparent'&&(_element.style.backgroundImage==='none'||!_element.style.backgroundImage)){
       _element.style.backgroundImage="url("+ie_htc_path+"128.gif)"; // transparent gif, 128x128
     }
   },
@@ -249,7 +249,7 @@ iefix = {
     //window.status = 'traversecount: '+_this._traverseCount;
     _element=_element||document.documentElement;
     while(_element){
-      if(_element.nodeType==1){
+      if(_element.nodeType===1){
         _this.inlineStyleChanged(_element);
       }
       var _next=_element.firstChild;
@@ -290,7 +290,7 @@ iefix = {
   // entry point from ie_css_style.htc
   htcStyleEntry: function(){
     //window.status = 'htcStyleEntry';
-    if(document.readyState=="complete"&&window.event.srcElement.readyState=="complete"){
+    if(document.readyState==="complete"&&window.event.srcElement.readyState==="complete"){
       iefix._traverseTree();
     }
   },
@@ -305,20 +305,20 @@ iefix = {
     //iefix._elemEntryCount++;
     //window.status="htcElementEntry: "+iefix._elemEntryCount;
     var _element=window.event.srcElement, _propName=window.event.propertyName;
-    if (_propName=="style.opacity"){
+    if (_propName==="style.opacity"){
       //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' opacity';
       iefix.fixOpacity(_element);
     }
-    else if((_propName=="src"&&_element.tagName=="IMG")||(_element.tagName=="INPUT"&&_element.type=="image")){
+    else if((_propName==="src"&&_element.tagName==="IMG")||(_element.tagName==="INPUT"&&_element.type==="image")){
       window.status = 'htcElementEntry: '+iefix._elemEntryCount+' img';
       iefix.fixImg(_element);
     }
-    //else if(_propName=='style.cssText'){
+    //else if(_propName==='style.cssText'){
       //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' cssText';
       //iefix._traverseTree();
     //}
-    else if(_propName.substring(0,6)=='style.'){
-      if(iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])!=-1){
+    else if(_propName.substring(0,6)==='style.'){
+      if(iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])!==-1){
         //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' style';
         iefix._traverseTree();
       }
@@ -335,10 +335,10 @@ iefix = {
 };
 iefix.init();
 
-ie_complete=document.readyState=="complete";
+ie_complete=document.readyState==="complete";
 ie_initialized=false;
 
-ie_documentLoaded=function(){if(document.readyState=="complete"){iefix._traverseTree();}};
+ie_documentLoaded=function(){if(document.readyState==="complete"){iefix._traverseTree();}};
 ie_fixes=function(){
   if( !ie_initialized
     ){

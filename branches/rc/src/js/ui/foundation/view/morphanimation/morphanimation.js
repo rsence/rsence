@@ -54,7 +54,7 @@ HMorphAnimation = HClass.extend({
     else {
       throw "Wrong argument type.";
     }
-    
+    return this;
   },
   
   
@@ -91,6 +91,7 @@ HMorphAnimation = HClass.extend({
       }
       
     }
+    return this;
   },
   
   
@@ -148,7 +149,7 @@ HMorphAnimation = HClass.extend({
         }, Math.round(1000 / _fps)
       );
     }
-    
+    return this;
   },
   
   
@@ -157,16 +158,16 @@ HMorphAnimation = HClass.extend({
   // is happening.
   _animateStep: function(_obj) {
     
-    var _time = new Date().getTime();
+    var _time = new Date().getTime(), i;
     if (_time < _obj.startTime + _obj.duration) {
       var _cTime = _time - _obj.startTime;
       
       // Handle all the defined properties.
-      for (var i = 0; i < _obj.props.length; i++) {
+      for (i = 0; i < _obj.props.length; i++) {
         var _from = _obj.props[i].from;
         var _to = _obj.props[i].to;
         
-        if (_from != _to) {
+        if (_from !== _to) {
           // The value of the property at this time.
           var _propNow = _obj.transition(_cTime, _from, (_to - _from),
             _obj.duration);
@@ -176,14 +177,14 @@ HMorphAnimation = HClass.extend({
       
     } else {
       // Animation is done, clear the interval and finalize the animation.
-      for (var i = 0; i < _obj.props.length; i++) {
+      for (i = 0; i < _obj.props.length; i++) {
         this.setStyle(_obj.props[i].prop,
           _obj.props[i].to + _obj.props[i].unit);
       }
       this._animationDone = true;
       this.stopAnimation();
     }
-    
+    return this;
   },
   
   

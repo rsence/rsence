@@ -23,7 +23,7 @@
 ReloadApp = HApplication.extend({
   reload: function(){
     var _url = this._url;
-    if((!_url)||(_url=='/')){
+    if((!_url)||(_url==='/')){
       window.location.reload(true);
     }
     else {
@@ -32,15 +32,16 @@ ReloadApp = HApplication.extend({
   },
   reset_session: function(){
     COMM.request(
-      '/hello/goodbye', {
+      HCLIENT_HELLO + '/goodbye', {
         method: 'POST',
         body: ('ses_key='+COMM.Session.ses_key),
-        async: false,
+        async: true,
         onSuccess: function(){
-          window.location.href = '/';
           window.location.reload(true);
         },
-        onFailure: function(){}
+        onFailure: function(){
+          window.location.reload(true);
+        }
     });
   },
   constructor: function( _title, _message, _url ){

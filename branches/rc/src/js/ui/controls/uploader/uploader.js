@@ -61,7 +61,7 @@ HUploader = HControl.extend({
         ELEM.get(this.markupElemIds.value).value=this.valueObj.id;
         var _label = this.uploadStateLabels[_stateKey];
         //console.log('stateLabel:',_label);
-        if(_state==0){
+        if(_state===0){
           ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','hidden');
           ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','hidden');
           ELEM.setStyle(this.markupElemIds.ack_button,'visibility','hidden');
@@ -73,9 +73,9 @@ HUploader = HControl.extend({
           ELEM.get(this.markupElemIds.file).value='';
           this.uploadKey = _uploadKey;
         }
-        else if(_state==1||_state==2||_state==3||_state==4){
+        else if(_state===1||_state===2||_state===3||_state===4){
           ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','inherit');
-          if(_state==1||_state==2||_state==4){
+          if(_state===1||_state===2||_state===4){
             ELEM.setStyle(this.markupElemIds.progress_indicator,'visibility','inherit');
             ELEM.setStyle(this.markupElemIds.ack_button,'visibility','hidden');
           }
@@ -86,7 +86,7 @@ HUploader = HControl.extend({
           ELEM.setHTML(this.markupElemIds.progress_label,_label);
           ELEM.setStyle(this.markupElemIds.button,'visibility','hidden');
           ELEM.setStyle(this.markupElemIds.form,'visibility','hidden');
-          if(_state==1){
+          if(_state===1){
             ELEM.get(this.markupElemIds.form).submit();
           }
         }
@@ -101,10 +101,10 @@ HUploader = HControl.extend({
     }
   },
   refreshValue: function(){
-    if(typeof this.value != 'string'){return;}
+    if(typeof this.value !== 'string'){return;}
     if(this.value.indexOf(':::')<1){return;}
     var _stateAndKey = this.value.split(':::');
-    if(_stateAndKey.length!=2){
+    if(_stateAndKey.length!==2){
       return;
     }
     var _state = parseInt(_stateAndKey[0],10),
@@ -119,7 +119,7 @@ HUploader = HControl.extend({
   },
   click: function(){
     //console.log('click');
-    if((this.uploadState==3)||(this.uploadState<0)){
+    if((this.uploadState===3)||(this.uploadState<0)){
       //console.log('clicked, state=',this.uploadState);
       this.getNewUploadKey();
     }

@@ -122,7 +122,6 @@ HView = HClass.extend({
       this.preserveTheme = true;
     }
     
-    
     // Used for smart template elements (resizing)
     
     this.optimizeWidthOnRefresh = true;
@@ -169,34 +168,40 @@ HView = HClass.extend({
     this.flexRight = _flag;
     if(_px===undefined){_px=0;}
     this.flexRightOffset = _px;
+    return this;
   },
   setFlexLeft: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexLeft = _flag;
-    if(_px!==undefined){
+    if((_px || _px === 0) && this.rect){
       this.rect.setLeft(_px);
     }
+    return this;
   },
   setFlexTop: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexTop = _flag;
-    if(_px!==undefined){
+    if((_px || _px === 0) && this.rect){
       this.rect.setTop(_px);
     }
+    return this;
   },
   setFlexBottom: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexBottom = _flag;
     if(_px===undefined){_px=0;}
     this.flexBottomOffset = _px;
+    return this;
   },
   setAbsolute: function(_flag){
     if(_flag===undefined){_flag=true;}
     this.isAbsolute = _flag;
+    return this;
   },
   setRelative: function(_flag){
     if(_flag===undefined){_flag=true;}
     this.isAbsolute = (!_flag);
+    return this;
   },
   
 /** method: getThemeGfxPath
@@ -232,14 +237,14 @@ HView = HClass.extend({
   },
   // provided solely for component extendability:
   _setCSS: function(_additional){
-      var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
-      if(this.isAbsolute){
-        _cssStyle += 'position:absolute;';
-      } else {
-        _cssStyle += 'position:relative;';
-      }
-      _cssStyle += _additional;
-      ELEM.setCSS(this.elemId,_cssStyle);
+    var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
+    if(this.isAbsolute){
+      _cssStyle += 'position:absolute;';
+    } else {
+      _cssStyle += 'position:relative;';
+    }
+    _cssStyle += _additional;
+    ELEM.setCSS(this.elemId,_cssStyle);
   },
   
   _getParentElemId: function(){
@@ -285,53 +290,54 @@ HView = HClass.extend({
   *  <draw> <drawMarkup> <refresh> <setRect> <HRect>
   **/
   drawRect: function() {
-    if (!this.parent || !this.rect.isValid) {
-      return;
+    if (this.parent && this.rect.isValid) {
+      var _this = this,
+          _elemId = _this.elemId,
+          _styl = ELEM.setStyle,
+          _rect = _this.rect;
+    
+      _styl( _elemId, 'left', _this.flexLeft?(_rect.left+'px'):'auto', true);
+      _styl( _elemId, 'top', _this.flexTop?(_rect.top+'px'):'auto', true);
+      _styl( _elemId, 'right', _this.flexRight?(_this.flexRightOffset+'px'):'auto', true);
+      _styl( _elemId, 'bottom', _this.flexBottom?(_this.flexBottomOffset+'px'):'auto', true);
+      _styl( _elemId, 'width', (_this.flexLeft&&_this.flexRight)?'auto':(_rect.width+'px'), true);
+      _styl( _elemId, 'height', (_this.flexTop&&_this.flexBottom)?'auto':(_rect.height+'px'), true);
+    
+      if(_this.flexLeft&&_this.flexRight){
+        _styl( _elemId, 'min-width', _rect.width+'px', true);
+      }
+      if(_this.flexTop&&_this.flexBottom){
+        _styl( _elemId, 'min-height', _rect.height+'px', true);
+      }
+    
+      // Show the rectangle once it gets created, unless visibility was set to
+      // hidden in the constructor.
+      if(undefined === _this.isHidden || _this.isHidden === false) {
+        _styl( _elemId, 'visibility', 'inherit', true);
+      }
+    
+      _styl( _elemId, 'display', 'block', true);
+    
+      _this._updateZIndex();
+    
+      if (_this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
+        _this.invalidatePositionCache();
+        _this._cachedLeft = _rect.left;
+        _this._cachedTop = _rect.top;
+      }
+    
+      _this.drawn = true;
+    
+      // right, bottom, opacity and png-transparency
+      /*
+      if (ELEM._is_ie6 && !this.ie_resizefixadded) {
+        iefix._traverseTree(ELEM.get(this.elemId));
+        this.ie_resizefixadded = true;
+        HSystem.fix_ie = true;
+      }
+      */
     }
-    
-    this.drawn = true;
-    
-    var _elemId = this.elemId;
-    var _rect = this.rect;
-    
-    ELEM.setStyle( _elemId, 'left', this.flexLeft?(_rect.left+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'top', this.flexTop?(_rect.top+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'right', this.flexRight?(this.flexRightOffset+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'bottom', this.flexBottom?(this.flexBottomOffset+'px'):'auto', true);
-    ELEM.setStyle( _elemId, 'width', (this.flexLeft&&this.flexRight)?'auto':(_rect.width+'px'), true);
-    ELEM.setStyle( _elemId, 'height', (this.flexTop&&this.flexBottom)?'auto':(_rect.height+'px'), true);
-    
-    if(this.flexLeft&&this.flexRight){
-      ELEM.setStyle( _elemId, 'min-width', _rect.width+'px', true);
-    }
-    if(this.flexTop&&this.flexBottom){
-      ELEM.setStyle( _elemId, 'min-height', _rect.height+'px', true);
-    }
-    
-    // Show the rectangle once it gets created, unless visibility was set to
-    // hidden in the constructor.
-    if(undefined === this.isHidden || this.isHidden == false) {
-      ELEM.setStyle( _elemId, 'visibility', 'inherit', true);
-    }
-    
-    ELEM.setStyle( _elemId, 'display', 'block', true);
-    
-    this._updateZIndex();
-    
-    if (this._cachedLeft != _rect.left || this._cachedTop != _rect.top) {
-      this.invalidatePositionCache();
-      this._cachedLeft = _rect.left;
-      this._cachedTop = _rect.top;
-    }
-    
-    // right, bottom, opacity and png-transparency
-    /*
-    if (ELEM._is_ie6 && !this.ie_resizefixadded) {
-      iefix._traverseTree(ELEM.get(this.elemId));
-      this.ie_resizefixadded = true;
-      HSystem.fix_ie = true;
-    }
-    */
+    return this;
   },
   
   /**
@@ -377,6 +383,7 @@ HView = HClass.extend({
       this.drawSubviews();
     }
     this.refresh();
+    return this;
   },
   
 /** method: drawSubviews
@@ -394,14 +401,19 @@ HView = HClass.extend({
   // the this.theme is used for loading the markup. Otherwise the currently
   // active theme is used.
   _loadMarkup: function() {
-    var _themeName;
+    var _themeName, _markup;
     if (this.preserveTheme) {
       _themeName = this.theme;
     }
     else {
       _themeName = HThemeManager.currentTheme;
     }
-    this.markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+    _markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+    if(_markup === false){
+      console.log('Warning: Markup template for "'+this.componentName+'" using theme "'+_themeName+'" not loaded.');
+    }
+    this.markup = _markup;
+    return (_markup !== false);
   },
   
 /** method: drawMarkup
@@ -415,7 +427,8 @@ HView = HClass.extend({
   drawMarkup: function() {
     ELEM.setStyle(this.elemId, 'display', 'none', true);
     
-    this._loadMarkup();
+    // continue processing from here on:
+    var _markupStatus = this._loadMarkup();
     
     this.bindMarkupVariables();
     ELEM.setHTML(this.elemId, this.markup);
@@ -425,7 +438,7 @@ HView = HClass.extend({
       var _partName = this.markupElemNames[ i ],
           _elemName = _partName + this.elemId,
           _htmlIdMatch = ' id="' + _elemName + '"';
-      if( this.markup.indexOf( _htmlIdMatch ) != -1 ) {
+      if( this.markup.indexOf( _htmlIdMatch ) !== -1 ) {
         this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
       }
     }
@@ -444,6 +457,7 @@ HView = HClass.extend({
       HSystem.fix_ie = true;
     }
     */
+    return this;
   },
   
 /** method: setHTML
@@ -455,6 +469,7 @@ HView = HClass.extend({
   **/
   setHTML: function( _html ) {
     ELEM.setHTML( this.elemId, _html );
+    return this;
   },
   
 /** method: refresh
@@ -475,6 +490,7 @@ HView = HClass.extend({
     if(this.optimizeWidthOnRefresh) {
       this.optimizeWidth();
     }
+    return this;
   },
 
 /** method: setRect
@@ -484,14 +500,107 @@ HView = HClass.extend({
   *
   * Parameter:
   *  _rect - The new <HRect> instance to replace the old <rect> instance with.
+  *  _rect - Array format:
+  *    
+  *    with 4 items, then left and top -aligned layout with numeric indexes at:
+  *      0: left
+  *      1: top
+  *      2: width
+  *      3: height
+  *    
+  *    with 6 items, then special layout with indexes at:
+  *      0: left
+  *         - right-aligned layout if null and valid number at index 2 and 4
+  *      1: top
+  *         - bottom-aligned layout if null and valid number at index 3 and 5
+  *      2: width
+  *         - auto-width if null and valid number at index 0 and 4
+  *      4: height
+  *         - auto-height if null and valid number at index 1 and 5
+  *      5: right
+  *         - right-aligned layout if valid number at index 2
+  *         - auto-width if valid number at index 0
+  *      6: bottom
+  *         - bottom-aligned layout if valid number at index 3
+  *                - auto-height if valid number at index 1
   **/
   setRect: function(_rect) {
     if (this.rect) {
       this.rect.release(this);
     }
-    this.rect = _rect;
+    if(_rect instanceof Array){
+      var _arrLen = _rect.length,
+          _throwPrefix = 'HView.setRect: If the HRect instance is replaced by an array, ';
+      if((_arrLen === 4) || (_arrLen === 6)){
+        var _leftOffset   = _rect[0],
+            _topOffset    = _rect[1],
+            _width        = _rect[2],
+            _height       = _rect[3],
+            _rightOffset  = ((_arrLen === 6)?_rect[4]:null),
+            _bottomOffset = ((_arrLen === 6)?_rect[5]:null),
+            _validLeftOffset    = (typeof _leftOffset    === 'number'),
+            _validTopOffset     = (typeof _topOffset     === 'number'),
+            _validRightOffset   = (typeof _rightOffset   === 'number'),
+            _validBottomOffset  = (typeof _bottomOffset  === 'number'),
+            _validWidth   = (typeof _width   === 'number'),
+            _validHeight  = (typeof _height  === 'number'),
+            _right,
+            _bottom;
+        
+        if( (!_validLeftOffset && !_validRightOffset) ||
+            (!_validTopOffset && !_validBottomOffset) ){
+          console.log(_throwPrefix + '(left or top) and (top or bottom) must be specified.');
+        }
+        else if( (!_validWidth   && !(_validLeftOffset && _validRightOffset)) ||
+                 (!_validHeight  && !(_validTopOffset  && _validBottomOffset)) ){
+          console.log(_throwPrefix + 'the (height or width) must be specified unless both (left and top) or (top and bottom) are specified.');
+        }
+        
+        this.setFlexLeft(_validLeftOffset,_leftOffset);
+        this.setFlexTop(_validTopOffset,_topOffset);
+        this.setFlexRight(_validRightOffset,_rightOffset);
+        this.setFlexBottom(_validBottomOffset,_bottomOffset);
+        
+        // default, makes a correct rect
+        if(_validLeftOffset && _validWidth && !_validRightOffset){
+          _right = _leftOffset + _width;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(!_validLeftOffset && _validWidth && _validRightOffset){
+          _leftOffset = 0;
+          _right = _width;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(_validLeftOffset && !_validWidth && _validRightOffset){
+          _right = _leftOffset + _rightOffset;
+        }
+        
+        // default, makes a correct rect
+        if(_validTopOffset && _validHeight && !_validBottomOffset){
+          _bottom = _topOffset + _height;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(!_validTopOffset && _validHeight && _validBottomOffset){
+          _topOffset = 0;
+          _bottom = _height;
+        }
+        // can't be entirely correct rect unless parent size is calculated
+        else if(_validTopOffset && !_validHeight && _validBottomOffset){
+          _bottom = _topOffset + _bottomOffset;
+        }
+        
+        this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
+      }
+      else {
+        console.log(_throwPrefix + 'the length has to be either 4 or 6.');
+      }
+    }
+    else {
+      this.rect = _rect;
+    }
     this.rect.bind(this);
     this.refresh();
+    return this;
   },
   
 /** method: setStyle
@@ -508,10 +617,10 @@ HView = HClass.extend({
   *  <Element Manager.styl_set> <style> <elemId>
   **/
   setStyle: function(_name, _value, _cacheOverride) {
-    if (!this.elemId) {
-      return;
+    if (this.elemId) {
+      ELEM.setStyle(this.elemId, _name, _value, _cacheOverride);
     }
-    ELEM.setStyle(this.elemId, _name, _value, _cacheOverride);
+    return this;
   },
 
 /** method: style
@@ -530,10 +639,10 @@ HView = HClass.extend({
   *  <Element Manager.styl_get> <setStyle> <elemId>
   **/
   style: function(_name) {
-    if (!this.elemId) {
-      return;
+    if (this.elemId) {
+      return ELEM.getStyle(this.elemId, _name);
     }
-    return ELEM.getStyle(this.elemId, _name);
+    return '';
   },
   
 /** method: setStyleForPart
@@ -552,13 +661,11 @@ HView = HClass.extend({
   setStyleOfPart: function(_partName, _name, _value, _cacheOverride) {
     if (!this.markupElemIds[_partName]) {
       console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
-      return;
     }
-    ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
-  },
-  setStyleForPart: function(_partName, _name, _value, _cacheOverride ){
-    console.log('Warning: setStyleForPart is deprecated. Use setStyleOfPart instead.');
-    this.styleOfPart( _partName, _name, _value, _cacheOverride );
+    else {
+      ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+    }
+    return this;
   },
   
 /** method: styleForPart
@@ -580,17 +687,15 @@ HView = HClass.extend({
     }
     return ELEM.getStyle(this.markupElemIds[_partName], _name);
   },
-  styleForPart: function(_partName, _name){
-    console.log('Warning: styleForPart is deprecated. Use styleOfPart instead.');
-    return this.styleOfPart( _partName, _name );
-  },
   
   setMarkupOfPart: function( _partName, _value ) {
     if (!this.markupElemIds[_partName]) {
       console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
-      return;
     }
-    ELEM.setHTML( this.markupElemIds[_partName], _value );
+    else {
+      ELEM.setHTML( this.markupElemIds[_partName], _value );
+    }
+    return this;
   },
   
 /** method: styleForPart
@@ -610,7 +715,7 @@ HView = HClass.extend({
       console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
-    ELEM.getHTML(this.markupElemIds[_partName]);
+    return ELEM.getHTML(this.markupElemIds[_partName]);
   },
 
 /** method: hide
@@ -628,6 +733,7 @@ HView = HClass.extend({
       _setStyl(_elemId,'display', 'none');
       this.isHidden = true;
     }
+    return this;
   },
   
 /** method: show
@@ -645,6 +751,7 @@ HView = HClass.extend({
       _setStyl(_elemId,'display', 'block');
       this.isHidden = false;
     }
+    return this;
   },
   
 /** method: toggle
@@ -660,6 +767,7 @@ HView = HClass.extend({
     } else {
       this.hide();
     }
+    return this;
   },
   
 /** method: remove
@@ -685,7 +793,7 @@ HView = HClass.extend({
       
       // frees this view from zindex re-ordering, if added
       var _sysUpdateZIndexOfChildrenBufferIndex = HSystem._updateZIndexOfChildrenBuffer.indexOf( this.viewId );
-      if(_sysUpdateZIndexOfChildrenBufferIndex != -1){
+      if(_sysUpdateZIndexOfChildrenBufferIndex !== -1){
         HSystem._updateZIndexOfChildrenBuffer.splice( _sysUpdateZIndexOfChildrenBufferIndex, 1 );
       }
       
@@ -697,6 +805,7 @@ HView = HClass.extend({
       this.parent  = null;
       this.parents = [];
     }
+    return this;
   },
   
 /** method: die
@@ -711,15 +820,15 @@ HView = HClass.extend({
     // hide self, makes destruction seem faster
     this.hide();
     // Delete the children first.
-    var _childViewId;
-    while (this.views.length != 0) {
+    var _childViewId, i;
+    while (this.views.length !== 0) {
       _childViewId = this.views[0];
       this.destroyView(_childViewId);
     }
     // Remove this object's bindings, except the DOM element.
     this.remove();
     // Remove the DOM element bindings.
-    for (var i = 0; i < this._domElementBindings.length; i++) {
+    for ( i = 0; i < this._domElementBindings.length; i++) {
       ELEM.del(this._domElementBindings[i]);
     }
     this._domElementBindings = [];
@@ -731,7 +840,7 @@ HView = HClass.extend({
     
     delete this.rect;
     var _this = this;
-    for( var i in _this ){
+    for( i in _this ){
       _this[i] = null;
       delete _this[i];
     }
@@ -803,6 +912,7 @@ HView = HClass.extend({
   **/
   removeView: function(_viewId) {
     HSystem.views[_viewId].remove();
+    return this;
   },
   
 /** method: destroyView
@@ -818,6 +928,7 @@ HView = HClass.extend({
   **/
   destroyView: function(_viewId) {
     HSystem.views[_viewId].die();
+    return this;
   },
   
 /** method: bounds
@@ -873,6 +984,7 @@ HView = HClass.extend({
     _rect.bottom += _vertical;
     _rect.updateSecondaryValues();
     this.drawRect();
+    return this;
   },
 
 /** method: resizeTo
@@ -903,6 +1015,7 @@ HView = HClass.extend({
     _rect.bottom = _rect.top + _height;
     _rect.updateSecondaryValues();
     this.drawRect();
+    return this;
   },
 
 /** method: offsetTo
@@ -932,6 +1045,7 @@ HView = HClass.extend({
   offsetTo: function() {
     this.rect.offsetTo.apply(this.rect, arguments);
     this.drawRect();
+    return this;
   },
   
 /** method: moveTo
@@ -941,6 +1055,7 @@ HView = HClass.extend({
   **/
   moveTo: function() {
     this.offsetTo.apply(this, arguments);
+    return this;
   },
   
 /** method: offsetBy
@@ -968,6 +1083,7 @@ HView = HClass.extend({
   offsetBy: function(_horizontal, _vertical) {
     this.rect.offsetBy(_horizontal, _vertical);
     this.drawRect();
+    return this;
   },
   
 /** method: moveBy
@@ -977,6 +1093,7 @@ HView = HClass.extend({
   **/
   moveBy: function() {
     this.offsetBy.apply(this, arguments);
+    return this;
   },
 
 /** method: bringToFront
@@ -987,13 +1104,13 @@ HView = HClass.extend({
   *  <sendToBack> <zIndex>
   **/
   bringToFront: function() {
-    if (!this.parent) {
-      return;
+    if (this.parent) {
+      var _index = this.zIndex();
+      this.parent.viewsZOrder.splice(_index, 1);
+      this.parent.viewsZOrder.push(this.viewId);
+      this._updateZIndexAllSiblings();
     }
-    var _index = this.zIndex();
-    this.parent.viewsZOrder.splice(_index, 1);
-    this.parent.viewsZOrder.push(this.viewId);
-    this._updateZIndexAllSiblings();
+    return this;
   },
   
 /** method: bringToFrontOf
@@ -1004,18 +1121,14 @@ HView = HClass.extend({
   * Parameters:
   *  _view - The view to bring to the front of.
   *
-  * Returns:
-  *  Success code. (true for success, false for no success)
-  *
   **/
   bringToFrontOf: function(_view){
-    if(this.parent.viewId != _view.parent.viewId){
-      return false;
+    if(this.parent.viewId === _view.parent.viewId){
+      this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
+      this.parent.viewsZOrder.splice( _view.zIndex()+1, 0, this.viewId); // sets itself in front of to _view
+      this._updateZIndexAllSiblings();
     }
-    this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
-    this.parent.viewsZOrder.splice( _view.zIndex()+1, 0, this.viewId); // sets itself in front of to _view
-    this._updateZIndexAllSiblings();
-    return true;
+    return this;
   },
   
 /** method: sendToBackOf
@@ -1026,37 +1139,29 @@ HView = HClass.extend({
   * Parameters:
   *  _view - The view to send to the back of.
   *
-  * Returns:
-  *  Success code. (true for success, false for no success)
-  *
   **/
   sendToBackOf: function(_view){
-    if(this.parent.viewId != _view.parent.viewId){
-      return false;
+    if(this.parent.viewId === _view.parent.viewId){
+      this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
+      this.parent.viewsZOrder.splice( _view.zIndex(), 0, this.viewId); // sets itself in back of to _view
+      this._updateZIndexAllSiblings();
     }
-    this.parent.viewsZOrder.splice( this.zIndex(), 1 ); // removes selfs index from the array
-    this.parent.viewsZOrder.splice( _view.zIndex(), 0, this.viewId); // sets itself in back of to _view
-    this._updateZIndexAllSiblings();
-    return true;
+    return this;
   },
   
 /** method: sendBackward
   *
   * Sends itself one step backward by changing its Z-Index.
   *
-  * Returns:
-  *  Success code. (true for success, false for no success)
-  *
   **/
   sendBackward: function(){
     var _index = this.zIndex();
-    if(_index===0){
-      return false;
+    if(_index!==0){
+      this.parent.viewsZOrder.splice( _index, 1 ); // removes selfs index from the array
+      this.parent.viewsZOrder.splice( _index-1, 0, this.viewId); // moves selfs position to one step less than where it was
+      this._updateZIndexAllSiblings();
     }
-    this.parent.viewsZOrder.splice( _index, 1 ); // removes selfs index from the array
-    this.parent.viewsZOrder.splice( _index-1, 0, this.viewId); // moves selfs position to one step less than where it was
-    this._updateZIndexAllSiblings();
-    return true;
+    return this;
   },
   
 /** method: bringForward
@@ -1069,13 +1174,12 @@ HView = HClass.extend({
   **/
   bringForward: function(){
     var _index = this.zIndex();
-    if(_index===this.parent.viewsZOrder.length-1){
-      return false;
+    if(_index!==this.parent.viewsZOrder.length-1){
+      this.parent.viewsZOrder.splice( _index, 1 ); // removes selfs index from the array
+      this.parent.viewsZOrder.splice( _index+1, 0, this.viewId); // moves selfs position to one step more than it was
+      this._updateZIndexAllSiblings();
     }
-    this.parent.viewsZOrder.splice( _index, 1 ); // removes selfs index from the array
-    this.parent.viewsZOrder.splice( _index+1, 0, this.viewId); // moves selfs position to one step more than it was
-    this._updateZIndexAllSiblings();
-    return true;
+    return this;
   },
   
 
@@ -1087,13 +1191,13 @@ HView = HClass.extend({
   *  <bringToFront> <zIndex>
   **/
   sendToBack: function() {
-    if (!this.parent) {
-      return;
+    if (this.parent) {
+      var _index = this.zIndex();
+      this.parent.viewsZOrder.splice(_index, 1); // removes this index from the arr
+      this.parent.viewsZOrder.splice(0, 0, this.viewId); // unshifts viewId
+      this._updateZIndexAllSiblings();
     }
-    var _index = this.zIndex();
-    this.parent.viewsZOrder.splice(_index, 1); // removes this index from the arr
-    this.parent.viewsZOrder.splice(0, 0, this.viewId); // unshifts viewId
-    this._updateZIndexAllSiblings();
+    return this;
   },
 
 /** method: sendToBack
@@ -1108,7 +1212,7 @@ HView = HClass.extend({
   **/
   zIndex: function() {
     if (!this.parent) {
-      return;
+      return -1;
     }
     // Returns the z-order of this item as seen by the parent.
     return this.parent.viewsZOrder.indexOf(this.viewId);
@@ -1239,6 +1343,7 @@ HView = HClass.extend({
     for(var i=0; i<this.views.length; i++) {
       HSystem.views[this.views[i]].invalidatePositionCache();
     }
+    return this;
   },
   
   

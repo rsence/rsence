@@ -59,10 +59,10 @@ HPoint = HClass.extend({
     if (_args.length === 0) {
       this._constructorDefault();
     }
-    else if (_args.length == 2) {
+    else if (_args.length === 2) {
       this._constructorValues(_args[0],_args[1]);
     }
-    else if (_args.length == 1) {
+    else if (_args.length === 1) {
       this._constructorPoint(_args[0]);
     }
     else {
@@ -97,10 +97,10 @@ HPoint = HClass.extend({
     if (_args.length === 0) {
       this._constructorDefault();
     }
-    else if (_args.length == 2) {
+    else if (_args.length === 2) {
       this._constructorValues(_args[0],_args[1]);
     }
-    else if (_args.length == 1) {
+    else if (_args.length === 1) {
       this._constructorPoint(_args[0]);
     }
     else {
@@ -158,11 +158,11 @@ HPoint = HClass.extend({
   **/
   add: function(_point) {
     _args = arguments;
-    if((_args.length==1)&&(_args[0].type==this.type)){
+    if((_args.length===1)&&(_args[0].type===this.type)){
       _point = _args[0];
       return new HPoint( (this.x + _point.x), (this.y + _point.y) );
     }
-    else if(_args.length==2){
+    else if(_args.length===2){
       return new HPoint( (this.x + _args[0]), (this.y + _args[1]) );
     } else {
       return new HPoint( 0, 0 );
@@ -192,11 +192,11 @@ HPoint = HClass.extend({
   **/
   subtract: function(){
     _args = arguments;
-    if((_args.length==1)&&(_args[0].type==this.type)){
+    if((_args.length===1)&&(_args[0].type===this.type)){
       _point = _args[0];
       return new HPoint( this.x-_point.x, this.y-_point.y );
     }
-    else if(_args.length==2){
+    else if(_args.length===2){
       return new HPoint( this.x-_args[0], this.y-_args[1] );
     } else {
       return new HPoint( 0, 0 );
@@ -218,7 +218,7 @@ HPoint = HClass.extend({
   *  <subtract> <add>
   **/
   equals: function(_point) {
-    return ( this.x == _point.x && this.y == _point.y );
+    return ( this.x === _point.x && this.y === _point.y );
   }
 
 

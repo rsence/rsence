@@ -31,7 +31,7 @@ HValidatorView = HControl.extend({
   **/
   constructor: function(_rect, _parent, _options) {
     if(_options !== undefined){
-      if(_options.valueField && _options.valueField.componentBehaviour[1] == 'control'){
+      if(_options.valueField && _options.valueField.componentBehaviour[1] === 'control'){
         _rect.offsetTo(
           _options.valueField.rect.right,
           _options.valueField.rect.top

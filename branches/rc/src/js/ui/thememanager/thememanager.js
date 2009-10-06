@@ -103,25 +103,35 @@ HThemeManager = HClass.extend({
   * Returns:
   *  The contents of the path.
   */
-  fetch: function( _url, _contentType ) {
-    var _result;
+  fetch: function( _url, _contentType, _callBack, _async ) {
     if( !_contentType ){
-      var _contentType = 'text/html; charset=UTF-8';
+      _contentType = 'text/html; charset=UTF-8';
+    }
+    if(_async){
+      var _callBackFun = function( resp ){
+        _callBack( resp.X.responseText );
+      };
+    }
+    else{
+      // console.log('WARNING: Fetching synchronously using HThemeManager is not recommended. Use pre-packaged themes instead.');
+      var _respText;
+      var _callBackFun = function( resp ){
+        _respText = resp.X.responseText;
+      };
     }
     COMM.request(
       _url, {
-        onSuccess: function( resp ){
-          _result = resp.X.responseText;
-        },
+        onSuccess:    _callBackFun,
         on404:        function(resp){ HThemeManager._errTemplateNotFound(  resp.url ); },
         onFailure:    function(resp){ HThemeManager._errTemplateFailure(   resp.url ); },
         onException:  function(resp){ HThemeManager._errTemplateException( resp.url ); },
         method: 'GET',
-        async: false
+        async: _async
       }
     );
-    
-    return _result;
+    if(!_async){
+      return _respText;
+    }
   },
   
   
@@ -150,7 +160,7 @@ HThemeManager = HClass.extend({
   */
   getCssFilePath: function( _fileName ){
     var _themeName      = this._cssEvalParams[0];
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
       return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
     }
     else {
@@ -172,15 +182,16 @@ HThemeManager = HClass.extend({
   */
   loadCSS: function( _url ) {
     var _contentType = 'text/css',
-        _cssText = this.fetch( _url, _contentType );
-    
-    // Don't try to do anything with empty or invalid css data:
-    if (!_cssText || _cssText == "") {
-      return;
-    }
-    this.useCSS( _cssText );
+        _cssFun = function(_cssText){
+          // Don't try to do anything with empty or invalid css data:
+          if (!_cssText || _cssText === "") {
+            return;
+          }
+          HThemeManager.useCSS( _cssText );
+        };
+    this.fetch( _url, _contentType, _cssFun, true );
   },
-  
+    
   useCSS: function( _cssText ){
     var _contentType = 'text/css';
     // Evaluate the css text
@@ -203,7 +214,7 @@ HThemeManager = HClass.extend({
       _head = document.getElementsByTagName('head')[0];
       _head.appendChild(_style);
       
-      if (navigator.userAgent.indexOf('KHTML') != -1) {
+      if (BROWSER_TYPE.safari) {
         // Work-around for safari
         var _cssTextElement = document.createTextNode(_cssText);
         _style.appendChild(_cssTextElement);
@@ -217,7 +228,7 @@ HThemeManager = HClass.extend({
   },
   
   _addSlash: function( _str ){
-    if( _str[ _str.length-1 ] != '/' ){
+    if( _str[ _str.length-1 ] !== '/' ){
       _str += '/';
     }
     return _str;
@@ -238,7 +249,7 @@ HThemeManager = HClass.extend({
     }
     
     // Pre-Build Path Format
-    if( HThemeMode == 0 ) {
+    if( HThemeMode === 0 ) {
       if( _pkgName ){
         _path = this._joinPath( _path, _pkgName );
       }
@@ -252,7 +263,7 @@ HThemeManager = HClass.extend({
     }
     
     // Post-Build Path Format
-    else if( HThemeMode == 1 ) {
+    else if( HThemeMode === 1 ) {
       _path = this._joinPath( _path, _themeName );
     }
     
@@ -262,17 +273,17 @@ HThemeManager = HClass.extend({
   // Makes a valid css template url
   _cssUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
     this._cssEvalParams = [_themeName, _componentName, _themePath, _pkgName];
-    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _cssSuffix = this._joinPath( 'css', _componentName+'.css' );
-    var _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
+    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+        _cssSuffix = this._joinPath( 'css', _componentName+'.css' ),
+        _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
     return _cssUrl;
   },
   
   // Makes a valid html template url
   _markupUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
-    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _htmlSuffix = this._joinPath( 'html', _componentName+'.html' );
-    var _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
+    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+        _htmlSuffix = this._joinPath( 'html', _componentName+'.html' ),
+        _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
     return _htmlUrl;
   },
   
@@ -297,14 +308,15 @@ HThemeManager = HClass.extend({
     var _cached = this._tmplCache[_themeName][_componentName];
     
     if (null === _cached || undefined === _cached) { 
-      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName );
-      _cached = this.fetch( _markupUrl );
+      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName ),
+          _markup = this.fetch( _markupUrl, null, null, false );
       // Save an empty string to template cache to prevent repeated failing
       // requests.
-      if (null === _cached || undefined === _cached) {
-        _cached = "";
+      if (null === _markup || undefined === _markup) {
+        _markup = "";
       }
-      this._tmplCache[_themeName][_componentName] = _cached;
+      HThemeManager._tmplCache[_themeName][_componentName] = _markup;
+      return _markup;
     }
     return _cached;
   },
@@ -326,17 +338,17 @@ HThemeManager = HClass.extend({
   *
   **/
   getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
-    
     /* Load Theme-Specific CSS: */
-    if(!this._cssCache[_themeName] && (HNoCommonCSS.indexOf(_themeName)==-1)){
-      var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
+    if(!this._cssCache[_themeName]){
       this._cssCache[_themeName] = {};
-      this.loadCSS( _commonCssUrl );
+      if(HNoCommonCSS.indexOf(_themeName)===-1){
+        var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
+        this.loadCSS( _commonCssUrl );
+      }
     }
     
     /* Load Component-Specific CSS, unless configured to only load the common css: */
-    if(HNoComponentCSS.indexOf(_themeName)==-1){
-      //console.log('HNoComponentCSS:',HNoComponentCSS,',  indexOf:',HNoComponentCSS.indexOf(_themeName),',  themeName:',_themeName, ',  componentName:', _componentName, ',  themePath:',_themePath,',  pkgName:',_pkgName);
+    if(HNoComponentCSS.indexOf(_themeName)===-1){
       if (!this._cssCache[_themeName][_componentName]){
         var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
         this._cssCache[_themeName][_componentName] = true;
@@ -359,12 +371,12 @@ HThemeManager = HClass.extend({
   *
   **/
   _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
-    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
-    var _url = this._joinPath( _urlPrefix, 'gfx' );
+    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+        _url = this._joinPath( _urlPrefix, 'gfx' );
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!=-1) && ELEM._is_ie6){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
       return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName.replace('.png','-ie6.gif') );
     }
     return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName );
@@ -415,7 +427,7 @@ HThemeManager = HClass.extend({
   *  An evaluated CSS Template.
   **/
   _bindCSSVariables: function( _cssTmpl ) {
-    while ( this._variable_match.test( _cssTmpl ) ) {  
+    while ( this._variable_match.test( _cssTmpl ) ) {
       _cssTmpl = _cssTmpl.replace(  this._variable_match, eval( RegExp.$1 )  );
     }
     return _cssTmpl;

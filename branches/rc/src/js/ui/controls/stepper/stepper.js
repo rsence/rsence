@@ -204,25 +204,25 @@ HStepper = HControl.extend({
   // up and right arrow keys steps the value up, down and left steps the value down
   keyDown: function( _keyCode ) {
     this.setKeyUp(true);
-    var _keyDown  = (_keyCode == Event.KEY_DOWN),
-        _keyUp    = (_keyCode == Event.KEY_UP),
-        _keyLeft  = (_keyCode == Event.KEY_LEFT),
-        _keyRight = (_keyCode == Event.KEY_RIGHT),
+    var _keyDown  = (_keyCode === Event.KEY_DOWN),
+        _keyUp    = (_keyCode === Event.KEY_UP),
+        _keyLeft  = (_keyCode === Event.KEY_LEFT),
+        _keyRight = (_keyCode === Event.KEY_RIGHT),
         _arrowKey = (_keyDown || _keyUp || _keyLeft || _keyRight);
     if (_arrowKey) {
       this._setRepeatInterval( (_keyUp || _keyRight) );
     }
-    else if (_keyCode == Event.KEY_HOME) {
+    else if (_keyCode === Event.KEY_HOME) {
       this.setValue(this.options.minValue);
     }
-    else if (_keyCode == Event.KEY_END) {
+    else if (_keyCode === Event.KEY_END) {
       this.setValue(this.options.maxValue);
     }
     // Page up and page down keys act just like arrow up/down.
-    else if (_keyCode == Event.KEY_PAGEUP) {
+    else if (_keyCode === Event.KEY_PAGEUP) {
       this._setRepeatInterval( 1 );
     }
-    else if (_keyCode == Event.KEY_PAGEDOWN) {
+    else if (_keyCode === Event.KEY_PAGEDOWN) {
       this._setRepeatInterval( 0 );
     }
   },

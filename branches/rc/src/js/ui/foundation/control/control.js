@@ -70,9 +70,9 @@ HControl = HView.extend({
       _options = {};
     }
     
-    var _isValueRange = (_options.minValue || _options.maxValue),
-        _options = HComponentDefaults.extend(_options).nu(),
-        _label = _options.label,
+    var _isValueRange = (_options.minValue || _options.maxValue);
+    _options = HComponentDefaults.extend(_options).nu();
+    var _label = _options.label,
         _events = _options.events,
         _this = this;
     
@@ -132,6 +132,7 @@ HControl = HView.extend({
   **/
   setAction: function(_action) {
     this.action = _action;
+    return this;
   },
   
 /** method: die
@@ -166,6 +167,7 @@ HControl = HView.extend({
     _this.label = _label;
     _this.options.label = _label;
     _this.refresh();
+    return this;
   },
   
 /** method: setEnabled
@@ -213,6 +215,7 @@ HControl = HView.extend({
     // Toggle the CSS class: enabled/disabled
     _this.toggleCSSClass(_elemId, HControl.CSS_ENABLED, _flag);
     _this.toggleCSSClass(_elemId, HControl.CSS_DISABLED, !_flag);
+    return this;
   },
   
   
@@ -236,6 +239,7 @@ HControl = HView.extend({
     _value = (_value > _maxValue) ? _maxValue : _value;
     this.setValue(_value);
     this.refresh();
+    return this;
   },
   
   refreshValue: function(){
@@ -244,6 +248,7 @@ HControl = HView.extend({
         ELEM.setHTML(this.markupElemIds.value,this.value);
       }
     }
+    return this;
   },
   refreshLabel: function(){
     if(this.markupElemIds){
@@ -251,6 +256,7 @@ HControl = HView.extend({
         ELEM.setHTML(this.markupElemIds.label,this.label);
       }
     }
+    return this;
   },
   refresh: function(){
     this.base();
@@ -262,6 +268,7 @@ HControl = HView.extend({
         this.refreshLabel();
       }
     }
+    return this;
   }
 },{
   
