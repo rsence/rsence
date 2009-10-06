@@ -22,7 +22,7 @@
   ###
 class SessionTimeout < ServletPlugin
   def match( uri, request_type )
-    if request_type == :post and uri == '/hello/goodbye'
+    if request_type == :post and uri == File.join($config[:broker_urls][:hello],'goodbye')
       return true
     end
     return false
@@ -64,7 +64,7 @@ class Main < Plugin
       if virtual_uri == '/sign_out'
         msg.reply( %{
           COMM.Transporter.stop=true;
-          location.href="/";
+          location.href=#{$config[:indexhtml_conf][:respond_address].to_json};
         } )
         #
         # Should not be required on recent safari versions

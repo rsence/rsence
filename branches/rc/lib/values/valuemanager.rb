@@ -23,15 +23,11 @@
   ###
 
 
-# ValueManager uses rexml for client -> server data parsing
-require 'rexml/document'
-include REXML
-
 # Require needed value types (hvalue supports bool/float/int/string)
 require 'values/hvalue'
 
 # RandomGenerator produces unique, random values
-require 'util/randgen'
+require 'ext/randgen'
 
 module Riassence
 module Server
@@ -48,20 +44,8 @@ class ValueManager
     
     @config = $config[:values_conf]
     
-    ## The value type parsers by string
-    @value_parsers = {}
-    
-    @value_parsers['b'] = BoolValueParser.new
-    @value_parsers['f'] = FloatValueParser.new
-    @value_parsers['i'] = IntValueParser.new
-    @value_parsers['s'] = StringValueParser.new
-    @value_parsers['a'] = ArrayValueParser.new
-    
-    # the version is checked to ensure client and server are compatible
-    @value_implementation_version = 8453 # 8000+revision
-    
     ## 'Unique' Random String generator for HValue keys (passed on to the client)
-    @randgen = RandomGenerator.new( @config[:key_length], @config[:buffer_size] )
+    @randgen = RandGen.new( @config[:key_length] )
     
   end
   
@@ -81,7 +65,7 @@ class ValueManager
       old_ids.each do |old_id|
         
         # make a new id
-        new_id = @randgen.get_one
+        new_id = @randgen.gen
         
         # get the hvalue
         val_obj = ses_values[:by_id][old_id]
@@ -119,41 +103,19 @@ class ValueManager
     
   end
   
-  ### Parses the xml from the client and passes it on to associated parsers
+  ### Parses the json from the client and passes it on to associated values
   def xhr( msg, syncdata_str )
     
-    # makes an xml parser object 'syncdata_xml' of the xml string 'syncdata_str'
-    syncdata_xml = Document.new( syncdata_str )
+    # parses the json data sent by the client
+    syncdata = JSON.parse( syncdata_str )
     
-    # gets the <hsyncvalues.../hsyncvalues> element (should only be one of these)
-    syncdata_xml.elements.each( 'hsyncvalues' ) do |syncvalues_xml|
-      
-      # gets the version of the input xml
-      syncvalversion = syncvalues_xml.attributes['version'].to_i
-      
-      # the client xml generator should match the server parser's version.
-      if syncvalversion != @value_implementation_version
-        if $DEBUG_MODE
-          puts
-          puts "CLIENT/SERVER hsyncvalues version mismatch: #{syncvalversion} vs #{@value_implementation_version}"
-          puts
-        end
-        $SESSION.stop_client_with_message( msg,
-          @config[:messages][:version_mismatch][:title],
-          @config[:messages][:version_mismatch][:descr],
-          @config[:messages][:version_mismatch][:uri]
-        )
-        return
-      end
-      
-      # loop through available parsers and..
-      @value_parsers.each_key do |value_type|
-        
-        # ..pass the xml value items to the associated value parser objects
-        syncvalues_xml.elements.each(value_type) do |value_xml|
-          @value_parsers[ value_type ].parse_xml( msg, value_xml )
-        end
-        
+    session_values = msg.session[:values][:by_id]
+    syncdata.each do |value_key, value_data|
+      if session_values.has_key?( value_key )
+        value_obj = session_values[ value_key ]
+        value_obj.from_client( msg, value_data )
+      else
+        raise "HValue; unassigned value id! (#{val_id.inspect})"
       end
     end
   end

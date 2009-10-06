@@ -34,19 +34,8 @@ representation of itself.
 =end
 class HValue
   
-  attr_reader :valid, :sync, :val_id, :data, :type, :jstype, :members
+  attr_reader :valid, :sync, :val_id, :data, :members
   attr_writer :valid, :val_id
-  
-  ## value conversion table between js and ruby
-  @@jstype_conv = {
-    'String'      => 'string',
-    'Fixnum'      => 'number',
-    'Bignum'      => 'number',
-    'Float'       => 'number',
-    'TrueClass'   => 'boolean',
-    'FalseClass'  => 'boolean',
-    'Array'       => 'object'
-  }
   
   ## method for binding the value to the session data
   def add( msg )
@@ -66,18 +55,18 @@ class HValue
   
   ## (Re-)Send the client-size representation
   def restore( msg )
-    ## Initialize a new client value
-    init_str = "HValue.nu('#{@val_id}', #{@data.to_json});"
-    msg.reply( init_str )
+    
+    ## Tags itself as a new value from the client's point of view
+    @is_new_to_client = true
+    
+    add_to_sync( msg )
+    
   end
   
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
-    @val_id   = $VALUES.randgen.get_one
-    
-    ## HValue's type is 'hvalue', just as in js
-    @type     = 'hvalue'
+    @val_id   = $VALUES.randgen.gen
     
     ## set the data of the hvalue
     set( msg, data, true )
@@ -165,19 +154,18 @@ class HValue
     
   end
   
+  def add_to_sync( msg )
+    ## add the id to the values to be syncronized (to client)
+    sync_ids = msg.session[:values][:sync]
+    unless sync_ids.include?( @val_id )
+      sync_ids.push( @val_id )
+    end
+  end
+  
   ## sets the data
   def set( msg, data, dont_tell_client=false )
     
-    ## check, if the data class is a supported type
-    if @@jstype_conv.has_key?( data.class.inspect )
-      ## the data should be correct
-      @jstype = @@jstype_conv[ data.class.inspect ]
-      @data   = data
-    else
-      ## unknown type: default to string (.to_json takes care of that)
-      @jstype = 'string'
-      @data   = data.to_json
-    end
+    @data   = data
     
     # won't tell the client about the change, usually not needed
     unless dont_tell_client
@@ -185,17 +173,21 @@ class HValue
       @sync  = false
       @is_valid = true
       
-      ## add the id to the values to be syncronized (to client)
-      sync_ids = msg.session[:values][:sync]
-      unless sync_ids.include?( @val_id )
-        sync_ids.push( @val_id )
-      end
+      add_to_sync( msg )
     end
   end
   
   ## tell the client that the value changed
   def to_client( msg )
-    msg.reply "HVM.s( '#{@val_id}', #{@data.to_json} );" 
+    if @is_new_to_client
+      ## Initialize a new client value
+      init_str = "COMM.Values.create(#{@val_id.to_json},#{@data.to_json});"
+      msg.reply_value( init_str )
+      @is_new_to_client = false
+    else
+      ## Sets the client value
+      msg.reply_value "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
+    end
   end
   
   ## clean up self
@@ -207,10 +199,10 @@ class HValue
     session_values = msg.session[:values][:by_id]
     
     ## Store the object here
-    session_values.delete[ @val_id ]
+    session_values.delete( @val_id )
     
-    if msg
-      msg.reply("HVM.del('#{@val_id}');")
+    if msg and not @is_new_to_client
+      msg.reply_value("HVM.del(#{@val_id.to_json});")
     end
   end
   
@@ -342,167 +334,7 @@ class UploadValue < HValue
   end
 end
 
-## Skeleton HValue parser
-class ValueParser
-  
-  def initialize( default_value=nil )
-    @default_value = default_value
-  end
-  
-  # please replace the process_data -method.
-  def process_data( msg, hvalue_xml )
-    puts "Warning: process_data not implemented for #{self.class.inspect}" if $DEBUG_MODE
-    return @defalut_value
-  end
-  
-  # gets called from valuemanager
-  def parse_xml( msg, hvalue_xml )
-    
-    ## get the value id from xml
-    val_id = hvalue_xml.attributes['id']
-    
-    ## parse the value id to integer
-    if val_id == val_id.to_i.to_s
-      val_id = val_id.to_i
-    end
-    
-    ## get the parsed value data
-    val_data = process_data( msg, hvalue_xml )
-    
-    ## store the value
-    session_values = msg.session[:values][:by_id]
-    if session_values.has_key?( val_id )
-      value_obj = session_values[ val_id ]
-      value_obj.from_client( msg, val_data )
-    else
-      raise "HValue; unassigned value id! (#{val_id.inspect})"
-    end
-  end
+end
 end
 
-## HValue parser that understands boolean data
-class BoolValueParser < ValueParser
-  
-  ## defaults to false
-  def initialize( default_value=false )
-    super
-  end
-  
-  ## parses boolean data from client: <b id='xyz'>1</b>
-  def process_data( msg, hvalue_xml )
-    val_data = hvalue_xml.text
-    if val_data != nil
-      return true  if val_data == '1'
-      return false if val_data == '0'
-    end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-    return @default_value
-  end
-end
-
-## HValue parser that understands floating-point numbers
-class FloatValueParser < ValueParser
-  
-  ## defaults to 0.0
-  def initialize( default_value=0.0 )
-    super
-  end
-  
-  ## parses floating-point-numeric data from the client: <f id='xyz'>1234.5678</f>
-  def process_data( msg, hvalue_xml )
-    val_data = hvalue_xml.text
-    if val_data != nil
-      return val_data.to_f
-    end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-    return @default_value
-  end
-  
-end
-
-## HValue parser that understands integer numbers
-class IntValueParser < ValueParser
-  
-  ## defaults to 0
-  def initialize( default_value=0 )
-    super
-  end
-  
-  ## parses integer numeric data from the client: <i id='xyz'>1234</i>
-  def process_data( msg, hvalue_xml )
-    val_data = hvalue_xml.text
-    if val_data != nil
-      return val_data.to_i
-    end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-    return @default_value
-  end
-  
-end
-
-## HValue parser that understands base64-encoded strings
-class StringValueParser < ValueParser
-  
-  ## defaults to ''
-  def initialize( default_value='' )
-    super
-  end
-  
-  ## parses base64-encoded string data from the client: <s id='xyz'>d898gD98guadbaxDDgd</s>
-  def process_data( msg, hvalue_xml )
-    val_data = hvalue_xml.text
-    if val_data != nil
-      val_data = Iconv.iconv('utf-8','utf-16be',val_data.unpack('m*')[0])[0]
-      while val_data[-1].chr == "\000"
-        val_data.chop!
-      end
-      return val_data
-    end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-    return @default_value
-  end
-end
-
-## Flat, simple Array value parser (arrays encoded as strings, then decoded usin JSON.parse)
-## <a id='xyz'>WzEsImZvbyIse2ZvbzoiYmFyIn1d</a>
-class ArrayValueParser < ValueParser
-  
-  ## defaults to ''
-  def initialize( default_value=[] )
-    super
-  end
-  
-  ## parses base64-encoded string data from the client: <s id='xyz'>d898gD98guadbaxDDgd</s>
-  def process_data( msg, hvalue_xml )
-    val_data = hvalue_xml.text
-    if val_data != nil
-      len = hvalue_xml.attributes['len'].to_i
-      arr_data_raw = JSON.parse( val_data )
-      if arr_data_raw.size != len
-        puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-        return @default_value
-      end
-      arr_data = []
-      arr_data_raw.each do |data_item|
-        data_item_class = data_item.class
-        if String == data_item_class
-          data_item = Iconv.iconv('utf-8','utf-16',data_item.unpack('m*')[0])[0]
-          while data_item[-1].chr == "\000"
-            data_item.chop!
-          end
-        elsif not [Float,Fixnum,Bignum,TrueClass,FalseClass].include?( data_item_class )
-          puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-          return @default_value
-        end
-        arr_data.push( data_item )
-      end
-      return arr_data
-    end
-    puts "Warning: using default data: #{@default_value.inspect} instead of #{val_data.inspect}" if $DEBUG_MODE
-    return @default_value
-  end
-end
-
-end
-end
 

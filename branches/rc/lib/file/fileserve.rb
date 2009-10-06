@@ -49,14 +49,18 @@ class FileServe
     
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
     support_gzip = false if $config[:no_gzip]
-    is_safari = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('WebKit'))
-    is_msie   = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE'))
-    
-    ## IE6 is 'special'
-    is_msie6  = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
+    if request.header.has_key?('user-agent')
+      ua = request.header['user-agent']
+      is_symbian = ua.include?("SymbianOS")
+      is_safari  = ((not is_symbian) and ua.include?("WebKit"))
+      is_msie = ((not ua.include?("Opera")) and ua.include?("MSIE"))
+      is_msie6 = ((not ua.include?("Opera")) and ua.include?("MSIE 6.0"))
+    end
     
     ## Split path into an array for determining what to serve
-    request_path = request.path.split('/')
+    request_uri = '/'+request.path.match( /^#{$config[:broker_urls][:h]}(.*)$/ )[1]
+    
+    request_path = request_uri.split( '/' )
     
     ## Requested type of client resource (js/themes)
     req_type = request_path[2]
@@ -108,7 +112,6 @@ class FileServe
       # the file-specific identifier ('core', 'basic' etc)
       req_file = request_path[3][0..-4]
       
-      #if not $FILECACHE.gz_cache.has_key?( req_file )
       if not $FILECACHE.js_cache.has_key?( req_file )
         response.status = 404
         response.body   = '/* 404 - Not Found */'
@@ -116,16 +119,19 @@ class FileServe
         response.status = 200
         response.content_type = 'text/javascript; charset=utf-8'
         
-        if support_gzip and not is_safari and not is_msie
+        # these browsers have issues with gzipped js content
+        support_gzip = false if (is_safari or is_msie or is_symbian)
+        
+        if support_gzip
           #response['Transfer-Encoding'] = 'chunked,gzip'
           response['Last-Modified'] = $FILECACHE.gz_cache[ req_file ][1]
-          response['Content-Size'] = $FILECACHE.gz_cache[ req_file ][2]
+          response['Content-Length'] = $FILECACHE.gz_cache[ req_file ][2]
           response['Content-Encoding'] = 'gzip'
           response.body   = $FILECACHE.gz_cache[ req_file ][0]+"\r\n\r\n"
         else
         
           response['Last-Modified'] = $FILECACHE.js_cache[ req_file ][1]
-          response['Content-Size'] = $FILECACHE.js_cache[ req_file ][2]
+          response['Content-Length'] = $FILECACHE.js_cache[ req_file ][2]
           response.body = $FILECACHE.js_cache[ req_file ][0]
         
         end
@@ -184,9 +190,11 @@ class FileServe
         }[file_ext]
         
         support_gzip = false if theme_part == 'gfx'
-        if support_gzip and not is_safari and not is_msie
+        support_gzip = false if (is_safari or is_msie or is_symbian)
+        
+        if support_gzip
           response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][1]
-          response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
+          response['Content-Length'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][2]
           response['Content-Encoding'] = 'gzip'
           response.body   = $FILECACHE.theme_cache[theme_name][theme_part][ req_file+'.gz' ][0]
         else
@@ -199,7 +207,7 @@ class FileServe
           end
         
           response['Last-Modified'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][1]
-          response['Content-Size'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
+          response['Content-Length'] = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][2]
           response.body = $FILECACHE.theme_cache[theme_name][theme_part][ req_file ][0]
           
         end

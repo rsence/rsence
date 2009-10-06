@@ -119,7 +119,7 @@ module Daemon
     def self.status(daemon)
       if File.file?(daemon.pid_fn)
         begin
-          pid = open(daemon.pid_fn,'r').read.to_i
+          pid = File.read(daemon.pid_fn).to_i
           pid && Process.kill('USR2',pid)
           return true
         rescue Errno::ESRCH => e
@@ -127,6 +127,30 @@ module Daemon
         end
       end
       return false
+    end
+    
+    def self.log_io(daemon)
+      Thread.new do
+        outpath = "#{daemon.log_fn}.stdout"
+        errpath = "#{daemon.log_fn}.stderr"
+        if $DEBUG_MODE
+          puts "Waiting 2 seconds before switching output to log file #{outpath} and .../#{File.split(errpath)[1]}"
+          sleep 2
+          puts "Switching to stdin and stdout to log mode. Follow the log file to see further server output."
+        end
+        if File.exist?( outpath )
+          STDOUT.reopen( outpath, "a" )
+        else
+          STDOUT.reopen( outpath, "w" )
+        end
+        if File.exist?( errpath )
+          STDERR.reopen( errpath, "a" )
+        else
+          STDERR.reopen( errpath, "w" )
+        end
+        STDOUT.sync = true
+        STDERR.sync = true
+      end
     end
     
     def self.daemonize(daemon)
@@ -160,23 +184,6 @@ module Daemon
         Process.setsid
         exit if fork
         PidFile.store(daemon, Process.pid)
-        #Dir.chdir( PIDPATH )
-        #File.umask( 0000 )
-        STDIN.reopen( "/dev/null" )
-        outpath = "#{daemon.log_fn}.stdout"
-        if not File.exist?( outpath )
-          STDOUT.reopen( outpath, "w" )
-        else
-          STDOUT.reopen( outpath, "a" )
-        end
-        errpath = "#{daemon.log_fn}.stderr"
-        if not File.exist?( errpath )
-          STDERR.reopen( errpath, "w" )
-        else
-          STDERR.reopen( errpath, "a" )
-        end
-        STDOUT.sync = true
-        STDERR.sync = true
         Signal.trap('USR1') do 
           $PLUGINS.shutdown
           $SESSION.shutdown
@@ -194,8 +201,10 @@ module Daemon
         Signal.trap('HUP') {
           daemon.restart
         }
+        STDIN.reopen( "/dev/null" )
         daemon.start
       end
+      
       timeout = Time.now + 10
       sleep 0.01 until self.status(daemon) or timeout < Time.now
       
@@ -204,6 +213,7 @@ module Daemon
       else
         puts "Riassence Core is running now."
       end
+      #Process.kill("USR2", File.read(daemon.pid_fn).to_i)
     end
     def self.save(daemon,is_restart=false)
       if !File.file?(daemon.pid_fn)
@@ -211,7 +221,7 @@ module Daemon
         return if is_restart
         exit
       end
-      pid = open(daemon.pid_fn,'r').read.to_i
+      pid = File.read(daemon.pid_fn).to_i
       begin
         pid && Process.kill("USR1", pid)
         puts "Session data saved."
@@ -227,13 +237,13 @@ module Daemon
         exit
       end
       pid = PidFile.recall(daemon)
-      FileUtils.rm(daemon.pid_fn)
       begin
         pid && Process.kill("TERM", pid)
         puts "Riassence Core is stopped now."
       rescue
         puts "Error, no such pid (#{pid}) running"
       end
+      FileUtils.rm(daemon.pid_fn)
     end
   end
 end
@@ -260,6 +270,8 @@ class HTTPDaemon < Riassence::Server::Daemon::Base
     $config[:transporter]     = Transporter.new
     $TRANSPORTER = $config[:transporter]
     
+    Daemon::Controller.log_io(self)
+    
     # This is the main http server instance:
     $config[:broker] = Broker.start(
       $config[:http_server][:rack_handler],
@@ -267,9 +279,8 @@ class HTTPDaemon < Riassence::Server::Daemon::Base
       $config[:http_server][:port]
     )
     $BROKER      = $config[:broker]
-    
+  
     yield $BROKER if block_given?
-    
   end
   def self.restart
     self.stop

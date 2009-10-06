@@ -34,14 +34,14 @@ module Rsrc
   # serves static resources
   def serve_rsrc( content, content_type )
     
-    rsrc_id = @randgen.get_one
+    rsrc_id = @randgen.gen
     #puts "rsrc_id: #{rsrc_id.inspect}"
     
     content_size = content.size.to_s
     
     @raw_uris[rsrc_id] = [content_type,content_size,content]
     
-    return "/d/#{rsrc_id}"
+    uri = File.join($config[:broker_urls][:d],rsrc_id)
   end
   
 end

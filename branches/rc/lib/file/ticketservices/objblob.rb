@@ -44,7 +44,7 @@ end
 module ObjBlob
   def serve_blobobj( msg, blob_obj, no_expire=false )
     # gets a new, unique identifier
-    ticket_id = @randgen.get_one
+    ticket_id = @randgen.gen
     if no_expire
       @raw_uris[ticket_id] = blob_obj
     else
@@ -52,7 +52,7 @@ module ObjBlob
       @blob_objs[:ses_ids][msg.ses_id].push( ticket_id )
       @blob_objs[:by_id][ticket_id] = [msg.ses_id,blob_obj]
     end
-    uri = "/b/#{ticket_id}"
+    uri = File.join($config[:broker_urls][:b],ticket_id)
     return uri
   end
   

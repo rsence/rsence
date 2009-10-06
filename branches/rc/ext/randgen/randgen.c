@@ -46,9 +46,9 @@ void generate_rand_str( char *cstr, int str_len ){
   
 }
 
-// ruby-side 'get_one' -method
+// ruby-side 'gen' -method
 // return one random value, length specified in initialize
-static VALUE cRandomGenerator_get_one( VALUE self ){
+static VALUE cRandGen_gen( VALUE self ){
   VALUE target_length;
   target_length = rb_iv_get(self,"@target_length");
   int str_len = FIX2INT( target_length );
@@ -61,35 +61,46 @@ static VALUE cRandomGenerator_get_one( VALUE self ){
 
 // ruby-side 'get' -method
 // gets many random values, outputs array, length specified in initialize
-static VALUE cRandomGenerator_get( VALUE self, VALUE amount ){
+static VALUE cRandGen_gen_many( VALUE self, VALUE amount ){
   VALUE output_arr;
   output_arr = rb_ary_new();
   int arr_len = FIX2INT( amount );
   int k = 0;
   for(;k<arr_len;k++){
-    rb_ary_push( output_arr, cRandomGenerator_get_one( self ) );
+    rb_ary_push( output_arr, cRandGen_gen( self ) );
   }
   return output_arr;
 }
 
 // ruby-side 'initialize' -method
-// NOTE: buffering is just ignored for now and included just for backwards-compatibility
-static VALUE cRandomGenerator_initialize( VALUE self, VALUE target_length, VALUE buffer_min ){
+static VALUE cRandGen_initialize( VALUE self, VALUE target_length ){
   rb_iv_set(self,"@target_length",target_length);
   return self;
 }
 
-// ruby-side 'RandomGenerator' -class
-VALUE cRandomGenerator;
-void Init_randgen() {
-  srand(time(NULL));
-  cRandomGenerator = rb_define_class("RandomGenerator", rb_cObject);
-  rb_define_method( cRandomGenerator, "initialize", cRandomGenerator_initialize, 2 );
-  rb_define_method( cRandomGenerator, "get_one", cRandomGenerator_get_one, 0 );
-  rb_define_method( cRandomGenerator, "get", cRandomGenerator_get, 1 );
+// NOTE: buffering is just ignored for now and included just for backwards-compatibility
+static VALUE cRandGen_initialize2( VALUE self, VALUE target_length, VALUE buffer_length ){
+  rb_iv_set(self,"@target_length",target_length);
+  return self;
 }
 
-
-
-
+// ruby-side 'RandGen' -class
+VALUE cRandomGenerator;
+// ruby-side 'RandomGenerator' -class (backwards-compatible)
+VALUE cRandomGenerator2;
+void Init_randgen() {
+  srand(time(NULL));
+  
+  cRandomGenerator = rb_define_class("RandGen", rb_cObject);
+  rb_define_method( cRandomGenerator, "initialize", cRandGen_initialize, 1 );
+  rb_define_method( cRandomGenerator, "gen", cRandGen_gen, 0 );
+  rb_define_method( cRandomGenerator, "gen_many", cRandGen_gen_many, 1 );
+  
+  // compatibility for old class name, its constuctor arguments and methods
+  cRandomGenerator2 = rb_define_class("RandomGenerator", rb_cObject);
+  rb_define_method( cRandomGenerator2, "initialize", cRandGen_initialize2, 2 );
+  // compatibility for old methods
+  rb_define_method( cRandomGenerator2, "get_one", cRandGen_gen, 0 );
+  rb_define_method( cRandomGenerator2, "get", cRandGen_gen_many, 1 );
+}
 

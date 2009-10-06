@@ -37,36 +37,20 @@ require 'rubygems'
 [ 'highline',
   'rack',
   ['thin', '>= 1.0'],
-  ['soap4r', '>= 1.5.8'],
+#  ['soap4r', '>= 1.5.8'],
   'json',
-  'iconv',
   'mkmf',
-  'mysql',
-  'dbd-mysql',
-  'dbi'
+  'sequel'
 ].each do |dep|
   if dep.class == String
     begin
       gem dep
     rescue Gem::LoadError
-      # gem name to require string conversions:
-      if dep == 'dbd-mysql'
-        dep = 'dbd/Mysql' if dep == 'dbd-mysql'
-        begin
-          require dep
-        rescue LoadError
-          puts "dbd-myql failed, continue? (y/N)"
-          answer = $stdin.gets.strip.downcase
-          exit unless answer[0].chr == 'y'
-        end
-      else
-        dep = 'RMagick'   if dep == 'rmagick'
-        require dep
-      end
+      require dep
     end
   elsif dep.class == Array
     begin
-      gem *dep
+      gem( *dep )
     rescue Gem::LoadError
       require dep[0]
     end

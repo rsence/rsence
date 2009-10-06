@@ -29,10 +29,26 @@ PIDPATH = File.join(SERVER_PATH,'var','run')
 LOGPATH = File.join(SERVER_PATH,'var','log')
 
 ## Client by default is "server/client"
-CLIENT_PATH = ARGV.include?('--client-path')?(ARGV[ARGV.index('--client-path')+1]):File.join( SERVER_PATH, '..', 'client' )
+if ARGV.include?('--client-path')
+  CLIENT_PATH = ARGV[ARGV.index('--client-path')+1]
+else
+  client_path_test1 = File.expand_path( File.join( SERVER_PATH, 'client' ) )
+  client_path_test2 = File.expand_path( File.join( SERVER_PATH, '..', 'client' ) )
+  if File.exist?(client_path_test1)
+    CLIENT_PATH = client_path_test1
+  elsif File.exist?(client_path_test2)
+    CLIENT_PATH = client_path_test2
+  else
+    warn "WARNING: CLIENT_PATH: #{CLIENT_PATH.inspect} not found in standard locations (#{client_path_test1.inspect} or #{client_path_test2.inspect})"
+  end
+end
 
 ## Global configuration hash
 $config = {
+  
+  ## The base_url specifies the prefix for all default http responders, except servlets.
+  ## NOTE: the default index_html servlet is aware of this parameter.
+  :base_url => '/',
   
   ## This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
   :no_gzip => false,
@@ -261,7 +277,7 @@ $config = {
   
   ## Database configuration
   :database => {
-  
+    
     # root_setup should ideally have permissions
     # to create the auth_setup account and database,
     # but if the access fails, it'll fall back to
@@ -313,7 +329,9 @@ $config = {
   :daemon => {
     :pid_fn => File.join(PIDPATH, "rsence.pid"),
     :log_fn => File.join(LOGPATH, "rsence")
-  }
+  },
+  
+  :broker_urls => {}
   
 }
 
@@ -324,8 +342,27 @@ LIB_PATHS  = [
 
 ## Create default local configuratation override file, if it does not exist:
 local_config_file_path = File.join(SERVER_PATH,'conf','local_conf.rb')
+
+
 if File.exist?(local_config_file_path)
   require local_config_file_path[0..-4]
+elsif ARGV.include?('--config')
+  conf_file = ARGV[ARGV.index('--config')+1]
+  if conf_file[0].chr != '/'
+    conf_file = File.join( Dir.pwd, conf_file )
+  end
+  if conf_file[-3..-1] != '.rb'
+    warn "WARNING: Only ruby configuration files are supported for now."
+    warn "         Future versions might include YAML support."
+    warn "      -> #{conf_file} ignored."
+  elsif File.exist?( conf_file )
+    # strip the '.rb' suffix
+    conf_file = conf_file[0..-4]
+    require conf_file
+  else
+    warn "ERROR: Configuration file #{conf_file.inspect} not found."
+    exit
+  end
 else
   puts "NOTE:  Local configuration file #{local_config_file_path.inspect}"
   puts "       does not exist, creating a default one."
@@ -335,28 +372,96 @@ else
   local_config_data = conf_wizard.run( local_config_file_path )
 end
 
-if ARGV.include?('--config')
-  conf_file = ARGV[ARGV.index('--config')+1]
-  if conf_file[0].chr != '/'
-    conf_file = File.join( Dir.pwd, conf_file )
-  end
-  unless conf_file[-3..-1] == '.rb'
-    puts "ERROR: Only ruby configuration files are supported for now."
-    puts "       Future versions might include YAML support."
-    exit
-  end
-  if File.exist?( conf_file )
-    # strip the '.rb' suffix
-    conf_file = conf_file[0..-4]
-    require conf_file
-  else
-    puts "ERROR: Configuration file #{conf_file.inspect} not found."
-    exit
-  end
+unless $config[:database].has_key?(:ses_db)
+  warn "WARNING: The database is not configured with a :ses_db url."
+  warn "         You are advised to convert the :root_setup and :auth_setup keys of"
+  warn "         $config[:database] to the new url format."
+  db_auth = $config[:database][:auth_setup]
+  $config[:database][:ses_db] = "mysql://#{db_auth[:user]}:#{db_auth[:pass]}@#{db_auth[:host]}:#{db_auth[:port]}/#{db_auth[:db]}"
+  warn "      -> Performed automatic conversion of :auth_setup as"
+  warn "         $config[:database][:ses_db] = #{$config[:database][:ses_db].inspect}"
 end
+
+
+
+## Broker configuration
+## WARNING: Don't rely on this as-is yet. The naming conventions might still change.
+
+## POST-requests
+
+# The default listener address of cookie-less transporter requests
+unless $config[:broker_urls].has_key?(:x)
+  $config[:broker_urls][:x]     = File.join($config[:base_url],'x')
+end
+
+# The default listener address of cookie-enabled transporter requests
+unless $config[:broker_urls].has_key?(:hello)
+  $config[:broker_urls][:hello] = File.join($config[:base_url],'hello')
+end
+
+# The default listener address of SOAP -requests
+unless $config[:broker_urls].has_key?(:soap)
+  $config[:broker_urls][:soap] = File.join($config[:base_url],'SOAP')
+end
+
+# The default listener address of file uploads
+unless $config[:broker_urls].has_key?(:u)
+  $config[:broker_urls][:u] = File.join($config[:base_url],'U')
+end
+
+
+## GET-requests
+
+# The default address of built javascript and theme packages
+unless $config[:broker_urls].has_key?(:h)
+  $config[:broker_urls][:h] = File.join($config[:base_url],'H/')
+end
+
+# The default address of the ticketserve :img -category
+unless $config[:broker_urls].has_key?(:i)
+  $config[:broker_urls][:i] = File.join($config[:base_url],'i/')
+end
+
+# The default address of the ticketserve :rsrc -category
+unless $config[:broker_urls].has_key?(:d)
+  $config[:broker_urls][:d] = File.join($config[:base_url],'d/')
+end
+
+# The default address of the ticketserve :file -category
+unless $config[:broker_urls].has_key?(:f)
+  $config[:broker_urls][:f] = File.join($config[:base_url],'f/')
+end
+
+# The default address of the ticketserve :blobobj -category
+unless $config[:broker_urls].has_key?(:b)
+  $config[:broker_urls][:b] = File.join($config[:base_url],'b/')
+end
+
+# The default address of the favicon
+unless $config[:broker_urls].has_key?(:favicon)
+  $config[:broker_urls][:favicon] = File.join($config[:base_url],'favicon.ico')
+end
+
+# The default address of the "empty" iframe of uploader
+unless $config[:broker_urls].has_key?(:uploader_iframe)
+  $config[:broker_urls][:uploader_iframe] = File.join($config[:base_url],'U/iframe_html')
+end
+
+
+# The default address of the index_html plugin
+unless $config[:indexhtml_conf].has_key?(:respond_address)
+  $config[:indexhtml_conf][:respond_address] = File.join($config[:base_url])
+end
+
 
 ## Uses the lib paths as search paths
 LIB_PATHS.each do |lib_path|
   $LOAD_PATH << lib_path
+end
+
+unless File.exist?(CLIENT_PATH)
+  $stderr.write("ERROR: CLIENT_PATH: #{CLIENT_PATH.inspect} does not exist!\n")
+  $stderr.write("Unable to continue; exit.\n")
+  exit
 end
 

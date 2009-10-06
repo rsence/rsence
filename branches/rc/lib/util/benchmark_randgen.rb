@@ -16,14 +16,14 @@ puts "| keylen | bufsize | time:ms |"#    gets |   makes |"
 [20,40,120].each do |key_length|
   [10,100,1000,10000].each do |buffer_size|
     buffer_start = Time.now.to_f
-    randgen = RandomGenerator.new(key_length,buffer_size)
+    randgen = RandGen.new(key_length)
     #puts  "=================================================="
     #stats = {1=>0,2=>0,4=>0,8=>0,16=>0,32=>0,64=>0,128=>0,256=>0}
     print ".............................\r"
     1000.times do |n|
       [1,2,4,8,16,32,64,128,256].each do |get_amount|
         #item_start = Time.now.to_f
-        randgen.get(get_amount)
+        randgen.gen_many(get_amount)
         #stats[get_amount]+=ms(item_start)
       end
       if n%40==0

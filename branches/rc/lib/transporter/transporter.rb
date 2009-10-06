@@ -91,15 +91,15 @@ class Transporter
       # If cookies are true, it means the url base needs to
       # be changed from /hello to /x to prevent further cookie juggling.
       if cookies
-        msg.reply('COMM.Transporter.url="/x";')
+        msg.reply("COMM.Transporter.url=#{$config[:broker_urls][:x].to_json};")
       end
       
       # Appends a 'new session.' message for new sessions in $DEBUG_MODE:
       puts "new session." if (msg.new_session or msg.restored_session) and $DEBUG_MODE
       
       ## Pass the client XML to the value manager
-      if request.query.has_key?( 'HSyncData' )
-        syncdata_str = request.query[ 'HSyncData' ]
+      if request.query.has_key?( 'values' )
+        syncdata_str = request.query[ 'values' ]
         begin
           $VALUES.xhr( msg, syncdata_str )
         rescue => e

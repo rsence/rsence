@@ -24,7 +24,7 @@
 require 'rubygems'
 require 'highline/import'
 
-require 'util/randgen'
+require 'ext/randgen'
 
 class ConfigWizard
   
@@ -63,18 +63,17 @@ class ConfigWizard
 
 ## Local configuration
 
+## The base_url specifies the prefix for all default http responders, except servlets.
+## NOTE: the default index_html servlet is aware of this parameter.
+#{cdiff([:base_url])}$config[:base_url] = #{@conf[:base_url].inspect}
+
+
 # This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
 #{cdiff([:no_gzip])}$config[:no_gzip] = #{@conf[:no_gzip].inspect}
 
 ## Enabling this appends all msg.reply call output to stdout
 #{cdiff([:trace])}$config[:trace] = #{@conf[:trace].inspect}
   
-## Path to the server root (containing lib, rsrc etc..)
-#{cdiff([:dir_root])}$config[:dir_root] = #{@conf[:dir_root].inspect}
-
-## Path to the client root (containing js and themes dirs)
-#{cdiff([:client_root])}$config[:client_root] = #{@conf[:client_root].inspect}
-
 ## Switches on debug-mode:
 ##  - Generates more output
 ##  - Each time /hello is post-requested:
@@ -112,24 +111,8 @@ class ConfigWizard
 #{cdiff([:client_parts,:themes])}$config[:client_parts][:themes] = #{@conf[:client_parts][:themes].inspect}
 
 
-## Old param, essentially always the same as SERVER_PATH
-#{cdiff([:sys_path])}$config[:sys_path] = #{@conf[:sys_path].inspect}
-
-
 ## Paths to scan for available plugins
 #{cdiff([:plugin_paths])}$config[:plugin_paths] = #{@conf[:plugin_paths].inspect}
-
-## Tracking-related settings (allows storing what the user does from the server's point of view)
-#{cdiff([:tracking,:enabled])}$config[:tracking][:enabled] = true
-
-
-## Transporter settings:
-
-## Message strings
-# If the client fails on javascript, display this:
-#{cdiff([:transporter_conf,:messages,:client_error,:title])}$config[:transporter_conf][:messages][:client_error][:title] = #{@conf[:transporter_conf][:messages][:client_error][:title].inspect}
-#{cdiff([:transporter_conf,:messages,:client_error,:descr])}$config[:transporter_conf][:messages][:client_error][:descr] = #{@conf[:transporter_conf][:messages][:client_error][:descr].inspect}
-#{cdiff([:transporter_conf,:messages,:client_error,:uri])}$config[:transporter_conf][:messages][:client_error][:uri] = #{@conf[:transporter_conf][:messages][:client_error][:uri].inspect}
 
 
 ## IndexHtml settings:
@@ -176,17 +159,18 @@ class ConfigWizard
 
 ## Database configuration
 
-# root_setup should ideally have permissions
-# to create the auth_setup account and database,
-# but if the access fails, it'll fall back to
-# auth_setup, if it's created manually
+# The session database is required for persistent session storage.
+# The database connection string for the session database is:
+#{cdiff([:database,:ses_db])}$config[:database][:ses_db] = #{@conf[:database][:ses_db].inspect}
+
+## NOTE: :root_setup and :auth_setup are deprecated.
+##       They are included only for backwards compatiblity with code that depended on RSence 1.0.
+
 #{cdiff([:database,:root_setup,:host])}$config[:database][:root_setup][:host] = #{@conf[:database][:root_setup][:host].inspect}
 #{cdiff([:database,:root_setup,:user])}$config[:database][:root_setup][:user] = #{@conf[:database][:root_setup][:user].inspect}
 #{cdiff([:database,:root_setup,:pass])}$config[:database][:root_setup][:pass] = #{@conf[:database][:root_setup][:pass].inspect}
 #{cdiff([:database,:root_setup,:db])}$config[:database][:root_setup][:db] = #{@conf[:database][:root_setup][:db].inspect}
-  
-# auth_setup is the mysql connection rsence uses
-# to handle session tables. It's obligatory.
+
 #{cdiff([:database,:auth_setup,:host])}$config[:database][:auth_setup][:host] = #{@conf[:database][:auth_setup][:host].inspect}
 #{cdiff([:database,:auth_setup,:user])}$config[:database][:auth_setup][:user] = #{@conf[:database][:auth_setup][:user].inspect}
 #{cdiff([:database,:auth_setup,:pass])}$config[:database][:auth_setup][:pass] = #{@conf[:database][:auth_setup][:pass].inspect}
@@ -199,20 +183,6 @@ class ConfigWizard
 ## The total length is actually key length + 12 bytes, because
 ## the uniqueness part is 12 bytes long
 #{cdiff([:values_conf,:key_length])}$config[:values_conf][:key_length] = #{@conf[:values_conf][:key_length].inspect}
-  
-## The amount of pre-generated keys to keep
-## Tweaking this might affect performance
-#{cdiff([:values_conf,:buffer_size])}$config[:values_conf][:buffer_size] = #{@conf[:values_conf][:buffer_size].inspect}
-
-## Disposable keys, when enabled, changes the value id on each session restoration
-#{cdiff([:values_conf,:disposable_keys])}$config[:values_conf][:disposable_keys] = #{@conf[:values_conf][:disposable_keys].inspect}
-
-## Message strings
-    
-# this message is for version mismatches in hsyncvalues
-#{cdiff([:values_conf,:messages,:version_mismatch,:title])}$config[:values_conf][:messages][:version_mismatch][:title] = #{@conf[:values_conf][:messages][:version_mismatch][:title].inspect}
-#{cdiff([:values_conf,:messages,:version_mismatch,:descr])}$config[:values_conf][:messages][:version_mismatch][:descr] = #{@conf[:values_conf][:messages][:version_mismatch][:descr].inspect}
-#{cdiff([:values_conf,:messages,:version_mismatch,:uri])  }$config[:values_conf][:messages][:version_mismatch][:uri  ] = #{@conf[:values_conf][:messages][:version_mismatch][:uri].inspect}
   
     }
   end
@@ -242,43 +212,14 @@ class ConfigWizard
   # configuration dialog for database connectivity
   def ask_about_mysql
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    puts " Database configuration"
+    puts " MySQL configuration"
     puts 
-    puts "  Riassence Core should ideally have permissions"
-    puts "  to create the the rsence account and database."
-    puts
     puts "  This feature requires an mysql account with "
     puts "  sufficient privileges of creating databases,"
     puts "  tables and users. "
     puts
-    puts " The default root account is configured as:"
-    puts
-    puts " Hostname: #{@conf[:database][:root_setup][:host].inspect}"
-    puts " Username: #{@conf[:database][:root_setup][:user].inspect}"
-    puts " Password: #{@conf[:database][:root_setup][:pass].inspect}"
-    puts " Database: #{@conf[:database][:root_setup][:db].inspect}"
-    puts
-    print " Correct, "
-    is_correct = yesno(true) until is_correct != nil
-    unless is_correct
-      @conf[:database][:root_setup][:host] = ask("MySQL Root Hostname (or IP address)?") do |q|
-        q.default = @conf[:database][:root_setup][:host]
-      end
-      @conf[:database][:root_setup][:user] = ask("MySQL Root Username?") do |q|
-        q.default = @conf[:database][:root_setup][:user]
-      end
-      @conf[:database][:root_setup][:pass] = ask("MySQL Root Password?") do |q|
-        q.default = @conf[:database][:root_setup][:pass]
-      end
-      @conf[:database][:root_setup][:db] = ask("MySQL Root Database?") do |q|
-        q.default = @conf[:database][:root_setup][:db]
-      end
-    end
-    puts
-    puts "  The \"Limited\" account is used for session storage "
+    puts "  This account is used for persistent session storage "
     puts "  and it is also the default database for plugins."
-    puts
-    puts "  It runs in restricted mode and will be created automatically."
     puts
     puts " The default rsence account is configured as:"
     puts
@@ -286,28 +227,37 @@ class ConfigWizard
     puts " Username: #{@conf[:database][:auth_setup][:user].inspect}"
     puts " Password: #{@conf[:database][:auth_setup][:pass].inspect}"
     puts " Database: #{@conf[:database][:auth_setup][:db].inspect}"
+    puts " Port: #{@conf[:database][:auth_setup][:port].inspect}"
     puts
     print " Correct, "
     is_correct = nil
     is_correct = yesno(true) until is_correct != nil
     unless is_correct
-      @conf[:database][:auth_setup][:host] = ask("MySQL Limited Hostname (or IP address)?") do |q|
+      @conf[:database][:auth_setup][:host] = ask("Hostname (or IP address)?") do |q|
         q.default = @conf[:database][:auth_setup][:host]
       end
-      @conf[:database][:auth_setup][:user] = ask("MySQL Limited Username?") do |q|
+      @conf[:database][:auth_setup][:user] = ask("Username?") do |q|
         q.default = @conf[:database][:auth_setup][:user]
       end
-      @conf[:database][:auth_setup][:pass] = ask("MySQL Limited Password?") do |q|
+      @conf[:database][:auth_setup][:pass] = ask("Password?") do |q|
         q.default = @conf[:database][:auth_setup][:pass]
       end
-      @conf[:database][:auth_setup][:db] = ask("MySQL Limited Database?") do |q|
+      @conf[:database][:auth_setup][:db] = ask("Database?") do |q|
         q.default = @conf[:database][:auth_setup][:db]
+      end
+      @conf[:database][:auth_setup][:port] = ask("Port?") do |q|
+        q.default = @conf[:database][:auth_setup][:port]
       end
     end
     puts
     print " Re-edit these settings, "
     re_edit = yesno(false) until re_edit != nil
-    ask_about_mysql if re_edit
+    if re_edit
+      ask_about_mysql
+    else
+      db_auth = @conf[:database][:auth_setup]
+      return "mysql://#{db_auth[:user]}:#{db_auth[:pass]}@#{db_auth[:host]}:#{db_auth[:port]}/#{db_auth[:db]}"
+    end
   end
   
   # configuration dialog for the web server
@@ -341,9 +291,139 @@ class ConfigWizard
     end
   end
   
+  def file_ok?(path)
+    return false if path == ''
+    if File.exist?(File.split(path)[0])
+      if File.directory?(File.split(path)[0])
+        if File.writable?(File.split(path)[0])
+          if File.exist?(path)
+            if File.file?(path)
+              return true if File.writable?(path) and File.readable?(path)
+              puts " Invalid path; #{path} is not writable or readable."
+              return false
+            end
+            puts " Invalid path; #{path} exists and is not a file."
+            return false
+          end
+          return true
+        end
+        puts " Invalid path; the directory #{File.split(path)[0]} is not writable."
+        return false
+      end
+      puts " Invalid path; the parent directory #{File.split(path)[0]} is not a directory."
+      return false
+    end
+    puts " Invalid path; the parent directory #{File.split(path)[0]} does not exist."
+    return false
+  end
+  
+  def ask_about_sqlite
+    sqlite_path = File.join(SERVER_PATH,'var','db','rsence_ses.db')
+    puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    puts " SQLite database configuration"
+    puts
+    puts "  SQLite is configured using file names. The default is:"
+    puts "  #{sqlite_path.inspect}"
+    puts
+    print " Correct, "
+    is_correct = yesno(true) until is_correct != nil
+    unless is_correct
+      new_sqlite_path = ''
+      until file_ok?(new_sqlite_path)
+        new_sqlite_path = ask(" Database file path? ") do |q|
+          q.default = sqlite_path
+        end
+      end
+      sqlite_path = new_sqlite_path
+    end
+    return "sqlite://#{sqlite_path}"
+  end
+  
+  def ask_about_other_db( other_db_string = '' )
+    puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    puts " All Sequel-compatible database drivers are supported."
+    puts
+    puts "  To configure another database engine, please enter a db url."
+    puts "  The format is usually: 'engine://username:password@host:port/database_name'"
+    puts "  For more details, see: http://sequel.rubyforge.org/rdoc/files/doc/opening_databases_rdoc.html"
+    puts
+    input_db_string = ''
+    until input_db_string != ''
+      input_db_string = ask(" Database connection string: ") do |q|
+        q.default = other_db_string
+      end
+    end
+    other_db_string = input_db_string
+    print "Correct, "
+    is_correct = yesno(true) until is_correct != nil
+    if is_correct
+      return other_db_string
+    else
+      ask_about_other_db( other_db_string )
+    end
+  end
+  
+  def ask_about_db
+    puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    puts " Session database configuration"
+    puts
+    puts "  Riassence Core requires a database for persistant"
+    puts "  session storage. This feature allows the server"
+    puts "  to be restarted without losing user sessions."
+    puts
+    puts " The default database engine is SQLite."
+    puts
+    puts " Select one of the following:"
+    puts "   1 - SQLite"
+    puts "   2 - MySQL"
+    puts "   3 - Other (custom Sequel database url)"
+    db_type = ''
+    until ['1','2','3'].include?(db_type)
+      db_type = ask("Database engine? ") do |q|
+        q.default = '1'
+      end
+    end
+    if db_type == '1'
+      db_connection_string = ask_about_sqlite
+    elsif db_type == '2'
+      db_connection_string = ask_about_mysql
+    elsif db_type == '3'
+      db_connection_string = ask_about_other_db
+    end
+    puts
+    puts " The database connection string is:"
+    puts "  #{db_connection_string}"
+    puts
+    print " Correct, "
+    db_ok = yesno(true) until db_ok != nil
+    if not db_ok
+      ask_about_db
+    else
+      @conf[:database][:ses_db] = db_connection_string
+    end
+  end
+  
   def run( local_config_file_path )
-    @conf[:database][:auth_setup][:pass] = RandomGenerator.new(12,1).get_one
-    ask_about_mysql
+    puts
+    puts
+    puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+    puts " This RSence instance is not configured."
+    puts
+    puts " To configure, create a configuration file:"
+    puts "  #{local_config_file_path}"
+    puts
+    puts " You may also answer a few simple questions to create"
+    puts " a configuration file template."
+    puts
+    print " Do you want to run the configuration tool, "
+    configure_now = yesno(true) until configure_now != nil
+    unless configure_now
+      puts
+      puts " OK. No configuration at this time. Can't continue; exit."
+      exit
+    end
+    @conf[:database][:auth_setup][:pass] = RandGen.new(12).gen
+    ask_about_db
     ask_about_httpd
     puts
     puts "Configuration done!"

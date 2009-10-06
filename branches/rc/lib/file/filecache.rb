@@ -161,7 +161,11 @@ class FileCache
     @busy_scanning = false
     
     puts "New client build found and loaded."
-    system('say "New client build found and loaded."') if ARGV.include?('-say')
+    if ARGV.include?('-say')
+      Thread.new do
+        system('say "New client build found and loaded."')
+      end
+    end
   end
   
   # Checks, if the client is newer than the cached

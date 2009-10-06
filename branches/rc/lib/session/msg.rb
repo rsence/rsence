@@ -69,6 +69,9 @@ class Message
     # response output
     @buffer = []
     
+    # value response output
+    @value_buffer = []
+    
     # The session identifier placeholder, assigned by SessionManager
     @ses_id      = 0
     
@@ -123,7 +126,7 @@ class Message
   
   def error_msg( error_js )
     @error_js = error_js
-    #response_done
+    # response_done
   end
   
   def buf_json(buffer)
@@ -133,27 +136,21 @@ class Message
   ## called to flush buffer
   def response_done
     return if @response_sent
-    ## The response status should always be 200 (OK)
-    @response.status = 200
-    
     if not @response_success
+      @response.status = 200
+      #@response.status = 503
       
       buffer = [
-        "", # empty session key will stop the syncing
-        @error_js
-        #,
-        #"jsLoader.load('controls');jsLoader.load('servermessage');",
-        #"ReloadApp.nu('Message Error','The message was unsuccessful.');"
-      ]
-      
+        "" # empty session key will stop the syncing
+      ] + @error_js
     else
+      ## The response status should always be 200 (OK)
+      @response.status = 200
       
-      buffer = @buffer
-      
+      buffer = @value_buffer + @buffer
       if @ses_key
         buffer.unshift( @ses_key )
       end
-      
       
     end
     
@@ -178,6 +175,12 @@ class Message
   def reply(data)
     puts data if $config[:trace]
     @buffer.push( data )
+  end
+  
+  ### For valuemanager; insert changed values BEFORE other js.
+  def reply_value(data)
+    puts data if $config[:trace]
+    @value_buffer.push( data )
   end
   
   ### Sends data to the client's console

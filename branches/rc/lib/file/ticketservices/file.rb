@@ -24,7 +24,7 @@
 module Riassence
 module Server
 module TicketService
-module File
+module TicketFile
   
   # removes other disposable data and references
   def del_file( file_id, ses_id=false )
