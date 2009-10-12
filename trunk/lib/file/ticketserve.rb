@@ -22,7 +22,11 @@
   ###
 
 require 'rubygems'
-require 'RMagick'
+begin
+  require 'RMagick'
+rescue LoadError
+  warn "Warning: RMagick not installed, ticketserve images will not be supported."
+end
 
 require 'ext/randgen'
 
