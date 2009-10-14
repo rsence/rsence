@@ -105,7 +105,9 @@ $_PACKAGES = {
   ],
   
   'lists' => [
-    'checkboxlist'
+    'listitems',
+    'checkboxlist',
+    'radiobuttonlist'
   ],
   
   'json_renderer' => [

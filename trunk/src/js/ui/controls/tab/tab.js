@@ -21,19 +21,6 @@
   **/
 
 HTabView = HView.extend({
-  tabIndex: 0,
-  flexRight: true,
-  flexRightOffset: 0,
-  flexBottom: true,
-  flexBottomOffset: 0,
-  /*setLabel: function(_label){
-    this.parent.setLabel(_label);
-    this.base(_label);
-  },
-  setValue: function(_value){
-    this.parent.setValue(_value);
-    this.base(_value);
-  },*/
   draw: function(){
     var _isDrawn = this.drawn;
     this.base();
@@ -136,7 +123,7 @@ HTab = HControl.extend({
         _tabLabelHTML='',
         _labelTextWidth=this.stringWidth(_tabLabel,0),
         _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
-        _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
+        _tab = new HTabView( [0,this.tabLabelHeight,null,null,0,0] ,this),
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
     _tabIdx = this.tabs.length;
     if(this.tabLabelNoHTMLPrefix){

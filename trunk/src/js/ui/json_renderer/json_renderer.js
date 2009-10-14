@@ -89,6 +89,9 @@ JSONRenderer = HClass.extend({
           _instance = _class.nu(_rect,_parent,_options);
         }
       }
+      else {
+        console.log('renderNode warning; No such class: '+_className);
+      }
     }
     catch(e){
       console.log('renderNode error:',e,', rect:',_rect,', class:',_dataNode['class'],', options:', _options);
