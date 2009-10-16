@@ -95,7 +95,7 @@ HCalendar = HControl.extend({
         row_height = Math.floor((this.rect.height-1-35)/6),
         week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(this.rect.width-3)+'px;height:'+row_height+'px;top:','px">'],
         week_html_suf = '</div>',
-        col_html_pre = ['<a href="javascript:HSystem.views['+this.viewId+'].setValue(',');" class="calendar_weeks_week_col','" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:','px">'],
+        col_html_pre = ['<a href="javascript:void(HSystem.views['+this.viewId+'].setValue(','));" class="calendar_weeks_week_col','" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:','px">'],
         col_html_suf = '</a>',
         col_week_pre = '<div class="calendar_weeks_week_col_wk" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:0px">',
         col_week_suf = '</div>',
