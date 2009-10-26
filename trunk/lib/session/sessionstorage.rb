@@ -191,6 +191,7 @@ class SessionStorage
   def shutdown
     puts "Session shutdown in progress..." if $DEBUG_MODE
     store_sessions
+    @db.disconnect
     puts "Session shutdown complete." if $DEBUG_MODE
   end
   
