@@ -89,8 +89,11 @@ JSONRenderer = HClass.extend({
           _instance = _class.nu(_rect,_parent,_options);
         }
       }
+      else if(!_hasClass && _hasSubviews) {
+        // this is ok
+      }
       else {
-        console.log('renderNode warning; No such class: '+_className);
+        console.log('renderNode warning; No such class: '+_className+', node: ',_dataNode);
       }
     }
     catch(e){
