@@ -57,8 +57,8 @@ HTab = HControl.extend({
       this.draw();
     }
   },
-  setValue: function(_value){
-    this.base(_value);
+  refreshValue: function(){
+    var _value = this.value;
     if(typeof _value === 'number'){
       var _index = parseInt(_value,10);
       if(_index<this.tabs.length){
@@ -157,7 +157,7 @@ HTab = HControl.extend({
     this.tabs.push(_tab.viewId);
     this.tabLabels.push(_tabLabelElemId);
     _tab.tabIndex = _tabIdx;
-    if(_doSelect){
+    if(_doSelect || (this.value === _tabIdx)){
       this.selectTab(_tabIdx);
     }
     return _tab;
