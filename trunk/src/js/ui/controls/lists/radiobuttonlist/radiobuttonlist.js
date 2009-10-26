@@ -42,7 +42,12 @@ HRadiobuttonList = HControl.extend({
         _radioButton,
         i = 0;
     for ( ; i < this.listItemViews.length; i++ ) {
-      this.listItemViews[i].die();
+      try {
+        this.listItemViews[i].die();
+      }
+      catch(e) {
+        console.log('HRadiobuttonList, setListItems item destruction error: ',e);
+      }
     }
     this.listItems = _listItems;
     this.listItemViews = [];
@@ -56,6 +61,7 @@ HRadiobuttonList = HControl.extend({
           label: _label
         }
       );
+      this.listItemViews[i] = _radioButton;
     }
     this.refreshValue();
   },
@@ -73,7 +79,9 @@ HRadiobuttonList = HControl.extend({
     },
     refresh: function(){
       var _listItems = this.parent.listItems;
-      this.parent.setValue( _listItems[ this.value ][0] );
+      if(_listItems[ this.value ] !== undefined){
+        this.parent.setValue( _listItems[ this.value ][0] );
+      }
     }
   }),
   refreshValue: function(){
