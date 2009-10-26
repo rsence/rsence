@@ -85,7 +85,9 @@ $_PACKAGES = {
     
     'slider','vslider',
     'progressbar','progressindicator','imageview','splitview','stepper',
-    'validatorview','window','tab'
+    'validatorview','window','tab',
+    
+    'sheet', 'alert_sheet', 'confirm_sheet'
   ],
   
   ## Application to invoke when a client/server error is encountered ("Reload" dialog)
