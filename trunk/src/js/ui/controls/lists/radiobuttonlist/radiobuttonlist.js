@@ -95,6 +95,7 @@ HRadiobuttonList = HControl.extend({
       }
       for ( var i = 0; i < this.listItems.length; i++ ) {
         if ( this.listItems[i][0] === _value ) {
+          this.radioButtonResponder.setValue( -1 );
           this.radioButtonResponder.setValue( i );
           break;
         }
