@@ -575,6 +575,11 @@ HView = HClass.extend({
           _right = _leftOffset + _rightOffset;
         }
         
+        // use minimum width based on the height information given
+        else if(_validLeftOffset && _validWidth && _validRightOffset){
+          _right = _leftOffset + _width;
+        }
+        
         // default, makes a correct rect
         if(_validTopOffset && _validHeight && !_validBottomOffset){
           _bottom = _topOffset + _height;
@@ -587,6 +592,11 @@ HView = HClass.extend({
         // can't be entirely correct rect unless parent size is calculated
         else if(_validTopOffset && !_validHeight && _validBottomOffset){
           _bottom = _topOffset + _bottomOffset;
+        }
+        
+        // use minimum height based on the height information given
+        else if(_validTopOffset && _validHeight && _validBottomOffset){
+          _bottom = _topOffset + _height;
         }
         
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
