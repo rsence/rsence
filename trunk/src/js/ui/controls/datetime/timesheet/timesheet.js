@@ -41,9 +41,38 @@ HTimeSheet = HControl.extend({
     }
     ELEM.setHTML(this.markupElemIds.state,lines.join(''));
   },
-  refreshValue: function(){
-    for(var i=0; i<this.value.length; i++){
-      
+  dragItem: false,
+  createItem: function(origY){
+    origY = Math.floor( origY / 12 )*12;
+    var maxY = 12*48;
+    if(origY>maxY){
+      origY = maxY;
+    }
+    var item = HTimeSheetItem.nu(
+      [48,origY,null,12,8,null],
+      this, {
+        label: 'New Item',
+        events: {
+          draggable: true
+        }
+      }
+    );
+    this.dragItem = item;
+  },
+  startDrag: function(x,y){
+    this.createItem(y-this.pageY());
+    this.dragItem.startDrag(x,y);
+  },
+  doDrag: function(x,y){
+    if(this.dragItem){
+      this.dragItem.doDrag(x,y);
+    }
+  },
+  endDrag: function(x,y){
+    if(this.dragItem){
+      this.dragItem.endDrag(x,y);
+      this.dragItem = false;
     }
   }
 });
+
