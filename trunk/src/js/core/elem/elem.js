@@ -175,15 +175,13 @@ ELEM = {
       if(_this._elements[_id]){
         return _this._elements[_id].innerHTML;
       }
-      else {
-        return '';
-      }
     } catch(e) {}
     //_this._initCache(_id);
+    return '';
   },
   
   _initRecycler: function(_tagName){
-    if(!ELEM._enableRecycler){return;}
+    if(!ELEM._enableRecycler){return null;}
     var _this=ELEM,_recycler=_this._recycler;
     if(!_recycler[_tagName]){
       _recycler._tagNames.push(_tagName);
@@ -198,7 +196,9 @@ ELEM = {
   // deletes element and all its associated caches by id
   del: function(_id){
     var _this=ELEM,_elem=_this._elements[_id];
-    while(_this._flushing){}
+    if(_this._flushing){
+      _this.del(_id);
+    }
     _this._flushing=true;
     if(_this._enableRecycler){
       var _tagName=_elem.tagName,
@@ -246,10 +246,7 @@ ELEM = {
   
   // returns element's size from the part that is not hidden by its parent elements with overflow property
   getVisibleSize: function(_id){
-    var _this,_elem,w,h,_parent,_parentOverflow,
-    _this=ELEM,_elem=_this._elements[_id],
-    w=_elem.offsetWidth,h=_elem.offsetHeight,
-    _parent=_elem.parentNode;
+    var _parentOverflow,_this=ELEM,_elem=_this._elements[_id],w=_elem.offsetWidth,h=_elem.offsetHeight,_parent=_elem.parentNode;
     while(_parent&&_parent.nodeName.toLowerCase()!=='body'){
       if(!_this._is_ie){_parentOverflow=document.defaultView.getComputedStyle(_parent,null).getPropertyValue('overflow');}
       else{_parentOverflow=_parent.currentStyle.getAttribute('overflow');}
@@ -263,22 +260,18 @@ ELEM = {
 
   // returns element's full size
   getSize: function(_id){
-    var _this,_elem,w,h,_parent,_parentOverflow,
-    _this=ELEM,_elem=_this._elements[_id],
-    w=_elem.offsetWidth,h=_elem.offsetHeight;
+    var _this=ELEM,_elem=_this._elements[_id],w=_elem.offsetWidth,h=_elem.offsetHeight;
     return [w,h];
   },
 
   // returns element's full size
   getScrollSize: function(_id){
-    var _this,_elem,w,h,_parent,_parentOverflow,
-    _this=ELEM,_elem=_this._elements[_id],
-    w=_elem.scrollWidth,h=_elem.scrollHeight;
+    var _this=ELEM,_elem=_this._elements[_id],w=_elem.scrollWidth,h=_elem.scrollHeight;
     return [w,h];
   },
 
   getVisiblePosition: function(_id){
-    var _this,_this=ELEM,x=0,y=0,_elem=_this._elements[_id];
+    var _this=ELEM,x=0,y=0,_elem=_this._elements[_id];
     while(_elem!==document){
       x+=_elem.offsetLeft;y+=_elem.offsetTop;
       x-=_elem.scrollLeft;y-=_elem.scrollTop;
@@ -293,22 +286,20 @@ ELEM = {
   //_flushStyleCache: function(_id){},
   
   getOpacity: function(_id){
-    var _this, _opacity, _try_opacity, _getStyle;
-    _this = ELEM;
-    _getStyle = _this.getStyle;
+    var _opacity, _try_opacity, _this = ELEM, _getStyle = _this.getStyle;
     // old safari (1.x):
-    if (_opacity = _getStyle(_id,'-khtml-opacity')) {
+    if (_opacity === _getStyle(_id,'-khtml-opacity')) {
       return parseFloat(_opacity);
     }
     // old mozilla (ff 1.0 and below):
-    if (_opacity = _getStyle(_id,'-moz-opacity')) {
+    if (_opacity === _getStyle(_id,'-moz-opacity')) {
       return parseFloat(_opacity);
     }
     _try_opacity = _getStyle(_id,'opacity',true);
-    if (_opacity = _try_opacity || (_try_opacity===0)) {
+    if (_opacity === _try_opacity || (_try_opacity===0)) {
       return parseFloat(_opacity);
     }
-    if (_opacity = (_this._elements[_id].currentStyle['filter'] || '').match(/alpha\(opacity=(.*)\)/)) {
+    if (_opacity === (_this._elements[_id].currentStyle['filter'] || '').match(/alpha\(opacity=(.*)\)/)) {
       if(_opacity[1]) {
         return parseFloat(_opacity[1]) / 100;
       }
@@ -487,7 +478,9 @@ ELEM = {
   hasClassName: function(_elemId, _className) {
     //_element = $(_element);
     var _element = ELEM.get(_elemId);
-    if (!_element) return;
+    if (!_element){
+      return null;
+    }
     
     var _hasClass = false;
     var _classNames = _element.className.split(' ');
@@ -504,7 +497,9 @@ ELEM = {
   addClassName: function(_elemId, _className) {
     //_element = $(_element);
     var _element = ELEM.get(_elemId);
-    if (!_element) return;
+    if (!_element){
+      return;
+    }
     
     ELEM.removeClassName(_elemId, _className);
     _element.className += ' ' + _className;
@@ -513,14 +508,18 @@ ELEM = {
   removeClassName: function(_elemId, _className) {
     //_element = $(_element);
     var _element = ELEM.get(_elemId);
-    if (!_element) return;
+    if (!_element){
+      return;
+    }
     
     var _newClassName = '';
     var _classNames = _element.className.split(' ');
     
     for(var i = 0; i < _classNames.length; i++) {
       if (_classNames[i] !== _className){
-        if (i > 0) _newClassName += ' ';
+        if (i > 0){
+          _newClassName += ' ';
+        }
         _newClassName += _classNames[i];
       }
     }
@@ -591,7 +590,7 @@ ELEM = {
     _this._setStyleCount++;
     if(_cached===undefined){
       _this._initCache(_id);
-      var _cached = _this._styleCache[ _id ];
+      _cached = _this._styleCache[ _id ];
     }
     _differs=_value!==_cached[_key];//;_this.getStyle(_id,_key);
     if(_differs){
