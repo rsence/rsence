@@ -155,9 +155,12 @@ HTextControl = HControl.extend({
   validateText: function(_value){
     return _value;
   },
+  getTextFieldValue: function(){
+    return ELEM.get(this.markupElemIds.value).value;
+  },
   textEnter: function(){
     if(this['markupElemIds']===undefined){return;}
-    var _value = this.validateText(ELEM.get(this.markupElemIds.value).value);
+    var _value = this.validateText( this.getTextFieldValue() );
     if(_value !== this.value.toString()){
       this.setValue(_value);
     }
