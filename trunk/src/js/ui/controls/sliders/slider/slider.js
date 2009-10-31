@@ -136,15 +136,16 @@ HSlider = HControl.extend({
   **/
   setValue: function(_value) {
     if (_value < this.minValue) {
-      var _value = this.minValue;
+      _value = this.minValue;
     }
     if (_value > this.maxValue) {
-      var _value = this.maxValue;
+      _value = this.maxValue;
     }
     this.base(_value);
     if(this._thumbElemId){
       this.drawThumbPos();
     }
+    return this;
   },
   
 /** method: draw
@@ -352,10 +353,11 @@ HSlider = HControl.extend({
   
   // private method
   _value2px: function() {
+    var _pxrange;
     if(this._isVertical){
-      var _pxrange  = this.rect.height - this.thumbSize;
+      _pxrange  = this.rect.height - this.thumbSize;
     } else {
-      var _pxrange  = this.rect.width - this.thumbSize;
+      _pxrange  = this.rect.width - this.thumbSize;
     }
     var _intvalue = _pxrange * (
       (this.value-this.minValue) / (this.maxValue - this.minValue)
@@ -363,17 +365,18 @@ HSlider = HControl.extend({
     if ( this._isVertical ) {
       _intvalue = _pxrange - _intvalue;
     }
-    var _pxvalue = parseInt(_intvalue, 10)+'px';
+    _pxvalue = parseInt(_intvalue, 10)+'px';
     return _pxvalue;
   },
   
   
   // private method
   _pos2value: function(_mousePos) {
+    var _pxrange;
     if(this._isVertical){
-      var _pxrange  = this.rect.height - this.thumbSize;
+      _pxrange  = this.rect.height - this.thumbSize;
     } else {
-      var _pxrange  = this.rect.width - this.thumbSize;
+      _pxrange  = this.rect.width - this.thumbSize;
     }
     _mousePos -= (this.thumbSize/2);
     if(_mousePos < 0){
@@ -408,13 +411,13 @@ HSlider = HControl.extend({
     }
     _orientation = _orientation.toLowerCase();
     if(_orientation === this.prevOrientation){
-      return false;
+      return;
     }
     if(this['markupElemIds']===undefined){
-      return false;
+      return;
     }
     if(this.markupElemIds['control']===undefined){
-      return false;
+      return;
     }
     var _toggleCSS = this.toggleCSSClass,
         _ctrlId    = this.markupElemIds.control,
