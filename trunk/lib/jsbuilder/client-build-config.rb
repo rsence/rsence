@@ -103,7 +103,7 @@ $_PACKAGES = {
   'datetime' => [
     'datetimevalue',
     'calendar',
-    'timesheet'
+    'timesheet','timesheet_item','timesheet_item_edit'
   ],
   
   'lists' => [
