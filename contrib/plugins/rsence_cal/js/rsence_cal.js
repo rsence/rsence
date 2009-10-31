@@ -20,29 +20,19 @@
   *
   **/
 
-
+TimeSheetItemEditor = HClass.extend({
+  drawSubviews: function(){
+    itemEditor = HTimeSheetItemEditor.nu();
+  }
+});
 RiassenceCal = HApplication.extend({
   constructor: function(values){
     this.values = values;
     this.base(100);
     this.drawSubviews();
   },
-  CalendarList: HCheckboxList.extend({
-    flexBottom: true,
-    flexBottomOffset: 248
-  }),
-  Calendar: HCalendar.extend({
-    flexTop: false, flexBottom: true,
-    flexBottomOffset: 40
-  }),
   drawSubviews: function(){
-    this.win = HWindow.nu(
-      HRect.nu(8,8,800,580),
-      this, {
-        label: 'Riassence Calendar',
-        minSize: [500,500]
-      }
-    );
+    this.view = HView.nu([0,0,700,500,0,0],this);
     this.todayButton = HButton.extend({
       click: function(){
         var date = new Date(),
@@ -53,7 +43,7 @@ RiassenceCal = HApplication.extend({
       }
     }).nu(
       HRect.nu(8,8,80,32),
-      this.win, {
+      this.view, {
         label: 'Today',
         valueObj: this.values.calendar_day,
         events: {
@@ -61,16 +51,19 @@ RiassenceCal = HApplication.extend({
         }
       }
     );
-    this.calendarList = this.CalendarList.nu(
-      HRect.nu(8,40,225,200),
-      this.win, {
-        valueObj: this.values.calendar_list,
-        cal_ids: this.values.calendar_ids
+    this.calendarList = HRadiobuttonList.nu(
+      [8,40,217,200,null,248],
+      this.view, {
+        valueObj: this.values.calendar_id
       }
     );
-    this.calendar = this.Calendar.nu(
-      HRect.nu(8,0,228,200),
-      this.win, {
+    this.calendarList.setStyle('background-color','#eee');
+    this.calendarListItems = HListItems.nu( null, this.calendarList, {
+      valueObj: this.values.calendar_list
+    });
+    this.calendar = HCalendar.nu(
+      [8,null,220,200,null,40],
+      this.view, {
         valueObj: this.values.calendar_day,
         events: {
           mouseWheel: true,
@@ -78,22 +71,161 @@ RiassenceCal = HApplication.extend({
         }
       }
     );
-    this.entriesTabs = HTab.extend({
-      flexRight: true, flexRightOffset: 20,
-      flexBottom: true, flexBottomOffset: 41
-    }).nu(
-      HRect.nu(233,17,333,400),
-      this.win
+    this.calendar.setStyle('background-color','#eee');
+    this.entriesTabs = HTab.nu(
+      [233,17,100,100,8,41],
+      this.view, {
+        valueObj: this.values.entries_tab
+      }
     );
     this.dayTab = this.entriesTabs.addTab( 'Day' );
-    this.dayEntries = HTimeSheet.nu(
-      HRect.nu(0,0,400,600),
+    this.dayEntriesLabel = HStringView.nu(
+      HRect.nu(36,4,678,20),
       this.dayTab, {
-        valueObj: this.values.entries_day
+        valueObj: this.values.entries_day_name
+      }
+    );
+    this.dayEntriesLabel.setStyle('font-weight','bold');
+    this.dayEntries = HTimeSheet.nu(
+      HRect.nu(0,24,678,528),
+      this.dayTab, {
+        valueObj: this.values.entries_day,
+        events: {
+          draggable: true
+        }
       }
     );
     this.weekTab = this.entriesTabs.addTab( 'Week' );
-    this.monthTab = this.entriesTabs.addTab( 'Month' );
-    this.values.entries_tab.bind(this.entriesTabs);
+    this.wday0Label = HStringView.nu(
+      HRect.nu(36,4,126,20),
+      this.weekTab, {
+        valueObj: this.values.entries_wday0_name
+      }
+    );
+    this.wday0Label.setStyle('font-weight','bold');
+    this.wday0Entries = HTimeSheet.nu(
+      [0,24,126,504],
+      this.weekTab, {
+        valueObj: this.values.entries_wday0,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    var _wdayLabelRect = HRect.nu(128,4,128+90,20);
+    var _wdayRect = HRect.nu(128,24,128+90,528);
+    var _wdayOffsetX = 92;
+    this.wday1Label = HStringView.nu(
+      HRect.nu(_wdayLabelRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday1_name
+      }
+    );
+    this.wday1Label.setStyle('font-weight','bold');
+    this.wday1Entries = HTimeSheet.nu(
+      HRect.nu(_wdayRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday1,
+        hideLabel: true,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    _wdayRect.offsetBy( _wdayOffsetX, 0 );
+    _wdayLabelRect.offsetBy( _wdayOffsetX, 0 );
+    this.wday2Label = HStringView.nu(
+      HRect.nu(_wdayLabelRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday2_name
+      }
+    );
+    this.wday2Label.setStyle('font-weight','bold');
+    this.wday2Entries = HTimeSheet.nu(
+      HRect.nu(_wdayRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday2,
+        hideLabel: true,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    _wdayRect.offsetBy( _wdayOffsetX, 0 );
+    _wdayLabelRect.offsetBy( _wdayOffsetX, 0 );
+    this.wday3Label = HStringView.nu(
+      HRect.nu(_wdayLabelRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday3_name
+      }
+    );
+    this.wday3Label.setStyle('font-weight','bold');
+    this.wday3Entries = HTimeSheet.nu(
+      HRect.nu(_wdayRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday3,
+        hideLabel: true,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    _wdayRect.offsetBy( _wdayOffsetX, 0 );
+    _wdayLabelRect.offsetBy( _wdayOffsetX, 0 );
+    this.wday4Label = HStringView.nu(
+      HRect.nu(_wdayLabelRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday4_name
+      }
+    );
+    this.wday4Label.setStyle('font-weight','bold');
+    this.wday4Entries = HTimeSheet.nu(
+      HRect.nu(_wdayRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday4,
+        hideLabel: true,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    _wdayRect.offsetBy( _wdayOffsetX, 0 );
+    _wdayLabelRect.offsetBy( _wdayOffsetX, 0 );
+    this.wday5Label = HStringView.nu(
+      HRect.nu(_wdayLabelRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday5_name
+      }
+    );
+    this.wday5Label.setStyle('font-weight','bold');
+    this.wday5Entries = HTimeSheet.nu(
+      HRect.nu(_wdayRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday5,
+        hideLabel: true,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    _wdayRect.offsetBy( _wdayOffsetX, 0 );
+    _wdayLabelRect.offsetBy( _wdayOffsetX, 0 );
+    this.wday6Label = HStringView.nu(
+      HRect.nu(_wdayLabelRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday6_name
+      }
+    );
+    this.wday6Label.setStyle('font-weight','bold');
+    this.wday6Entries = HTimeSheet.nu(
+      HRect.nu(_wdayRect),
+      this.weekTab, {
+        valueObj: this.values.entries_wday6,
+        hideLabel: true,
+        events: {
+          draggable: true
+        }
+      }
+    );
   }
 });
