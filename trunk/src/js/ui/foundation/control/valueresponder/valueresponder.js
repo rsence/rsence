@@ -58,8 +58,8 @@ HValueResponder = HClass.extend({
   *
   **/
   setValue: function(_value) {
-    if(_value === undefined){return;}
-    if(!this.valueObj){return;}
+    if(_value === undefined){return this;}
+    if(!this.valueObj){return this;}
     if(this.valueDiffers(_value)) {
       this.value = _value;
       this.valueObj.set(_value);
