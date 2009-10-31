@@ -104,18 +104,19 @@ HThemeManager = HClass.extend({
   *  The contents of the path.
   */
   fetch: function( _url, _contentType, _callBack, _async ) {
+    var _callBackFun;
     if( !_contentType ){
       _contentType = 'text/html; charset=UTF-8';
     }
     if(_async){
-      var _callBackFun = function( resp ){
+      _callBackFun = function( resp ){
         _callBack( resp.X.responseText );
       };
     }
     else{
       // console.log('WARNING: Fetching synchronously using HThemeManager is not recommended. Use pre-packaged themes instead.');
       var _respText;
-      var _callBackFun = function( resp ){
+      _callBackFun = function( resp ){
         _respText = resp.X.responseText;
       };
     }
