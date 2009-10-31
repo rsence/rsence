@@ -26,68 +26,102 @@ HCheckboxList = HControl.extend({
     this.setStyle('overflow','auto');
   },
   listItems: [],
-  CalCheckbox: HCheckbox.extend({
-    setRowId: function(){
-      var cal_ids = this.parent.options.cal_ids,
-          ids_arr = cal_ids.value,
-          row_id  = this.options.row_id;
-      if(ids_arr.indexOf(row_id)===-1){
-        var new_arr = [],
-            i = 0;
-        for(;i<ids_arr.length;i++){
-          new_arr.push(ids_arr[i]);
-        }
-        new_arr.push(row_id);
-        cal_ids.set(new_arr);
-      }
-    },
-    unsetRowId: function(){
-      var cal_ids = this.parent.options.cal_ids,
-          ids_arr = cal_ids.value,
-          row_id  = this.options.row_id;
-      if(ids_arr.indexOf(row_id)!==-1){
-        var new_arr = [],
-            i = 0;
-        for(;i<ids_arr.length;i++){
-          if(ids_arr[i]!==row_id){
-            new_arr.push(ids_arr[i]);
-          }
-        }
-        cal_ids.set(new_arr);
-      }
-    },
+  listItemViews: [],
+  ListCheckbox: HCheckbox.extend({
     refreshValue: function(){
       this.base();
-      if(this.value){
-        this.setRowId();
+      if(this.value === true){
+        this.parent.addItem( this.options.listValue );
       }
       else{
-        this.unsetRowId();
+        this.parent.delItem( this.options.listValue );
       }
     }
   }),
-  refreshValue: function(){
-    var i;
-    // destroy extra list
-    for(i=this.value.length;i<this.listItems.length;i++){
-      this.listItems[i][0].die();
+  addItem: function( _listValue ){
+    if(this.value.indexOf(_listValue) === -1){
+      var _newValue = [], i = 0;
+      for( ; i < this.value.length; i++ ){
+        _newValue.push( this.value[i] );
+      }
+      _newValue.push( _listValue );
+      this.setValue( _newValue );
     }
-    var listItemCheckRect = HRect.nu(4,4,this.rect.right-8,28);
-    for(i=0;i<this.value.length;i++){
-      if(i>this.listItems.length-1){
-        var isSelected = (this.options.cal_ids.value.indexOf(this.value[i].id)!==-1);
-        this.listItems.push(
-          this.CalCheckbox.nu(
-            HRect.nu(listItemCheckRect),
-            this, {
-              label: this.value[i].title,
-              value: isSelected,
-              row_id: this.value[i].id
-            }
-          )
-        );
-        listItemCheckRect.offsetBy(0,24);
+  },
+  delItem: function( _listValue ){
+    var _listIndex = this.value.indexOf(_listValue);
+    if(_listIndex !== -1){
+      var _newValue = [], i = 0;
+      for( ; i < this.value.length; i++ ){
+        if(this.value[i] !== _listValue){
+          _newValue.push( this.value[i] );
+        }
+      }
+      this.setValue( _newValue );
+    }
+  },
+  /* listItems is an array-packed array, where each index in the
+   * surrounding array contains a [ value, label ] pair.
+   * The value is mapped to the value of the HRadiobuttonList
+   * instance when its HRadiobutton instance is selected.
+   */
+  setListItems: function(_listItems){
+    var _listItem,
+        _value,
+        _label,
+        _checked,
+        _checkbox,
+        i = 0;
+    for ( ; i < this.listItemViews.length; i++ ) {
+      try {
+        this.listItemViews[i].die();
+      }
+      catch(e) {
+        console.log('HCheckboxList, setListItems item destruction error: ',e);
       }
     }
+    this.listItems = _listItems;
+    this.listItemViews = [];
+    for ( i = 0 ; i < _listItems.length; i++ ){
+      _listItem = _listItems[i];
+      _value = _listItem[0];
+      _label = _listItem[1];
+      _checked = (this.value.indexOf( _value ) !== -1);
+      _checkbox = this.ListCheckbox.nu(
+        [ 4, (i*23)+4, null, 23, 4, null ],
+        this, {
+          label: _label,
+          value: _checked,
+          listValue: _value
+        }
+      );
+      this.listItemViews[i] = _checkbox;
+    }
+    this.refreshValue();
+  },
+  die: function(){
+    this.listItems = null;
+    this.listItemViews = null;
+    this.base();
+  },
+  refreshValue: function(){
+    if(this.listItemViews.length === 0){
+      return this;
+    }
+    var _value = this.value,
+        _listItems = this.listItems,
+        _listItemValue,
+        _selectedItems = [],
+        i = 0,
+        _isSelected;
+    for( ; i < _listItems.length; i++ ){
+      _listItemValue = _listItems[i][0];
+      _isSelected = (_value.indexOf( _listItemValue ) !== -1);
+      this.listItemViews[i].setValue( _isSelected );
+      if(_isSelected){
+        _selectedItems.push( _listItemValue );
+      }
+    }
+    return this;
   }
 });
