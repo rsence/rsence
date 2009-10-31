@@ -200,7 +200,7 @@ HControl = HView.extend({
     
     if (_this.enabled === _flag) {
       // No change in enabled status, do nothing.
-      return;
+      return this;
     }
     
     _this.enabled = _flag;
