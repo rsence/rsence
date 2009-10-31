@@ -173,13 +173,13 @@ HSystem = HClass.extend({
   **  <HApplication>
   ***/
   addApp: function(_app, _priority){
-    
+    var _appId;
     if(this.freeAppIds.length !== 0){
-      var _appId = this.freeAppIds.unshift();
+      _appId = this.freeAppIds.unshift();
       this.apps[_appId] = _app;
     } else {
       this.apps.push(_app);
-      var _appId = this.apps.length-1;
+      _appId = this.apps.length-1;
     }
     
     // sets self as parent
