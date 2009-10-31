@@ -74,30 +74,32 @@ HDynControl = HControl.extend({
     }
   },
   _checkConstraints: function(_leftChange,_topChange){
-    var _this = this, _rect = _this.rect, _options = _this.options;
+    var _this = this, _rect = _this.rect,
+        _options = _this.options,
+        _dw, _dh;
     if(_rect.width < _options.minSize[0]){
-      var _dw=0-(_options.minSize[0]-_rect.width);
+      _dw=0-(_options.minSize[0]-_rect.width);
       _rect.setWidth( _options.minSize[0]);
       if(_leftChange){
         _rect.offsetBy( _dw, 0 );
       }
     }
     else if(_rect.width > _options.maxSize[0]){
-      var _dw=0-(_options.maxSize[0]-_rect.width);
+      _dw=0-(_options.maxSize[0]-_rect.width);
       _rect.setWidth( _options.maxSize[0]);
       if(_leftChange){
         _rect.offsetBy( _dw, 0 );
       }
     }
     if(_rect.height < _options.minSize[1]){
-      var _dh=0-(_options.minSize[1]-_rect.height);
+      _dh=0-(_options.minSize[1]-_rect.height);
       _rect.setHeight(_options.minSize[1]);
       if(_topChange){
         _rect.offsetBy( 0, _dh );
       }
     }
     else if(_rect.height > _options.maxSize[1]){
-      var _dh=0-(_options.maxSize[1]-_rect.height);
+      _dh=0-(_options.maxSize[1]-_rect.height);
       _rect.setHeight(_options.maxSize[1]);
       if(_topChange){
         _rect.offsetBy( 0, _dh );
