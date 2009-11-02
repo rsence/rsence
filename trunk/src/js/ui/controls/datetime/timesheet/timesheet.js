@@ -83,18 +83,7 @@ HTimeSheet = HControl.extend({
   },
   startDrag: function(x,y){
     this.createItem(y-this.pageY());
-    this.dragItem.startDrag(x,y);
-  },
-  doDrag: function(x,y){
-    if(this.dragItem){
-      this.dragItem.doDrag(x,y);
-    }
-  },
-  endDrag: function(x,y){
-    if(this.dragItem){
-      this.dragItem.endDrag(x,y);
-      this.dragItem = false;
-    }
+    EVENT.startDragging( this.dragItem );
   },
   listItemViews: false,
   drawSubviews: function(){
