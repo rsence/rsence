@@ -36,7 +36,7 @@ JSONRenderer = HClass.extend({
   *  - _parent: The parent view (or app)
   **/
   constructor: function(_data, _parent){
-    if((_data['type'] === 'GUITree') && ([0.1,0.2].indexOf(_data['version']) !== -1)){
+    if((_data['type'] === 'GUITree') && ([0.1,0.2,0.3].indexOf(_data['version']) !== -1)){
       this.data   = _data;
       this.parent = _parent;
       this.render();
@@ -67,6 +67,10 @@ JSONRenderer = HClass.extend({
         _hasOptions  = _dataNode['options'] !== undefined,
         _options     = _hasOptions?_dataNode['options']:null,
         
+        // JS Extension block
+        _hasExtension = _dataNode['extend'] !== undefined,
+        _extension    = _hasExtension?_dataNode['extend']:null,
+        
         // The HView-derived class instance, instance is by default the parent
         _instance = _parent,
         
@@ -74,6 +78,26 @@ JSONRenderer = HClass.extend({
         _subView;
     try{
       if(_hasClass){
+        if(_hasExtension){
+          var _extBlock = {},
+              _name,
+              _block;
+          for(_name in _extension){
+            _block = _extension[_name];
+            if( typeof _block === 'string' ){
+              if( _block.indexOf("function(") === 0 ){
+                try {
+                  eval( '_block = '+_block );
+                }
+                catch(e){
+                  console.log('renderNode ext eval error:',e,', name:',_name,', block:',_block);
+                }
+              }
+            }
+            _extBlock[_name] = _block;
+          }
+          _class = _class.extend( _extBlock );
+        }
         if(_hasOptions){
           if(_options['valueObjId'] !== undefined){
             var _valueObjId = _options['valueObjId'];
@@ -90,7 +114,7 @@ JSONRenderer = HClass.extend({
         }
       }
       else if(!_hasClass && _hasSubviews) {
-        // this is ok
+        void(0);
       }
       else {
         console.log('renderNode warning; No such class: '+_className+', node: ',_dataNode);
