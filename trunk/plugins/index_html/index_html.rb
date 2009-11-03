@@ -45,6 +45,10 @@ class IndexHtmlPlugin < ServletPlugin
   #  render_index_html
   #end
   
+  def init
+    $config[:indexhtml_conf][:instance] = self
+  end
+  
   def open
     @client_rev = $FILECACHE.client_rev
     #@deps = []
@@ -65,6 +69,7 @@ class IndexHtmlPlugin < ServletPlugin
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     @index_html.gsub!('__CLIENT_BASE__',File.join($config[:broker_urls][:h],@client_rev))
     @index_html.gsub!('__CLIENT_HELLO__',$config[:broker_urls][:hello])
+    @index_html.gsub!('__NOSCRIPT__',$config[:indexhtml_conf][:noscript])
     
     deps_src = ''
     $config[:index_html][:deps].each do |dep|

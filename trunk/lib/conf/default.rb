@@ -229,6 +229,10 @@ $config = {
     
     ## The initialized html page <title>
     :loaded_title   => 'Ready',
+    
+    :noscript => '<h1>Sorry!</h1><p>This site requires a Javascript -capable web browser.</p><p>Please enable Javascript or upgrade your browser.</p>',
+    
+    :instance => nil
   },
   
   ## Session-related settings
