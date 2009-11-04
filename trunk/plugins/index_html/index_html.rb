@@ -37,13 +37,8 @@ class IndexHtmlPlugin < ServletPlugin
   end
   
   def score
-    return 1000 # allows overriding with anything with a score below 0
+    return 1000 # allows overriding with anything with a score below 1000
   end
-  
-  #def set_deps( deps )
-  #  @deps = deps
-  #  render_index_html
-  #end
   
   def init
     $config[:indexhtml_conf][:instance] = self
@@ -55,8 +50,8 @@ class IndexHtmlPlugin < ServletPlugin
     @index_html_src = file_read( $config[:index_html][:index_tmpl] )
     loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
     @loading_gif_id = $TICKETSERVE.serve_rsrc( loading_gif, 'image/gif' )
-    riassence_gif = File.read( File.join( @path, 'img/riassence.gif' ) )
-    @riassence_gif_id = $TICKETSERVE.serve_rsrc( riassence_gif, 'image/gif' )
+    # riassence_gif = File.read( File.join( @path, 'img/riassence.gif' ) )
+    # @riassence_gif_id = $TICKETSERVE.serve_rsrc( riassence_gif, 'image/gif' )
     render_index_html
   end
   
@@ -71,7 +66,7 @@ class IndexHtmlPlugin < ServletPlugin
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
-    @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
+    # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     @index_html.gsub!('__CLIENT_BASE__',File.join($config[:broker_urls][:h],@client_rev))
     @index_html.gsub!('__CLIENT_HELLO__',$config[:broker_urls][:hello])
@@ -83,7 +78,15 @@ class IndexHtmlPlugin < ServletPlugin
     end
     @index_html.gsub!('__SCRIPT_DEPS__',deps_src)
     
+    @index_gzip = GZString.new('')
+    gzwriter = Zlib::GzipWriter.new( @index_gzip, Zlib::BEST_SPEED )
+    gzwriter.write( @index_html )
+    gzwriter.close
+    
     @content_size = @index_html.size
+    @content_size_gzip = @index_gzip.size
+    
+    @index_date = $FILESERVE.httime( Time.now )
   end
   
   def debug_rescan
@@ -131,10 +134,22 @@ class IndexHtmlPlugin < ServletPlugin
     debug_rescan if $DEBUG_MODE
     
     response.status = 200
-    response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-length'] = @content_size
+    response['Content-Type'] = 'text/html; charset=UTF-8'
+    response['Date'] = @index_date
+    response['Server'] = 'Riassence Framework'
     
-    response.body = @index_html
+    support_gzip = (request.header.has_key?('accept-encoding') and \
+                    request.header['accept-encoding'].include?('gzip')) \
+                    and not $config[:no_gzip]
+    
+    if support_gzip
+      response['Content-Length'] = @content_size_gzip
+      response['Content-Encoding'] = 'gzip'
+      response.body = @index_gzip
+    else
+      response['Content-Length'] = @content_size
+      response.body = @index_html
+    end
   end
   
 end
