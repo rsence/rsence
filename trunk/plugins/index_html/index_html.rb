@@ -53,11 +53,16 @@ class IndexHtmlPlugin < ServletPlugin
     @client_rev = $FILECACHE.client_rev
     #@deps = []
     @index_html_src = file_read( $config[:index_html][:index_tmpl] )
-    loading_gif_h = File.open( File.join( @path, 'img/loading.gif' ), 'rb' )
-    loading_gif = loading_gif_h.read
-    loading_gif_h.close
+    loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
     @loading_gif_id = $TICKETSERVE.serve_rsrc( loading_gif, 'image/gif' )
+    riassence_gif = File.read( File.join( @path, 'img/riassence.gif' ) )
+    @riassence_gif_id = $TICKETSERVE.serve_rsrc( riassence_gif, 'image/gif' )
     render_index_html
+  end
+  
+  def close
+    $TICKETSERVE.del_rsrc( @riassence_gif_id )
+    $TICKETSERVE.del_rsrc( @loading_gif_id )
   end
   
   def render_index_html
@@ -66,6 +71,7 @@ class IndexHtmlPlugin < ServletPlugin
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
+    @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     @index_html.gsub!('__CLIENT_BASE__',File.join($config[:broker_urls][:h],@client_rev))
     @index_html.gsub!('__CLIENT_HELLO__',$config[:broker_urls][:hello])
