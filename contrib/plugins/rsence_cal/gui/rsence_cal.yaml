@@ -132,3 +132,5 @@ subviews:
                   valueObjId: :values.entries_wday6
                   hideLabel: true
                   events: { draggable: true }
+              - class: HView
+                rect: [ 0, 0, null, null, 0, 0 ]
