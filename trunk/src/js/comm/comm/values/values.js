@@ -21,11 +21,9 @@
   **/
 
 COMM.Values = HClass.extend({
-  constructor: function(){
-    var _this = this;
-    _this.values = {};
-    _this.tosync = [];
-  },
+  constructor: null,
+  values: {},
+  tosync: [],
   create: function(_id,_data){
     HValue.nu(_id,_data);
   },
@@ -69,11 +67,6 @@ COMM.Values = HClass.extend({
     'b', // boolean
     'n', // number
     's'  // string
-    /** invalid:
-    'o'  // object
-    'f'  // function
-    'u'  // undefined
-    **/
   ],
   type: function(_obj){
     var _type = (typeof _obj).slice(0,1);
@@ -235,6 +228,27 @@ COMM.Values = HClass.extend({
     }
     return _obj;
   },
+  clone: function( _obj ){
+    var _item,
+        _cloned;
+    if( _obj instanceof Array ){
+      _cloned = [];
+      for( _item = 0; _item < _obj.length; _item ++ ){
+        _cloned[ _item ] = this.clone( _obj[ _item ] );
+      }
+      return _cloned;
+    }
+    else if( _obj instanceof Object ){
+      _cloned = {};
+      for( _item in _obj ){
+        _cloned[ _item ] = this.clone( _obj[ _item ] );
+      }
+      return _cloned;
+    }
+    else {
+      return _obj;
+    }
+  },
   sync: function(){
     if(this.tosync.length===0){
       return false;
@@ -252,7 +266,7 @@ COMM.Values = HClass.extend({
     }
     return encodeURIComponent(_this.encode(_syncValues));
   }
-}).nu();
+});
 
 HVM = COMM.Values;
 
