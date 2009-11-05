@@ -1,11 +1,18 @@
 type: GUITree
-version: 0.3
+version: 0.4
 
 class: HApplication
 options: '20'
 subviews:
   - class: HView
     rect: [ 0, 0, 700, 500, 0, 0 ]
+    define:
+      - class: BoldString
+        extend: HStringView
+        drawSubviews: |
+          function(){
+            this.setStyle('font-weight','bold');
+          }
     subviews:
       - class: HButton
         rect: [ 8, 8, 80, 32 ]
@@ -46,9 +53,8 @@ subviews:
             rect: [ 0 ]
             options: { label: Day }
             subviews:
-              - class: HStringView
+              - class: BoldString
                 rect: [ 36, 4, 642, 16 ]
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
                 options: { valueObjId: :values.entries_day_name }
               - class: HTimeSheet
                 rect: [ 0, 24, 678, 504 ]
@@ -63,32 +69,25 @@ subviews:
             rect: [ 0 ]
             options: { label: Week }
             subviews:
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 36, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday0_name }
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 128, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday1_name }
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 220, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday2_name }
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 312, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday3_name }
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 404, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday4_name }
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 496, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday5_name }
-              - class: HStringView
-                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+              - class: BoldString
                 rect: [ 588, 4, 90, 16 ]
                 options: { valueObjId: :values.entries_wday6_name }
               - class: HTimeSheet
