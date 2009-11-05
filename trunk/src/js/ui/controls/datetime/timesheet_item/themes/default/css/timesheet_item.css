@@ -11,7 +11,10 @@
   top: 0px; bottom: 0px;
   border: 1px solid #c00;
   background-color: #c66;
-  opacity: 0.9;
+  opacity: 0.75;
+}
+.active .timesheet_item {
+  opacity: 1.0;
 }
 .timesheet_item_middle {
   top: 50%; height: 0px;

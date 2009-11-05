@@ -33,10 +33,12 @@ HTimeSheetItem = HControl.extend({
           _yEquals = (Math.round(this.prevXY[1]/4) === Math.round(y/4)),
           _noTimeout = ((_timeNow - this.prevXYTime) < 500);
       if( _xEquals && _yEquals && _noTimeout ) {
-        var _editor = this.parent.editor;
-        _editor.setTimeSheetItem(this);
-        _editor.bringToFront();
-        _editor.show();
+        if( this.parent['editor'] ){
+          var _editor = this.parent.editor;
+          _editor.setTimeSheetItem(this);
+          _editor.bringToFront();
+          _editor.show();
+        }
       }
       else {
         var _diffTop = this.rect.top - this.origY,
@@ -62,7 +64,7 @@ HTimeSheetItem = HControl.extend({
     this.label = _label;
     this.refreshLabel();
   },
-  createDrag: function(_y){
+  dragCreate: function(_y){
     var _negative = (_y < this.origY),
         _lineHeight = Math.floor(this.parent.pxPerHour/2),
         _top, _bottom, _diff;
@@ -97,7 +99,7 @@ HTimeSheetItem = HControl.extend({
     this.rect.setTop(_top);
     this.rect.setBottom(_bottom);
   },
-  resizeTop: function(_y){
+  dragResizeTop: function(_y){
     var _lineHeight = Math.floor(this.parent.pxPerHour/2),
         _top = Math.floor( _y/_lineHeight )*_lineHeight;
     if(_top < 0){ _top = 0; }
@@ -106,7 +108,7 @@ HTimeSheetItem = HControl.extend({
     }
     this.rect.setTop( _top );
   },
-  resizeBottom: function(_y){
+  dragResizeBottom: function(_y){
     var _lineHeight = Math.floor(this.parent.pxPerHour/2),
         _bottom = Math.floor( _y/_lineHeight )*_lineHeight;
     if(_bottom > _lineHeight*48){ _bottom = _lineHeight*48; }
@@ -115,7 +117,7 @@ HTimeSheetItem = HControl.extend({
     }
     this.rect.setBottom( _bottom );
   },
-  move: function(_y){
+  dragMove: function(_y){
     var _lineHeight = Math.floor(this.parent.pxPerHour/2),
         _top = Math.floor( (0-this.moveDiff+_y)/_lineHeight )*_lineHeight;
     if(_top<0){_top = 0;}
@@ -128,41 +130,54 @@ HTimeSheetItem = HControl.extend({
     var _pageY  = this.parent.pageY(),
         _y = y - _pageY;
     if(this.dragMode === 'create'){
-      this.createDrag(_y);
+      this.dragCreate(_y);
     }
     else if(this.dragMode === 'resize-top'){
-      this.resizeTop(_y);
+      this.dragResizeTop(_y);
     }
     else if(this.dragMode === 'resize-bottom'){
-      this.resizeBottom(_y);
+      this.dragResizeBottom(_y);
     }
     else if(this.dragMode === 'move'){
-      this.move(_y);
+      this.dragMove(_y);
     }
     this.drawRect();
     return true;
   },
   endDrag: function(x,y){
+    var _pxPerHour = Math.floor(this.parent.pxPerHour),
+        _value;
+    if(this.dragMode === 'create'){
+      this.parent.listItemViews.push( this );
+      _value = {
+        'timeBegin': this.rect.top/_pxPerHour,
+        'timeEnd': this.rect.bottom/_pxPerHour,
+        'label': this.label
+      };
+      if(this.parent['editor']){
+        this.parent.editor.createItem( _value );
+      }
+    }
+    else {
+      _value = COMM.Values.clone( this.value );
+      _value['timeBegin'] = this.rect.top/_pxPerHour;
+      _value['timeEnd'] = this.rect.bottom/_pxPerHour;
+      if(this.parent['editor']){
+        this.parent.editor.modifyItem( _value );
+      }
+    }
+    this.setValue( _value );
     this.dragMode = 'normal';
-    var _pxPerHour = Math.floor(this.parent.pxPerHour);
-    this.setValue( [ this.rect.top/_pxPerHour, this.rect.bottom/_pxPerHour, this.label ] );
     return true;
   },
   refreshValue: function(){
-    var _value = this.value;
-    if(_value instanceof Array){
-      if(_value.length > 1){
-        var _timeStart = _value[0],
-            _timeEnd = _value[1],
-            _pxPerHour = this.parent.pxPerHour;
-        if(_value.length > 2){
-          this.label = _value[2];
-          this.refreshLabel();
-        }
-        this.rect.setTop( _timeStart * _pxPerHour );
-        this.rect.setBottom( _timeEnd * _pxPerHour );
-        this.drawRect();
-      }
+    var _value = this.value,
+        _pxPerHour = this.parent.pxPerHour;
+    if((_value instanceof Object) && !(_value instanceof Array)){
+      this.setLabel( _value['label'] );
+      this.rect.setTop( _value['timeBegin'] * _pxPerHour );
+      this.rect.setBottom( _value['timeEnd'] * _pxPerHour );
+      this.drawRect();
     }
   }
 });

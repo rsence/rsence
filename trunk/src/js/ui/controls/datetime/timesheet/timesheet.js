@@ -71,7 +71,7 @@ HTimeSheet = HControl.extend({
       origY = maxY;
     }
     var item = HTimeSheetItem.nu(
-      HRect.nu(this.itemOffsetLeft,origY,this.rect.width+this.itemOffsetLeft-this.itemOffsetRight,origY+lineHeight),
+      this.createItemRect(origY,lineHeight),
       this, {
         label: 'New Item',
         events: {
@@ -86,26 +86,15 @@ HTimeSheet = HControl.extend({
     EVENT.startDragging( this.dragItem );
   },
   listItemViews: false,
-  drawSubviews: function(){
-    var _validEditorClass = (this.options['timeSheetItemEditorClass'] !== undefined),
-        _editorClassName,
-        _editorClass;
-    if(_validEditorClass){
-      _editorClassName = this.options['timeSheetItemEditorClass'];
-      _validEditorClass = (window[_editorClassName] !== undefined);
-    }
-    if(_validEditorClass){
-      _editorClass = window[_editorClassName];
-    }
-    else {
-      _editorClass = HTimeSheetItemEdit;
-    }
-    this.editor = _editorClass.nu(
-      [0,0,1,1],
-      this, {
-        visible: false
-      }
-    );
+  setEditor: function( _editor ){
+    this.editor = _editor;
+  },
+  createItemRect: function(_origY, _lineHeight){
+    var _left = this.itemOffsetLeft,
+        _top = _origY,
+        _right = this.rect.width - this.itemOffsetRight,
+        _bottom = _origY + _lineHeight;
+    return HRect.nu( _left, _top, _right, _bottom );
   },
   die: function(){
     this.editor.die();
@@ -113,7 +102,6 @@ HTimeSheet = HControl.extend({
   },
   refreshValue: function(){
     var _data = this.value, i;
-    // console.log( 'data:', _data );
     if(this.listItemViews === false){
       this.listItemViews = [];
     }
@@ -124,24 +112,21 @@ HTimeSheet = HControl.extend({
       this.listItemViews = [];
     }
     if(_data instanceof Array){
+      var _value, _label, _item;
       for( i=0; i<_data.length; i++){
-        var _dataItem = _data[i],
-            _value = _dataItem.value,
-            _label = _dataItem.label,
-            _id = _dataItem.id,
-            _timeBegin = _value[0],
-            _timeEnd = _value[1],
-            _item = HTimeSheetItem.nu(
-              HRect.nu(this.itemOffsetLeft,0,this.rect.width+this.itemOffsetLeft-this.itemOffsetRight,1),
-              this, {
-                label: _label,
-                value: _value,
-                events: {
-                  draggable: true
-                }
-              }
-            );
-        // console.log( 'view:', this.viewId, ', time begin:', _timeBegin, ', time end:', _timeEnd, ', id:', _id, ', label:', _label );
+        _value = _data[i];
+        _label = _value['label'];
+        _item = HTimeSheetItem.nu(
+          this.createItemRect( 0, 12 ),
+          this, {
+            label: _label,
+            value: _value,
+            events: {
+              draggable: true
+            }
+          }
+        );
+        _item.dragMode = 'normal';
         this.listItemViews.push( _item );
       }
     }
