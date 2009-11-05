@@ -91,6 +91,17 @@ class RiassenceCal < Plugin
     }
     @gui.init( msg, params )
   end
+  
+  def change_calendar_day( msg, hvalue )
+    update_entries_day_names( msg )
+    update_entries( msg )
+    return true
+  end
+  def change_calendar_id( msg, hvalue )
+    update_entries( msg )
+    return true
+  end
+
 private
   class GUIParser
     def init( msg, params )
@@ -150,7 +161,6 @@ private
       @yaml_src = File.read("#{parent.path}/gui/#{gui_name}.yaml")
     end
   end
-  require 'sequel'
   def create_db
     db = Sequel.sqlite(@cal_path)
     unless db.table_exists?(:calendars)
@@ -214,15 +224,6 @@ private
       ses[value_name].set( msg, day_name )
     end
   end
-  def change_calendar_day( msg, hvalue )
-    update_entries_day_names( msg )
-    update_entries( msg )
-    return true
-  end
-  def change_calendar_id( msg, hvalue )
-    update_entries( msg )
-    return true
-  end
   def time_to_decimal_hour( time )
     t = Time.at( time )
     time_begin_day = Time.mktime( t.year, t.month, t.mday, 0, 0, 0 ).to_i
@@ -265,7 +266,6 @@ private
       [ :entries_wday6, same_week_offset( time, 6 ) ]
     ].each do | value_name, date_offset |
       entries = select_day_entries( cal_id, time+date_offset )
-      pp entries if value_name == :entries_day
       ses[value_name].set( msg, entries )
     end
     return true
