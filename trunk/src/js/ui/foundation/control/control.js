@@ -163,10 +163,13 @@ HControl = HView.extend({
   *
   **/
   setLabel: function(_label) {
-    var _this = this;
-    _this.label = _label;
-    _this.options.label = _label;
-    _this.refresh();
+    var _this = this,
+        _differs = (_label !== _this.label);
+    if(_differs){
+      _this.label = _label;
+      _this.options.label = _label;
+      _this.refresh();
+    }
     return this;
   },
   
