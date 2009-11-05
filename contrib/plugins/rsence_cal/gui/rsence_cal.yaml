@@ -1,0 +1,129 @@
+type: GUITree
+version: 0.3
+
+class: HApplication
+subviews:
+  - class: HView
+    rect: [ 0, 0, 700, 500, 0, 0 ]
+    subviews:
+      - class: HButton
+        rect: [ 8, 8, 80, 32 ]
+        extend:
+          click: |
+            function(){
+              var date = new Date(),
+                  date_today = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+                  secs_today = Math.round(date_today.getTime()/1000);
+              secs_today -= (date_today.getTimezoneOffset()*60);
+              this.setValue( secs_today );
+            }
+        options:
+          label: Today
+          valueObjId: :values.calendar_day
+          events: { click: true }
+      - class: HRadiobuttonList
+        rect: [ 8, 40, 217, 200, null, 248 ]
+        extend: "function(){this.setStyle('background-color','#eee');}"
+        options:
+          valueObjId: :values.calendar_id
+        subviews:
+          - class: HListItems
+            rect: null
+            options: { valueObjId: :values.calendar_list }
+      - class: HCalendar
+        rect: [ 8, null, 220, 200, null, 40 ]
+        options:
+          valueObjId: :values.calendar_day
+          events:
+            mouseWheel: true
+            click: true
+      - class: HTab
+        rect: [ 233, 17, 100, 100, 8, 41 ]
+        options: { valueObjId: :values.entries_tab }
+        subviews:
+          - class: HTabItem
+            rect: null
+            options: { label: Day }
+            subviews:
+              - class: HStringView
+                rect: [ 36, 4, 642, 16 ]
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                options: { valueObjId: :values.entries_day_name }
+              - class: HTimeSheet
+                rect: [ 0, 24, 678, 504 ]
+                options:
+                  valueObjId: :values.entries_day
+                  events: { draggable: true }
+          - class: HTabItem
+            rect: null
+            options: { label: Week }
+            subviews:
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 36, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday0_name }
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 128, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday1_name }
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 220, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday2_name }
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 312, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday3_name }
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 404, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday4_name }
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 496, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday5_name }
+              - class: HStringView
+                extend: { drawSubviews: "function(){this.setStyle('font-weight','bold');}" }
+                rect: [ 588, 4, 90, 16 ]
+                options: { valueObjId: :values.entries_wday6_name }
+              - class: HTimeSheet
+                rect: [ 0, 24, 126, 504 ]
+                options:
+                  valueObjId: :values.entries_wday0
+                  events: { draggable: true }
+              - class: HTimeSheet
+                rect: [ 128, 24, 90, 504 ]
+                options:
+                  valueObjId: :values.entries_wday1
+                  hideLabel: true
+                  events: { draggable: true }
+              - class: HTimeSheet
+                rect: [ 220, 24, 90, 504 ]
+                options:
+                  valueObjId: :values.entries_wday2
+                  hideLabel: true
+                  events: { draggable: true }
+              - class: HTimeSheet
+                rect: [ 312, 24, 90, 504 ]
+                options:
+                  valueObjId: :values.entries_wday3
+                  hideLabel: true
+                  events: { draggable: true }
+              - class: HTimeSheet
+                rect: [ 404, 24, 90, 504 ]
+                options:
+                  valueObjId: :values.entries_wday4
+                  hideLabel: true
+                  events: { draggable: true }
+              - class: HTimeSheet
+                rect: [ 496, 24, 90, 504 ]
+                options:
+                  valueObjId: :values.entries_wday5
+                  hideLabel: true
+                  events: { draggable: true }
+              - class: HTimeSheet
+                rect: [ 588, 24, 90, 504 ]
+                options:
+                  valueObjId: :values.entries_wday6
+                  hideLabel: true
+                  events: { draggable: true }

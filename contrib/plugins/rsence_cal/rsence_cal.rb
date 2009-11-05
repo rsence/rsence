@@ -22,6 +22,133 @@
   ###
 
 class RiassenceCal < Plugin
+  def init
+    @cal_path = File.join( @path, 'db', 'rsence_cal.db' )
+    create_db unless File.exist? @cal_path
+  end
+  def open
+    @db = Sequel.sqlite @cal_path
+    @gui = GUIParser.new( self, 'rsence_cal' )
+  end
+  def close
+    @db.disconnect
+  end
+  def get_ses( msg )
+    msg.session[:rsence_cal] = {} unless msg.session.has_key?(:rsence_cal)
+    return msg.session[:rsence_cal]
+  end
+  def init_ses( msg )
+    ses = get_ses( msg )
+    time_now = Time.now.to_i
+    default_values = {
+      :calendar_day  => time_now,
+      :calendar_list => calendars_list,
+      :calendar_id   => calendars_list.first[:value],
+      :entries_tab   => 0,
+      :entries_day_name => 'Saturday 31.10.',
+      :entries_day   => [],
+      :entries_wday0_name => 'Mon 26.10.',
+      :entries_wday0 => [],
+      :entries_wday1_name => 'Tue 27.10.',
+      :entries_wday1 => [],
+      :entries_wday2_name => 'Wed 28.10.',
+      :entries_wday2 => [],
+      :entries_wday3_name => 'Thu 29.10.',
+      :entries_wday3 => [],
+      :entries_wday4_name => 'Fri 30.10.',
+      :entries_wday4 => [],
+      :entries_wday5_name => 'Sat 31.10.',
+      :entries_wday5 => [],
+      :entries_wday6_name => 'Sun 1.11.',
+      :entries_wday6 => []
+    }
+    default_keep = [ :calendar_day, :calendar_id, :entries_tab ]
+    default_values.each do |value_name, default_value|
+      puts "#{value_name.inspect} => #{default_value.inspect}"
+      if not ses.has_key?( value_name )
+        ses[value_name] = HValue.new( msg, default_value )
+      elsif not default_keep.include?( value_name )
+        ses[value_name].set( msg, default_value )
+      end
+    end
+    update_entries_day_names( msg )
+    update_entries( msg )
+    values_bind = [
+      [:calendar_day, 'change_calendar_day'],
+      [:calendar_id,  'change_calendar_id' ]
+    ]
+    values_bind.each do |value_name,method_name|
+      ses[value_name].bind( 'rsence_cal', method_name )
+    end
+  end
+  alias restore_ses init_ses
+  def init_ui( msg )
+    include_js( msg, ['default_theme','controls','datetime','lists','json_renderer'] )
+    ses = msg.session[:rsence_cal]
+    params = {
+      :values => @gui.values( ses )
+    }
+    @gui.init( msg, params )
+  end
+private
+  class GUIParser
+    def init( msg, params )
+      gui_data = YAML.load( @yaml_src )
+      parse_gui( gui_data, params )
+      msg.reply "JSONRenderer.nu( #{gui_data} );"
+    end
+    def values( ses )
+      ids = {}
+      ses.each do | key, value |
+        if value.class == HValue
+          ids[ key ] = value.val_id
+        end
+      end
+      return ids
+    end
+  private
+    def parse_gui( gui_data, params )
+      data_class = gui_data.class
+      if data_class == Array
+        gui_data.each_with_index do |item,i|
+          gui_data[i] = parse_gui( item, params )
+        end
+      elsif data_class == Hash
+        gui_data.each do |key,value|
+          gui_data[key] = parse_gui( value, params )
+        end
+      elsif data_class == Symbol
+        sym_str = gui_data.to_s
+        if sym_str.include? '.'
+          sym_arr = sym_str.split('.')
+        else
+          sym_arr = [ sym_str ]
+        end
+        return get_params( sym_arr, params )
+      end
+      return gui_data
+    end
+    def get_params( params_path, params )
+      item = params_path.shift
+      if params.class == Hash
+        has_str = params.has_key?( item )
+        has_sym = params.has_key?( item.to_sym )
+        item = item.to_sym if has_sym
+        if has_str or has_sym
+          if params_path.size == 0
+            return params[item]
+          else
+            return get_params( params_path, params[ item ] )
+          end
+        end
+      end
+      return ''
+    end
+    def initialize( parent, gui_name )
+      @parent = parent
+      @yaml_src = File.read("#{parent.path}/gui/#{gui_name}.yaml")
+    end
+  end
   require 'sequel'
   def create_db
     db = Sequel.sqlite(@cal_path)
@@ -43,15 +170,6 @@ class RiassenceCal < Plugin
       end
     end
   end
-  def init
-    @cal_path = File.join( @path, 'db', 'rsence_cal.db' )
-    unless File.exist?( @cal_path )
-      create_db
-    end
-  end
-  def open
-    @db = Sequel.sqlite(@cal_path)
-  end
   def calendars_list
     @db[:calendars].select(:id => :value, :title => :label).all
   end
@@ -67,10 +185,6 @@ class RiassenceCal < Plugin
       :calendar_id => ses[:calendar_id].data,
       :time_begin => time_begin..time_end
     }).all
-  end
-  def get_ses( msg )
-    msg.session[:rsence_cal] = {} unless msg.session.has_key?(:rsence_cal)
-    return msg.session[:rsence_cal]
   end
   def same_week_offset( time, target_wday )
     day_secs = 60*60*24
@@ -154,58 +268,6 @@ class RiassenceCal < Plugin
       ses[value_name].set( msg, entries )
     end
     return true
-  end
-  require 'pp'
-  def init_ses(msg)
-    ses = get_ses( msg )
-    time_now = Time.now.to_i
-    default_values = {
-      :calendar_day  => time_now,
-      :calendar_list => calendars_list,
-      :calendar_id   => calendars_list.first[:value],
-      :entries_tab   => 0,
-      :entries_day_name => 'Saturday 31.10.',
-      :entries_day   => [],
-      :entries_wday0_name => 'Mon 26.10.',
-      :entries_wday0 => [],
-      :entries_wday1_name => 'Tue 27.10.',
-      :entries_wday1 => [],
-      :entries_wday2_name => 'Wed 28.10.',
-      :entries_wday2 => [],
-      :entries_wday3_name => 'Thu 29.10.',
-      :entries_wday3 => [],
-      :entries_wday4_name => 'Fri 30.10.',
-      :entries_wday4 => [],
-      :entries_wday5_name => 'Sat 31.10.',
-      :entries_wday5 => [],
-      :entries_wday6_name => 'Sun 1.11.',
-      :entries_wday6 => []
-    }
-    default_keep = [ :calendar_day, :calendar_id, :entries_tab ]
-    default_values.each do |value_name, default_value|
-      puts "#{value_name.inspect} => #{default_value.inspect}"
-      if not ses.has_key?( value_name )
-        ses[value_name] = HValue.new( msg, default_value )
-      elsif not default_keep.include?( value_name )
-        ses[value_name].set( msg, default_value )
-      end
-    end
-    update_entries_day_names( msg )
-    update_entries( msg )
-    values_bind = [
-      [:calendar_day, 'change_calendar_day'],
-      [:calendar_id,  'change_calendar_id' ]
-    ]
-    values_bind.each do |value_name,method_name|
-      ses[value_name].bind( 'rsence_cal', method_name )
-    end
-  end
-  alias restore_ses init_ses
-  def init_ui(msg)
-    include_js( msg, ['default_theme','controls','datetime','lists'] )
-    msg.reply require_js('rsence_cal')
-    ses = msg.session[:rsence_cal]
-    msg.reply "rsence_cal = RiassenceCal.nu(#{extract_hvalues_from_hash(ses)});"
   end
 end
 RiassenceCal.new.register('rsence_cal')
