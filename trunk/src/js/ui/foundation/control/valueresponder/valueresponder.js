@@ -61,8 +61,15 @@ HValueResponder = HClass.extend({
     if(_value === undefined){return this;}
     if(!this.valueObj){return this;}
     if(this.valueDiffers(_value)) {
+      var _valueManager = COMM.Values;
       this.value = _value;
-      this.valueObj.set(_value);
+      if( _valueManager._builtins.indexOf( _valueManager.type(_value) ) === -1 ){
+        _valueClone = _valueManager.clone( _value );
+        this.valueObj.set( _valueClone );
+      }
+      else {
+        this.valueObj.set( _value );
+      }
       this.refresh();
     }
     return this;
