@@ -31,7 +31,8 @@ subviews:
           events: { click: true }
       - class: HRadiobuttonList
         rect: [ 8, 40, 217, 200, null, 248 ]
-        extend: "function(){this.setStyle('background-color','#eee');}"
+        extend:
+          drawSubviews: "function(){this.base();this.setStyle('background-color','#eee');}"
         options:
           valueObjId: :values.calendar_id
         subviews:
@@ -40,6 +41,8 @@ subviews:
             options: { valueObjId: :values.calendar_list }
       - class: HCalendar
         rect: [ 8, null, 220, 200, null, 40 ]
+        extend:
+          drawSubviews: "function(){this.base();this.setStyle('background-color','#eee');}"
         options:
           valueObjId: :values.calendar_day
           events:
