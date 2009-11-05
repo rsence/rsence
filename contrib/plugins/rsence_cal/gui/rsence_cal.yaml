@@ -55,6 +55,10 @@ subviews:
                 options:
                   valueObjId: :values.entries_day
                   events: { draggable: true }
+                subviews:
+                  - class: HTimeSheetEditor
+                    rect: [ 0, 0, 1, 1 ]
+                    options: { valueObjId: :values.entries_day_edit }
           - class: HTabItem
             rect: [ 0 ]
             options: { label: Week }
