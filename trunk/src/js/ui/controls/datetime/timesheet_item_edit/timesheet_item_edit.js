@@ -98,6 +98,13 @@ HTimeSheetEditor = HControl.extend({
       this.setValue( _value );
     }
   },
+  deleteItem: function( _itemId ){
+    var _value = COMM.Values.clone( this.value );
+    if(_value['delete'].indexOf( _itemId ) === -1){
+      _value['delete'].push( _itemId );
+      this.setValue( _value );
+    }
+  },
   refreshValue: function(){
     var _value = COMM.Values.clone( this.value ),
         i = 0,
@@ -140,8 +147,13 @@ HTimeSheetEditor = HControl.extend({
     this.delButton = HButton.extend({
       click: function(){
         this.parent.hide();
-        if(this.timeSheetItem!==false){
-          this.parent.timeSheetItem.delTimeSheetItem();
+        var _sheetItem = this.parent.timeSheetItem;
+        if(_sheetItem!==false){
+          this.parent.deleteItem( _sheetItem.value['id'] );
+          _sheetItem.die();
+          var _parent = this.parent.origParent?this.parent.origParent:this.parent.parent;
+          var _sheetIdx = _parent.listItemViews.indexOf( _sheetItem );
+          _parent.listItemViews.splice( _sheetIdx, 1 );
           this.parent.timeSheetItem = false;
         }
       }
