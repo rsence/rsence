@@ -2,6 +2,7 @@ type: GUITree
 version: 0.3
 
 class: HApplication
+options: '20'
 subviews:
   - class: HView
     rect: [ 0, 0, 700, 500, 0, 0 ]
@@ -28,7 +29,7 @@ subviews:
           valueObjId: :values.calendar_id
         subviews:
           - class: HListItems
-            rect: null
+            rect: [ 0 ]
             options: { valueObjId: :values.calendar_list }
       - class: HCalendar
         rect: [ 8, null, 220, 200, null, 40 ]
@@ -42,7 +43,7 @@ subviews:
         options: { valueObjId: :values.entries_tab }
         subviews:
           - class: HTabItem
-            rect: null
+            rect: [ 0 ]
             options: { label: Day }
             subviews:
               - class: HStringView
@@ -55,7 +56,7 @@ subviews:
                   valueObjId: :values.entries_day
                   events: { draggable: true }
           - class: HTabItem
-            rect: null
+            rect: [ 0 ]
             options: { label: Week }
             subviews:
               - class: HStringView

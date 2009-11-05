@@ -33,6 +33,7 @@ class RiassenceCal < Plugin
   def close
     @db.disconnect
   end
+  def path; @path; end
   def get_ses( msg )
     msg.session[:rsence_cal] = {} unless msg.session.has_key?(:rsence_cal)
     return msg.session[:rsence_cal]
@@ -95,7 +96,7 @@ private
     def init( msg, params )
       gui_data = YAML.load( @yaml_src )
       parse_gui( gui_data, params )
-      msg.reply "JSONRenderer.nu( #{gui_data} );"
+      msg.reply "JSONRenderer.nu( #{gui_data.to_json} );"
     end
     def values( ses )
       ids = {}
