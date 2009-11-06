@@ -1,11 +1,11 @@
 # -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
+##   Riassence Framework
+ #   Copyright 2008 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
 #####
   #
   # Adapted from mongrel-soap4r: http://mongrel-soap4r.rubyforge.org/

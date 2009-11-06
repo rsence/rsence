@@ -1,65 +1,75 @@
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
+
 /**
-  * Riassence Core -- http://rsence.org/
+  * = HClass
   *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
+  * HClass is the foundation class of all other classes. It implements
+  * a proper object oriented environment in Javascript. It supports
+  * inheritance (HClass.extend), superclass invocation ( this.base ),
+  * interfaces (HClass.implement) and such.
   *
-  * This file is part of Riassence Core.
+  * It's derived from and backwards compatible with  Dean Edward's Base.js,
+  * so you can mix and match code written against Base.js.
   *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
-
-// all properties should be installed in constructor because otherwise those
-// are iterated unnecessary
-
-// super keyword conflicts for example with Safari
-// cannot be used
-
-// Safari leaves copies of prototype properties and methods to parent class
-// in for (var in this) structure
-
-/** class: HClass
-  *
-  * HClass class is a simple JavaScript class that eases the pain of JavaScript OO. 
   * It is intended for the following main purposes:
-  *   -	to easily create classes without the MyClass.prototype cruft,
-  *   -	method overriding with intuitive access to the overridden method (like Java's super),
-  *   -	to avoid calling a class' constructor function during the prototyping phase,
-  *   -	to easily add static (class) properties and methods,
-  *   -	to achieve the above without resorting to global functions to build prototype chains,
-  *   -	to achieve the above without affecting Object.prototype. 
-  *
+  *   * To easily create classes without the MyClass.prototype cruft
+  *   * Method overriding with intuitive access to the overridden method (like Ruby's super)
+  *   * To avoid calling a class' constructor function during the prototyping phase
+  *   * To easily add static (class) properties and methods
+  *   * To achieve the above without resorting to global functions to build prototype chains
+  *   * To achieve the above without affecting Object.prototype
   *
   * The HClass class extends the 'Object' object by adding one instance method (base) 
   * and two class methods (extend, implement). Instance method extend can be also called directly.
   *
+  * == Example:
+  *    MyClass = HClass.extend({
+  *      constructor: function( foo ){
+  *        this.setFoo( foo );
+  *      },
+  *      setFoo: function( foo ){
+  *        this.foo = foo;
+  *      }
+  *    });
+  *    
+  *    myClassInstance1 = MyClass.nu( 'rabbids' );
+  *    myClassInstance2 = new MyClass( 'ribbit' );
+  *    
+  *    MyEqualsClass = MyClass.extend({
+  *      testFoo: function( that ){
+  *        return this.foo === that.foo;
+  *      }
+  *    });
+  *    myEqualsClassInstance1 = MyEqualsClass.nu( 'woof' );
+  *    equals1 = myEqualsClassInstance1.testFoo( myClassIntance1 );
+  *    myClassInstance2.setFoo( myEqualsClassInstance1.foo );
+  *    equals2 = myEqualsClassInstance1.testFoo( myClassIntance2 );
+  *
   **/
-var HClass = function() {
-  if (arguments.length) {
-    var _1stArg = arguments[0];
+HClass = function() {
+  if ( arguments.length ) {
     if (this === window) {
-      HClass.prototype.extend.call(_1stArg, arguments.callee.prototype);
-    } else {
-      this.extend(_1stArg);
+      HClass.prototype.extend.call( arguments[0], arguments.callee.prototype );
+    }
+    else {
+      this.extend( arguments[0] );
     }
   }
 };
 
+
 HClass.prototype = {
   
-  // basically internal methods event if can be called safely
+  /**
+    * == 
+    *
+    **/
   extend: function(_source, _value) {
     var _extend = HClass.prototype.extend;
     if (arguments.length === 2) {
