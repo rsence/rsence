@@ -876,7 +876,7 @@ ELEM = {
       return;
     }
     
-    if(!_this.hasClassName(_className)){
+    if(!_this.hasClassName(_elemId, _className)){
       return;
     }
     
@@ -886,10 +886,12 @@ ELEM = {
     
     for (; i < _classNames.length; i++) {
       if (_classNames[i] !== _className) {
-        if (i > 0) {
-          _newClassName += ' ';
+        if(_classNames[i] !== ' '){
+          if (i > 0) {
+            _newClassName += ' ';
+          }
+          _newClassName += _classNames[i];
         }
-        _newClassName += _classNames[i];
       }
     }
     
