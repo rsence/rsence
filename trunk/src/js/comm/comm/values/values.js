@@ -6,24 +6,86 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** Manages data value synchronization.
+  **
+  ** Keeps track of all +HValue+ instances present.
+***/
 COMM.Values = HClass.extend({
+  
+/** No constructor, singleton class.
+  **/
   constructor: null,
+  
+/** An +Object+ containing all values by key.
+  **/
   values: {},
+  
+/** A list of value keys whose value has changed. To be synchronized asap.
+  **/
   tosync: [],
+  
+/** = Description
+  * Creates a new +HValue+ instance. Its main purpose is to act as the main
+  * client-side value creation interface for the server representation of
+  * +HValue+.
+  *
+  * = Parameters
+  * +_id+::     The unique id of the +HValue+ instance (set by the server)
+  * +_data::    The initial data of the +HValue+ instance (set by the server)
+  *
+  **/
   create: function(_id,_data){
     HValue.nu(_id,_data);
   },
+  
+/** = Description
+  * Binds a +HValue+ instance created externally to +self.values+.
+  * Called from +HValue+ upon construction.
+  *
+  * = Parameters
+  * +_id+::     The unique id of the +HValue+ instance (set by the server)
+  * +_value+::  The +HValue+ instance itself.
+  *
+  **/
   add: function(_id,_value){
     this.values[_id] = _value;
   },
+  
+/** = Description
+  * Sets the data of the +HValue+ instance by +_Id+.
+  *
+  * = Parameters
+  * +_id+::     The unique id of the +HValue+ instance (set by the server)
+  * +_data+::   The new data, any Object type supported by JSON.
+  *
+  **/
   set: function(_id,_data){
     this.values[_id].set(_data);
   },
+  
+/** = Description
+  * Sets and decodes the +_data+. Main value setter interface 
+  * for the server representation of +HValue+.
+  *
+  * = Parameters
+  * +_id+::     The unique id of the +HValue+ instance (set by the server)
+  * +_data+::   The new data from the server, to be decoded.
+  *
+  **/
   s: function(_id,_data){
     var _this = this;
     _data = _this.decode(_data);
     _this.values[_id].set(_data);
   },
+  
+/** = Description
+  * Deletes a +HValue+ instance by +_id+.
+  *
+  * = Parameters
+  * +_id+::     The unique id of the +HValue+ instance (set by the server)
+  *
+  **/
   del: function(_id){
     var _this = this,
         _values = _this.values,
@@ -39,6 +101,16 @@ COMM.Values = HClass.extend({
     _value.views = [];
     delete _values[_id];
   },
+  
+/** = Description
+  * Marks the +HValue+ instance as changed and tries to send it
+  * immediately, unless COMM.Transporter has an ongoing transfer.
+  * Usually called by the +HValue+ instance internally.
+  *
+  * = Parameters
+  * +_value+::     The +HValue+ instanche that changed.
+  *
+  **/
   changed: function(_value){
     var _this = this;
     if(_this.tosync.indexOf(_value.id)===-1){
@@ -49,11 +121,30 @@ COMM.Values = HClass.extend({
       }
     }
   },
+  
+  // List of primitive object types.
   _builtins: [
     'b', // boolean
     'n', // number
     's'  // string
   ],
+  
+/** = Description
+  * Use this method to detect the type of the object given.
+  *
+  * Returns the type of the object given as a character code. Returns false,
+  * if unknown or unsupported objcet type.
+  *
+  * = Returns
+  * _One of the following:_
+  * - 'a': Array
+  * - 'h': Hash (Generic Object)
+  * - 'd': Date
+  * - 'b': Boolean (true/false)
+  * - 'n': Number (integers and floats)
+  * - 's': String
+  *
+  **/
   type: function(_obj){
     var _type = (typeof _obj).slice(0,1);
     if(this._builtins.indexOf(_type)!==-1){
@@ -73,6 +164,8 @@ COMM.Values = HClass.extend({
     }
     return false;
   },
+  
+  // Returns an encoded version of the array _arr as a string
   _encodeArr: function(_arr){
     var _str = '[',
         _output = [],
@@ -87,6 +180,8 @@ COMM.Values = HClass.extend({
     _str += _output.join(',')+']';
     return _str;
   },
+  
+  // Returns a decoded array with decoded content of array _arr
   _decodeArr: function(_arr){
     var _output = [],
         _len = _arr.length,
@@ -99,6 +194,8 @@ COMM.Values = HClass.extend({
     }
     return _output;
   },
+  
+  // Returns an encoded version of the Hash (Object) _hash as a string
   _encodeHash: function(_hash){
     var _str = '{',
         _output = [],
@@ -112,6 +209,8 @@ COMM.Values = HClass.extend({
     _str += _output.join(',')+'}';
     return _str;
   },
+  
+  // Returns a decoded version of the Hash (Object) _hash
   _decodeHash: function(_hash){
     var _output = {},
         _this = this,
@@ -123,6 +222,8 @@ COMM.Values = HClass.extend({
     }
     return _output;
   },
+  
+  // Regular expression match/replace pairs for string escaping.
   _stringSubstitutions: [
     [(/\\/g), '\\\\'],
     //[(/\b/g), '\\b'],
@@ -132,6 +233,8 @@ COMM.Values = HClass.extend({
     [(/\r/g), '\\r'],
     [(/"/g),  '\\"']
   ],
+  
+  // Quotes a string (escapes quotation marks and places quotes around)
   _quoteString: function(_str){
     var _this = this,
         _substitutions = _this._stringSubstitutions,
@@ -145,28 +248,41 @@ COMM.Values = HClass.extend({
     }
     return '"' + _str + '"';
   },
+  
+  // Encodes the native character set to url-encoded unicode
   _encodeString: function(_str){
     var _outStr;
     try {
       _outStr = unescape( encodeURIComponent( _str ) );
     }
     catch(e) {
-      //console.log('COMM.Values.encodeString failure '+e+' of string '+_str);
       _outStr = _str;
     }
     return _outStr;
   },
+  
+  // Decodes the url-encoded unicode to the native character set
   _decodeString: function(_str){
     var _outStr;
     try {
       _outStr = decodeURIComponent( escape( _str ) );
     }
     catch(e) {
-      //console.log('COMM.Values.decodeString failure '+e+' of string '+_str);
       _outStr = _str;
     }
     return _outStr;
   },
+  
+/** = Description
+  * Encodes an object to a ascii string (special characters url-encoded).
+  *
+  * = Parameters
+  * +_obj+::  Any object
+  *
+  * = Returns
+  * A +String+ representation of the +_obj+
+  *
+  **/
   encode: function(_obj){
     var _str, _type, _this = this;
     if(_obj === null){
@@ -192,6 +308,17 @@ COMM.Values = HClass.extend({
     }
     return _str;
   },
+  
+/** = Description
+  * Decodes a JSON object. Decodes url-encoded strings contained.
+  *
+  * = Parameters
+  * +_ibj+::  A raw object with special characters url-encoded.
+  *
+  * = Returns
+  * An version of the object with the contained strings decoded to unicode.
+  *
+  **/
   decode: function(_ibj){
     var _obj, _type, _this = this;
     if(_ibj !== null && _ibj !== undefined){
@@ -214,6 +341,21 @@ COMM.Values = HClass.extend({
     }
     return _obj;
   },
+  
+/** = Description
+  * Makes a deep copy of the object.
+  *
+  * When you use assignment of a js object, only primitive object types
+  * (strings, numbers and booleans) are copied. This method makes a deep
+  * (nested) clone of the input object.
+  *
+  * = Parameters
+  * +_obj+:: Any object.
+  *
+  * = Returns
+  * A copy of the object.
+  *
+  **/
   clone: function( _obj ){
     var _item,
         _cloned;
@@ -235,6 +377,14 @@ COMM.Values = HClass.extend({
       return _obj;
     }
   },
+  
+/** = Description
+  * Returns an URI-encoded string representation of all the changed values to
+  * synchronize to the server.
+  *
+  * = Returns
+  * An encoded string representation of values to synchronize.
+  **/
   sync: function(){
     if(this.tosync.length===0){
       return false;
@@ -254,5 +404,7 @@ COMM.Values = HClass.extend({
   }
 });
 
+// Backwards compatibility assignment for code that still
+// uses HVM as a reference of the Value Manager:
 HVM = COMM.Values;
 

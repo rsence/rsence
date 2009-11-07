@@ -7,18 +7,24 @@
  */
 
 
-/***
- *** Riassence Core Communications Collection
- ***/
+/*** = Description
+  ** Low-level XMLHttpRequest abstractor.
+***/
 COMM = {
-  // this does nothing yet, but will be extended to
-  // handle cases where no XMLHttpRequest is available
-  _FakeHttpRequest: function(){}
+  
+/** Displays an error alert, if the browser doesn't support XMLHttpRequests
+  **/
+  _FakeHttpRequest: function(){
+    alert("'ERROR: This web browser doesn't support XMLHttpRequest. Please upgrade; unable to continue.");
+  }
 };
 
-// Returns a new instance of the XMLHttpRequest
-// object supported by the browser. eval:ed only once,
-// after that does its things without any extra statements
+/** = Description
+  * Creates a new instance of the XMLHttpRequest
+  * object supported by the browser. Evaluated only once,
+  * after that does its things without any extra statements
+  *
+  **/
 eval(
   'COMM._XMLHttpRequest = function(){return new '+(
   (window['XMLHttpRequest']!==undefined)?
@@ -30,10 +36,14 @@ eval(
   )+';}'
 );
 
-// converts arrays to valid query strings.
-// example:
-//    ['productId',100,'customerName','J-J Heinonen']
-// -> 'productId=100&customerName=J-J%20Heinonen'
+/** = Description
+  * Converts arrays to valid query strings.
+  *
+  * = Usage
+  * Returns 'productId=100&customerName=J-J%20Heinonen'
+  *   COMM._arrayToQueryString(['productId',100,'customerName','J-J Heinonen'])
+  *
+  **/
 COMM._arrayToQueryString = function(_params){
   var i = 0,
       _length = _params.length,
@@ -45,6 +55,15 @@ COMM._arrayToQueryString = function(_params){
   return _queryString;
 };
 
+/** = Description
+  * Finds and calls the state responder method upon a readyState change to 4.
+  * - On readyStates other than 4 does nothing.
+  * - The default responder for a successful response code (between 200 to 299) is onSuccess.
+  * - The default responder for unsuccessful response codes is onFailure.
+  * - The responders are called with the request object as the parameter.
+  * - Custom response code handling is implemented as 'on' + status code,
+  *   eg. 'on404' for a 404 not found error.
+  **/
 COMM._stateChange = function(_this){
   if(_this.X.readyState === 4){
     var _status = _this.X.status,
@@ -54,33 +73,54 @@ COMM._stateChange = function(_this){
   }
 };
 
-/**
+/** = Description
   * The main Request-handling object.
-  * Optimized for speed and small size, not readability :)
   *
-  * Constructor parameters:
-  *  - url: Full or relative url of the response handler
-  *  - options:
-  *    - onSuccess: function callback for successful response (takes one param: the request object)
-  *    - onFailure: function callback for unsuccessful response (takes one param: the request object)
-  *    - method(*: The HTTP Request Method, usually 'POST' 
-  *                or 'GET' but will handle DAV and other extensions.
-  *                Defaults to 'POST'.
-  *    - async(*: Boolean; Uses asyncronous requests when true.
-  *               Defaults to true.
-  *    - params(*: Extra parameters to send, format: Array, see COMM._arrayToQueryString()
-  *    - headers(*: Extra HTTP headers to send for POST requests, format: Hash.
-  *    - body(*: The HTTP POST Body
-  *    - username(*: Username for basic authentication
-  *    - password(*: Password for basic authentication
-  *    - contentType(*: The 'content-type' -header to send.
-  *                     Defaults to 'application/x-www-form-urlencoded'.
-  *    - charset(*: The charset type to use. Defaults to 'UTF-8'.
+  * = Parameters
   *
-  *    *) denotes optional parameter
-**/
+  * +_url+::        Full or relative url of the response handler
+  *
+  * +_options+::    An +Object+, see below for content:
+  *
+  *
+  * == Required properties for +_options+:
+  *
+  * +onSuccess+::   A function that is called on a successful response.
+  *                 Must accept one parameter: the request object.
+  *
+  * +onFailure+::   A function that is called on an unsuccessful response.
+  *                 Must accept one parameter: the request object.
+  *
+  *
+  * == Optional properties for +_options+:
+  *
+  * +method+::      The HTTP Request Method, usually 'POST' or 'GET', but will handle
+  *                 DAV and other extensions if the server supports them.
+  *                 Defaults to 'POST'.
+  *
+  * +async+::       Boolean; Uses asyncronous requests when true.
+  *                 Defaults to true.
+  *
+  * +params+::      Extra parameters to send, format: Array, see COMM._arrayToQueryString()
+  *
+  * +headers+::     Extra HTTP headers to send for POST requests, format: Hash.
+  *
+  * +body+::        The HTTP POST Body
+  *
+  * +username+::    Username for basic authentication
+  *
+  * +password+::    Password for basic authentication
+  *
+  * +contentType+:: The 'content-type' -header to send.
+  *                 Defaults to 'application/x-www-form-urlencoded'.
+  *
+  * +charset+::     The charset type to use. Defaults to 'UTF-8'.
+  *
+  * = Returns
+  *  An +Object+ extended from the +_options+ given in the input.
+  *
+  **/
 COMM.request = function(_url,_options){
-  //_success,_failure,_method,_async,_params,_headers,_body,_username,_password,_contentType,_charset){
   var _comm = COMM,
       
       _this = _options?_options:{},

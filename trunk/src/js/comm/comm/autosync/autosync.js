@@ -402,5 +402,7 @@ COMM.Transporter = HApplication.extend({
     );
   }
 }).nu();
+
+// Starts the synchronization upon page load.
 LOAD('COMM.Transporter.url=HCLIENT_HELLO;COMM.Transporter.stop=false;COMM.Transporter.sync();');
 
