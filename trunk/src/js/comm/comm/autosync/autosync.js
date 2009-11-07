@@ -379,14 +379,14 @@ COMM.Transporter = HApplication.extend({
   **/
   sync: function(){
     if(this.stop){
-      console.log('sync stop');
+      // console.log('sync stop');
       return;
     }
     if(this.busy){
-      console.log('sync busy');
+      // console.log('sync busy');
       return;
     }
-    console.log('sync.');
+    // console.log('sync.');
     this.busy = true;
     var _this = this,
         _values = COMM.Values.sync(),
