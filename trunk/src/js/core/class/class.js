@@ -6,8 +6,8 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/**
-  * = HClass
+/** = Description
+  * The extended object model.
   *
   * HClass is the foundation class of all other classes. It implements
   * a proper object oriented environment in Javascript. It supports
@@ -66,10 +66,7 @@ HClass = function() {
 
 HClass.prototype = {
   
-  /**
-    * == 
-    *
-    **/
+ /* The property copying method. */
   extend: function(_source, _value) {
     var _extend = HClass.prototype.extend;
     if (arguments.length === 2) {
@@ -119,6 +116,7 @@ HClass.prototype = {
         }
       }
     }
+    
     // alternative constructor (use instead of the new keywoard)
     this.nu = function() {
       return new (
@@ -131,8 +129,7 @@ HClass.prototype = {
     };
     return this;
   },
-  /** method: base
-    *
+  /** = Description
     * If a method has been overridden then the base method provides access to the overridden method. 
     * Call this method from any other method to invoke that method's ancestor.
     * It is also possible to call the base method from within a constructor function.
@@ -143,46 +140,48 @@ HClass.prototype = {
   }
 };
 
-/** method: extend
+/** = Description
+  * The class method method to create a new extended class.
   *
-  * Enables the inheritance. If the method name constructor is defined null in _instance parameter returns a single instance.
+  * If the method name constructor is defined null as the +_instance+ parameter,
+  * it will return a single instance.
   *
-  * Parameters:
-  *   _instance - An object that has properties and methods of inherited class.
-  *   _static - An object that has properties and methods of inherited class's class methods if the method named constructor
-  *     is defined null in _instance parameter.
-  *   
-  * Returns:
-  *   Return value is inherited class.
+  * = Parameters:
+  * +_instance+:: An object that has properties and methods of inherited class.
+  * +_static+::   An object that has properties and methods of inherited class's
+  *               class methods if the method named constructor is defined null
+  *               in _instance parameter.
   *
-  * Example:
+  * = Returns:
+  *   Returns the extended class object.
   *
-  * > Point = HClass.extend({
-  * > constructor: function(x, y) {
-  * >   this.x = x;
-  * >   this.y = y;
-  * > }
-  * > });
-  * > Rectangle = Point.extend({
-  * > constructor: function(x, y, width, height) {
-  * >   this.base(x, y);
-  * >   this.width = width;
-  * >   this.height = height;
-  * > },
-  * > getWidth: function() {
-  * >   return this.width;
-  * > },
-  * > getHeight: function() {
-  * >   return this.height;
-  * > }
-  * > },
-  * > {
-  * > // class methods
-  * > description: "this is a Rectangle",
-  * > getClass: function() {
-  * >   return this;
-  * > }
-  * > });
+  * = Usage:
+  *   Point = HClass.extend({
+  *   constructor: function(x, y) {
+  *     this.x = x;
+  *     this.y = y;
+  *   }
+  *   });
+  *   Rectangle = Point.extend({
+  *   constructor: function(x, y, width, height) {
+  *     this.base(x, y);
+  *     this.width = width;
+  *     this.height = height;
+  *   },
+  *   getWidth: function() {
+  *     return this.width;
+  *   },
+  *   getHeight: function() {
+  *     return this.height;
+  *   }
+  *   },
+  *   {
+  *   // class methods
+  *   description: "this is a Rectangle",
+  *   getClass: function() {
+  *     return this;
+  *   }
+  *   });
   *
   **/
 HClass.extend = function(_instance, _static) {
@@ -232,42 +231,40 @@ HClass.extend = function(_instance, _static) {
   return _object;
 };
 
-/** method: implement
-  *
+/** = Description
   * Copies the prototype properties and methods from _interface or if it is an object it's properties and functions
   * to HClass or class inherited from HClass. Mimics the interface behaviour of ordinary programming languages.
   *
-  * Example:
-  *
-  * > // Mimics the interface
-  * > 
-  * > AreaInterface = HClass.extend({
-  * > constructor: null,
-  * >   // implement
-  * >   // don't define here
-  * >   //getWidth: function() {},
-  * >   //getHeight: function() {},
-  * > area: function() {
-  * >   return this.getWidth() * this.getHeight();
-  * > }
-  * > });
-  * > 
-  * > Rectangle = HClass.extend({
-  * > constructor: function(x, y, width, height) {
-  * >   this.x = x;
-  * >   this.y = y;
-  * >   this.width = width;
-  * >   this.height = height;
-  * > },
-  * > getWidth: function() {
-  * >   return this.width;
-  * > },
-  * > getHeight: function() {
-  * >   return this.height;
-  * > }
-  * > });
-  * > 
-  * > Rectangle.implement(AreaInterface);
+  * = Usage:
+  * Defines an interface:
+  *  
+  *  AreaInterface = HClass.extend({
+  *  constructor: null,
+  *    // implement
+  *    // don't define here
+  *    //getWidth: function() {},
+  *    //getHeight: function() {},
+  *  area: function() {
+  *    return this.getWidth() * this.getHeight();
+  *  }
+  *  });
+  *  
+  *  Rectangle = HClass.extend({
+  *  constructor: function(x, y, width, height) {
+  *    this.x = x;
+  *    this.y = y;
+  *    this.width = width;
+  *    this.height = height;
+  *  },
+  *  getWidth: function() {
+  *    return this.width;
+  *  },
+  *  getHeight: function() {
+  *    return this.height;
+  *  }
+  *  });
+  *  
+  *  Rectangle.implement(AreaInterface);
   *
   **/
 HClass.implement = function(_interface) {
