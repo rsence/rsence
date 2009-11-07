@@ -204,8 +204,7 @@ COMM.Session = HClass.extend({
   constructor: function(){
     var _this = this;
     _this.sha = SHAClass.nu(8);
-    _this._hexSHA1 = sha.hexSHA1;
-    _this.sha_key = _this._hexSHA1(((new Date().getTime())*Math.random()*1000).toString());
+    _this.sha_key = _this.sha.hexSHA1(((new Date().getTime())*Math.random()*1000).toString());
     _this.ses_key = '0:.o.:'+_this.sha_key;
     _this.req_num = 0;
   },
@@ -222,7 +221,7 @@ COMM.Session = HClass.extend({
   **/
   newKey: function(_sesKey){
     var _this = this,
-        _shaKey = _this._hexSHA1(_sesKey+_this.sha_key);
+        _shaKey = _this.sha.hexSHA1(_sesKey+_this.sha_key);
     _this.req_num++;
     _this.ses_key = _this.req_num+':.o.:'+_shaKey;
     _this.sha_key = _shaKey;
@@ -265,7 +264,7 @@ COMM.Transporter = HApplication.extend({
   * HApplication instance.
   **/
   onIdle: function(){
-    !this.busy && this.sync();
+    this.sync();
   },
   
 /** (Re)sets the priority of itself, effects how
@@ -305,13 +304,13 @@ COMM.Transporter = HApplication.extend({
         i = 1,
         _responseArrayLen = _responseArray.length,
         _sesKey = _responseArray[0],
-        _sesssion = COMM.Session,
+        _session = COMM.Session,
         _queue = COMM.Queue;
     if(_sesKey === ''){
       console.log('Invalid session, error message should follow...');
     }
     else {
-      _sesssion.newKey(_sesKey);
+      _session.newKey(_sesKey);
     }
     for(;i<_responseArrayLen;i++){
       try {
@@ -352,6 +351,7 @@ COMM.Transporter = HApplication.extend({
 /** Called by the XMLHttpRequest, when there was a failure in communication.
   **/
   failure: function(_resp){
+    console.log('failure');
     var _this = COMM.Transporter;
     // server didn't respond, likely network issue.. retry.
     if(_resp.X.status===0){
@@ -379,11 +379,14 @@ COMM.Transporter = HApplication.extend({
   **/
   sync: function(){
     if(this.stop){
+      console.log('sync stop');
       return;
     }
     if(this.busy){
+      console.log('sync busy');
       return;
     }
+    console.log('sync.');
     this.busy = true;
     var _this = this,
         _values = COMM.Values.sync(),
@@ -404,5 +407,11 @@ COMM.Transporter = HApplication.extend({
 }).nu();
 
 // Starts the synchronization upon page load.
-LOAD('COMM.Transporter.url=HCLIENT_HELLO;COMM.Transporter.stop=false;COMM.Transporter.sync();');
+LOAD(
+  function(){
+    COMM.Transporter.url=HCLIENT_HELLO;
+    COMM.Transporter.stop=false;
+    COMM.Transporter.sync();
+  }
+);
 

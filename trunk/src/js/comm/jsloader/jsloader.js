@@ -72,7 +72,11 @@ JSLoader = HClass.extend({
 
 // Makes the standard jsLoader instance based on the client base url 
 // of the server when the page is loaded.
-RUN("jsLoader = JSLoader.nu(HCLIENT_BASE+'/js/');");
+LOAD(
+  function(){
+    jsLoader = JSLoader.nu( HCLIENT_BASE + '/js/' );
+  }
+);
 
 
 

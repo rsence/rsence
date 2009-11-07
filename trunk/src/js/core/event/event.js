@@ -619,5 +619,9 @@ EVENT = {
 
 /** Starts the only instance
   */
-LOAD('EVENT.start();');
+LOAD(
+  function(){
+    EVENT.start();
+  }
+);
 

@@ -378,4 +378,8 @@ HSystem = HClass.extend({
 });
 
 // Starts the ticking:
-LOAD('HSystem.ticker();');
+LOAD(
+  function(){
+    HSystem.ticker();
+  }
+);
