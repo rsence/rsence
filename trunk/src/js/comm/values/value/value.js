@@ -6,36 +6,50 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HValue
+/*** = Description
+  ** Data value synchonization container object.
   **
-  ** Data that needs to be syncronized between components or remote clients should be implemented as HValues.
-  ** If client-side validation and type-checking is needed, it should be implemented by subclassing HValue.
+  ** +HValue+ is the default class to use for data syrchronization purposes.
+  ** It's smart enough to tell COMM.Values (Value Manager) that it has
+  ** been changed.
   **
-  ** vars: Instance variables
-  **  id - Value Id, used by the whole value management system to identify individual values.
-  **  type - '[HValue]'
-  **  value - The container/"payload" data value itself.
-  **  views - A list of Components that uses this value. 
-  **          Used for automatic value syncronization between components.
+  ** A single HValue instance can be bound to any number of responders, the
+  ** main client-side responder class is +HControl+.
   **
-  ** Usage example:
-  **  > var myApp = new HApplication(100);
-  **  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
-  **  > mySlider.draw();
-  **  > var myValue = new HValue(123,100.0);
-  **  > myValue.bind(mySlider);
+  ** When you change the value in one of the instances bound to the HValue
+  ** instances, all other instances get notified too and the server is also
+  ** notified and can be further bound on the server side to any number of
+  ** responders there too.
   **
-  ** See also:
-  **  <HValueManager> <HControl>
-  ***/
-
-
+  ** An instance constructed with "false" (Boolean) as its id is not reported
+  ** to the server. Such an instance can be used for client-side responder
+  ** synchronization.
+  **
+  ** Priority-wise, only the server can create a value id. If a value id is
+  ** created on the client, the server won't recognize nor accept it.
+  **
+  ** If a value is changed on the server, it overrides the changes on
+  ** the client, so no server-client lock is needed in this model.
+  **
+  ** = Instance variables:
+  **  +id+::     Value Id, used by the whole value management system to identify individual values.
+  **  +type+::   '[HValue]'
+  **  +value+::  The container/"payload" data value itself.
+  **  +views+::  A list of Components that uses this value. 
+  **             Used for automatic value syncronization between responders.
+***/
 HValue = HClass.extend({
-/** constructor: constructor
+  
+/** = Description
+  * Constructs a value with the initial value +_value+ and the unique id +_id+.
   *
-  * Parameters:
-  *   _id - The source id (ideally set by server, should be unique)
-  *   _value - The initial data 
+  * Only the server can create value id's, so use false when constructing
+  * from the client. A value with a false id is not reported to the server.
+  *
+  * = Parameters
+  * +_id+::     The source id (ideally set by server, should be unique)
+  * +_value+::  The initial data 
+  *
   **/
   constructor: function(_id,_value){
     this.id    = _id;
@@ -43,10 +57,12 @@ HValue = HClass.extend({
     this.value = _value;
     this.views = [];
     if(_id){
-      HVM.add(_id,this);
+      COMM.Values.add(_id,this);
     }
   },
   
+/** Destructor method. Releases all bindings.
+  **/
   die: function(){
     for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
       var _tryObj = this.views[_viewNum];
@@ -54,19 +70,18 @@ HValue = HClass.extend({
       this.views.splice(_viewNum,1);
     }
     if(this.id){
-      HVM.del(this.id);
+      COMM.Values.del(this.id);
     }
   },
   
-/** method: set
-  * 
-  * Replaces the data of the value. Extend this, if you need validation etc.
+/** = Description
+  * Replaces the data of the value.
   *
-  * Parameters:
-  *  _value - The new data to replace the old data with.
+  * Extend this method, if you want client-side validation in the value itself.
   *
-  * See also:
-  *  <HControl.setValue> <HValueManager.set>
+  * = Parameters
+  * +_value+::  The new data to replace the old data with.
+  *
   **/
   set: function(_value){
     if(this.differs(_value)){
@@ -78,97 +93,86 @@ HValue = HClass.extend({
     }
   },
   
+/** Compares +_value+ with +self.value+.
+  * = Returns
+  * true or false, depending on the equality
+  **/
   differs: function(_value){
     return (COMM.Values.encode(_value) !== COMM.Values.encode(this.value));
   },
   
-/** method: s
+/** = Description
+  * Setter for the server.
   * 
-  * Just as <set>, but doesn't re-notify the server about the change.
-  *
+  * Just as +self.set+, but doesn't re-notify the server about the change.
   **/
   s: function(_value){
     this.value = _value;
     this.refresh();
   },
   
-/** method: get
-  *
-  * Return the data, synonymous to the <value> instance variable
+/** = Description
+  * Return the data, returns the +self.value+ instance variable
   *
   * Returns:
   *  The value instance variable (the data "payload")
-  *
-  * See also:
-  *  <HValue.value>
   **/
   get: function(){
     return this.value;
   },
   
-/** method: bind
+/** = Description
+  * Bind a responder to the value, use to attach HValues to responders derived from HControl.
   *
-  * Bind a component to the value, use to attach HValues to components derived from HControl.
-  *
-  * Parameters:
-  *  _viewObj - Any component that is derived from HControl *or* any class 
-  *             that responds to setValueObj and setValue methods.
-  *
-  * See also:
-  *  <unbind> <HControl.setValueObj>
-  *
+  * = Parameters
+  * +_responder+::   Any responder that is derived from HControl or any other 
+  *                  class instance that implements HValueResponder or has
+  *                  compatible typing.
   **/
-  bind: function(_viewObj){
-    if(_viewObj===undefined){
-      throw("HValueBindError: _viewObj is undefined!");
+  bind: function(_responder){
+    if(_responder===undefined){
+      throw("HValueBindError: responder is undefined!");
     }
-    if(this.views.indexOf(_viewObj)===-1){
-      this.views.push(_viewObj);
-      _viewObj.setValueObj( this );
+    if(this.views.indexOf(_responder)===-1){
+      this.views.push(_responder);
+      _responder.setValueObj( this );
     }
   },
   
-/** method: unbind
+/** = Description
+  * Release a responder bound to the HValue instance itself.
   *
-  * Detach a component bound to this value.
-  *
-  * Parameters:
-  *  _viewObj - Any component that is derived from HControl *or* any class 
-  *             that responds to setValueObj and setValue methods.
-  *
-  * See also:
-  *  <bind>
-  *
+  * = Parameters
+  * +_responder+::   Any responder that is derived from HControl or any other 
+  *                  class instance that implements HValueResponder or has
+  *                  compatible typing.
   **/
-  unbind: function(_viewObj){
+  unbind: function(_responder){
     for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
       var _tryObj = this.views[_viewNum];
-      if(_tryObj===_viewObj){
+      if(_tryObj===_responder){
         this.views.splice(_viewNum,1);
         return;
       }
     }
   },
-  
-  release: function(_viewObj){
-    return this.unbind(_viewObj);
+
+/** Alias of +self.unbind+, opposite of +bind+.
+  **/
+  release: function(_responder){
+    return this.unbind(_responder);
   },
   
-/** method: refresh
-  *
-  * Calls the setValue method all components bound to this HValue.
-  *
-  * See also:
-  *  <HControl.setValue>
+/** Calls the setValue method all responders bound to this HValue.
   **/
   refresh: function(){
     for(var _viewNum=0;_viewNum<this.views.length;_viewNum++){
-      var _viewObj = this.views[_viewNum];
-      if(_viewObj.value !== this.value){
-        if(!_viewObj._valueIsBeingSet){
-          _viewObj._valueIsBeingSet=true;
-          _viewObj.setValue( this.value );
-          _viewObj._valueIsBeingSet=false;
+      var _responder = this.views[_viewNum];
+      if(_responder.value !== this.value){
+        if(!_responder._valueIsBeingSet){
+          _responder._valueIsBeingSet=true;
+          _responder.setValue( this.value );
+          _responder._valueIsBeingSet=false;
         }
       }
     }
