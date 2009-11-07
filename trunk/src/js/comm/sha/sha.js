@@ -8,69 +8,107 @@
 
 
 
-/**
-*** This File is a part of AppSpace
-***
-*** Copyright (c) 2007 Juha-Jarmo Heinonen <jjh@riassence.com>
-***                    jjh@riassence.com
-**/
-
-// Encoder / Decoder facility
-
-/** IMPROVED FROM: **/
-/*
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
-
- * vBulletin Usage: md5hash(input,output)
- * Recommend: input = password input field; output = hidden field
-
- */
-
-
+/*** = Description
+  ** A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
+  ** in FIPS 180-1. Also includes a Base64 encoder.
+  **
+  ** = Original implementation:
+  ** Copyright Paul Johnston 2000 - 2009.
+  ** Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+  ** Distributed under the BSD License
+  ** See http://pajhome.org.uk/crypt/md5 for details.
+  **
+  ***/
 SHAClass = HClass.extend({
-  
+
+/** = Description
+  * Constructs an instance of SHAClass.
+  *
+  * = Parameters
+  * +_chrsz+::   The input character size, in bits. Optional.
+  *
+  **/
   constructor: function(_chrsz){
-    if(_chrsz){
-      this.setChrsz(_chrsz);
-    }
+    _chrsz && this.setChrsz(_chrsz);
   },
   
   /* hex output format. 0 - lowercase; 1 - uppercase        */
   _hexcase: 0,
+  
+/** = Description
+  * Returns the letter case of the hexadecimal output.
+  *
+  * = Returns
+  * 1 if upporcase, 0 if lowercase.
+  **/
   hexCase: function(){
     return this._hexcase;
   },
+  
+/** = Descrition
+  * Sets the letter case of the hexadecimal output.
+  *
+  * = Parameters:
+  * +_case+::  1: Upper case
+  *            0: Lower case
+  *
+  **/
   setHexCase: function(_case){
     this._hexcase = _case;
   },
   
   /* base-64 pad character. "=" for strict RFC compliance   */
   _b64pad: "=",
+  
+/** Returns the Base64 padding character. Is '=' by default.
+  **/
   base64Pad: function(){
     return this._b64pad;
   },
+  
+/** = Description
+  * Sets the Base64 padding character.
+  *
+  * Set to '=' (default) for strict RFC compliance.
+  *
+  * = Parameters
+  * +_pad+::   The padding character
+  *
+  **/
   setBase64Pad: function(_pad){
     this._b64pad = _pad;
   },
   
   /* bits per input character. 8 - ASCII; 16 - Unicode      */
   _chrsz: 8,
+  
+/** Returns the number of bits per input character. The default is 8.
+  **/
   chrsz: function(){
     return this._chrsz;
   },
+  
+/** = Description
+  * Sets the number of bits per input character.
+  *
+  * = Parameters
+  * +_bits+::  Amount of bits per input character. 8 for ascii, 16 for unicode.
+  *
+  **/
   setChrsz: function(_bits){
     this._chrsz = _bits;
   },
   
-/*
- * These are the functions you'll usually want to call
- * They take string arguments and return either hex or base-64 encoded strings
- */
+/** = Description
+  * Calculates the SHA1 of a string and returns the result encoded in hexadecimal.
+  *
+  * = Parameters
+  * +_s+::  The input string.
+  *
+  * = Returns
+  * A hexadecimal-encoded string containing the SHA1 result.
+  *
+  **/
   hexSHA1: function(_s){
     var _this=this;
     return _this._binb2hex(
@@ -80,6 +118,17 @@ SHAClass = HClass.extend({
       )
     );
   },
+  
+/** = Description
+  * Calculates the SHA1 of a string and returns the result encoded in Base64.
+  *
+  * = Parameters
+  * +_s+::  The input string.
+  *
+  * = Returns
+  * A Base64-encoded string containing the SHA1 result.
+  *
+  **/
   b64SHA1: function(_s){
     var _this=this;
     return _this._binb2b64(
@@ -89,6 +138,17 @@ SHAClass = HClass.extend({
       )
     );
   },
+  
+/** = Description
+  * Calculates the SHA1 of a string and returns the result as a raw string.
+  *
+  * = Parameters
+  * +_s+::  The input string.
+  *
+  * = Returns
+  * A raw string containing the SHA1 result.
+  *
+  **/
   strSHA1: function(_s){
     var _this=this;
     return _this._binb2str(
@@ -98,18 +158,54 @@ SHAClass = HClass.extend({
       )
     );
   },
+  
+/** = Description
+  * Calculates the HMAC-SHA1 of a string and returns the result encoded in hexadecimal.
+  *
+  * = Parameters
+  * +_key+::   The key to use.
+  * +_data+::  The input data.
+  *
+  * = Returns
+  * A hexadecimal-encoded string containing the HMAC-SHA1 result.
+  *
+  **/
   hexHmacSHA1: function(_key, _data){
     var _this=this;
     return _this._binb2hex(
       _this._coreHmacSHA1(_key, _data)
     );
   },
+  
+/** = Description
+  * Calculates the HMAC-SHA1 of a string and returns the result encoded in Base64.
+  *
+  * = Parameters
+  * +_key+::   The key to use.
+  * +_data+::  The input data.
+  *
+  * = Returns
+  * A Base64-encoded string containing the HMAC-SHA1 result.
+  *
+  **/
   b64HmacSHA1: function(_key, _data){
     var _this=this;
     return _this._binb2b64(
       _this._coreHmacSHA1(_key, _data)
     );
   },
+  
+/** = Description
+  * Calculates the HMAC-SHA1 of a string and returns the result as a raw string.
+  *
+  * = Parameters
+  * +_key+::   The key to use.
+  * +_data+::  The input data.
+  *
+  * = Returns
+  * A raw string containing the HMAC-SHA1 result.
+  *
+  **/
   strHmacSHA1: function(_key, _data){
     var _this=this;
     return _this._binb2str(
@@ -117,14 +213,23 @@ SHAClass = HClass.extend({
     );
   },
   
+/** = Description
+  * Encodes a string to Base64.
+  *
+  * = Parameters
+  * +_str+::    The input data.
+  *
+  * = Returns
+  * The Base64 encoded version of the input data.
+  *
+  **/
   str2Base64: function(_str){
     var _this=this;
     return _this._binb2b64(_this._str2binb(_str));
   },
   
-  /*
-   * Perform a simple self-test to see if the VM is working
-   */
+/** Performs a simple self-test to see if the VM is working
+  **/
   test: function(){
     return this.hexSHA1("abc") === "a9993e364706816aba3e25717850c26c9cd0d89d";
   },
@@ -322,5 +427,6 @@ SHAClass = HClass.extend({
   }
 });
 
+// Assigns SHA as a SHAClass instance that uses unicode input.
 SHA = SHAClass.nu(16);
 
