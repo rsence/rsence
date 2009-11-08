@@ -9,8 +9,10 @@
 // Injects htc stuff into IE
 ie_htc_path = null;
 function ie_early_fixes() {
-  
-  document.execCommand("BackgroundImageCache",false,true);
+  try{
+    document.execCommand("BackgroundImageCache",false,true);
+  }
+  catch(e){}
   
   var _script = document.scripts[document.scripts.length - 1],
       _src = _script.src;
@@ -22,6 +24,7 @@ function ie_early_fixes() {
       
     }
   };
+
 }
 ie_early_fixes();
 
@@ -319,6 +322,7 @@ iefix = {
   }
 };
 iefix.init();
+
 
 ie_complete=document.readyState==="complete";
 ie_initialized=false;
