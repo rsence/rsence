@@ -111,7 +111,7 @@ COMM.Queue = HApplication.extend({
       
       // Displays an error message in the Javascript console, if failure.
       catch(e){
-        var _itemSrc = BROWSER_TYPE.ie?_item:_item.toSource(),
+        var _itemSrc = BROWSER_TYPE.ie?_item.toSource():_item,
             _strs = this.STRINGS;
         console.log([
           _strs.ERR_PREFIX,
