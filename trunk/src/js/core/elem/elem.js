@@ -1221,20 +1221,20 @@ ELEM = {
   /* Checks browser versions and starts the document load check */
   _warmup: function() {
     var _this = ELEM,
-        _uaIndexOf = navigator.userAgent.indexOf,
-        _isIE = (document.all && _uaIndexOf("Opera") === -1),
+        _ua = navigator.userAgent,
+        _isIE = (document.all && _ua.indexOf("Opera") === -1),
         _browserTypesTable = [
-          [ 'opera',    '_is_opera',   _uaIndexOf("Opera") !== -1           ],
-          [ 'safari',   '_is_safari',  _uaIndexOf("KHTML") !== -1           ],
-          [ 'symbian',  '_is_symbian', _uaIndexOf("SymbianOS") !== -1       ],
-          [ 'chrome',   '_is_chrome',  _uaIndexOf("Chrome") !== -1          ],
-          [ 'ie',       '_is_ie',      _isIE                                ],
-          [ 'ie6',      '_is_ie6',     _isIE && _uaIndexOf("MSIE 6") !== -1 ],
-          [ 'ie7',      '_is_ie7',     _isIE && _uaIndexOf("MSIE 7") !== -1 ],
-          [ 'ie8',      '_is_ie8',     _isIE && _uaIndexOf("MSIE 8") !== -1 ],
-          [ 'firefox',  '_is_ff',      _uaIndexOf("Firefox") !== -1         ],
-          [ 'firefox2', '_is_ff2',     _uaIndexOf("Firefox/2.") !== -1      ],
-          [ 'firefox3', '_is_ff3',     _uaIndexOf("Firefox/3.") !== -1      ]
+          [ 'opera',    '_is_opera',   _ua.indexOf("Opera") !== -1           ],
+          [ 'safari',   '_is_safari',  _ua.indexOf("KHTML") !== -1           ],
+          [ 'symbian',  '_is_symbian', _ua.indexOf("SymbianOS") !== -1       ],
+          [ 'chrome',   '_is_chrome',  _ua.indexOf("Chrome") !== -1          ],
+          [ 'ie',       '_is_ie',      _isIE                                 ],
+          [ 'ie6',      '_is_ie6',     _isIE && _ua.indexOf("MSIE 6") !== -1 ],
+          [ 'ie7',      '_is_ie7',     _isIE && _ua.indexOf("MSIE 7") !== -1 ],
+          [ 'ie8',      '_is_ie8',     _isIE && _ua.indexOf("MSIE 8") !== -1 ],
+          [ 'firefox',  '_is_ff',      _ua.indexOf("Firefox") !== -1         ],
+          [ 'firefox2', '_is_ff2',     _ua.indexOf("Firefox/2.") !== -1      ],
+          [ 'firefox3', '_is_ff3',     _ua.indexOf("Firefox/3.") !== -1      ]
         ],
         i = 0,
         _typeKeyGlobal,
