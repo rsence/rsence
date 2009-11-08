@@ -34,13 +34,14 @@ HControl = HView.extend({
   
   componentBehaviour: ['view','control'],
 /** = Description
-  * The first two parameters are the same as with <HView>, but additionally
-  * sets the label and events.
+  * The constructor of HControl implements the same model as HView, 
+  * but accepts a third parameter: the options object, that contain 
+  * optional properties, like the value, label and events.
   *
   * = Parameters
-  *  +_rect+::   The rectangle of the component. See <HView.constructor>.
-  *  +_parent+:: The parent component of the component. See <HView.constructor>.
-  *  +options+:: optional, all other parameters. See <HComponentDefaults>.
+  *  +_rect+::   The rectangle of the component. See HView.constructor.
+  *  +_parent+:: The parent component of the component. See HView.constructor.
+  *  +options+:: optional, all other parameters. See HComponentDefaults.
   *
   **/
   refreshOnValueChange: true,
@@ -120,7 +121,10 @@ HControl = HView.extend({
     return this;
   },
   
-/** Unregisters events before destroying the view.
+/** = Description
+  * The destructor of [wiki:HControl HControl] instances. 
+  * Releases events and values before passing through to the base HView.die.
+  *
   **/
   die: function() {
     var _this = this;
@@ -133,9 +137,11 @@ HControl = HView.extend({
   },
   
 /** = Description
-  * Sets the label on a control component: the text that's displayed, for
-  * example, in the <HButton>. Actual functionality is implemented in component
-  * templates and component <refresh> method extensions.
+  * Sets the label on a control component: the text that's displayed in 
+  * HControl extensions. Visual functionality is implemented in component 
+  * theme templates and refreshLabel method extensions.
+  *
+  * Avoid extending directly, extend refreshLabel instead.
   *
   * = Parameters
   *  +_label+::  The text the component should display.
@@ -156,10 +162,10 @@ HControl = HView.extend({
   },
   
 /** = Description
-  * Enables the Control if the enabled flag is true, and disables
-  * it if enabled is false.
-  * Typically, a disabled Control also won't post messages or respond
-  * to mouse and keyboard manipulation.
+  * Enables the HControl instance, if the enabled flag is true, and disables 
+  * it if enabled is false. A disabled HControl won't respond events. 
+  * Component themes reflect the disabled state typically with 
+  * a dimmer appearance.
   *
   * = Parameters
   *  +_flag+::  Boolean; true enables, false disables.
@@ -204,14 +210,14 @@ HControl = HView.extend({
   
   
 /** = Description
-  * Assigns the object a new value range. Used for sliders etc. Calls 
+  * Assigns the object a new value range. Used for sliders, steppers etc. Calls
   * setValue with the value given.
   *
   * = Parameters
-  *  +_value+::     The new <value> to be set to the component's 
+  *  +_value+::     The new value to be set to the component's 
   *                 HValue compatible instance.
-  *  +_minValue+::  The new minimum <value> limit. See <minValue>.
-  *  +_maxValue+::  The new maximum <value> limit. See <maxValue>.
+  *  +_minValue+::  The new minimum value limit. See minValue.
+  *  +_maxValue+::  The new maximum value limit. See maxValue.
   *
   * = Returns
   * +self+
@@ -238,8 +244,15 @@ HControl = HView.extend({
     return this;
   },
   
-  /** Refreshes the HControl's label.
-    **/
+/** = Description
+  * Performs an action whenever the label changes. See setLabel. By default,
+  * if a theme template is used, it's updating the DOM element prefixed with
+  * 'label'. It's utilized as-is in most components.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
   refreshLabel: function(){
     if(this.markupElemIds){
       if(this.markupElemIds.label){
@@ -248,8 +261,19 @@ HControl = HView.extend({
     }
     return this;
   },
-  /** Refreshes the value and label if they are not up to date.
-    **/
+/** = Description
+  * Called mostly internally whenever a property change requires usually visual
+  * action. It's called by methods like setLabel and setValue. 
+  * Extends HView.refresh. The boolean properties refreshOnValueChange and 
+  * refreshOnLabelChange control whether refreshValue or refreshLabel 
+  * should be called. It's used as-is in most components. If you implement 
+  * your class extension with properties similar to value or label, 
+  * you are adviced to extend the refresh method.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
   refresh: function(){
     this.base();
     if(this.drawn){
