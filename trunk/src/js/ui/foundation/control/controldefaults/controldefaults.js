@@ -6,13 +6,12 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-
-/** class: HComponentDefaults
-  *
+/** = Description
   * Define default setting here. Will be used, when no or invalid constructor options are supplied.
   *
-  * vars: Settable Control-level defaults, override on construction
-  *  label - The visual value of the component
+  * = Instance variables:
+  * Settable Control-level defaults, override on construction 
+  * +label+::  The visual value of the component
   **/
 HComponentDefaults = HClass.extend({
   
