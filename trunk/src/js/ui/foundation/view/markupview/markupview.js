@@ -6,25 +6,22 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HMarkupView
-  **
-  ** Serves as a mixin class for classes that need to draw markup but don't
-  ** inherit from the HView.
-  **
-  ** vars: Instance variables
-  **  markup - The markup from the component's HTML template.
-  **
-  ** See also:
-  **  <HView>
-  ***/
+/*** = Description
+ ** Serves as a mixin class for classes that need to draw markup but don't
+ ** inherit from the HView.
+ **
+ ** = Instance variables
+ **  +markup+::  The markup from the component's HTML template.
+***/
 HMarkupView = HClass.extend({
 
-/** method: bindMarkupVariables
-  * 
+/** = Description
   * Evaluates the pieces of code defined in the markup template marked with
   * syntax #{}.
-  * Can't use } characters in the code though. This might need another look...
-  * 
+  * Can't use } characters in the code though. 
+  * --
+  * This might need another look...
+  * ++
   * Places the resulting markup in the instance variable.
   * 
   **/
@@ -43,7 +40,23 @@ HMarkupView = HClass.extend({
     
     return this;
   },
-  
+/** = Description
+  * Evaluates a string and throws an error into console.log 
+  * if the string doesn't pass evaluation. 
+  * If _isAssignment flag is set to true returns empty string. 
+  * if _isAssignment is set to false will return string if it passes 
+  * evaluation.
+  *
+  * = Parameters
+  * +_strToEval+::      A String to evaluate.
+  * 
+  * +_isAssignment+::   Flag to indicate return the String upon passed 
+  *                     evaluation(false) or return of an empty String(true).
+  *
+  * = Returns
+  * +String+ 
+  * 
+  **/
   evalMarkupVariable: function(_strToEval,_isAssignment){
     try {
       var _ID     = this.elemId.toString(),
@@ -66,15 +79,17 @@ HMarkupView = HClass.extend({
     }
   },
   
-/** method: toggleCSSClass
-  * 
-  * Sets or unsets the _cssClass into a DOM element that goes by the ID
+/** = Description
+  * Sets or unsets the _cssClass into a DOM element that goes by the ID 
   * _elementId.
   * 
-  * Parameters:
-  *  _elementId - ID of the DOM element, or the element itself, to be modified.
-  *  _cssClass - Name of the CSS class to be added or removed.
-  *  _setOn - Boolean value that tells should the CSS class be added or removed.
+  * = Parameters
+  *  +_elementId+:: ID of the DOM element, or the element itself, to be modified.
+  *  +_cssClass+::  Name of the CSS class to be added or removed.
+  *  +_setOn+::     Boolean value that tells should the CSS class be added or removed.
+  *
+  * = Returns
+  * +self+
   * 
   **/
   toggleCSSClass: function(_elementId, _cssClass, _setOn) {
