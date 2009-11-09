@@ -16,29 +16,60 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
     ARGV.include?('save')
   )
   puts %{
-Usage: #{__FILE__} command [params]
 
-command is one of:"
- status     Tells if Riassence Framework Server is running or not
- start      Starts Riassence Framework Server
- stop       Stops Riassence Framework Server
- restart    Restarts Riassence Framework Server
- save       Saves Riassence Framework Server session data
- help       This message
+  Riassence Framework is RIA client and server. This help message contains
+  hints about how to control the server startup/shutdown.
 
-Params:
- --trace-js               Write content of msg.reply calls to stdout.
- --root-path /path        Define the path to rsence server, defaults to 'bin'
- --client-path /path      Define the path to rsence client, defaults to '../client'
- --port 80                Define the http port to use, defaults to '8001'
- --latency 200            Simulate network latency, value in milliseconds
- --addr 127.0.0.1         Define the IPv4 address to bind to, defaults to '0.0.0.0' (all)
- --server ebb             Choose http server, valid choices:
-                            webrick, mongrel, ebb or thin.  Defaults to 'thin'
- --reset-sessions         Deletes all old sessions on startup, useful for development and maintenance
- --config /path/conf.rb   Optional config override file.
- --profile                Turns on profiling (Will slow down performance A LOT)
- --help                   This Text
+  Usage:
+    #{__FILE__} command [params]
+
+  Command is one of:"
+    status     Tells if Riassence Framework Server is running or not
+    start      Starts Riassence Framework Server
+    stop       Stops Riassence Framework Server
+    restart    Restarts Riassence Framework Server
+    save       Saves Riassence Framework Server session data
+    help       This message
+  
+  Params:
+    -d                      Debug/Development mode
+    --trace-js              Write content of msg.reply calls to stdout
+    --root-path <PATH>      Define the PATH to rsence server
+                              Defaults to 'bin'
+    --client-path <PATH>    Define the PATH to the built rsence client
+                              Defaults to '../client'
+    --port PORT             Define the http PORT to use, defaults to '8001'
+    --latency MS            Simulate network latency, value in milliseconds
+    --addr <ADDRESS>        Define the IPv4 ADDRESS to bind to.
+                              Defaults to '0.0.0.0' (any)
+    --server <SERVER>       Choose http SERVER, valid choices:
+                               - webrick
+                               - mongrel
+                               - ebb
+                               - thin
+                               Defaults to thin
+    --reset-sessions        Deletes all old sessions on startup
+    --config <PATH>         Optional config override file
+    --run-config-wizard     Runs configuration wizard
+                              Runs by default, if no local
+                              configuration files were found.
+    --profile               Turns on profiling
+    --help                  This message
+    -h                      This message
+  
+  Examples:
+    #{__FILE__} status
+    #{__FILE__} start
+    #{__FILE__} stop
+    #{__FILE__} save
+    #{__FILE__} restart
+    #{__FILE__} restart -d --reset-sessions
+    #{__FILE__} restart --latency 150
+    #{__FILE__} restart --server mongrel --port 8080 --addr 127.0.0.1
+  
+  Further information:
+     http://riassence.org/
+
 }
   exit
 end

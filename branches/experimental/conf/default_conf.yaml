@@ -198,12 +198,13 @@
       :ur:    '/'
 #
 # Database configuration
-:database:
+:database: {
   # these two params are kept for backwards compatibility; not actually used.
-  :root_setup: { }
-  :auth_setup: { }
+  # :root_setup: { }
+  # :auth_setup: { }
   # Session database storage string. Leave empty here to enable the wizard for storage.
   #:ses_db: 'sqlite:///var/lib/rsence/db/ses.db'
+}
 
 #
 # ValueManager settings

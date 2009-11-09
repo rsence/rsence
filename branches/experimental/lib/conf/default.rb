@@ -20,25 +20,37 @@ class Configuration
     pidpath = File.join(SERVER_PATH,'var','run')
     logpath = File.join(SERVER_PATH,'var','log')
     
+    yaml_conf_path = File.join( SERVER_PATH, 'conf', 'default_conf.yaml' )
+    
+    ## Global configuration hash
+    $config = YAML.load( File.read( yaml_conf_path ) )
+    
     ## Client by default is "server/client"
     if ARGV.include?('--client-path')
       client_path = ARGV[ARGV.index('--client-path')+1]
     else
       client_path_test1 = File.expand_path( File.join( SERVER_PATH, 'client' ) )
-      client_path_test2 = File.expand_path( File.join( SERVER_PATH, '..', 'client' ) )
+      client_path_test2 = File.expand_path( File.join( File.split( SERVER_PATH )[0], 'client' ) )
+      client_path_test3 = File.expand_path( File.join( Dir.pwd, 'client' ) )
       if File.exist?(client_path_test1)
         client_path = client_path_test1
       elsif File.exist?(client_path_test2)
         client_path = client_path_test2
+      elsif File.exist?(client_path_test3)
+        client_path = client_path_test3
       else
-        warn "WARNING: client_path: #{client_path.inspect} not found in standard locations (#{client_path_test1.inspect} or #{client_path_test2.inspect})"
+        warn [ "",
+               "ERROR: client_path not found in the standard locations:",
+               "  - #{[client_path_test1,client_path_test2,client_path_test3].join("\n  - ")}",
+               "",
+               "  Did you build the client?",
+               "",
+               "  Unable to continue: exiting.",
+               ""
+       ].join("\n")
+       exit
       end
     end
-    
-    yaml_conf_path = File.join( SERVER_PATH, 'conf', 'default_conf.yaml' )
-    
-    ## Global configuration hash
-    $config = YAML.load( File.read( yaml_conf_path ) )
     
     $config[:trace] = true if ARGV.include?('--trace-js')
     $config[:client_root] = client_path unless $config.has_key? :client_root
@@ -51,7 +63,9 @@ class Configuration
       :js => File.join( client_path, 'js' ),
       :themes => File.join( client_path, 'themes' )
     }
+    
     default_plugins_path = File.join( SERVER_PATH, 'plugins' )
+    
     $config[:plugin_paths].push( default_plugins_path ) unless $config[:plugin_paths].include? default_plugins_path
     $config[:indexhtml_conf] = $config[:index_html]
     $config[:session_conf][:reset_sessions] = true if ARGV.include?('--reset-sessions=true') or ARGV.include?('--reset-sessions')
@@ -65,50 +79,51 @@ class Configuration
     ]
     
     ## Create default local configuratation override file, if it does not exist:
-    local_config_file_path = File.join(SERVER_PATH,'conf','local_conf.rb')
-    
-    local_config_file_path2 = File.join(SERVER_PATH,'conf','local_conf.yaml')
-    local_config_file_path3 = File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.yaml' )
-    
-    if File.exists? local_config_file_path2
-      config2 = YAML.load( File.read( local_config_file_path2 ) )
-      $config.join( config2 )
+    local_config_file_paths = [
+      File.join(SERVER_PATH,'conf','local_conf.yaml'),
+      File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.yaml' ),
+      File.join( Dir.pwd, 'conf', 'local_conf.yaml' ),
+      File.join(SERVER_PATH,'conf','local_conf.rb'),
+      File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.rb' ),
+      File.join( Dir.pwd, 'conf', 'local_conf.rb' )
+    ]
+    if ARGV.include?('--config')
+      argv_conf_file = ARGV[ARGV.index('--config')+1]
+      if not argv_conf_file.begin_with? '/'
+        argv_conf_file = File.join( Dir.pwd, conf_file )
+      end
+      local_config_file_paths.push( argv_conf_file )
     end
-    if File.exists? local_config_file_path3
-      config3 = YAML.load( File.read( local_config_file_path3 ) )
-      $config.join( config3 )
+    
+    local_config_file_path_found = false
+    local_config_file_paths.each do |local_config_file_path|
+      if File.exists? local_config_file_path and File.file? local_config_file_path
+        if local_config_file_path.end_with? '.yaml'
+          $config.merge!( YAML.load( File.read( local_config_file_path ) ) )
+          local_config_file_path_found = true
+        elsif local_config_file_path.end_with? '.rb'
+          load local_config_file_path
+          local_config_file_path_found = true
+        else
+          warn "Only Yaml and Ruby configuration files are allowed at this time."
+        end
+      end
     end
 
-
-    if File.exist?(local_config_file_path)
-      require local_config_file_path[0..-4]
-    elsif ARGV.include?('--config')
-      conf_file = ARGV[ARGV.index('--config')+1]
-      if conf_file[0].chr != '/'
-        conf_file = File.join( Dir.pwd, conf_file )
-      end
-      if conf_file[-3..-1] != '.rb'
-        warn "WARNING: Only ruby configuration files are supported for now."
-        warn "         Future versions might include YAML support."
-        warn "      -> #{conf_file} ignored."
-      elsif File.exist?( conf_file )
-        # strip the '.rb' suffix
-        conf_file = conf_file[0..-4]
-        require conf_file
-      else
-        warn "ERROR: Configuration file #{conf_file.inspect} not found."
-        exit
-      end
-    else
-      puts "NOTE:  Local configuration file #{local_config_file_path.inspect}"
-      puts "       does not exist, creating a default one."
+    if not local_config_file_path_found or ARGV.include? '--run-wizard'
+      puts "NOTE:  No local configuration file found, running the, configuration wizard." unless ARGV.include? '--run-wizard'
       puts "Please answer the following questions, blank lines equal to the default in brackets:"
       require 'conf/wizard'
-      conf_wizard = ConfigWizard.new
-      local_config_data = conf_wizard.run( local_config_file_path )
+      if File.directory?( File.join( Dir.pwd, 'conf' ) )
+        wizard_conf_file = File.join( Dir.pwd, 'conf', 'local_conf.yaml' )
+      else
+        wizard_conf_file = File.join( SERVER_PATH, 'conf', 'local_conf.yaml' )
+      end
+      wizard_config_data = ConfigWizard.new($config).run( wizard_conf_file )
+      $config.merge!( wizard_config_data )
     end
 
-    unless $config[:database].has_key?(:ses_db)
+    if not $config[:database].has_key?( :ses_db ) and $config[:database].has_key?( :auth_setup )
       warn "WARNING: The database is not configured with a :ses_db url."
       warn "         You are advised to convert the :root_setup and :auth_setup keys of"
       warn "         $config[:database] to the new url format."
@@ -117,95 +132,69 @@ class Configuration
       warn "      -> Performed automatic conversion of :auth_setup as"
       warn "         $config[:database][:ses_db] = #{$config[:database][:ses_db].inspect}"
     end
-
-
-
+    
+    
+    
     ## Broker configuration
-    ## WARNING: Don't rely on this as-is yet. The naming conventions might still change.
-
-    ## POST-requests
-
-    # The default listener address of cookie-less transporter requests
-    unless $config[:broker_urls].has_key?(:x)
-      $config[:broker_urls][:x]     = File.join($config[:base_url],'x')
+    [   ## POST-requests
+        # broker_key      # default_uri
+        # The default responder for transporter requests.
+      [ :x,               File.join($config[:base_url],'x') ],
+        # The default responder for cookie-enabled "handshake" transporter requests
+      [ :hello,           File.join($config[:base_url],'hello') ],
+        # The default responder for SOAP -requests
+      [ :soap,            File.join($config[:base_url],'SOAP') ],
+        # The default responder for file uploads
+      [ :u,               File.join($config[:base_url],'U') ],
+      
+        ## GET-requests
+        # broker_key      # default_uri
+        # The default address of built javascript and theme packages
+      [ :h,               File.join($config[:base_url],'H/') ],
+        # The default address of the ticketserve :img -category
+      [ :i,               File.join($config[:base_url],'i/') ],
+        # The default address of the ticketserve :rsrc -category
+      [ :d,               File.join($config[:base_url],'d/') ],
+        # The default address of the ticketserve :file -category
+      [ :f,               File.join($config[:base_url],'f/') ],
+        # The default address of the ticketserve :blobobj -category
+      [ :b,               File.join($config[:base_url],'b/') ],
+      # The default address of the favicon
+      [ :favicon,         '/favicon.ico' ],
+      # The default address of the "empty" iframe of uploader
+      [ :uploader_iframe, File.join($config[:base_url],'U/iframe_html') ],
+    ].each do |broker_key, default_uri|
+      unless $config[:broker_urls].has_key?( broker_key )
+        $config[:broker_urls][broker_key] = default_uri
+      end
     end
-
-    # The default listener address of cookie-enabled transporter requests
-    unless $config[:broker_urls].has_key?(:hello)
-      $config[:broker_urls][:hello] = File.join($config[:base_url],'hello')
-    end
-
-    # The default listener address of SOAP -requests
-    unless $config[:broker_urls].has_key?(:soap)
-      $config[:broker_urls][:soap] = File.join($config[:base_url],'SOAP')
-    end
-
-    # The default listener address of file uploads
-    unless $config[:broker_urls].has_key?(:u)
-      $config[:broker_urls][:u] = File.join($config[:base_url],'U')
-    end
-
-
-    ## GET-requests
-
-    # The default address of built javascript and theme packages
-    unless $config[:broker_urls].has_key?(:h)
-      $config[:broker_urls][:h] = File.join($config[:base_url],'H/')
-    end
-
-    # The default address of the ticketserve :img -category
-    unless $config[:broker_urls].has_key?(:i)
-      $config[:broker_urls][:i] = File.join($config[:base_url],'i/')
-    end
-
-    # The default address of the ticketserve :rsrc -category
-    unless $config[:broker_urls].has_key?(:d)
-      $config[:broker_urls][:d] = File.join($config[:base_url],'d/')
-    end
-
-    # The default address of the ticketserve :file -category
-    unless $config[:broker_urls].has_key?(:f)
-      $config[:broker_urls][:f] = File.join($config[:base_url],'f/')
-    end
-
-    # The default address of the ticketserve :blobobj -category
-    unless $config[:broker_urls].has_key?(:b)
-      $config[:broker_urls][:b] = File.join($config[:base_url],'b/')
-    end
-
-    # The default address of the favicon
-    unless $config[:broker_urls].has_key?(:favicon)
-      $config[:broker_urls][:favicon] = File.join($config[:base_url],'favicon.ico')
-    end
-
-    # The default address of the "empty" iframe of uploader
-    unless $config[:broker_urls].has_key?(:uploader_iframe)
-      $config[:broker_urls][:uploader_iframe] = File.join($config[:base_url],'U/iframe_html')
-    end
-
-
+    
     # The default address of the index_html plugin
     unless $config[:indexhtml_conf].has_key?(:respond_address)
       $config[:indexhtml_conf][:respond_address] = File.join($config[:base_url])
     end
-
-
+    
     ## Uses the lib paths as search paths
     lib_paths.each do |lib_path|
       $LOAD_PATH << lib_path
     end
-
+    
     unless File.exist?(client_path)
       $stderr.write("ERROR: client_path: #{client_path.inspect} does not exist!\n")
       $stderr.write("Unable to continue; exit.\n")
       exit
     end
-
+    
+    @config = $config
   end
+  attr_reader :config
+end
+@@config = Configuration.new.config
+def self.config
+  @@config
 end
 
 end
 end
 
-Riassence::Server::Configuration.new
 
