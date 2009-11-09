@@ -42,7 +42,10 @@ class ConfigWizard
   
   # makes a copy of the default configuration for comparisons
   def initialize( config )
-    @conf = hash_deep_copy( config )
+    @conf = {
+      :database      => hash_deep_copy( config[:database] ),
+      :http_server   => hash_deep_copy( config[:http_server] )
+    }
   end
   
   # asks y/n and returns boleans,
