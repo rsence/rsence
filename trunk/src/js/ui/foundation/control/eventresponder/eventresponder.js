@@ -212,9 +212,8 @@ HEventResponder = HClass.extend({
   },
   
 /** = Description
-  * Alternative flag setter for the onHoverStart, onDrop and onHoverEnd event
-  * types. If set to true, starts listening to these events when the component
-  * has focus.
+  * Registers or releases event listening for onHoverStart, onDrop and 
+  * onHoverEnd -events depending on the value of the flag argument.
   *
   * = Parameters
   *  +_flag+::  Set the onHoverStart, onDrop and onHoverEnd event listening 
@@ -232,11 +231,11 @@ HEventResponder = HClass.extend({
   
   
 /** = Description
-  * Alternative flag setter for the <keyDown> event type. If set to true, 
-  * starts listening to <keyDown> events when the component is active.
+  * Registers or releases event listening for keyDown events depending on the 
+  * value of the flag argument.
   *
   * = Parameters
-  *  +_flag+:: Set the <keyDown> event listening on/off (true/false) for
+  *  +_flag+:: Set the keyDown event listening on/off (true/false) for
   *            the component instance.
   *
   * = Returns
@@ -250,8 +249,8 @@ HEventResponder = HClass.extend({
   
   
 /** = Description
-  * Alternative flag setter for the keyUp event type. If set to true, 
-  * starts listening to keyUp events when the component is active.
+  * Registers or releases event listening for keyUp events depending on 
+  * the value of the flag argument.
   *
   * = Parameters
   *  +_flag+::  Set the keyUp event listening on/off (true/false) for
@@ -267,7 +266,13 @@ HEventResponder = HClass.extend({
     return this;
   },
   
-  /** Set text enter listener with flag.
+  /** = Description
+    * Registers or releases event listening for textEnter events 
+    * depending on the value of the flag argument.
+    *
+    * = Returns
+    * +self+
+    *
     **/
   setTextEnter: function(_flag) {
     this.events.textEnter = _flag;
@@ -280,7 +285,13 @@ HEventResponder = HClass.extend({
     
   },
   
-  /** Set click with flag.
+  /** = Description
+    * Registers or releases event listening for click events 
+    * depending on the value of the flag argument.
+    *
+    * = Returns
+    * +self+
+    *
     **/
   setClick: function(_flag) {
     this.events.click = _flag;
@@ -288,7 +299,7 @@ HEventResponder = HClass.extend({
     return this;
   },
   
-  /** Click functionality. No functionality as default.
+  /** Click functionality
     **/
   click: function(x,y,_isRightButton){},
   
