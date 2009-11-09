@@ -43,8 +43,8 @@ HEventResponder = HClass.extend({
   * the events object to the control instance. The event manager 
   * handles the event mapping and abstraction itself.
   *
-  * NOTE Currently, click and drag events conflict, if both are set 
-  * simultaneously.
+  * NOTE startDrag vs mouseDown and endDrag vs mouseUp events 
+  * conflict, if both are set simultaneously.
   *
   * = Parameter
   *  +_events+::  A {key: flag} hash structure, sets events based on the 
