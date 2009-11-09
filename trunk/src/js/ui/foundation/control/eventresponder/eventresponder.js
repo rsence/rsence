@@ -475,7 +475,7 @@ HEventResponder = HClass.extend({
   * Extend the startDrag method, if you want to do something special 
   * when the user starts a dragging event.
   *
-  * This is the preferred method to extend if you want <mouseDown> functionality
+  * This is the preferred method to extend if you want mouseDown functionality
   * for a draggable component.
   *
   * = Parameters
@@ -514,7 +514,7 @@ HEventResponder = HClass.extend({
   * Extend the endDrag method, if you want to do something special 
   * when the user ends a dragging event.
   *
-  * This is the preferred method to extend if you want <mouseUp> functionality
+  * This is the preferred method to extend if you want mouseUp functionality
   * for a draggable component.
   *
   * = Parameters
@@ -545,7 +545,8 @@ HEventResponder = HClass.extend({
 
 /** = Description
   * Extend the onHoverStart method, if you want to do something special 
-  * when a dragged component instance is dragged over a droppable component instance.
+  * when a dragged component instance is dragged over a droppable 
+  * component instance.
   * Has no functionality as default.
   *
   * = Parameters
@@ -559,7 +560,8 @@ HEventResponder = HClass.extend({
   
 /** = Description
   * Extend the onHoverEnd method, if you want to do something special 
-  * when a dragged component instance is dragged from a droppable component instance.
+  * when a dragged component instance is dragged from a 
+  * droppable component instance.
   *
   * = Parameters
   *  +obj+::  The dragged component object.
@@ -597,7 +599,7 @@ HEventResponder = HClass.extend({
   },
   
   
-  /***** -- DON'T TOUCH _mouseOver, IT IS A LOW-LEVEL HANDLER, use focus() instead ++ *****/
+  /** -- DON'T TOUCH _mouseOver, IT IS A LOW-LEVEL HANDLER, use focus() instead ++ **/
   _mouseOver: function(e) {
     if (!Event.element) {
       return;
@@ -615,7 +617,7 @@ HEventResponder = HClass.extend({
     Event.stop(e);
   },
   
-  /***** -- DON'T TOUCH _mouseOut, IT IS A LOW-LEVEL HANDLER, use blur() instead ++*****/
+  /** -- DON'T TOUCH _mouseOut, IT IS A LOW-LEVEL HANDLER, use blur() instead ++ **/
   _mouseOut: function(e) {
     if (!Event.element) {
       return;
