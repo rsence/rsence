@@ -1,4 +1,4 @@
-# -* coding: UTF-8 -*-
+#--
 ##   Riassence Framework
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,6 +6,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+ #++
 
 
 
@@ -26,6 +27,8 @@ class Broker
   
   ## Post requests are always xhr requests
   def post
+    
+    sleep $config[:http_server][:latency]/1000.0 unless $config[:http_server][:latency] == 0
     
     ## The full request URI:
     uri = @request.fullpath
@@ -76,6 +79,8 @@ class Broker
   
   ## Get requests are different, depending on the uri requested
   def get
+    
+    sleep $config[:http_server][:latency]/1000.0 unless $config[:http_server][:latency] == 0
     
     ## The full request URI:
     uri = @request.fullpath

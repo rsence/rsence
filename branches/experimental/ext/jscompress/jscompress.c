@@ -4,7 +4,7 @@
  * Author:  Domen Puncer <domen@cba.si>
  * License: BSD
  *
- * Ideas taken from js_builder.rb (Riassence Core) by Juha-Jarmo Heinonen <jjh@riassence.com>
+ * Ideas taken from js_builder.rb (Riassence Framework) by Juha-Jarmo Heinonen <jjh@riassence.com>
  */
 
 

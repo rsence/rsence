@@ -1,4 +1,4 @@
-# -* coding: UTF-8 -*-
+#--
 ##   Riassence Framework
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,6 +6,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+ #++
 class SessionTimeout < ServletPlugin
   def match( uri, request_type )
     if request_type == :post and uri == File.join($config[:broker_urls][:hello],'goodbye')
@@ -157,6 +158,10 @@ class Main < Plugin
       
       # Delegates the init_ui method to each plugin to signal bootstrap completion.
       $PLUGINS.delegate( 'init_ui', msg )
+      
+      # Deletes the initial "Loading, please wait..." -message
+      msg.reply "ELEM.del(ELEM.bindId('loading'));"
+
       
     ## Processes delayed calls, if the
     ## :delayed_calls -array contains something to process.

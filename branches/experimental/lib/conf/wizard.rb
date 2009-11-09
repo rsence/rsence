@@ -1,4 +1,4 @@
-# -* coding: UTF-8 -*-
+#--
 ##   Riassence Framework
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,6 +6,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+ #++
 
 
 require 'rubygems'
@@ -252,7 +253,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " HTTP Server configuration"
     puts 
-    puts "  Riassence Core runs its HTTP Server as:"
+    puts "  Riassence Framework runs its HTTP Server as:"
     puts
     puts "  Server: #{@conf[:http_server][:rack_require].inspect}"
     puts " Address: #{@conf[:http_server][:bind_address].inspect}"
@@ -354,7 +355,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " Session database configuration"
     puts
-    puts "  Riassence Core requires a database for persistant"
+    puts "  Riassence Framework requires a database for persistant"
     puts "  session storage. This feature allows the server"
     puts "  to be restarted without losing user sessions."
     puts
