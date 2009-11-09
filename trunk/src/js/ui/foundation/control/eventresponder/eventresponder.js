@@ -39,10 +39,12 @@
 HEventResponder = HClass.extend({
   
 /** = Description
-  * Sets the events the control should listen to. Event bindings happen 
-  * automatically through HEventManager.
+  * Registers the events defined by boolean properties of 
+  * the events object to the control instance. The event manager 
+  * handles the event mapping and abstraction itself.
   *
-  * *NOTE* Currently, click and drag events conflict, if both are set simultaneously.
+  * NOTE Currently, click and drag events conflict, if both are set 
+  * simultaneously.
   *
   * = Parameter
   *  +_events+::  A {key: flag} hash structure, sets events based on the 
@@ -111,7 +113,7 @@ HEventResponder = HClass.extend({
   *
   * = Parameters
   *  +_flag+:: Set the mouseDown event listening on/off (true/false) for
-  *           the component instance.
+  *            the component instance.
   *
   **/
   setMouseMove: function(_flag) {
@@ -138,8 +140,8 @@ HEventResponder = HClass.extend({
   },
   
 /** = Description
-  * Alternative flag setter for the mouseDown event type. If set to true, 
-  * starts listening to mouseDown events when the component has focus.
+  * Registers or releases event listening for mouseDown events depending on 
+  * the value of the flag argument.
   *
   * = Parameters
   * +_flag+:: Set the mouseDown event listening on/off (true/false) for
@@ -156,8 +158,8 @@ HEventResponder = HClass.extend({
   },
   
 /** = Description
-  * Alternative flag setter for the mouseUp event type. If set to true, 
-  * starts listening to mouseUp events when the component has focus.
+  * Registers or releases event listening for mouseUp events depending on the 
+  * value of the flag argument.
   *
   * = Parameters
   * +_flag+:: Set the mouseUp event listening on/off (true/false) for
@@ -192,9 +194,8 @@ HEventResponder = HClass.extend({
   },
   
 /** = Description
-  * Alternative flag setter for the startDrag, onDrag and endDrag event
-  * types. If set to true, starts listening to these events when the component
-  * has focus.
+  * Registers or releases event listening for startDrag, doDrag and 
+  * endDrag -events depending on the value of the flag argument.
   *
   * = Parameters
   *  +_flag+:: Set the startDrag, doDrag and endDrag event listening 
