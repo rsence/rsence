@@ -51,26 +51,13 @@ class Configuration
        exit
       end
     end
-    
-    $config[:trace] = true if ARGV.include?('--trace-js')
-    $config[:client_root] = client_path unless $config.has_key? :client_root
-    $config[:debug_mode] = true if ARGV.include?('-d') or ARGV.include?('--debug')
-    $config[:http_server][:latency] = ARGV[ARGV.index('--latency')+1].to_i if ARGV.include?('--latency')
-    $config[:http_server][:port] = ARGV[ARGV.index('--port')+1].to_i if ARGV.include?('--port')
-    $config[:http_server][:bind_address] = ARGV[ARGV.index('--addr')+1] if ARGV.include?('--addr')
-    $config[:http_server][:rack_require] = ARGV[ARGV.index('--server')+1] if ARGV.include?('--server')
     $config[:client_parts] = {
       :js => File.join( client_path, 'js' ),
       :themes => File.join( client_path, 'themes' )
     }
     
     default_plugins_path = File.join( SERVER_PATH, 'plugins' )
-    
     $config[:plugin_paths].push( default_plugins_path ) unless $config[:plugin_paths].include? default_plugins_path
-    $config[:indexhtml_conf] = $config[:index_html]
-    $config[:session_conf][:reset_sessions] = true if ARGV.include?('--reset-sessions=true') or ARGV.include?('--reset-sessions')
-    $config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless $config[:daemon].has_key?(:pid_fn)
-    $config[:daemon][:log_fn] = File.join(logpath, "rsence") unless $config[:daemon].has_key?(:log_fn)
 
     ## Paths of server libraries
     lib_paths  = [
@@ -122,7 +109,7 @@ class Configuration
       wizard_config_data = ConfigWizard.new($config).run( wizard_conf_file )
       $config.merge!( wizard_config_data )
     end
-
+    
     if not $config[:database].has_key?( :ses_db ) and $config[:database].has_key?( :auth_setup )
       warn "WARNING: The database is not configured with a :ses_db url."
       warn "         You are advised to convert the :root_setup and :auth_setup keys of"
@@ -133,6 +120,18 @@ class Configuration
       warn "         $config[:database][:ses_db] = #{$config[:database][:ses_db].inspect}"
     end
     
+    
+    $config[:trace] = true if ARGV.include?('--trace-js')
+    $config[:client_root] = client_path unless $config.has_key? :client_root
+    $config[:debug_mode] = true if ARGV.include?('-d') or ARGV.include?('--debug')
+    $config[:http_server][:latency] = ARGV[ARGV.index('--latency')+1].to_i if ARGV.include?('--latency')
+    $config[:http_server][:port] = ARGV[ARGV.index('--port')+1].to_i if ARGV.include?('--port')
+    $config[:http_server][:bind_address] = ARGV[ARGV.index('--addr')+1] if ARGV.include?('--addr')
+    $config[:http_server][:rack_require] = ARGV[ARGV.index('--server')+1] if ARGV.include?('--server')
+    $config[:indexhtml_conf] = $config[:index_html]
+    $config[:session_conf][:reset_sessions] = true if ARGV.include?('--reset-sessions=true') or ARGV.include?('--reset-sessions')
+    $config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless $config[:daemon].has_key?(:pid_fn)
+    $config[:daemon][:log_fn] = File.join(logpath, "rsence") unless $config[:daemon].has_key?(:log_fn)
     
     
     ## Broker configuration
