@@ -177,7 +177,7 @@ JSONRenderer = HClass.extend({
       }
     }
     catch(e){
-      console.log('renderNode error:',e,', rect:',_rect,', class:',_dataNode['class'],', options:', _options);
+      console.log('renderNode error:',e.description,', rect:',_rect,', class:',_dataNode['class'],', options:', _options);
     }
     // Iterates recursively through all subviews, if specified.
     if(_hasSubviews){

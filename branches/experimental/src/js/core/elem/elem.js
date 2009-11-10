@@ -483,15 +483,20 @@ ELEM = {
   **/
   setOpacity: function(_id, _opacity) {
     var _this = ELEM;
-    if (_opacity === 1 && _this._is_ie) {
+    if (_opacity === 1 && _this._is_ie6) {
       _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, ''));
-    } else {
+    }
+    else {
       if (_opacity < 0.01) {
         _opacity = 0;
       }
-      if (_this._is_ie) {
+      if (_this._is_ie6) {
         _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, '') + 'alpha(opacity=' + _opacity * 100 + ')');
-      } else {
+      }
+      else if (_this._is_ie) {
+        (_this._elements[_id].style.setAttribute('opacity', _opacity));
+      }
+      else {
         _this._elements[_id].style.setProperty('opacity', _opacity, '');
       }
     }
@@ -766,7 +771,7 @@ ELEM = {
   setAttr: function(_id, _key, _value, _bypass) {
     var _this = ELEM,
         _attrTodo = _this._attrTodo[_id],
-        _attrCache = _this._attrCache[_id];
+        _attrCache = _this._attrCache[_id],
         _differs = _value !== _this.getAttr(_id, _key);
     if (_differs) {
       _attrCache[_key] = _value;
@@ -828,17 +833,7 @@ ELEM = {
     if (!_element) {
       return null;
     }
-    
-    var _classNames = _element.className.split(' '),
-        i = 0;
-    
-    for (; i < _classNames.length; i++) {
-      if (_classNames[i] === _className) {
-        return true;
-      }
-    }
-    
-    return false;
+    return (_element.className.indexOf(_className) !== -1);
   },
   
 /** = Description
@@ -856,8 +851,16 @@ ELEM = {
       return;
     }
     
-    if(!_this.hasClassName(_className)){
-      _element.className += ' ' + _className;
+    if(_element.className === '' || _element.className === ' '){
+      _element.className = _className;
+    }
+    else{
+      var _classNames = _element.className.split(' '),
+          _index = _classNames.indexOf(_className);
+      if(_index===-1){
+        _classNames.push(_className);
+        _element.className = _classNames.join(' ');
+      }
     }
   },
   
@@ -880,22 +883,12 @@ ELEM = {
       return;
     }
     
-    var _newClassName = '',
-        _classNames = _element.className.split(' '),
-        i = 0;
-    
-    for (; i < _classNames.length; i++) {
-      if (_classNames[i] !== _className) {
-        if(_classNames[i] !== ' '){
-          if (i > 0) {
-            _newClassName += ' ';
-          }
-          _newClassName += _classNames[i];
-        }
-      }
+    var _classNames = _element.className.split(' '),
+        _index = _classNames.indexOf(_className);
+    if(_index!==-1){
+      _classNames.splice(_index,1);
+      _element.className = _classNames.join(' ');
     }
-    
-    _element.className = _newClassName;
   },
   
   /* Checks, if the buffers need to be flushed. */
@@ -936,7 +929,6 @@ ELEM = {
       _cached = _this._styleCache[_id];
     }
     _differs = _value !== _cached[_key];
-    //;_this.getStyle(_id,_key);
     if (_differs) {
       _this._setStyleDiffCount++;
       _cached[_key] = _value;
@@ -945,17 +937,26 @@ ELEM = {
           _this.setOpacity(_id, _value);
         }
         else {
-          _this._is_ie ? (_elems[_id].style.setAttribute(_key.replace(/((-)([a-z])(w))/g,
-          function($0, $1, $2, $3, $4) {
-            return $3.toUpperCase() + $4;
-          }), _cached[_key])) : (_elems[_id].style.setProperty(_key, _cached[_key], ''));
+          if( _this._is_ie ) {
+            var _camelKey = _key.replace(
+              /((-)([a-z])(\w))/g,
+              function($0, $1, $2, $3, $4) {
+                return $3.toUpperCase() + $4;
+              }
+            );
+            _elems[_id].style[_camelKey] = _cached[_key];
+          }
+          else {
+            _elems[_id].style.setProperty(_key, _cached[_key], '');
+          }
         }
         if (_this._is_ie6) {
           if (iefix._traverseStyleProperties.indexOf(_key) !== -1) {
             _this._ieFixesNeeded = true;
           }
         }
-      } else {
+      }
+      else {
         _elemTodoH = _this._elemTodoH;
         _styleTodo = _this._styleTodo[_id];
         if (_styleTodo.indexOf(_key) === -1) {
@@ -1092,11 +1093,13 @@ ELEM = {
         _retval = _this.getOpacity(_id);
       }
       else {
-        _camelName = _key.replace(/((-)([a-z])(w))/g,
-        function($0, $1, $2, $3, $4) {
-          return $3.toUpperCase() + $4;
-        });
-        _retval = _this._elements[_id].currentStyle[_camelName];
+        _camelName = _key.replace(
+          /((-)([a-z])(\w))/g,
+          function($0, $1, $2, $3, $4) {
+            return $3.toUpperCase() + $4;
+          }
+        );
+        _this._elements[_id].currentStyle[_camelName];
       }
       _cached[_key] = _retval;
     }
@@ -1138,24 +1141,20 @@ ELEM = {
     var _this = ELEM,
         _styleTodo = _this._styleTodo[_id],
         _cached = _this._styleCache[_id],
-        _elem = _this._elements[_id],
-        _elemS,
-        _loopMaxP,
-        _cid,
-        _key,
-        _currTodo,
-        _retval;
+        _elem = _this._elements[_id];
     if (!_elem) {
       return;
     }
-    _elemS = _elem.style;
-    _loopMaxP = _styleTodo.length;
-    _currTodo = _styleTodo.splice(0, _loopMaxP);
-    for (_cid = 0; _cid !== _loopMaxP; _cid++) {
+    var _elemS = _elem.style,
+        _loopMaxP = _styleTodo.length,
+        i = 0,
+        _key,
+        _currTodo = _styleTodo.splice(0, _loopMaxP);
+    for (; i !== _loopMaxP; i++) {
       _key = _currTodo.pop();
       _this._flushStylCount++;
       if (_key === 'opacity') {
-        _retval = _this.setOpacity(_id, _cached[_key]);
+        _this.setOpacity(_id, _cached[_key]);
       }
       else {
         if (_this._is_ie6) {
@@ -1164,12 +1163,21 @@ ELEM = {
           }
         }
         try {
-          _elemS.setAttribute(_key.replace(/((-)([a-z])(w))/g,
-          function($0, $1, $2, $3, $4) {
-            return $3.toUpperCase() + $4;
-          }), _cached[_key]);
+          var _camelKey = _key.replace(
+            /((-)([a-z])(\w))/g,
+            function($0, $1, $2, $3, $4) {
+              return $3.toUpperCase() + $4;
+            }
+          );
+          _elemS[_camelKey] = _cached[_key];
+          // _elemS.setAttribute(
+          //   _camelKey,
+          //   _cached[_key]
+          // );
         }
-        catch(e) {}
+        catch(e) {
+          console.log(e);
+        }
       }
     }
   },
@@ -1181,10 +1189,10 @@ ELEM = {
         _type,
         _cmdResult;
     if (_this._is_ie) {
-      _this.getStyle = _this._getStyleIE;
+      ELEM.getStyle = _this._getStyleIE;
     }
     if (_this._is_ie) {
-      _this._flushStyleCache = _this._flushStyleCacheIE;
+      ELEM._flushStyleCache = _this._flushStyleCacheIE;
     }
     
     _this.bind(document.body);

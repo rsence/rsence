@@ -49,10 +49,7 @@ HTextControl = HControl.extend({
   drawSubviews: function(){
     if(this['markupElemIds']!==undefined){
       if(this.markupElemIds['label']!==undefined) {
-        var _size   = ELEM.getVisibleSize( this.elemId ),
-            _width  = _size[0],
-            _height = _size[1],
-            _input  = this.markupElemIds.value,
+        var _input  = this.markupElemIds.value,
             _label  = this.markupElemIds.label;
         if(BROWSER_TYPE.firefox){
           ELEM.setStyle(_input,'padding-top','0px');
@@ -62,7 +59,11 @@ HTextControl = HControl.extend({
           ELEM.setStyle(_label,'right','2px');
           ELEM.setStyle(_label,'bottom','2px');
         }
-        else if(BROWSER_TYPE.ie7){
+        else if(BROWSER_TYPE.ie7 || BROWSER_TYPE.ie6){
+        ELEM.flushLoop();
+        var _size   = ELEM.getVisibleSize( this.elemId ),
+            _width  = _size[0],
+            _height = _size[1];
           ELEM.setStyle(_input,'left','2px');
           ELEM.setStyle(_input,'top','2px');
           ELEM.setStyle(_input,'padding-top','0px');
@@ -126,9 +127,11 @@ HTextControl = HControl.extend({
   hasTextFocus: false,
   textFocus: function(){
     this.hasTextFocus = true;
+    return true;
   },
   textBlur: function(){
     this.hasTextFocus = false;
+    return true;
   },
   refreshValue: function(){
     if(this.markupElemIds){
