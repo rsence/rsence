@@ -25,7 +25,7 @@ HTabView = HView.extend({
 HTab = HControl.extend({
   componentName: "tab",
   componentBehaviour: ['view','control','tab'],
-  refreshOnValueChange: false,
+  refreshOnValueChange: true,
   refreshOnLabelChange: false,
   constructor: function(_rect,_parent,_options){
     this.tabInit();
@@ -197,14 +197,6 @@ HTab = HControl.extend({
     }
     ELEM.del(_tabLabelElemId);
     HSystem.views[_tabViewId].die();
-  },
-  draw: function(){
-    var _isDrawn = this.drawn;
-    this.base();
-    if(!_isDrawn){
-      this.drawMarkup();
-    }
-    this.refresh();
   }
 });
 
