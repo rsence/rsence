@@ -54,11 +54,11 @@ HTab = HControl.extend({
       }
     }
   },
-  stringWidth: function(_string,_elemId){
-    var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
-        _width = this.base( _html, null, _elemId );
-    return _width;
-  }, 
+  // stringWidth: function(_string,_elemId){
+  //   var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
+  //       _width = this.base( _html, null, _elemId );
+  //   return _width;
+  // }, 
   tabInit: function(){
     this.tabs = [];
     this.tabLabels = [];
@@ -107,7 +107,7 @@ HTab = HControl.extend({
   addTab: function(_tabLabel,_doSelect){
     var _tabIdx=this.tabs.length,
         _tabLabelHTML='',
-        _labelTextWidth=this.stringWidth(_tabLabel,0),
+        _labelTextWidth=this.stringWidth(_tabLabel),
         _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = new HTabView( [0,this.tabLabelHeight,null,null,0,0] ,this),
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);

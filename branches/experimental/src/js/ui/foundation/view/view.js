@@ -1275,6 +1275,7 @@ HView = HClass.extend({
     var _stringElem = ELEM.make(_elemId);
     ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
+    ELEM.flushLoop();
     var _visibleSize=ELEM.getVisibleSize(_stringElem);
     ELEM.del(_stringElem);
     return _visibleSize;
