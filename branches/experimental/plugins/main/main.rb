@@ -96,7 +96,7 @@ class Main < Plugin
       :client_time => HValue.new( msg, 0 ),
       
       # the location.href value of the client
-      :location_href => HValue.new(msg,''),
+      :location_href => HValue.new(msg,'#'),
       
       ## array for segmented transfers
       :delayed_calls => [],
@@ -146,7 +146,7 @@ class Main < Plugin
       ## url_responder is bound in the client-space
       ## to tell the server its status by updating its value
       msg.reply require_js_once(msg,'url_responder')
-      msg.reply "urlCatcher = new URLCatcher('#{mses[:location_href].val_id}');"
+      msg.reply "urlResponder = URLResponder.nu('#{mses[:location_href].val_id}');"
     
     ## Second stage enables SesWatcher that changes :client_time every 60 seconds.
     ## Causes the client to poll the server on regular intervals, when polling mode

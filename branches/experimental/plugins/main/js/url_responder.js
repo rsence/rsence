@@ -10,15 +10,19 @@
 // certain views automatically whenever the anchor
 // part of the url is changed.
 URLResponder = HApplication.extend({
-  constructor: function(){
+  constructor: function(_url_val_id){
     this.label = 'URLResponder';
-    this.base();
+    // this.base();
     this.urlMatchers = [];
     this.urlCallBack = [];
     this.defaultCallBack = null;
     this.prevCallBack = false;
     this.prevMatchStr = '';
-    this.valueObj = null;
+    // this.url_hvalue = HVM.values[_url_val_id];
+    this.base(1);
+    // this.valueObj = null;
+    HVM.values[_url_val_id].bind( this );
+    // this.valueObj = null;
   },
   
   // sets the view to show when there is
@@ -46,6 +50,7 @@ URLResponder = HApplication.extend({
         return 1;
       }
     }
+    return 0;
   },
   
   // Adds responder
@@ -57,6 +62,7 @@ URLResponder = HApplication.extend({
   addResponder: function(_matchRegExp,_callBack,_activate){
     this.urlMatchers.push(new RegExp(_matchRegExp));
     this.urlCallBack.push(_callBack);
+    // this.checkMatch(this.valueObj.value);
     this.checkMatch(this.valueObj.value);
     if(_activate!==undefined){
       location.href=_activate;
@@ -92,38 +98,56 @@ URLResponder = HApplication.extend({
     return -1;
   },
   
-  // HValueManager compatibility method, just like in HControl
+//   // HValueManager compatibility method, just like in HControl
+//   // setValueObj: function(_valueObj){
+//   //   this.valueObj = _valueObj;
+//   // },
+//   
+//   // HValueManager compatibility method, just like in HControl
+//   // setValue: function(_value){
+//   //   //this.valueObj.set(_value);
+//   //   //var _matchStatus = 
+//   //   this.checkMatch(_value);
+//   // }
+// });
+// urlResponder = URLResponder.nu();
+// 
+// 
+// // URLCatcher sets its associated valueObj to 
+// // the current value of location.href
+// //
+// // - enables URLResponder
+// // - enables client -> server url reporting
+// URLCatcher = HApplication.extend({
+  
+  // constructor: function(_url_val_id){
+  //   this.label = 'URLCatcher';
+    // this.url_hvalue = HVM.values[_url_val_id];
+    // this.base(1);
+    // this.url_value.bind( this );
+    // this.valueObj = null;
+    //this.url_hvalue.bind(urlResponder);
+  // },
+  
   setValueObj: function(_valueObj){
     this.valueObj = _valueObj;
   },
   
-  // HValueManager compatibility method, just like in HControl
   setValue: function(_value){
-    this.valueObj.set(_value);
-    var _matchStatus = this.checkMatch(_value);
-  }
-});
-urlResponder = URLResponder.nu();
-
-
-// URLCatcher sets its associated valueObj to 
-// the current value of location.href
-//
-// - enables URLResponder
-// - enables client -> server url reporting
-URLCatcher = HApplication.extend({
-  
-  constructor: function(_url_val_id){
-    this.label = 'URLCatcher';
-    this.url_hvalue = HVM.values[_url_val_id];
-    this.base(1);
-    this.url_hvalue.bind(urlResponder);
+    if(_value !== this.valueObj.value){
+      if(location.href !== _value){
+        location.href = _value;
+      }
+      this.valueObj.set( _value );
+      urlResponder.checkMatch( _value );
+    }
   },
   
   onIdle: function(){
+    if(!this['valueObj']){return;}
     var _href = location.href;
-    if(_href!==this.url_hvalue.value){
-      this.url_hvalue.set(_href);
+    if(_href!==this.valueObj.value){
+      this.setValue(_href);
     }
   }
 });
