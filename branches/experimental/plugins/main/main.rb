@@ -53,13 +53,6 @@ class Main < Plugin
           COMM.Transporter.stop=true;
           location.href=#{$config[:indexhtml_conf][:respond_address].to_json};
         } )
-        #
-        # Should not be required on recent safari versions
-        #
-        #  if(BROWSER_TYPE.safari){
-        #    reloadTimeout=setTimeout("location.reload(true);",100);
-        #  }
-        #
         msg.expire_session()
       end
       
@@ -140,12 +133,10 @@ class Main < Plugin
     if mses[:boot] == 0
       
       msg.reply("ELEM.setStyle(0,'background-color','#{$config[:main_plugin][:bg_color]}');")
-      ## js/start.js includes the client's initial settings
-      msg.reply require_js_once(msg,'start')
       
       ## url_responder is bound in the client-space
       ## to tell the server its status by updating its value
-      msg.reply require_js_once(msg,'url_responder')
+      msg.reply require_js_once(msg,'main')
       msg.reply "urlResponder = URLResponder.nu('#{mses[:location_href].val_id}');"
     
     ## Second stage enables SesWatcher that changes :client_time every 60 seconds.
