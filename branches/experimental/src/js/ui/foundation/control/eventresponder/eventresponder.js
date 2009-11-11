@@ -110,7 +110,7 @@ HEventResponder = HClass.extend({
   **/
   setEvents: function(_events) {
     if(!this.events) {
-      var _eventsClass = HClass.extend({
+      this.events = HClass.extend({
         mouseMove:  false,
         mouseDown:  false,
         mouseUp:    false,
@@ -121,19 +121,19 @@ HEventResponder = HClass.extend({
         mouseWheel: false,
         textEnter:  false,
         click:      false
-      });
-      this.events = new _eventsClass;
+      }).nu();
     }
     if(_events) {
       this.events.extend( _events );
     }
     this.events.ctrl = this;
     EVENT.focusOptions[this.elemId] = this.events;
-    var _mmoveStatus = this.events.mouseMove;
-    var _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
+    var _mmoveStatus = this.events.mouseMove,
+        _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
     if (_mmoveStatus && (_mmoveIndex===-1)){
       EVENT.coordListeners.push(this.elemId);
-    } else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
+    }
+    else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
       EVENT.coordListeners.splice(_mmoveIndex,1);
     }
     
@@ -333,9 +333,7 @@ HEventResponder = HClass.extend({
   * Called when the component gets focus.
   *
   **/
-  focus: function() {
-    
-  },
+  focus: function() {},
   
 /** = Description
   * Default blur event responder method. Does nothing by default.
@@ -343,9 +341,7 @@ HEventResponder = HClass.extend({
   * Called when the component loses focus.
   *
   **/
-  blur: function() {
-    
-  },
+  blur: function() {},
   
   
 /** = Description
