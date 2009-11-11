@@ -34,6 +34,7 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
   Params:
     -d                      Debug/Development mode
     --trace-js              Write content of msg.reply calls to stdout
+    --trace-delegate        Traces plugin method delegation to stdout
     --root-path <PATH>      Define the PATH to rsence server
                               Defaults to 'bin'
     --client-path <PATH>    Define the PATH to the built rsence client
