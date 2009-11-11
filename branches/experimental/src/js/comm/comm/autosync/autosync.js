@@ -405,12 +405,169 @@ COMM.Transporter = HApplication.extend({
   }
 }).nu();
 
+
+/*** = Description
+  ** The single instance of this class is constructed after the first
+  ** handshake request with the server by the 'main' plugin.
+  **
+  ** It has dual functionality:
+  ** - It tells the the client time.
+  **   It's available as the server HValue instance
+  **   +msg.session[:main][:client_time]+ from
+  **   any Plugin instance.
+  ** - It polls the server on regular intervals.
+  **   The polling interval is defined by the server
+  **   as the _timeoutSecs constructor parameter.
+  **
+***/
+COMM.SessionWatcher = HApplication.extend({
+  constructor: function( _timeoutSecs, _sesTimeoutValueId ){
+    
+    // onIdle is called when HSystem's ticker count % 100 == 0
+    // this means it's 5 seconds with HSystemTickerInterval 50
+    this.base(10, 'SesWatcher'); 
+    
+    // gets the HValue represented by
+    // sesTimeoutValueId (:client_time in server)
+    this.sesTimeoutValue = HVM.values[_sesTimeoutValueId];
+    this.timeoutSecs = _timeoutSecs;
+  },
+  
+  // Tells the server the client's current time
+  onIdle: function(){
+    if((new Date().getTime() - this.sesTimeoutValue.value) > this.timeoutSecs ){
+      this.sesTimeoutValue.set( new Date().getTime() );
+    }
+  }
+});
+
+/*** = Description
+  ** This application registers url responders to hide/show
+  ** certain views automatically whenever the anchor
+  ** part of the url is changed.
+  **
+  ** It is bound to the server HValue instance
+  ** +msg.session[:main][:location_href]+ by
+  ** the 'main' plugin. By default it runs with 
+  ** a client-side-only HValue instance until then.
+  **
+***/
+COMM.URLResponder = HApplication.extend({
+  constructor: function(){
+    this.urlMatchers = [];
+    this.urlCallBack = [];
+    this.defaultCallBack = null;
+    this.prevCallBack = false;
+    this.prevMatchStr = '';
+    this.base(1, 'URLResponder');
+    this.clientValue = HValue.nu( false, '#' );
+    this.clientValue.bind( this );
+    this.serverValue = false;
+  },
+  
+  // sets the view to show when there is
+  // no matches (like a virtual 404)
+  setDefaultResponder: function(_callBack){
+    this.defaultCallBack = _callBack;
+  },
+  
+  // Removes responder
+  // - matchStr is an url that the callBack will
+  //   respond to
+  // - callBack is the component registered
+  delResponder: function(_matchStr,_callBack){
+    _callBack.hide();
+    if(_callBack === this.prevCallBack){
+      this.prevCallBack = false;
+      this.prevMatchStr = '';
+    }
+    var i=0, _urlMatch, _urlCallBack;
+    for(;i<this.urlMatchers.length;i++){
+      _urlMatch = this.urlMatchers[i].test(_matchStr);
+      if(_urlMatch){
+        this.urlMatchers.splice(i,1);
+        this.urlCallBack.splice(i,1);
+        return 1;
+      }
+    }
+    return 0;
+  },
+  
+  // Adds responder
+  // - matchRegExp is the regular expression
+  //   that matches the anchor part of the uri
+  // - callBack is the component that will receive hide/show calls
+  // - activate is a flag that tells the view to be immediately 
+  //   activate (and the previous one to deactivate)
+  addResponder: function(_matchRegExp,_callBack,_activate){
+    this.urlMatchers.push(new RegExp(_matchRegExp));
+    this.urlCallBack.push(_callBack);
+    // this.checkMatch(this.valueObj.value);
+    this.checkMatch(this.valueObj.value);
+    if(_activate!==undefined){
+      location.href=_activate;
+    }
+  },
+  
+  // Checks the matchStr agains regular expressions
+  checkMatch: function(_matchStr){
+    if(_matchStr === this.prevMatchStr){
+      return 0;
+    }
+    var i=0, _urlMatch, _urlCallBack;
+    for(;i<this.urlMatchers.length;i++){
+      _urlMatch = this.urlMatchers[i].test(_matchStr);
+      if(_urlMatch){
+        _urlCallBack = this.urlCallBack[i];
+        if(this.prevCallBack){
+          this.prevCallBack.hide();
+        }
+        _urlCallBack.show();
+        this.prevCallBack = _urlCallBack;
+        this.prevmatchStr = _matchStr;
+        return 1;
+      }
+    }
+    if(this.defaultCallBack){
+      if(this.prevCallBack){
+        this.prevCallBack.hide();
+      }
+      this.defaultCallBack.show();
+      this.prevCallBack = this.defaultCallBack;
+    }
+    return -1;
+  },
+  
+  setValueObj: function(_valueObj){
+    (!this.serverValue && _valueObj.id !== this.clientValue.id) && this.clientValue.die();
+    this.valueObj = _valueObj;
+  },
+  
+  setValue: function(_value){
+    if(_value !== this.valueObj.value){
+      if(location.href !== _value){
+        location.href = _value;
+      }
+      this.valueObj.set( _value );
+      this.checkMatch( _value );
+    }
+  },
+  
+  onIdle: function(){
+    if(!this['valueObj']){return;}
+    var _href = location.href;
+    if(_href!==this.valueObj.value){
+      this.setValue(_href);
+    }
+  }
+});
+
 // Starts the synchronization upon page load.
 LOAD(
   function(){
+    COMM.urlResponder=COMM.URLResponder.nu();
     COMM.Transporter.url=HCLIENT_HELLO;
     COMM.Transporter.stop=false;
     COMM.Transporter.sync();
   }
 );
-
