@@ -7,31 +7,48 @@
  */
 
 /*** = Description
-  ** Define default setting here. Will be used, when no or invalid constructor options are supplied.
+  ** Define default setting here. Will be used, when no or invalid constructor
+  ** options are supplied.
   **
   ** = Instance variables:
   ** Settable Control-level defaults, override on construction 
   ** +label+::  The visual value of the component
-  ***/
+***/
 HControlDefaults = HClass.extend({
   
-  // The visual value of a component:
+/** The default label. A label is the "visual value" of a component that
+  * operates on a "hidden" value.
+  **/
   label:    "",
+
+/** The default initial visibility of the component.
+  **/
   visible:  true,
   
-  // See <HControl.setEvents>.
+/** The default initial event responders to register to a component.
+  * By default no events are enabled.
+  **/
   events:   {},
   
-  // The default value. See <HControl.setValue>
+/** The default initial value of the component.
+  **/
   value:    0,
   
-  // The enabled/disabled flag. See <HControl.setEnabled>
+/** The default initial enabled state of the component.
+  **/
   enabled:  true,
+  
+/** The default initial active state of the component.
+  **/
   active:   false,
   
-  // Value Range -related
-  minValue: -2147483648, // signed 32bit
-  maxValue:  2147483648  // signed 32bit
+/** The default initial minimum value of the component.
+  **/
+  minValue: -2147483648, // negative max of signed 32bit
+  
+/** The default initial maximum value of the component.
+  **/
+  maxValue:  2147483648  // positive max of signed 32bit
   
 });
 
