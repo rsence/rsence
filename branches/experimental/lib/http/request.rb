@@ -50,12 +50,18 @@ class Request < Rack::Request
       ['HTTP_ACCEPT',           'accept'],
       ['REQUEST_METHOD',        'request-method'],
       ['HTTP_CONNECTION',       'connection'],
-      ['HTTP_SOAPACTION',       'soapaction']
+      ['HTTP_SOAPACTION',       'soapaction'],
+      ['HTTP_FORWARDED_HOST',   'forwarded-host']
     ].each do |env_key,header_key|
-      @header[header_key] = @env[env_key] if @env.has_key?(env_key)
-      @header["x-#{header_key}"] = @env["X_#{env_key}"] if @env.has_key?("X_#{env_key}")
-      x_env_key = "#{env_key.gsub('HTTP_','HTTP_X_')}"
-      @header["x-#{header_key}"] = @env[x_env_key] if @env.has_key?(x_env_key) if x_env_key.include?('X_')
+      if @env.has_key?(env_key)
+        @header[header_key] = @env[env_key]
+      end
+      if env_key.start_with?( 'HTTP_' )
+        x_env_key = "HTTP_X#{env_key[4..-1]}"
+        if @env.has_key?( x_env_key )
+          @header["x-#{header_key}"] = @env[ x_env_key ]
+        end
+      end
     end
   end
 end
