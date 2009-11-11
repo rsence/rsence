@@ -460,7 +460,8 @@ COMM.URLResponder = HApplication.extend({
     this.prevCallBack = false;
     this.prevMatchStr = '';
     this.base(1, 'URLResponder');
-    this.clientValue = HValue.nu( false, '#' );
+    this.value = 0;
+    this.clientValue = HValue.nu( false, '' );
     this.clientValue.bind( this );
     this.serverValue = false;
   },
@@ -502,8 +503,7 @@ COMM.URLResponder = HApplication.extend({
   addResponder: function(_matchRegExp,_callBack,_activate){
     this.urlMatchers.push(new RegExp(_matchRegExp));
     this.urlCallBack.push(_callBack);
-    // this.checkMatch(this.valueObj.value);
-    this.checkMatch(this.valueObj.value);
+    this.checkMatch(this.value);
     if(_activate!==undefined){
       location.href=_activate;
     }
@@ -538,19 +538,16 @@ COMM.URLResponder = HApplication.extend({
     return -1;
   },
   
-  setValueObj: function(_valueObj){
-    (!this.serverValue && _valueObj.id !== this.clientValue.id) && this.clientValue.die();
-    this.valueObj = _valueObj;
-  },
-  
-  setValue: function(_value){
-    if(_value !== this.valueObj.value){
-      if(location.href !== _value){
-        location.href = _value;
-      }
-      this.valueObj.set( _value );
-      this.checkMatch( _value );
+  refresh: function(){
+    var _value = this.value;
+    if(_value.length === 0){ return; }
+    if (!this.serverValue && this.valueObj.id !== this.clientValue.id) {
+      this.clientValue.die();
     }
+    if(location.href !== _value){
+      location.href = _value;
+    }
+    this.checkMatch( _value );
   },
   
   onIdle: function(){
@@ -565,7 +562,9 @@ COMM.URLResponder = HApplication.extend({
 // Starts the synchronization upon page load.
 LOAD(
   function(){
+    COMM.URLResponder.implement(HValueResponder);
     COMM.urlResponder=COMM.URLResponder.nu();
+    urlResponder=COMM.urlResponder; // backwards compatibility
     COMM.Transporter.url=HCLIENT_HELLO;
     COMM.Transporter.stop=false;
     COMM.Transporter.sync();
