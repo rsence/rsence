@@ -10,35 +10,56 @@
   ** Automatic event responder. Defines what events HControl listens to
   ** and actions to be taken.
   **
-  ** = Pre-defined event handler methods, extend in component code.
-  ** +focus+               Called when the component gets focus
-  ** +blur+                Called when the component loses focus
-  ** +mouseDown+           Called when the mouse button is pushed down
-  ** +mouseUp+             Called when the mouse button is released
-  ** +mouseWheel+          Called when the mouse wheel is used
-  ** +startDrag+           Called when the mouse button 
-  **                       is pressed (and item is draggable)
-  ** +endDrag+             Called when the mouse button 
-  **                       is released (and item is draggable)
-  ** +doDrag+              Called when the mouse is moved and mouse button 
-  **                       is down (and item is draggable)
-  ** +onDrop+              Called when a draggable item is released 
-  **                       on the droppable
-  ** +onHoverStart+        Called when a draggable item is moved 
-  **                       over the droppable
-  ** +onHoverEnd+          Called when a draggable item is moved out 
-  **                       of the droppable
-  ** +keyDown+             Called when the user presses a key, and 
-  **                       the control is active
-  ** +keyUp+               Called when the user releases a key, and 
-  **                       the control is active
-  ** +gainedActiveStatus+  Called when the component gets activated.
-  ** +lostActiveStatus+    Called when the component gets deactivated.
-  ***/
-
+  ** = Event handler methods
+  ** Pre-defined event handler methods, extend these in your subclass.
+  **
+  ** +focus+::               Called when the component gets focus
+  **
+  ** +blur+::                Called when the component loses focus
+  **
+  ** +mouseDown+::           Called when the mouse button is pushed down
+  **
+  ** +mouseUp+::             Called when the mouse button is released
+  **
+  ** +mouseWheel+::          Called when the mouse wheel is used
+  **
+  ** +startDrag+::           Called when the mouse button 
+  **                         is pressed (and item is draggable).
+  **
+  ** +endDrag+::             Called when the mouse button 
+  **                         is released (and item is draggable).
+  **
+  ** +doDrag+::              Called when the mouse is moved and mouse button 
+  **                         is down (and item is draggable).
+  **
+  ** +onDrop+::              Called when a draggable item is released 
+  **                         on the droppable.
+  **
+  ** +onHoverStart+::        Called when a draggable item is moved 
+  **                         over the droppable.
+  **
+  ** +onHoverEnd+::          Called when a draggable item is moved out 
+  **                         of the droppable.
+  **
+  ** +keyDown+::             Called when the user presses a key, and 
+  **                         the control is active.
+  **
+  ** +keyUp+::               Called when the user releases a key, and 
+  **                         the control is active.
+  **
+  ** +textEnter+::           Called when the user releases a key regardless 
+  **                         if the control is active or not.
+  **
+  ** +gainedActiveStatus+::  Called when the component gets activated.
+  **
+  ** +lostActiveStatus+::    Called when the component gets deactivated.
+  **
+***/
 HEventResponder = HClass.extend({
   
 /** = Description
+  * The event responder interface for +HControl+.
+  *
   * Registers the events defined by boolean properties of 
   * the events object to the control instance. The event manager 
   * handles the event mapping and abstraction itself.
@@ -46,26 +67,42 @@ HEventResponder = HClass.extend({
   * NOTE startDrag vs mouseDown and endDrag vs mouseUp events 
   * conflict, if both are set simultaneously.
   *
-  * = Parameter
-  *  +_events+::  A {key: flag} hash structure, sets events based on the 
-  *               keys and the flag.
+  * = Parameters
+  * +_events+::  A {key: flag} hash structure, sets events based on the 
+  *              keys and the flag. See the Event types below:
   *
-  * = Pre-Defined event types:
-  * +mouseMove+::   flag, start listening to global mousemove events
-  * +mouseDown+::   flag, start listening to mousedown events when the 
-  *                 component has focus
-  * +mouseUp+::     flag, start listening to mouseup events when the 
-  *                 component has focus
-  * +mouseWheel+::  flag, start listening to mousewheel events when the 
-  *                 component has focus
-  * +draggable+::   flag, start listening to dragging events when the 
-  *                 component has focus
-  * +droppable+::   flag, start listening to dropping events when the 
-  *                 component has focus
-  * +keyDown+::     flag, start listening to keydown events when the 
-  *                 component has focus
-  * +keyUp+::       flag, start listening to keyup events when the 
-  *                 component has focus
+  * = Event types
+  * +mouseMove+::   flag, start listening to global mousemove events.
+  *
+  * +mouseDown+::   flag, start listening to mouseDown events when the 
+  *                 component has focus.
+  *
+  * +mouseUp+::     flag, start listening to mouseUp events when the 
+  *                 component has focus.
+  *
+  * +mouseWheel+::  flag, start listening to mouseWheel events when the 
+  *                 component has focus.
+  *
+  * +draggable+::   flag, start listening to drag events when the 
+  *                 component has focus.
+  *
+  * +droppable+::   flag, start listening to drop events when the 
+  *                 component has focus.
+  *
+  * +keyDown+::     flag, start listening to keyDown events when the 
+  *                 component has focus.
+  *
+  * +keyUp+::       flag, start listening to keyUp events when the 
+  *                 component has focus.
+  *
+  * = Usage
+  *   HControl.new(
+  *     [0,0,100,20],
+  *     HApplication.nu()
+  *   ).setEvents({
+  *     mouseUp: true,
+  *     mouseDown: true
+  *   });
   *
   * = Returns
   * +self+
@@ -103,17 +140,19 @@ HEventResponder = HClass.extend({
     /// The following boolean must be set:
     this.isDragged = false;
     
-    
     return this;
   },
 
 /** = Description
-  * Alternative flag setter for the mouseDown event type. If set to true, 
+  * Alternative flag setter for the mouseMove event type. If set to true, 
   * starts listening to mouseDown events when the component has focus.
   *
   * = Parameters
-  *  +_flag+:: Set the mouseDown event listening on/off (true/false) for
-  *            the component instance.
+  * +_flag+:: Set the mouseDown event listening on/off (true/false) for
+  *           the component instance.
+  *
+  * = Returns
+  * +self+
   *
   **/
   setMouseMove: function(_flag) {
@@ -128,7 +167,8 @@ HEventResponder = HClass.extend({
   *
   * = Parameters
   * +_flag+::  Set the click event listening on/off (true/false) for
-  *             the component instance.
+  *            the component instance.
+  *
   * = Returns
   * +self+
   *
@@ -145,7 +185,7 @@ HEventResponder = HClass.extend({
   *
   * = Parameters
   * +_flag+:: Set the mouseDown event listening on/off (true/false) for
-  *            the component instance.
+  *           the component instance.
   *
   * = Returns
   * +self+
@@ -163,7 +203,7 @@ HEventResponder = HClass.extend({
   *
   * = Parameters
   * +_flag+:: Set the mouseUp event listening on/off (true/false) for
-  *            the component instance.
+  *           the component instance.
   *
   * = Returns
   * +self+
@@ -180,11 +220,11 @@ HEventResponder = HClass.extend({
   * starts listening to mouseWheel events when the component has focus.
   *
   * = Parameters
-  *  +_flag+::  Set the mouseWheel event listening on/off (true/false) for
-  *             the component instance.
+  * +_flag+::  Set the mouseWheel event listening on/off (true/false) for
+  *            the component instance.
   *
   * = Returns
-  *  +self+
+  * +self+
   *
   **/
   setMouseWheel: function(_flag) {
@@ -198,7 +238,7 @@ HEventResponder = HClass.extend({
   * endDrag -events depending on the value of the flag argument.
   *
   * = Parameters
-  *  +_flag+:: Set the startDrag, doDrag and endDrag event listening 
+  * +_flag+:: Set the startDrag, doDrag and endDrag event listening 
   *            on/off (true/false) for the component instance.
   *
   * = Returns
@@ -216,11 +256,11 @@ HEventResponder = HClass.extend({
   * onHoverEnd -events depending on the value of the flag argument.
   *
   * = Parameters
-  *  +_flag+::  Set the onHoverStart, onDrop and onHoverEnd event listening 
-  *             on/off (true/false) for the component instance.
+  * +_flag+::  Set the onHoverStart, onDrop and onHoverEnd event listening 
+  *            on/off (true/false) for the component instance.
   *
   * = Returns
-  *  +self+
+  * +self+
   *
   **/
   setDroppable: function(_flag) {
@@ -235,11 +275,12 @@ HEventResponder = HClass.extend({
   * value of the flag argument.
   *
   * = Parameters
-  *  +_flag+:: Set the keyDown event listening on/off (true/false) for
-  *            the component instance.
+  * +_flag+:: Set the keyDown event listening on/off (true/false) for
+  *           the component instance.
   *
   * = Returns
-  *  +self+
+  * +self+
+  *
   **/
   setKeyDown: function(_flag) {
     this.events.keyDown = _flag;
@@ -253,11 +294,11 @@ HEventResponder = HClass.extend({
   * the value of the flag argument.
   *
   * = Parameters
-  *  +_flag+::  Set the keyUp event listening on/off (true/false) for
-  *             the component instance.
+  * +_flag+::  Set the keyUp event listening on/off (true/false) for
+  *            the component instance.
   *
   * = Returns
-  *  +self+
+  * +self+
   *
   **/
   setKeyUp: function(_flag) {
@@ -266,51 +307,30 @@ HEventResponder = HClass.extend({
     return this;
   },
   
-  /** = Description
-    * Registers or releases event listening for textEnter events 
-    * depending on the value of the flag argument.
-    *
-    * = Returns
-    * +self+
-    *
-    **/
+/** = Description
+  * Registers or releases event listening for textEnter events 
+  * depending on the value of the flag argument.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
   setTextEnter: function(_flag) {
     this.events.textEnter = _flag;
     this.setEvents();
     return this;
   },
-  /** Text enter functionality. No functionality as default.
-    **/
-  textEnter: function() {
-    
-  },
   
-  /** = Description
-    * Registers or releases event listening for click events 
-    * depending on the value of the flag argument.
-    *
-    * = Returns
-    * +self+
-    *
-    **/
+/** Same as +setClickable+
+  **/
   setClick: function(_flag) {
-    this.events.click = _flag;
-    this.setEvents();
-    return this;
+    return this.setClickable(_flag);
   },
-  
-  /** Click functionality
-    **/
-  click: function(x,y,_isRightButton){},
   
 /** = Description
-  * Implement/extend the focus method, if you want to do something special when
-  * the focus is gained.
+  * Default focus event responder method. Does nothing by default.
   *
   * Called when the component gets focus.
-  *
-  * = Usage
-  *  this.hasFocus = true
   *
   **/
   focus: function() {
@@ -318,13 +338,10 @@ HEventResponder = HClass.extend({
   },
   
 /** = Description
-  * Implement/extend the blur method, if you want to do something special when
-  * the focus is lost.
+  * Default blur event responder method. Does nothing by default.
   *
   * Called when the component loses focus.
   *
-  * = Usage
-  *  this.hasFocus = false;
   **/
   blur: function() {
     
@@ -332,25 +349,27 @@ HEventResponder = HClass.extend({
   
   
 /** = Description
-  * Implement/extend this if you want to do something special when the control gets
-  * activated.
+  * Default gainedActiveStatus event responder method. Does nothing by default.
+  *
+  * Called when the component gains active status; both focused and clicked.
   *
   * = Parameters
-  *  +_lastActiveControl+::  A reference to the control that was active
-  *                          before this control became active. Can
-  *                          be null if there was no active control.
+  * +_lastActiveControl+::  A reference to the control that was active
+  *                         before this control became active. Can
+  *                         be null if there was no active control.
   *
   **/
   gainedActiveStatus: function(_lastActiveControl) {
     
-    if ( (HWindowFocusBehaviour === 1) && ( this.parents.length > 2 ) ) {
+    if ( (HSystem.windowFocusBehaviour === 1) && ( this.parents.length > 2 ) ) {
       if ( this.parents[2].componentBehaviour.indexOf('window') !== -1 ) {
         this.parents[2].gainedActiveStatus();
       }
     }
     
   },
-  // A low-level handler, don't extend this.
+  
+  // A low-level handler for active status, don't extend this.
   _gainedActiveStatus: function(_lastActiveControl) {
     if(this.enabled) {
       this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, true);
@@ -360,20 +379,22 @@ HEventResponder = HClass.extend({
   
   
 /** = Description
-  * Implement/extend this if you want to do something special when the control loses its
-  * active status. No functionality as default.
+  * Default lostActiveStatus event responder method. Does nothing by default.
   *
-  * +Parameters+::
-  *  +_newActiveControl+:: A reference to the control that became the currently
-  *                        active control. Can be null if there is no active
-  *                        control.
+  * Called when the component loses active status; another component was
+  * focused and clicked.
+  *
+  * = Parameters
+  * +_newActiveControl+:: A reference to the control that became the currently
+  *                       active control. Can be null if there is no active
+  *                       control.
   *
   **/
   lostActiveStatus: function(_newActiveControl) {
     
   },
-  // A low-level handler, don't extend this.
   
+  // A low-level handler for lost active status, don't extend this.
   _lostActiveStatus: function(_newActiveControl) {
     if(this.enabled) {
       this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, false);
@@ -383,221 +404,196 @@ HEventResponder = HClass.extend({
   
   
 /** = Description
-  * Implement/extend the mouseDown method, if you want to do something special 
-  * when the mouse button is pressed down and the component instance has focus.
-  * No functionality as default.
+  * Default mouseMove event responder method. Does nothing by default.
+  *
+  * Called whenever the mouse cursor is moved regardless if the
+  * component is active or has focus.
   *
   * = Parameters
-  *  +_x+::           The horizonal coordinate units (px) of the 
-  *                   mouse cursor position.
-  *  +_y+::           The vertical coordinate units (px) of the 
-  *                   mouse cursor position.
-  *  +_leftButton+::  Flag, is false when the right mouse button was pressed.  
-  *
-  * = Usage:
-  *       this.hasMouseDown = true;
-  *       this.mouseDownCoords  = new HPoint(_x,_y);
+  * +x+::           The horizonal coordinate units (px) of the 
+  *                 mouse cursor position.
+  * +y+::           The vertical coordinate units (px) of the 
+  *                 mouse cursor position.
   *
   **/
-  mouseMove: function(_x, _y) {
-    
-  },
+  mouseMove: function(x,y) {},
   
   
 /** = Description
-  * Implement/extend the mouseDown method, if you want to do something special 
-  * when the mouse button is pressed down and the component instance has focus.
-  * No functionality as default.
+  * Default click event responder method. Does nothing by default.
   *
   * = Parameters
-  *  +_x+::           The horizonal coordinate units (px) of the 
-  *                   mouse cursor position.
-  *  +_y+::           The vertical coordinate units (px) of the 
-  *                   mouse cursor position.
-  *  +_leftButton+::  Flag, is false when the right mouse button 
-  *                   was pressed. *Do not rely on it*
-  *
-  * = Usage
-  *       this.hasMouseDown = true;
-  *       this.mouseDownCoords  = new HPoint(_x,_y);
+  * +x+::              The horizonal coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +y+::              The vertical coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +_isRightButton+:: Boolean flag; true if the right(context) mouse
+  *                    button is pressed.
   *
   **/
-  mouseDown: function(_x, _y, _leftButton) {
-    
-  },
+  click: function(x,y,_isRightButton){},
+  
+/** = Description
+  * Default mouseDown event responder method. Does nothing by default.
+  *
+  * = Parameters
+  * +x+::              The horizonal coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +y+::              The vertical coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +_isRightButton+:: Boolean flag; true if the right(context) mouse
+  *                    button is pressed.
+  *
+  **/
+  mouseDown: function(x,y,_isRightButton) {},
   
   
 /** = Description
-  * Implement/extend the mouseUp method, if you want to do something special 
-  * when the mouse button is released and the component instance has focus.
-  *
-  * This is the preferred method to extend when you want click functionality
-  * for a component.
+  * Default mouseDown event responder method. Does nothing by default.
   *
   * = Parameters
-  *  +_x+::           The horizonal coordinate units (px) of 
-  *                   the mouse cursor position.
-  *  +_y+::           The vertical coordinate units (px) of 
-  *                   the mouse cursor position.
-  *  +_leftButton+::  Flag, is false when the right mouse button 
-  *                   was pressed. *Do not rely on it*
-  *
-  * = Usage
-  *      this.hasMouseDown = false;
-  *      this.mouseUpCoords  = new HPoint(_x,_y);
+  * +x+::              The horizonal coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +y+::              The vertical coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +_isRightButton+:: Boolean flag; true if the right(context) mouse
+  *                    button is pressed.
   *
   **/
-  mouseUp: function(_x, _y, _leftButton) {
-    
-  },
+  mouseUp: function(x,y,_isRightButton) {},
   
 /** = Description
-  * Implement/extend the mouseWheel method, if you want to do something special 
-  * when the mouse wheel is used and the component instance has focus.
-  * Has no functionality as default.
+  * Default mouseWheel event responder method. Does nothing by default.
   *
   * = Parameters
-  *  +_delta+::  Scrolling delta, the wheel angle change. If delta is positive,
-  *              wheel was scrolled up. Otherwise, it was scrolled down.
-  *
-  * = Usage
-  *  if (_delta > 0)
-  *    msg = "Moving up!";
-  *  else 
-  *    msg = "Going down...";
+  * +_delta+::  Scrolling delta, the wheel angle change. If delta is positive,
+  *             wheel was scrolled up. Otherwise, it was scrolled down.
   *
   **/
-  mouseWheel: function(_delta) {
-    
-  },
+  mouseWheel: function(_delta) {},
   
 /** = Description
-  * Extend the startDrag method, if you want to do something special 
-  * when the user starts a dragging event.
+  * Default startDrag event responder method. Sets internal flags by default.
   *
-  * This is the preferred method to extend if you want mouseDown functionality
-  * for a draggable component.
+  * This is the preferred method to extend if you want to do something
+  * when a drag event starts. If you extend, remember to call +this.base();+
   *
   * = Parameters
-  *  +x+:: - The horizonal coordinate units (px) of the mouse cursor position.
-  *  +y+:: - The vertical coordinate units (px) of the mouse cursor position.
-  *
-  * = Usage
-  *     this.originX = x-parseInt(prop_get(this.elemId,'left'));
-  *     this.originY = y-parseInt(prop_get(this.elemId,'top'));
+  * +x+::    The horizonal coordinate units (px) of the mouse cursor position.
+  * +y+::    The vertical coordinate units (px) of the mouse cursor position.
   *
   **/
   startDrag: function(x, y) {
-    this.isDragged = true; // must be set to work
-    
+    this.isDragged = true; // must be set to work?
   },
   
 /** = Description
-  * Extend the doDrag method, if you want to do something special 
-  * when the user is performing a dragging event. Called whenever the 
-  * mouse cursor moves.
+  * Default doDrag event responder method. Does nothing by default.
+  *
+  * This is the preferred method to extend while a drag method is ongoing.
+  * Called whenever the mouse cursor moves and a drag event has been started.
   *
   * = Parameters
-  *  +x+:: The horizonal coordinate units (px) of the mouse cursor position.
-  *  +y+:: The vertical coordinate units (px) of the mouse cursor position.
-  *
-  * = Usage
-  *       prop_set(this.elemId,'left',(x-this.originX)+'px');
-  *       prop_set(this.elemId,'top',(y-this.originY)+'px');
+  * +x+:: The horizonal coordinate units (px) of the mouse cursor position.
+  * +y+:: The vertical coordinate units (px) of the mouse cursor position.
   *
   **/
-  doDrag: function(x, y) {
-    
-  },
+  doDrag: function(x, y) {},
   
 /** = Description
-  * Extend the endDrag method, if you want to do something special 
-  * when the user ends a dragging event.
+  * Default startDrag event responder method. Sets internal flags by default.
   *
-  * This is the preferred method to extend if you want mouseUp functionality
-  * for a draggable component.
+  * This is the preferred method to extend if you want to do something
+  * when a drag event ends. If you extend, remember to call +this.base();+
   *
   * = Parameters
-  *  +x+::  The horizonal coordinate units (px) of the mouse cursor position.
-  *  +y+::  The vertical coordinate units (px) of the mouse cursor position.
-  *  
+  * +x+::  The horizonal coordinate units (px) of the mouse cursor position.
+  * +y+::  The vertical coordinate units (px) of the mouse cursor position.
+  *
   **/
   endDrag: function(x, y) {
-    this.isDragged = false; // must be un-set to work
+    this.isDragged = false; // must be un-set to work?
     this.invalidatePositionCache();
-   /* Example:
-   */
   },
 
 /** = Description
-  * Extend the onDrop method, if you want to do something special 
-  * when the user is performing a drop event. Called when a dragged 
-  * component instance is dropped on another component instance.
-  * Has no functionality as default.
+  * Default onDrop event responder method. Does nothing by default.
+  *
+  * Extend the onDrop method, if you want to do something 
+  * when this instance is the target of another instance's endDrag event.
+  * Called when a dragged component instance is dropped on the target instance.
   *
   * = Parameters
-  *  +obj+::  The dragged component object.
+  * +obj+::  The dragged component object.
   *
   **/
-  onDrop: function(obj) {
-    
-  },
+  onDrop: function(obj) {},
 
 /** = Description
-  * Extend the onHoverStart method, if you want to do something special 
-  * when a dragged component instance is dragged over a droppable 
-  * component instance.
-  * Has no functionality as default.
+  * Default onHoverStart event responder method. Does nothing by default.
+  *
+  * Extend the onDrop method, if you want to do something 
+  * when this instance is the target of another instance's doDrag event.
+  * Called when a dragged component instance is dragged over
+  * the target instance.
   *
   * = Parameters
-  *  +obj+::  The dragged component object.
+  * +obj+::  The dragged component object.
   *
   **/
-  onHoverStart: function(obj) {
-    
-  },
-  
+  onHoverStart: function(obj) {},
   
 /** = Description
-  * Extend the onHoverEnd method, if you want to do something special 
-  * when a dragged component instance is dragged from a 
-  * droppable component instance.
+  * Default onHoverStart event responder method. Does nothing by default.
+  *
+  * Extend the onDrop method, if you want to do something 
+  * when this instance is no longer the target of another instance's
+  * doDrag event.
+  * Called when a dragged component instance is dragged away from
+  * the target instance.
   *
   * = Parameters
-  *  +obj+::  The dragged component object.
+  * +obj+::  The dragged component object.
   *
   **/
-  onHoverEnd: function(obj) {
-    
-  },
-  
+  onHoverEnd: function(obj) {},
   
 /** = Description
-  * Implement/extend the keyDown method, if you want to do something special 
-  * when a key is pressed down and the component is active.
+  * Default keyDown event responder method. Does nothing by default.
+  *
+  * Extend the keyDown method, if you want to do something
+  * when a key is pressed and the component is active.
   *
   * = Parameters
-  *  +_keycode+::  The keycode of the key that was pressed down.
+  * +_keycode+::  The keycode of the key that was pressed.
   *
   **/
-  keyDown: function(_keycode) {
-    
-  },
-  
+  keyDown: function(_keycode) {},
   
 /** = Description
-  * Implement/extend the keyUp method, if you want to do something special 
+  * Default keyUp event responder method. Does nothing by default.
+  *
+  * Extend the keyUp method, if you want to do something
   * when a key is released and the component is active.
-  * No functianality as default.
   *
   * = Parameters
-  *  +_keycode+::  The keycode of the key that was released.
+  * +_keycode+::  The keycode of the key that was released.
   *
   **/
-  keyUp: function(_keycode) {
-    
-  },
+  keyUp: function(_keycode) {},
   
+/** = Description
+  * Default textEnter event responder method. Does nothing by default.
+  *
+  * Extend the textEnter method, if you want to do something
+  * when a key is released regardless if the component is active,
+  * has focus or not.
+  *
+  * = Parameters
+  * +_keycode+::  The keycode of the key that was released.
+  *
+  **/
+  textEnter: function() {},
   
   /** -- DON'T TOUCH _mouseOver, IT IS A LOW-LEVEL HANDLER, use focus() instead ++ **/
   _mouseOver: function(e) {
@@ -638,8 +634,8 @@ HEventResponder = HClass.extend({
   
 /** = Description
   * Forces retrieving this control's DOM element position directly rather than
-  * using the cached version when the position is needed by the HEventManager.
-  * Child controls are invalidated recursively by HView.
+  * using the cached version when the position is needed by +EVENT+.
+  * Child controls are invalidated recursively by +HView+.
   *
   * = Returns
   * +self+
@@ -649,6 +645,6 @@ HEventResponder = HClass.extend({
     this.base();
     EVENT.coordCacheFlush(this.elemId);
     return this;
-}
+  }
   
 });
