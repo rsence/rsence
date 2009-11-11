@@ -38,9 +38,6 @@ HSystem = HClass.extend({
 /** An array (in the same order as apps): holds busy status **/
   busyApps: [],
   
-/** An array (in the same order as apps): holds Timeout values **/
-  appTimers: [],
-  
 /** This array holds free app id:s **/
   freeAppIds: [],
   
@@ -79,14 +76,9 @@ HSystem = HClass.extend({
             // That happens in <HApplication._startIdle>
             
             // If the app is not busy, then make a idle call:
-            this.appTimers[ _appId ] = setTimeout(
-              function(){
-                if(HSystem.apps[_appId]){
-                  HSystem.apps[_appId]._startIdle();
-                }
-              },
-              this.defaultInterval
-            );
+            if(HSystem.apps[_appId]){
+              HSystem.apps[_appId]._startIdle();
+            }
           }
         }
       }
