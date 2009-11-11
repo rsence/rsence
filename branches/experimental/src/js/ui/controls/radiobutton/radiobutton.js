@@ -37,9 +37,10 @@
   *  <HControl> <HCheckbox> <HToggleButton>
   **/
 
-HRadioButton = ( HCheckbox.extend(HValueMatrixComponentExtension) ).extend({
-  componentName: 'radiobutton'
-});
+HRadioButton = HCheckbox.extend(
+  HValueMatrixComponentExtension
+);
+HRadioButton.prototype.componentName = 'radiobutton';
 
 
 // Backwards compatibility
