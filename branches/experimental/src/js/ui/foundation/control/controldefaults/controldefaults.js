@@ -13,7 +13,7 @@
   ** Settable Control-level defaults, override on construction 
   ** +label+::  The visual value of the component
   ***/
-HComponentDefaults = HClass.extend({
+HControlDefaults = HClass.extend({
   
   // The visual value of a component:
   label:    "",
@@ -34,4 +34,7 @@ HComponentDefaults = HClass.extend({
   maxValue:  2147483648  // signed 32bit
   
 });
+
+// Alias for backwards-compatibility.
+HComponentDefaults = HControlDefaults;
 
