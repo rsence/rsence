@@ -7,36 +7,30 @@
  */
 
 
-/** = Description
-  *
-  * Simple application template.
-  *
-  * Depends on <HSystem>
-  *
-  * HApplication instances are good namespaces to bind your client-side logic to.
-  * Feel free to extend HApplication to suit your needs. The primary default
-  * purpose is root-level component (<HView>) management and being the
-  * root controller for <onIdle> events.
-  *
-  * = Instance members
-  *  type - '[HApplication]'
-  *  views - A list of child components bound to it through <HView>
-  *  parent - Usually <HSystem>
-  *  parents - An array containing parents, usually just <HSystem>
-  *  isBusy - A flag that is true when the app is doing <onIdle> events or stopped.
-  *
-  * = Usage:
-  *   var myApp = HApplication.nu(10,'Sample Application');
-  *   HSlider.nu(
-  *     HRect.nu(100,100,300,118),
-  *     myApp, {
-  *       value: 100.0,
-  *       minValue: 0.0,
-  *       maxValue: 200.0
-  *     }
-  *   );
-  *   myApp.die();
-  **/
+/*** = Description
+  **
+  ** Simple application template.
+  **
+  ** Depends on <HSystem>
+  **
+  ** HApplication instances are good namespaces to bind your client-side logic to.
+  ** Feel free to extend HApplication to suit your needs. The primary default
+  ** purpose is root-level component (<HView>) management and being the
+  ** root controller for <onIdle> events.
+  **
+  ** = Instance members
+  ** +views+::    A list of child component ids bound to it via +HView+ and +HSystem+
+  ** +parent+::   Usually +HSystem+.
+  ** +parents+::  An array containing parent instances. In this case, just +HSystem+.
+  ** +isBusy+::   A flag that is true when the app is doing <onIdle> events or stopped.
+  **
+  ** = Usage
+  ** Creates the +HApplication+ instance +myApp+, makes a +HWindow+ instance
+  ** as its first view.
+  **   var myApp = HApplication.nu(10,'Sample Application');
+  **   HWindow.nu( [10,10,320,200], myApp, {label:'myWin'} );
+  **
+***/
 HApplication = HClass.extend({
   
   componentBehaviour: ['app'],
