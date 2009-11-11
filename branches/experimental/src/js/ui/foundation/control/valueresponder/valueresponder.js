@@ -6,21 +6,23 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** = Description
-  **  Value responder class.
-  ***/
 
+/*** = Description
+  ** Defines a minimal +HValue+ responder interface.
+  ** It's implemented by default by +HControl+.
+***/
 HValueResponder = HClass.extend({
   
 /** = Description
   * Binds an HValue compatible instance to the component's valueObj. Also 
-  * calls setValue. It should not be called from user code, instead use HValue.bind.
+  * calls +self.setValue+. It should not be called from user code, instead
+  * use the +HValue+ instance method +bind+.
   *
   * = Parameter
-  *  +_aValueObj+::  The new value object.
+  * +_aValueObj+::  The HValue instance object to bind.
   *
   * = Returns
-  *  +self+
+  * +self+
   *
   **/
   setValueObj: function(_valueObj) {
@@ -30,10 +32,13 @@ HValueResponder = HClass.extend({
   },
   
 /** = Description
-  * Checks if the value given as parameter differs from this.value.
+  * Checks, if the value given as parameter differs from +self.value+.
   *
   * = Parameters
   * +_value+::  The value to be tested.
+  *
+  * = Returns
+  * A boolean true (different) or false (same).
   *
   **/
   valueDiffers: function(_value){
@@ -41,31 +46,32 @@ HValueResponder = HClass.extend({
   },
   
 /** = Description
-  * Assigns the object a new value. Extend it, if your component needs to do
-  * something whenever the value changes.
+  * Assigns the object a new value.
+  *
+  * Extend it, if your component needs to do validation of the new value.
+  *
+  * For +HControl+ instances, extend +refreshValue+ to do something when
+  * the +self.value+ has been set.
   *
   * = Parameter
-  *  +_value+::   The new value. Allowed values depend on the component type
-  *               and other usage of the bound HValue instance.
+  * +_value+::  The new value. Allowed values depend on the component type
+  *             and other usage of the bound +HValue+ instance +self.valueObj+.
   *
   * = Returns
   * +self+
   *
   **/
   setValue: function(_value) {
-    if(_value === undefined){return this;}
-    if(!this.valueObj){return this;}
-    if(this.valueDiffers(_value)) {
+    if(_value !== undefined && this['valueObj'] && this.valueDiffers(_value)) {
       var _valueManager = COMM.Values;
       this.value = _value;
       if( _valueManager._builtins.indexOf( _valueManager.type(_value) ) === -1 ){
-        _valueClone = _valueManager.clone( _value );
-        this.valueObj.set( _valueClone );
+        this.valueObj.set( _valueManager.clone( _value ) );
       }
       else {
         this.valueObj.set( _value );
       }
-      this.refresh();
+      this['refresh'] && (typeof this.refresh === 'function') && this.refresh();
     }
     return this;
   }
