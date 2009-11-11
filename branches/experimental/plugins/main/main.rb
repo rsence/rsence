@@ -106,7 +106,6 @@ class Main < Plugin
   # called once when a session is 
   # restored using the cookie's ses_key
   def restore_ses(msg)
-    
     ## Resets session data to defaults
     ses = msg.session
     init_ses(msg) unless ses.has_key?(:main)
@@ -136,16 +135,17 @@ class Main < Plugin
       
       ## url_responder is bound in the client-space
       ## to tell the server its status by updating its value
-      msg.reply require_js_once(msg,'main')
-      msg.reply "urlResponder = URLResponder.nu('#{mses[:location_href].val_id}');"
-    
-    ## Second stage enables SesWatcher that changes :client_time every 60 seconds.
-    ## Causes the client to poll the server on regular intervals, when polling mode
-    ## is disabled.
+      # msg.reply require_js('main')
+      msg.reply "COMM.Values['#{mses[:location_href].val_id}'].bind(COMM.urlResponder);"
+      msg.reply "urlResponder = COMM.URLResponder;" # backwards compatibility
+      ## This enables SesWatcher that changes :client_time every 60 seconds.
+      ## It makes the client to poll the server on regular intervals, when polling mode
+      ## is disabled.
+      # 5000ms = 5secs
+      msg.reply "sesWatcher = COMM.SessionWatcher.nu(#{$config[:main_plugin][:server_poll_interval]},'#{mses[:client_time].val_id}');"
+      
     elsif mses[:boot] == 1
       
-      # 5000ms = 5secs
-      msg.reply "sesWatcher = new SesWatcher(#{$config[:main_plugin][:server_poll_interval]},'#{mses[:client_time].val_id}');"
       
       # Delegates the init_ui method to each plugin to signal bootstrap completion.
       $PLUGINS.delegate( 'init_ui', msg )
