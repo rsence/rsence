@@ -11,8 +11,17 @@
 require 'rubygems'
 require 'rack'
 
+# Legacy:
+LIB_PATHS = []
+PIDPATH = File.join(SERVER_PATH,'var','run')
+LOGPATH = File.join(SERVER_PATH,'var','log')
+def load_legacy( local_config_file_path )
+  require local_config_file_path[0..-4]
+end
+
 module Riassence
 module Server
+
 
 class Configuration
   def initialize
@@ -24,6 +33,9 @@ class Configuration
     
     ## Global configuration hash
     $config = YAML.load( File.read( yaml_conf_path ) )
+    
+    # Legacy:
+    $config[:indexhtml_conf] = $config[:index_html]
     
     ## Client by default is "server/client"
     if ARGV.include?('--client-path')
@@ -89,7 +101,15 @@ class Configuration
           $config.merge!( YAML.load( File.read( local_config_file_path ) ) )
           local_config_file_path_found = true
         elsif local_config_file_path.end_with? '.rb'
-          load local_config_file_path
+          # Legacy work-arounds
+          prev_pidpath = PIDPATH
+          prev_logpath = LOGPATH
+          # /Legacy work-arounds
+          load_legacy( local_config_file_path )
+          # Legacy work-arounds
+          pidpath = PIDPATH if PIDPATH != prev_pidpath
+          logpath = LOGPATH if LOGPATH != prev_logpath
+          # /Legacy work-arounds
           local_config_file_path_found = true
         else
           warn "Only Yaml and Ruby configuration files are allowed at this time."
@@ -128,7 +148,6 @@ class Configuration
     $config[:http_server][:port] = ARGV[ARGV.index('--port')+1].to_i if ARGV.include?('--port')
     $config[:http_server][:bind_address] = ARGV[ARGV.index('--addr')+1] if ARGV.include?('--addr')
     $config[:http_server][:rack_require] = ARGV[ARGV.index('--server')+1] if ARGV.include?('--server')
-    $config[:indexhtml_conf] = $config[:index_html]
     $config[:session_conf][:reset_sessions] = true if ARGV.include?('--reset-sessions=true') or ARGV.include?('--reset-sessions')
     $config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless $config[:daemon].has_key?(:pid_fn)
     $config[:daemon][:log_fn] = File.join(logpath, "rsence") unless $config[:daemon].has_key?(:log_fn)
@@ -175,6 +194,11 @@ class Configuration
     
     ## Uses the lib paths as search paths
     lib_paths.each do |lib_path|
+      $LOAD_PATH << lib_path
+    end
+    
+    ## Legacy:
+    LIB_PATHS.each do |lib_path|
       $LOAD_PATH << lib_path
     end
     
