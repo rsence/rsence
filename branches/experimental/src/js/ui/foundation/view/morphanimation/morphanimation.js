@@ -50,7 +50,9 @@ HMorphAnimation = HClass.extend({
   *   
   **/
   animateTo: function(_obj, _duration, _fps) {
-    
+    if(!this.drawn){
+      return this;
+    }
     // Redirect the method call to _animateTo(HRect).
     if(_obj instanceof HPoint) {
       var _rect = new HRect(_obj, _obj);
@@ -125,6 +127,9 @@ HMorphAnimation = HClass.extend({
       // its destination.
       this._animateInterval = window.setInterval(
         function() {
+          if(!_that){
+            return;
+          }
           _that._animateStep({
             startTime: _startTime,
             duration: _duration,
