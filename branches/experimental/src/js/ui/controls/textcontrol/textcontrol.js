@@ -97,6 +97,7 @@ HTextControl = HControl.extend({
         }
       }
     }
+    this.setEnabled(this.enabled);
   },
   
   setStyle: function(_name, _value, _cacheOverride) {
@@ -121,7 +122,7 @@ HTextControl = HControl.extend({
     this.base(_flag);
     if(this['markupElemIds']===undefined){return;}
     if(this.markupElemIds.value) {
-      ELEM.setAttr(this.markupElemIds.value,'disabled',!this.enabled);
+      ELEM.get(this.markupElemIds.value).disabled = !this.enabled;
     }
   },
   hasTextFocus: false,
