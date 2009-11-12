@@ -122,14 +122,14 @@ HRect = HClass.extend({
       * and its bottom is greater than or equal to its top, and false otherwise.
       * An invalid rectangle can't be used to define an interface area (such as
       * the frame of a view or window).
-      */
+      **/
     this.isValid = ( this.right >= this.left && this.bottom >= this.top );
     
     /**
       *
       * The Point-returning functions return the coordinates of one of the
       * rectangle's four corners. 
-      */
+      **/
     this.leftTop = new HPoint(this.left, this.top);
     this.leftBottom = new HPoint(this.left, this.bottom);
     this.rightTop = new HPoint(this.right, this.top);
@@ -138,7 +138,7 @@ HRect = HClass.extend({
     /**
       * The width and height of a Rect's rectangle, as returned through these
       * properties.
-      */
+      **/
     this.width = (this.right - this.left);
     this.height = (this.bottom - this.top);
   },
