@@ -247,12 +247,12 @@ COMM.Transporter = HApplication.extend({
   **/
   constructor: function(){
     var _this = this;
-    this.serverLostMessage = 'Server Connection Lost. Retrying.';
+    this.serverLostMessage = 'Server Connection Lost: Reconnecting...';
     _this.label = 'Transporter';
     _this.url = false;
     _this.busy = false;
     _this.stop = true;
-    _this._serverInterruptElemId = false;
+    _this._serverInterruptView = false;
     _this._clientEvalError = false;
     _this._busyFlushTimeout = false;
     _this.base(1);
@@ -298,8 +298,12 @@ COMM.Transporter = HApplication.extend({
   *
   **/
   success: function(resp){
-    var _this = COMM.Transporter,
-        _responseArray = eval(resp.X.responseText),
+    var _this = COMM.Transporter;
+    if(!resp.X.responseText){
+      _this.failure(resp);
+      return;
+    }
+    var _responseArray = eval(resp.X.responseText),
         i = 1,
         _responseArrayLen = _responseArray.length,
         _sesKey = _responseArray[0],
@@ -320,9 +324,9 @@ COMM.Transporter = HApplication.extend({
         _this._clientEvalError = e+" - "+e.description+' - '+_responseArray[i];
       }
     }
-    if(_this._serverInterruptElemId){
-      ELEM.del(_this._serverInterruptElemId);
-      _this._serverInterruptElemId = false;
+    if(_this._serverInterruptView){
+      _this._serverInterruptView.die();
+      _this._serverInterruptView = false;
     }
     _queue.push( function(){COMM.Transporter.flushBusy();} );
     _queue.flush();
@@ -350,24 +354,92 @@ COMM.Transporter = HApplication.extend({
 /** Called by the XMLHttpRequest, when there was a failure in communication.
   **/
   failure: function(_resp){
-    console.log('failure');
     var _this = COMM.Transporter;
     // server didn't respond, likely network issue.. retry.
     if(_resp.X.status===0){
       console.log(_this.serverLostMessage);
-      if(HSystem.appPriorities[_this.appId]<10){
-        HSystem.reniceApp(_this.appId,10);
-      }
-      if(!_this._serverInterruptElemId){
-        _this._serverInterruptElemId = ELEM.make(0);
-        ELEM.setCSS(_this._serverInterruptElemId,'position:absolute;z-index:1000;padding-left:8px;left:0px;top:0px;height:28px;width:100%;background-color:#600;color:#fff;font-family:Arial,sans-serif;font-size:20px;');
-        ELEM.setStyle(_this._serverInterruptElemId,'opacity',0.85);
-        ELEM.setHTML(_this._serverInterruptElemId,_this.serverLostMessage);
+      if(!_this._serverInterruptView){
+        _this._serverInterruptView = HView.extend({
+          _setFailedResp: function(_resp){
+            if(_resp!==undefined){
+              this._failedResp = _resp;
+            }
+            this._errorIndex++;
+            return this;
+          },
+          _retry: function(){
+            this._retryIndex++;
+            var _resp = this._failedResp;
+            COMM.request(
+              _resp.url,
+              _resp.options
+            );
+          },
+          onIdle: function(){
+            var _currentDate = new Date().getTime();
+            this.bringToFront();
+            if( this._errorIndex > 0 &&
+                (this._retryIndex !== this._errorIndex) &&
+                (this._lastError + 2000 < _currentDate) &&
+                this._failedResp ){
+              this._lastError = _currentDate;
+              this._retry();
+            }
+            this.base();
+          },
+          _errorIndex: 0,
+          _retryIndex: 0,
+          _lastError: new Date().getTime(),
+          die: function(){
+            var _app = this.app;
+            HSystem.reniceApp(_app.appId,this._origPriority);
+            this.base();
+            _app.sync();
+          },
+          drawSubviews: function(){
+            var _style = [
+              ['padding-left', '8px'],
+              ['background-color', '#600'],
+              ['text-align','center'],
+              ['color', '#fff'],
+              ['font-size', '16px'],
+              ['opacity', 0.85]
+            ], i = 0;
+            for( ; i<_style.length; i++ ){
+              this.setStyle( _style[i][0], _style[i][1] );
+            }
+            this.setHTML(this.app.serverLostMessage);
+            this._origPriority = HSystem.appPriorities[this.appId];
+            if(HSystem.appPriorities[this.appId]<10){
+              HSystem.reniceApp(this.appId,10);
+            }
+            this._anim = HView.extend({
+              _animIndex: 0,
+              _anim: function(){
+                var _targetRect,
+                    _width = ELEM.getSize(this.parent.elemId)[0];
+                this._animIndex++;
+                if(this._animIndex%2===0){
+                  _targetRect = HRect.nu(0,0,80,20);
+                }
+                else {
+                  _targetRect = HRect.nu(_width-80,0,_width,20);
+                }
+                this.animateTo(_targetRect,2000);
+              },
+              onAnimationEnd: function(){
+                if(this.drawn){
+                  this._anim();
+                }
+              }
+            }
+          ).nu( [0,0,80,20], this ).setStyle('background-color','#fff').setStyle('opacity',0.8)._anim();
+          }
+        }).nu([0,0,200,20,0,null],_this)._setFailedResp(_resp);
       }
       else {
-        ELEM.get(_this._serverInterruptElemId).innerHTML += '.';
+        _this._serverInterruptView._setFailedResp();
       }
-      _this.busy = false;
     }
     else {
       _this.failMessage('Transporter Error','Transporter was unable to complete the synchronization request.');
