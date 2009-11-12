@@ -824,6 +824,7 @@ ELEM = {
   * +_className+::    The CSS class name to check.
   *
   * = Returns
+  * Returns null, if the element does not exist
   * Returns true, if the element has the class name set
   * Returns false otherwise
   *
@@ -833,7 +834,8 @@ ELEM = {
     if (!_element) {
       return null;
     }
-    return (_element.className.indexOf(_className) !== -1);
+    var _classNames = _element.className.split(' ');
+    return (_classNames.indexOf(_className) !== -1);
   },
   
 /** = Description
