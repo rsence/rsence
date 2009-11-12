@@ -283,50 +283,42 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setWidth
-  *
+/** = Description
   * Moves the rects right side to a new coordinate. Does not affect the position.
   *
-  * Parameter:
-  *  _width - A numeric value representing the new target width of the rect.
+  * = Parameters
+  * +_width+::  A numeric value representing the new target width of the rect.
   *
-  * See also:
-  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setHeight> <setSize>
   **/
   setWidth: function(_width){
     this.right = this.left + _width;
     this.updateSecondaryValues();
   },
 
-/** method: setHeight
-  *
+/** = Description
   * Moves the rects bottom side to a new coordinate. Does not affect the position.
   *
-  * Parameter:
-  *  _height - A numeric value representing the new target height of the rect.
+  * = Parameters
+  * +_height+::   A numeric value representing the new target height of the rect.
   *
-  * See also:
-  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setSize>
   **/
   setHeight: function(_height){
     this.bottom = this.top + _height;
     this.updateSecondaryValues();
   },
 
-/** method: setSize
-  *
+/** = Description
   * Moves the rects right and bottom sides to new coordinates. Does not affect the position.
   *
-  * Parameter (by separate numeric values):
-  *  _width - A numeric value representing the new target width of the rect.
-  *  _height - A numeric value representing the new target height of the rect.
+  * = Parameters 
+  * by separate numeric values:
+  * +_width+::   A numeric value representing the new target width of the rect.
+  * +_height+::  A numeric value representing the new target height of the rect.
   *
-  * Parameter (by <HPoint> used as "HSize"):
-  *  _point.x - A numeric value representing the new target width of the rect.
-  *  _point.y - A numeric value representing the new target height of the rect.
+  * by HPoint used as "HSize":
+  * +_point.x+::   A numeric value representing the new target width of the rect.
+  * +_point.y+::   A numeric value representing the new target height of the rect.
   *
-  * See also:
-  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight>
   **/
   setSize: function(){
     var _args=arguments;
@@ -345,19 +337,16 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: intersects
-  *
+/** = Description
   * Returns true if the Rect has any area even a corner or part 
   * of a side in common with rect, and false if it doesn't.
   *
-  * Parameter:
-  *  _rect - A <HRect> instance to intersect this rect with
+  * = Parameters
+  * +_rect+::   A HRect instance to intersect this rect with
   *
-  * Returns:
-  *  A Boolean (true/false) depending on the result.
+  * = Returns
+  * A Boolean (true/false) depending on the result.
   *
-  * See also:
-  *  <contains> <equals> <intersection> <union>
   **/
   intersects: function(_rect) {
     return (
@@ -367,22 +356,19 @@ HRect = HClass.extend({
         (_rect.bottom >= this.top && _rect.bottom <= this.bottom)));
   },
   
-/** method: contains
-  *
+/** = Description
   * Returns true if point or rect lies entirely within the Rect's
   * rectangle (and false if not). A rectangle contains the points that lie
   * along its edges; for example, two identical rectangles contain each other.
   * 
-  * Also works with <HPoint> instances.
+  * Also works with HPoint instances.
   *
-  * Parameter:
-  *  _obj - A <HRect> or <HPoint> to check the containment with.
+  * = Parameters
+  * +_obj+::  A HRect or HPoint to check the containment with.
   *
-  * Returns:
-  *  A Boolean (true/false) depending on the result.
+  * = Returns
+  * A Boolean (true/false) depending on the result.
   *
-  * See also:
-  *  <intersects> <equals> <intersection> <union>
   **/
   contains: function(_obj) {
     if(_obj instanceof HPoint) {
@@ -404,8 +390,7 @@ HRect = HClass.extend({
              _rect.top >= this.top && _rect.bottom <= this.bottom );
   },
   
-/** method: insetBy
-  *
+/** = Description
   * Insets the sides of the Rect's rectangle by x units (left and
   * right sides) and y units (top and bottom). Positive inset values shrink
   * the rectangle; negative values expand it. Note that both sides of each
@@ -413,14 +398,14 @@ HRect = HClass.extend({
   * left side moves (to the right) four units and the right side moves (to the
   * left) four units (and similarly with the top and bottom).
   *
-  * Parameter (using a <HPoint>):
-  *  point - A <HPoint> to inset by.
+  * = Parameters 
+  * using a HPoint:
+  * +point+::  A HPoint to inset by.
   *
-  * Parameter (using separate x and y coordinates):
-  *  x, y - Numeric coordinates to inset by.
+  * using separate x and y coordinates:
+  * +x+::  x Coordinate 
+  * +y+::  y Coordinate
   *
-  * See also:
-  *  <offsetBy> <offsetTo> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
   **/
   insetBy: function() {
     var _args=arguments;
@@ -443,19 +428,18 @@ HRect = HClass.extend({
     this.bottom -= y;
   },
   
-/** method: offsetBy
-  *
+/** = Description
   * Moves the Rect horizontally by x units and vertically by y
   * units. The rectangle's size doesn't change.
   *
-  * Parameter (using a <HPoint>):
-  *  point - A <HPoint> to offset by.
+  * = Parameters 
+  * using a HPoint:
+  * +point+::  A HPoint to offset by.
   *
-  * Parameter (using separate x and y coordinates):
-  *  x, y - Numeric coordinates to offset by.
+  * using separate x and y coordinates
+  * +x+::  X coordinate
+  * +y+::  Y coordinate
   *
-  * See also:
-  *  <insetBy> <offsetTo> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
   **/
   offsetBy: function() {
     var _args=arguments;
@@ -478,18 +462,17 @@ HRect = HClass.extend({
     this.bottom += y;
   },
   
-/** method: offsetTo
-  *
+/** = Description
   * Moves the Rect to the location (x,y).
   *
-  * Parameter (using a <HPoint>):
-  *  point - A <HPoint> to offset to.
+  * = Parameters 
+  * using a HPoint:
+  * +point+::  A HPoint to offset to.
   *
-  * Parameter (using separate x and y coordinates):
-  *  x, y - Numeric coordinates to offset to.
+  * using separate x and y coordinates):
+  * +x+::  X coordinate 
+  * +y+::  Y coordinate
   *
-  * See also:
-  *  <insetBy> <offsetBy> <setLeftTop> <setRightTop> <setLeftBottom> <setLeftTop>
   **/
   offsetTo: function() {
     var _args=arguments;
@@ -512,38 +495,32 @@ HRect = HClass.extend({
     this.top = y;
   },
   
-/** method: equals
-  *
+/** = Description
   * Returns true if the two objects' rectangles exactly coincide.
   *
-  * Parameter:
-  *  _rect - A <HRect> instance to compare to.
+  * = Parameters
+  * +_rect+::  A HRect instance to compare to.
   *
-  * Returns:
-  *  A Boolean (true/false) depending on the result.
+  * = Returns
+  * A Boolean (true/false) depending on the result.
   *
-  * See also:
-  *  <intersects> <contains> <intersection> <union>
   **/
   equals: function(_rect) {
     return (this.left === _rect.left && this.top === _rect.top &&
             this.right === _rect.right && this.bottom === _rect.bottom);
   },
   
-/** method: intersection
-  *
+/** = Description
   * Creates and returns a new Rect that's the intersection of this Rect and
   * the specified Rect. The new Rect encloses the area that the two Rects have
   * in common. If the two Rects don't intersect, the new Rect will be invalid.
   *
-  * Parameter:
-  *  _rect - A <HRect> instance to compare to.
+  * = Parameters
+  * +_rect+::   A HRect instance to compare to.
   *
-  * Returns:
-  *  A new <HRect> instance.
+  * = Returns
+  * A new HRect instance.
   *
-  * See also:
-  *  <intersects> <contains> <equals> <union>
   **/
   intersection: function(_rect) {
     return new HRect(
@@ -552,19 +529,16 @@ HRect = HClass.extend({
     );
   },
   
-/** method: union
-  *
+/** = Description
   * Creates and returns a new Rect that minimally but completely encloses the
   * area defined by this Rect and the specified Rect.
   *
-  * Parameter:
-  *  _rect - A <HRect> instance to compare to.
+  * = Parameters
+  * +_rect+::   A HRect instance to compare to.
   *
-  * Returns:
-  *  A new <HRect> instance.
+  * = Returns
+  * A new HRect instance.
   *
-  * See also:
-  *  <intersects> <contains> <equals> <intersection>
   **/
   union: function(_rect) {
     return new HRect(
@@ -576,20 +550,49 @@ HRect = HClass.extend({
   // HValue and HView support
   valueObj: null,
   viewIds: [],
+  
+/** = Description
+  * Bind function
+  *
+  * = Parameters
+  * +_view+::  view
+  *
+  **/
   bind: function(_view){
     if(this.viewIds.indexOf(_view.viewId) !== -1){
       this.viewIds.push( _view.viewId );
     }
   },
+  
+/** = Description
+  * Release function
+  **/
   release: function(_view){
     var _viewIdx = this.viewIds.indexOf(_view.viewId);
     if(_viewIdx !== -1){
       this.viewIds.splice( _viewIdx, 1 );
     }
   },
+  
+/** = Description
+  * Sets valueObj for this component given as parameter.
+  *
+  * = Parameters
+  * +_valueObj+::   valueObj to use
+  *
+  **/
   setValueObj: function(_valueObj){
     this.valueObj = _valueObj;
   },
+  
+/** = Description
+  * setValue function
+  *
+  * = Parameters
+  * +_value+::      value
+  * +_srcViewId+::  srcViewId
+  *
+  **/
   setValue: function(_value,_srcViewId){
     if(this.valueObj){
       this.valueObj.set(_value);
