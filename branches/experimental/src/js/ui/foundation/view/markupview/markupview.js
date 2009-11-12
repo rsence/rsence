@@ -96,18 +96,11 @@ HMarkupView = HClass.extend({
   **/
   toggleCSSClass: function(_elementId, _cssClass, _setOn) {
     if(_elementId) {
-      
-      var _has_class = ELEM.hasClassName(_elementId, _cssClass);
-      
       if (_setOn) {
-        if (!_has_class) {
-          ELEM.addClassName(_elementId, _cssClass);
-        }
+        ELEM.addClassName(_elementId, _cssClass);
       }
       else {
-        if (_has_class) {
-          ELEM.removeClassName(_elementId, _cssClass);
-        }
+        ELEM.removeClassName(_elementId, _cssClass);
       }
     }
     return this;
