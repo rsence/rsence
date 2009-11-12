@@ -6,54 +6,55 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** class: HRect
-  *
-  * A Rect object represents a rectangle. Rects are used throughout the
-  * Components to define the frames of windows, views, bitmaps even the 
-  * screen itself. A HRect is defined by its four sides, expressed as the public
-  * data members left, top, right, and bottom.
-  *
-  * If you change a component's rect, you should call its <HView.drawRect> method.
-  *
-  * vars: Instance Variables
-  *  type - '[HRect]'
-  *  top - The position of the rect's top side (from parent top)
-  *  left - The position of the rect's left side (from parent left)
-  *  bottom - The position of the rect's bottom side (from parent top)
-  *  right - The position of the rect's right side (from parent left)
-  *  leftTop - A <HPoint> representing the coordinate of the rect's *left top corner*
-  *  leftBottom - A <HPoint> representing the coordinate of the rect's *left bottom corner*
-  *  rightTop - A <HPoint> representing the coordinate of the rect's *right top corner*
-  *  rightBottom - A <HPoint> representing the coordinate of the rect's *right bottom corner*
-  *  width - The width of the rect.
-  *  height - The height of the rect.
-  *
-  * See also:
-  *  <HPoint> <HView> <HView.drawRect>
-  **/  
+/*** = Description
+  ** A Rect object represents a rectangle. Rects are used throughout the
+  ** Components to define the frames of windows, views, bitmaps even the 
+  ** screen itself. A HRect is defined by its four sides, expressed as the public
+  ** data members left, top, right, and bottom.
+  **
+  ** If you change a component's rect, you should call its HView.drawRect method.
+  **
+  ** = Instance Variables
+  ** +type+::         '[HRect]'
+  ** +top+::          The position of the rect's top side (from parent top)
+  ** +left+::         The position of the rect's left side (from parent left)
+  ** +bottom+::       The position of the rect's bottom side (from parent top)
+  ** +right+::        The position of the rect's right side (from parent left)
+  ** +leftTop+::      A HPoint representing the coordinate of the rect's left top corner
+  ** +leftBottom+::   A HPoint representing the coordinate of the rect's left bottom corner
+  ** +rightTop+::     A HPoint representing the coordinate of the rect's right top corner
+  ** +rightBottom+::  A HPoint representing the coordinate of the rect's right bottom corner
+  ** +width+::        The width of the rect.
+  ** +height+::       The height of the rect.
+  ***/  
 HRect = HClass.extend({
-/** constructor: constructor
-  *
+/** = Description
   * Initializes a Rect as four sides, as two diametrically opposed corners,
   * or as a copy of some other Rect object. A rectangle that's not assigned
   * any initial values is invalid, until a specific assignment is made, either
   * through a set() function or by setting the object's data members directly.
   *
-  * Parameter (using a <HRect> instance):
-  *  rect - Another <HRect>.
+  * = Parameters 
+  * using a HRect instance:
+  * +rect+::  Another HRect.
   *
-  * Parameters (using two <HPoint> instances):
-  *  leftTop, rightBottom - Coordinates of the *left top corner* and *right bottom corner*.
+  * using two HPoint instances:
+  * +leftTop+::       Coordinates of the left top corner.
+  * +rightBottom+::   Coordinates of the right bottom corner.
   *
-  * Parameters (using separate Numeric coordinates):
-  *  left, top, right, bottom - Coordinates of the *sides*.
+  * using separate numeric coordinates:
+  * +left+::    The coordinate of left side.
+  * +top+::     The coordinate of top side.
+  * +right+::   The coordinate of right side.
+  * +bottom+::  The coordinate of bottom side.
   *
-  * Initialization examples:
-  * > var myLeftTopPoint = new HPoint(100,200);
-  * > var myBottomRightPoint = new HPoint(300,400);
-  * > var myRectFromOppositeCornerPoints = new HRect( myLeftTopPoint, myBottomRightPoint );
-  * > var myRectFromSideCoordinates = new HRect(100,200,300,400);
-  * > var myRectFromAnotherRect = new HRect( myRectFromEdgeCoordinates );
+  * = Usage
+  * var myLeftTopPoint = new HPoint(100,200);
+  * var myBottomRightPoint = new HPoint(300,400);
+  * var myRectFromOppositeCornerPoints = new HRect( myLeftTopPoint, myBottomRightPoint );
+  * var myRectFromSideCoordinates = new HRect(100,200,300,400);
+  * var myRectFromAnotherRect = new HRect( myRectFromEdgeCoordinates );
+  *
   **/
   constructor: function() {
     this.type = '[HRect]';
@@ -105,18 +106,15 @@ HRect = HClass.extend({
     this.right = _rect.right;
   },
 
-/** method: updateSecondaryValues
-  *
+/** = Description
   * You should call this on the instance to update secondary values, like
   * width and height, if you change a primary (left/top/right/bottom) value
   * straight through the property.
   *
-  * *Do not change properties other than the primaries through properties.*
+  * Do not change properties other than the primaries through properties.
   *
-  * *Use the accompanied methods instead.*
+  * Use the accompanied methods instead.
   *
-  * See also:
-  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
   **/
   updateSecondaryValues: function() {
     /**
@@ -145,24 +143,21 @@ HRect = HClass.extend({
     this.height = (this.bottom - this.top);
   },
   
-/** method: set
-  *
+/** = Description
   * Sets the object's rectangle by defining the coordinates of all four
   * sides.
   *
   * The other set...() functions move one of the rectangle's corners to the
   * Point argument; the other corners and sides are modified concomittantly.
   *
-  * *None of these methods prevents you from creating an invalid rectangle.*
+  * None of these methods prevents you from creating an invalid rectangle.
   *
-  * Parameters:
-  *  _left - The coordinate of the left side.
-  *  _top - The coordinate of the top side.
-  *  _right - The coordinate of the right side.
-  *  _bottom - The coordinate of the bottom side.
+  * = Parameters
+  * +_left+::     The coordinate of the left side.
+  * +_top+::      The coordinate of the top side.
+  * +_right+::    The coordinate of the right side.
+  * +_bottom+::   The coordinate of the bottom side.
   *
-  * See also:
-  *  <setLeftTop> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
   **/
   set: function() {
     var _args=arguments;
@@ -184,12 +179,11 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setLeft
-  *
+/** = Description
   * Moves the rect's left side to a new coordinate.
   *
-  * Parameter:
-  *  _left - The new left side coordinate (in px)
+  * = Parameters
+  * +_left+::  The new left side coordinate (in px)
   *
   **/
   setLeft: function(_left){
@@ -197,12 +191,11 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setRight
-  *
+/** = Description
   * Moves the rect's right side to a new coordinate.
   *
-  * Parameter:
-  *  _right - The new right side coordinate (in px)
+  * = Parameters
+  * +_right+::  The new right side coordinate (in px)
   *
   **/
   setRight: function(_right){
@@ -210,12 +203,11 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setTop
-  *
+/** = Description
   * Moves the rect's top side to a new coordinate.
   *
-  * Parameter:
-  *  _top - The new top side coordinate (in px)
+  * = Parameters
+  * +_top+::  The new top side coordinate (in px)
   *
   **/
   setTop: function(_top){
@@ -223,12 +215,11 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setBottom
-  *
+/** = Description
   * Moves the rect's bottom side to a new coordinate.
   *
-  * Parameter:
-  *  _bottom - The new bottom side coordinate (in px)
+  * = Parameters
+  * +_bottom+::  The new bottom side coordinate (in px)
   *
   **/
   setBottom: function(_bottom){
@@ -236,16 +227,13 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setLeftTop
-  *
+/** = Description
   * Moves the rects left and top sides to a new point. Affects the position,
   * width and height.
   *
-  * Parameter:
-  *  _point - A <HPoint> instance to mode the sides to.
+  * = Parameters
+  * +_point+::  A HPoint instance to mode the sides to.
   *
-  * See also:
-  *  <set> <setLeftBottom> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
   **/
   setLeftTop: function(_point) {
     this.left=_point.x;
@@ -253,16 +241,13 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setLeftBottom
-  *
+/** = Description
   * Moves the rects left and bottom sides to a new point. Affects the left
   * position, width and height.
   *
-  * Parameter:
-  *  _point - A <HPoint> instance to mode the sides to.
+  * = Parameters
+  * +_point+::  A HPoint instance to mode the sides to.
   *
-  * See also:
-  *  <set> <setLeftTop> <setRightTop> <setRightBottom> <setWidth> <setHeight> <setSize>
   **/
   setLeftBottom: function(_point) {
     this.left=_point.x;
@@ -270,16 +255,13 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setRightTop
-  *
+/** = Description
   * Moves the rects right and top sides to a new point. Affects the top
   * position, width and height.
   *
-  * Parameter:
-  *  _point - A <HPoint> instance to mode the sides to.
+  * = Parameters
+  * +_point+::  A HPoint instance to mode the sides to.
   *
-  * See also:
-  *  <set> <setLeftTop> <setLeftBottom> <setRightBottom> <setWidth> <setHeight> <setSize>
   **/
   setRightTop: function(_point) {
     this.right=_point.x;
@@ -287,16 +269,13 @@ HRect = HClass.extend({
     this.updateSecondaryValues();
   },
   
-/** method: setRightBottom
-  *
+/** = Description
   * Moves the rects right and bottom sides to a new point. Affects the width
   * and height. Does not affect the position.
   *
-  * Parameter:
-  *  _point - A <HPoint> instance to mode the sides to.
+  * = Parameters
+  * +_point+::  A HPoint instance to mode the sides to.
   *
-  * See also:
-  *  <set> <setLeftTop> <setLeftBottom> <setRightTop> <setWidth> <setHeight> <setSize>
   **/
   setRightBottom: function(_point) {
     this.right=_point.x;
