@@ -71,7 +71,7 @@ HValueResponder = HClass.extend({
       else {
         this.valueObj.set( _value );
       }
-      this['refresh'] && (typeof this.refresh === 'function') && this.refresh();
+      (this['refresh'] !== undefined) && (typeof this.refresh === 'function') && this.refresh();
     }
     return this;
   }
