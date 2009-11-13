@@ -17,24 +17,7 @@ HStepper = HControl.extend({
   
   componentName: "stepper",
   
-  constructor: function(_rect,_parent,_options) {
-    
-    // Makes sure there is at least an empty options block
-    if (!_options) {
-      _options = {};
-    }
-    
-    // Makes sure the default events for HStepper are enabled
-    if (!_options.events) {
-      _options.events = {
-        mouseDown:  true,
-        keyDown:    true,
-        mouseWheel: true
-      };
-    }
-    
-    // Makes sure some other optional options are at some sane defaults
-    _options = HClass.extend({
+  controlDefaults: (HControlDefaults.extend({
       
       // The smallest allowed value
       minValue: 0,
@@ -51,12 +34,23 @@ HStepper = HControl.extend({
       // Boolean to control wrap-around behaviour
       wrapAround: false
       
-    }).extend(
-      
-      // Include user-specified overrides to options
-      _options
-      
-    ).nu(); // new instance of the HClass as _options
+  })),
+  
+  constructor: function(_rect,_parent,_options) {
+    
+    // Makes sure there is at least an empty options block
+    if (!_options) {
+      _options = {};
+    }
+    
+    // Makes sure the default events for HStepper are enabled
+    if (!_options.events) {
+      _options.events = {
+        mouseDown:  true,
+        keyDown:    true,
+        mouseWheel: true
+      };
+    }
     
     this.base( _rect, _parent, _options );
     

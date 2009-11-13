@@ -10,6 +10,7 @@
 
 require 'rubygems'
 require 'rack'
+require 'yaml'
 
 # Legacy:
 LIB_PATHS = []

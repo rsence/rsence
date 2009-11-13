@@ -43,6 +43,9 @@ HControl = HView.extend({
   **/
   refreshOnLabelChange: true,
   
+/** Use this object to specify class-specific default settings. **/
+  controlDefaults: HControlDefaults,
+  
 /** = Description
   * The constructor of HControl implements the same model as HView, 
   * but accepts a third parameter: the options object, that contain 
@@ -56,14 +59,11 @@ HControl = HView.extend({
   *
   **/
   constructor: function(_rect, _parent, _options) {
-    
     // Use empty options if none supplied. Change this within components.
     if(!_options) {
       _options = {};
     }
-    
-    _options = HComponentDefaults.extend(_options).nu();
-    
+    _options = (this.controlDefaults.extend(_options)).nu();
     var _isValueRange = (_options.minValue || _options.maxValue),
         _label = _options.label,
         _events = _options.events,
@@ -80,7 +80,6 @@ HControl = HView.extend({
       _this.base(_rect, _parent);
       _this.isinherited = false;
     }
-    
     // Initial visibility.
     if(_options.visible) {
       _this.show();
@@ -88,11 +87,9 @@ HControl = HView.extend({
     else {
       _this.hide();
     }
-    
     _this.setLabel(_label);
     _this.setEvents(_events);
     _this.setEnabled(_options.enabled);
-    
     if(_options.valueObj){
       _options.valueObj.bind(_this);
     }
@@ -105,7 +102,6 @@ HControl = HView.extend({
     if(_isValueRange) {
       _this.setValueRange(this.value, _options.minValue, _options.maxValue);
     }
-    
     if(!_this.isinherited) {
       _this.draw();
     }

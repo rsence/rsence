@@ -9,6 +9,10 @@
  ##
  #++
 
+if RUBY_VERSION.to_f >= 1.9
+  Encoding.default_external = Encoding::ASCII_8BIT
+end
+
 if ARGV.include?('--help') or ARGV.include?('-h') or
    ARGV.include?('help') or not (
     ARGV.include?('start') or ARGV.include?('stop') or 

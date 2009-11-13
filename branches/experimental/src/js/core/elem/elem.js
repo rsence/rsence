@@ -1171,11 +1171,11 @@ ELEM = {
               return $3.toUpperCase() + $4;
             }
           );
-          _elemS[_camelKey] = _cached[_key];
-          // _elemS.setAttribute(
-          //   _camelKey,
-          //   _cached[_key]
-          // );
+          // _elemS[_camelKey] = _cached[_key];
+          _elemS.setAttribute(
+            _camelKey,
+            _cached[_key]
+          );
         }
         catch(e) {
           console.log(e);
