@@ -21,14 +21,8 @@
   **  <HControl> <HTextControl>
   ***/
 HPasswordControl = HTextControl.extend({
-  // just change input type to password from the default input type=text
-  drawSubviews: function(){
-    this.base();
-    ELEM.get(this.markupElemIds.value).type = 'password';
-  },
-  // disable value echoing for passwords,
-  // one way only (the value entered in the password input)
-  refreshValue: function(){
-  }
+  
+  componentName: 'passwordcontrol'
+  
 });
 

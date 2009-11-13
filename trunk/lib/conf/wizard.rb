@@ -1,4 +1,4 @@
-# -* coding: UTF-8 -*-
+#--
 ##   Riassence Framework
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,6 +6,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+ #++
 
 
 require 'rubygems'
@@ -40,137 +41,10 @@ class ConfigWizard
   end
   
   # makes a copy of the default configuration for comparisons
-  def initialize
-    @conf = hash_deep_copy( $config )
-  end
-  
-  # returns configuration as ruby source
-  def conf_data
-    return %{
-
-## Local configuration
-
-## The base_url specifies the prefix for all default http responders, except servlets.
-## NOTE: the default index_html servlet is aware of this parameter.
-#{cdiff([:base_url])}$config[:base_url] = #{@conf[:base_url].inspect}
-
-
-# This setting should be on, until Rack supports chunked transfers (and as such, transfer encodings for gzip)
-#{cdiff([:no_gzip])}$config[:no_gzip] = #{@conf[:no_gzip].inspect}
-
-## Enabling this appends all msg.reply call output to stdout
-#{cdiff([:trace])}$config[:trace] = #{@conf[:trace].inspect}
-  
-## Switches on debug-mode:
-##  - Generates more output
-##  - Each time /hello is post-requested:
-##    - Plugins are reloaded from source 
-##    - GZFiles are reloaded (if more recent than in memory)
-#{cdiff([:debug_mode])}$config[:debug_mode] = #{@conf[:debug_mode].inspect}
-
-
-## Web server-related settings:
-
-## HTTP Port number:
-#{cdiff([:http_server,:port])}$config[:http_server][:port] = #{@conf[:http_server][:port].inspect}
-
-## Bind this ip address ('0.0.0.0' means all)
-#{cdiff([:http_server,:bind_address])}$config[:http_server][:bind_address] = #{@conf[:http_server][:bind_address].inspect}
-  
-## Rack handler to use
-#{cdiff([:http_server,:rack_require])}$config[:http_server][:rack_require] = #{@conf[:http_server][:rack_require].inspect}
-
-
-## When disabled, tries to prevent all request caching
-#{cdiff([:cache_maximize])}$config[:cache_maximize] = #{@conf[:cache_maximize].inspect}
-
-## When cache_maximize is enabled,
-## this is the time (in seconds) the cached content will expire in
-#{cdiff([:cache_expire])}$config[:cache_expire] = #{@conf[:cache_expire].inspect}
-
-
-## Client-related paths (fileserve)
-
-## The paths FileServe uses to load client js
-#{cdiff([:client_parts,:js])}$config[:client_parts][:js] = #{@conf[:client_parts][:js].inspect}
-
-## The paths FileServe uses to load client css and html templates
-#{cdiff([:client_parts,:themes])}$config[:client_parts][:themes] = #{@conf[:client_parts][:themes].inspect}
-
-
-## Paths to scan for available plugins
-#{cdiff([:plugin_paths])}$config[:plugin_paths] = #{@conf[:plugin_paths].inspect}
-
-
-## IndexHtml settings:
-
-## The initial index.html page <title>
-#{cdiff([:indexhtml_conf,:loading_title])}$config[:indexhtml_conf][:loading_title] = #{@conf[:indexhtml_conf][:loading_title].inspect}
-
-## The initialized html page <title>
-#{cdiff([:indexhtml_conf,:loaded_title])}$config[:indexhtml_conf][:loaded_title] = #{@conf[:indexhtml_conf][:loaded_title].inspect}
-
-
-## Session-related settings
-
-## The comment string in the session cookie
-#{cdiff([:session_conf,:ses_cookie_comment])}$config[:session_conf][:ses_cookie_comment] = #{@conf[:session_conf][:ses_cookie_comment].inspect}
-
-## Disposable keys, when enabled, changes the session id on each xhr
-#{cdiff([:session_conf,:disposable_keys])}$config[:session_conf][:disposable_keys] = #{@conf[:session_conf][:disposable_keys].inspect}
-
-## Timeout controls how long a session is valid, specify seconds
-#{cdiff([:session_conf,:timeout_secs])}$config[:session_conf][:timeout_secs] = #{@conf[:session_conf][:timeout_secs].inspect}
-
-## Key length controls the length of the random-part of the key.
-## The total length is actually key length + 12 bytes, because
-## the uniqueness part is 12 bytes long
-#{cdiff([:session_conf,:key_length])}$config[:session_conf][:key_length] = #{@conf[:session_conf][:key_length].inspect}
-
-## Cookie keys are this many times longer than xhr keys
-#{cdiff([:session_conf,:cookie_key_multiplier])}$config[:session_conf][:cookie_key_multiplier] = #{@conf[:session_conf][:cookie_key_multiplier].inspect}
-
-## The amount of pre-generated keys to keep
-## Tweaking this might affect performance
-#{cdiff([:session_conf,:buffer_size])}$config[:session_conf][:buffer_size] = #{@conf[:session_conf][:buffer_size].inspect}
-
-## When enabled, deletes all old sessions upon server startup
-#{cdiff([:session_conf,:reset_sessions])}$config[:session_conf][:reset_sessions] = #{@conf[:session_conf][:reset_sessions].inspect}
-
-## Message strings
-# if the session is invalid for one reason or another, display this:
-#{cdiff([:session_conf,:messages,:invalid_session,:title])}$config[:session_conf][:messages][:invalid_session][:title] = #{@conf[:session_conf][:messages][:invalid_session][:title].inspect}
-#{cdiff([:session_conf,:messages,:invalid_session,:descr])}$config[:session_conf][:messages][:invalid_session][:descr] = #{@conf[:session_conf][:messages][:invalid_session][:descr].inspect}
-#{cdiff([:session_conf,:messages,:invalid_session,:uri])  }$config[:session_conf][:messages][:invalid_session][:uri  ] = #{@conf[:session_conf][:messages][:invalid_session][:uri].inspect}
-
-
-## Database configuration
-
-# The session database is required for persistent session storage.
-# The database connection string for the session database is:
-#{cdiff([:database,:ses_db])}$config[:database][:ses_db] = #{@conf[:database][:ses_db].inspect}
-
-## NOTE: :root_setup and :auth_setup are deprecated.
-##       They are included only for backwards compatiblity with code that depended on RSence 1.0.
-
-#{cdiff([:database,:root_setup,:host])}$config[:database][:root_setup][:host] = #{@conf[:database][:root_setup][:host].inspect}
-#{cdiff([:database,:root_setup,:user])}$config[:database][:root_setup][:user] = #{@conf[:database][:root_setup][:user].inspect}
-#{cdiff([:database,:root_setup,:pass])}$config[:database][:root_setup][:pass] = #{@conf[:database][:root_setup][:pass].inspect}
-#{cdiff([:database,:root_setup,:db])}$config[:database][:root_setup][:db] = #{@conf[:database][:root_setup][:db].inspect}
-
-#{cdiff([:database,:auth_setup,:host])}$config[:database][:auth_setup][:host] = #{@conf[:database][:auth_setup][:host].inspect}
-#{cdiff([:database,:auth_setup,:user])}$config[:database][:auth_setup][:user] = #{@conf[:database][:auth_setup][:user].inspect}
-#{cdiff([:database,:auth_setup,:pass])}$config[:database][:auth_setup][:pass] = #{@conf[:database][:auth_setup][:pass].inspect}
-#{cdiff([:database,:auth_setup,:db])}$config[:database][:auth_setup][:db] = #{@conf[:database][:auth_setup][:db].inspect}
-
-
-## ValueManager settings
-
-## Key length controls the length of the random-part of the key.
-## The total length is actually key length + 12 bytes, because
-## the uniqueness part is 12 bytes long
-#{cdiff([:values_conf,:key_length])}$config[:values_conf][:key_length] = #{@conf[:values_conf][:key_length].inspect}
-  
+  def initialize( config )
+    @conf = {
+      :database      => hash_deep_copy( config[:database] ),
+      :http_server   => hash_deep_copy( config[:http_server] )
     }
   end
   
@@ -252,7 +126,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " HTTP Server configuration"
     puts 
-    puts "  Riassence Core runs its HTTP Server as:"
+    puts "  Riassence Framework runs its HTTP Server as:"
     puts
     puts "  Server: #{@conf[:http_server][:rack_require].inspect}"
     puts " Address: #{@conf[:http_server][:bind_address].inspect}"
@@ -354,7 +228,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " Session database configuration"
     puts
-    puts "  Riassence Core requires a database for persistant"
+    puts "  Riassence Framework requires a database for persistant"
     puts "  session storage. This feature allows the server"
     puts "  to be restarted without losing user sessions."
     puts
@@ -394,7 +268,7 @@ class ConfigWizard
     puts
     puts
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    puts " This RSence instance is not configured."
+    puts " This Riassence Framework instance is not configured."
     puts
     puts " To configure, create a configuration file:"
     puts "  #{local_config_file_path}"
@@ -409,20 +283,19 @@ class ConfigWizard
       puts " OK. No configuration at this time. Can't continue; exit."
       exit
     end
-    @conf[:database][:auth_setup][:pass] = RandGen.new(12).gen
     ask_about_db
     ask_about_httpd
     puts
     puts "Configuration done!"
     puts
     puts "Writing #{local_config_file_path.inspect}..."
-    local_config_file = open( local_config_file_path, 'w' )
-    local_config_file.write( conf_data )
-    local_config_file.close
-    require local_config_file_path[0..-4]
+    f = File.open( local_config_file_path, 'w' )
+    f.write( YAML.dump( @conf ) )
+    f.close
     puts
-    puts "Revisit #{local_config_file_path} to edit these (and a lot more) settings."
+    puts "Edit #{local_config_file_path} to change the configuration."
     puts
+    return @conf
   end
 end
 

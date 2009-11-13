@@ -1,4 +1,3 @@
-# -* coding: UTF-8 -*-
 ##   Riassence Framework
  #   Copyright 2009 Riassence Inc.
  #   http://riassence.com/
@@ -515,12 +514,12 @@ class JSBuilder
         print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
       end
       
-      html_templates.each do |tmpl_name,tmpl_html|
-        html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
-      end
+      # html_templates.each do |tmpl_name,tmpl_html|
+      #   html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
+      # end
       
       theme_html_js_arr = []
-      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "}; "
+      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]=#{html_templates.to_json}; "
       theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json}); "
       theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json}); "
       theme_html_js_arr.push "HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null );"

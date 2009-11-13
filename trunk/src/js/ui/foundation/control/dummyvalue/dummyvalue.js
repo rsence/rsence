@@ -9,16 +9,18 @@
 /*** = Description
   ** A HDummyValue is just a placeholder for HValue values. HDummyValue
   ** is a light-weight alternative that doesn't implement any actual HValue
-  ** functionality, but implements the essential methods that keep HControl happy.
-  ** It's the default value type for components not bound to real HValue instances.
-  ***/
+  ** functionality, but implements the essential methods and keeps the HControl
+  ** content when an actual HValue instance isn't bound.
+  ** It's the default valueObj type for components not bound to real HValue instances.
+***/
 HDummyValue = HClass.extend({
+  
 /** = Description
   * HDummyValue is initialized just like a real HValue.
   *
   * = Parameters
-  *  +_id+::     Any string or integer, just a placeholder for HValue.id
-  *  +_value+::  Any valid js object, just as for HValue.value
+  * +_id+::     Any string or integer, just a placeholder for HValue.id
+  * +_value+::  Any valid js object, just as for HValue.value
   *
   **/
   constructor: function(_id, _value) {
@@ -38,13 +40,11 @@ HDummyValue = HClass.extend({
     return this.value;
   },
   
-  /** Binds HControl
-    **/
-  bind: function( _theObj ){
-  },
+/** Binds HControl (not)
+  **/
+  bind: function( _theObj ){},
   
-  /** Unbinds HControl
-    **/
-  unbind: function( _theObj ){
-  }
+/** Unbinds (releases) HControl (not)
+  **/
+  unbind: function( _theObj ){}
 });

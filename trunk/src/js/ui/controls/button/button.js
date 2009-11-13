@@ -46,7 +46,9 @@ HClickValueButton = HButton.extend({
     this.setEnabled( this.value === 0 );
   },
   click: function(){
-    this.setValue(1);
+    if(this.enabled){
+      this.setValue(1);
+    }
   }
 });
 

@@ -6,102 +6,63 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** class: HSystem
-  *
-  * *Simple application householding system.*
-  * 
-  * Designed as single instance.
-  *
-  * HSystem is used to keep <HApplication> instances in order.
-  * HApplication itself calls HSystem, so there is no real need to access
-  * HSystem itself besides its <HSystem.stopApp>, <HSystem.startApp>, 
-  * <HSystem.reniceApp> and <HSystem.killApp> methods.
-  *
-  * HSystem works as the root of the component hierachy and currently offers
-  * only <HApplication> management. Useful for implementing taskbars/docks etc.
-  *
-  * var: HDefaultApplicationInterval
-  *  - Defines the default ms interval of polling.
-  *  - Defaults to 100 (ms)
-  *  - Change it before <Element Manager.onloader> is started.
-  *  - Has no effect after the system is initialized.
-  *
-  * vars: Instance variables
-  *  type - '[HSystem]'
-  *  apps - A list of Applications running. 
-  *  defaultInterval - The default application priority.
-  *
-  * See Also:
-  *  <HApplication>
-  *
-  * Usage example:
-  *  > var MyApp = new HApplication();
-  *  > myAppId = MyApp.appId;
-  *  > HSystem.reniceApp(myAppId, 10);
-  *  > HSystem.killApp(myAppId);
-  **/
 
-
-HDefaultApplicationInterval=20;
-HSystemTickerInterval=10;
-
-
-/** global: HWindowFocusBehaviour
-  *
-  * When the focus behaviour is 1, clicking on any subview brings
+/*** = Description
+  ** Main container of global operations on +HView+ and
+  ** +HApplication+ -derived classes.
+  **
+  ** HSystem is used to keep +HApplication+ and +HView+ instances
+  ** globally managed. The managed classes themself calls +HSystem+ methods,
+  ** so there is no real need to access +HSystem+ directly from user-level code.
+  **
+***/
+HSystem = HClass.extend({
+  
+/** When the focus behaviour is 1, clicking on any subview brings
   * the window to front, if attached to a HWindow instance.
   * If the behaviour is 0, only direct clicks on the HWindow controls
   * brings the window to front.
   *
   **/
-HWindowFocusBehaviour = 1;
-
-
-HSystem = HClass.extend({
+  windowFocusBehaviour: 1,
   
-  // Single instance; has no constructor
+/** Singleton class; has no constructor **/
   constructor: null,
   
-  type: '[HSystem]',
-    
-  // An array of HApplication instances, index is the appId
+/** An array of HApplication instances, index is the appId **/
   apps: [],
   
-  // An array (in the same order as apps): holds priority values
+/** An array (in the same order as apps): holds priority values **/
   appPriorities: [],
   
-  // An array (in the same order as apps): holds busy statuses
+/** An array (in the same order as apps): holds busy status **/
   busyApps: [],
   
-  // An array (in the same order as apps): holds Timeout values
-  appTimers: [],
-  
-  // This array holds free app id:s
+/** This array holds free app id:s **/
   freeAppIds: [],
   
-  defaultInterval: HDefaultApplicationInterval,
+/** The default HSystem ticker interval. Unit is milliseconds. **/
+  defaultInterval: 10,
   
-  // The Z-order of applications. All the array handling is done by
-  // HApplication and HView instances.
+/** The default HApplication priority. Unit is "On the n:th tick: poll". **/
+  defaultPriority: 20,
+  
+/** The z-index of root-level +HView+ instances. All the array operations 
+  * are done by the inner logic of +HApplication+ and +HView+ instances.
+  **/
   viewsZOrder: [],
   
-  // This is the internal "clock" counter. Gets updated on every process tick.
+/** This is the internal "clock" counter. Gets updated on every tick. **/
   ticks: 0,
-  //fix_ie: false,
   
-  // Time in milliseconds how long to wait for an application to finish before
-  // terminating it when the application is killed.
+/** Time in milliseconds for the timeout of a poll to finish before
+  * being classified as stuck and thus forcibly terminated.
+  **/
   maxAppRunTime: 5000,
   
-/*** method: scheduler
-  **
-  ** Calls applications, uses the divmod as a prioritizer.
-  **
-  ***/
+/** Calls applications, uses the prority as a prioritizer.
+  **/
   scheduler: function(){
-    //if ((this.ticks % 10) === 0 && this.fix_ie) {
-      //_traverseTree();
-    //}
     
     // Loop through all applications:
     for( var _appId=0; _appId<this.apps.length; _appId++ ){
@@ -115,8 +76,9 @@ HSystem = HClass.extend({
             // That happens in <HApplication._startIdle>
             
             // If the app is not busy, then make a idle call:
-            this.appTimers[ _appId ] = setTimeout('if (HSystem.apps[' + _appId +
-             ']) {HSystem.apps['+_appId+']._startIdle();}',10);
+            if(HSystem.apps[_appId]){
+              HSystem.apps[_appId]._startIdle();
+            }
           }
         }
       }
@@ -129,34 +91,31 @@ HSystem = HClass.extend({
   },
   
   
-/*** method: ticker
-  **
-  ** Calls the scheduler and then calls itself.
-  **
-  ***/
+/** Calls the scheduler and then calls itself after a timeout to keep
+  * the loop going on.
+  **/
   ticker: function(){
     // Increment the tick counter:
     this.ticks++;
     this.scheduler();
-    this._tickTimeout = setTimeout('HSystem.ticker();',HSystemTickerInterval);
+    this._tickTimeout = setTimeout( function(){HSystem.ticker();},this.defaultInterval);
   },
   
   
-/*** method: addApp
-  **
-  ** Called from inside the <HApplication> constructor.
-  ** Binds an app and gives it a unique id.
-  **
-  ** Parameters:
-  **  _app - Usually *this* inside the HApplication constructor, is the app namespace.
-  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
-  **
-  ** Returns:
-  **  The application unique id.
-  **
-  ** See also:
-  **  <HApplication>
-  ***/
+/** = Description
+  * Adds the structures needed for a new +HApplication+ instance.
+  * 
+  * Called from inside the +HApplication+ constructor.
+  * Binds an app and gives it a unique id.
+  *
+  * = Parameters
+  * +_app+::       The reference to the +HApplication+ instance object.
+  * +_priority+::  The app priority.
+  *
+  * = Returns
+  * The app id.
+  *
+  **/
   addApp: function(_app, _priority){
     var _appId;
     if(this.freeAppIds.length !== 0){
@@ -178,17 +137,14 @@ HSystem = HClass.extend({
     return _appId;
   },
   
-/*** method: startApp
-  **
-  ** Starts polling an app instance (and its components).
-  **
-  ** Parameters:
-  **  _appId - The unique id of the app.
-  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
-  **
-  ** See also:
-  **  <HApplication.start> <HSystem.stopApp> <HSystem.reniceApp>
-  ***/
+/** = Description
+  * Starts polling an app instance (and its components).
+  *
+  * = Parameters
+  * +_appId+::      The unique id of the app.
+  * +_priority+::   The app priority.
+  *
+  **/
   startApp: function(_appId,_priority){
     if(_priority===undefined){
       _priority = this.defaultInterval;
@@ -197,45 +153,37 @@ HSystem = HClass.extend({
     this.busyApps[_appId] = false;
   },
   
-/*** method: stopApp
-  **
-  ** Stops polling an app instance (and its components).
-  **
-  ** Parameters:
-  **  _appId - The unique id of the app.
-  **
-  ** See also:
-  **  <HApplication.stop> <HSystem.startApp> <HSystem.reniceApp>
-  ***/
+/** = Description
+  * Stops polling an app instance (and its components).
+  *
+  * = Parameters
+  * +_appId+::   The id of the app.
+  *
+  **/
   stopApp: function(_appId){
     this.busyApps[_appId] = true;
   },
   
-/*** method: reniceApp
-  **
-  ** Changes the priority of the app. Calls <stopApp> and <startApp>.
-  **
-  ** Parameters:
-  **  _appId - The unique id of the app.
-  **  _priority - The priority as the index interval of the ticker to poll the app and its components.
-  **
-  ** See also:
-  **  <HSystem.stopApp> <HSystem.startApp>
-  ***/
+/** = Description
+  * Changes the priority of the app. Calls +stopApp+ and +startApp+.
+  *
+  * = Parameters
+  * +_appId+::     The id of the app.
+  * +_priority+::  The app priority.
+  *
+  **/
   reniceApp: function(_appId,_priority){
     this.appPriorities[ _appId ] = _priority;
   },
   
-/*** method: killApp
-  **
-  ** Stops polling and deletes an app instance (and its components).
-  **
-  ** Parameters:
-  **  _appId - The unique id of the app.
-  **
-  ** See also:
-  **  <HApplication.die> <HSystem.stopApp>
-  ***/
+/** = Description
+  * Stops polling and deletes an app instance (and its components).
+  *
+  * = Parameters
+  * +_appId+::    The unique id of the app.
+  * +_forced+::   (Optional) The doesn't wait for the last poll to finish.
+  *
+  **/
   killApp: function(_appId, _forced){
     if( !_forced ){
       var _startedWaiting = new Date().getTime();
@@ -250,13 +198,26 @@ HSystem = HClass.extend({
     
     this.apps[ _appId ].destroyAllViews();
     this.apps[ _appId ] = null;
-    delete this.apps[ _appId ];
     
     this.freeAppIds.push( _appId );
   },
   
+/** All +HView+ instances that are defined **/
   views: [],
+  
+/** List of free +viwes+ indexes **/
   _freeViewIds: [],
+  
+/** = Description
+  * Adds a view and assigns it an id.
+  *
+  * = Parameters
+  * +_view+::   The +HView+ instance.
+  *
+  * = Returns
+  * The new view id.
+  *
+  **/
   addView: function(_view){
     var _newId;
     if(this._freeViewIds.length===0){
@@ -269,12 +230,30 @@ HSystem = HClass.extend({
     }
     return _newId;
   },
+  
+/** = Description
+  * Removes a view and recycles its id.
+  *
+  * = Parameters
+  * +_viewId+::  The view id to delete.
+  *
+  **/
   delView: function(_viewId){
     this.views[_viewId] = null;
     this._freeViewIds.push(_viewId);
   },
   
+/** The view id of the active window. 0 means none. **/
   activeWindowId: 0,
+  
+/** = Description
+  * Focuses the window given and blurs the previous one.
+  *
+  * = Parameters
+  * +_view+::   The +HView+ instance, this is almost always a
+  *             +HWindow+ instance.
+  *
+  **/
   windowFocus: function(_view){
     if(!_view){
       this.activeWindowId=0;
@@ -293,14 +272,19 @@ HSystem = HClass.extend({
     _view.windowFocus();
   },
   
-  // optimization of zindex buffer, see HView
+/** optimization of zindex buffer, see +HView+ **/
   _updateZIndexOfChildrenBuffer: [],
+  
+/** Updates the z-indexes of the children of the given +_viewId+. **/
   updateZIndexOfChildren: function(_viewId) {
     if(this._updateZIndexOfChildrenBuffer.indexOf(_viewId)===-1){
       this._updateZIndexOfChildrenBuffer.push(_viewId);
     }
   },
   
+/** Flushes the z-indexes. This is a fairly expensive operation,
+  * thas's why the info is buffered.
+  **/
   _flushUpdateZIndexOfChilden: function() {
     
     var j=0, // buffer index
@@ -377,7 +361,7 @@ HSystem = HClass.extend({
   
 });
 
-// Starts the ticking:
+// Starts the ticking, when the document is loaded:
 LOAD(
   function(){
     HSystem.ticker();

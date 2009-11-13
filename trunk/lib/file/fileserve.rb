@@ -1,4 +1,3 @@
-# -* coding: UTF-8 -*-
 ##   Riassence Framework
  #   Copyright 2007 Riassence Inc.
  #   http://riassence.com/

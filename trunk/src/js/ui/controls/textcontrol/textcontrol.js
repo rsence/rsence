@@ -49,28 +49,34 @@ HTextControl = HControl.extend({
   drawSubviews: function(){
     if(this['markupElemIds']!==undefined){
       if(this.markupElemIds['label']!==undefined) {
-        var _size   = ELEM.getVisibleSize( this.elemId ),
-            _width  = _size[0],
-            _height = _size[1],
-            _input  = this.markupElemIds.value,
+        var _input  = this.markupElemIds.value,
             _label  = this.markupElemIds.label;
         if(BROWSER_TYPE.firefox){
-          ELEM.setStyle(_input,'padding-top','0px');
+          if(this.componentName === 'textarea'){
+            ELEM.setStyle(_input,'padding-top','0px');
+          }
+          else {
+            ELEM.setStyle(_input,'margin-top','1px');
+          }
           ELEM.setStyle(_input,'padding-left','0px');
           ELEM.setStyle(_label,'left','2px');
-          ELEM.setStyle(_label,'top','2px');
+          ELEM.setStyle(_label,'top','0px');
           ELEM.setStyle(_label,'right','2px');
           ELEM.setStyle(_label,'bottom','2px');
         }
-        else if(BROWSER_TYPE.ie7){
+        else if(BROWSER_TYPE.ie){
+          ELEM.flushLoop();
+          var _size   = ELEM.getVisibleSize( this.elemId ),
+              _width  = _size[0],
+              _height = _size[1];
           ELEM.setStyle(_input,'left','2px');
-          ELEM.setStyle(_input,'top','2px');
+          ELEM.setStyle(_input,'top','1px');
           ELEM.setStyle(_input,'padding-top','0px');
           ELEM.setStyle(_input,'padding-left','0px');
           ELEM.setStyle(_input,'padding-right','8px');
           ELEM.setStyle(_input,'padding-bottom','0px');
-          ELEM.setStyle(_input,'width',(_width-4)+'px');
-          ELEM.setStyle(_input,'height',(_height-4)+'px');
+          ELEM.setStyle(_input,'width',(_width-10)+'px');
+          ELEM.setStyle(_input,'height',(_height-2)+'px');
           ELEM.setStyle(_label,'left','0px');
           ELEM.setStyle(_label,'top','0px');
           ELEM.setStyle(_label,'right','0px');
@@ -96,6 +102,7 @@ HTextControl = HControl.extend({
         }
       }
     }
+    this.setEnabled(this.enabled);
   },
   
   setStyle: function(_name, _value, _cacheOverride) {
@@ -120,15 +127,17 @@ HTextControl = HControl.extend({
     this.base(_flag);
     if(this['markupElemIds']===undefined){return;}
     if(this.markupElemIds.value) {
-      ELEM.setAttr(this.markupElemIds.value,'disabled',!this.enabled);
+      ELEM.get(this.markupElemIds.value).disabled = !this.enabled;
     }
   },
   hasTextFocus: false,
   textFocus: function(){
     this.hasTextFocus = true;
+    return true;
   },
   textBlur: function(){
     this.hasTextFocus = false;
+    return true;
   },
   refreshValue: function(){
     if(this.markupElemIds){

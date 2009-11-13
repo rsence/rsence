@@ -27,10 +27,6 @@ HValidatorView = HControl.extend({
     this.base(_rect, _parent, _options);
   },
   
-  drawSubviews: function(){
-    this.setStyle('background-image',"url('"+this.getThemeGfxFile('validator.png')+"')");
-  },
-  
 /** method: setValue
   * 
   * Sets the selected status of the validator.
@@ -52,11 +48,10 @@ HValidatorView = HControl.extend({
         _x = _trueValue?-21:0,
         _y = _this.enabled?0:-21,
         _title = _trueValue?'':_value,
-        _setStyle = ELEM.setStyle,
         _elemId = _this.elemId;
-    _setStyle(_elemId,'background-repeat','no-repeat');
-    ELEM.setAttr(_elemId,'title',_title);
-    _setStyle(_elemId,'background-position',_x+'px '+_y+'px');
+    ELEM.setStyle(_elemId,'background-image',"url("+_this.getThemeGfxFile('validator.png')+")");
+    ELEM.setStyle(_elemId,'background-repeat','no-repeat');
+    ELEM.setStyle(_elemId,'background-position',_x+'px '+_y+'px');
   }
 
   

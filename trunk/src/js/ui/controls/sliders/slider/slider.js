@@ -6,7 +6,7 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HSlider
+/*** = Description
   **
   ** HSlider is a control unit that enables the user to choose a value in a range of values. 
   ** Sliders support both dragging the handle and clicking the mouse anywhere on the slider 
@@ -17,28 +17,62 @@
   ** A typical slider is a drag-able thumb along vertical or horizontal line. 
   ** Slider view or theme can be changed; the helmiTheme is used by default.
   **
-  ** vars: Instance variables
-  **  type - '[HSlider]'
-  **  value - Numeric value currently set to this object.
-  **  minValue - The minimum value that can be set to this object.
-  **  maxValue - The maximum value that can be set to this object.
+  ** = Instance variables
+  ** +value+::      Numeric value currently set to this object.
+  ** +minValue+::   The minimum value that can be set to this object.
+  ** +maxValue::    The maximum value that can be set to this object.
   **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl> <HVSlider>
-  ***/
+***/
 HSlider = HControl.extend({
   
   componentName: "slider",
   
-/** constructor: constructor
+  controlDefaults: (HControlDefaults.extend({
+      // The smallest allowed value
+      minValue: 0,
+      
+      // The biggest allowed value
+      maxValue: 1,
+      
+      // Interval in milliseconds for repeat
+      repeatDelay: 300,
+      
+      // Interval in milliseconds for repeat
+      repeatInterval: 50,
+      
+      // Inverse Scrollwheel axis:
+      // As there is only one scrollwheel event, sideways
+      // scrolling doesn't work logically for horizonal
+      // scrollbars by default, so set this to true to
+      // have horizonal sliders work logically
+      // with sideways scrolling, where supported.
+      inverseAxis: false
+  })),
+  
+/** = Description
+  * Like the +HControl.constructor+, except:
+  * Sets the default event responders to:
+  * - +mouseDown+: +false+
+  * - +mouseup+: +false+
+  * - +draggable+: +true+
+  * - +keyDown+: +true+
+  * - +keyUp+: +true+
+  * - +mouseWheel+: +true+
+  * Uses the following extra attributes to +_options+:
+  * +minValue+::  The smallest value the slider can set. Defaults to 0.
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parent - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * +maxValue+::  The largest value the slider can set. Defaults to 1.
+  *
+  * +value+::     The the initial position of the slider. Defaults to 0.
+  *
+  * +repatDelay+::  The key repetition initial delay when changing the slider
+  *                 with cursor keys. Defaults to 300 (ms)
+  *
+  * +repeatInterval+::  The key repetition interval when changing the slider
+  *                     with cursor keys. Defaults to 50 (ms)
+  *
+  * +inverseAxis+::  Inverts the axis of the slider. Defaults to false.
+  *
   **/
   constructor: function(_rect,_parent,_options) {
     
@@ -59,36 +93,6 @@ HSlider = HControl.extend({
       };
     }
     
-    // Makes sure some other optional options are at some sane defaults
-    _options = HClass.extend({
-      
-      // The smallest allowed value
-      minValue: 0,
-      
-      // The biggest allowed value
-      maxValue: 1,
-      
-      // Interval in milliseconds for repeat
-      repeatDelay: 300,
-      
-      // Interval in milliseconds for repeat
-      repeatInterval: 50,
-      
-      // Inverse Scrollwheel axis:
-      // As there is only one scrollwheel event, sideways
-      // scrolling doesn't work logically for horizonal
-      // scrollbars by default, so set this to true to
-      // have horizonal sliders work logically
-      // with sideways scrolling, where supported.
-      inverseAxis: false
-      
-    }).extend(
-      
-      // Include user-specified overrides to options
-      _options
-      
-    ).nu(); // new instance of the HClass as _options
-    
     if(this.isinherited){
       this.base(_rect,_parent,_options);
     }
@@ -106,6 +110,7 @@ HSlider = HControl.extend({
     if(!this.isinherited){
       this.draw();
     }
+    
   },
   
   

@@ -846,6 +846,8 @@ HView = HClass.extend({
   die: function() {
     // hide self, makes destruction seem faster
     this.hide();
+    this.drawn = false;
+    this.stopAnimation();
     // Delete the children first.
     var _childViewId, i;
     while (this.views.length !== 0) {
@@ -860,12 +862,11 @@ HView = HClass.extend({
     }
     this._domElementBindings = [];
     
-    this.drawn = false;
     
     // Remove the DOM object itself
     ELEM.del(this.elemId);
     
-    delete this.rect;
+    this.rect = null;
     var _this = this;
     for( i in _this ){
       _this[i] = null;
@@ -1275,6 +1276,7 @@ HView = HClass.extend({
     var _stringElem = ELEM.make(_elemId);
     ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
+    ELEM.flushLoop();
     var _visibleSize=ELEM.getVisibleSize(_stringElem);
     ELEM.del(_stringElem);
     return _visibleSize;

@@ -1,4 +1,3 @@
-# -* coding: UTF-8 -*-
 ##   Riassence Framework
  #   Copyright 2006 Riassence Inc.
  #   http://riassence.com/
@@ -329,7 +328,7 @@ class SessionManager < SessionStorage
       "Max-Age=#{ses_cookie_max_age}",
       "Comment=#{ses_cookie_comment}"
     ]
-    ses_cookie_arr.push("Domain=#{ses_cookie_domain}") unless ses_cookie_domain == 'localhost'
+    ses_cookie_arr.push("Domain=#{ses_cookie_domain}")
     
     ### Sets the set-cookie header
     msg.response['Set-Cookie'] = ses_cookie_arr.join('; ')

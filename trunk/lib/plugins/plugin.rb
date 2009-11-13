@@ -1,4 +1,3 @@
-# -* coding: UTF-8 -*-
 ##   Riassence Framework
  #   Copyright 2006 Riassence Inc.
  #   http://riassence.com/
@@ -162,7 +161,7 @@ private
     return "{#{js_references.join(', ')}}"
   end
   
-  # Riassence Core dependency reader, just supply it 
+  # Riassence Framework dependency reader, just supply it 
   # with everything you need, it keeps track of
   # what's loaded.
   def include_js(msg, dependencies=[])

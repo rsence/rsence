@@ -1,4 +1,3 @@
-# -* coding: UTF-8 -*-
 ##   Riassence Framework
  #   Copyright 2007 Riassence Inc.
  #   http://riassence.com/
@@ -51,8 +50,8 @@ $_PACKAGES = {
     'thememanager',
     'markupview','morphanimation','view',
     'eventresponder','valueresponder',
-    'control',
     'dummyvalue','controldefaults',
+    'control',
     'dyncontrol'
   ],
   
@@ -116,7 +115,7 @@ $_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGE
 
 
 # Themes to include
-$_THEMES = ['default']
+$_THEMES = ['default','bright']
 
 # BASEPATH COMES FROM THE .sh FILE
 $_SRC_PATH = [ File.join(BASEPATH,'src') ]

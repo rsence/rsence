@@ -1,4 +1,4 @@
-# -* coding: UTF-8 -*-
+#--
 ##   Riassence Framework
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,6 +6,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+ #++
 class SessionTimeout < ServletPlugin
   def match( uri, request_type )
     if request_type == :post and uri == File.join($config[:broker_urls][:hello],'goodbye')
@@ -52,13 +53,6 @@ class Main < Plugin
           COMM.Transporter.stop=true;
           location.href=#{$config[:indexhtml_conf][:respond_address].to_json};
         } )
-        #
-        # Should not be required on recent safari versions
-        #
-        #  if(BROWSER_TYPE.safari){
-        #    reloadTimeout=setTimeout("location.reload(true);",100);
-        #  }
-        #
         msg.expire_session()
       end
       
@@ -112,7 +106,6 @@ class Main < Plugin
   # called once when a session is 
   # restored using the cookie's ses_key
   def restore_ses(msg)
-    
     ## Resets session data to defaults
     ses = msg.session
     init_ses(msg) unless ses.has_key?(:main)
@@ -139,24 +132,28 @@ class Main < Plugin
     if mses[:boot] == 0
       
       msg.reply("ELEM.setStyle(0,'background-color','#{$config[:main_plugin][:bg_color]}');")
-      ## js/start.js includes the client's initial settings
-      msg.reply require_js_once(msg,'start')
       
       ## url_responder is bound in the client-space
       ## to tell the server its status by updating its value
-      msg.reply require_js_once(msg,'url_responder')
-      msg.reply "urlCatcher = new URLCatcher('#{mses[:location_href].val_id}');"
-    
-    ## Second stage enables SesWatcher that changes :client_time every 60 seconds.
-    ## Causes the client to poll the server on regular intervals, when polling mode
-    ## is disabled.
+      location_href_id = mses[:location_href].val_id.to_json
+      msg.reply "COMM.Values.values[#{location_href_id}].bind(COMM.urlResponder);"
+      ## This enables SesWatcher that changes :client_time every 60 seconds.
+      ## It makes the client to poll the server on regular intervals, when polling mode
+      ## is disabled.
+      # 5000ms = 5secs
+      client_time_id = mses[:client_time].val_id.to_json
+      poll_interval = $config[:main_plugin][:server_poll_interval]
+      msg.reply "sesWatcher = COMM.SessionWatcher.nu(#{poll_interval},#{client_time_id});"
+      
     elsif mses[:boot] == 1
       
-      # 5000ms = 5secs
-      msg.reply "sesWatcher = new SesWatcher(#{$config[:main_plugin][:server_poll_interval]},'#{mses[:client_time].val_id}');"
       
       # Delegates the init_ui method to each plugin to signal bootstrap completion.
       $PLUGINS.delegate( 'init_ui', msg )
+      
+      # Deletes the initial "Loading, please wait..." -message
+      msg.reply "ELEM.del(ELEM.bindId('loading'));"
+
       
     ## Processes delayed calls, if the
     ## :delayed_calls -array contains something to process.

@@ -25,16 +25,22 @@ COMM = {
   * after that does its things without any extra statements
   *
   **/
-eval(
-  'COMM._XMLHttpRequest = function(){return new '+(
-  (window['XMLHttpRequest']!==undefined)?
-    'XMLHttpRequest()':(
-    BROWSER_TYPE.ie?
-      'ActiveXObject("Msxml2.XMLHTTP")':
-      'COMM._FakeHttpRequst()'
-    )
-  )+';}'
-);
+if(window['XMLHttpRequest']!==undefined){
+  COMM._XMLHttpRequest = function(){
+    return new XMLHttpRequest();
+  };
+}
+else if(BROWSER_TYPE.ie){
+  COMM._XMLHttpRequest = function(){
+    return new ActiveXObject("Msxml2.XMLHTTP");
+  };
+}
+else {
+  COMM._XMLHttpRequest = function(){
+    console.log("No XMLHttpRequest object types known. Can't Communicate.");
+    return new COMM._FakeHttpRequst();
+  };
+}
 
 /** = Description
   * Converts arrays to valid query strings.
@@ -140,6 +146,7 @@ COMM.request = function(_url,_options){
     _this.onSuccess = function(resp){console.log('No success handler specified, response: ',resp);};
   }
   _this.url = _url;
+  _this.options = _options;
   _this.X   = _comm._XMLHttpRequest();
   if(_method === 'GET' && _params.length !== 0){
     _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);

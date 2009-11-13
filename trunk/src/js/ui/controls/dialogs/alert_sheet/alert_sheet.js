@@ -7,6 +7,12 @@
  */
 
 HAlertSheet = HSheet.extend({
+  refreshLabel: function(){
+    this.base();
+    if(this['alertText']){
+      this.alertText.setValue( this.label );
+    }
+  },
   drawSubviews: function(){
     this.icon = HImageView.nu(
       [ 16, 16, 48, 48 ],
