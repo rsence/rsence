@@ -49,11 +49,11 @@ HRect = HClass.extend({
   * +bottom+::  The coordinate of bottom side.
   *
   * = Usage
-  * var myLeftTopPoint = new HPoint(100,200);
-  * var myBottomRightPoint = new HPoint(300,400);
-  * var myRectFromOppositeCornerPoints = new HRect( myLeftTopPoint, myBottomRightPoint );
-  * var myRectFromSideCoordinates = new HRect(100,200,300,400);
-  * var myRectFromAnotherRect = new HRect( myRectFromEdgeCoordinates );
+  *  var myLeftTopPoint = new HPoint(100,200);
+  *  var myBottomRightPoint = new HPoint(300,400);
+  *  var myRectFromOppositeCornerPoints = new HRect( myLeftTopPoint, myBottomRightPoint );
+  *  var myRectFromSideCoordinates = new HRect(100,200,300,400);
+  *  var myRectFromAnotherRect = new HRect( myRectFromEdgeCoordinates );
   *
   **/
   constructor: function() {
