@@ -85,7 +85,7 @@ class Plugin
     raise "DuplicateAppNameFound: #{name.inspect}" if PluginManager.plugins.has_key?(name)
     PluginManager.plugins[ name ] = self
     @names << name
-    @path = PluginManager.curr_plugin_path
+    @path = File.expand_path( PluginManager.curr_plugin_path )
     init if not @initied
     @inited = true
   end
