@@ -7,7 +7,6 @@
  */
 
 /*** = Description
-  **
   ** HSlider is a control unit that enables the user to choose a value in a range of values. 
   ** Sliders support both dragging the handle and clicking the mouse anywhere on the slider 
   ** to move the handle towards the mouse, as well as keyboard support 
@@ -114,15 +113,12 @@ HSlider = HControl.extend({
   },
   
   
-/** method: setValue
-  * 
+/** = Description
   * Sets the current value of the object and moves the slider thumb to the correct position.
   * 
-  * Parameters:
-  *   _value - A numeric value to be set to the object.
+  * = Parameters
+  * +_value+::  A numeric value to be set to the object.
   *
-  * See also:
-  *  <HControl.setValue>
   **/
   setValue: function(_value) {
     if (_value < this.minValue) {
@@ -138,12 +134,9 @@ HSlider = HControl.extend({
     return this;
   },
   
-/** method: draw
-  * 
+/** = Description
   * Draws the rectangle and the markup of this object on the screen.
   *
-  * See also:
-  *  <HView.draw>
   **/
   draw: function() {
     if(!this.drawn) {
@@ -155,17 +148,14 @@ HSlider = HControl.extend({
   },
   
   
-/** event: startDrag
-  * 
+/** = Description
   * This gets called automatically when the user starts to drag the slider thumb.
   * Extend this method if you want something special to happen when the dragging starts.
   * 
-  * Parameters:
-  *   _x - The X coordinate of the point where the drag started.
-  *   _y - The Y coordinate of the point where the drag started.
-  *
-  * See also:
-  *  <HControl.startDrag>
+  * = Parameters
+  * +_x+::  The X coordinate of the point where the drag started.
+  * +_y+::  The Y coordinate of the point where the drag started.
+  *  
   **/
   startDrag: function(_x,_y){
     var _originalPosition = ELEM.getVisiblePosition(this.elemId, true);
@@ -176,34 +166,28 @@ HSlider = HControl.extend({
   },
   
   
-/** event: endDrag
-  * 
+/** = Description
   * This gets called automatically when the user stops dragging the slider thumb.
   * Extend this method if you want something special to happen when the dragging ends.
   * 
-  * Parameters:
-  *   _x - The X coordinate of the point where the drag ended.
-  *   _y - The Y coordinate of the point where the drag ended.
+  * = Parameters
+  * +_x+::  The X coordinate of the point where the drag ended.
+  * +_y+::  The Y coordinate of the point where the drag ended.
   *
-  * See also:
-  *  <HControl.endDrag>
   **/
   endDrag: function(_x,_y){
     this.doDrag(_x,_y);
   },
   
   
-/** event: doDrag
-  * 
+/** = Description
   * This gets called periodically while the user drags the slider thumb.
   * Extend this method if you want something special to happen while dragging.
   * 
-  * Parameters:
-  *   _x - The X coordinate of the point where the user is currently dragging.
-  *   _y - The Y coordinate of the point where the user is currently dragging.
+  * = Parameters
+  * +_x+::  The X coordinate of the point where the user is currently dragging.
+  * +_y+::  The Y coordinate of the point where the user is currently dragging.
   *
-  * See also:
-  *  <HControl.doDrag>
   **/
   doDrag: function(_x,_y){
     _x -= this._originX;
@@ -215,17 +199,14 @@ HSlider = HControl.extend({
   },
   
   
-/** event: keyDown
-  * 
+/** = Description
   * This gets called when the user presses a key down while this control is 
   * active. The default behaviour is to move the thumb with arrow keys, page up,
   * page down, home and end.
   * 
-  * Parameters:
-  *   _keycode - The keycode of the key that was pressed down.
+  * = Parameters
+  * +_keycode+::  The keycode of the key that was pressed down.
   *
-  * See also:
-  *  <HControl.keyDown>
   **/
   keyDown: function(_keycode) {
     // Arrow keys move the thumb 5% at a time.
