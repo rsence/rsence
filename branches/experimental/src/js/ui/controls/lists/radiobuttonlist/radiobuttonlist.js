@@ -6,9 +6,10 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** HRadiobuttonList expects the setListItems to be set. See HListItems.
-  * The value of the instance is the selected key in the listItems.
-  **/
+/*** = Description
+  ** HRadiobuttonList expects the setListItems to be set. See HListItems.
+  ** The value of the instance is the selected key in the listItems.
+  ***/
 HRadiobuttonList = HControl.extend({
   drawSubviews: function(){
     this.setStyle('border','1px solid #999');

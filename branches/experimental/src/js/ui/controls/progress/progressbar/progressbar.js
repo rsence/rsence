@@ -6,8 +6,7 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HProgressBar
-  **
+/*** = Description
   ** HProgressBar is a control unit used to convey the progress of a task, 
   ** such as a download or file transfer. In other words, it is a component 
   ** indicating a percentage of a total task has completed.

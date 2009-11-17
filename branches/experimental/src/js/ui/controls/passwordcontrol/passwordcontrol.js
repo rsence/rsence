@@ -6,19 +6,13 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HPasswordControl
-  **
+/*** = Description
   ** Just like HTextControl, but the typed characters are not shown.
   **
-  ** vars: Instance variables
-  **  type - '[HPasswordControl]'
-  **  value - The string that is currently held by this object.
+  ** = Instance variables
+  ** +type+::   '[HPasswordControl]'
+  ** +value+::  The string that is currently held by this object.
   **
-  ** Extends:
-  **  <HTextControl>
-  **
-  ** See also:
-  **  <HControl> <HTextControl>
   ***/
 HPasswordControl = HTextControl.extend({
   
