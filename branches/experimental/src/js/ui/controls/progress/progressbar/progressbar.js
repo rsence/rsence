@@ -11,29 +11,24 @@
   ** such as a download or file transfer. In other words, it is a component 
   ** indicating a percentage of a total task has completed.
   **
-  ** vars: Instance variables
-  **  type - '[HProgressBar]'
-  **  value - Numeric value currently set to this object.
-  **  minValue - The minimum value that can be set to this object.
-  **  maxValue - The maximum value that can be set to this object.
-  **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl> <HProgressIndicator>
+  ** = Instance variables
+  ** +type+::      '[HProgressBar]'
+  ** +value+::     Numeric value currently set to this object.
+  ** +minValue+::  The minimum value that can be set to this object.
+  ** +maxValue+::  The maximum value that can be set to this object.
   ***/
 
 HProgressBar = HControl.extend({
   
   componentName: "progressbar",
 
-/** constructor: constructor
+/** = Description
+  * HProgressBar constructor
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * = Parameters
+  * +_rect+::         An HRect object that sets the position and dimensions of this control.
+  * +_parentClass+::  The parent view that this control is to be inserted in.
+  * +_options+::      (optional) All other parameters. See HComponentDefaults.
   **/  
   constructor: function(_rect,_parentClass,_options) {  
 
@@ -77,30 +72,33 @@ HProgressBar = HControl.extend({
     this.progressFrames      = 10;
     this.currProgressFrame   = 0;
   },
-  
+  /** Set frame height for progressbar
+    **/
   setProgressFrameHeight: function(_px){
     this.progressFrameHeight = _px;
   },
-  
+  /** Set frame numbers for progressbar
+    **/
   setProgressFrameNum: function(_num){
     this.progressFrames = _num;
   },
   
-/** method: setValue
-  * 
+/** = Description
   * Sets the current value of the object and extends the progress mark to the correct position.
   * 
-  * Parameters:
-  *   _value - A numeric value to be set to the object.
+  * = Parameters
+  * +_value+::   A numeric value to be set to the object.
   *
-  * See also:
-  *  <HControl.setValue>
   **/  
   setValue: function(_value) {  
     this.base(_value);       
     this.drawProgress();
   },
   
+  /** = Description
+    * OnIdle function
+    *
+    **/
   onIdle: function(){
     if(this.progressbarElemId) {
       this.currProgressFrame++;
@@ -110,13 +108,8 @@ HProgressBar = HControl.extend({
     }
   },
   
-  /** method: draw
-  * 
-  * Draws the rectangle and the markup of this object on the screen.
-  *
-  * See also:
-  *  <HView.draw>
-  **/  
+  /** Draws the rectangle and the markup of this object on the screen.
+    **/  
   draw: function() {
     if (!this.drawn) {
       this.drawRect();
@@ -139,7 +132,10 @@ HProgressBar = HControl.extend({
     return _pxvalue; 
   },
 
-// private method 
+/** = Description
+  * Drawprogress function
+  *
+  **/
   drawProgress: function() {
     if (this.progressbarElemId) {
       var _propval   = this._value2px();
