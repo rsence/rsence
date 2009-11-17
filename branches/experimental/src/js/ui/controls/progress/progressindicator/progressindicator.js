@@ -6,23 +6,17 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HProgressIndicator
-  **
+/*** = Description
   ** A progress indicator is the indeterminate progress bar, which is used in situations where the
   ** extent of the task is unknown or the progress of the task can not be determined in a way that could be
   ** expressed as a percentage. This bar uses motion or some other indicator to show that progress is taking
   ** place, rather than using the size of the filled portion to show the total amount of progress.
   **
-  ** vars: Instance variables
-  **  type - '[HProgressIndicator]'
-  **  value - Boolean value currently set to this object (true - on, false - off).
-  **  interval - The delay time (in ms) before the next iteration.
+  ** = Instance variables
+  ** +type+::      '[HProgressIndicator]'
+  ** +value+::     Boolean value currently set to this object (true - on, false - off).
+  ** +interval+::  The delay time (in ms) before the next iteration.
   **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl> <HProgressBar>
   ***/
 
 HProgressIndicator = HControl.extend({
@@ -30,12 +24,15 @@ HProgressIndicator = HControl.extend({
   packageName:   "progress",
   componentName: "progressindicator",
 
-/** constructor: constructor
+/** = Description
+  * HProgressIndicator constructor.
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * = Parameters
+  * +_rect+::         An HRect object that sets the position and dimensions 
+  *                   of this control.
+  * +_parentClass+::  The parent view that this control is to be inserted in.
+  * +_options+::      (optional) All other parameters. See <HComponentDefaults>.
+  *
   **/    
   constructor: function(_rect,_parentClass,_options) { 
    
@@ -76,12 +73,11 @@ HProgressIndicator = HControl.extend({
     
   },
 
-/** method: setValue
-  * 
+/** = Description
   * Checks if the given value is true of false and serves as a toggle of the object. (to be changed..)
   * 
-  * Parameters:
-  *   _value - A boolean value to be set to the object.
+  * = Parameters
+  * +_value+:: A boolean value to be set to the object.
   *
   **/ 
   setValue: function(_value) {
@@ -104,13 +100,10 @@ HProgressIndicator = HControl.extend({
   },
   
   
-/** method: die
-  * 
+/** = Description
   * Makes sure the progress indicator update interval gets cleaned up before the
   * component is destroyed.
   * 
-  * See also:
-  *  <HView.die>
   */
   die: function() {
     this.base();
@@ -120,12 +113,9 @@ HProgressIndicator = HControl.extend({
   },
   
   
-/** method: draw
-  * 
+/** = Description
   * Draws the rectangle and the markup of this object on the screen.
   *
-  * See also:
-  *  <HView.draw>
   **/ 
   draw: function() {
     if (!this.drawn) {
@@ -143,7 +133,10 @@ HProgressIndicator = HControl.extend({
     this.drawProgress();
   },
 
-// private method 
+/** = Description
+  * DrawProgress function
+  *
+  **/
   drawProgress: function() {
     this.progressPosition ++;
     if(this.progressPosition > this.positionLimit - 1) {
