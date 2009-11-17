@@ -16,7 +16,6 @@
   ** +type+::      '[HProgressIndicator]'
   ** +value+::     Boolean value currently set to this object (true - on, false - off).
   ** +interval+::  The delay time (in ms) before the next iteration.
-  **
   ***/
 
 HProgressIndicator = HControl.extend({
