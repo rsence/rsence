@@ -6,36 +6,32 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** class: HCheckbox
-  *
-  * Simple checkbox component, toggles the value of
-  * itself between true and false.
-  *
-  * Extends:
-  *  <HButton>
-  *
-  * See Also:
-  *  <HButton> <HControl> <HView>
-  *
-  **/
+/*** = Description
+  ** Simple checkbox component, toggles the value of
+  ** itself between true and false.
+  ***/
 HCheckbox = HButton.extend({
   componentName: 'checkbox',
+/** Like HControl.constructor but sets the HCheckbox clickable.
+  **/
   constructor: function(_rect,_parent,_options){
     this.base(_rect,_parent,_options);
     this.setClickable(true);
   },
   
-  // Toggles the value:
+/** Toggles the value checked / unchecked.
+  **/
   click: function(){
     this.setValue(!this.value);
   },
-  
+/** SetStyle function for HCheckBox
+  **/
   setStyle: function(_name,_value,_bypass){
     this.setStyleOfPart('label',_name,_value,_bypass);
   },
   
-  // Toggles the checked/unchecked css-class status
-  // according to the trueness of the value.
+/**Toggles the checked/unchecked css-class status 
+  according to the trueness of the value.**/
   refreshValue: function(){
     if(this.markupElemIds.control){
       if(this.value){
@@ -49,5 +45,5 @@ HCheckbox = HButton.extend({
     }
   }
 });
-// Alias for some users:
+//-- Alias for some users:++
 HCheckBox = HCheckbox;
