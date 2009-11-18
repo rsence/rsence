@@ -210,12 +210,23 @@ HTextControl = HControl.extend({
   
 });
 
+/** = Description
+  * HNumericTextControl
+  *
+  *
+  **/
 HNumericTextControl = HTextControl.extend({
   mouseWheel: function(_delta){
     var _value = this.value;
     _value = _value-((_delta<0)?1:-1);
     this.setValue(Math.round(this.validateText(_value)));
   },
+
+/** = Description
+  * validateText function
+  *
+  *
+  **/
   validateText: function(_value){
     if(isNaN(_value)){
       _value = this.value;
@@ -235,6 +246,12 @@ HNumericTextControl = HTextControl.extend({
     }
     return _value;
   },
+
+/** = Description
+  * setValue function
+  *
+  *
+  **/
   setValue: function(_value){
     this.base(this.validateText(_value));
   }
