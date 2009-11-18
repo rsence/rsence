@@ -186,11 +186,11 @@ HTextControl = HControl.extend({
     return _value;
   },
 
-/** = Description
-  * getTextFieldValue function
-  *
-  *
-  **/
+/*** = Description
+  ** getTextFieldValue function
+  **
+  **
+  ***/
   getTextFieldValue: function(){
     return ELEM.get(this.markupElemIds.value).value;
   },
