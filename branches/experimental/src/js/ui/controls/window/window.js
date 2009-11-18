@@ -6,22 +6,25 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** class: HWindow
-  *
-  * Simple window component.
-  *
-  * Extends:
-  *  <HDynControl>
-  *
-  * See Also:
-  *  <HDynControl> <HControl> <HView>
-  *
-  **/
+/*** = Description
+  **
+  ** Simple window component.
+  ***/
 HWindow = HDynControl.extend({
   
   componentName:      'window',
   
-  // HWindow has a few extra options, like the close/collapse/zoom buttons, see below
+  // -- HWindow has a few extra options, like the close/collapse/zoom buttons, see below ++
+
+/** = Description
+  * HWindow constructor
+  *
+  * = Parameters
+  * +_rect+::
+  * +_parentApp+::
+  * +_options+::
+  *
+  **/
   constructor: function(_rect,_parentApp,_options){
     
     if(!_options) {
@@ -41,17 +44,17 @@ HWindow = HDynControl.extend({
       resizeSE:  [ 16, 16 ],
       noResize:  false,
       
-      // set to true, if you want all of the window area to be draggable.
-      // false means only the titlebar is draggable
+      // -- set to true, if you want all of the window area to be draggable.
+      // false means only the titlebar is draggable ++
       fullWindowMove: false,
       
-      // set to true, if you want a close box for the window
+      // -- set to true, if you want a close box for the window ++
       closeButton: false,
       
-      // set to true, if you want a collapse (minimize) button for the window
+      // -- set to true, if you want a collapse (minimize) button for the window ++
       collapseButton: false,
       
-      // set to true, if you want a zoom (maximize/restore) button for the window
+      // -- set to true, if you want a zoom (maximize/restore) button for the window ++
       zoomButton: false
     });
     _options = new (_defaults.extend(_options))();
@@ -71,8 +74,14 @@ HWindow = HDynControl.extend({
     HSystem.windowFocus(this);
   },
   
-  // overrides the drag rules to adapt to the !fullWindowMove as well
-  // as disabling draggability in window button areas.
+  // -- overrides the drag rules to adapt to the !fullWindowMove as well
+  // as disabling draggability in window button areas. ++
+
+/** = Description
+  * makeRectRules function
+  *
+  *
+  **/
   makeRectRules: function(){
     var _this = this,
         _rectRules = _this.base(),
@@ -94,35 +103,45 @@ HWindow = HDynControl.extend({
     return _rectRules;
   },
   
-  // Reports to HSystem that this window has the focus and the previously active window needs to blur
+/** Reports to HSystem that this window has the focus and the 
+  * previously active window needs to blur 
+  **/
   gainedActiveStatus: function(){
     HSystem.windowFocus(this);
   },
   
-  // HSystem calls this method, whenever this window is allowed to be focused
+/** HSystem calls this method, whenever this window is allowed to be focused
+  **/
   windowFocus: function(){
     this.toggleCSSClass(this.elemId, 'inactive', false);
   },
   
-  // HSystem calls this method, whenever this window needs to lose its focus (another window focused)
+/** HSystem calls this method, whenever this window needs to lose its 
+  * focus (another window focused) 
+  **/
   windowBlur: function(){
     this.toggleCSSClass(this.elemId, 'inactive', true);
     this.setStyle('cursor','default');
   },
   
-  // This method gets called, whenever the close button has been clicked
+/** This method gets called, whenever the close button has been clicked
+  **/
   windowClose: function(){
     this.die(); // extend this to this.app.die(), if your app needs to die instead of just the window
   },
   
-  // This method gets called, whenever the collapse (minimize) button has been clicked
+/** This method gets called, whenever the collapse (minimize) button has 
+  * been clicked
+  **/
   windowCollapse: function(){
-    // extend with your app-specific behaviour
+    // -- extend with your app-specific behaviour ++
   },
   
-  // This method gets called, whenever the zoom (maximize/restore) button has been clicked
+/** This method gets called, whenever the zoom (maximize/restore) 
+  * button has been clicked
+  **/
   windowZoom: function(){
-    // extend with your app-specific behaviour
+    // -- extend with your app-specific behaviour ++
   }
 });
 
