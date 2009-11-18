@@ -6,8 +6,7 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HVSlider
-  **
+/*** = Description
   ** HVSlider (vertical version of the slider control) is a control unit that enables the user
   ** to choose a value in a range of values. Sliders support both dragging the handle and 
   ** clicking the mouse anywhere on the slider to move the handle towards the mouse, 
@@ -17,28 +16,25 @@
   ** A typical slider is a drag-able knob along vertical or horizontal line. 
   ** Slider view or theme can be changed; the helmiTheme is used by default.
   **
-  ** vars: Instance variables
-  **  type - '[HVSlider]'
-  **  value - Numeric value currently set to this object.
-  **  minValue - The minimum value that can be set to this object.
-  **  maxValue - The maximum value that can be set to this object.
-  **
-  ** Extends:
-  **  <HSlider>
-  **
-  ** See also:
-  **  <HControl> <HSlider>
+  ** = Instance variables
+  ** +type+::      '[HVSlider]'
+  ** +value+::     Numeric value currently set to this object.
+  ** +minValue+::  The minimum value that can be set to this object.
+  ** +maxValue+::  The maximum value that can be set to this object.
   ***/
 HVSlider = HSlider.extend({
   
   componentName: "vslider",
   
-/** constructor: constructor
+/** = Description
+  * Vertical slider constructor.
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * = Parameters
+  * +_rect+::          An HRect object that sets the position and dimensions 
+  *                    of this control.
+  * +_parentClass+::   The parent view that this control is to be inserted in.
+  * +_options+::       (optional) All other parameters. See HComponentDefaults.
+  *
   **/
   constructor: function(_rect,_parentClass,_options) {
     
