@@ -6,38 +6,39 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HTextControl
+/*** = Description
+  ** HTextControl is a control unit that represents an editable input 
+  ** line of text. Commonly, textcontrol is used as a single text field in 
+  ** the request forms. HTextControl view or theme can be changed; the 
+  ** default_theme is used by default.
   **
-  ** HTextControl is a control unit that represents an editable input line of text. 
-  ** Commonly, textcontrol is used as a single text field in the request forms. 
-  ** HTextControl view or theme can be changed; the helmiTheme is used by default.
-  **
-  ** vars: Instance variables
-  **  type - '[HTextControl]'
-  **  value - The string that is currently held by this object.
-  **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl>
+  ** = Instance variables
+  ** +type+::   '[HTextControl]'
+  ** +value+::  The string that is currently held by this object.
   ***/
 HTextControl = HControl.extend({
   
   componentName: "textcontrol",
 
-/** constructor: constructor
+/** = Description
+  * HTextControl constructor
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * = Parameters
+  * +_rect+::          An <HRect> object that sets the position and dimensions of this control.
+  * +_parentClass+::   The parent view that this control is to be inserted in.
+  * +_options+::       (optional) All other parameters. See <HComponentDefaults>.
+  *
   **/
   constructor: function(_rect, _parentClass, _options) {
     this.base(_rect, _parentClass, _options);
     this.setTextEnter(true);
   },
   
+/** = Description
+  * refreshLable function
+  *
+  *
+  **/
   refreshLabel: function(){
     if(this['markupElemIds']!==undefined){
       if(this.markupElemIds['label']!==undefined){
@@ -45,7 +46,12 @@ HTextControl = HControl.extend({
       }
     }
   },
-  
+
+/** = Description
+  * drawSubviews function
+  *
+  *
+  **/
   drawSubviews: function(){
     if(this['markupElemIds']!==undefined){
       if(this.markupElemIds['label']!==undefined) {
@@ -104,7 +110,16 @@ HTextControl = HControl.extend({
     }
     this.setEnabled(this.enabled);
   },
-  
+
+/** = Description
+  * setStyle function
+  *
+  * = Parameters
+  * +_name+::
+  * +_value+::
+  * +cacheOverride+::
+  *
+  **/
   setStyle: function(_name, _value, _cacheOverride) {
     if (!this['markupElemIds']||!this.markupElemIds['value']) {
       return;
@@ -112,16 +127,13 @@ HTextControl = HControl.extend({
     this.setStyleOfPart('value', _name, _value, _cacheOverride);
   },
   
-/** method: setEnabled
-  * 
+/** = Description
   * Enables/disables the actual text control in addition to changing the look of
   * the field.
   * 
-  * Parameters:
-  *   _flag - True to enable, false to disable.
+  * = Parameters
+  * +_flag+::  True to enable, false to disable.
   *
-  * See also:
-  *  <HControl.setEnabled>
   **/
   setEnabled: function(_flag) {
     this.base(_flag);
@@ -131,14 +143,32 @@ HTextControl = HControl.extend({
     }
   },
   hasTextFocus: false,
+
+/** = Description
+  * textFocus function
+  *
+  *
+  **/
   textFocus: function(){
     this.hasTextFocus = true;
     return true;
   },
+
+/** = Description
+  * textBlur function
+  *
+  *
+  **/
   textBlur: function(){
     this.hasTextFocus = false;
     return true;
   },
+
+/** = Description
+  * refreshValue function
+  *
+  *
+  **/
   refreshValue: function(){
     if(this.markupElemIds){
       if(this.markupElemIds.value){
@@ -146,12 +176,30 @@ HTextControl = HControl.extend({
       }
     }
   },
+
+/** = Description
+  * validateText function
+  *
+  *
+  **/
   validateText: function(_value){
     return _value;
   },
+
+/** = Description
+  * getTextFieldValue function
+  *
+  *
+  **/
   getTextFieldValue: function(){
     return ELEM.get(this.markupElemIds.value).value;
   },
+
+/** = Description
+  * textEnter function
+  *
+  *
+  **/
   textEnter: function(){
     if(this['markupElemIds']===undefined){return;}
     var _value = this.validateText( this.getTextFieldValue() );
