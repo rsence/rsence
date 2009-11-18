@@ -8,12 +8,13 @@
 
 HValidatorView = HControl.extend({
 
-/** constructor: constructor
+/** = Description
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parent - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * = Parameters
+  * +_rect+::     An HRect object that sets the position and 
+  *               dimensions of this control.
+  * +_parent+::   The parent view that this control is to be inserted in.
+  * +_options+::  (optional) All other parameters. See HComponentDefaults.
   **/
   constructor: function(_rect, _parent, _options) {
     if(_options !== undefined){
@@ -27,12 +28,12 @@ HValidatorView = HControl.extend({
     this.base(_rect, _parent, _options);
   },
   
-/** method: setValue
-  * 
+/** = Description
   * Sets the selected status of the validator.
   *
-  * Parameters:
-  *  _flag - True to set the status to selected, false to set to unselected.
+  * = Parameters
+  * +_flag+::   True to set the status to selected, false to set to unselected.
+  *
   **/
   setValue: function(_flag) {
     if (!_flag && _flag !== false) {
@@ -40,7 +41,12 @@ HValidatorView = HControl.extend({
     }
     this.base(_flag);
   },
-  
+
+/** = Description
+  * refreshValue function
+  *
+  *
+  **/
   refreshValue: function(){
     var _this = this,
         _value = _this.value,
