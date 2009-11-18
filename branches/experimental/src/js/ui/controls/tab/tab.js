@@ -6,7 +6,16 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** HTabView
+  **
+  **
+  ***/
 HTabView = HView.extend({
+/** = Description
+  * draw function
+  *
+  **/
   draw: function(){
     var _isDrawn = this.drawn;
     this.base();
@@ -22,11 +31,24 @@ HTabView = HView.extend({
   }
 });
 
+/** = Description
+  * HTab
+  *
+  **/
 HTab = HControl.extend({
   componentName: "tab",
   componentBehaviour: ['view','control','tab'],
   refreshOnValueChange: true,
   refreshOnLabelChange: false,
+/** = Description
+  * constructor for HTab
+  *
+  * = Parameters
+  * +_rect+::
+  * +_parent+::
+  * +_options+::
+  *
+  **/
   constructor: function(_rect,_parent,_options){
     this.tabInit();
     if(this.isinherited) {
@@ -43,6 +65,11 @@ HTab = HControl.extend({
       this.draw();
     }
   },
+  
+/** = Description
+  * refreshValue function
+  *
+  **/
   refreshValue: function(){
     var _value = this.value;
     if(typeof _value === 'number'){
@@ -58,7 +85,12 @@ HTab = HControl.extend({
   //   var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
   //       _width = this.base( _html, null, _elemId );
   //   return _width;
-  // }, 
+  // },
+   
+/** = Description
+  * tabInit function
+  *
+  **/
   tabInit: function(){
     this.tabs = [];
     this.tabLabels = [];
@@ -80,9 +112,25 @@ HTab = HControl.extend({
     this.tabTriggerLink = false;
     this.tabLabelNoHTMLPrefix = false;
   },
+  
+/** = Description
+  * Sets label for the tab.
+  *
+  * = Parameters
+  * +_label+::  Label for the tab
+  *
+  **/
   setLabel: function(_label){
     this.label = _label;
   },
+  
+/** = Description
+  * selectTab function
+  *
+  * = Parameters
+  * +_tabIdx+::
+  *
+  **/
   selectTab: function(_tabIdx){
     if(_tabIdx instanceof HTabView){
       _tabIdx = _tabIdx.tabIndex;
@@ -104,6 +152,15 @@ HTab = HControl.extend({
     this.selectIdx = _tabIdx;
     this.setValue(_tabIdx);
   },
+  
+/** = Description
+  * addTab function
+  *
+  * = Parameters
+  * +_tabLabel+::
+  * +_doSelect+::
+  *
+  **/
   addTab: function(_tabLabel,_doSelect){
     var _tabIdx=this.tabs.length,
         _tabLabelHTML='',
@@ -148,6 +205,15 @@ HTab = HControl.extend({
     }
     return _tab;
   },
+  
+/** = Description
+  * mouseDown function
+  *
+  * = Parameters
+  * +_x+::
+  * +_y+::
+  *
+  **/
   mouseDown: function(_x,_y){
     if(this.tabTriggerLink){
       this.setMouseDown(false);
@@ -172,6 +238,14 @@ HTab = HControl.extend({
       
     }
   },
+  
+/** = Description
+  * removeTab function
+  *
+  * = Parameters
+  * +_tabIdx+::
+  *
+  **/
   removeTab: function(_tabIdx){
     var _selIdx = this.selectIdx,
         _tabViewId = this.tabs[_tabIdx],
@@ -200,15 +274,18 @@ HTab = HControl.extend({
   }
 });
 
-/* HTabItem is a wrapper for creating tabs as subviews when using JSONRenderer.
- *  - rect is ignored
- *  - parent is the HTab instance
- *  - options may contain the following:
- *    - select: true|false, passed on to addTab
- *    - label: true|false, passed on to addTab
- *
- *  returns a new HTabView instance returned by addTab
- */
+/** = Description
+  * HTabItem is a wrapper for creating tabs as subviews when using JSONRenderer.
+  * rect is ignored
+  * parent is the HTab instance
+  * options may contain the following:
+  * select: true|false, passed on to addTab
+  * label: true|false, passed on to addTab
+  *
+  * = Returns 
+  * a new HTabView instance returned by addTab
+  *
+  **/
 HTabItem = {
   nu: function(_rect, _parent, _options){
     return _parent.addTab( _options.label, _options.select );
