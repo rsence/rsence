@@ -241,32 +241,26 @@ HSlider = HControl.extend({
   },
   
   
-/** event: keyUp
-  * 
+/** = Description
   * This gets called when the user releases a key while this control is active.
   * 
-  * Parameters:
-  *   _keycode - The keycode of the key that was released.
+  * = Parameters
+  * +_keycode+::  The keycode of the key that was released.
   *
-  * See also:
-  *  <HControl.keyUp>
   **/
   keyUp: function(_keycode) {
     this._moving = false;
   },
   
   
-/** event: mouseWheel
+/** = Description
+  * This gets called when the mouse wheel is used and the component 
+  * instance has focus.
   *
-  * This gets called when the mouse wheel is used and the component instance has
-  * focus.
+  * = Parameters
+  * +_delta+::  Scrolling delta, the wheel angle change. If delta is positive,
+  *             wheel was scrolled up. Otherwise, it was scrolled down.
   *
-  * Parameters:
-  *  _delta - Scrolling delta, the wheel angle change. If delta is positive,
-  *   wheel was scrolled up. Otherwise, it was scrolled down.
-  *
-  * See also:
-  *  <HControl.mouseWheel>
   **/
   mouseWheel: function(_delta) {
     var _valueChange;
@@ -285,11 +279,11 @@ HSlider = HControl.extend({
   },
   
   
-  // private method
+  // --private method++
   _moveThumb: function(_valueChange, _rate) {
     
     if (!_rate) {
-      // If the key is held down, wait for a while before starting repeat.
+      // --If the key is held down, wait for a while before starting repeat.++
       _rate = this.options.repeatDelay;
     }
     else if (_rate === this.options.repeatDelay) {
@@ -315,14 +309,14 @@ HSlider = HControl.extend({
   },
   
   thumbSize: 21,
-  // private method
+  // -- private method ++
   _initThumb: function() {
     this._thumbElemId = this.markupElemIds.control;
     this.drawThumbPos();
   },
   
   
-  // private method
+  // -- private method ++
   _value2px: function() {
     var _pxrange;
     if(this._isVertical){
@@ -341,7 +335,7 @@ HSlider = HControl.extend({
   },
   
   
-  // private method
+  // -- private method ++
   _pos2value: function(_mousePos) {
     var _pxrange;
     if(this._isVertical){
@@ -364,7 +358,7 @@ HSlider = HControl.extend({
   },
   
   
-  // private method
+  // -- private method ++
   drawThumbPos: function() {
     var _whichprop = this._isVertical?'top':'left',
         _propval   = this._value2px();
@@ -376,6 +370,13 @@ HSlider = HControl.extend({
   
   cssClassPrefix: 'h',
   
+/** = Description
+  * setOrientation function
+  *
+  * = Parameters
+  * +_orientation+::
+  *
+  **/
   setOrientation: function(_orientation) {
     if(!_orientation){
       _orientation = 'c';
