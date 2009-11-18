@@ -6,32 +6,27 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HSplitView
-  **
+/*** = Description
   ** An HSplitView object stacks several child views within one view so that the user can change their relative sizes.
   ** By default, the split bars between the views are horizontal, so the views are one on top of the other.
   **
-  ** vars: Instance variables
-  **  type - '[HSplitView]'
-  **  vertical - Sets whether the split bars are vertical.
-  **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl>
+  ** = Instance variables
+  ** +type+::     '[HSplitView]'
+  ** +vertical+::  Sets whether the split bars are vertical.
   ***/
 HSplitView = HControl.extend({
     
   componentName: "splitview",
 
-  /** constructor: constructor
+/** = Description
+  * HSplitView constructor
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this
-  *     control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * = Parameters
+  * +_rect+::         An HRect object that sets the position and 
+  *                   dimensions of this control.
+  * +_parentClass+::  The parent view that this control is to be inserted in.
+  * +_options+::      (optional) All other parameters. See HComponentDefaults
+  *
   **/
   constructor: function(_rect, _parentClass, _options) {
     
@@ -47,8 +42,8 @@ HSplitView = HControl.extend({
       this.base(_rect, _parentClass, _options);
       this.isinherited = false;
     }
-    // When this is true, the component is always drawn with the theme that was
-    // active at the creation of the component, not the current theme.
+    // -- When this is true, the component is always drawn with the theme that was ++
+    // -- active at the creation of the component, not the current theme. ++
     this.preserveTheme = true;
     
     this.vertical = this.options.vertical;
@@ -63,6 +58,16 @@ HSplitView = HControl.extend({
       this.draw();
     }
   },
+  
+/** = Description
+  * StartDrag function
+  *
+  * = Parameters
+  * +_x+:: 
+  * +_y+:: 
+  * +_dividerView+::
+  *
+  **/
   startDrag: function(_x, _y, _dividerView) {
     if (!_dividerView) {
       return;
@@ -87,6 +92,16 @@ HSplitView = HControl.extend({
       this._limit2 = this._startView2.rect.right - this.dividerWidth;
     }
   },
+
+/** = Description
+  * doDrag function
+  *
+  * = Parameters
+  * +_x+:: 
+  * +_y+:: 
+  * +_dividerView+::
+  *
+  **/
   doDrag: function(_x, _y, _dividerView) {
     if (!_dividerView) {
       return;
@@ -131,6 +146,16 @@ HSplitView = HControl.extend({
       this._startView2.setStyle('width',this._startView2.rect.width+'px', true);
     }
   },
+  
+/** = Description
+  * endDrag function
+  *
+  * = Parameters
+  * +_x+:: 
+  * +_y+:: 
+  * +_dividerView+::
+  *
+  **/
   endDrag: function(_x, _y, _dividerView) {
     this.doDrag(_x, _y);
     delete this._startPointCRSR;
@@ -142,15 +167,15 @@ HSplitView = HControl.extend({
     delete this._limit1;
     delete this._limit2;
   },
-  /** method: addSplitViewItem
-  * 
+/** = Description
   * Adds an item to the HSplitView at index - or, if no index is mentioned, to
   * the end of the list.
   * 
-  * Parameters:
-  *   _item - A [HView] object.
-  *   _index - The index of the item, its ordinal position in the menu. Indices
-  *     begin at 0.
+  * = Parameters
+  * +_item+::    A [HView] object.
+  * +_index+::   The index of the item, its ordinal position in the menu. 
+  *              Indices begin at 0.
+  *
   **/  
   addSplitViewItem: function(_item, _index) {
     if (_index !== undefined) {
@@ -159,12 +184,12 @@ HSplitView = HControl.extend({
       this.splitviews.push(_item);
     }
   },
-  /** method: removeSplitViewItem
-  * 
+  
+/** = Description
   * Removes the the specified item from the HSplitView.
   * 
-  * Parameters:
-  *   _item - A [HView] object.
+  * = Parameters
+  * +_item+::  A [HView] object.
   *
   **/ 
   removeSplitViewItem: function(_item) {
@@ -178,21 +203,25 @@ HSplitView = HControl.extend({
       }
     }
   },
-  /** method: setVertical
-  * 
+  
+/** = Description
   * Sets whether the split bars are vertical.
   * 
-  * Parameters:
-  *   _flag - f flag is true, they're vertical (child views are side by side); if it's false, they're horizontal (child views are one on top of the other). Split bars are horizontal by default.
+  * = Parameters
+  * +_flag+:: if flag is true, they're vertical (child views are side by side);
+  *           if it's false, they're horizontal (child views are one on top 
+  *           of the other). Split bars are horizontal by default.
+  *
   **/
   setVertical: function(_flag) {
     this.vertical = _flag;
     this.options.vertical = _flag;
   },
-  /** method: adjustViews
-  * 
-  * Adjusts the sizes of the receiver’s child views so they (plus the dividers) fill the receiver.
-  * The child views are resized proportionally; the size of a child view relative to the other child views doesn’t change.
+  
+/** = Description
+  * Adjusts the sizes of the receiver’s child views so they (plus the dividers)
+  * fill the receiver. The child views are resized proportionally; 
+  * the size of a child view relative to the other child views doesn’t change.
   * 
   **/
   adjustViews: function() {
@@ -251,6 +280,11 @@ HSplitView = HControl.extend({
     }
     this.draw();
   },
+/** = Description
+  * refresh function
+  *
+  *
+  **/
   refresh: function() {
     // base method calls drawRect
     this.base();
