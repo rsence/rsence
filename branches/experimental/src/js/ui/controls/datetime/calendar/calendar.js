@@ -6,10 +6,20 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-
+/** = Description
+  * HCalendar class
+  *
+  *
+  **/
+  
 HCalendar = HControl.extend({
   componentName: 'calendar',
   weekdays_localized: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  
+/** = Description
+  * Mousewheel changes months on calendar ui.
+  *
+  **/
   mouseWheel: function(delta){
     if(delta<0){
       this.nextMonth();
@@ -18,6 +28,12 @@ HCalendar = HControl.extend({
       this.prevMonth();
     }
   },
+
+/** = Description
+  *
+  *
+  *
+  **/
   refreshLabel: function(){
     var weekdays_localized = this.weekdays_localized,
         weekdays_width = Math.floor(this.rect.width/weekdays_localized.length),
@@ -34,6 +50,12 @@ HCalendar = HControl.extend({
     }
     ELEM.setHTML(this.markupElemIds.label, weekdays_html.join(''));
   },
+
+/** = Description
+  *
+  *
+  *
+  **/
   calendarDateRange: function(date){
     var date_begin = this.firstDateOfMonth(date),
         date_end = this.lastDateOfMonth(date),
@@ -57,19 +79,43 @@ HCalendar = HControl.extend({
       lastWeeksDate
     ];
   },
+
+/** = Description
+  *
+  *
+  *
+  **/
   refreshValue: function(){
     var date = this.date();
     this.drawCalendar(date);
   },
+
+/** = Description
+  *
+  *
+  *
+  **/
   nextMonth: function(){
     var date = new Date( this.viewMonth[0], this.viewMonth[1]+1, 1 );
     this.drawCalendar( new Date(date.getTime() - this.tzMs(date)) );
   },
+
+/** = Description
+  *
+  *
+  *
+  **/
   prevMonth: function(){
     var date = new Date( this.viewMonth[0], this.viewMonth[1]-1, 1 );
     this.drawCalendar( new Date(date.getTime() - this.tzMs(date)) );
   },
   viewMonth: [1970,0],
+
+/** = Description
+  *
+  *
+  *
+  **/
   drawCalendar: function(date){
     date = (date instanceof Date)?date:this.date();
     var calendarDateRange = this.calendarDateRange(date),
