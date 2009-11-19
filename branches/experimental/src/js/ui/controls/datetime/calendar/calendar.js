@@ -17,7 +17,8 @@ HCalendar = HControl.extend({
   weekdays_localized: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
   
 /** = Description
-  * Mousewheel is used to change months.
+  * Calls HCalendar#nextMonth or HCalendar#prevMonth based on delta 
+  * of mouseWheel. 
   *
   **/
   mouseWheel: function(delta){
@@ -30,8 +31,7 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
-  *
-  *
+  * Refreshes weekdays.
   *
   **/
   refreshLabel: function(){
@@ -52,8 +52,13 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
+  * Checks the date range for the month which the date given as input belongs.
+  * 
+  * = Parameters
+  * +date+:: +date+ object to check date range from
   *
-  *
+  * = Returns
+  * Array of [0] first week's date and [1] last week's date.
   *
   **/
   calendarDateRange: function(date){
@@ -81,8 +86,7 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
-  *
-  *
+  * Refreshes the calendar.
   *
   **/
   refreshValue: function(){
@@ -91,8 +95,7 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
-  *
-  *
+  * Draws the next month on calendar.
   *
   **/
   nextMonth: function(){
@@ -101,8 +104,7 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
-  *
-  *
+  * Draws the previous month on calendar.
   *
   **/
   prevMonth: function(){
@@ -112,8 +114,10 @@ HCalendar = HControl.extend({
   viewMonth: [1970,0],
 
 /** = Description
+  * Draws the calendar with the date open given as input.
   *
-  *
+  * = Parameters
+  * +date+:: The date on which calendar UI is opened at.
   *
   **/
   drawCalendar: function(date){
