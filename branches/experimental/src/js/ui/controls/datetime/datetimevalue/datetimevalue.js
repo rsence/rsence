@@ -155,8 +155,13 @@ HDateTime = HClass.extend({
   },
 
 /** = Description
+  * Get last millisecond of the input given date's year as a Date object.
   *
+  * = Parameters
+  * +date+:: The last millisecond of the year on the date given.
   *
+  * = Returns
+  * Last millisecond of the year as a Date object.
   *
   **/
   lastDateOfYear: function(date){
@@ -167,8 +172,13 @@ HDateTime = HClass.extend({
   },
 
 /** = Description
+  * Returns the first millisecond of the input given date's month.
   *
+  * = Parameters
+  * +date+:: The date to get the first millisecond of the month
   *
+  * = Returns
+  * The first millisecond on the given date's month as a Date object.
   *
   **/
   firstDateOfMonth: function(date){
@@ -179,8 +189,13 @@ HDateTime = HClass.extend({
   },
 
 /** = Description
+  * Returns the last millisecond of the input given date's month.
   *
+  * = Parameters
+  * +date+:: The date to get the last millisecond of the month.
   *
+  * = Returns
+  * The last millisecond of the given date's month as a Date object.
   *
   **/
   lastDateOfMonth: function(date){
@@ -191,13 +206,13 @@ HDateTime = HClass.extend({
   },
 
 /** = Description
-  * Returns the first second when the week starts for date given as input.
+  * Returns the first millisecond when the week starts for date given as input.
   *
   * = Parameters
-  * +date+:: The date to get the first second.
+  * +date+:: The date to get the first millisecond.
   *
   * = Returns
-  * Date for the first second of the week.
+  * Date for the first millisecond of the week.
   *
   **/
   firstDateOfWeek: function(date){
@@ -213,8 +228,13 @@ HDateTime = HClass.extend({
   },
 
 /** = Description
+  * Returns the last millisecond of the week for the given date.
   *
+  * = Parameters
+  * +date+:: The date to get the last millisecond
   *
+  * = Returns
+  * The last millisecond of the week as a Date object.
   *
   **/
   lastDateOfWeek: function(date){
