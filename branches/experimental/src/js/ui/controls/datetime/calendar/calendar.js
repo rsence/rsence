@@ -6,18 +6,18 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** = Description
-  * HCalendar class
-  *
-  *
-  **/
+/*** = Description
+  ** HCalendar is a time control component.
+  ** 
+  **
+  ***/
   
 HCalendar = HControl.extend({
   componentName: 'calendar',
   weekdays_localized: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
   
 /** = Description
-  * Mousewheel changes months on calendar ui.
+  * Mousewheel is used to change months.
   *
   **/
   mouseWheel: function(delta){
