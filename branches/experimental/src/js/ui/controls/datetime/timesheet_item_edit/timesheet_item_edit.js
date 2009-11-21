@@ -6,13 +6,31 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** Editor control for HTimeSheet. Editor can access the HTimeSheetItems 
+  ** on HTimeSheet.
+  ***/
+
 HTimeSheetEditor = HControl.extend({
   timeSheetItem: false,
   createId: 0,
+  
+/** = Description
+  * Selects a HTimeSheetItem to edit.
+  *
+  * = Parameters
+  * +_timeSheetItem+:: A HTimeSheetItem to edit.
+  *
+  **/
   setTimeSheetItem: function(_timeSheetItem){
     this.timeSheetItem = _timeSheetItem;
     this.textField.setValue( _timeSheetItem.label );
   },
+
+/** = Description
+  * Opens HTimeSheetEditor for the selected HTimeSheetItem.
+  *
+  **/
   show: function(){
     if(this.timeSheetItem!==false){
       var _newRect = HRect.nu(this.timeSheetItem.rect);
@@ -29,10 +47,23 @@ HTimeSheetEditor = HControl.extend({
     }
     this.base();
   },
+  
+/** = Description
+  * Hides the HTimeSheetEditor.
+  *
+  **/
   hide: function(){
     this.base();
   },
   origParent: null,
+
+/** = Description
+  * Creates a new item.
+  *
+  * = Parameters
+  * +_properties+:: Properties for the new item.
+  *
+  **/
   createItem: function( _properties ){
     if(_properties['id'] === undefined){
       this.createId--;
@@ -58,6 +89,14 @@ HTimeSheetEditor = HControl.extend({
     }
     this.setValue( _value );
   },
+  
+/** = Description
+  * Modifies an item.
+  *
+  * = Parameters
+  * +_properties+:: Properties to change.
+  *
+  **/
   modifyItem: function( _properties ){
     if(_properties['id'] < 0){
       this.createItem( _properties );
@@ -84,6 +123,14 @@ HTimeSheetEditor = HControl.extend({
       this.setValue( _value );
     }
   },
+
+/** = Description
+  * Deletes an item with id given as parameter.
+  *
+  * = Parameters
+  * +_itemId+:: Id of an item to be deleted.
+  * 
+  **/
   deleteItem: function( _itemId ){
     var _value = COMM.Values.clone( this.value );
     if(_value['delete'].indexOf( _itemId ) === -1){
@@ -91,6 +138,11 @@ HTimeSheetEditor = HControl.extend({
       this.setValue( _value );
     }
   },
+
+/** = Description
+  * 
+  *
+  **/
   refreshValue: function(){
     var _value = COMM.Values.clone( this.value ),
         i = 0,
@@ -119,6 +171,11 @@ HTimeSheetEditor = HControl.extend({
     _value['response'] = [];
     this.setValue( _value );
   },
+
+/** = Description
+  * Draws ok, delete and cancel buttons.
+  *
+  **/
   drawSubviews: function(){
     this.origParent = this.parent;
     this.remove();
@@ -131,6 +188,12 @@ HTimeSheetEditor = HControl.extend({
       }
     );
     this.delButton = HButton.extend({
+      
+/** = Description
+  * Click function for delete button. Will call delete function on click
+  * for the current item.
+  *
+  **/
       click: function(){
         this.parent.hide();
         var _sheetItem = this.parent.timeSheetItem;
@@ -153,6 +216,11 @@ HTimeSheetEditor = HControl.extend({
       }
     );
     this.okButton = HButton.extend({
+      
+/** = Description
+  * Click function for okButton will ok the modifications for the current item.
+  *
+  **/
       click: function(){
         this.parent.hide();
         if(this.parent.timeSheetItem!==false){
@@ -175,6 +243,11 @@ HTimeSheetEditor = HControl.extend({
       }
     );
     this.cancelButton = HButton.extend({
+/** = Description
+  * Click function for cancel button will cancel 
+  * the modifications for the current item.
+  *
+  **/
       click: function(){
         this.parent.hide();
         if(this.timeSheetItem!==false){
