@@ -8,8 +8,6 @@
 
 /*** = Description
   ** HCalendar is a time control component.
-  ** 
-  **
   ***/
   
 HCalendar = HControl.extend({
