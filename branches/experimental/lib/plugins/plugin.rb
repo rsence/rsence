@@ -77,6 +77,25 @@ class Plugin
   def restore_ses( msg )
   end
   
+  # extend this method to invoke actions
+  # whenever a user's session is cloned.
+  # this one is called before resore_ses.
+  # this happens when a user opens a new
+  # another browser window or tab while
+  # the old session is still active.
+  # source_ses is the "old" session, which
+  # was the source of the cloning.
+  def cloned_target( msg, source_session )
+  end
+  
+  # extend this method to invoke actions
+  # whenever another session is cloned
+  # from the current session.
+  # target_ses is the "new" session, which
+  # was the target when cloning the
+  # current session.
+  def cloned_source( msg, target_sessions )
+  end
   
   # Registers the plugin respond to messages prefixed +name+
   # Call multiple times to make your plugin to respond

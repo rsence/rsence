@@ -55,7 +55,7 @@ JSLoader = HClass.extend({
     }
     COMM.Queue.pause();
     _this._loadedJS.push(_jsName);
-    if(BROWSER_TYPE.ie){
+    if(BROWSER_TYPE.ie || BROWSER_TYPE.symbian){
       _this._req = COMM.request(
         _this.uri+_jsName+'.js', {
           onSuccess: function(_resp){
