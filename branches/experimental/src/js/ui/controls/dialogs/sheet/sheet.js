@@ -7,21 +7,24 @@
  */
 
 
-/** HSheet is a container component that toggles its visibility
-  * based on its value.
-  *
-  * When the value is 0, it's visible, otherwise it's hidden.
-  *
-  * It expands to fill its parent view, the rect specifies the
-  * size of the sheet inside. The sheet is centered.
-  *
-  * It's practical when combined with button values.
-  *
-  * Also see HAlertSheet and HConfirmSheet components.
+/** = Description
+  * HSheet is a container component that toggles its visibility
+  * based on its value. When the value is 0, it's visible, otherwise 
+  * it's hidden. It expands to fill its parent view, the rect 
+  * specifies the size of the sheet inside. The sheet is 
+  * centered. It's practical when combined with button 
+  * values. Also see HAlertSheet and HConfirmSheet components.
   *
   **/
 HSheet = HControl.extend({
   componentName: 'sheet',
+
+/** = Description
+  * Shows of hides HSheet depending on the value.
+  * If the value is 0 the HSheet#show() will be called. 
+  * Otherwise HSheet#hide() is called.
+  *
+  **/
   refreshValue: function(){
     if(this.value===0){
       this.show();
@@ -30,6 +33,15 @@ HSheet = HControl.extend({
       this.hide();
     }
   },
+
+/** = Description
+  * Draws the sheet rectangle once it has been created and 
+  * if it has not been set as hidden by constructor.
+  *
+  * = Returns
+  * +self+
+  
+  **/
   drawRect: function() {
     if (this.parent && this.rect.isValid) {
       var _this = this,
