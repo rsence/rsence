@@ -112,6 +112,7 @@ HDateTime = HClass.extend({
   *
   * = Parameters
   * +date+:: The date to get timezone offset from.
+  *
   * = Returns
   * Timezone offset in milliseconds.
   *
