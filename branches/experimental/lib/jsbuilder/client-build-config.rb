@@ -99,8 +99,8 @@ $_PACKAGES = {
   ],
   
   'json_renderer' => [
-    'json_renderer',
-    'json_renderer_test'
+    'json_renderer'
+#    'json_renderer_test'
   ]
 }
 
@@ -111,7 +111,7 @@ $_PACKAGES['basic'] = $_PACKAGES['controls']
 
 # All in one -package
 $_PACKAGE_NAMES.push('allinone')
-$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['datetime']
+$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['json_renderer'] + $_PACKAGES['controls'] + $_PACKAGES['lists'] + $_PACKAGES['datetime']
 
 
 # Themes to include
