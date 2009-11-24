@@ -8,7 +8,6 @@
 
 /*** = Description
   ** HTimesheet is a simple timesheet control. 
-  **
   ***/
 HTimeSheet = HControl.extend({
   componentName: 'timesheet',
@@ -17,7 +16,6 @@ HTimeSheet = HControl.extend({
   itemOffsetRight: 0,
 /** = Description
   * Redraws the timesheet.
-  *
   *
   **/
   refresh: function(){
