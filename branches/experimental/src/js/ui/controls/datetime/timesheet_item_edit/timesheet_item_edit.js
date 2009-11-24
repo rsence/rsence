@@ -140,7 +140,8 @@ HTimeSheetEditor = HControl.extend({
   },
 
 /** = Description
-  * 
+  * Refreshes the values by iterating through value['response'] and checking
+  * the new values from the response array. 
   *
   **/
   refreshValue: function(){
