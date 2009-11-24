@@ -8,10 +8,8 @@
 
 
 /*** = Description
-  ** 
   ** This class is still at experimental phase.
   ** Please assume that the API _will_ change later.
-  ** 
   **
   ** HListItems is uses an array-packed list of hash objects as its value.
   ** Each item in the array should have a 'label' and a 'value' key.
