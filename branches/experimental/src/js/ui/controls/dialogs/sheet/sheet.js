@@ -68,8 +68,8 @@ HSheet = HControl.extend({
         _styl( _stateId, 'width', _width+'px', true );
         _styl( _stateId, 'height', _height+'px', true );
       }
-      // Show the rectangle once it gets created, unless visibility was set to
-      // hidden in the constructor.
+      //-- Show the rectangle once it gets created, unless visibility was set to++
+      //-- hidden in the constructor.++
       if(undefined === _this.isHidden || _this.isHidden === false) {
         _styl( _elemId, 'visibility', 'inherit', true);
       }
