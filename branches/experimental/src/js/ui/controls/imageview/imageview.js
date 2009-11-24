@@ -19,17 +19,6 @@
   ** +value+::  URL pointing to the image that is currently shown.
   ***/
 HImageView = HControl.extend({
-  
-/** = Description
-  * HImageView constructor
-  *
-  * = Parameters
-  * +_rect+:: An HRect object that sets the position and 
-  *           dimensions of this control.
-  * +_parentClass+:: - The parent view that this control is to be inserted in.
-  * +_options+:: - (optional) All other parameters. See HComponentDefaults.
-  *
-  **/
   constructor: function(_rect, _parentClass, _options) {
     if(!_options) {
       _options={};
