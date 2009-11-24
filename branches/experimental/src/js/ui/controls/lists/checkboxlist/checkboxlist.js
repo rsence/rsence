@@ -6,11 +6,13 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** = Description
-  * HCheckboxList is a combined list of HCheckboxes.
-  *
-  **/
-
+/*** = Description
+  ** This class is still at experimental phase.
+  ** Please assume that the API _will_ change later. 
+  **
+  ** HCheckboxList is a combined list of HCheckboxes.
+  **
+  ***/
 HCheckboxList = HControl.extend({
   
 /** = Description
