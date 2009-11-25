@@ -6,24 +6,21 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HThemeManager
-  **
+/*** = Description
   ** A single instance class.
-  **
   ** The theme manager knows the name of the currently loaded theme and handles
   ** the loading of theme specific markup snippets and style declarations.
   **
-  ** vars: Instance variables
-  **  themePath - Relative path to the components' top directory. 
-  **  currentTheme - The name of the theme currently in use. Initially the
-  **    default unnamed theme is used.
-  **  usesComponentDir - True when the components are separated in their own
-  **    directories, usually when using the source/development version. False
-  **    when the components are all in same directory. This is the case in the
-  **    release build.
+  ** = Instance variables
+  ** +themePath+::        Relative path to the components' top directory. 
+  ** +currentTheme+::     The name of the theme currently in use. Initially the
+  **                      default unnamed theme is used.
+  ** +usesComponentDir+:: True when the components are separated in their own
+  **                      directories, usually when using the 
+  **                      source/development version. False when the components
+  **                      are all in same directory. This is the case in the 
+  **                      release build.
   **
-  ** See also:
-  **  <HView> <HMarkupView>
   ***/
 
 HDefaultThemePath = '/H/themes';
@@ -32,12 +29,9 @@ HNoComponentCSS = [];
 HNoCommonCSS = [];
 HThemeHasIE6GifsInsteadOfPng = [];
 
-/** HDefaultThemeMode:
-  *
-  *  0 = Pre-built mode
+/**  0 = Pre-built mode
   *  1 = Post-built mode
-  *
-  */
+  **/
 HThemeMode = 1;
 
 HThemeManager = HClass.extend({
@@ -76,18 +70,19 @@ HThemeManager = HClass.extend({
     console.log( "ERROR: Template Exception: '" + _url + "' ");
   },
   
-/** method: fetch
-  *
+/** = Description
   * Loads a template file and returns its contents.
   * If errors occurred, calls the error management functions.
   *
-  * Parameters:
-  *  _url - A valid local file path or http url pointing to the resource to load.
-  *  _contentType - An optional parameter, specifies the content type wanted, defaults to text/html.
+  * = Parameters
+  * +_url+::         A valid local file path or http url pointing to the 
+  *                  resource to load.
+  * +_contentType+:: An optional parameter, specifies the content type wanted, 
+  *                  defaults to text/html.
   *
-  * Returns:
-  *  The contents of the path.
-  */
+  * = Returns
+  * The contents of the path.
+  **/
   fetch: function( _url, _contentType, _callBack, _async ) {
     var _callBackFun;
     if( !_contentType ){
@@ -121,11 +116,9 @@ HThemeManager = HClass.extend({
   },
   
   
-/** method: getThemeGfxPath
-  *
-  * Returns the theme/component -specific path, called from inside css
+/** Returns the theme/component -specific path, called from inside css
   * themes, a bit kludgy approach to tell the theme grapics file paths. 
-  */
+  **/
   getThemeGfxPath: function() {
     var _themeName      = this._cssEvalParams[0],
         _componentName  = this._cssEvalParams[1],
@@ -135,15 +128,14 @@ HThemeManager = HClass.extend({
     return this._joinPath( _urlPrefix, 'gfx' );
   },
   
-/** method: getCssFilePath
-  *
+/** = Description
   * Returns the theme/component -specific graphics file path with proper css wrappers.
   * Used from inside css themes, a bit kludgy approach to tell the file name path.
   *
-  * Parameters:
-  *  _fileName - The File name to load.
+  * = Parameters
+  * +_fileName+:: The File name to load.
   *
-  */
+  **/
   getCssFilePath: function( _fileName ){
     var _themeName      = this._cssEvalParams[0];
     if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
@@ -154,18 +146,18 @@ HThemeManager = HClass.extend({
     }
   },
   
-/** method: loadCSS
-  *
+/** = Description
   * Loads a css file based on the given url (or file path).
   * Evaluates the css data.
   * Makes sure the browser uses the data for component styles.
   *
-  * Parameter:
-  *  _url - A valid url that points to a valid css file.
+  * = Parameter
+  * +_url+:: A valid url that points to a valid css file.
   *
-  * Returns:
-  *  The source of the url.
-  */
+  * = Returns
+  * The source of the url.
+  *
+  **/
   loadCSS: function( _url ) {
     var _contentType = 'text/css',
         _cssFun = function(_cssText){
@@ -273,18 +265,19 @@ HThemeManager = HClass.extend({
     return _htmlUrl;
   },
   
-/** method: loadMarkup
+/** = Description
+  * Loads HTML templates of components. Handles caching independently and 
+  * intelligently.
   *
-  * Loads HTML templates of components. Handles caching independently and intelligently.
+  * = Parameters
+  * +_themeName+::     The name of the template to use.
+  * +_componentName+:: The name of the component template (css/html) to load.
+  * +_themePath+::     Optional, parameter to override the global theme path.
+  * +_pkgPath+::       Optional, parameter to specify the package of the 
+  *                    component, useful only in pre-built mode.
   *
-  * Parameters:
-  *  _themeName     - The name of the template to use.
-  *  _componentName - The name of the component template (css/html) to load.
-  *  _themePath     - (Optional) parameter to override the global theme path.
-  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
-  *
-  * Returns:
-  *  The Pre-Evaluated HTML Template.
+  * = Returns
+  * The Pre-Evaluated HTML Template.
   *
   **/
   loadMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
@@ -307,20 +300,20 @@ HThemeManager = HClass.extend({
     return _cached;
   },
   
-/** method: getMarkup
-  *
-  * Loads CSS and HTML templates of components. Called from <HView._loadMarkup>.
+/** = Description
+  * Loads CSS and HTML templates of components. Called from HView#_loadMarkup.
   * Returns the HTML Template as text.
   * Manages file caches independently and intelligently.
   *
-  * Parameters:
-  *  _themeName     - The name of the template to use.
-  *  _componentName - The name of the component template (css/html) to load.
-  *  _themePath     - (Optional) parameter to override the global theme path.
-  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
+  * = Parameters
+  * +_themeName+::     The name of the template to use.
+  * +_componentName+:: The name of the component template (css/html) to load.
+  * +_themePath+::     (Optional) parameter to override the global theme path.
+  * +_pkgPath+::       (Optional) parameter to specify the package of the 
+  *                    component, useful only in pre-built mode.
   *
-  * Returns:
-  *  The Pre-Evaluated HTML Template.
+  * = Returns
+  * The Pre-Evaluated HTML Template.
   *
   **/
   getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
@@ -347,13 +340,12 @@ HThemeManager = HClass.extend({
   },
   
   
-/** method: _componentGfxPath
-  *
+/** = Description
   * Called via HView to determine the valid path prefix to aid
   * finding theme- and component-specific image files.
   *
-  * Returns:
-  *   A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
+  * = Returns
+  * A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
   *
   **/
   _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
@@ -376,41 +368,36 @@ HThemeManager = HClass.extend({
   },
   
   
-/** method: setTheme
-  * 
+/** = Description
   * Sets the active theme.
   * 
-  * Parameters:
-  *  _theme - The name of the theme to be set as the active theme.
+  * = Parameters
+  * +_theme+:: The name of the theme to be set as the active theme.
   *
   **/
   setTheme: function(_theme) {
     this.currentTheme = _theme;
   },
   
-/** method: restoreDefaultTheme
-  *
-  * Sets the default theme ( HDefaultTheme ) to be the active theme.
+/** Sets the default theme ( HDefaultTheme ) to be the active theme.
   **/
   restoreDefaultTheme: function() {
     this.setTheme( HDefaultThemeName );
   },
   
 /** regexp: _variable_match
-  *
   * A regular expression to match the template evaluation syntax: #{stuff_to_evaluate}
   **/
   _variable_match: new RegExp(/#\{([^\}]*)\}/),
   
-/** method: _bindCSSVariables
-  *
+/** = Description
   * Evaluates the _variable_match regular expression for the string _markup.
   *
-  * Parameters:
-  *  _cssTmpl - The css template file to be evaluated. 
+  * = Parameters
+  * +_cssTmpl+:: The css template file to be evaluated. 
   *
-  * Returns:
-  *  An evaluated CSS Template.
+  * = Returns
+  * An evaluated CSS Template.
   **/
   _bindCSSVariables: function( _cssTmpl ) {
     while ( this._variable_match.test( _cssTmpl ) ) {
