@@ -14,46 +14,164 @@
   ** The major differences between HView and HControl is that HView handles
   ** only visual representation and structurization. In addition to HView's
   ** features, HControl handles labels, values, events, states and such.
-  ** However HControl is heavier, so use HView instead whenever you don't
+  ** However, HControl is more complex, so use HView instead whenever you don't
   ** need the additional features of HControl. HView implements the HMarkupView
   ** interface for template-related task.
   **
-  **
-  ** = Instance variables:
-  ** +themePath+:: Component specific theme path. Default null.
-  ** +packageName+:: Prefix of the directory that contains set of
-  **                 components in pre-build mode. Default null.
-  ** +isAbsolute+:: Is the component using absolute positioning?
-  **                Defaults to true.
-  ** +flexRight+:: Does the HView flex right? Defaults to false.
-  ** +flexLeft+:: Does the HView flex left? Defaults to true. 
-  ** +flexTop+:: Does the HView flex top? Defaults to true.
-  ** +flexBottom+:: Does the HView flex bottom? Defaults false.
-  ** +flexRightOffset+:: Positioning mode offset to right. Defaults to 0.
-  ** +flexBottomOffset+:: Positioning mode offset to bottom. Defaults to 0.
-  ** +componentBehaviour+:: Component behaviour tells other classes what to
-  **                        expect of the component's api and 
-  **                        visual behaviour. 'view' by default.
-  **
   ** = Usage
-  **  myAppInstance = HApplication.nu();
-  **  myViewInstance = HView.nu( [10, 10, 100, 100], myAppInstance );
-  **  myViewInstance.setStyle('background-color','#ffcc00');
-  **  mySubView1 = HView.nu( [10, 10, 70, 70], myViewIntance );
-  **  mySubView2 = HView.nu( [20, 20, 50, 50], mySubView1 );
+  **  var myAppInstance = HApplication.nu();
+  **  var rect1 = [10, 10, 100, 100];
+  **  var myViewInstance = HView.nu( rect1, myAppInstance );
+  **  var myViewInstance.setStyle('background-color','#ffcc00');
+  **  var rect2 = [10, 10, 70, 70];
+  **  var mySubView1 = HView.nu( rect2, myViewIntance );
+  **  var rect3 [20, 20, 50, 50];
+  **  var mySubView2 = HView.nu( rect3, mySubView1 );
+  **
 ***/
 
 HView = HClass.extend({
+  
+/** Component specific theme path.
+  **/
   themePath:   null,
+  
+/** Prefix of the directory that contains set of
+  * components in pre-build mode.
+  **/
   packageName: null,
+  
+/** True, if the component using absolute positioning.
+  * False, if the component is using relative positioning.
+  **/
   isAbsolute: true,
+  
+/** True, if the coordinates are right-aligned.
+  * False, if the coordinates are left-aligned.
+  * Uses flexRightOffset if true. Defined with 6-item arrays
+  * for the _rect parameter of setRect or the constructor.
+  * Can be set directly using the setFlexRight method.
+  **/
   flexRight:  false,
+  
+/** True, if the coordinates are left-aligned.
+  * False, if the coordinates are right-aligned.
+  * Uses the X-coordinate of rect, if true.
+  * Disabled using 6-item arrays with null x-coordinate
+  * for the _rect parameter of setRect or the constructor.
+  * Can be set directly using the setFlexLeft method.
+  **/
   flexLeft:   true,
+  
+/** True, if the coordinates are top-aligned.
+  * False, if the coordinates are bottom-aligned.
+  * Uses the Y-coordinate of rect, if true.
+  * Disabled using 6-item arrays with null x-coordinate
+  * for the _rect parameter of setRect or the constructor.
+  * Can be set directly using the setFlexTop method.
+  **/
   flexTop:    true,
+  
+/** True, if the coordinates are bottom-aligned.
+  * False, if the coordinates are top-aligned.
+  * Uses flexBottomOffset if true. Defined with 6-item arrays
+  * for the _rect parameter of setRect or the constructor.
+  * Can be set directly using the setFlexRight method.
+  **/
   flexBottom: false,
+  
+/** The amount of pixels to offset from the right edge when
+  * flexRight is true. Defined with 6-item arrays
+  * for the _rect parameter of setRect or the constructor.
+  * Can be set directly using the setFlexRight method.
+  **/
   flexRightOffset:  0,
+  
+/** The amount of pixels to offset from the bottom edge when
+  * flexBottom is true.Defined with 6-item arrays
+  * for the _rect parameter of setRect or the constructor.
+  * Can be set directly using the setFlexBottom method.
+  **/
   flexBottomOffset: 0,
+  
+/** The componentBehaviour array tells other classes what to
+  * expect of the component's API and visual behaviour.
+  * The first index is 'view' by default for all classes
+  * inherited from HView.
+  **/
   componentBehaviour: ['view'],
+  
+/** The drawn flag is false before the component is visually
+  * drawn, it's true after it's drawn.
+  **/
+  drawn: false,
+  
+/** The theme the component is constructed with. By default,
+  * uses the HThemeManager.currentTheme specified at the time
+  * of construction.
+  **/
+  theme: null,
+  
+/** The preserveTheme flag prevents the view from being redrawn
+  * if HThemeManager.currentTheme is changed after the view
+  * has been drawn. Is true, if theme has been set.
+  **/
+  preserveTheme: false,
+  
+/** The optimizeWidthOnRefresh flag, when enabled, allows
+  * automatic width calculation for components that support
+  * that feature.
+  **/
+  optimizeWidthOnRefresh: true,
+  
+/** The parent is the +_parent+ supplied to the constructor.
+  * This is a complete object reference to the parent's namespace.
+  **/
+  parent: null,
+  
+/** The parents is an array containing parent instances up to
+  * the root controller level. The root controller is almost
+  * always an instance of HApplication.
+  **/
+  parents: null,
+  
+/** The viewId is the unique ID (serial number) of this view.
+  * This means the view can be looked up globally based on its
+  * id by using the +HSystem.views+ array.
+  **/
+  viewId: null,
+  
+/** The appId is the unique ID (serial number) of the app process
+  * acting as the root controller of the view tree of which this
+  * view is a member.
+  * This means the app can be looked up globally based on this
+  * id by using the +HSystem.apps+ array.
+  **/
+  appId: null,
+  
+/** The app is the reference of the app process acting as
+  * the root controller of the view tree of which this view is a
+  * member.
+  * This is a complete object reference to the app's namespace.
+  **/
+  app: null,
+  
+/** The views array contains a list of subviews of this view
+  * by id. To access the object reference, use the +HSystem.views+
+  * array with the id.
+  **/
+  views: null,
+  
+/** The viewsZOrder array contains a list of subviews ordered by
+  * zIndex. To change the order, use the bringToFront,
+  * sendToBack, bringForwards, sendBackwards, bringToFrontOf and
+  * sentToBackOf methods.
+  **/
+  viewsZOrder: null,
+  
+/** The isHidden flog reflects the visibility of the view.
+  **/
+  isHidden: true,
   
 /** = Description
   * Constructs the logic part of a HView.
@@ -61,24 +179,111 @@ HView = HClass.extend({
   * subcomponents of the view are initialized.
   *
   * = Parameters
-  * +_rect+:: An instance of HRect, defines the position and size of views. 
-  * +_parent+:: Another HView compatible instance, like HApplication,
-  *             HControl and derived component classes.             
+  * +_rect+::     An instance of +HRect+, defines the position and size of views.
+  *               It can be also defined with an array, see below.
+  * +_parent+::   The parent instance this instance will be contained within.
+  *               A valid parent can be another HView compatible instance,
+  *               an HApplication instance, a HControl or a similar extended
+  *               HView instance. The origin of the +_rect+ is the same as the
+  *               parent's offset. For HApplication instances, the web browser's
+  *               window's left top corner is the origin.
+  *
+  * == The +_rect+ dimensions as arrays
+  * Instead of an instance of +HRect+, dimensions can also be supplied as arrays.
+  * The array length must be either 4 or 6. If the length is 4, the dimensions are
+  * specified as follows: +[ x, y, width, height ]+. Note that this is different
+  * from the construction parameters of +HRect+ that takes the coordinates as two
+  * points, like: +( left, top, right, bottom )+.
+  * Arrays with 6 items are a bit more complex (and powerful) as they can specify
+  * the flexible offsets too.
+  * 
+  * === The array indexes for a +_rect+ configured as an 4-item array:
+  * Always left/top aligned, all items must be specified.
+  * Index::            Description
+  * +0+::              The X-coordinate (measured from the parent's left edge)
+  * +1+::              The Y-coordinate (measured from the parent's top edge)
+  * +2+::              The width.
+  * +3+::              The height.
+  *
+  * === The array indexes of an 6-item array:
+  * Can be any configuration of left/top/right/bottom alignment and supports
+  * flexible widths. At least 4 items must be specified.
+  * Index::            Description
+  * +0+::              The left-aligned X-coordinate or +null+ if the view is
+  *                    right-aligned and using a right-aligned X-coordinate at
+  *                    index +4+ as well as the width specified at index +2+.
+  * +1+::              The top-aligned Y-coordinate or +null+ if the view is
+  *                    bottom-aligned and using a right-aligned X-coordinate at
+  *                    index +5+ as well as the height specified at index +3+.
+  * +2+::              The width, if only one X-coordinate specifies the
+  *                    position (at indexes +0+ or +4+).
+  *                    If both X-coordinates (at indexes +0+ and +4+) are
+  *                    specified, the width can be specified with a +null+ for
+  *                    automatic (flexible) width. If the width is specified,
+  *                    it's used as the minimum width.
+  * +3+::              The height, if only one Y-coordinate specifies the
+  *                    position (at indexes +1+ or +5+).
+  *                    If both Y-coordinates (at indexes +1+ and +5+) are
+  *                    specified, the height can be specified with a +null+ for
+  *                    automatic (flexible) height. if the height is specified,
+  *                    it's used as the minimum height.
+  * +4+::              The right-aligned X-coordinate or +null+ if the view is
+  *                    left-aligned and using a left-aligned X-coordinate at
+  *                    index +0+ as well as the width specified at index +2+.
+  * +5+::              The bottom-aligned Y-coordinate or +null+ if the view is
+  *                    top-aligned and using a top-aligned X-coordinate at
+  *                    index +1+ as well as the height specified at index +3+.
+  * == Usage examples of +_rect+:
+  * Specified as two instances of +HPoint+,
+  * x: 23, y: 75, width: 200, height: 100:
+  *  HRect.nu( HPoint.nu( 23, 75 ), HPoint.nu( 223, 175 ) )
+  *
+  * The same as above, but without +HPoint+ instances:
+  *  HRect.nu( 23, 75, 223, 175 )
+  *
+  * The same as above, but with an array as the constructor
+  * parameter for +HRect+:
+  *  HRect.nu( [ 23, 75, 223, 175 ] )
+  *
+  * The same as above, but with an array instead of a +HRect+ instance:
+  *  [ 23, 75, 200, 100 ]
+  *
+  * The same as above, but with a 6-item array:
+  *  [ 23, 75, 200, 100, null, null ]
+  *
+  * The same as above, but aligned to the right instead of left:
+  *  [ null, 75, 200, 100, 23, null ]
+  *
+  * The same as above, but aligned to the right/bottom edges:
+  *  [ null, null, 200, 100, 23, 75 ]
+  *
+  * The same as above, but aligned to the left/bottom edges:
+  *  [ 23, null, 200, 100, null, 75 ]
+  *
+  * Flexible width (based on the parent's dimensions):
+  *  [ 23, 75, null, 100, 23, null ]
+  *
+  * Flexible height (based on the parent's dimensions):
+  *  [ 23, 75, 200, null, null, 75 ]
+  *
+  * Flexible width and height (based on the parent's dimensions):
+  *  [ 23, 75, null, null, 23, 75 ]
+  *
+  * Flexible width and height, but limited to a minimum width
+  * of 200 and a minimum height of 100 (based on the parent's dimensions):
+  *  [ 23, 75, 200, 100, 23, 75 ]
   *
   **/
   constructor: function(_rect, _parent) {
-    // Moved these to the top to ensure safe themeing operation
-    if(this.theme===undefined){
+    
+    // Moved these to the top to ensure safe theming operation
+    if(!this.theme){
       this.theme = HThemeManager.currentTheme;
       this.preserveTheme = false;
     }
     else {
       this.preserveTheme = true;
     }
-    
-    // Used for smart template elements (resizing)
-    
-    this.optimizeWidthOnRefresh = true;
     
     // adds the parentClass as a "super" object
     this.parent = _parent;
@@ -100,9 +305,6 @@ HView = HClass.extend({
     
     // Set the geometry
     this.setRect(_rect);
-    this.isHidden = true;
-    
-    this.drawn = false;
     
     this._cachedLeft = _rect.left;
     this._cachedTop = _rect.top;
@@ -117,8 +319,23 @@ HView = HClass.extend({
     }
   },
   
-  /** Set right side flexing.
-    **/
+/** = Description
+  * When the +_flag+ is true, the view will be aligned to the right.
+  * The +_px+ offset defines how many pixels from the parent's right
+  * edge the right edge of this view will be. If both setFlexRight
+  * and setFlexLeft are set, the width is flexible.
+  * Use the constructor or setRect instead of calling this method
+  * directly.
+  *
+  * = Parameters
+  * +_flag+::    Boolean flag (true/false). Enables
+  *              right-alignment when true.
+  * +_px+::      The amount of pixels to offset from the right
+  *              edge of the parent's right edge.
+  *
+  * = Returns
+  * +self+
+  **/
   setFlexRight: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexRight = _flag;
@@ -127,8 +344,23 @@ HView = HClass.extend({
     return this;
   },
   
-  /** Set left side flexing.
-    **/
+/** = Description
+  * When the +_flag+ is true, the view will be aligned to the left (default).
+  * The +_px+ offset defines how many pixels from the parent's left
+  * edge the left edge of this view will be. If both setFlexLeft
+  * and setFlexRight are set, the width is flexible.
+  * Use the constructor or setRect instead of calling this method
+  * directly.
+  *
+  * = Parameters
+  * +_flag+::    Boolean flag (true/false). Enables
+  *              left-alignment when true.
+  * +_px+::      The amount of pixels to offset from the left
+  *              edge of the parent's left edge.
+  *
+  * = Returns
+  * +self+
+  **/
   setFlexLeft: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexLeft = _flag;
@@ -138,8 +370,23 @@ HView = HClass.extend({
     return this;
   },
   
-  /** Set top flexing.
-    **/
+/** = Description
+  * When the +_flag+ is true, the view will be aligned to the top (default).
+  * The +_px+ offset defines how many pixels from the parent's top
+  * edge the top edge of this view will be. If both setFlexTop
+  * and setFlexBottom are set, the height is flexible.
+  * Use the constructor or setRect instead of calling this method
+  * directly.
+  *
+  * = Parameters
+  * +_flag+::    Boolean flag (true/false). Enables
+  *              top-alignment when true.
+  * +_px+::      The amount of pixels to offset from the top
+  *              edge of the parent's top edge.
+  *
+  * = Returns
+  * +self+
+  **/
   setFlexTop: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexTop = _flag;
@@ -148,8 +395,24 @@ HView = HClass.extend({
     }
     return this;
   },
-  /** Set bottom flexing.
-    **/
+  
+/** = Description
+  * When the +_flag+ is true, the view will be aligned to the bottom.
+  * The +_px+ offset defines how many pixels from the parent's bottom
+  * edge the bottom edge of this view will be. If both setFlexBottom
+  * and setFlexTop are set, the height is flexible.
+  * Use the constructor or setRect instead of calling this method
+  * directly.
+  *
+  * = Parameters
+  * +_flag+::    Boolean flag (true/false). Enables
+  *              bottom-alignment when true.
+  * +_px+::      The amount of pixels to offset from the bottom
+  *              edge of the parent's bottom edge.
+  *
+  * = Returns
+  * +self+
+  **/
   setFlexBottom: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexBottom = _flag;
@@ -157,24 +420,53 @@ HView = HClass.extend({
     this.flexBottomOffset = _px;
     return this;
   },
-  /** Set absolute coordinates true / false.
-    **/
+  
+/** = Description
+  * The +_flag+ enables or disables the absolute positioning mode.
+  * (It's enabled by default). If absolute positioning mode is 
+  * off, the coordinate system has little or no effect.
+  *
+  * = Parameters
+  * +_flag+::    Boolean flag (true/false). Enables
+  *              absolute positioning when true.
+  *              Enables relative positioning when false.
+  *
+  * = Returns
+  * +self+
+  **/
   setAbsolute: function(_flag){
     if(_flag===undefined){_flag=true;}
     this.isAbsolute = _flag;
     return this;
   },
-  /** Set relative coordinates true / false.
-    **/
+  
+/** = Description
+  * The +_flag+ enables or disables the relative positioning mode.
+  * (It's disabled by default). If relative positioning mode is 
+  * on, the coordinate system has little or no effect.
+  *
+  * = Parameters
+  * +_flag+::    Boolean flag (true/false). Enables
+  *              absolute relative when true.
+  *              Enables absolute positioning when false.
+  *
+  * = Returns
+  * +self+
+  **/
   setRelative: function(_flag){
     if(_flag===undefined){_flag=true;}
     this.isAbsolute = (!_flag);
     return this;
   },
   
-  /** Used by from html theme templates to get the theme-specific image path.
-    **/
+/** = Description
+  * Used by html theme templates to get the theme-specific full image path.
+  *
+  * = Returns
+  * The full path of the theme-specific gfx path as a string.
+  **/
   getThemeGfxPath: function() {
+    var _themeName;
     if( this.preserveTheme ){
       _themeName = this.theme;
     } else {
@@ -182,9 +474,14 @@ HView = HClass.extend({
     }
     return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath, this.packageName );
   },
-  /** Returns the full theme URL of the given filename. Used by HTML templates.
-    **/
   
+/** = Description
+  * Used by html theme templates to get the theme-specific full path
+  * of the _fileName given.
+  *
+  * = Returns
+  * The full path of the file.
+  **/
   getThemeGfxFile: function( _fileName ) {
     if( this.preserveTheme ){
       _themeName = this.theme;
@@ -194,11 +491,25 @@ HView = HClass.extend({
     return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, this.packageName, _fileName );
   },
   
-  // provided solely for component extendability:
+/** --
+  * = Description
+  * The _makeElem method does the ELEM.make call to create
+  * the <div> element of the component. It assigns the elemId.
+  * It's a separate method to ease creating component that require
+  * other element types.
+  * ++
+  **/
   _makeElem: function(_parentElemId){
     this.elemId = ELEM.make(_parentElemId,'div');
   },
-  // provided solely for component extendability:
+  
+/** --
+  * = Description
+  * The _setCSS method does the initial styling of the element.
+  * It's a separate method to ease creating component that require
+  * other initial styles.
+  * ++
+  **/
   _setCSS: function(_additional){
     var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
     if(this.isAbsolute){
@@ -210,6 +521,11 @@ HView = HClass.extend({
     ELEM.setCSS(this.elemId,_cssStyle);
   },
   
+/** --
+  * = Description
+  * The _getParentElemId method returns the ELEM ID of the parent.
+  * ++
+  **/
   _getParentElemId: function(){
     var _parentElemId;
     // if the parent does not have an element:
@@ -227,7 +543,12 @@ HView = HClass.extend({
     return _parentElemId;
   },
   
-  // create the dom element
+/** --
+  * = Description
+  * The _createElement method calls the methods required to initialize the
+  * main DOM element of the view.
+  * ++
+  **/
   _createElement: function() {
     if(!this.elemId) {
       
@@ -245,8 +566,9 @@ HView = HClass.extend({
   },
   
 /** = Description
-  * Handles automatically value management, Z-indexes, drawing and 
-  * updating of HView upon alteration.
+  * The +drawRect+ method refreshes the dimensions of the view.
+  * It needs to be called to affect changes in the rect.
+  * It enables the drawn flag.
   *
   * = Returns
   * +self+
@@ -290,51 +612,33 @@ HView = HClass.extend({
       }
     
       _this.drawn = true;
-    
-      // right, bottom, opacity and png-transparency
-      /*
-      if (ELEM._is_ie6 && !this.ie_resizefixadded) {
-        iefix._traverseTree(ELEM.get(this.elemId));
-        this.ie_resizefixadded = true;
-        HSystem.fix_ie = true;
-      }
-      */
     }
     return this;
   },
   
-  /**
-    * --
-    * These methods update the z-index property of the actual element(s).
-    * _updateZIndex updates this object only and it is used when the object is
-    * initially drawn. _updateZIndexAllSiblings updates this object and all its
-    * siblings. This is useful when modifying this object's z-order affects
-    * other elements too.
-    * ++
-    */
+/** --
+  * This method updates the z-index property of the children of self.
+  * It's essentially a wrapper for HSystem.updateZIndexOfChildren passed
+  * with the viewId of self.
+  * ++
+  **/
   _updateZIndex: function() {
-    // doing this via HSystem shaves 10% off the view creation time
-    //ELEM.setStyle(this.elemId, 'z-index',this.parent.viewsZOrder.indexOf(this.viewId));
     HSystem.updateZIndexOfChildren(this.viewId);
   },
   
-  /**
-    * --
-    * This function was really slow, that's why it's moved off to the system scheduler.
-    *
-    * According to benchmarking, with 1000 views, deletion
-    * took over 2000 ms on average before, versus 50 ms after.
-    * ++
-    **/
+/** --
+  * This method updates the z-index property of the siblings of self.
+  * It's essentially a wrapper for HSystem.updateZIndexOfChildren passed
+  * with the parent's viewId of self.
+  * ++
+  **/
   _updateZIndexAllSiblings: function() {
     HSystem.updateZIndexOfChildren(this.parent.viewId);
   },
   
 /** = Description
-  * Marks HView as drawn on the current frame and draws it.
-  *
-  * When extending HView, override this method, don't extend it. 
-  * The new method should call at least drawRect.
+  * The higher level draw wrapper for drawRect, drawMarkup and drawSubviews.
+  * Finally calls refresh.
   * 
   * = Returns
   * +self+
@@ -1093,7 +1397,7 @@ HView = HClass.extend({
     return this;
   },
   
-/** = Descripion
+/** = Description
   * Brings itself to the front of the given view by changing its Z-Index.
   * Only works on sibling views.
   *
@@ -1255,8 +1559,8 @@ HView = HClass.extend({
 /** Returns the X coordinate that has the scrolled position calculated.
   **/
   pageX: function() {
-    var _x = 0;
-    var _elem = this;
+    var _x = 0,
+        _elem = this;
     while(_elem) {
       if(_elem.elemId && _elem.rect) {
         _x += ELEM.get(_elem.elemId).offsetLeft;
@@ -1274,8 +1578,8 @@ HView = HClass.extend({
 /** Returns the Y coordinate that has the scrolled position calculated.
   **/
   pageY: function() {
-    var _y = 0;
-    var _elem = this;
+    var _y = 0,
+        _elem = this;
     while(_elem) {
       if(_elem.elemId && _elem.rect) {
         _y += ELEM.get(_elem.elemId).offsetTop;
@@ -1367,3 +1671,4 @@ HView = HClass.extend({
 
 HView.implement(HMarkupView);
 HView.implement(HMorphAnimation);
+
