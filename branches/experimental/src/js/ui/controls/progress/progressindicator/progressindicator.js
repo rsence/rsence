@@ -120,8 +120,8 @@ HProgressIndicator = HControl.extend({
   },
 
 /** = Description
-  * Adds one to the progressPosition and draws the progress 
-  * if this._progressbarElemId is present.
+  * Moves the progress indicator to the next point and draws it 
+  * if progressbarElemId is present.
   *
   **/
   drawProgress: function() {
