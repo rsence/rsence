@@ -63,29 +63,7 @@ HView = HClass.extend({
   * = Parameters
   * +_rect+:: An instance of HRect, defines the position and size of views. 
   * +_parent+:: Another HView compatible instance, like HApplication,
-  *             HControl and derived component classes.
-  * = Parameters with array               
-  * +_rect+:: can be also defined with array.
-  *           with 4 items, then left and top -aligned layout with numeric indexes at:
-  *           0: left
-  *           1: top
-  *           2: width
-  *           3: height
-  *           with 6 items, then special layout with indexes at:
-  *           0: left
-  *           right-aligned layout if null and valid number at index 2 and 4
-  *           1: top
-  *           bottom-aligned layout if null and valid number at index 3 and 5
-  *           2: width
-  *           auto-width if null and valid number at index 0 and 4
-  *           4: height
-  *           auto-height if null and valid number at index 1 and 5
-  *           5: right
-  *           right-aligned layout if valid number at index 2
-  *           auto-width if valid number at index 0
-  *           6: bottom
-  *           bottom-aligned layout if valid number at index 3
-  *           auto-height if valid number at index 1                         
+  *             HControl and derived component classes.             
   *
   **/
   constructor: function(_rect, _parent) {
