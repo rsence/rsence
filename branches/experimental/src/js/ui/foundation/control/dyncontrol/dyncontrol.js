@@ -17,65 +17,21 @@ HDynControl = HControl.extend({
   
   componentBehaviour: ['view','control','window'],
   
-/** = Description
-  * Like the +HControl.constructor+, but defines the following extra
-  * attributes to +_options+:
-  *
-  * +minX+::      The minimun x-coordinate (from parent's left edge).
-  *               Defaults to 0.
-  *
-  * +minY+::      The minimun y-coordinate (from parent's top edge).
-  *               Defaults to 0.
-  *
-  * +maxX+::      The minimun x-coordinate (from parent's left edge).
-  *               Defaults to the current browser window width.
-  *
-  * +maxY+::      The minimun y-coordinate (from parent's top edge).
-  *               Defaults to the current browser window height.
-  *
-  * +minSize+::   An array containing the minimum +[ width, height ]+.
-  *               Defaults to +[ 24, 54 ]+.
-  *
-  * +maxSize+::   An array containing the maximum +[ width, height ]+.
-  *               Defaults to the window dimensions.
-  *
-  * +resizeW+::   The west (left) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeE+::   The east (right) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeN+::   The north (top) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeS+::   The south (bottom) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeNW+::  The north-west (left top) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +resizeNE+::  The north-east (right top) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +resizeSW+::  The south-west (left bottom) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +resizeSE+::  The south-east (right bottom) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +noResize+::  A boolean flag toggling resizability. When true, disables
-  *               resizing and causes all trigger areas respond to moving
-  *               the offset of the view.
-  *
-  **/
   constructor: function( _rect, _parent, _options ){
     if(!_options) {
       _options={};
     }
     var _winSize = ELEM.windowSize(),
         _defaults = HClass.extend({
+/** The minimun x-coordinate (from parent's left edge). Defaults to 0.
+  **/
           minX:      0,
+/** The minimun y-coordinate (from parent's top edge). Defaults to 0.
+  **/
           minY:      0,
+/** The minimun x-coordinate (from parent's left edge). 
+  * Defaults to the current browser window width.
+  **/
           maxX:      _winSize[0],
           maxY:      _winSize[1],
           minSize:   [24,54],
