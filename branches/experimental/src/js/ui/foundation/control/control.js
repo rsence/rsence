@@ -15,7 +15,6 @@
   *
   * = Instance variables
   * +label+::       The visual value of a component. See setLabel.
-  * +action+::      A function reference to call in certain situations.
   * +events+::      A structure that tells what events to bind.
   * +enabled+::     The enabled/disabled flag. See setEnabled.
   * +value+::       The current value of a component. See setValue.
@@ -31,6 +30,8 @@
   **/
 HControl = HView.extend({
   
+/** Component behaviour includes 'view' and 'control' as a default.
+  **/
   componentBehaviour: ['view','control'],
   
 /** A flag: when true, calls the +refreshValue+ method whenever
@@ -52,14 +53,13 @@ HControl = HView.extend({
   * optional properties, like the value, label and events.
   *
   * = Parameters
-  * +_rect+::     The rectangle of the component. See +HView.constructor+.
-  * +_parent+::   The parent component of the component. See +HView.constructor+.
-  * +_options+::  Optional, all other parameters as object attributes.
-  *               Defaults to an instance of +HControlDefaults+.
+  * +_rect+::    The rectangle of the component. See +HView.constructor+.
+  * +_parent+::  The parent component of the component. See +HView.constructor+.
+  * +_options+:: Optional, all other parameters as object attributes.
+  *              Defaults to an instance of +HControlDefaults+.
   *
   **/
   constructor: function(_rect, _parent, _options) {
-    // Use empty options if none supplied. Change this within components.
     if(!_options) {
       _options = {};
     }
@@ -71,7 +71,6 @@ HControl = HView.extend({
     
     _this.options = _options;
     
-    // HView.constructor:
     if(_this.isinherited) {
       _this.base(_rect, _parent);
     }
@@ -80,7 +79,6 @@ HControl = HView.extend({
       _this.base(_rect, _parent);
       _this.isinherited = false;
     }
-    // Initial visibility.
     if(_options.visible) {
       _this.show();
     }
@@ -132,7 +130,7 @@ HControl = HView.extend({
   * Avoid extending directly, extend +refreshLabel+ instead.
   *
   * = Parameters
-  * +_label+::  The text the component should display.
+  * +_label+:: The text the component should display.
   *
   * = Returns
   * +self+
@@ -156,7 +154,7 @@ HControl = HView.extend({
   * a dimmer appearance.
   *
   * = Parameters
-  * +_flag+::    Boolean; true enables, false disables.
+  * +_flag+:: Boolean; true enables, false disables.
   *
   * = Returns
   * +this+
@@ -202,12 +200,12 @@ HControl = HView.extend({
   * setValue with the value given.
   *
   * = Parameters
-  * +_value+::     The new value to be set to the component's 
-  *                HValue compatible instance.
+  * +_value+::    The new value to be set to the component's 
+  *               HValue compatible instance.
   *
-  * +_minValue+::  The new minimum value limit. See minValue.
+  * +_minValue+:: The new minimum value limit. See minValue.
   *
-  * +_maxValue+::  The new maximum value limit. See maxValue.
+  * +_maxValue+:: The new maximum value limit. See maxValue.
   *
   * = Returns
   * +self+
