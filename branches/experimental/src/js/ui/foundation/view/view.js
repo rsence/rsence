@@ -965,7 +965,6 @@ HView = HClass.extend({
   *
   * = Parameters
   * +_partName+::  The identifier of the markup element.
-  * +_name+::      The style name
   *
   * = Returns
   * The style of a specified markup element.
