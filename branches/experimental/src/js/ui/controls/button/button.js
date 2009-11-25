@@ -29,10 +29,11 @@ HButton = HControl.extend({
   ** for sending button clicks to the server and the like.
   ** For the value responder, reset the value to 0 when read to make
   ** the button clickable again.
-  ** Value states
-  ** 0: Enabled, clickable
-  ** 1: Disabled, clicked
-  ** Other: Disabled, not clickable, not clicked
+  **
+  ** = Value states
+  ** +0+::     Enabled, clickable
+  ** +1+::     Disabled, clicked
+  ** +Other+:: Disabled, not clickable, not clicked
   ***/
 HClickValueButton = HButton.extend({
 /** = Description
