@@ -111,7 +111,7 @@ HProgressIndicator = HControl.extend({
     }
   },
 
-// private method   
+//--private method++
   _initProgress: function() {
     this._progressbarElemId = this.bindDomElement(
       this._progressbarPrefix + this.elemId);
@@ -120,7 +120,8 @@ HProgressIndicator = HControl.extend({
   },
 
 /** = Description
-  * DrawProgress function
+  * Adds one to the progressPosition and draws the progress 
+  * if this._progressbarElemId is present.
   *
   **/
   drawProgress: function() {
