@@ -34,19 +34,18 @@ HMorphAnimation = HClass.extend({
   * +self+
   *   
   * = Usage:
-  * Creates a red view that animates to a new location:
-  *   HView.extend({
-  *     onAnimationEnd: function(){
-  *       this.die();
-  *     }
-  *   }).nu(
-  *     [ 0, 0, 300, 300 ],
-  *     HApplication.nu()
-  *   ).setStyle(
-  *     'background-color', 'red'
-  *   ).animateTo(
-  *     HRect.nu( 300, 300, 500, 500 )
-  *   );
+  *  HView.extend({
+  *    onAnimationEnd: function(){
+  *      this.die();
+  *    }
+  *  }).nu(
+  *    [ 0, 0, 300, 300 ],
+  *    HApplication.nu()
+  *  ).setStyle(
+  *    'background-color', 'red'
+  *  ).animateTo(
+  *    HRect.nu( 300, 300, 500, 500 )
+  *  );
   *   
   **/
   animateTo: function(_obj, _duration, _fps) {
@@ -103,8 +102,8 @@ HMorphAnimation = HClass.extend({
   },
   
   
-  // Private method.
-  // Starts the animation with the target _rect.
+  // --Private method.++
+  // --Starts the animation with the target _rect.++
   _animateTo: function(_rect, _duration, _fps) {
     
     if (null === _duration || undefined === _duration) {
@@ -114,7 +113,6 @@ HMorphAnimation = HClass.extend({
       _fps = 50; // default fps
     }
     
-    // Don't start another animation until the current animation has stopped.
     if (!this._animateInterval) {
       
       this._animationDone = false;
@@ -123,8 +121,6 @@ HMorphAnimation = HClass.extend({
       var _startTime = new Date().getTime();
       
       var _that = this;
-      // Start the animation interval. It will be cleared when the view reaches
-      // its destination.
       this._animateInterval = window.setInterval(
         function() {
           if(!_that){
@@ -164,9 +160,9 @@ HMorphAnimation = HClass.extend({
   },
   
   
-  // Private method.
-  // Moves the view for one step. This gets called repeatedly when the animation
-  // is happening.
+  // --Private method.++
+  // --Moves the view for one step. This gets called repeatedly when the animation++
+  // --is happening.++
   _animateStep: function(_obj) {
     
     var _time = new Date().getTime(), i;
