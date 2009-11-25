@@ -1461,10 +1461,12 @@ HView = HClass.extend({
   * to draw the string.
   *
   * = Parameters
-  * +_string+::  The string to measure.
-  * +_length+::  optional, How many characters to count.
-  * +_elemId+::  optional, The element ID where the temporary string is created
-  *              in.
+  * +_string+::   The string to measure.
+  * +_length+::   Optional, How many characters to count.
+  * +_elemId+::   Optional, The element ID where the temporary string is created
+  *               in.
+  * +_wrap+::     Optional boolean value, wrap whitespaces?
+  * +_extraCss+:: Optional, extra css to add.
   *
   * = Returns
   * The width in pixels required to draw a string in the font.
