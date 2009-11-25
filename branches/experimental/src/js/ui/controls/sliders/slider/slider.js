@@ -14,12 +14,7 @@
   ** Naturally, sliders are commonly used as colour mixers, volume controls, 
   ** graphical equalizers and seekers in media applications. 
   ** A typical slider is a drag-able thumb along vertical or horizontal line. 
-  ** Slider view or theme can be changed; the helmiTheme is used by default.
-  **
-  ** = Instance variables
-  ** +value+:: Numeric value currently set to this object.
-  ** +minValue+:: The minimum value that can be set to this object.
-  ** +maxValue:: The maximum value that can be set to this object.
+  ** Slider view or theme can be changed; the helmiTheme is used by default.o
   **
   ** = Instance variables
   ** +minValue+:: The smallest allowed value.
