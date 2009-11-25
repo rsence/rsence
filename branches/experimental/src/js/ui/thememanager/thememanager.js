@@ -308,8 +308,8 @@ HThemeManager = HClass.extend({
   * = Parameters
   * +_themeName+::     The name of the template to use.
   * +_componentName+:: The name of the component template (css/html) to load.
-  * +_themePath+::     (Optional) parameter to override the global theme path.
-  * +_pkgPath+::       (Optional) parameter to specify the package of the 
+  * +_themePath+::     Optional, parameter to override the global theme path.
+  * +_pkgPath+::       Optional, parameter to specify the package of the 
   *                    component, useful only in pre-built mode.
   *
   * = Returns

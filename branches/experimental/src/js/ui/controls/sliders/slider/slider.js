@@ -44,7 +44,7 @@ HSlider = HControl.extend({
   
 /** = Description
   * Use like the HControl#constructor.
-  * Defaults:
+  * Default events:
   * +mouseDown+:: +false+
   * +mouseup+:: +false+
   * +draggable+:: +true+
