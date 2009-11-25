@@ -9,11 +9,7 @@
 /*** = Description
   ** Define default setting here. Will be used, when no or invalid constructor
   ** options are supplied.
-  **
-  ** = Instance variables:
-  ** Settable Control-level defaults, override on construction 
-  ** +label+::  The visual value of the component
-***/
+  ***/
 HControlDefaults = HClass.extend({
   
 /** The default label. A label is the "visual value" of a component that
