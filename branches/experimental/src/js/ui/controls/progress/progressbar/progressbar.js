@@ -12,24 +12,14 @@
   ** indicating a percentage of a total task has completed.
   **
   ** = Instance variables
-  ** +type+::      '[HProgressBar]'
-  ** +value+::     Numeric value currently set to this object.
-  ** +minValue+::  The minimum value that can be set to this object.
-  ** +maxValue+::  The maximum value that can be set to this object.
+  ** +value+:: Numeric value currently set to this object.
+  ** +minValue+:: The minimum value that can be set to this object.
+  ** +maxValue+:: The maximum value that can be set to this object.
   ***/
 
 HProgressBar = HControl.extend({
   
   componentName: "progressbar",
-
-/** = Description
-  * HProgressBar constructor
-  *
-  * = Parameters
-  * +_rect+::         An HRect object that sets the position and dimensions of this control.
-  * +_parentClass+::  The parent view that this control is to be inserted in.
-  * +_options+::      (optional) All other parameters. See HComponentDefaults.
-  **/  
   constructor: function(_rect,_parentClass,_options) {  
 
     if(this.isinherited) {
@@ -60,8 +50,6 @@ HProgressBar = HControl.extend({
     this.maxValue = _options.maxValue;
 
     this.visibleWidth = this.rect.width - 2;
-    
-    this.type = '[HProgressBar]';
     this._progressbarPrefix = 'progressmark';
     
     if(!this.isinherited) {
@@ -87,7 +75,7 @@ HProgressBar = HControl.extend({
   * Sets the current value of the object and extends the progress mark to the correct position.
   * 
   * = Parameters
-  * +_value+::   A numeric value to be set to the object.
+  * +_value+:: A numeric value to be set to the object.
   *
   **/  
   setValue: function(_value) {  
@@ -96,7 +84,7 @@ HProgressBar = HControl.extend({
   },
   
   /** = Description
-    * OnIdle function
+    * Sets the next frame on progressbar and draws it.
     *
     **/
   onIdle: function(){
@@ -133,7 +121,7 @@ HProgressBar = HControl.extend({
   },
 
 /** = Description
-  * Drawprogress function
+  * Draws the progress.
   *
   **/
   drawProgress: function() {
