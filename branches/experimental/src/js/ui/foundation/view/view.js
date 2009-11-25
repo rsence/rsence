@@ -20,20 +20,20 @@
   **
   **
   ** = Instance variables:
-  **  +themePath+::           Component specific theme path. Default null.
-  **  +packageName+::         Prefix of the directory that contains set of
-  **                          components in pre-build mode. Default null.
-  **  +isAbsolute+::          Is the component using absolute positioning?
-  **                          Defaults to true.
-  **  +flexRight+::           Does the HView flex right? Defaults to false.
-  **  +flexLeft+::            Does the HView flex left? Defaults to true. 
-  **  +flexTop+::             Does the HView flex top? Defaults to true.
-  **  +flexBottom+::          Does the HView flex bottom? Defaults false.
-  **  +flexRightOffset+::     Positioning mode offset to right. Defaults to 0.
-  **  +flexBottomOffset+::    Positioning mode offset to bottom. Defaults to 0.
-  **  +componentBehaviour+::  Component behaviour tells other classes what to
-  **                          expect of the component's api and 
-  **                          visual behaviour. 'view' by default.
+  ** +themePath+:: Component specific theme path. Default null.
+  ** +packageName+:: Prefix of the directory that contains set of
+  **                 components in pre-build mode. Default null.
+  ** +isAbsolute+:: Is the component using absolute positioning?
+  **                Defaults to true.
+  ** +flexRight+:: Does the HView flex right? Defaults to false.
+  ** +flexLeft+:: Does the HView flex left? Defaults to true. 
+  ** +flexTop+:: Does the HView flex top? Defaults to true.
+  ** +flexBottom+:: Does the HView flex bottom? Defaults false.
+  ** +flexRightOffset+:: Positioning mode offset to right. Defaults to 0.
+  ** +flexBottomOffset+:: Positioning mode offset to bottom. Defaults to 0.
+  ** +componentBehaviour+:: Component behaviour tells other classes what to
+  **                        expect of the component's api and 
+  **                        visual behaviour. 'view' by default.
   **
   ** = Usage
   **  myAppInstance = HApplication.nu();
@@ -44,32 +44,15 @@
 ***/
 
 HView = HClass.extend({
-  
-  // This property should be overridden in custom made components. It's like a
-  // theme path, but points to the location of a component specific themes. The
-  // directory structure must be the same as in the release version's themes
-  // directory.
   themePath:   null,
-  
-  // In pre-build mode, this is the prefix of the directory that contains a set of components.
   packageName: null,
-  
-  // Uses absolute positioning by default
   isAbsolute: true,
-  
-  // flags, sets positioning mode
   flexRight:  false,
   flexLeft:   true,
   flexTop:    true,
   flexBottom: false,
-  
-  // ints, positioning mode offsets
   flexRightOffset:  0,
-  //rect.left: flexLeftOffset:   0,
-  //rect.top:  flexTopOffset:    0,
   flexBottomOffset: 0,
-  
-  // Component behaviour tells other classes what to expect of the component's api and visual behaviour.
   componentBehaviour: ['view'],
   
 /** = Description
@@ -78,34 +61,31 @@ HView = HClass.extend({
   * subcomponents of the view are initialized.
   *
   * = Parameters
-  *  +_rect+::    An instance of HRect, defines the position and size of 
-  *               views. 
-  *                +_rect+ can be alse defined with array.
-  *                _rect - Array format:
-  *    
-  *    with 4 items, then left and top -aligned layout with numeric indexes at:
-  *      0: left
-  *      1: top
-  *      2: width
-  *      3: height
-  *    
-  *    with 6 items, then special layout with indexes at:
-  *      0: left
-  *         - right-aligned layout if null and valid number at index 2 and 4
-  *      1: top
-  *         - bottom-aligned layout if null and valid number at index 3 and 5
-  *      2: width
-  *         - auto-width if null and valid number at index 0 and 4
-  *      4: height
-  *         - auto-height if null and valid number at index 1 and 5
-  *      5: right
-  *         - right-aligned layout if valid number at index 2
-  *         - auto-width if valid number at index 0
-  *      6: bottom
-  *         - bottom-aligned layout if valid number at index 3
-  *                - auto-height if valid number at index 1                                 
-  *  +_parent+::  Another HView compatible instance, like HApplication, 
-  *               HControl and derived component classes.
+  * +_rect+:: An instance of HRect, defines the position and size of views. 
+  * +_parent+:: Another HView compatible instance, like HApplication,
+  *             HControl and derived component classes.
+  * = Parameters with array               
+  * +_rect+:: can be also defined with array.
+  *           with 4 items, then left and top -aligned layout with numeric indexes at:
+  *           0: left
+  *           1: top
+  *           2: width
+  *           3: height
+  *           with 6 items, then special layout with indexes at:
+  *           0: left
+  *           right-aligned layout if null and valid number at index 2 and 4
+  *           1: top
+  *           bottom-aligned layout if null and valid number at index 3 and 5
+  *           2: width
+  *           auto-width if null and valid number at index 0 and 4
+  *           4: height
+  *           auto-height if null and valid number at index 1 and 5
+  *           5: right
+  *           right-aligned layout if valid number at index 2
+  *           auto-width if valid number at index 0
+  *           6: bottom
+  *           bottom-aligned layout if valid number at index 3
+  *           auto-height if valid number at index 1                         
   *
   **/
   constructor: function(_rect, _parent) {
