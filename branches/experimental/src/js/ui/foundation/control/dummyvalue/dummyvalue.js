@@ -19,8 +19,8 @@ HDummyValue = HClass.extend({
   * HDummyValue is initialized just like a real HValue.
   *
   * = Parameters
-  * +_id+::     Any string or integer, just a placeholder for HValue.id
-  * +_value+::  Any valid js object, just as for HValue.value
+  * +_id+::    Any string or integer, just a placeholder for HValue.id
+  * +_value+:: Any valid js object, just as for HValue.value
   *
   **/
   constructor: function(_id, _value) {
@@ -40,11 +40,11 @@ HDummyValue = HClass.extend({
     return this.value;
   },
   
-/** Binds HControl (not)
+/** Binds HControl, does actually nothing.
   **/
   bind: function( _theObj ){},
   
-/** Unbinds (releases) HControl (not)
+/** Unbinds (releases) HControl, does actually nothing.
   **/
   unbind: function( _theObj ){}
 });
