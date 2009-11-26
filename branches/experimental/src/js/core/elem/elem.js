@@ -332,21 +332,22 @@ ELEM = {
   * Replaces all styles of the element with the string containing css source.
   *
   * = Parameters
-  * +_id+::   The ELEM ID which all styles will be replaced with the css source.
-  * +_css+::  A string containing the CSS source.
+  * +_id+::         The ELEM ID which all styles will be replaced
+  *                 with the css source.
+  * +_cssText+::    A string containing the CSS Text.
   *
   **/
-  setCSS: function(_id, _css) {
-    ELEM._elements[_id].style.cssText = _css;
+  setCSS: function(_id, _cssText) {
+    ELEM._elements[_id].style.cssText = _cssText;
   },
 
 /** = Description
   * Returns the CSS source style of the element.
-  *
+  * 
   * = Parameters
   * +_id+::   The ELEM ID which all styles will be returned as
-  *       a string containing the CSS source.
-  *
+  *           a string containing the CSS source.
+  * 
   * = Returns
   * A string containing the CSS source of the element.
   *
@@ -466,7 +467,7 @@ ELEM = {
   * +_id+::  The ELEM ID.
   *
   * = Returns
-  * The opacity as a flating point number between 0.0 (transparent) and 1.0 (opaque).
+  * The opacity as a floating point number between 0.0 (transparent) and 1.0 (opaque).
   *
   **/
   getOpacity: function(_id) {
@@ -499,7 +500,7 @@ ELEM = {
   *
   * = Parameters
   * +_id+::       The ELEM ID.
-  * +_opacity+::  The opacity as a flating point number between 0.0 (transparent) and 1.0 (opaque).
+  * +_opacity+::  The opacity as a floating point number between 0.0 (transparent) and 1.0 (opaque).
   *
   **/
   setOpacity: function(_id, _opacity) {
@@ -595,7 +596,7 @@ ELEM = {
   * updates to let your logic code get as many cpu cycles as possible without
   * wasting most of them on more DOM refreshes than necessary.
   *
-  * The default frame rate is 30 and the maximum framerate allowed is 100.
+  * The default frame rate is 30 and the maximum frame rate allowed is 100.
   *
   * = Parameters
   * +_fps+::      The target frame rate (DOM updates per second).
@@ -637,7 +638,7 @@ ELEM = {
   *
   * The idle delay is the amount of milliseconds between polling for something
   * to flush to DOM. This is the setting affecting how long (max) it takes to
-  * start flushing the buffers after the buffers have been emtied.
+  * start flushing the buffers after the buffers have been emptied.
   *
   * = Parameters
   * +_idleDelay+::     The amount of milliseconds to wait before re-checking
