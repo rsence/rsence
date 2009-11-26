@@ -7,15 +7,15 @@
  */
 
 
-/** = Description
-  * HSheet is a container component that toggles its visibility
-  * based on its value. When the value is 0, it's visible, otherwise 
-  * it's hidden. It expands to fill its parent view, the rect 
-  * specifies the size of the sheet inside. The sheet is 
-  * centered. It's practical when combined with button 
-  * values. Also see HAlertSheet and HConfirmSheet components.
-  *
-  **/
+/*** = Description
+  ** HSheet is a container component that toggles its visibility
+  ** based on its value. When the value is 0, it's visible, otherwise 
+  ** it's hidden. It expands to fill its parent view, the rect 
+  ** specifies the size of the sheet inside. The sheet is 
+  ** centered. It's practical when combined with button 
+  ** values. Also see HAlertSheet and HConfirmSheet components.
+  **
+  ***/
 HSheet = HControl.extend({
   componentName: 'sheet',
 
