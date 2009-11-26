@@ -14,21 +14,20 @@
   ** Naturally, sliders are commonly used as colour mixers, volume controls, 
   ** graphical equalizers and seekers in media applications. 
   ** A typical slider is a drag-able thumb along vertical or horizontal line. 
-  ** Slider view or theme can be changed; the helmiTheme is used by default.o
   **
   ** = Instance variables
-  ** +minValue+:: The smallest allowed value.
-  ** +maxValue+:: The biggest allowed value.
-  ** +repeatDelay+:: The key repetition initial delay when changing the slider
-  **                 with cursor keys. Defaults to 300 (ms)
+  ** +minValue+::       The smallest allowed value.
+  ** +maxValue+::       The biggest allowed value.
+  ** +repeatDelay+::    The key repetition initial delay when changing the slider
+  **                    with cursor keys. Defaults to 300 (ms)
   ** +repeatInterval+:: The key repetition interval when changing the slider
   **                    with cursor keys. Defaults to 50 (ms)
-  ** +inveseAxis+:: Inverse Scrollwheel axis.
-  **                As there is only one scrollwheel event, sideways
-  **                scrolling doesn't work logically for horizonal
-  **                scrollbars by default, so set this to true to
-  **                have horizonal sliders work logically
-  **                with sideways scrolling, where supported.
+  ** +inveseAxis+::     Inverse Scrollwheel axis.
+  **                    As there is only one scrollwheel event, sideways
+  **                    scrolling doesn't work logically for horizonal
+  **                    scrollbars by default, so set this to true to
+  **                    have horizonal sliders work logically
+  **                    with sideways scrolling, where supported.
 ***/
 HSlider = HControl.extend({
   
@@ -44,14 +43,15 @@ HSlider = HControl.extend({
   
 /** = Description
   * Use like the HControl#constructor.
-  * Default events:
-  * +mouseDown+:: +false+
-  * +mouseup+:: +false+
-  * +draggable+:: +true+
-  * +keyDown+:: +true+
-  * +keyUp+:: +true+
+  *
+  * = Default events
+  * +mouseDown+::  +false+
+  * +mouseup+::    +false+
+  * +draggable+::  +true+
+  * +keyDown+::    +true+
+  * +keyUp+::      +true+
   * +mouseWheel+:: +true+
-  * +value+:: +0+
+  * +value+::      +0+
   *
   **/
   constructor: function(_rect,_parent,_options) {
