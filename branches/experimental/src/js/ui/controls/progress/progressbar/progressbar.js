@@ -12,7 +12,7 @@
   ** indicating a percentage of a total task has completed.
   **
   ** = Instance variables
-  ** +value+:: Numeric value currently set to this object.
+  ** +value+::    Numeric value currently set to this object.
   ** +minValue+:: The minimum value that can be set to this object.
   ** +maxValue+:: The maximum value that can be set to this object.
   ***/
