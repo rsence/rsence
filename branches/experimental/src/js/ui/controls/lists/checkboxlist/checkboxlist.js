@@ -9,7 +9,6 @@
 /*** = Description
   ** This class is still at experimental phase.
   ** Please assume that the API _will_ change later. 
-  **
   ** HCheckboxList is a combined list of HCheckboxes.
   **
   ***/
