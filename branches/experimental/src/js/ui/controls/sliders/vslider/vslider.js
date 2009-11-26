@@ -13,29 +13,25 @@
   ** as well as keyboard support after the handle is in active mode. 
   ** Naturally, sliders are commonly used as colour mixers, volume controls, 
   ** graphical equalizers and seekers in media applications. 
-  ** A typical slider is a drag-able knob along vertical or horizontal line. 
-  ** Slider view or theme can be changed; the helmiTheme is used by default.
+  ** A typical slider is a drag-able knob along vertical or horizontal line.
   **
   ** = Instance variables
-  ** +type+::      '[HVSlider]'
-  ** +value+::     Numeric value currently set to this object.
-  ** +minValue+::  The minimum value that can be set to this object.
-  ** +maxValue+::  The maximum value that can be set to this object.
+  ** +minValue+::       The smallest allowed value.
+  ** +maxValue+::       The biggest allowed value.
+  ** +repeatDelay+::    The key repetition initial delay when changing the slider
+  **                    with cursor keys. Defaults to 300 (ms)
+  ** +repeatInterval+:: The key repetition interval when changing the slider
+  **                    with cursor keys. Defaults to 50 (ms)
+  ** +inveseAxis+::     Inverse Scrollwheel axis.
+  **                    As there is only one scrollwheel event, sideways
+  **                    scrolling doesn't work logically for horizonal
+  **                    scrollbars by default, so set this to true to
+  **                    have horizonal sliders work logically
+  **                    with sideways scrolling, where supported.
   ***/
 HVSlider = HSlider.extend({
   
   componentName: "vslider",
-  
-/** = Description
-  * Vertical slider constructor.
-  *
-  * = Parameters
-  * +_rect+::          An HRect object that sets the position and dimensions 
-  *                    of this control.
-  * +_parentClass+::   The parent view that this control is to be inserted in.
-  * +_options+::       (optional) All other parameters. See HComponentDefaults.
-  *
-  **/
   constructor: function(_rect,_parentClass,_options) {
     
     if(this.isinherited){
