@@ -122,7 +122,7 @@ HTimeSheet = HControl.extend({
   * Returns HRect the size of given parameters and suitable for timesheet.
   *
   * = Parameters
-  * +_origY+:: Y coordinate.
+  * +_origY+::      Y coordinate.
   * +_lineHeight+:: The height of item on time sheet.
   *
   **/
