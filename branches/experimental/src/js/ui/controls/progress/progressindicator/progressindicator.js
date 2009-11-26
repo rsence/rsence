@@ -21,7 +21,6 @@
   ***/
 HProgressIndicator = HControl.extend({
   
-  packageName:   "progress",
   componentName: "progressindicator",
   constructor: function(_rect,_parentClass,_options) { 
    

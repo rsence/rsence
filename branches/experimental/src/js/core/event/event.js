@@ -500,10 +500,10 @@ EVENT = {
   * Gets called on the onMouseMove event.
   * Delegates the following calls to the high-level event receivers of all
   * enabled controls registered, depending on the events they registered:
-  * - doDrag
+  * - drag
   * - mouseMove
-  * - onHoverEnd
-  * - onHoverStart
+  * - endHover
+  * - startHover
   *
   **/
   mouseMove: function(e) {
@@ -536,10 +536,10 @@ EVENT = {
     // drag detect flag
     _currentlyDragging = false;
     
-    // send doDrag event to all drag-interested ctrls
+    // send drag event to all drag-interested ctrls
     for (; i !== _this.dragItems.length; i++) {
       _elemId = _this.dragItems[i];
-      _this.focusOptions[_elemId].ctrl.doDrag(x, y);
+      _this.focusOptions[_elemId].ctrl.drag(x, y);
       _this.coordCacheFlush(_elemId);
       _currentlyDragging = true;
     }
@@ -586,13 +586,13 @@ EVENT = {
             }
           }
 
-          // Topmost item has changed, send onHoverStart or onHoverEnd to the droppable.
+          // Topmost item has changed, send startHover or endHover to the droppable.
           if (_wasTopmostDroppable !== _this.topmostDroppable) {
             if (_wasTopmostDroppable) {
-              _wasTopmostDroppable.onHoverEnd(_ctrl);
+              _wasTopmostDroppable.endHover(_ctrl);
             }
             if (_this.topmostDroppable) {
-              _this.topmostDroppable.onHoverStart(_ctrl);
+              _this.topmostDroppable.startHover(_ctrl);
             }
           }
         }
@@ -835,8 +835,8 @@ EVENT = {
   * Delegates the following calls to the high-level event receivers of all
   * enabled controls registered, depending on the events they registered:
   * - mouseUp
-  * - onHoverEnd
-  * - onDrop
+  * - endHover
+  * - drop
   * - endDrag
   *
   **/
@@ -865,11 +865,11 @@ EVENT = {
           _this.blur(_ctrl);
         }
       }
-      // If there is a drop target in the currently hovered items, send onDrop to it.
+      // If there is a drop target in the currently hovered items, send drop to it.
       if (_this.topmostDroppable) {
         // Droppable found at the release point.
-        _this.topmostDroppable.onHoverEnd(_ctrl);
-        _this.topmostDroppable.onDrop(_ctrl);
+        _this.topmostDroppable.endHover(_ctrl);
+        _this.topmostDroppable.drop(_ctrl);
         _this.topmostDroppable = null;
       }
     }

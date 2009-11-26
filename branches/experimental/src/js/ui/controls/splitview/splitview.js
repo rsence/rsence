@@ -94,7 +94,7 @@ HSplitView = HControl.extend({
   },
 
 /** = Description
-  * doDrag function
+  * Drag function
   *
   * = Parameters
   * +_x+:: 
@@ -102,7 +102,7 @@ HSplitView = HControl.extend({
   * +_dividerView+::
   *
   **/
-  doDrag: function(_x, _y, _dividerView) {
+  drag: function(_x, _y, _dividerView) {
     if (!_dividerView) {
       return;
     }
@@ -157,7 +157,7 @@ HSplitView = HControl.extend({
   *
   **/
   endDrag: function(_x, _y, _dividerView) {
-    this.doDrag(_x, _y);
+    this.drag(_x, _y);
     delete this._startPointCRSR;
     delete this._prevPointCRSR;
     delete this._diffPoint;

@@ -174,7 +174,7 @@ HTimeSheetItem = HControl.extend({
   * +y+:: Y coordinate at the start of drag.
   *
   **/
-  doDrag: function(x,y){
+  drag: function(x,y){
     var _pageY  = this.parent.pageY(),
         _y = y - _pageY;
     if(this.dragMode === 'create'){

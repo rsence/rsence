@@ -15,17 +15,38 @@ ELEMTickerInterval = 10;
   * An object that contains the browser types detected as booleans.
 **/
 BROWSER_TYPE = {
+  
+/* Any version of Microsoft Internet Explorer */
   ie: false,
+  
+/* Microsoft Internet Explorer version 6 */
   ie6: false,
+  
+/* Microsoft Internet Explorer version 7 */
   ie7: false,
+  
+/* Microsoft Internet Explorer version 8 */
   ie8: false,
+  
+/* Any version of Opera */
   opera: false,
+  
+/* Any version of Safari (and other KHTML/WebKit -derived browsers) */
   safari: false,
+  
+/* The Symbian version of KHTML/WebKit/Safari, is also registered as +safari+ */
   symbian: false,
+  
+/* Any version of Google Chrome, is also registered as +safari+ */
   chrome: false,
-  // will also register itself as safari
+  
+/* Any version of Mozilla Firefox */
   firefox: false,
+
+/* Mozilla Firefox version 2 */
   firefox2: false,
+
+/* Mozilla Firefox version 3 */
   firefox3: false
 };
 

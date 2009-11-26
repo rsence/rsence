@@ -140,7 +140,7 @@ HSlider = HControl.extend({
     this._originX = _originalPosition[0];
     this._originY = _originalPosition[1];
     
-    this.doDrag(_x,_y);
+    this.drag(_x,_y);
   },
   
   
@@ -154,7 +154,7 @@ HSlider = HControl.extend({
   *
   **/
   endDrag: function(_x,_y){
-    this.doDrag(_x,_y);
+    this.drag(_x,_y);
   },
   
   
@@ -167,7 +167,7 @@ HSlider = HControl.extend({
   * +_y+:: The Y coordinate of the point where the user is currently dragging.
   *
   **/
-  doDrag: function(_x,_y){
+  drag: function(_x,_y){
     _x -= this._originX;
     _y -= this._originY;
     

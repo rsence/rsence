@@ -40,11 +40,11 @@ HControlDefaults = HClass.extend({
   
 /** The default initial minimum value of the component.
   **/
-  minValue: -2147483648, // negative max of signed 32bit
+  minValue: -2147483648,
   
 /** The default initial maximum value of the component.
   **/
-  maxValue:  2147483648  // positive max of signed 32bit
+  maxValue:  2147483648
   
 });
 

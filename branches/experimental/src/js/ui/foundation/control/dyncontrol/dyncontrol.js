@@ -399,7 +399,7 @@ HDynControl = HControl.extend({
   * +true+
   *
   **/
-  doDrag: function(x,y){
+  drag: function(x,y){
     var _parent = this.parent;
     if(_parent.elemId){
       x-=_parent.pageX();

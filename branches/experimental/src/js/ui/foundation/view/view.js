@@ -36,11 +36,6 @@ HView = HClass.extend({
   **/
   themePath:   null,
   
-/** Prefix of the directory that contains set of
-  * components in pre-build mode.
-  **/
-  packageName: null,
-  
 /** True, if the component using absolute positioning.
   * False, if the component is using relative positioning.
   **/
@@ -205,7 +200,7 @@ HView = HClass.extend({
   * +2+::              The width.
   * +3+::              The height.
   *
-  * === The array indexes of an 6-item array:
+  * === The array indexes a +_rect+ configured as an 6-item array:
   * Can be any configuration of left/top/right/bottom alignment and supports
   * flexible widths. At least 4 items must be specified.
   * Index::            Description
@@ -472,7 +467,7 @@ HView = HClass.extend({
     } else {
       _themeName = HThemeManager.currentTheme;
     }
-    return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath, this.packageName );
+    return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath );
   },
   
 /** = Description
@@ -488,7 +483,7 @@ HView = HClass.extend({
     } else {
       _themeName = HThemeManager.currentTheme;
     }
-    return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, this.packageName, _fileName );
+    return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, _fileName );
   },
   
 /** --
@@ -680,7 +675,7 @@ HView = HClass.extend({
     else {
       _themeName = HThemeManager.currentTheme;
     }
-    _markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath, this.packageName );
+    _markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath );
     if(_markup === false){
       console.log('Warning: Markup template for "'+this.componentName+'" using theme "'+_themeName+'" not loaded.');
     }
