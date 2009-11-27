@@ -32,24 +32,9 @@
 HVSlider = HSlider.extend({
   
   componentName: "vslider",
-  constructor: function(_rect,_parentClass,_options) {
     
-    if(this.isinherited){
-      this.base(_rect,_parentClass,_options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect,_parentClass,_options);
-      this.isinherited = false;
-    }
-    
-    // This overrides the HSlider property.
-    this._isVertical = true;
-    
-    if(!this.isinherited){
-      this.draw();
-    }
-  }
+  // This overrides the HSlider property.
+  _isVertical: true
   
 });
 

@@ -80,6 +80,7 @@ HCheckboxList = HControl.extend({
       this.setValue( _newValue );
     }
   },
+  
 /** = Description
   * Setter function for listItems and listImetViews. Destroys 
   * the old ListCheckboxes before creating the new ones based on the
@@ -126,6 +127,7 @@ HCheckboxList = HControl.extend({
     }
     this.refreshValue();
   },
+  
 /** = Description
   * Sets listItems and ListItemViews to null and calls 
   * the inherited destructor.

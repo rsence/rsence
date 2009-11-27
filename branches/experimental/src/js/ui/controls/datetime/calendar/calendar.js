@@ -7,9 +7,10 @@
  */
 
 /*** = Description
-  ** HCalendar is a time control component.
+  ** Use HCalendar to display a month calendar that displays days as columns
+  ** and weeks as rows. Its value is a date/time number specified in seconds
+  ** since or before epoch (1970-01-01 00:00:00 UTC).
   ***/
-  
 HCalendar = HControl.extend({
   componentName: 'calendar',
   weekdays_localized: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
@@ -19,11 +20,11 @@ HCalendar = HControl.extend({
   * of mouseWheel. 
   *
   **/
-  mouseWheel: function(delta){
-    if(delta<0){
+  mouseWheel: function(_delta){
+    if ( _delta < 0 ) {
       this.nextMonth();
     }
-    else{
+    else {
       this.prevMonth();
     }
   },
@@ -33,53 +34,53 @@ HCalendar = HControl.extend({
   *
   **/
   refreshLabel: function(){
-    var weekdays_localized = this.weekdays_localized,
-        weekdays_width = Math.floor(this.rect.width/weekdays_localized.length),
-        weekdays_html = [],
+    var _weekdays_localized = this.weekdays_localized,
+        _weekdays_width = Math.floor(this.rect.width/_weekdays_localized.length),
+        _weekdays_html = [],
         i = 0,
-        weekdays_html_pre = ['<div style="width:'+weekdays_width+'px;left:','px">'],
-        weekdays_html_suf = '</div>';
-    for(;i<weekdays_localized.length;i++){
-      weekdays_html.push([
-        weekdays_html_pre.join(i*weekdays_width),
-        weekdays_localized[i],
-        weekdays_html_suf
+        _weekdays_html_pre = ['<div style="width:'+_weekdays_width+'px;left:','px">'],
+        _weekdays_html_suf = '</div>';
+    for(;i<_weekdays_localized.length;i++){
+      _weekdays_html.push([
+        _weekdays_html_pre.join(i*_weekdays_width),
+        _weekdays_localized[i],
+        _weekdays_html_suf
       ].join('') );
     }
-    ELEM.setHTML(this.markupElemIds.label, weekdays_html.join(''));
+    ELEM.setHTML(this.markupElemIds.label, _weekdays_html.join(''));
   },
 
 /** = Description
   * Checks the date range for the month which the date given as input belongs.
   * 
   * = Parameters
-  * +date+:: +date+ object to check date range from
+  * +_date+:: A Date instance to check date range from
   *
   * = Returns
   * Array of [0] first week's date and [1] last week's date.
   *
   **/
-  calendarDateRange: function(date){
-    var date_begin = this.firstDateOfMonth(date),
-        date_end = this.lastDateOfMonth(date),
-        firstWeeksDate = this.firstDateOfWeek(date_begin),
-        lastWeeksDate  = this.lastDateOfWeek(date_end),
-        week_begin = this.week(firstWeeksDate),
-        week_end = this.week(lastWeeksDate),
-        weeks = week_end-week_begin;
-    if((weeks===5) && (firstWeeksDate.getDate() !== 1)){
-      lastWeeksDate = new Date( lastWeeksDate.getTime() + this.msWeek );
+  calendarDateRange: function(_date){
+    var _date_begin = this.firstDateOfMonth(_date),
+        _date_end = this.lastDateOfMonth(_date),
+        _firstWeeksDate = this.firstDateOfWeek(_date_begin),
+        _lastWeeksDate  = this.lastDateOfWeek(_date_end),
+        _week_begin = this.week(_firstWeeksDate),
+        _week_end = this.week(_lastWeeksDate),
+        _weeks = _week_end-_week_begin;
+    if((_weeks===5) && (_firstWeeksDate.getDate() !== 1)){
+      _lastWeeksDate = new Date( _lastWeeksDate.getTime() + this.msWeek );
     }
-    else if((weeks===5) && (firstWeeksDate.getDate() === 1)){
-      firstWeeksDate = new Date( firstWeeksDate.getTime() - this.msWeek );
+    else if((_weeks===5) && (_firstWeeksDate.getDate() === 1)){
+      _firstWeeksDate = new Date( _firstWeeksDate.getTime() - this.msWeek );
     }
-    else if(weeks===4){
-      firstWeeksDate = new Date( firstWeeksDate.getTime() - this.msWeek );
-      lastWeeksDate = new Date( lastWeeksDate.getTime() + this.msWeek );
+    else if(_weeks===4){
+      _firstWeeksDate = new Date( _firstWeeksDate.getTime() - this.msWeek );
+      _lastWeeksDate = new Date( _lastWeeksDate.getTime() + this.msWeek );
     }
     return [
-      firstWeeksDate,
-      lastWeeksDate
+      _firstWeeksDate,
+      _lastWeeksDate
     ];
   },
 
@@ -88,8 +89,8 @@ HCalendar = HControl.extend({
   *
   **/
   refreshValue: function(){
-    var date = this.date();
-    this.drawCalendar(date);
+    var _date = this.date();
+    this.drawCalendar(_date);
   },
 
 /** = Description
@@ -97,8 +98,8 @@ HCalendar = HControl.extend({
   *
   **/
   nextMonth: function(){
-    var date = new Date( this.viewMonth[0], this.viewMonth[1]+1, 1 );
-    this.drawCalendar( new Date(date.getTime() - this.tzMs(date)) );
+    var _date = new Date( this.viewMonth[0], this.viewMonth[1]+1, 1 );
+    this.drawCalendar( new Date(_date.getTime() - this.tzMs(_date)) );
   },
 
 /** = Description
@@ -106,8 +107,8 @@ HCalendar = HControl.extend({
   *
   **/
   prevMonth: function(){
-    var date = new Date( this.viewMonth[0], this.viewMonth[1]-1, 1 );
-    this.drawCalendar( new Date(date.getTime() - this.tzMs(date)) );
+    var _date = new Date( this.viewMonth[0], this.viewMonth[1]-1, 1 );
+    this.drawCalendar( new Date(_date.getTime() - this.tzMs(_date)) );
   },
   viewMonth: [1970,0],
 
@@ -115,76 +116,77 @@ HCalendar = HControl.extend({
   * Draws the calendar with the date open given as input.
   *
   * = Parameters
-  * +date+:: The date on which calendar UI is opened at.
+  * +_date+:: The date on which calendar UI is opened at.
   *
   **/
-  drawCalendar: function(date){
-    date = (date instanceof Date)?date:this.date();
-    var calendarDateRange = this.calendarDateRange(date),
-        monthFirst = this.firstDateOfMonth(date),
-        monthLast = this.lastDateOfMonth(date),
-        firstDate = calendarDateRange[0],
-        lastDate = calendarDateRange[1],
-        column_count = this.weekdays_localized.length,
-        column_width = Math.floor((this.rect.width-1)/column_count),
-        row_height = Math.floor((this.rect.height-1-35)/6),
-        week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(this.rect.width-3)+'px;height:'+row_height+'px;top:','px">'],
-        week_html_suf = '</div>',
-        col_html_pre = ['<a href="javascript:void(HSystem.views['+this.viewId+'].setValue(','));" class="calendar_weeks_week_col','" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:','px">'],
-        col_html_suf = '</a>',
-        col_week_pre = '<div class="calendar_weeks_week_col_wk" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:0px">',
-        col_week_suf = '</div>',
-        month_html = [],
-        week_html,
-        col_html,
-        row, col,
-        colMs,
-        colSecs,
-        colDate,
-        extraCssClass;
-    for(row = 0; row<6; row++){
-      week_html = [];
-      for(col = 0; col<8; col++){
-        colDate = new Date(firstDate.getTime()+((row*this.msWeek)+((col-1)*this.msDay)));
-        colMs = colDate.getTime();
-        if(col===0){
-          col_html = [
-            col_week_pre,
-            this.week(colDate),
-            col_week_suf
+  drawCalendar: function(_date){
+    _date = (_date instanceof Date)?_date:this.date();
+    var _calendarDateRange = this.calendarDateRange(_date),
+        _monthFirst = this.firstDateOfMonth(_date),
+        _monthLast = this.lastDateOfMonth(_date),
+        _firstDate = _calendarDateRange[0],
+        _lastDate = _calendarDateRange[1],
+        _column_count = this.weekdays_localized.length,
+        _column_width = Math.floor((this.rect.width-1)/_column_count),
+        _row_height = Math.floor((this.rect.height-1-35)/6),
+        _week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(this.rect.width-3)+'px;height:'+_row_height+'px;top:','px">'],
+        _week_html_suf = '</div>',
+        _col_html_pre = ['<a href="javascript:void(HSystem.views['+this.viewId+'].setValue(','));" class="calendar_weeks_week_col','" style="width:'+_column_width+'px;height:'+_row_height+'px;line-height:'+_row_height+'px;left:','px">'],
+        _col_html_suf = '</a>',
+        _col_week_pre = '<div class="calendar_weeks_week_col_wk" style="width:'+_column_width+'px;height:'+_row_height+'px;line-height:'+_row_height+'px;left:0px">',
+        _col_week_suf = '</div>',
+        _month_html = [],
+        _week_html,
+        _col_html,
+        _row = 0,
+        _col,
+        _colMs,
+        _colSecs,
+        _colDate,
+        _extraCssClass;
+    for(; _row<6; _row++){
+      _week_html = [];
+      for(_col = 0; _col<8; _col++){
+        _colDate = new Date(_firstDate.getTime()+((_row*this.msWeek)+((_col-1)*this.msDay)));
+        _colMs = _colDate.getTime();
+        if(_col===0){
+          _col_html = [
+            _col_week_pre,
+            this.week(_colDate),
+            _col_week_suf
           ].join('');
         }
         else {
-          colSecs = Math.round(colMs/1000);
-          if((this.value >= colSecs) && (this.value < (colSecs+86400))){
-            extraCssClass = '_'+'sel';
+          _colSecs = Math.round(_colMs/1000);
+          if((this.value >= _colSecs) && (this.value < (_colSecs+86400))){
+            _extraCssClass = '_'+'sel';
           }
           else{
-            extraCssClass = (colDate<monthFirst || colDate > monthLast)?'_'+'no':'_'+'yes';
+            _extraCssClass = (_colDate<_monthFirst || _colDate > _monthLast)?'_'+'no':'_'+'yes';
           }
-          col_html = [
-            col_html_pre[0],
-            colSecs,
-            col_html_pre[1],
-            extraCssClass,
-            col_html_pre[2],
-            (col*column_width),
-            col_html_pre[3],
-            this.mday(colDate),
-            col_html_suf
+          _col_html = [
+            _col_html_pre[0],
+            _colSecs,
+            _col_html_pre[1],
+            _extraCssClass,
+            _col_html_pre[2],
+            (_col*_column_width),
+            _col_html_pre[3],
+            this.mday(_colDate),
+            _col_html_suf
           ].join('');
         }
-        week_html.push(col_html);
+        _week_html.push(_col_html);
       }
-      month_html.push([
-        week_html_pre.join(row*row_height),
-        week_html.join(''),
-        week_html_suf
+      _month_html.push([
+        _week_html_pre.join(_row*_row_height),
+        _week_html.join(''),
+        _week_html_suf
       ].join('') );
     }
-    ELEM.setHTML(this.markupElemIds.value, month_html.join(''));
-    ELEM.setHTML(this.markupElemIds.state, this.monthName(date)+'&nbsp;'+this.year(date));
-    this.viewMonth = [monthFirst.getUTCFullYear(),monthFirst.getUTCMonth()];
+    ELEM.setHTML(this.markupElemIds.value, _month_html.join(''));
+    ELEM.setHTML(this.markupElemIds.state, this.monthName(_date)+'&nbsp;'+this.year(_date));
+    this.viewMonth = [_monthFirst.getUTCFullYear(),_monthFirst.getUTCMonth()];
   }
 });
 HCalendar.implement(HDateTime);

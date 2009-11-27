@@ -40,31 +40,48 @@ HTab = HControl.extend({
   componentBehaviour: ['view','control','tab'],
   refreshOnValueChange: true,
   refreshOnLabelChange: false,
-/** = Description
-  * constructor for HTab
-  *
-  * = Parameters
-  * +_rect+::
-  * +_parent+::
-  * +_options+::
-  *
-  **/
-  constructor: function(_rect,_parent,_options){
-    this.tabInit();
-    if(this.isinherited) {
-      this.base(_rect, _parent, _options);
+  
+  controlDefaults: (HControlDefaults.extend({
+    constructor: function(_ctrl){
+      if(!this.events){
+        this.events = {
+          mouseDown: true
+        };
+      }
+      this.tabInit(_ctrl);
+    },
+    tabInit: function(_ctrl){
+      _ctrl.tabs = [];
+      _ctrl.tabLabels = [];
+      _ctrl.tabLabelBounds = [];
+      _ctrl.tabLabelStrings = [];
     }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parent, _options);
-      this.isinherited = false;
-    }
-    this.type = '[HTab]';
-    this.setMouseDown(true);
-    if(!this.isinherited) {
-      this.draw();
-    }
-  },
+  })),
+  
+  rightmostPx: 0,
+  selectIdx: -1,
+  
+  // overridden in the template
+  tabLabelHeight: 20,
+  
+  // overridden in the template
+  tabLabelLeftEdge: 4,
+  
+  // overridden in the template
+  tabLabelRightEdge: 4,
+  
+  // overridden in the template
+  fontStyle: 'font-family:Arial,sans-serif;font-size:13px;',
+  
+  tabLabelHTMLPrefix1: '<div class="edge-left"></div><div class="tablabel" style="width:',
+  tabLabelHTMLPrefix2: 'px">',
+  tabLabelHTMLSuffix: '</div><div class="edge-right"></div>',
+  tabLabelParentElem: 'label',
+  tabLabelElementTagName: 'div',
+  tabLabelAlign: 'left',
+  tabLabelFillBg: false,
+  tabTriggerLink: false,
+  tabLabelNoHTMLPrefix: false,
   
 /** = Description
   * refreshValue function
@@ -80,37 +97,6 @@ HTab = HControl.extend({
         }
       }
     }
-  },
-  // stringWidth: function(_string,_elemId){
-  //   var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
-  //       _width = this.base( _html, null, _elemId );
-  //   return _width;
-  // },
-   
-/** = Description
-  * tabInit function
-  *
-  **/
-  tabInit: function(){
-    this.tabs = [];
-    this.tabLabels = [];
-    this.tabLabelBounds = [];
-    this.tabLabelStrings = [];
-    this.rightmostPx = 0;
-    this.selectIdx = -1;
-    this.tabLabelHeight    = 20; // overridden in the template
-    this.tabLabelLeftEdge  = 4;  // overridden in the template
-    this.tabLabelRightEdge = 4;  // overridden in the template
-    this.fontStyle = 'font-family:Arial,sans-serif;font-size:13px;'; // overridden in the template
-    this.tabLabelHTMLPrefix1 = '<div class="edge-left"></div><div class="tablabel" style="width:';
-    this.tabLabelHTMLPrefix2 = 'px">';
-    this.tabLabelHTMLSuffix = '</div><div class="edge-right"></div>';
-    this.tabLabelParentElem = 'label';
-    this.tabLabelElementTagName = 'div';
-    this.tabLabelAlign = 'left';
-    this.tabLabelFillBg = false;
-    this.tabTriggerLink = false;
-    this.tabLabelNoHTMLPrefix = false;
   },
   
 /** = Description

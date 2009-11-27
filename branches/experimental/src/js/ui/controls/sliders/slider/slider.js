@@ -34,61 +34,26 @@ HSlider = HControl.extend({
   componentName: "slider",
   
   controlDefaults: (HControlDefaults.extend({
-      minValue: 0,
-      maxValue: 1,
-      repeatDelay: 300,
-      repeatInterval: 50,
-      inverseAxis: false
+    minValue: 0,
+    maxValue: 1,
+    repeatDelay: 300,
+    repeatInterval: 50,
+    inverseAxis: false,
+    constructor: function(_ctrl){
+      if(!this.events){
+        this.events = {
+          draggable: true,
+          keyDown: true,
+          keyUp: true,
+          mouseWheel: true
+        };
+      }
+    }
   })),
   
-/** = Description
-  * Use like the HControl#constructor.
-  *
-  * = Default events
-  * +mouseDown+::  +false+
-  * +mouseup+::    +false+
-  * +draggable+::  +true+
-  * +keyDown+::    +true+
-  * +keyUp+::      +true+
-  * +mouseWheel+:: +true+
-  * +value+::      +0+
-  *
-  **/
-  constructor: function(_rect,_parent,_options) {
-    
-    if (!_options) {
-      _options = {};
-    }
-    
-    if (!_options.events) {
-      _options.events = {
-        mouseDown: false,
-        mouseUp:   false,
-        draggable: true,
-        keyDown: true, 
-        keyUp: true, 
-        mouseWheel: true
-      };
-    }
-    
-    if(this.isinherited){
-      this.base(_rect,_parent,_options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect,_parent,_options);
-      this.isinherited = false;
-    }
-    
-    this.refreshOnValueChange = false;
-    
-    this._isVertical = false;
-    
-    if(!this.isinherited){
-      this.draw();
-    }
-    
-  },
+  refreshOnValueChange: false,
+  
+  _isVertical: false,
   
   
 /** = Description

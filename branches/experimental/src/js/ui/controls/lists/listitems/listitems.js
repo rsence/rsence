@@ -8,8 +8,6 @@
 
 
 /*** = Description
-  ** This class is still at experimental phase.
-  ** Please assume that the API _will_ change later.
   ** HListItems is uses an array-packed list of hash objects as its value.
   ** Each item in the array should have a 'label' and a 'value' key.
   ** The 'label' key of each item is used as the label for the HRadiobutton in the list.
@@ -29,6 +27,7 @@ HListItems = HValueResponder.extend({
   _warningMessage: function(_messageText){
     console.log("Warning; HListItems: "+_messageText);
   },
+  
 /** = Description
   * Iterates through this.value array and calls
   * the setListItems function of the parent class.

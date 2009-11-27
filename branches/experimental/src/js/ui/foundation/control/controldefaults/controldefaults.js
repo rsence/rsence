@@ -27,7 +27,7 @@ HControlDefaults = HClass.extend({
   events:   null,
   
   constructor: function(){
-    if(COMM.Values.encode(this.events)==='{}'){
+    if(!this.events){
       this.events = {};
     }
   },

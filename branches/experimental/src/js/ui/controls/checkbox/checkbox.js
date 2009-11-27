@@ -12,12 +12,16 @@
   ***/
 HCheckbox = HButton.extend({
   componentName: 'checkbox',
-/** Like HControl.constructor but sets the HCheckbox clickable.
-  **/
-  constructor: function(_rect,_parent,_options){
-    this.base(_rect,_parent,_options);
-    this.setClickable(true);
-  },
+  
+  controlDefaults: (HControlDefaults.extend({
+    constructor: function(){
+      if(!this.events){
+        this.events = {
+          click: true
+        }
+      }
+    }
+  })),
   
 /** Toggles the value checked / unchecked.
   **/

@@ -19,24 +19,20 @@
 HTextControl = HControl.extend({
   
   componentName: "textcontrol",
-
-/** = Description
-  * HTextControl constructor
-  *
-  * = Parameters
-  * +_rect+::          An <HRect> object that sets the position and dimensions of this control.
-  * +_parentClass+::   The parent view that this control is to be inserted in.
-  * +_options+::       (optional) All other parameters. See <HComponentDefaults>.
-  *
-  **/
-  constructor: function(_rect, _parentClass, _options) {
-    this.base(_rect, _parentClass, _options);
-    this.setTextEnter(true);
-  },
+  
+  controlDefaults: (HControlDefaults.extend({
+    constructor: function(_ctrl){
+      if(!this.events){
+        this.events = {
+          textEnter: true
+        };
+      }
+    }
+  })),
   
 /** = Description
-  * refreshLable function
-  *
+  * The refreshLabel method sets the title property of the text
+  * field, essentially creating a tooltip using the label.
   *
   **/
   refreshLabel: function(){
@@ -48,8 +44,8 @@ HTextControl = HControl.extend({
   },
 
 /** = Description
-  * drawSubviews function
-  *
+  * Tweaks the input element to fit the match the size properly
+  * in different browsers.
   *
   **/
   drawSubviews: function(){
@@ -111,15 +107,6 @@ HTextControl = HControl.extend({
     this.setEnabled(this.enabled);
   },
 
-/** = Description
-  * setStyle function
-  *
-  * = Parameters
-  * +_name+::
-  * +_value+::
-  * +cacheOverride+::
-  *
-  **/
   setStyle: function(_name, _value, _cacheOverride) {
     if (!this['markupElemIds']||!this.markupElemIds['value']) {
       return;
@@ -127,14 +114,6 @@ HTextControl = HControl.extend({
     this.setStyleOfPart('value', _name, _value, _cacheOverride);
   },
   
-/** = Description
-  * Enables/disables the actual text control in addition to changing the look of
-  * the field.
-  * 
-  * = Parameters
-  * +_flag+::  True to enable, false to disable.
-  *
-  **/
   setEnabled: function(_flag) {
     this.base(_flag);
     if(this['markupElemIds']===undefined){return;}
@@ -196,8 +175,8 @@ HTextControl = HControl.extend({
   },
 
 /** = Description
-  * textEnter function
-  *
+  * Receives the textEnter event to update the value
+  * based on what's (potentially) entered in the text input field.
   *
   **/
   textEnter: function(){
@@ -211,11 +190,14 @@ HTextControl = HControl.extend({
 });
 
 /** = Description
-  * HNumericTextControl
-  *
+  * HNumericTextControl is an extension of HTextControl that
+  * validates the input as a number. It supports value ranges.
   *
   **/
 HNumericTextControl = HTextControl.extend({
+  
+/** Uses the mouseWheel event to step up/down the value.
+  **/
   mouseWheel: function(_delta){
     var _value = this.value;
     _value = _value-((_delta<0)?1:-1);
@@ -223,8 +205,8 @@ HNumericTextControl = HTextControl.extend({
   },
 
 /** = Description
-  * validateText function
-  *
+  * Extends the validateText method to ensure the
+  * input is a number.
   *
   **/
   validateText: function(_value){
@@ -248,8 +230,8 @@ HNumericTextControl = HTextControl.extend({
   },
 
 /** = Description
-  * setValue function
-  *
+  * When changing the value, passes it on to the validateText method
+  * before setting the value itself.
   *
   **/
   setValue: function(_value){

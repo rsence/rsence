@@ -14,36 +14,19 @@
   ** scaleToFit and scaleToOriginal. If the image is unable to be loaded, 
   ** a default blank image will be rendered.
   **
-  ** = Instance variables
-  ** +type+::   HImageView
-  ** +value+::  URL pointing to the image that is currently shown.
   ***/
 HImageView = HControl.extend({
-  constructor: function(_rect, _parentClass, _options) {
-    if(!_options) {
-      _options={};
+  
+  controlDefaults: (HControlDefaults.extend({
+    scaleToFit: true,
+    value: null,
+    constructor: function(_ctrl){
+      if(this.value===null){
+        // default to a blank image
+        this.value = _ctrl.getThemeGfxPath() + "/blank.gif";
+      }
     }
-    var _defaults = HClass.extend({
-      scaleToFit: true
-    });
-    _options = new (_defaults.extend(_options))();
-    if(this.isinherited) {
-      this.base(_rect, _parentClass, _options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parentClass, _options);
-      this.isinherited = false;
-    }
-    if(!this.value) {
-      // default to a blank image
-      this.value = this.getThemeGfxPath() + "/blank.gif";
-    }
-    
-    if(!this.isinherited) {
-      this.draw();
-    }
-  },
+  })),
   
   _makeScaleToFit: function(_parentId){
     this.elemId = ELEM.make(_parentId,'img');
@@ -64,6 +47,7 @@ HImageView = HControl.extend({
       this._makeScaleToOriginal(_parentId);
     }
   },
+  
 /** = Description
   * Used to refresh HImageView if the this.value is changed.
   * 
@@ -71,6 +55,7 @@ HImageView = HControl.extend({
   refreshValue: function(){
     ELEM.setAttr(this.elemId,'src',this.value);
   },
+  
 /** = Description
   * Refreshesh the label of HImageView.
   *

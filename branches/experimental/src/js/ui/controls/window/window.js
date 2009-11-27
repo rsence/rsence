@@ -7,8 +7,12 @@
  */
 
 /*** = Description
+  ** The HWindow component can contain subviews and its position and size
+  ** is modifiable by the user (within limits).
+  ** Its label is the title of the HWindow and its constructor support a
+  ** few additions to the set of HDynControl#controlDefaults.
+  ** See #controlDefaults
   **
-  ** Simple window component.
   ***/
 HWindow = HDynControl.extend({
   

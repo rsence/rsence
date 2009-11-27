@@ -24,41 +24,21 @@ HStepper = HControl.extend({
   componentName: "stepper",
   
   controlDefaults: (HControlDefaults.extend({
-      minValue: 0,
-      maxValue: 100,
-      stepSize: 1,
-      repeatInterval: 200,
-      wrapAround: false
+    minValue: 0,
+    maxValue: 100,
+    stepSize: 1,
+    repeatInterval: 200,
+    wrapAround: false,
+    constructor: function(_ctrl){
+      if(!this.events){
+        this.events = {
+          mouseDown: true,
+          keyDown: true,
+          mouseWheel: true
+        };
+      }
+    }
   })),
-  
-/** = Description
-  * HStepper constructor
-  *
-  * = Parameters
-  * +_rect+::     
-  * +_parent+::   
-  * +_options+::  
-  *
-  **/
-  constructor: function(_rect,_parent,_options) {
-    
-    // -- Makes sure there is at least an empty options block ++
-    if (!_options) {
-      _options = {};
-    }
-    
-    // -- Makes sure the default events for HStepper are enabled ++
-    if (!_options.events) {
-      _options.events = {
-        mouseDown:  true,
-        keyDown:    true,
-        mouseWheel: true
-      };
-    }
-    
-    this.base( _rect, _parent, _options );
-    
-  },
   
   /** Setter for wrap-around behaviour
     **/

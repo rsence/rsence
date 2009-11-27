@@ -7,9 +7,6 @@
  */
 
 /*** = Description
-  ** This class is still at experimental phase.
-  ** Please assume that the API _will_ change later.
-  ** 
   ** HRadiobuttonList expects the setListItems to be set. See HListItems.
   ** The value of the instance is the selected key in the listItems.
   ***/
@@ -22,7 +19,7 @@ HRadiobuttonList = HControl.extend({
   listItemViews: [],
   
 /** = Description
-  * Setter function for listItems and listImetViews. Destroys 
+  * Setter function for listItems and listItemViews. Destroys 
   * the old HRadiabuttons before creating the new ones based on the
   * listItems given as an parameter. 
   *
