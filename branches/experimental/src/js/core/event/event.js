@@ -156,7 +156,6 @@ _defaultFocusOptions = {
   keyDown: false,
   keyUp: false,
   mouseWheel: false,
-  isDragged: false,
   textEnter: false
 };
 
@@ -466,7 +465,7 @@ EVENT = {
     var _this = EVENT,
         _elemId = _ctrl.elemId,
         _elem = ELEM.get(_elemId);
-    if (_this.focused[_elemId] === false && _this.focusOptions[_elemId].isDragged === false) {
+    if (_this.focused[_elemId] === false && _this.dragItems.indexOf(_elemId) === -1) {
       Event.stopObserving(_elem, 'mouseover', _this._mouseOver);
       Event.observe(_elem, 'mouseout', _this._mouseOut);
       _this.focused[_elemId] = true;
@@ -486,7 +485,7 @@ EVENT = {
     var _this = EVENT,
         _elemId = _ctrl.elemId,
         _elem = ELEM.get(_elemId);
-    if (_this.focused[_elemId] === true && _this.focusOptions[_elemId].isDragged === false) {
+    if (_this.focused[_elemId] === true && _this.dragItems.indexOf(_elemId) === -1) {
       Event.stopObserving(_elem, 'mouseout', _this._mouseOut);
       Event.observe(_elem, 'mouseover', _this._mouseOver);
       _this.focused[_elemId] = false;
@@ -532,9 +531,6 @@ EVENT = {
         _ctrl;
     
     clearTimeout(_this._lastCoordFlushTimeout);
-    
-    // drag detect flag
-    _currentlyDragging = false;
     
     // send drag event to all drag-interested ctrls
     for (; i !== _this.dragItems.length; i++) {
@@ -735,6 +731,7 @@ EVENT = {
       document.onselectstart = function() {
         return false;
       };
+      Event.stop(e);
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
     if (this.enableDroppableChecks) {

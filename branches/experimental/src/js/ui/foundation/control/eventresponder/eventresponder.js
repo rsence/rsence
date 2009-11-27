@@ -160,9 +160,6 @@ HEventResponder = HClass.extend({
       EVENT.coordListeners.splice(_mmoveIndex,1);
     }
     
-    /// The following boolean must be set:
-    this.isDragged = false;
-    
     return this;
   },
 
@@ -494,9 +491,7 @@ HEventResponder = HClass.extend({
   * +y+:: The vertical coordinate units (px) of the mouse cursor position.
   *
   **/
-  startDrag: function(x, y) {
-    this.isDragged = true;
-  },
+  startDrag: function(x, y) {},
   
 /** = Description
   * Default drag event responder method. Does nothing by default.
@@ -525,7 +520,6 @@ HEventResponder = HClass.extend({
   *
   **/
   endDrag: function(x, y) {
-    this.isDragged = false;
     this.invalidatePositionCache();
   },
 

@@ -441,16 +441,6 @@ HControl = HView.extend({
 
 {
   
-/** Stops event propagation.
-  **/
-  stopPropagation: function(event) {
-    if (event.stopPropagation) { 
-      event.stopPropagation(); 
-    } else {
-      event.cancelBubble = true;
-    }
-  },
-  
   // The CSS class name to set when the component is disabled
   CSS_DISABLED: "disabled",
   
