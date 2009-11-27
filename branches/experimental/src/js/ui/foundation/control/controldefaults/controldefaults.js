@@ -24,7 +24,13 @@ HControlDefaults = HClass.extend({
 /** The default initial event responders to register to a component.
   * By default no events are enabled.
   **/
-  events:   {},
+  events:   null,
+  
+  constructor: function(){
+    if(COMM.Values.encode(this.events)==='{}'){
+      this.events = {};
+    }
+  },
   
 /** The default initial value of the component.
   **/

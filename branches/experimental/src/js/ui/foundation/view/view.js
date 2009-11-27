@@ -168,6 +168,10 @@ HView = HClass.extend({
   **/
   isHidden: true,
   
+/** The +HRect+ instance bound to +self+ using the +constructor+ or +setRect+.
+  **/
+  rect: null,
+  
 /** = Description
   * Constructs the logic part of a HView.
   * The view still needs to be drawn on screen. To do that, call draw after

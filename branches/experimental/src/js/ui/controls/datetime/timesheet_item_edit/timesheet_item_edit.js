@@ -190,11 +190,11 @@ HTimeSheetEditor = HControl.extend({
     );
     this.delButton = HButton.extend({
       
-/** = Description
-  * Click function for delete button. Will call delete function on click
-  * for the current item.
-  *
-  **/
+    /** = Description
+      * Click function for delete button. Will call delete function on click
+      * for the current item.
+      *
+      **/
       click: function(){
         this.parent.hide();
         var _sheetItem = this.parent.timeSheetItem;
@@ -218,10 +218,10 @@ HTimeSheetEditor = HControl.extend({
     );
     this.okButton = HButton.extend({
       
-/** = Description
-  * Click function for okButton will ok the modifications for the current item.
-  *
-  **/
+    /** = Description
+      * Click function for okButton will ok the modifications for the current item.
+      *
+      **/
       click: function(){
         this.parent.hide();
         if(this.parent.timeSheetItem!==false){
@@ -244,11 +244,11 @@ HTimeSheetEditor = HControl.extend({
       }
     );
     this.cancelButton = HButton.extend({
-/** = Description
-  * Click function for cancel button will cancel 
-  * the modifications for the current item.
-  *
-  **/
+    /** = Description
+      * Click function for cancel button will cancel 
+      * the modifications for the current item.
+      *
+      **/
       click: function(){
         this.parent.hide();
         if(this.timeSheetItem!==false){

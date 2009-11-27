@@ -212,12 +212,9 @@ HControl = HView.extend({
     if(!_options) {
       _options = {};
     }
-    _options = (this.controlDefaults.extend(_options)).nu();
-    var _isValueRange = (_options.minValue || _options.maxValue),
-        _label = _options.label,
-        _events = _options.events,
-        _this = this;
+    var _this = this;
     
+    _options = (_this.controlDefaults.extend(_options)).nu(this);
     _this.options = _options;
     
     if(_this.isinherited) {
@@ -228,22 +225,30 @@ HControl = HView.extend({
       _this.base(_rect, _parent);
       _this.isinherited = false;
     }
+    
+    var _isValueRange = (_options.minValue || _options.maxValue),
+        _label = _options.label,
+        _events = _options.events;
+    
     if(_options.visible) {
       _this.show();
     }
     else {
       _this.hide();
     }
+    
     _this.setLabel(_label);
     _this.setEvents(_events);
     _this.setEnabled(_options.enabled);
+    
     if(_options.valueObj){
       _options.valueObj.bind(_this);
     }
     else if(!_this.valueObj) {
       _this.valueObj = HDummyValue.nu();
     }
-    if((_this.value===undefined)&&(_options.value!==undefined)) {
+    
+    if((_this.value===null)&&(_options.value!==undefined)) {
       _this.setValue(_options.value);
     }
     if(_isValueRange) {
@@ -446,9 +451,13 @@ HControl = HView.extend({
     }
   },
   
-  // CSS class names for different statuses.
+  // The CSS class name to set when the component is disabled
   CSS_DISABLED: "disabled",
+  
+  // The CSS class name to set when the component is enabled
   CSS_ENABLED:  "enabled",
+  
+  // The CSS class name to set when the component is active (clicked/focused)
   CSS_ACTIVE:   "active"
   
 });
