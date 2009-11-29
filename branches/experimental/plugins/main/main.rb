@@ -180,9 +180,7 @@ class Main < Plugin
         # gets the next call
         delayed_call = mses[:delayed_calls].shift
         if $DEBUG_MODE
-          puts '-='*30
           puts "delayed_call: #{delayed_call.inspect}"
-          puts '=-'*30
         end
         
         # strings are always javascript, used for segmenting client load

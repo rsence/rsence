@@ -13,7 +13,7 @@
   ** Use the jsLoader instance to get packaged Javascript libraries from the
   ** standard package url.
 ***/
-JSLoader = HClass.extend({
+COMM.JSLoader = HClass.extend({
   
 /** = Description
   * Construct with the base url.
@@ -80,11 +80,16 @@ JSLoader = HClass.extend({
   
 });
 
+/** -- Global reference ++ **/
+JSLoader = COMM.JSLoader;
+
 // Makes the standard jsLoader instance based on the client base url 
 // of the server when the page is loaded.
 LOAD(
   function(){
-    jsLoader = JSLoader.nu( HCLIENT_BASE + '/js/' );
+    COMM.jsLoader = COMM.JSLoader.nu( HCLIENT_BASE + '/js/' );
+    // backwards compatibility aliases:
+    jsLoader = COMM.jsLoader;
   }
 );
 
