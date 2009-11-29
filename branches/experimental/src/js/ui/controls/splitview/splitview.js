@@ -7,27 +7,17 @@
  */
 
 /*** = Description
-  ** An HSplitView object stacks several child views within one view so that the user can change their relative sizes.
-  ** By default, the split bars between the views are horizontal, so the views are one on top of the other.
+  ** An HSplitView object stacks several child views within one view so that 
+  ** the user can change their relative sizes. By default, the split bars 
+  ** between the views are horizontal, so the views are one on top of the 
+  ** other.
   **
   ** = Instance variables
-  ** +type+::     '[HSplitView]'
-  ** +vertical+::  Sets whether the split bars are vertical.
+  ** +vertical+:: Sets whether the split bars are vertical.
   ***/
 HSplitView = HControl.extend({
     
   componentName: "splitview",
-
-/** = Description
-  * HSplitView constructor
-  *
-  * = Parameters
-  * +_rect+::         An HRect object that sets the position and 
-  *                   dimensions of this control.
-  * +_parentClass+::  The parent view that this control is to be inserted in.
-  * +_options+::      (optional) All other parameters. See HComponentDefaults
-  *
-  **/
   constructor: function(_rect, _parentClass, _options) {
     
     _options = new (Base.extend({
