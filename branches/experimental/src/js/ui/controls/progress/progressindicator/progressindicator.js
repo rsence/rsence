@@ -13,128 +13,29 @@
   ** percentage. This bar uses motion or some other indicator to show that 
   ** progress is taking place, rather than using the size of the filled portion
   ** to show the total amount of progress.
-  **
-  ** = Instance variables
-  ** +value+:: Boolean value currently set to this object 
-  **           (true - on, false - off).
-  ** +interval+:: The delay time (in ms) before the next iteration.
   ***/
-HProgressIndicator = HControl.extend({
-  
-  componentName: "progressindicator",
-  constructor: function(_rect,_parentClass,_options) { 
-   
-    if(this.isinherited) {
-      this.base(_rect,_parentClass,_options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect,_parentClass,_options);
-      this.isinherited = false;
-    }
-    
-    if (!_options) {
-      _options = {};
-    }
-    
-    var _defaults = Base.extend({
-      value: 0,
-      interval: 20
-    });
-    _defaults = _defaults.extend(_options);
-    _options = new _defaults();
-    
-    this._progressbarPrefix = 'progressmark'; 
-    
-    this.interval = _options.interval;
-    this.value = _options.value;
-    
-    this._counter = null;
-    
-    if(!this.isinherited) {
-        this.draw();
-    }
-    
+HProgressIndicator = HView.extend({
+  _indicator: null,
+  _animDirection: 0,
+  drawSubviews: function(){
+    var _this = this;
+    _this.setStyle( 'border', '1px solid #999' );
+    _this.setStyle( 'background-color', '#ccc' );
+    var _height = _this.rect.height,
+        _width = ELEM.getVisibleSize( _this.elemId )[0]-2;
+    _this['_rect'+0] = HRect.nu( 0,0,_height,_height );
+    _this['_rect'+1] = HRect.nu( _width-_height, 0, _width, _height );
+    _this._indicator = HView.nu( HRect.nu( _this['_rect'+0] ), _this );
+    _this._indicator.setStyle('background-color','#333');
+    _this._indicator.onAnimationEnd = function(){
+      this.parent._toggleDirection();
+    };
+    _this._toggleDirection();
   },
-
-/** = Description
-  * Checks if the given value is true of false and serves as a toggle of 
-  * the object. --(to be changed..)++
-  * 
-  * = Parameters
-  * +_value+:: A boolean value to be set to the object.
-  *
-  **/ 
-  setValue: function(_value) {
-    
-    if(this._progressbarElemId) {
-      
-      if (_value === true && !this._counter) {
-        var temp = this;
-        this._counter = setInterval(function() {
-            temp.drawProgress();
-          }, temp.interval
-        );
-      }
-      else {
-        clearInterval(this._counter);
-        this._counter = null;
-      }
-      
-    }
-  },
-  
-  
-/** = Description
-  * Makes sure the progress indicator update interval gets cleaned up before 
-  * the component is destroyed.
-  * 
-  */
-  die: function() {
-    this.base();
-    if (this._counter) {
-      clearInterval(this._counter);
-    }
-  },
-  
-  
-/** = Description
-  * Draws the rectangle and the markup of this object on the screen.
-  *
-  **/ 
-  draw: function() {
-    if (!this.drawn) {
-      this.drawRect();
-      this.drawMarkup();
-      this._initProgress();
-    }
-  },
-
-//--private method++
-  _initProgress: function() {
-    this._progressbarElemId = this.bindDomElement(
-      this._progressbarPrefix + this.elemId);
-
-    this.drawProgress();
-  },
-
-/** = Description
-  * Moves the progress indicator to the next point and draws it 
-  * if progressbarElemId is present.
-  *
-  **/
-  drawProgress: function() {
-    this.progressPosition ++;
-    if(this.progressPosition > this.positionLimit - 1) {
-      this.progressPosition = 0;
-    }
-    
-    if (this._progressbarElemId) {
-      ELEM.setStyle(this._progressbarElemId, 'background-position', '0px -' +
-        (this.progressPosition * this.rect.height) + 'px');
-    }
-    
+  _toggleDirection: function(){
+    this._animDirection = this._animDirection===1?0:1;
+    var _directionRect = HRect.nu( this['_rect'+this._animDirection] );
+    this._indicator.animateTo(_directionRect);
   }
-   
 });
 
