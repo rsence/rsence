@@ -9,6 +9,10 @@
 # plugin.rb contains the Plugin skeleton class
 require 'plugins/plugin'
 
+# guiparser.rb contains the Yaml serializer for gui trees.
+# It uses JSONRenderer on the client to build user interfaces.
+require 'plugins/guiparser'
+
 # soapserve contains an extended hsoaplet for pluginmanager usage
 begin
   require 'http/soap/soapserve'

@@ -4,8 +4,14 @@ version: 0.4
 class: HApplication
 options: '20'
 subviews:
-  - class: HView
-    rect: [ 0, 0, 700, 500, 0, 0 ]
+  - class: HWindow
+    rect: [ 0, 0, 700, 500 ]
+    options:
+      label: 'Riassence Calendar'
+      zoomButton: true
+      collapseButton: true
+      closeButton: true
+      minSize: [ 700, 500 ]
     define:
       - class: BoldString
         extend: HStringView

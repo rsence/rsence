@@ -1,26 +1,13 @@
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2009 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
-require 'pp'
+#--
+##   Riassence Framework
+ #   Copyright 2008 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+ #++
+
 class RiassenceCal < Plugin
   def init
     @cal_path = File.join( @path, 'db', 'rsence_cal.db' )
@@ -100,7 +87,6 @@ class RiassenceCal < Plugin
   
   def edit_entry( msg, hvalue )
     data = hvalue.data.clone
-    pp data
     ses = get_ses( msg )
     cal_id = ses[:calendar_id].data
     cal_day = ses[:calendar_day].data
@@ -121,7 +107,6 @@ class RiassenceCal < Plugin
           'id' => item_id
         }
       } )
-      pp data['response']
     end
     data['create'] = []
     data['modify'].each do |item|
@@ -156,64 +141,6 @@ class RiassenceCal < Plugin
   end
 
 private
-  class GUIParser
-    def init( msg, params )
-      gui_data = YAML.load( @yaml_src )
-      parse_gui( gui_data, params )
-      msg.reply "JSONRenderer.nu( #{gui_data.to_json} );"
-    end
-    def values( ses )
-      ids = {}
-      ses.each do | key, value |
-        if value.class == HValue
-          ids[ key ] = value.val_id
-        end
-      end
-      return ids
-    end
-  private
-    def parse_gui( gui_data, params )
-      data_class = gui_data.class
-      if data_class == Array
-        gui_data.each_with_index do |item,i|
-          gui_data[i] = parse_gui( item, params )
-        end
-      elsif data_class == Hash
-        gui_data.each do |key,value|
-          gui_data[key] = parse_gui( value, params )
-        end
-      elsif data_class == Symbol
-        sym_str = gui_data.to_s
-        if sym_str.include? '.'
-          sym_arr = sym_str.split('.')
-        else
-          sym_arr = [ sym_str ]
-        end
-        return get_params( sym_arr, params )
-      end
-      return gui_data
-    end
-    def get_params( params_path, params )
-      item = params_path.shift
-      if params.class == Hash
-        has_str = params.has_key?( item )
-        has_sym = params.has_key?( item.to_sym )
-        item = item.to_sym if has_sym
-        if has_str or has_sym
-          if params_path.size == 0
-            return params[item]
-          else
-            return get_params( params_path, params[ item ] )
-          end
-        end
-      end
-      return ''
-    end
-    def initialize( parent, gui_name )
-      @parent = parent
-      @yaml_src = File.read("#{parent.path}/gui/#{gui_name}.yaml")
-    end
-  end
   def create_db
     db = Sequel.sqlite(@cal_path)
     unless db.table_exists?(:calendars)
