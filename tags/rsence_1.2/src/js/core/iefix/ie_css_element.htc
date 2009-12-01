@@ -1,0 +1,5 @@
+<PUBLIC:COMPONENT lightWeight="true">
+<script type="text/javascript">
+try{element.attachEvent("onpropertychange",iefix.htcElementEntry);}catch(e){window.status=e;}
+</script>
+</PUBLIC:COMPONENT>

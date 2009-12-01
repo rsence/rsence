@@ -1,0 +1,1 @@
+.progressbar{cursor:wait;position:absolute;left:0;top:0;right:0;bottom:1px;border:1px solid #999;background-color:#ccc;}.progressbar .progress{position:absolute;left:0;top:0;width:50px;bottom:0;background-color:#333;}.disabled .progressbar{opacity:.75;}
