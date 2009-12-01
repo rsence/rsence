@@ -6,13 +6,27 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** HAlertSheet is a simple alert notification control.
+  ***/
+
 HAlertSheet = HSheet.extend({
+
+/** = Description
+  * Refreshes the label of text if this['alertText'] is set.
+  *
+  **/
   refreshLabel: function(){
     this.base();
     if(this['alertText']){
       this.alertText.setValue( this.label );
     }
   },
+  
+/** = Description
+  * Draws the warning text (this.label) as a HStringView and a warning image 
+  * and an alert button.
+  **/
   drawSubviews: function(){
     this.icon = HImageView.nu(
       [ 16, 16, 48, 48 ],
@@ -28,6 +42,11 @@ HAlertSheet = HSheet.extend({
     );
     this.alertButtons();
   },
+
+/** = Description
+  * Draws an alert button.
+  *
+  **/
   alertButtons: function(){
     this.okButton = HClickValueButton.nu(
       [ null, null, 60, 23, 8, 8 ],

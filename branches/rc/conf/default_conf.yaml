@@ -157,6 +157,18 @@
       :descr: 'The plugin delegation process for init_ses failed with error:'
       :uri:   '/'
     #
+    # If the plugins delegation of the cloned_target event fails, display this:
+    :plugin_delegate_cloned_target_error:
+      :title: 'ClonedTargetError'
+      :descr: 'The plugin delegation process for cloned_target failed with error:'
+      :uri:   '/'
+    #
+    # If the plugins delegation of the cloned_source event fails, display this:
+    :plugin_delegate_cloned_source_error:
+      :title: 'ClonedSourceError'
+      :descr: 'The plugin delegation process for cloned_source failed with error:'
+      :uri:   '/'
+    #
     # If the plugins rescan fails, display this:
     :plugin_idle_error:
       :title: 'PluginIdleError'
@@ -185,8 +197,29 @@
   :cookie_key_multiplier: 3
   #
   #
-  # When enabled, deletes all old sessions upon server startup
+  # When enabled, deletes all old sessions upon server startup.
+  # If the --reset-sessions command-line switch is provided,
+  # switches this one to true.
   :reset_sessions: false
+  #
+  # When this is enabled, multiple sessions are allowed for each client
+  # When it's enabled, the old session is left intact and a new one is
+  # created by making a clone of the last session.
+  # If enabled, also check the maximum number of clones allowed in
+  # :session_cookie_max_clones
+  # Defaults to false, will be the default in a future version.
+  :clone_cookie_sessions: false
+  #
+  # This limits the amount of cloned targets of a source session.
+  # NOTE: This has no effect yet, the code is not implemented.
+  :max_cloned_sessions: 10
+  #
+  # This option overrides the default session timeout.
+  # Don't set this to less than the expected poll interval,
+  # otherwise the session might expire before the previous
+  # (cloned) session re-connects the next time.
+  # A safe value for a 60 second poll interval is 120 (default).
+  :cloned_session_expires_in: 120
   #
   # Message strings
   :messages:

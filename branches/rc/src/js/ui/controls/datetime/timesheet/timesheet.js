@@ -6,11 +6,18 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** HTimesheet is a simple timesheet control. 
+  ***/
 HTimeSheet = HControl.extend({
   componentName: 'timesheet',
   pxPerHour: 24,
   itemOffsetLeft: 36,
   itemOffsetRight: 0,
+/** = Description
+  * Redraws the timesheet.
+  *
+  **/
   refresh: function(){
     if(this.drawn){
       var _areaHeight = this.rect.height;
@@ -27,6 +34,11 @@ HTimeSheet = HControl.extend({
     }
     this.base();
   },
+  
+/** = Description
+  * Refreshes the hour labels.
+  *
+  **/
   refreshLabel: function(){
     var hour = 1,
         hours = [],
@@ -38,6 +50,11 @@ HTimeSheet = HControl.extend({
     ELEM.setHTML(this.markupElemIds.label,hours.join(''));
     this.refreshState();
   },
+  
+/** = Description
+  * Refreshes the lines which mark hours and half-hours.
+  *
+  **/
   refreshState: function(){
     var line = 0,
         lines = [],
@@ -48,6 +65,14 @@ HTimeSheet = HControl.extend({
     ELEM.setHTML(this.markupElemIds.state,lines.join(''));
   },
   dragItem: false,
+  
+/** = Description
+  * Creates an item into timesheet with default label 'New Item'.
+  *
+  * = Parameters
+  * +origY+:: Y coordinate of the new item.
+  *
+  **/
   createItem: function(origY){
     var _lineHeight = Math.round(this.pxPerHour/2);
     origY = Math.floor( origY / _lineHeight )*_lineHeight;
@@ -67,14 +92,40 @@ HTimeSheet = HControl.extend({
     );
     this.dragItem = item;
   },
+  
+/** = Description
+  * Dragging is used to mark items on the timesheet.
+  * 
+  * = Parameters
+  * +x+:: x coordinate of the origin of drag
+  * +y+:: y coordinate of the origin of drag
+  *
+  **/
   startDrag: function(x,y){
     this.createItem(y-this.pageY());
     EVENT.startDragging( this.dragItem );
   },
   listItemViews: false,
+  
+/** = Description
+  * Sets the editor given as parameter as the editor of instance.
+  *
+  * = Parameters
+  * +_editor+:: 
+  *
+  **/
   setEditor: function( _editor ){
     this.editor = _editor;
   },
+  
+/** = Description
+  * Returns HRect the size of given parameters and suitable for timesheet.
+  *
+  * = Parameters
+  * +_origY+::      Y coordinate.
+  * +_lineHeight+:: The height of item on time sheet.
+  *
+  **/
   createItemRect: function(_origY, _lineHeight){
     var _left = this.itemOffsetLeft,
         _top = _origY,
@@ -82,10 +133,20 @@ HTimeSheet = HControl.extend({
         _bottom = _origY + _lineHeight;
     return HRect.nu( _left, _top, _right, _bottom );
   },
+
+/** = Description
+  * Destructor; destroys the editor first and commences inherited die.
+  *
+  **/
   die: function(){
     this.editor.die();
     this.base();
   },
+  
+/** = Description
+  * Redraws and refreshes the values on timesheet.
+  *
+  **/
   refreshValue: function(){
     var _data = this.value, i;
     if(this.listItemViews === false){

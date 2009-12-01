@@ -11,7 +11,7 @@
  ** inherit from the HView.
  **
  ** = Instance variables
- **  +markup+::  The markup from the component's HTML template.
+ ** +markup+:: The markup from the component's HTML template.
 ***/
 HMarkupView = HClass.extend({
 
@@ -84,11 +84,11 @@ HMarkupView = HClass.extend({
   * _elementId.
   * 
   * = Parameters
-  *  +_elementId+:: ID of the DOM element, or the element itself, to be 
-  *                 modified.
-  *  +_cssClass+::  Name of the CSS class to be added or removed.
-  *  +_setOn+::     Boolean value that tells should the CSS class be added or 
-  *                 removed.
+  * +_elementId+:: ID of the DOM element, or the element itself, to be 
+  *                modified.
+  * +_cssClass+::  Name of the CSS class to be added or removed.
+  * +_setOn+::     Boolean value that tells should the CSS class be added or 
+  *                removed.
   *
   * = Returns
   * +self+

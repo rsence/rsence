@@ -25,6 +25,41 @@ module Server
 
 
 class Configuration
+  def array_merge( target, source )
+    source.each do |item|
+      unless target.include?(item)
+        if item.class == Array
+          sub_arr = []
+          array_merge( sub_arr, item )
+          target.push( sub_arr )
+        elsif item.class == Hash
+          sub_hash = {}
+          hash_merge( sub_hash, item )
+          target.push( sub_hash )
+        else
+          target.push( item )
+        end
+      end
+    end
+  end
+  def hash_merge( target, source )
+    source.each do |key,item|
+      if not target.has_key?key or target[key] != item
+        if item.class == Array
+          target[key] = [] unless target.has_key?(key)
+          array_merge( target[key], item )
+          if key == :plugin_paths
+            puts target[key].inspect
+          end
+        elsif item.class == Hash
+          target[key] = {} unless target.has_key?key
+          hash_merge( target[key], item )
+        else
+          target[key] = item
+        end
+      end
+    end
+  end
   def initialize
     ## Paths for log and pid files
     pidpath = File.join(SERVER_PATH,'var','run')
@@ -99,7 +134,8 @@ class Configuration
     local_config_file_paths.each do |local_config_file_path|
       if File.exists? local_config_file_path and File.file? local_config_file_path
         if local_config_file_path.end_with? '.yaml'
-          $config.merge!( YAML.load( File.read( local_config_file_path ) ) )
+          local_conf = YAML.load( File.read( local_config_file_path ) )
+          hash_merge( $config, local_conf )
           local_config_file_path_found = true
         elsif local_config_file_path.end_with? '.rb'
           # Legacy work-arounds

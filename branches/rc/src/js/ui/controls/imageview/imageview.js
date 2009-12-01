@@ -6,58 +6,27 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HImageView
-  **
+/*** = Description
   ** HImageView is a control unit intended to display images on the screen
-  ** through the HTML <IMG> tag. The HImageView class is a container to visualize
+  ** through the HTML <IMG> tag. The HImageView class is a container 
+  ** to visualize
   ** images loaded via URL. It supports scaling via two class methods, 
   ** scaleToFit and scaleToOriginal. If the image is unable to be loaded, 
   ** a default blank image will be rendered.
   **
-  ** vars: Instance variables
-  **  type - '[HImageView]'
-  **  value - URL pointing to the image that is currently shown.
-  **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl>
   ***/
 HImageView = HControl.extend({
   
-/** constructor: constructor
-  *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parentClass - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
-  **/
-  constructor: function(_rect, _parentClass, _options) {
-    if(!_options) {
-      _options={};
+  controlDefaults: (HControlDefaults.extend({
+    scaleToFit: true,
+    value: null,
+    constructor: function(_ctrl){
+      if(this.value===null){
+        // default to a blank image
+        this.value = _ctrl.getThemeGfxPath() + "/blank.gif";
+      }
     }
-    var _defaults = HClass.extend({
-      scaleToFit: true
-    });
-    _options = new (_defaults.extend(_options))();
-    if(this.isinherited) {
-      this.base(_rect, _parentClass, _options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parentClass, _options);
-      this.isinherited = false;
-    }
-    if(!this.value) {
-      // default to a blank image
-      this.value = this.getThemeGfxPath() + "/blank.gif";
-    }
-    
-    if(!this.isinherited) {
-      this.draw();
-    }
-  },
+  })),
   
   _makeScaleToFit: function(_parentId){
     this.elemId = ELEM.make(_parentId,'img');
@@ -79,21 +48,26 @@ HImageView = HControl.extend({
     }
   },
   
+/** = Description
+  * Used to refresh HImageView if the this.value is changed.
+  * 
+  **/
   refreshValue: function(){
     ELEM.setAttr(this.elemId,'src',this.value);
   },
   
+/** = Description
+  * Refreshesh the label of HImageView.
+  *
+  **/
   refreshLabel: function(){
     ELEM.setAttr(this.elemId,'alt',this.label);
   },
   
-/** method: scaleToFit
-  * 
+/** = Description
   * Changes the size of the image element so that it fits in the rectangle of
   * the view.
   *
-  * See also:
-  *  <scaleToOriginal>
   **/
   scaleToFit: function() {
     if(!this.options.scaleToFit){
@@ -104,13 +78,10 @@ HImageView = HControl.extend({
   },
   
   
-/** method: scaleToOriginal
-  * 
+/** = Description
   * Resizes the image element to its original dimesions. If the image is larger
   * than the rectangle of this view, clipping will occur.
   *
-  * See also:
-  *  <scaleToFit>
   **/
   scaleToOriginal: function() {
     if(this.options.scaleToFit){

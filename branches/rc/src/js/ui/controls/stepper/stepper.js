@@ -6,11 +6,17 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HStepper
-  **
+/*** = Description
   ** HStepper is a control unit made of two adjacent buttons with up and down arrows 
   ** to select the previous or next of a set of contiguous values. 
   ** Normally, a HStepper instance works in combination with a HTextControl or a HStringView instance.
+  **
+  ** = Instance Variables
+  ** +minValue+::         The smallest allowed value
+  ** +maxValue+::         The biggest allowed value
+  ** +stepSize+::         Amount of to step, defaults to +/- 1
+  ** +repeatInterval+::   Interval in milliseconds for repeat
+  ** +wrapAround+::       Boolean to control wrap-around behaviour
   ***/
 
 HStepper = HControl.extend({
@@ -18,54 +24,33 @@ HStepper = HControl.extend({
   componentName: "stepper",
   
   controlDefaults: (HControlDefaults.extend({
-      
-      // The smallest allowed value
-      minValue: 0,
-      
-      // The biggest allowed value
-      maxValue: 100,
-      
-      // Amount of to step, defaults to +/- 1
-      stepSize: 1,
-      
-      // Interval in milliseconds for repeat
-      repeatInterval: 200,
-      
-      // Boolean to control wrap-around behaviour
-      wrapAround: false
-      
+    minValue: 0,
+    maxValue: 100,
+    stepSize: 1,
+    repeatInterval: 200,
+    wrapAround: false,
+    constructor: function(_ctrl){
+      if(!this.events){
+        this.events = {
+          mouseDown: true,
+          keyDown: true,
+          mouseWheel: true
+        };
+      }
+    }
   })),
   
-  constructor: function(_rect,_parent,_options) {
-    
-    // Makes sure there is at least an empty options block
-    if (!_options) {
-      _options = {};
-    }
-    
-    // Makes sure the default events for HStepper are enabled
-    if (!_options.events) {
-      _options.events = {
-        mouseDown:  true,
-        keyDown:    true,
-        mouseWheel: true
-      };
-    }
-    
-    this.base( _rect, _parent, _options );
-    
-  },
-  
-  // Setter for wrap-around behaviour
+  /** Setter for wrap-around behaviour
+    **/
   setWrapAround: function(_on){
     this.options.wrapAround = _on;
   },
   
-  // Makes sure the value is in its boundaries and either wrap-around
-  // to min/max or revert to the current value
+  // -- Makes sure the value is in its boundaries and either wrap-around
+  // to min/max or revert to the current value ++
   _checkValueBoundaries: function(_value){
     
-    // checks for boundaries
+    // -- checks for boundaries ++
     var _this     = this,
         _options  = _this.options,
         _minVal   = _options.minValue,
@@ -74,15 +59,15 @@ HStepper = HControl.extend({
         _tooBig   = _value>_maxVal,
         _overflow = ( _tooSmall || _tooBig );
     
-    // The value is ok, just return it as it is
+    // -- The value is ok, just return it as it is ++
     if (!_overflow) {
       return _value;
     }
     
     
-    /// Handle the overflow condition:
+    /// -- Handle the overflow condition: ++
     
-    // Wrap around uses min/max as new value as either is reached
+    // -- Wrap around uses min/max as new value as either is reached ++
     if (_options.wrapAround) {
       if (_tooSmall) {
         return _maxVal;
@@ -91,14 +76,15 @@ HStepper = HControl.extend({
         return _minVal;
       }
     }
-    // Any other condition means we just revert the changes
+    // -- Any other condition means we just revert the changes ++
     else {
       return _this.value;
     }
     
   },
   
-  // Adds the step size to the value
+/** Adds the step size to the value
+  **/
   stepUp: function(){
     this.setValue(
       this._checkValueBoundaries(
@@ -107,7 +93,8 @@ HStepper = HControl.extend({
     );
   },
   
-  // Subtracts the step size from the value
+/** Subtracts the step size from the value
+  **/
   stepDown: function(){
     this.setValue(
       this._checkValueBoundaries(
@@ -116,7 +103,7 @@ HStepper = HControl.extend({
     );
   },
   
-  // Returns an action string for the setInterval in _setRepeatInterval
+  // -- Returns an action string for the setInterval in _setRepeatInterval ++
   _repeatIntervalStr: function( _up ){
     return [
       'HSystem.views[',
@@ -127,8 +114,8 @@ HStepper = HControl.extend({
     ].join('');
   },
   
-  // Background-offset of the state images up/down,
-  // overrideable in the html template
+  // -- Background-offset of the state images up/down,
+  // overrideable in the html template ++
   bgStateUp: '0px -23px',
   bgStateDown: '0px -46px',
   
@@ -163,24 +150,28 @@ HStepper = HControl.extend({
     clearInterval( this._repeatInterval );
   },
   
-  // Checks where the mouseDown happened and adjusts the stepper up/down based on that
+  /** Checks where the mouseDown happened and adjusts the stepper up/down based on that
+    **/
   mouseDown: function( x, y ){
     this.setMouseUp(true);
     this._setRepeatInterval(  ( y - ELEM.getVisiblePosition( this.elemId )[1] ) <= 11  );
   },
   
-  // Stops the repeating stepping, when the mouse button goes up
+  /** Stops the repeating stepping, when the mouse button goes up
+    **/
   mouseUp: function(){
     this._clearRepeatInterval();
   },
   
-  // Stops the repeating stepping, when the control becomes inactive
+  /** Stops the repeating stepping, when the control becomes inactive
+    **/
   blur: function(){
     this._clearRepeatInterval();
   },
   
-  // adjusts stepping up/down based on the arrow key pressed.
-  // up and right arrow keys steps the value up, down and left steps the value down
+/** adjusts stepping up/down based on the arrow key pressed.
+  * up and right arrow keys steps the value up, down and left steps the value down
+  **/
   keyDown: function( _keyCode ) {
     this.setKeyUp(true);
     var _keyDown  = (_keyCode === Event.KEY_DOWN),
@@ -206,12 +197,14 @@ HStepper = HControl.extend({
     }
   },
   
-  // stops the repeating when a key goes up
+/** stops the repeating when a key goes up
+  **/
   keyUp: function(){
     this._clearRepeatInterval();
   },
   
-  // steps the value up/down based on the mouse scroll wheel
+/** steps the value up/down based on the mouse scroll wheel
+  **/
   mouseWheel: function(_delta) {
     (_delta>0)?this.stepUp():this.stepDown();
   }

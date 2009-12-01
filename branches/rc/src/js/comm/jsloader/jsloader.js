@@ -13,7 +13,7 @@
   ** Use the jsLoader instance to get packaged Javascript libraries from the
   ** standard package url.
 ***/
-JSLoader = HClass.extend({
+COMM.JSLoader = HClass.extend({
   
 /** = Description
   * Construct with the base url.
@@ -55,26 +55,41 @@ JSLoader = HClass.extend({
     }
     COMM.Queue.pause();
     _this._loadedJS.push(_jsName);
-    _this._req = COMM.request(
-      _this.uri+_jsName+'.js', {
-        onSuccess: function(_resp){
-          COMM.Queue.unshiftEval(_resp.X.responseText);
-          COMM.Queue.resume();
-        },
-        onFailure: _this._fail,
-        method: 'GET',
-        async: true
-      }
-    );
+    if(BROWSER_TYPE.ie || BROWSER_TYPE.symbian){
+      _this._req = COMM.request(
+        _this.uri+_jsName+'.js', {
+          onSuccess: function(_resp){
+            COMM.Queue.unshiftEval(_resp.X.responseText);
+            COMM.Queue.resume();
+          },
+          onFailure: _this._fail,
+          method: 'GET',
+          async: true
+        }
+      );
+    }
+    else {
+      // The following doesn't always work reliably on Internet Explorer:
+      var _script = document.createElement('script');
+      _script.onload = function(){COMM.Queue.resume();};
+      _script.src = _this.uri+_jsName+'.js';
+      _script.type = 'text/javascript';
+      document.getElementsByTagName('head')[0].appendChild(_script);
+    }
   }
   
 });
+
+/** -- Global reference ++ **/
+JSLoader = COMM.JSLoader;
 
 // Makes the standard jsLoader instance based on the client base url 
 // of the server when the page is loaded.
 LOAD(
   function(){
-    jsLoader = JSLoader.nu( HCLIENT_BASE + '/js/' );
+    COMM.jsLoader = COMM.JSLoader.nu( HCLIENT_BASE + '/js/' );
+    // backwards compatibility aliases:
+    jsLoader = COMM.jsLoader;
   }
 );
 

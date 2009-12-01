@@ -7,21 +7,31 @@
  */
 
 
-/**
-  *  The current purpose of JSONRenderer is to render JSON hashes to GUI views.
-  *
-  *  It's currently considered being as pre-alpha quality and will later
-  *  greatly expand to cover most situations.
-  *
-  **/
-
-JSONRenderer = HClass.extend({
-
-/** consturctor parameters:
-  *  - _data:   The data structure used for building.
-  *  - _parent: The parent view (or app)
-  **/
+/*** Constructs nodes from JSON structures as GUI
+  ** tree structures. Lowers the learning curve of GUI
+  ** development, because Javascript knowledge is not
+  ** required to define user interfaces.
+  ** The main purpose is to ease the development of
+  ** user interfaces by defining them as data on the
+  ** server, converting the data to JSON GUI trees and
+  ** letting the client handle the rest. The end result
+  ** is the same as defining the structures in
+  ** JavaScript code.
+  **
+  ** This class is still in development, so expect more
+  ** features and documentation as it matures.
+***/
+COMM.JSONRenderer = HClass.extend({
+  
   version: 0.4,
+
+/** = Description
+  * Renders JSON structured data, see some of the demos for usage examples.
+  *
+  * = Parameters:
+  * +_data+:   The data structure used for building.
+  * +_parent+: The parent view (or app) (Optional)
+  **/
   constructor: function(_data, _parent){
     if((_data['type'] === 'GUITree') && (this.version >= _data['version'])){
       this.data   = _data;
@@ -193,4 +203,8 @@ JSONRenderer = HClass.extend({
     return _instance;
   }
 });
+
+/** -- Global reference ++ **/
+JSONRenderer = COMM.JSONRenderer;
+
 

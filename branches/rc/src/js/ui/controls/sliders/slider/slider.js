@@ -7,7 +7,6 @@
  */
 
 /*** = Description
-  **
   ** HSlider is a control unit that enables the user to choose a value in a range of values. 
   ** Sliders support both dragging the handle and clicking the mouse anywhere on the slider 
   ** to move the handle towards the mouse, as well as keyboard support 
@@ -15,114 +14,54 @@
   ** Naturally, sliders are commonly used as colour mixers, volume controls, 
   ** graphical equalizers and seekers in media applications. 
   ** A typical slider is a drag-able thumb along vertical or horizontal line. 
-  ** Slider view or theme can be changed; the helmiTheme is used by default.
   **
   ** = Instance variables
-  ** +value+::      Numeric value currently set to this object.
-  ** +minValue+::   The minimum value that can be set to this object.
-  ** +maxValue::    The maximum value that can be set to this object.
-  **
+  ** +minValue+::       The smallest allowed value.
+  ** +maxValue+::       The biggest allowed value.
+  ** +repeatDelay+::    The key repetition initial delay when changing the slider
+  **                    with cursor keys. Defaults to 300 (ms)
+  ** +repeatInterval+:: The key repetition interval when changing the slider
+  **                    with cursor keys. Defaults to 50 (ms)
+  ** +inveseAxis+::     Inverse Scrollwheel axis.
+  **                    As there is only one scrollwheel event, sideways
+  **                    scrolling doesn't work logically for horizonal
+  **                    scrollbars by default, so set this to true to
+  **                    have horizonal sliders work logically
+  **                    with sideways scrolling, where supported.
 ***/
 HSlider = HControl.extend({
   
   componentName: "slider",
   
   controlDefaults: (HControlDefaults.extend({
-      // The smallest allowed value
-      minValue: 0,
-      
-      // The biggest allowed value
-      maxValue: 1,
-      
-      // Interval in milliseconds for repeat
-      repeatDelay: 300,
-      
-      // Interval in milliseconds for repeat
-      repeatInterval: 50,
-      
-      // Inverse Scrollwheel axis:
-      // As there is only one scrollwheel event, sideways
-      // scrolling doesn't work logically for horizonal
-      // scrollbars by default, so set this to true to
-      // have horizonal sliders work logically
-      // with sideways scrolling, where supported.
-      inverseAxis: false
+    minValue: 0,
+    maxValue: 1,
+    repeatDelay: 300,
+    repeatInterval: 50,
+    inverseAxis: false,
+    constructor: function(_ctrl){
+      if(!this.events){
+        this.events = {
+          draggable: true,
+          keyDown: true,
+          keyUp: true,
+          mouseWheel: true
+        };
+      }
+    }
   })),
   
+  refreshOnValueChange: false,
+  
+  _isVertical: false,
+  
+  
 /** = Description
-  * Like the +HControl.constructor+, except:
-  * Sets the default event responders to:
-  * - +mouseDown+: +false+
-  * - +mouseup+: +false+
-  * - +draggable+: +true+
-  * - +keyDown+: +true+
-  * - +keyUp+: +true+
-  * - +mouseWheel+: +true+
-  * Uses the following extra attributes to +_options+:
-  * +minValue+::  The smallest value the slider can set. Defaults to 0.
-  *
-  * +maxValue+::  The largest value the slider can set. Defaults to 1.
-  *
-  * +value+::     The the initial position of the slider. Defaults to 0.
-  *
-  * +repatDelay+::  The key repetition initial delay when changing the slider
-  *                 with cursor keys. Defaults to 300 (ms)
-  *
-  * +repeatInterval+::  The key repetition interval when changing the slider
-  *                     with cursor keys. Defaults to 50 (ms)
-  *
-  * +inverseAxis+::  Inverts the axis of the slider. Defaults to false.
-  *
-  **/
-  constructor: function(_rect,_parent,_options) {
-    
-    // Makes sure there is at least an empty options block
-    if (!_options) {
-      _options = {};
-    }
-    
-    // Makes sure the default events for HStepper are enabled
-    if (!_options.events) {
-      _options.events = {
-        mouseDown: false,
-        mouseUp:   false,
-        draggable: true,
-        keyDown: true, 
-        keyUp: true, 
-        mouseWheel: true
-      };
-    }
-    
-    if(this.isinherited){
-      this.base(_rect,_parent,_options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect,_parent,_options);
-      this.isinherited = false;
-    }
-    
-    this.refreshOnValueChange = false;
-    
-    // This is overridden in vertical slider.
-    this._isVertical = false;
-    
-    if(!this.isinherited){
-      this.draw();
-    }
-    
-  },
-  
-  
-/** method: setValue
-  * 
   * Sets the current value of the object and moves the slider thumb to the correct position.
   * 
-  * Parameters:
-  *   _value - A numeric value to be set to the object.
+  * = Parameters
+  * +_value+:: A numeric value to be set to the object.
   *
-  * See also:
-  *  <HControl.setValue>
   **/
   setValue: function(_value) {
     if (_value < this.minValue) {
@@ -138,12 +77,9 @@ HSlider = HControl.extend({
     return this;
   },
   
-/** method: draw
-  * 
+/** = Description
   * Draws the rectangle and the markup of this object on the screen.
   *
-  * See also:
-  *  <HView.draw>
   **/
   draw: function() {
     if(!this.drawn) {
@@ -155,57 +91,48 @@ HSlider = HControl.extend({
   },
   
   
-/** event: startDrag
-  * 
+/** = Description
   * This gets called automatically when the user starts to drag the slider thumb.
   * Extend this method if you want something special to happen when the dragging starts.
   * 
-  * Parameters:
-  *   _x - The X coordinate of the point where the drag started.
-  *   _y - The Y coordinate of the point where the drag started.
-  *
-  * See also:
-  *  <HControl.startDrag>
+  * = Parameters
+  * +_x+:: The X coordinate of the point where the drag started.
+  * +_y+:: The Y coordinate of the point where the drag started.
+  *  
   **/
   startDrag: function(_x,_y){
     var _originalPosition = ELEM.getVisiblePosition(this.elemId, true);
     this._originX = _originalPosition[0];
     this._originY = _originalPosition[1];
     
-    this.doDrag(_x,_y);
+    this.drag(_x,_y);
   },
   
   
-/** event: endDrag
-  * 
+/** = Description
   * This gets called automatically when the user stops dragging the slider thumb.
   * Extend this method if you want something special to happen when the dragging ends.
   * 
-  * Parameters:
-  *   _x - The X coordinate of the point where the drag ended.
-  *   _y - The Y coordinate of the point where the drag ended.
+  * = Parameters
+  * +_x+:: The X coordinate of the point where the drag ended.
+  * +_y+:: The Y coordinate of the point where the drag ended.
   *
-  * See also:
-  *  <HControl.endDrag>
   **/
   endDrag: function(_x,_y){
-    this.doDrag(_x,_y);
+    this.drag(_x,_y);
   },
   
   
-/** event: doDrag
-  * 
+/** = Description
   * This gets called periodically while the user drags the slider thumb.
   * Extend this method if you want something special to happen while dragging.
   * 
-  * Parameters:
-  *   _x - The X coordinate of the point where the user is currently dragging.
-  *   _y - The Y coordinate of the point where the user is currently dragging.
+  * = Parameters
+  * +_x+:: The X coordinate of the point where the user is currently dragging.
+  * +_y+:: The Y coordinate of the point where the user is currently dragging.
   *
-  * See also:
-  *  <HControl.doDrag>
   **/
-  doDrag: function(_x,_y){
+  drag: function(_x,_y){
     _x -= this._originX;
     _y -= this._originY;
     
@@ -215,17 +142,14 @@ HSlider = HControl.extend({
   },
   
   
-/** event: keyDown
-  * 
+/** = Description
   * This gets called when the user presses a key down while this control is 
   * active. The default behaviour is to move the thumb with arrow keys, page up,
   * page down, home and end.
   * 
-  * Parameters:
-  *   _keycode - The keycode of the key that was pressed down.
+  * = Parameters
+  * +_keycode+:: The keycode of the key that was pressed down.
   *
-  * See also:
-  *  <HControl.keyDown>
   **/
   keyDown: function(_keycode) {
     // Arrow keys move the thumb 5% at a time.
@@ -260,32 +184,26 @@ HSlider = HControl.extend({
   },
   
   
-/** event: keyUp
-  * 
+/** = Description
   * This gets called when the user releases a key while this control is active.
   * 
-  * Parameters:
-  *   _keycode - The keycode of the key that was released.
+  * = Parameters
+  * +_keycode+:: The keycode of the key that was released.
   *
-  * See also:
-  *  <HControl.keyUp>
   **/
   keyUp: function(_keycode) {
     this._moving = false;
   },
   
   
-/** event: mouseWheel
+/** = Description
+  * This gets called when the mouse wheel is used and the component 
+  * instance has focus.
   *
-  * This gets called when the mouse wheel is used and the component instance has
-  * focus.
+  * = Parameters
+  * +_delta+:: Scrolling delta, the wheel angle change. If delta is positive,
+  *            wheel was scrolled up. Otherwise, it was scrolled down.
   *
-  * Parameters:
-  *  _delta - Scrolling delta, the wheel angle change. If delta is positive,
-  *   wheel was scrolled up. Otherwise, it was scrolled down.
-  *
-  * See also:
-  *  <HControl.mouseWheel>
   **/
   mouseWheel: function(_delta) {
     var _valueChange;
@@ -304,11 +222,11 @@ HSlider = HControl.extend({
   },
   
   
-  // private method
+  // --private method++
   _moveThumb: function(_valueChange, _rate) {
     
     if (!_rate) {
-      // If the key is held down, wait for a while before starting repeat.
+      // --If the key is held down, wait for a while before starting repeat.++
       _rate = this.options.repeatDelay;
     }
     else if (_rate === this.options.repeatDelay) {
@@ -334,14 +252,14 @@ HSlider = HControl.extend({
   },
   
   thumbSize: 21,
-  // private method
+  // -- private method ++
   _initThumb: function() {
     this._thumbElemId = this.markupElemIds.control;
     this.drawThumbPos();
   },
   
   
-  // private method
+  // -- private method ++
   _value2px: function() {
     var _pxrange;
     if(this._isVertical){
@@ -360,7 +278,7 @@ HSlider = HControl.extend({
   },
   
   
-  // private method
+  // -- private method ++
   _pos2value: function(_mousePos) {
     var _pxrange;
     if(this._isVertical){
@@ -383,7 +301,7 @@ HSlider = HControl.extend({
   },
   
   
-  // private method
+  // -- private method ++
   drawThumbPos: function() {
     var _whichprop = this._isVertical?'top':'left',
         _propval   = this._value2px();
@@ -395,6 +313,15 @@ HSlider = HControl.extend({
   
   cssClassPrefix: 'h',
   
+/** = Description
+  * Changes the thumb graphic. Possible orientations by default are
+  * north ('n'), south ('s'), west ('w'), east('e') and center ('c').
+  * Defaults to 'c'. No case sensitivity.
+  *
+  * = Parameters
+  * +_orientation+:: The orientation of slider thumb graphic.
+  *
+  **/
   setOrientation: function(_orientation) {
     if(!_orientation){
       _orientation = 'c';

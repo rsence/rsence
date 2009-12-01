@@ -224,7 +224,7 @@ HClass.extend = function(_instance, _static) {
   _extend.call(_klass, _static);
   // if _constructor is marked as null returns the created instance (that is also class structure for
   // instances if class is returned
-  var _object = _constructor ? _klass : _prototype;
+  var _object = (_constructor !== null) ? _klass : _prototype;
   if (_object.init instanceof Function) {
     _object.init();
   }

@@ -82,7 +82,10 @@ class Transporter
       end
       
       # Appends a 'new session.' message for new sessions in $DEBUG_MODE:
-      puts "new session." if (msg.new_session or msg.restored_session) and $DEBUG_MODE
+      puts "new session." if msg.new_session and $DEBUG_MODE
+      puts "restored session." if msg.restored_session and $DEBUG_MODE
+      puts "clone source." if msg.cloned_targets and $DEBUG_MODE
+      puts "clone target." if msg.cloned_source and $DEBUG_MODE
       
       ## Pass the client XML to the value manager
       if request.query.has_key?( 'values' )
@@ -107,7 +110,19 @@ class Transporter
       
       ## Calls the restore_ses of plugins, when a session is restored (page reload with previously active session)
       if msg.restored_session
+        
         msg.session[:deps] = []
+        
+        if msg.cloned_source
+          begin
+            $PLUGINS.delegate( 'cloned_target', msg, msg.cloned_source )
+          rescue => e
+            response_success = false
+            xhr_error_handler( msg, :plugin_delegate_cloned_target_error, e.message )
+            xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: $PLUGINS.delegate 'cloned_target' failed." )
+          end
+        end
+        
         begin
           $PLUGINS.delegate( 'restore_ses', msg )
         rescue => e
@@ -115,6 +130,7 @@ class Transporter
           xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: $PLUGINS.delegate 'restore_ses' failed." )
         end
+        
       elsif msg.new_session
         begin
           $PLUGINS.delegate( 'init_ses', msg )
@@ -122,6 +138,14 @@ class Transporter
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: $PLUGINS.delegate 'init_ses' failed." )
+        end
+      elsif msg.cloned_targets
+        begin
+          $PLUGINS.delegate( 'cloned_source', msg, msg.cloned_targets )
+        rescue => e
+          response_success = false
+          xhr_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: $PLUGINS.delegate 'cloned_source' failed." )
         end
       end
       

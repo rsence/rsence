@@ -6,8 +6,7 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HStringView
-  **
+/*** = Description
   ** HStringView is a view component that represents a non-editable line of text. 
   ** Commonly, stringview is used as a label to control elements 
   ** that do not have implicit labels (text fields, checkboxes and radio buttons, and menus). 
@@ -15,27 +14,30 @@
   ** while most do not have (text fields, checkboxes and radio buttons, and sliders etc.).  
   ** HStringView view or theme can be changed; the helmiTheme is used by default.
   **
-  ** vars: Instance variables
-  **  type - '[HStringView]'
-  **  value - The string that this string view displays when drawn.
-  **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl>
+  ** = Instance variables
+  ** +type+::   '[HStringView]'
+  ** +value+::  The string that this string view displays when drawn.
   ***/
 HStringView = HControl.extend({
 
   componentName: "stringview",
   componentBehaviour: ['view','control','text'],
   
+/** = Description
+  * setStyle function
+  *
+  **/
   setStyle: function(_name, _value, _cacheOverride) {
     if (!this['markupElemIds']||!this.markupElemIds['value']) {
       return;
     }
     ELEM.setStyle(this.markupElemIds.value, _name, _value, _cacheOverride);
   },
+  
+/** = Description
+  * refreshLable function
+  *
+  **/
   refreshLabel: function() {
     if(this.markupElemIds) {
       if(this.markupElemIds.value) {
@@ -43,7 +45,5 @@ HStringView = HControl.extend({
       }
     }
   }
-
-  
 });
 

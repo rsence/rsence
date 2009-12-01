@@ -9,11 +9,7 @@
 /*** = Description
   ** Define default setting here. Will be used, when no or invalid constructor
   ** options are supplied.
-  **
-  ** = Instance variables:
-  ** Settable Control-level defaults, override on construction 
-  ** +label+::  The visual value of the component
-***/
+  ***/
 HControlDefaults = HClass.extend({
   
 /** The default label. A label is the "visual value" of a component that
@@ -28,7 +24,13 @@ HControlDefaults = HClass.extend({
 /** The default initial event responders to register to a component.
   * By default no events are enabled.
   **/
-  events:   {},
+  events:   null,
+  
+  constructor: function(){
+    if(!this.events){
+      this.events = {};
+    }
+  },
   
 /** The default initial value of the component.
   **/
@@ -44,11 +46,11 @@ HControlDefaults = HClass.extend({
   
 /** The default initial minimum value of the component.
   **/
-  minValue: -2147483648, // negative max of signed 32bit
+  minValue: -2147483648,
   
 /** The default initial maximum value of the component.
   **/
-  maxValue:  2147483648  // positive max of signed 32bit
+  maxValue:  2147483648
   
 });
 

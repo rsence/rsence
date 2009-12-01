@@ -93,8 +93,6 @@ class SessionManager < SessionStorage
     # bind the session data to @sessions by its id
     @sessions[ ses_id ] = ses_data
     
-    
-    
     # map the key back to the id
     @session_keys[ ses_sha ] = ses_id
     
@@ -117,6 +115,85 @@ class SessionManager < SessionStorage
     
   end
   
+  def refresh_ses( msg, ses_data, ses_id, ses_key, ses_seed )
+    # new time-out
+    ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
+    
+    # re-generates the ses_key for each xhr
+    if @config[:disposable_keys]
+      
+      # disposes the old (current) ses_key:
+      @session_keys.delete( ses_key )
+      
+      unless ses_seed
+        ses_seed = ses_key
+      end
+      
+      # gets a new ses_key:
+      ses_key = @randgen.gen
+      
+      ses_sha = SHA1.hexdigest(ses_key+ses_seed)
+      
+      # re-maps the session id to the new key
+      @session_keys[ses_sha] = ses_id
+      
+      # changes the session key in the session data
+      ses_data[:ses_key] = ses_sha
+      
+      # tell the client what its new session key is
+      msg.ses_key = ses_key
+    end
+    
+    if @config[:clone_cookie_sessions] and @clone_targets.has_key? ses_id
+      targets = []
+      @clone_targets[ ses_id ].length.times do |n|
+        target_id  = @clone_targets[ ses_id ].shift
+        warn "target_id: #{target_id}"
+        target_ses = @sessions[ target_id ]
+        if @sessions.has_key?( target_id ) and @sessions[ target_id ].class == Hash
+          targets.push( target_ses )
+        end
+      end
+      @clone_targets.delete( ses_id ) if @clone_targets[ ses_id ].empty?
+      msg.cloned_targets = targets unless targets.empty?
+    end
+    
+    ### Bind the session data and id to the message object
+    msg.session = ses_data
+    msg.ses_id  = ses_id
+    
+  end
+  
+  def clone_ses( msg, old_data, old_id, old_key, ses_seed )
+    ses_data = Marshal.restore( Marshal.dump( old_data ) )
+    old_data[:timeout] = Time.now.to_i + @config[:cloned_session_expires_in]
+    timeout = Time.now.to_i + @config[:timeout_secs]
+    cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
+    ses_key = @randgen.gen
+    ses_sha = SHA1.hexdigest(ses_key+ses_seed)
+    ses_data[:timeout] = timeout
+    ses_data[:ses_key] = ses_key
+    ses_data[:cookie_key] = cookie_key
+    ses_id = new_ses_id( cookie_key, ses_key, timeout )
+    ses_data[:ses_id] = ses_id
+    @sessions[ ses_id ] = ses_data
+    @session_keys[ ses_sha ] = ses_id
+    @session_cookie_keys.delete( old_data[:cookie_key] )
+    @session_cookie_keys[ cookie_key ] = ses_id
+    msg.ses_id = ses_id
+    msg.ses_key = ses_key
+    msg.session = ses_data
+    if @clone_targets.has_key? old_id
+      @clone_targets[ old_id ].push( ses_id )
+    else
+      @clone_targets[ old_id ] = [ ses_id ]
+    end
+    @clone_sources[ ses_id ] = old_id
+    msg.cloned_source = old_data
+    msg.new_session = false
+    msg.restored_session = true
+  end
+  
   ### Returns the current session data, if the session is valid.
   ### Otherwise stops the client and returns false.
   def check_ses( msg, ses_key, ses_seed=false )
@@ -130,42 +207,14 @@ class SessionManager < SessionStorage
       # get the session's data based on its id
       ses_data = @sessions[ ses_id ]
       
-      # new time-out
-      ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
-      
-      ### extra security
-      # re-generates the ses_key for each xhr
-      if @config[:disposable_keys]
-        
-        # disposes the old (current) ses_key:
-        @session_keys.delete( ses_key )
-        
-        unless ses_seed
-          ses_seed = ses_key
-        end
-        
-        # gets a new ses_key:
-        ses_key = @randgen.gen
-        
-        ses_sha = SHA1.hexdigest(ses_key+ses_seed)
-        
-        # re-maps the session id to the new key
-        @session_keys[ses_sha] = ses_id
-        
-        # changes the session key in the session data
-        ses_data[:ses_key] = ses_sha
-        
-        # tell the client what its new session key is
-        msg.ses_key = ses_key
+      if @config[:clone_cookie_sessions] and ses_seed
+        clone_ses( msg, ses_data, ses_id, ses_key, ses_seed )
+        return [true, true]
+      else
+        refresh_ses( msg, ses_data, ses_id, ses_key, ses_seed )
+        return [true, false]
       end
-      ### /extra security
       
-      ### Bind the session data and id to the message object
-      msg.session = ses_data
-      msg.ses_id  = ses_id
-      
-      ## Return success
-      return true
     
     ## The session was either faked or expired:
     else
@@ -177,7 +226,7 @@ class SessionManager < SessionStorage
       )
       
       ## Return failure
-      return false
+      return [false, false]
     end
     
   end
@@ -237,14 +286,16 @@ class SessionManager < SessionStorage
       ses_key = @sessions[ses_id][:ses_key]
       
       # make additional checks on the session validity (expiry etc)
-      ses_status = check_ses( msg, ses_key, ses_seed )
+      (ses_status, ses_cloned) = check_ses( msg, ses_key, ses_seed )
       
-      # delete the old key:
-      @session_cookie_keys.delete( cookie_key )
-      
-      # status is either true (valid) or false (invalid)
-      # based on the result of check_ses
-      if ses_status
+      if ses_status and ses_cloned
+        ses_id = msg.ses_id
+        ses_key = msg.session[:ses_key]
+        cookie_key = msg.session[:cookie_key]
+        $VALUES.resend_session_values( msg )
+      elsif ses_status
+        # delete the old cookie key:
+        @session_cookie_keys.delete( cookie_key )
         
         # get a new cookie key
         cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
@@ -281,6 +332,16 @@ class SessionManager < SessionStorage
       ses_status = true
     end
     
+    renew_cookie( msg, cookie_key )
+    
+    ## Return the session status. Actually,
+    ## the value is always true, but future
+    ## versions might not accept invalid
+    ## cookies as new sessions.
+    return ses_status
+  end
+  
+  def renew_cookie( msg, cookie_key )
     # Uses a cookie comment to tell the user what the
     # cookie is for, change it to anything valid in the
     # configuration.
@@ -294,6 +355,11 @@ class SessionManager < SessionStorage
     ## does mod_rewrite header translation):
     else
       domain = msg.request.host
+    end
+    
+    if domain == 'localhost'
+      warn "Warning: Cookies won't be set for 'localhost'. Use '127.0.0.1' instead." if $DEBUG_MODE
+      return
     end
     
     server_port = msg.request.port
@@ -326,18 +392,12 @@ class SessionManager < SessionStorage
       "Path=#{ses_cookie_path}",
       "Port=#{server_port}",
       "Max-Age=#{ses_cookie_max_age}",
-      "Comment=#{ses_cookie_comment}"
+      "Comment=#{ses_cookie_comment}",
+      "Domain=#{ses_cookie_domain}"
     ]
-    ses_cookie_arr.push("Domain=#{ses_cookie_domain}")
     
     ### Sets the set-cookie header
     msg.response['Set-Cookie'] = ses_cookie_arr.join('; ')
-    
-    ## Return the session status. Actually,
-    ## the value is always true, but future
-    ## versions might not accept invalid
-    ## cookies as new sessions.
-    return ses_status
   end
   
   ### Creates a message and checks the session
@@ -378,7 +438,7 @@ class SessionManager < SessionStorage
         #
         if cookies
           ses_status = check_cookie( msg, ses_seed )
-        # Otherwise, we just create a new session:
+        # Otherwise, a new session is created:
         else
           init_ses( msg, ses_seed )
           ses_status = true
@@ -388,9 +448,14 @@ class SessionManager < SessionStorage
       else
         
         ## Validate the session key
-        ses_status = check_ses( msg, ses_seed )
+        ses_status = check_ses( msg, ses_seed )[0]
         
-      end # /ses_id
+        ## Renew the cookie even when the request is a "x" (not "hello")
+        if @config[:session_cookies] and ses_status
+          renew_cookie( msg, msg.session[:cookie_key] )
+        end
+        
+      end # /ses_key
       
       ## msg.ses_valid is false by default, meaning
       ## it's not valid or hasn't been initialized.

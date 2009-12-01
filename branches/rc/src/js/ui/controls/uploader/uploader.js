@@ -6,20 +6,27 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/** = Description
+  * HUploader class
+  *
+  *
+  *
+  **/
+
 HUploader = HControl.extend({
   componentName: 'uploader',
   uploadState: false,
   uploadKey: false,
   uploadStateLabels: {
     
-    //Upload success states:
+    // -- Upload success states: ++
      '0': "Select file...",
      '1': "Uploading...",
      '2': "Processing data...",
      '3': "Upload Complete",
      '4': "Preparing upload",
     
-    //Upload failure states:
+    // -- Upload failure states: ++
      '-1': "Error: Invalid request",
      '-2': "Error: Invalid upload key",
      '-3': "Error: Invalid data format",
@@ -38,6 +45,15 @@ HUploader = HControl.extend({
     'value',
     'ack_button'
   ],
+
+/** = Description
+  * setUploadState function
+  *
+  * = Parameters
+  * +_state+::
+  * +_uploadKey+::
+  *
+  **/
   setUploadState: function(_state,_uploadKey){
     if(_state!==this.uploadState){
       this.uploadState = _state;
@@ -86,6 +102,12 @@ HUploader = HControl.extend({
       }
     }
   },
+  
+  /** = Description
+    * refreshValue function
+    *
+    *
+    **/
   refreshValue: function(){
     if(typeof this.value !== 'string'){return;}
     if(this.value.indexOf(':::')<1){return;}
@@ -97,12 +119,30 @@ HUploader = HControl.extend({
         _uploadKey    = _stateAndKey[1];
     this.setUploadState(_state,_uploadKey);
   },
+  
+  /** = Description
+    * upload function
+    *
+    *
+    **/
   upload: function(){
     this.setValue('1:::'+this.uploadKey);
   },
+  
+  /** = Description
+    *getNewUploadKey function
+    *
+    *
+    **/
   getNewUploadKey: function(){
     this.setValue('4:::'+this.uploadKey);
   },
+  
+  /** = Description
+    * click function
+    *
+    *
+    **/
   click: function(){
     //console.log('click');
     if((this.uploadState===3)||(this.uploadState<0)){

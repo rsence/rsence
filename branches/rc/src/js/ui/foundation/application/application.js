@@ -22,7 +22,7 @@
   ** +views+::    A list of child component ids bound to it via +HView+ and +HSystem+
   ** +parent+::   Usually +HSystem+.
   ** +parents+::  An array containing parent instances. In this case, just +HSystem+.
-  ** +isBusy+::   A flag that is true when the app is doing <onIdle> events or stopped.
+  ** +isBusy+::   A flag that is true when the app is doing onIdle events or stopped.
   **
   ** = Usage
   ** Creates the +HApplication+ instance +myApp+, makes a +HWindow+ instance

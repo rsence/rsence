@@ -6,24 +6,21 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HThemeManager
-  **
+/*** = Description
   ** A single instance class.
-  **
   ** The theme manager knows the name of the currently loaded theme and handles
   ** the loading of theme specific markup snippets and style declarations.
   **
-  ** vars: Instance variables
-  **  themePath - Relative path to the components' top directory. 
-  **  currentTheme - The name of the theme currently in use. Initially the
-  **    default unnamed theme is used.
-  **  usesComponentDir - True when the components are separated in their own
-  **    directories, usually when using the source/development version. False
-  **    when the components are all in same directory. This is the case in the
-  **    release build.
+  ** = Instance variables
+  ** +themePath+::        Relative path to the components' top directory. 
+  ** +currentTheme+::     The name of the theme currently in use. Initially the
+  **                      default unnamed theme is used.
+  ** +usesComponentDir+:: True when the components are separated in their own
+  **                      directories, usually when using the 
+  **                      source/development version. False when the components
+  **                      are all in same directory. This is the case in the 
+  **                      release build.
   **
-  ** See also:
-  **  <HView> <HMarkupView>
   ***/
 
 HDefaultThemePath = '/H/themes';
@@ -31,14 +28,6 @@ HDefaultThemeName = 'default';
 HNoComponentCSS = [];
 HNoCommonCSS = [];
 HThemeHasIE6GifsInsteadOfPng = [];
-
-/** HDefaultThemeMode:
-  *
-  *  0 = Pre-built mode
-  *  1 = Post-built mode
-  *
-  */
-HThemeMode = 1;
 
 HThemeManager = HClass.extend({
   
@@ -76,18 +65,19 @@ HThemeManager = HClass.extend({
     console.log( "ERROR: Template Exception: '" + _url + "' ");
   },
   
-/** method: fetch
-  *
+/** = Description
   * Loads a template file and returns its contents.
   * If errors occurred, calls the error management functions.
   *
-  * Parameters:
-  *  _url - A valid local file path or http url pointing to the resource to load.
-  *  _contentType - An optional parameter, specifies the content type wanted, defaults to text/html.
+  * = Parameters
+  * +_url+::         A valid local file path or http url pointing to the 
+  *                  resource to load.
+  * +_contentType+:: An optional parameter, specifies the content type wanted, 
+  *                  defaults to text/html.
   *
-  * Returns:
-  *  The contents of the path.
-  */
+  * = Returns
+  * The contents of the path.
+  **/
   fetch: function( _url, _contentType, _callBack, _async ) {
     var _callBackFun;
     if( !_contentType ){
@@ -121,29 +111,25 @@ HThemeManager = HClass.extend({
   },
   
   
-/** method: getThemeGfxPath
-  *
-  * Returns the theme/component -specific path, called from inside css
-  * themes, a bit kludgy approach to tell the theme grapics file paths. 
-  */
+/** Returns the theme/component -specific path, called from inside css
+  * themes, a bit kludgy approach to tell the theme graphics file paths. 
+  **/
   getThemeGfxPath: function() {
     var _themeName      = this._cssEvalParams[0],
         _componentName  = this._cssEvalParams[1],
         _themePath      = this._cssEvalParams[2],
-        _pkgName        = this._cssEvalParams[3],
-        _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName );
+        _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath );
     return this._joinPath( _urlPrefix, 'gfx' );
   },
   
-/** method: getCssFilePath
-  *
+/** = Description
   * Returns the theme/component -specific graphics file path with proper css wrappers.
   * Used from inside css themes, a bit kludgy approach to tell the file name path.
   *
-  * Parameters:
-  *  _fileName - The File name to load.
+  * = Parameters
+  * +_fileName+:: The File name to load.
   *
-  */
+  **/
   getCssFilePath: function( _fileName ){
     var _themeName      = this._cssEvalParams[0];
     if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
@@ -154,18 +140,18 @@ HThemeManager = HClass.extend({
     }
   },
   
-/** method: loadCSS
-  *
+/** = Description
   * Loads a css file based on the given url (or file path).
   * Evaluates the css data.
   * Makes sure the browser uses the data for component styles.
   *
-  * Parameter:
-  *  _url - A valid url that points to a valid css file.
+  * = Parameter
+  * +_url+:: A valid url that points to a valid css file.
   *
-  * Returns:
-  *  The source of the url.
-  */
+  * = Returns
+  * The source of the url.
+  *
+  **/
   loadCSS: function( _url ) {
     var _contentType = 'text/css',
         _cssFun = function(_cssText){
@@ -225,7 +211,7 @@ HThemeManager = HClass.extend({
   },
   
   // Makes a common url prefix for template files
-  _urlPrefix: function( _themeName, _componentName, _themePath, _pkgName ) {
+  _urlPrefix: function( _themeName, _componentName, _themePath ) {
     
     var _path = _themePath;
     
@@ -234,67 +220,49 @@ HThemeManager = HClass.extend({
       _path = this.themePath;
     }
     
-    // Pre-Build Path Format
-    if( HThemeMode === 0 ) {
-      if( _pkgName ){
-        _path = this._joinPath( _path, _pkgName );
-      }
-      // When using a component specific theme path, skip the standard directory
-      // structure and use the path directly.
-      if( _themePath === null ) {
-        _path = this._joinPath( _path, _componentName );
-        _path = this._joinPath( _path, 'themes' );
-      }
-      _path = this._joinPath( _path, _themeName );
-    }
-    
-    // Post-Build Path Format
-    else if( HThemeMode === 1 ) {
-      _path = this._joinPath( _path, _themeName );
-    }
+    _path = this._joinPath( _path, _themeName );
     
     return _path;
   },
   
   // Makes a valid css template url
-  _cssUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
-    this._cssEvalParams = [_themeName, _componentName, _themePath, _pkgName];
-    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+  _cssUrl: function( _themeName, _componentName, _themePath ) {
+    this._cssEvalParams = [_themeName, _componentName, _themePath];
+    var _cssPrefix = this._urlPrefix( _themeName, _componentName, _themePath ),
         _cssSuffix = this._joinPath( 'css', _componentName+'.css' ),
         _cssUrl = this._joinPath( _cssPrefix, _cssSuffix );
     return _cssUrl;
   },
   
   // Makes a valid html template url
-  _markupUrl: function( _themeName, _componentName, _themePath, _pkgName ) {
-    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+  _markupUrl: function( _themeName, _componentName, _themePath ) {
+    var _htmlPrefix = this._urlPrefix( _themeName, _componentName, _themePath ),
         _htmlSuffix = this._joinPath( 'html', _componentName+'.html' ),
         _htmlUrl = this._joinPath( _htmlPrefix, _htmlSuffix );
     return _htmlUrl;
   },
   
-/** method: loadMarkup
+/** = Description
+  * Loads HTML templates of components. Handles caching independently and 
+  * intelligently.
   *
-  * Loads HTML templates of components. Handles caching independently and intelligently.
+  * = Parameters
+  * +_themeName+::     The name of the template to use.
+  * +_componentName+:: The name of the component template (css/html) to load.
+  * +_themePath+::     Optional, parameter to override the global theme path.
   *
-  * Parameters:
-  *  _themeName     - The name of the template to use.
-  *  _componentName - The name of the component template (css/html) to load.
-  *  _themePath     - (Optional) parameter to override the global theme path.
-  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
-  *
-  * Returns:
-  *  The Pre-Evaluated HTML Template.
+  * = Returns
+  * The Pre-Evaluated HTML Template.
   *
   **/
-  loadMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
+  loadMarkup: function( _themeName, _componentName, _themePath ) {
     if( !this._tmplCache[_themeName] ){
       this._tmplCache[_themeName] = {};
     }
     var _cached = this._tmplCache[_themeName][_componentName];
     
     if (null === _cached || undefined === _cached) { 
-      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath, _pkgName ),
+      var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath ),
           _markup = this.fetch( _markupUrl, null, null, false );
       // Save an empty string to template cache to prevent repeated failing
       // requests.
@@ -307,23 +275,21 @@ HThemeManager = HClass.extend({
     return _cached;
   },
   
-/** method: getMarkup
-  *
-  * Loads CSS and HTML templates of components. Called from <HView._loadMarkup>.
+/** = Description
+  * Loads CSS and HTML templates of components. Called from HView#_loadMarkup.
   * Returns the HTML Template as text.
   * Manages file caches independently and intelligently.
   *
-  * Parameters:
-  *  _themeName     - The name of the template to use.
-  *  _componentName - The name of the component template (css/html) to load.
-  *  _themePath     - (Optional) parameter to override the global theme path.
-  *  _pkgPath       - (Optional) parameter to specify the package of the component, useful only in pre-built mode.
+  * = Parameters
+  * +_themeName+::     The name of the template to use.
+  * +_componentName+:: The name of the component template (css/html) to load.
+  * +_themePath+::     Optional, parameter to override the global theme path.
   *
-  * Returns:
-  *  The Pre-Evaluated HTML Template.
+  * = Returns
+  * The Pre-Evaluated HTML Template.
   *
   **/
-  getMarkup: function( _themeName, _componentName, _themePath, _pkgName ) {
+  getMarkup: function( _themeName, _componentName, _themePath ) {
     /* Load Theme-Specific CSS: */
     if(!this._cssCache[_themeName]){
       this._cssCache[_themeName] = {};
@@ -336,36 +302,35 @@ HThemeManager = HClass.extend({
     /* Load Component-Specific CSS, unless configured to only load the common css: */
     if(HNoComponentCSS.indexOf(_themeName)===-1){
       if (!this._cssCache[_themeName][_componentName]){
-        var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath, _pkgName );
+        var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath );
         this._cssCache[_themeName][_componentName] = true;
         this.loadCSS( _componentCssUrl );
       }
     }
     
     /* Load/Return Component-Specific HTML: */
-    return this.loadMarkup( _themeName, _componentName, _themePath, _pkgName );
+    return this.loadMarkup( _themeName, _componentName, _themePath );
   },
   
   
-/** method: _componentGfxPath
-  *
+/** = Description
   * Called via HView to determine the valid path prefix to aid
   * finding theme- and component-specific image files.
   *
-  * Returns:
-  *   A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
+  * = Returns
+  * A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
   *
   **/
-  _componentGfxPath: function( _themeName, _componentName, _themePath, _pkgName ) {
-    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath, _pkgName ),
+  _componentGfxPath: function( _themeName, _componentName, _themePath ) {
+    var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath ),
         _url = this._joinPath( _urlPrefix, 'gfx' );
     return _url;
   },
-  _componentGfxFile: function( _themeName, _componentName, _themePath, _pkgName, _fileName ){
+  _componentGfxFile: function( _themeName, _componentName, _themePath, _fileName ){
     if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
-      return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName.replace('.png','-ie6.gif') );
+      return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath), _fileName.replace('.png','-ie6.gif') );
     }
-    return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath, _pkgName), _fileName );
+    return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath), _fileName );
   },
   
   
@@ -376,41 +341,36 @@ HThemeManager = HClass.extend({
   },
   
   
-/** method: setTheme
-  * 
+/** = Description
   * Sets the active theme.
   * 
-  * Parameters:
-  *  _theme - The name of the theme to be set as the active theme.
+  * = Parameters
+  * +_theme+:: The name of the theme to be set as the active theme.
   *
   **/
   setTheme: function(_theme) {
     this.currentTheme = _theme;
   },
   
-/** method: restoreDefaultTheme
-  *
-  * Sets the default theme ( HDefaultTheme ) to be the active theme.
+/** Sets the default theme ( HDefaultTheme ) to be the active theme.
   **/
   restoreDefaultTheme: function() {
     this.setTheme( HDefaultThemeName );
   },
   
 /** regexp: _variable_match
-  *
   * A regular expression to match the template evaluation syntax: #{stuff_to_evaluate}
   **/
   _variable_match: new RegExp(/#\{([^\}]*)\}/),
   
-/** method: _bindCSSVariables
-  *
+/** = Description
   * Evaluates the _variable_match regular expression for the string _markup.
   *
-  * Parameters:
-  *  _cssTmpl - The css template file to be evaluated. 
+  * = Parameters
+  * +_cssTmpl+:: The css template file to be evaluated. 
   *
-  * Returns:
-  *  An evaluated CSS Template.
+  * = Returns
+  * An evaluated CSS Template.
   **/
   _bindCSSVariables: function( _cssTmpl ) {
     while ( this._variable_match.test( _cssTmpl ) ) {
