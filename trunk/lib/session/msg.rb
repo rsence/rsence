@@ -28,6 +28,7 @@ class Message
   
   attr_accessor :session, :ses_id,
                 :new_session, :restored_session,
+                :cloned_source, :cloned_targets,
                 :ses_valid, :request, :response,
                 :buffer, :response_success
   
@@ -77,6 +78,15 @@ class Message
     # encountered. The old Values are automatically present,
     # so you should at least not re-create or re-bind them.
     @restored_session = false
+    
+    # Contains the source ses on the first request after this
+    # session was cloned from another session.
+    @cloned_source = false
+    
+    # Contains the target sessions packed in an array on
+    # the first request after another session was cloned
+    # from this session.
+    @cloned_targets = false
     
     # The session is not valid by default, it's set
     # by SessionManager, if everything seems ok.

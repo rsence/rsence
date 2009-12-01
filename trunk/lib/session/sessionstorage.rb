@@ -36,6 +36,16 @@ class SessionStorage
     ## Session id by cookie key
     @session_cookie_keys = {}
     
+    @clone_origins = {
+      # id => [ id, id, id ... ]
+    }
+    @clone_sources = {
+      # id => id
+    }
+    @clone_targets = {
+      # id => [ id, id, id ... ]
+    }
+    
     ## Disposable keys (new ses_key each request)
     @config = $config[:session_conf]
     
@@ -208,6 +218,21 @@ class SessionStorage
     
     # Removes all ticket-based storage bound to the session
     $TICKETSERVE.expire_ses( ses_id )
+    
+    # target -> source cleanup
+    if @clone_sources.has_key?( ses_id )
+      source_id = @clone_sources[ ses_id ]
+      @clone_sources.delete( ses_id ) if @clone_sources.has_key?( ses_id )
+      @clone_targets[ source_id ].delete( ses_id ) if @clone_targets.has_key?( source_id )
+    end
+    
+    # source -> targets cleanup
+    if @clone_targets.has_key?( ses_id )
+      @clone_targets[ ses_id ].each do |target_id|
+        @clone_sources.delete( target_id ) if @clone_sources.has_key?( target_id )
+      end
+      @clone_targets.delete( ses_id ) if @clone_targets.has_key?( ses_id )
+    end
     
     # Deletes the session's row from the database
     @db[:rsence_session].filter(:id => ses_id).delete

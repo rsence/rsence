@@ -35,22 +35,26 @@ $_PACKAGES = {
     'sha',
     
     # Process foundation
-    'system','application',
+    'system', 'application',
     
     # Server communication package
-    'comm','autosync','values','value','jsloader',
+    'comm',
+    'queue', 'session', 'transporter', 'sessionwatcher', 'urlresponder', 'autosync',
+    'values',
+    'value', 'jsloader',
+    'json_renderer',
     
     # Multi-control-single-value controller
     'valuematrix',
     
     # geometry
-    'point','rect',
+    'point', 'rect',
     
     # ui foundation
     'thememanager',
-    'markupview','morphanimation','view',
-    'eventresponder','valueresponder',
-    'dummyvalue','controldefaults',
+    'markupview', 'morphanimation', 'view',
+    'eventresponder', 'valueresponder',
+    'dummyvalue', 'controldefaults',
     'control',
     'dyncontrol'
   ],
@@ -70,7 +74,7 @@ $_PACKAGES = {
     'uploader',
     
     'slider','vslider',
-    'progressbar','progressindicator','imageview','splitview','stepper',
+    'progressbar','progressindicator','imageview','stepper',
     'validatorview','window','tab',
     
     'sheet', 'alert_sheet', 'confirm_sheet'
@@ -99,8 +103,10 @@ $_PACKAGES = {
   ],
   
   'json_renderer' => [
+    'json_renderer_pre_check',
     'json_renderer',
-    'json_renderer_test'
+    'json_renderer_post_check',
+#    'json_renderer_test'
   ]
 }
 
@@ -111,7 +117,7 @@ $_PACKAGES['basic'] = $_PACKAGES['controls']
 
 # All in one -package
 $_PACKAGE_NAMES.push('allinone')
-$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['datetime']
+$_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGES['lists'] + $_PACKAGES['datetime']
 
 
 # Themes to include

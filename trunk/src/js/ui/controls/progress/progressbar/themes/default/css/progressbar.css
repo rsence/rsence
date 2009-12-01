@@ -1,29 +1,15 @@
 .progressbar {
   cursor: wait;
   position: absolute;
-  left: 0px; right: 0px; bottom: 0px; top: 0px; 
-  display: block;
-  padding: 0;
+  left: 0px; top: 0px; right: 0px; bottom: 1px;
+  border: 1px solid #999;
+  background-color: #ccc;
 } 
-.progressbar .bg {
+.progressbar .progress {
   position: absolute;
-  left: 0px; right: 0px; bottom: 0px; top: 0px;
-  border: 1px solid #BCBDBE;
-  background-color: #f3f3f3;
-} 
-.progressbar .progressmark {
-  position: absolute;
-  left: 1px; top: 2px;
-  width: 1px; bottom: 2px;
-  background-image: url('#{this.getThemeGfxFile('progressmark.png')}');
-  background-position: 0px 0px;
-  background-repeat: repeat-x;
-}
-.enabled .progressbar .bg {
-  background-color: #fff;
-}
-.active .progressbar .bg {
-  background-color: #eee;
+  left: 0px; top: 0px;
+  width: 50px; bottom: 0px;
+  background-color: #333;
 }
 .disabled .progressbar {
   opacity: 0.75;

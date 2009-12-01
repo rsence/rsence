@@ -19,14 +19,15 @@ class ResponseBody < Array
 end
 
 ## Minimally WEBrick -compatible Response object.
-## Implements only used methods
+## Implements only the methods used by the framework.
 class Response
   def initialize
     @body = ResponseBody.new(1)
     @body[0] = ''
     @status = 200
     @header = {
-      'Content-Type' => 'text/plain'
+      'Content-Type' => 'text/plain',
+      'Server' => 'Riassence Framework'
     }
   end
   def body=(body_data)

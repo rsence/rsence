@@ -6,20 +6,13 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/*** class: HTextArea
-  **
+/*** = Description
   ** HTextArea is a scrollable multi-line area that displays editable plain
   ** text.
   **
-  ** vars: Instance variables
-  **  type - '[HTextArea]'
-  **  value - The string that is currently held by this object.
-  **
-  ** Extends:
-  **  <HTextControl>
-  **
-  ** See also:
-  **  <HControl> <HTextControl>
+  ** = Instance variables
+  ** +type+::   '[HTextArea]'
+  ** +value+::  The string that is currently held by this object.
   ***/
 HTextArea = HTextControl.extend({
   

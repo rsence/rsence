@@ -6,7 +6,18 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** This class is still at experimental phase.
+  ** Please assume that the API _will_ change later. 
+  ** HCheckboxList is a combined list of HCheckboxes.
+  **
+  ***/
 HCheckboxList = HControl.extend({
+  
+/** = Description
+  * Draws borders with 1px and sets 'overflow' to 'auto'.
+  *
+  **/
   drawSubviews: function(){
     this.setStyle('border','1px solid #999');
     this.setStyle('overflow','auto');
@@ -14,6 +25,11 @@ HCheckboxList = HControl.extend({
   listItems: [],
   listItemViews: [],
   ListCheckbox: HCheckbox.extend({
+
+/** = Description
+  * Adds listValues to the parent if they are true otherwise deletes them.
+  *
+  **/
     refreshValue: function(){
       this.base();
       if(this.value === true){
@@ -24,6 +40,15 @@ HCheckboxList = HControl.extend({
       }
     }
   }),
+
+/** = Description
+  * Checks if +_listValue+ can be found from the values. Adds the value
+  * if it can't be found.
+  * 
+  * = Parameters
+  * +_listValue+:: listValue to add.
+  *
+  **/
   addItem: function( _listValue ){
     if(this.value.indexOf(_listValue) === -1){
       var _newValue = [], i = 0;
@@ -34,6 +59,15 @@ HCheckboxList = HControl.extend({
       this.setValue( _newValue );
     }
   },
+  
+/** = Description
+  * Checks if the item can be found from this.value and deletes it
+  * in case it can be found.
+  *
+  * = Parameters
+  * +_listValue+:: A listValue to delete.
+  *
+  **/
   delItem: function( _listValue ){
     var _listIndex = this.value.indexOf(_listValue);
     if(_listIndex !== -1){
@@ -46,11 +80,19 @@ HCheckboxList = HControl.extend({
       this.setValue( _newValue );
     }
   },
-  /* listItems is an array-packed array, where each index in the
-   * surrounding array contains a [ value, label ] pair.
-   * The value is mapped to the value of the HRadiobuttonList
-   * instance when its HRadiobutton instance is selected.
-   */
+  
+/** = Description
+  * Setter function for listItems and listImetViews. Destroys 
+  * the old ListCheckboxes before creating the new ones based on the
+  * listItems given as an parameter.
+  * 
+  * = Parameters
+  * +_listItems+:: listItems is an array-packed array, where each index in the
+  *                surrounding array contains a [ value, label ] pair.
+  *                The value is mapped to the value of the HRadiobuttonList
+  *                instance when its HRadiobutton instance is selected.
+  *
+  **/
   setListItems: function(_listItems){
     var _listItem,
         _value,
@@ -85,11 +127,26 @@ HCheckboxList = HControl.extend({
     }
     this.refreshValue();
   },
+  
+/** = Description
+  * Sets listItems and ListItemViews to null and calls 
+  * the inherited destructor.
+  *
+  **/
   die: function(){
     this.listItems = null;
     this.listItemViews = null;
     this.base();
   },
+
+/** = Description
+  * Checks whether there are listItemViews and if there are, 
+  * refreshes their state.
+  *
+  * = Returns
+  * +self+
+  * 
+  **/
   refreshValue: function(){
     if(this.listItemViews.length === 0){
       return this;

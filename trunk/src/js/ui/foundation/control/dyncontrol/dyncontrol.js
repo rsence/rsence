@@ -7,125 +7,117 @@
  */
 
 /*** = Description
-  ** A +HControl+ extension that defines a draggable and
-  ** resizable foundation box.
+  ** The +HControl+ extension that defines a draggable and
+  ** resizable foundation container view.
   **
-  ** See +HWindow+ for an implementation example.
+  ** It's used like a HControl, but contains pre-defined active areas
+  ** for resizing and moving its view. The resizable areas are defined
+  ** by the edges (only horizontal or vertical resizability) and corners
+  ** (both horizontal and vertical resizability). The rest triggers
+  ** the movable area.
+  **
+  ** The droppable events are enabled by default and
+  ** a lot more constructor options can be defined: see +controlDefaults+
+  **
   **
 ***/
 HDynControl = HControl.extend({
   
   componentBehaviour: ['view','control','window'],
   
+  preserveTheme: true,
+  
 /** = Description
-  * Like the +HControl.constructor+, but defines the following extra
-  * attributes to +_options+:
-  *
-  * +minX+::      The minimun x-coordinate (from parent's left edge).
-  *               Defaults to 0.
-  *
-  * +minY+::      The minimun y-coordinate (from parent's top edge).
-  *               Defaults to 0.
-  *
-  * +maxX+::      The minimun x-coordinate (from parent's left edge).
-  *               Defaults to the current browser window width.
-  *
-  * +maxY+::      The minimun y-coordinate (from parent's top edge).
-  *               Defaults to the current browser window height.
-  *
-  * +minSize+::   An array containing the minimum +[ width, height ]+.
-  *               Defaults to +[ 24, 54 ]+.
-  *
-  * +maxSize+::   An array containing the maximum +[ width, height ]+.
-  *               Defaults to the window dimensions.
-  *
-  * +resizeW+::   The west (left) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeE+::   The east (right) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeN+::   The north (top) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeS+::   The south (bottom) resizable edge trigger size.
-  *               Defaults to 1.
-  *
-  * +resizeNW+::  The north-west (left top) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +resizeNE+::  The north-east (right top) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +resizeSW+::  The south-west (left bottom) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +resizeSE+::  The south-east (right bottom) resizable corner trigger size.
-  *               Defaults to [ 1, 1 ].
-  *
-  * +noResize+::  A boolean flag toggling resizability. When true, disables
-  *               resizing and causes all trigger areas respond to moving
-  *               the offset of the view.
+  * In addition to the standard HControl#constructor options,
+  * the following properties can be set:
+  * 
+  * Key::         Description
+  * +minX+::      The minimum X-coordinate allowed to be dragged or resized to.
+  *               Defaults to +0+.
+  * +minY+::      The minimum Y-coordinate allowed to be dragged or resized to.
+  *               Defaults to +0+.
+  * +maxX+::      The maximum X-coordinate allowed to be dragged or resized to.
+  *               Defaults to the browser window width.
+  * +maxY+::      The maximum Y-coordinate allowed to be dragged or resized to.
+  *               Defaults to the browser window height.
+  * +minSize+::   An array containing exactly two values: +[ width, height ]+.
+  *               Defines the minimum size allowed for resizing.
+  *               Defaults to +[ 24, 54 ]+
+  * +maxSize+::   An array containing exactly two values: +[ width, height ]+.
+  *               Defines the maximum size allowed for resizing.
+  *               Defaults to the browser window size.
+  * +resizeW+::   The size of the west (left) resizable edge. Defaults to +1+.
+  * +resizeE+::   The size of the east (right) resizable edge. Defaults to +1+.
+  * +resizeN+::   The size of the north (top) resizable edge. Defaults to +1+.
+  * +resizeS+::   The size of the south (bottom) resizable edge. Default to +1+.
+  * +resizeNW+::  The size of the north-west (left top) resizable corner.
+  *               Defaults to +[ 1, 1 ]+
+  * +resizeNE+::  The size of the north-east (right top) resizable corner.
+  *               Defaults to +[ 1, 1 ]+
+  * +resizeSW+::  The size of the south-west (left bottom) resizable corner.
+  *               Defaults to +[ 1, 1 ]+
+  * +resizeSE+::  The size of the south-east (right bottom) resizable corner.
+  *               Defaults to +[ 1, 1 ]+
+  * +noResize+::  A flag (when true) disables all resizing and only allows
+  *               moving.
   *
   **/
-  constructor: function( _rect, _parent, _options ){
-    if(!_options) {
-      _options={};
-    }
-    var _winSize = ELEM.windowSize(),
-        _defaults = HClass.extend({
-          minX:      0,
-          minY:      0,
-          maxX:      _winSize[0],
-          maxY:      _winSize[1],
-          minSize:   [24,54],
-          maxSize:   [_winSize[0],_winSize[1]],
-          resizeW:   1,
-          resizeE:   1,
-          resizeN:   1,
-          resizeS:   1,
-          resizeNW:  [ 1, 1 ],
-          resizeNE:  [ 1, 1 ],
-          resizeSW:  [ 1, 1 ],
-          resizeSE:  [ 1, 1 ],
-          noResize:  false
-        });
-    
-    _options = new (_defaults.extend(_options))();
-    
-    if(_options.noResize){
-      _options.minSize = [_rect.width,_rect.height];
-      _options.maxSize = [_rect.width,_rect.height];
-      _options.resizeW = 0;
-      resizeE = 0;
-      resizeN = 0;
-      resizeS = 0;
-      resizeNW = [0,0];
-      resizeNE = [0,0];
-      resizeSW = [0,0];
-      resizeSE = [0,0];
-    }
-    
-    if(this.isinherited) {
-      this.base(_rect, _parent, _options);
-    }
-    else {
-      this.isinherited = true;
-      this.base(_rect, _parent, _options);
-      this.isinherited = false;
-    }
-    
-    this.preserveTheme = true;
-    
-    this.setDraggable(true);
-    
+  controlDefaults: (HControlDefaults.extend({
+    constructor: function(_ctrl){
+      var _winSize = ELEM.windowSize(),
+          _winWidth = _winSize[0],
+          _winHeight = _winSize[1];
+      if(!this.minSize){
+        this.minSize = [24,54];
+      }
+      if(!this.maxSize){
+        this.maxSize = _winSize;
+      }
+      if(!this.maxX){
+        this.maxX = _winWidth-this.minSize[0];
+      }
+      if(!this.maxY){
+        this.maxY = _winHeight-this.minSize[1];
+      }
+      if(!this.events){
+        this.events = {
+          draggable: true
+        };
+      }
+      if(!this.resizeNW){
+        this.resizeNW = [ 1, 1 ];
+      }
+      if(!this.resizeNE){
+        this.resizeNE = [ 1, 1 ];
+      }
+      if(!this.resizeSW){
+        this.resizeSW = [ 1, 1 ];
+      }
+      if(!this.resizeSE){
+        this.resizeSE = [ 1, 1 ];
+      }
+    },
+    minX:      0,
+    minY:      0,
+    maxX:      null,
+    maxY:      null,
+    minSize:   null,
+    maxSize:   null,
+    resizeW:   1,
+    resizeE:   1,
+    resizeN:   1,
+    resizeS:   1,
+    resizeNW:  null,
+    resizeNE:  null,
+    resizeSW:  null,
+    resizeSE:  null,
+    noResize:  false
+  })),
+  
+  draw: function(){
+    this.base();
     this._initActionFns();
     this._initActionFlag();
-    
-    if(!this.isinherited) {
-      this.draw();
-    }
-    
   },
   
   /* Method for checking the change is within the limits */
@@ -160,6 +152,18 @@ HDynControl = HControl.extend({
       if(_topChange){
         _rect.offsetBy( 0, _dh );
       }
+    }
+    if(_rect.left < _options.minX){
+      _rect.offsetTo( _options.minX, _rect.top );
+    }
+    else if(_rect.left > _options.maxX){
+      _rect.offsetTo( _options.maxX, _rect.top );
+    }
+    if(_rect.top < _options.minY){
+      _rect.offsetTo( _rect.left, _options.minY );
+    }
+    else if(_rect.top > _options.maxY){
+      _rect.offsetTo( _rect.left, _options.maxY );
     }
     _this.drawRect();
   },
@@ -393,6 +397,11 @@ HDynControl = HControl.extend({
     var i,
     _actionPoint = this._startPoint.subtract(this.rect.left,this.rect.top),
     _actionRects = this._actionRects;
+    if(this.options.noResize && _actionRects[8].contains(_actionPoint)){
+      this._actionFlag = 8;
+      this.setStyle('cursor',this._actionCrsr[8]);
+      return;
+    }
     for(i=0;i!==9;i++){
       if(_actionRects[i].contains(_actionPoint)){
         this._actionFlag=i;
@@ -409,7 +418,7 @@ HDynControl = HControl.extend({
   * = Parameters
   * +x+::              The current x coordinate of the mouse cursor.
   * +y+::              The current y coordinate of the mouse cursor.
-  * +_isRightButton+:: A flag that is true when right (or contect) clicking.
+  * +_isRightButton+:: A flag that is true when right (or context) clicking.
   *
   * = Returns
   * +true+
@@ -443,7 +452,7 @@ HDynControl = HControl.extend({
   * +true+
   *
   **/
-  doDrag: function(x,y){
+  drag: function(x,y){
     var _parent = this.parent;
     if(_parent.elemId){
       x-=_parent.pageX();
@@ -462,13 +471,14 @@ HDynControl = HControl.extend({
   * = Parameters
   * +x+::              The current x coordinate of the mouse cursor.
   * +y+::              The current y coordinate of the mouse cursor.
-  * +_isRightButton+:: A flag that is true when right (or contect) clicking.
+  * +_isRightButton+:: A flag that is true when right (or context) clicking.
   *
   * = Returns
   * +true+
   *
   **/
   endDrag: function(x,y,_isRightButton){
+    this.base();
     var _parent = this.parent;
     if(_parent.elemId){
       x-=_parent.pageX();

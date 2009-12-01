@@ -6,9 +6,10 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-/** HRadiobuttonList expects the setListItems to be set. See HListItems.
-  * The value of the instance is the selected key in the listItems.
-  **/
+/*** = Description
+  ** HRadiobuttonList expects the setListItems to be set. See HListItems.
+  ** The value of the instance is the selected key in the listItems.
+  ***/
 HRadiobuttonList = HControl.extend({
   drawSubviews: function(){
     this.setStyle('border','1px solid #999');
@@ -16,11 +17,19 @@ HRadiobuttonList = HControl.extend({
   },
   listItems: [],
   listItemViews: [],
-  /* listItems is an array-packed array, where each index in the
-   * surrounding array contains a [ value, label ] pair.
-   * The value is mapped to the value of the HRadiobuttonList
-   * instance when its HRadiobutton instance is selected.
-   */
+  
+/** = Description
+  * Setter function for listItems and listItemViews. Destroys 
+  * the old HRadiabuttons before creating the new ones based on the
+  * listItems given as an parameter. 
+  *
+  * = Parameters 
+  * +_listItems+:: listItems is an array-packed array, where each index in the
+  *                surrounding array contains a [ value, label ] pair.
+  *                The value is mapped to the value of the HRadiobuttonList
+  *                instance when its HRadiobutton instance is selected.
+  *
+  **/
   setListItems: function(_listItems){
     var _listItem,
         _value,
@@ -51,6 +60,12 @@ HRadiobuttonList = HControl.extend({
     }
     this.refreshValue();
   },
+  
+/** = Description
+  * Destructor. Sets listItems and listItemViews to null and initiates
+  * destructor for radioButtonIndexValue.
+  * 
+  **/
   die: function(){
     this.listItems = null;
     this.listItemViews = null;
@@ -59,6 +74,11 @@ HRadiobuttonList = HControl.extend({
   },
   radioButtonIndexValue: false,
   radioButtonResponder: false,
+  
+/** = Description
+  * 
+  * 
+  **/
   RadioButtonIndexResponder: HValueResponder.extend({
     constructor: function( _parent, _valueObj ){
       this.parent = _parent;

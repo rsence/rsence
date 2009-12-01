@@ -6,7 +6,16 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/*** = Description
+  ** Simple confirm sheet control. Acts like HAlertSheet but has a cancel 
+  ** button as well.
+  ***/
+
 HConfirmSheet = HAlertSheet.extend({
+/** = Description
+  * Creates a cancel button.
+  *
+  **/
   alertButtons: function(){
     this.cancelButton = HClickValueButton.extend({
       click: function(){

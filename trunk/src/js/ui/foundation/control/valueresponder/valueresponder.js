@@ -15,11 +15,11 @@ HValueResponder = HClass.extend({
   
 /** = Description
   * Binds an HValue compatible instance to the component's valueObj. Also 
-  * calls +self.setValue+. It should not be called from user code, instead
+  * calls +setValue+. It should not be called from user code, instead
   * use the +HValue+ instance method +bind+.
   *
   * = Parameter
-  * +_aValueObj+::  The HValue instance object to bind.
+  * +_aValueObj+:: The HValue instance object to bind.
   *
   * = Returns
   * +self+
@@ -32,10 +32,10 @@ HValueResponder = HClass.extend({
   },
   
 /** = Description
-  * Checks, if the value given as parameter differs from +self.value+.
+  * Checks, if the value given as parameter differs from +value+.
   *
   * = Parameters
-  * +_value+::  The value to be tested.
+  * +_value+:: The value to be tested.
   *
   * = Returns
   * A boolean true (different) or false (same).
@@ -47,11 +47,9 @@ HValueResponder = HClass.extend({
   
 /** = Description
   * Assigns the object a new value.
-  *
   * Extend it, if your component needs to do validation of the new value.
-  *
-  * For +HControl+ instances, extend +refreshValue+ to do something when
-  * the +self.value+ has been set.
+  * For +HControl+ instances, extend HControl#refreshValue to do something when
+  * the +value+ has been set.
   *
   * = Parameter
   * +_value+::  The new value. Allowed values depend on the component type
