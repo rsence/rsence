@@ -1,26 +1,27 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2008 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
+/*** = Description
+  ** An application designed to display errors.
+  **
+  ** Used automatically by the server to report issues.
+  ** Stops COMM.Transporter and displays a HWindow with the message contained.
+  ** Has two buttons: *Reset Session* and *Reload*
+  **
+  ** = Usage
+  **   jsLoader.load('servermessage');
+  **   ReloadApp.nu( 'Session Timeout', 'Your session has timed out', '/' );
+  **
+**/
 ReloadApp = HApplication.extend({
+  
+/** Reloads the page using the +_url+ given in the +constructor+.
+  **/
   reload: function(){
     var _url = this._url;
     if((!_url)||(_url==='/')){
@@ -30,6 +31,16 @@ ReloadApp = HApplication.extend({
       window.location.href = _url;
     }
   },
+  
+/** = Description
+  * Reset the session.
+  *
+  * Resets the session by calling the hello/goodbye url on the server.
+  * The server reads the cookie key and deletes the session bound to it.
+  *
+  * Reloads the page after a successful request.
+  *
+  **/
   reset_session: function(){
     COMM.request(
       HCLIENT_HELLO + '/goodbye', {
@@ -44,6 +55,21 @@ ReloadApp = HApplication.extend({
         }
     });
   },
+  
+/** = Description
+  * Constructs the ReloadApp.
+  *
+  * Creates an application with a window titled +_title+,
+  * containing the +_message+ and *Reset Session* and *Reload*
+  * buttons. The +_url+ is the url to load when any of the
+  * buttons are pressed.
+  *
+  * = Parameters
+  * +_title+::    The title of the message.
+  * +_message+::  The message text content.
+  * +_url+::      The url the buttons load when pressed.
+  *
+  **/
   constructor: function( _title, _message, _url ){
     var _this = this;
     _this.base();
@@ -113,13 +139,12 @@ ReloadApp = HApplication.extend({
     
     COMM.Transporter.stop = true;
   },
+  
+/** Re-focuses the window.
+  **/
   onIdle: function(){
-    if(this._alertWindow){
+    if(this['_alertWindow']){
       HSystem.windowFocus(this._alertWindow);
     }
   }
 });
-/** USAGE: 
-jsLoader.load('servermessage');
-reloadApp = ReloadApp.nu( 'Session Timeout', 'Your session has timed out', '/' );
-**/

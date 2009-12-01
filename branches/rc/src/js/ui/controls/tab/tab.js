@@ -1,39 +1,12 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2008 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
 HTabView = HView.extend({
-  tabIndex: 0,
-  flexRight: true,
-  flexRightOffset: 0,
-  flexBottom: true,
-  flexBottomOffset: 0,
-  /*setLabel: function(_label){
-    this.parent.setLabel(_label);
-    this.base(_label);
-  },
-  setValue: function(_value){
-    this.parent.setValue(_value);
-    this.base(_value);
-  },*/
   draw: function(){
     var _isDrawn = this.drawn;
     this.base();
@@ -52,7 +25,7 @@ HTabView = HView.extend({
 HTab = HControl.extend({
   componentName: "tab",
   componentBehaviour: ['view','control','tab'],
-  refreshOnValueChange: false,
+  refreshOnValueChange: true,
   refreshOnLabelChange: false,
   constructor: function(_rect,_parent,_options){
     this.tabInit();
@@ -70,8 +43,8 @@ HTab = HControl.extend({
       this.draw();
     }
   },
-  setValue: function(_value){
-    this.base(_value);
+  refreshValue: function(){
+    var _value = this.value;
     if(typeof _value === 'number'){
       var _index = parseInt(_value,10);
       if(_index<this.tabs.length){
@@ -81,11 +54,11 @@ HTab = HControl.extend({
       }
     }
   },
-  stringWidth: function(_string,_elemId){
-    var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
-        _width = this.base( _html, null, _elemId );
-    return _width;
-  }, 
+  // stringWidth: function(_string,_elemId){
+  //   var _html = '<span style="'+this.fontStyle+'">'+_string+'</span>',
+  //       _width = this.base( _html, null, _elemId );
+  //   return _width;
+  // }, 
   tabInit: function(){
     this.tabs = [];
     this.tabLabels = [];
@@ -134,9 +107,9 @@ HTab = HControl.extend({
   addTab: function(_tabLabel,_doSelect){
     var _tabIdx=this.tabs.length,
         _tabLabelHTML='',
-        _labelTextWidth=this.stringWidth(_tabLabel,0),
+        _labelTextWidth=this.stringWidth(_tabLabel),
         _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
-        _tab = new HTabView(new HRect(0,this.tabLabelHeight,this.rect.width,this.rect.height),this),
+        _tab = new HTabView( [0,this.tabLabelHeight,null,null,0,0] ,this),
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
     _tabIdx = this.tabs.length;
     if(this.tabLabelNoHTMLPrefix){
@@ -170,7 +143,7 @@ HTab = HControl.extend({
     this.tabs.push(_tab.viewId);
     this.tabLabels.push(_tabLabelElemId);
     _tab.tabIndex = _tabIdx;
-    if(_doSelect){
+    if(_doSelect || (this.value === _tabIdx)){
       this.selectTab(_tabIdx);
     }
     return _tab;
@@ -224,14 +197,6 @@ HTab = HControl.extend({
     }
     ELEM.del(_tabLabelElemId);
     HSystem.views[_tabViewId].die();
-  },
-  draw: function(){
-    var _isDrawn = this.drawn;
-    this.base();
-    if(!_isDrawn){
-      this.drawMarkup();
-    }
-    this.refresh();
   }
 });
 

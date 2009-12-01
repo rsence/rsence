@@ -1,45 +1,30 @@
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
+#--
+##   Riassence Framework
+ #   Copyright 2008 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+ #++
 
+# Use the default configuration:
 require 'conf/default'
 
+# Use rubygems to load rack
 require 'rubygems'
 require 'rack'
 
-## Loads the chosen web-server 
+# Loads the selected web-server (default is 'thin')
 require $config[:http_server][:rack_require]
 
-# methods that return rack handlers
-def rack_fuzed_handler
-  require 'http/fuzed/rack_fuzed'
-  Rack::Handler::Fuzed
-end
+# Methods that return rack the selected handler
 def rack_webrick_handler; Rack::Handler::WEBrick; end
 def rack_ebb_handler;     Rack::Handler::Ebb;     end
 def rack_thin_handler;    Rack::Handler::Thin;    end
 def rack_mongrel_handler; Rack::Handler::Mongrel; end
 
-# Selects handler for Rack
+# Selects the handler for Rack
 $config[:http_server][:rack_handler] = self.method({
   'fuzed'   => :rack_fuzed_handler,
   'webrick' => :rack_webrick_handler,
@@ -48,18 +33,15 @@ $config[:http_server][:rack_handler] = self.method({
   'mongrel' => :rack_mongrel_handler
 }[$config[:http_server][:rack_require]]).call
 
+# Debug mode switch. The debug mode is intended for developers, not production.
 $DEBUG_MODE  = $config[:debug_mode]
 
-
-# JSServe / JSCache caches and serves js and theme -files
+# JSServe / JSCache caches and serves the pre-packaged js and theme -files.
 require 'file/filecache'
 require 'file/fileserve'
 
-# TicketServe caches and serves disposable and static resources
+# TicketServe caches and serves the disposable and static resources.
 require 'file/ticketserve'
-
-# IndexHtml builds the default page at '/'
-# require 'page/indexhtml' # getting replaced by the servletplugin functionality
 
 # ValueManager syncronizes value objects
 require 'values/valuemanager'
@@ -70,7 +52,7 @@ require 'session/sessionmanager'
 # PluginManager handles all the plugins
 require 'plugins/pluginmanager'
 
-# Transporter is the top-level handler for xhr
+# Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
 require 'transporter/transporter'
 
 ## Broker routes requests to the correct handler
@@ -112,7 +94,7 @@ module Daemon
     
     def self.print_status(daemon)
       is_running = self.status(daemon)
-      puts "Riassence Core is #{'not ' unless is_running}running"
+      puts "Riassence Framework is #{'not ' unless is_running}running"
     end
     
     ## Status is not entirely reliable
@@ -174,7 +156,7 @@ module Daemon
     def self.start(daemon)
       is_running = self.status(daemon)
       if is_running
-        puts "Riassence Core is already running. Try restart."
+        puts "Riassence Framework is already running. Try restart."
         exit
       elsif not is_running and File.file?(daemon.pid_fn)
         puts "Stale pid file, removing.."
@@ -209,15 +191,15 @@ module Daemon
       sleep 0.01 until self.status(daemon) or timeout < Time.now
       
       if timeout < Time.now
-        puts "Riassence Core did not start, please check the logfile."
+        puts "Riassence Framework did not start, please check the logfile."
       else
-        puts "Riassence Core is running now."
+        puts "Riassence Framework is running now."
       end
       #Process.kill("USR2", File.read(daemon.pid_fn).to_i)
     end
     def self.save(daemon,is_restart=false)
       if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is Riassence Core started?"
+        puts "Pid file not found. Is Riassence Framework started?"
         return if is_restart
         exit
       end
@@ -232,14 +214,14 @@ module Daemon
     def self.stop(daemon,is_restart=false)
       self.save(daemon,is_restart)
       if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is Riassence Core started?"
+        puts "Pid file not found. Is Riassence Framework started?"
         return if is_restart
         exit
       end
       pid = PidFile.recall(daemon)
       begin
         pid && Process.kill("TERM", pid)
-        puts "Riassence Core is stopped now."
+        puts "Riassence Framework is stopped now."
       rescue
         puts "Error, no such pid (#{pid}) running"
       end

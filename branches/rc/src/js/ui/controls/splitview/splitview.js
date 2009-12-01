@@ -1,25 +1,10 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
 /*** class: HSplitView
   **
@@ -108,8 +93,9 @@ HSplitView = HControl.extend({
     }
     _x -= this.pageX();
     _y -= this.pageY();
+    var _targetPoint;
     if (this.vertical === false) {
-      var _targetPoint = _y - this._diffPoint.y;
+      _targetPoint = _y - this._diffPoint.y;
       if (_targetPoint < this._limit1 || _targetPoint > this._limit2) {
         return;
       }
@@ -127,7 +113,7 @@ HSplitView = HControl.extend({
       this._startView2.setStyle('top',this._startView2.rect.top+'px', true);
       this._startView2.setStyle('height',this._startView2.rect.height+'px', true);
     } else {
-      var _targetPoint = _x - this._diffPoint.x;
+      _targetPoint = _x - this._diffPoint.x;
       if (_targetPoint < this._limit1 || _targetPoint > this._limit2) {
         return;
       }
@@ -210,23 +196,27 @@ HSplitView = HControl.extend({
   * 
   **/
   adjustViews: function() {
-    var _viewCount = this.splitviews.length;
-    var _newTotal;
-    var _oldTotal;
-    var _scale;
-    var _running;
+    var _viewCount = this.splitviews.length,
+        _newTotal,
+        _oldTotal,
+        _scale,
+        _running,
+        i,
+        _view,
+        _newHeight,
+        _newWidth;
     if (this.vertical === false) {
       _newTotal = this.rect.height - this.dividerWidth*(_viewCount - 1);
       _oldTotal = 0;
-      for (var i = 0; i < _viewCount; i++) {
+      for (i = 0; i < _viewCount; i++) {
         _oldTotal += this.splitviews[i].rect.height;
       }
       // 
       _scale = _newTotal / _oldTotal;
       _running = 0;
-      for (var i = 0; i < _viewCount; i++) {
-        var _view = this.splitviews[i];
-        var _newHeight = _view.rect.height*_scale;
+      for (i = 0; i < _viewCount; i++) {
+        _view = this.splitviews[i];
+        _newHeight = _view.rect.height*_scale;
         if (i === _viewCount - 1) {
           _newHeight = Math.floor(_newHeight);
         } else {
@@ -240,14 +230,14 @@ HSplitView = HControl.extend({
     } else {
       _newTotal = this.rect.width - this.dividerWidth*(_viewCount - 1);
       _oldTotal = 0;
-      for (var i = 0; i < _viewCount; i++) {
+      for (i = 0; i < _viewCount; i++) {
         _oldTotal += this.splitviews[i].rect.width;
       }
       _scale = _newTotal / _oldTotal;
       _running = 0;
-      for (var i = 0; i < _viewCount; i++) {
-        var _view = this.splitviews[i];
-        var _newWidth = _view.rect.width*_scale;
+      for (i = 0; i < _viewCount; i++) {
+        _view = this.splitviews[i];
+        _newWidth = _view.rect.width*_scale;
         if (i === _viewCount - 1) {
           _newWidth = Math.floor(_newWidth);
         } else {

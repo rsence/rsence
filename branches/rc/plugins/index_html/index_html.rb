@@ -1,25 +1,10 @@
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2009 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
+##   Riassence Framework
+ #   Copyright 2009 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
 
 =begin
  IndexHtmlPlugin is the servlet plugin that is responsible for initializing the "boot-strap page".
@@ -37,23 +22,27 @@ class IndexHtmlPlugin < ServletPlugin
   end
   
   def score
-    return 1000 # allows overriding with anything with a score below 0
+    return 1000 # allows overriding with anything with a score below 1000
   end
   
-  #def set_deps( deps )
-  #  @deps = deps
-  #  render_index_html
-  #end
+  def init
+    $config[:indexhtml_conf][:instance] = self
+  end
   
   def open
     @client_rev = $FILECACHE.client_rev
     #@deps = []
     @index_html_src = file_read( $config[:index_html][:index_tmpl] )
-    loading_gif_h = File.open( File.join( @path, 'img/loading.gif' ), 'rb' )
-    loading_gif = loading_gif_h.read
-    loading_gif_h.close
+    loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
     @loading_gif_id = $TICKETSERVE.serve_rsrc( loading_gif, 'image/gif' )
+    # riassence_gif = File.read( File.join( @path, 'img/riassence.gif' ) )
+    # @riassence_gif_id = $TICKETSERVE.serve_rsrc( riassence_gif, 'image/gif' )
     render_index_html
+  end
+  
+  def close
+    $TICKETSERVE.del_rsrc( @riassence_gif_id )
+    $TICKETSERVE.del_rsrc( @loading_gif_id )
   end
   
   def render_index_html
@@ -62,9 +51,11 @@ class IndexHtmlPlugin < ServletPlugin
     
     @index_html.gsub!('__DEFAULT_TITLE__',$config[:indexhtml_conf][:loading_title])
     @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
+    # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     @index_html.gsub!('__CLIENT_BASE__',File.join($config[:broker_urls][:h],@client_rev))
     @index_html.gsub!('__CLIENT_HELLO__',$config[:broker_urls][:hello])
+    @index_html.gsub!('__NOSCRIPT__',$config[:indexhtml_conf][:noscript])
     
     deps_src = ''
     $config[:index_html][:deps].each do |dep|
@@ -72,7 +63,15 @@ class IndexHtmlPlugin < ServletPlugin
     end
     @index_html.gsub!('__SCRIPT_DEPS__',deps_src)
     
+    @index_gzip = GZString.new('')
+    gzwriter = Zlib::GzipWriter.new( @index_gzip, Zlib::BEST_SPEED )
+    gzwriter.write( @index_html )
+    gzwriter.close
+    
     @content_size = @index_html.size
+    @content_size_gzip = @index_gzip.size
+    
+    @index_date = $FILESERVE.httime( Time.now )
   end
   
   def debug_rescan
@@ -120,10 +119,22 @@ class IndexHtmlPlugin < ServletPlugin
     debug_rescan if $DEBUG_MODE
     
     response.status = 200
-    response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-length'] = @content_size
+    response['Content-Type'] = 'text/html; charset=UTF-8'
+    response['Date'] = @index_date
+    response['Server'] = 'Riassence Framework'
     
-    response.body = @index_html
+    support_gzip = (request.header.has_key?('accept-encoding') and \
+                    request.header['accept-encoding'].include?('gzip')) \
+                    and not $config[:no_gzip]
+    
+    if support_gzip
+      response['Content-Length'] = @content_size_gzip
+      response['Content-Encoding'] = 'gzip'
+      response.body = @index_gzip
+    else
+      response['Content-Length'] = @content_size
+      response.body = @index_html
+    end
   end
   
 end

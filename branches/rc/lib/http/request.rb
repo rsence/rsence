@@ -1,25 +1,13 @@
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
+#--
+##   Riassence Framework
+ #   Copyright 2008 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+ #++
+
 
 require 'rubygems'
 require 'rack'
@@ -62,12 +50,18 @@ class Request < Rack::Request
       ['HTTP_ACCEPT',           'accept'],
       ['REQUEST_METHOD',        'request-method'],
       ['HTTP_CONNECTION',       'connection'],
-      ['HTTP_SOAPACTION',       'soapaction']
+      ['HTTP_SOAPACTION',       'soapaction'],
+      ['HTTP_FORWARDED_HOST',   'forwarded-host']
     ].each do |env_key,header_key|
-      @header[header_key] = @env[env_key] if @env.has_key?(env_key)
-      @header["x-#{header_key}"] = @env["X_#{env_key}"] if @env.has_key?("X_#{env_key}")
-      x_env_key = "#{env_key.gsub('HTTP_','HTTP_X_')}"
-      @header["x-#{header_key}"] = @env[x_env_key] if @env.has_key?(x_env_key) if x_env_key.include?('X_')
+      if @env.has_key?(env_key)
+        @header[header_key] = @env[env_key]
+      end
+      if env_key.start_with?( 'HTTP_' )
+        x_env_key = "HTTP_X#{env_key[4..-1]}"
+        if @env.has_key?( x_env_key )
+          @header["x-#{header_key}"] = @env[ x_env_key ]
+        end
+      end
     end
   end
 end

@@ -1,26 +1,17 @@
 #!/usr/bin/env ruby
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
+#--
+##   Riassence Framework
+ #   Copyright 2008 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+ #++
+
+if RUBY_VERSION.to_f >= 1.9
+  Encoding.default_external = Encoding::ASCII_8BIT
+end
 
 if ARGV.include?('--help') or ARGV.include?('-h') or
    ARGV.include?('help') or not (
@@ -28,29 +19,63 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
     ARGV.include?('restart') or ARGV.include?('status') or
     ARGV.include?('save')
   )
-  puts "Usage: #{__FILE__} command [params]"
-  puts
-  puts "command is one of:"
-  puts " status     Tells if Riassence Core is running or not"
-  puts " start      Starts Riassence Core"
-  puts " stop       Stops Riassence Core"
-  puts " restart    Restarts Riassence Core"
-  puts " save       Saves Riassence Core session data"
-  puts " help       This text"
-  puts
-  puts "Params:"
-  puts " --trace-js               Write content of msg.reply calls to stdout."
-  puts " --root-path /path        Define the path to rsence server, defaults to 'bin'"
-  puts " --client-path /path      Define the path to rsence client, defaults to '../client'"
-  puts " --port 80                Define the http port to use, defaults to '8001'"
-  puts " --addr 127.0.0.1         Define the IPv4 address to bind to, defaults to '0.0.0.0' (all)"
-  puts " --server ebb             Choose http server, valid choices:"
-  puts "                            webrick, mongrel, ebb or thin.  Defaults to 'mongrel'"
-  puts " --reset-sessions         Deletes all old sessions on startup, useful for development and maintenance"
-  puts " --config /path/conf.rb   Optional config override file."
-  puts " --profile                Turns on profiling (Will slow down performance A LOT)"
-  puts " --help                   This Text"
-  puts
+  puts %{
+
+  Riassence Framework is RIA client and server. This help message contains
+  hints about how to control the server startup/shutdown.
+
+  Usage:
+    #{__FILE__} command [params]
+
+  Command is one of:"
+    status     Tells if Riassence Framework Server is running or not
+    start      Starts Riassence Framework Server
+    stop       Stops Riassence Framework Server
+    restart    Restarts Riassence Framework Server
+    save       Saves Riassence Framework Server session data
+    help       This message
+  
+  Params:
+    -d                      Debug/Development mode
+    --trace-js              Write content of msg.reply calls to stdout
+    --trace-delegate        Traces plugin method delegation to stdout
+    --root-path <PATH>      Define the PATH to rsence server
+                              Defaults to 'bin'
+    --client-path <PATH>    Define the PATH to the built rsence client
+                              Defaults to '../client'
+    --port PORT             Define the http PORT to use, defaults to '8001'
+    --latency MS            Simulate network latency, value in milliseconds
+    --addr <ADDRESS>        Define the IPv4 ADDRESS to bind to.
+                              Defaults to '0.0.0.0' (any)
+    --server <SERVER>       Choose http SERVER, valid choices:
+                               - webrick
+                               - mongrel
+                               - ebb
+                               - thin
+                               Defaults to thin
+    --reset-sessions        Deletes all old sessions on startup
+    --config <PATH>         Optional config override file
+    --run-config-wizard     Runs configuration wizard
+                              Runs by default, if no local
+                              configuration files were found.
+    --profile               Turns on profiling
+    --help                  This message
+    -h                      This message
+  
+  Examples:
+    #{__FILE__} status
+    #{__FILE__} start
+    #{__FILE__} stop
+    #{__FILE__} save
+    #{__FILE__} restart
+    #{__FILE__} restart -d --reset-sessions
+    #{__FILE__} restart --latency 150
+    #{__FILE__} restart --server mongrel --port 8080 --addr 127.0.0.1
+  
+  Further information:
+     http://riassence.org/
+
+}
   exit
 end
 
@@ -62,13 +87,6 @@ SERVER_PATH = ARGV.include?('--root-path')?(ARGV[ARGV.index('--root-path')+1]):F
 ## Include server & lib in the search path
 $LOAD_PATH << SERVER_PATH
 $LOAD_PATH << File.join( SERVER_PATH, 'lib' )
-
-if RUBY_VERSION.to_f >= 1.9
-  $LOAD_PATH << File.join( SERVER_PATH, 'lib', 'compat19' )
-end
-
-## Dependencies / dependency check:
-require 'conf/dependencies'
 
 ## Riassence Daemon controls
 require 'daemon/daemon'

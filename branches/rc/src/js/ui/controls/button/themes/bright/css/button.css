@@ -1,0 +1,89 @@
+
+.button_control,
+.button_edge_left,
+.button_center,
+.button_edge_right,
+.button_label,
+.button_antiselect {
+  position: absolute;
+  top: 0px; height: 24px;
+}
+
+.button_control {
+  left: 0px; right: 0px;
+  cursor: pointer;
+}
+.disabled .button_control {
+  cursor: default;
+}
+
+.button_edge_left,
+.button_center,
+.button_edge_right {
+  background-repeat: repeat-x;
+  background-image: #{this.getCssFilePath('button_parts1.png')};
+}
+
+.button_edge_left {
+  left: 0px; width: 24px;
+  background-position: 0px 0px;
+}
+.disabled > .button_control > .button_edge_left {
+  background-position: 0px -144px;
+}
+.enabled > .button_control:hover > .button_edge_left {
+  background-position: 0px -48px;
+}
+.enabled > .button_control:active > .button_edge_left {
+  background-position: 0px -96px;
+}
+
+.button_edge_right {
+  right: 0px; width: 24px;
+  background-position: -24px 0px;
+}
+.disabled > .button_control > .button_edge_right {
+  background-position: -24px -144px;
+}
+.enabled > .button_control:hover > .button_edge_right {
+  background-position: -24px -48px;
+}
+.enabled > .button_control:active > .button_edge_right {
+  background-position: -24px -96px;
+}
+
+.button_center {
+  left: 24px; right: 24px;
+  background-position: 0px -24px;
+}
+.disabled > .button_control > .button_center {
+  background-position: 0px -168px;
+}
+.enabled > .button_control:hover > .button_center {
+  background-position: 0px -72px;
+}
+.enabled > .button_control:active > .button_center {
+  background-position: 0px -120px;
+}
+
+.button_label {
+  left: 6px; right: 6px; top: 2px;
+  height: 20px; line-height: 21px;
+  text-align: center; vertical-align: middle;
+  font-family: Arial, sans-serif;
+  font-size: 12px; font-weight: bold;
+  color: #333;
+}
+.disabled > .button_control > .button_label {
+  color: #999;
+}
+.enabled > .button_control:hover > .button_label {
+  color: #000;
+}
+.enabled > .button_control:active > .button_label {
+  color: #000;
+}
+
+.button_antiselect {
+  left: 0px; right: 0px;
+}

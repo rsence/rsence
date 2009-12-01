@@ -1,25 +1,11 @@
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2009 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
+##   Riassence Framework
+ #   Copyright 2009 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+
 
 module Riassence
 module Client
@@ -528,12 +514,12 @@ class JSBuilder
         print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
       end
       
-      html_templates.each do |tmpl_name,tmpl_html|
-        html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
-      end
+      # html_templates.each do |tmpl_name,tmpl_html|
+      #   html2js_themes.push( "#{tmpl_name}:#{tmpl_html.to_json}" )
+      # end
       
       theme_html_js_arr = []
-      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]={" + html2js_themes.join(',') + "}; "
+      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]=#{html_templates.to_json}; "
       theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json}); "
       theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json}); "
       theme_html_js_arr.push "HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null );"

@@ -1,74 +1,47 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
-/** class: HView
-  *
-  * Abstract foundation class for all visual components.
-  *
-  * Depends on <HApplication> <HMarkupView>
-  *
-  * HView instances are the simplest component type. HViews don't respond to 
-  * events, they don't have a visible visual representation (just an invisible
-  * '<div>' element), but offers the common visual methods of most components.
-  *
-  * Feel free to extend HView to suit your needs.
-  * However, extend <HControl> instead if you are going to make an active component.
-  *
-  * vars: Instance variables (common for almost all components)
-  *  type - '[HView]' normally, '[HSubview]' if the parent is also a HView
-  *
-  *  views - A list of child components bound.
-  *  viewId - The view index id of this view (parent specific, will change to system-wide uniqueness)
-  *  drawn  - A flag that is true after draw is called the first time (the DOM element exists after that)
-  *  elemId - The <Element Manager> compatible element index id of the main <div> DOM element of the view. Exists after <draw> is called.
-  *  parent - The parent of the view structure
-  *  parents - An array containing parents, up to <HApplication> and <HSystem>
-  *  appId - The unique id of the app that contains the view
-  *  app - References the <HApplication> instance at the root of the view structure
-  *
-  *  rect - The <HRect> instance that defines the coordinates and dimensions of the view. Call <drawRect> for changes to a rect property to take effect.
-  *
-  *  theme - The theme chosen to render the component with.
-  *  preserveTheme - Boolean, won't change the theme on the fly if true and the global theme changes. Defaults to false.
-  *  optimizeWidthOnRefresh - Boolean, true (default) when <optimizeWidth> should be called whenever <refresh> gets called.
-  *  
-  *  isHidden - Boolean flag, true if set to hidden. Defaults to false (visible)
-  *
-  *  viewsZOrder - The order of subviews in the Z-dimension.
-  *
-  * See Also:
-  *  <HSystem> <HApplication> <HControl>
-  *
-  * Usage example:
-  *  > var myApp = new HApplication(100);
-  *  > var myView = new HView( new HRect(100,100,200,200), myApp );
-  *  > myView.draw();
-  *  > myView.setStyle('background-color','#660000');
-  *  > var mySubview = new HView( new HRect(50,50,100,100), myView );
-  *  > mySubview.draw();
-  *  > mySubview.setStyle('background-color','#ffcc00');
-  *  > mySubview.setStyle('border','1 px solid #ffffff');
-  **/
+/*** = Description
+  ** HView is the foundation class for all views. HView is useful for
+  ** any type of view and control grouping. It is designed for easy extension
+  ** and it's the foundation for HControl and all other controls.
+  ** 
+  ** The major differences between HView and HControl is that HView handles
+  ** only visual representation and structurization. In addition to HView's
+  ** features, HControl handles labels, values, events, states and such.
+  ** However HControl is heavier, so use HView instead whenever you don't
+  ** need the additional features of HControl. HView implements the HMarkupView
+  ** interface for template-related task.
+  **
+  **
+  ** = Instance variables:
+  **  +themePath+::           Component specific theme path. Default null.
+  **  +packageName+::         Prefix of the directory that contains set of
+  **                          components in pre-build mode. Default null.
+  **  +isAbsolute+::          Is the component using absolute positioning?
+  **                          Defaults to true.
+  **  +flexRight+::           Does the HView flex right? Defaults to false.
+  **  +flexLeft+::            Does the HView flex left? Defaults to true. 
+  **  +flexTop+::             Does the HView flex top? Defaults to true.
+  **  +flexBottom+::          Does the HView flex bottom? Defaults false.
+  **  +flexRightOffset+::     Positioning mode offset to right. Defaults to 0.
+  **  +flexBottomOffset+::    Positioning mode offset to bottom. Defaults to 0.
+  **  +componentBehaviour+::  Component behaviour tells other classes what to
+  **                          expect of the component's api and 
+  **                          visual behaviour. 'view' by default.
+  **
+  ** = Usage
+  **  myAppInstance = HApplication.nu();
+  **  myViewInstance = HView.nu( [10, 10, 100, 100], myAppInstance );
+  **  myViewInstance.setStyle('background-color','#ffcc00');
+  **  mySubView1 = HView.nu( [10, 10, 70, 70], myViewIntance );
+  **  mySubView2 = HView.nu( [20, 20, 50, 50], mySubView1 );
+***/
 
 HView = HClass.extend({
   
@@ -99,18 +72,41 @@ HView = HClass.extend({
   // Component behaviour tells other classes what to expect of the component's api and visual behaviour.
   componentBehaviour: ['view'],
   
-/** constructor: constructor
-  *
-  * Constructs the logic part of a <HView>.
-  * The view still needs to be drawn on screen. To do that, call <draw> after
+/** = Description
+  * Constructs the logic part of a HView.
+  * The view still needs to be drawn on screen. To do that, call draw after
   * subcomponents of the view are initialized.
   *
-  * Parameters:
-  *  _rect - An instance of <HRect>, defines the position and size of views.
-  *  _parent - Another <HView> -compatible instance, like <HApplication>, <HControl> and derived component classes.
+  * = Parameters
+  *  +_rect+::    An instance of HRect, defines the position and size of 
+  *               views. 
+  *                +_rect+ can be alse defined with array.
+  *                _rect - Array format:
+  *    
+  *    with 4 items, then left and top -aligned layout with numeric indexes at:
+  *      0: left
+  *      1: top
+  *      2: width
+  *      3: height
+  *    
+  *    with 6 items, then special layout with indexes at:
+  *      0: left
+  *         - right-aligned layout if null and valid number at index 2 and 4
+  *      1: top
+  *         - bottom-aligned layout if null and valid number at index 3 and 5
+  *      2: width
+  *         - auto-width if null and valid number at index 0 and 4
+  *      4: height
+  *         - auto-height if null and valid number at index 1 and 5
+  *      5: right
+  *         - right-aligned layout if valid number at index 2
+  *         - auto-width if valid number at index 0
+  *      6: bottom
+  *         - bottom-aligned layout if valid number at index 3
+  *                - auto-height if valid number at index 1                                 
+  *  +_parent+::  Another HView compatible instance, like HApplication, 
+  *               HControl and derived component classes.
   *
-  * See also:
-  *  <HApplication.addView> <draw> <drawRect> <refresh> <setRect> <drawMarkup> <HControl.draw>
   **/
   constructor: function(_rect, _parent) {
     // Moved these to the top to ensure safe themeing operation
@@ -163,6 +159,8 @@ HView = HClass.extend({
     }
   },
   
+  /** Set right side flexing.
+    **/
   setFlexRight: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexRight = _flag;
@@ -170,6 +168,9 @@ HView = HClass.extend({
     this.flexRightOffset = _px;
     return this;
   },
+  
+  /** Set left side flexing.
+    **/
   setFlexLeft: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexLeft = _flag;
@@ -178,6 +179,9 @@ HView = HClass.extend({
     }
     return this;
   },
+  
+  /** Set top flexing.
+    **/
   setFlexTop: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexTop = _flag;
@@ -186,6 +190,8 @@ HView = HClass.extend({
     }
     return this;
   },
+  /** Set bottom flexing.
+    **/
   setFlexBottom: function(_flag,_px){
     if(_flag===undefined){_flag=true;}
     this.flexBottom = _flag;
@@ -193,27 +199,23 @@ HView = HClass.extend({
     this.flexBottomOffset = _px;
     return this;
   },
+  /** Set absolute coordinates true / false.
+    **/
   setAbsolute: function(_flag){
     if(_flag===undefined){_flag=true;}
     this.isAbsolute = _flag;
     return this;
   },
+  /** Set relative coordinates true / false.
+    **/
   setRelative: function(_flag){
     if(_flag===undefined){_flag=true;}
     this.isAbsolute = (!_flag);
     return this;
   },
   
-/** method: getThemeGfxPath
-  *
-  * Used by from html theme templates to get the theme-specific image path.
-  *
-  * Returns:
-  *  The theme image directory of the current theme.
-  *
-  * See also:
-  *  <HThemeManager._componentGfxPath>
-  **/
+  /** Used by from html theme templates to get the theme-specific image path.
+    **/
   getThemeGfxPath: function() {
     if( this.preserveTheme ){
       _themeName = this.theme;
@@ -222,6 +224,9 @@ HView = HClass.extend({
     }
     return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath, this.packageName );
   },
+  /** Returns the full theme URL of the given filename. Used by HTML templates.
+    **/
+  
   getThemeGfxFile: function( _fileName ) {
     if( this.preserveTheme ){
       _themeName = this.theme;
@@ -281,13 +286,13 @@ HView = HClass.extend({
     }
   },
   
-/** method: drawRect
+/** = Description
+  * Handles automatically value management, Z-indexes, drawing and 
+  * updating of HView upon alteration.
   *
-  * Sets the correct properties for elements after changes in the <rect> instance object.
-  * Effectively updates the visual representation to match the state of <rect>.
+  * = Returns
+  * +self+
   *
-  * See also:
-  *  <draw> <drawMarkup> <refresh> <setRect> <HRect>
   **/
   drawRect: function() {
     if (this.parent && this.rect.isValid) {
@@ -341,11 +346,13 @@ HView = HClass.extend({
   },
   
   /**
+    * --
     * These methods update the z-index property of the actual element(s).
     * _updateZIndex updates this object only and it is used when the object is
     * initially drawn. _updateZIndexAllSiblings updates this object and all its
     * siblings. This is useful when modifying this object's z-order affects
     * other elements too.
+    * ++
     */
   _updateZIndex: function() {
     // doing this via HSystem shaves 10% off the view creation time
@@ -354,24 +361,26 @@ HView = HClass.extend({
   },
   
   /**
+    * --
     * This function was really slow, that's why it's moved off to the system scheduler.
     *
     * According to benchmarking, with 1000 views, deletion
     * took over 2000 ms on average before, versus 50 ms after.
-    *
+    * ++
     **/
   _updateZIndexAllSiblings: function() {
     HSystem.updateZIndexOfChildren(this.parent.viewId);
   },
   
-/** method: draw
+/** = Description
+  * Marks HView as drawn on the current frame and draws it.
   *
-  * Initializes the visual representation of the object, should call at least <drawRect>.
+  * When extending HView, override this method, don't extend it. 
+  * The new method should call at least drawRect.
+  * 
+  * = Returns
+  * +self+
   *
-  * *When extending <HView>, override this method, don't extend it.*
-  *
-  * See also:
-  *  <drawRect> <drawMarkup> <refresh> <HRect>
   **/
   draw: function() {
     var _isDrawn = this.drawn;
@@ -386,8 +395,7 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: drawSubviews
-  *
+/** = Description
   * Called once, when the layout of the view is initially drawn.
   *
   * Doesn't do anything by itself, but provides an extension point for making
@@ -416,12 +424,11 @@ HView = HClass.extend({
     return (_markup !== false);
   },
   
-/** method: drawMarkup
+/** = Description
+  * Replaces the contents of the view's DOM element with html from the theme specific html file.
   *
-  * Replaces the *contents* of the view's DOM element with html from the theme specific html file.
-  *
-  * See also:
-  *  <HThemeManager> <bindMarkupVariables> <drawRect> <draw> <refresh>
+  * = Returns
+  * +self+
   **/
   markupElemNames: ['bg', 'label', 'state', 'control', 'value', 'subview'],
   drawMarkup: function() {
@@ -460,26 +467,30 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: setHTML
-  *
+/** = Description
   * Replaces the contents of the view's DOM element with custom html.
   *
-  * Parameters:
-  *  _html - The HTML (string-formatted) to replace the content with.
+  * = Parameters
+  * +_html+::  The HTML (string-formatted) to replace the content with.
+  *
+  * = Returns
+  * +self+
+  *
   **/
   setHTML: function( _html ) {
     ELEM.setHTML( this.elemId, _html );
     return this;
   },
   
-/** method: refresh
+/** = Description
   *
   * This method should be extended in order to redraw only specific parts. The
-  * base implementation calls <optimizeWidth> when optimizeWidthOnRefresh is set
+  * base implementation calls optimizeWidth when optimizeWidthOnRefresh is set
   * to true.
   *
-  * See also:
-  *  <HThemeManager> <drawRect> <drawMarkup> <draw>
+  * = Returns
+  * +self+
+  *
   **/
   refresh: function() {
     if(this.drawn) {
@@ -493,14 +504,14 @@ HView = HClass.extend({
     return this;
   },
 
-/** method: setRect
+/** = Description
   *
-  * Replaces the <rect> of the component with a new <HRect> instance and
+  * Replaces the rect of the component with a new HRect instance and
   * then refreshes the display.
   *
-  * Parameter:
-  *  _rect - The new <HRect> instance to replace the old <rect> instance with.
-  *  _rect - Array format:
+  * = Parameters
+  *  +_rect+ - The new HRect instance to replace the old rect instance with.
+  *  +_rect+ - Array format:
   *    
   *    with 4 items, then left and top -aligned layout with numeric indexes at:
   *      0: left
@@ -575,6 +586,11 @@ HView = HClass.extend({
           _right = _leftOffset + _rightOffset;
         }
         
+        // use minimum width based on the height information given
+        else if(_validLeftOffset && _validWidth && _validRightOffset){
+          _right = _leftOffset + _width;
+        }
+        
         // default, makes a correct rect
         if(_validTopOffset && _validHeight && !_validBottomOffset){
           _bottom = _topOffset + _height;
@@ -587,6 +603,11 @@ HView = HClass.extend({
         // can't be entirely correct rect unless parent size is calculated
         else if(_validTopOffset && !_validHeight && _validBottomOffset){
           _bottom = _topOffset + _bottomOffset;
+        }
+        
+        // use minimum height based on the height information given
+        else if(_validTopOffset && _validHeight && _validBottomOffset){
+          _bottom = _topOffset + _height;
         }
         
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
@@ -603,18 +624,18 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: setStyle
-  *
+/** = Description
   * Sets any arbitary style of the main DOM element of the component.
-  * Utilizes <Element Manager>'s drawing queue/cache to perform the action, 
-  * thus working efficiently even when called frequently.
+  * Utilizes Element Manager's drawing queue/cache to perform the action.
   *
-  * Parameters:
-  *  _name - The style name (css syntax, eg. 'background-color')
-  *  _value - The style value (css syntax, eg. 'rgb(255,0,0)')
+  * = Parameters
+  * +_name+::           The style name (css syntax, eg. 'background-color')
+  * +value+::           The style value (css syntax, eg. 'rgb(255,0,0)')
+  * +_cacheOverride+::  Cache override flag.
   *
-  * See also:
-  *  <Element Manager.styl_set> <style> <elemId>
+  * = Returns
+  * +self+
+  *
   **/
   setStyle: function(_name, _value, _cacheOverride) {
     if (this.elemId) {
@@ -623,20 +644,16 @@ HView = HClass.extend({
     return this;
   },
 
-/** method: style
-  *
+/** = Description
   * Returns a style of the main DOM element of the component.
-  * Utilizes <Element Manager>'s cache to perform the action, thus working
-  * efficiently even when called frequently.
+  * Utilizes <Element Manager>'s cache to perform the action.
   *
-  * Parameters:
-  *  _name - The style name (css syntax, eg. 'background-color')
+  * = Parameters
+  * +_name+:: The style name (css syntax, eg. 'background-color')
   *
-  * Returns:
-  *  The style property value (css syntax, eg. 'rgb(255,0,0)')
+  * = Returns
+  * The style property value (css syntax, eg. 'rgb(255,0,0)')
   *
-  * See also:
-  *  <Element Manager.styl_get> <setStyle> <elemId>
   **/
   style: function(_name) {
     if (this.elemId) {
@@ -645,18 +662,18 @@ HView = HClass.extend({
     return '';
   },
   
-/** method: setStyleForPart
-  *
+/** = Description
   * Sets a style for a specified markup element that has been bound to this
   * view.
   *
-  * Parameters:
-  *  _partName - The identifier of the markup element.
-  *  _name - The style name
-  *  _value - The style value
+  * = Parameters
+  *  +_partName+::  The identifier of the markup element.
+  *  +_name+::      The style name
+  *  +_value+::     The style value
   *
-  * See also:
-  *  <setStyle> <styleForPart>
+  * = Returns
+  * +self+
+  *
   **/
   setStyleOfPart: function(_partName, _name, _value, _cacheOverride) {
     if (!this.markupElemIds[_partName]) {
@@ -668,17 +685,17 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: styleForPart
-  *
+/** = Description
   * Returns a style of a specified markup element that has been bound to this
   * view.
   *
-  * Parameters:
-  *  _partName - The identifier of the markup element.
-  *  _name - The style name
+  * = Parameters
+  *  +_partName+::  The identifier of the markup element.
+  *  +_name+::      The style name
   *
-  * See also:
-  *  <style> <SetStyleForPart>
+  * = Returns
+  * The style of a specified markup element.
+  *
   **/
   styleOfPart: function(_partName, _name) {
     if (!this.markupElemIds[_partName]) {
@@ -688,6 +705,18 @@ HView = HClass.extend({
     return ELEM.getStyle(this.markupElemIds[_partName], _name);
   },
   
+/** = Description
+  * Sets a style of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  *  +_partName+::  The identifier of the markup element.
+  *  +_value+::     Value for markup element.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
   setMarkupOfPart: function( _partName, _value ) {
     if (!this.markupElemIds[_partName]) {
       console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
@@ -698,17 +727,17 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: styleForPart
-  *
+/** = Description
   * Returns a style of a specified markup element that has been bound to this
   * view.
   *
-  * Parameters:
-  *  _partName - The identifier of the markup element.
-  *  _name - The style name
+  * = Parameters
+  *  +_partName+::  The identifier of the markup element.
+  *  +_name+::      The style name
   *
-  * See also:
-  *  <style> <SetStyleForPart>
+  * = Returns
+  * The style of a specified markup element.
+  *
   **/
   markupOfPart: function(_partName) {
     if (!this.markupElemIds[_partName]) {
@@ -718,12 +747,12 @@ HView = HClass.extend({
     return ELEM.getHTML(this.markupElemIds[_partName]);
   },
 
-/** method: hide
-  *
+/** = Description
   * Hides the component's main DOM element (and its children).
   *
-  * See also:
-  *  <show> <toggle>
+  * = Returns
+  * +self+
+  *
   **/
   hide: function() {
     if(!this.isHidden) {
@@ -736,12 +765,12 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: show
-  *
+/** = Description
   * Restores the visibility of the component's main DOM element (and its children).
   *
-  * See also:
-  *  <hide> <toggle>
+  * = Return
+  * +self+
+  *
   **/
   show: function() {
     if(this.isHidden) {
@@ -754,12 +783,12 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: toggle
+/** = Description
+  * Toggles between hide and show.
   *
-  * Toggles between <hide> and <show>.
+  * = Returns
+  * +self+
   *
-  * See also:
-  *  <hide> <show>
   **/
   toggle: function() {
     if(this.isHidden) {
@@ -770,14 +799,14 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: remove
-  *
+/** = Description
   * Call this if you need to remove a component from its parent's <views> array without
   * destroying the DOM element itself, making it in effect a view without parent.
   * Useful, for example, for moving a view from one parent component to another.
   *
-  * See also:
-  *  <HApplication.removeView> <addView> <destroy> <die>
+  * = Returns
+  * +self+
+  *
   **/
   remove: function() {
     if( this.parent ) {
@@ -808,17 +837,17 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: die
+/** = Description
   *
   * Deletes the component and all its children.
   * Should normally be called from the parent.
   *
-  * See also:
-  *  <HApplication.die> <addView> <remove> <die> <Element Manager.elem_del>
   **/
   die: function() {
     // hide self, makes destruction seem faster
     this.hide();
+    this.drawn = false;
+    this.stopAnimation();
     // Delete the children first.
     var _childViewId, i;
     while (this.views.length !== 0) {
@@ -833,12 +862,11 @@ HView = HClass.extend({
     }
     this._domElementBindings = [];
     
-    this.drawn = false;
     
     // Remove the DOM object itself
     ELEM.del(this.elemId);
     
-    delete this.rect;
+    this.rect = null;
     var _this = this;
     for( i in _this ){
       _this[i] = null;
@@ -846,17 +874,15 @@ HView = HClass.extend({
     }
   },
   
-  // Idle poller (recursive)
+/** Recursive idle poller. Should be extended if functionality is desired.
+  **/
   onIdle: function() {
     for(var i = 0; i < this.views.length; i++) {
       HSystem.views[this.views[i]].onIdle();
     }
   },
   
-/** method: buildParents
-  *
-  * Used by addView to build a parents array of parent classes.
-  *
+/** Used by addView to build a parents array of parent classes.
   **/
   buildParents: function(_viewId){
     var _view = HSystem.views[_viewId];
@@ -868,25 +894,22 @@ HView = HClass.extend({
     _view.parents.push(this);
   },
   
-/** method: addView
-  *
+/** = Description
   * Adds a sub-view/component to the view.
   *
   * Called from inside the HView constructor and should be automatic for all 
   * components that accept the 'parent' parameter, usually the second argument,
-  * after the <HRect>.
+  * after the HRect.
   *
-  * May also be used to attach a freely floating component (removed with <remove>)
+  * May also be used to attach a freely floating component (removed with remove)
   * to another component.
   *
-  * Parameter:
-  *  _view - Usually *this* inside <HView>-derivate components.
+  * = Parameter
+  * +_view+::   Usually this inside HView derivate components.
   *
-  * Returns:
-  *  The view id.
+  * = Returns
+  * The view id.
   *
-  * See also:
-  *  <HApplication.addView> <remove> <die>
   **/
   addView: function(_view) {
     var _viewId = HSystem.addView(_view);
@@ -898,50 +921,46 @@ HView = HClass.extend({
     return _viewId;
   },
   
-/** method: removeView
-  *
+/** = Description
   * Call this if you need to remove a child view from this view without
   * destroying its element, making it in effect a view without parent.
   * Useful, for example, for moving a view from one parent component to another.
   *
-  * Parameters:
-  *  _viewId - The parent-specific view id. Actually an array index.
+  * = Parameters
+  * +_viewId+::  The parent-specific view id. Actually an array index.
   *
-  * See also:
-  *  <remove> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
+  * = Returns
+  * +self+
+  *
   **/
   removeView: function(_viewId) {
     HSystem.views[_viewId].remove();
     return this;
   },
   
-/** method: destroyView
-  *
+/** = Description
   * Call this if you need to remove a child view from this view, destroying its
   * child elements recursively and removing all DOM elements too.
   *
-  * Parameters:
-  *  _viewId - The parent-specific view id. Actually an array index.
+  * = Parameters
+  *  +_viewId+::  The parent-specific view id. Actually an array index.
   *
-  * See also:
-  *  <remove> <removeView> <addView> <HApplication.removeView> <destroy> <destroyView> <die>
+  * = Returns
+  * +self+
   **/
   destroyView: function(_viewId) {
     HSystem.views[_viewId].die();
     return this;
   },
   
-/** method: bounds
-  *
+/** = Description
   *  Returns bounds rectangle that defines the size and coordinate system
   *  of the component. This should be identical to the rectangle used in
   *  constructing the object, unless it has been changed after construction.
   *
-  * Returns:
+  * = Returns
   *  A new <HRect> instance with identical values to this component's rect.
   *
-  * See also:
-  *  <resizeTo> <resizeBy> <offsetTo> <offsetBy> <HRect> <rect>
   **/
   bounds: function() {
     // Could be cached.
@@ -956,8 +975,7 @@ HView = HClass.extend({
   },
   
   
-/** method: resizeBy
-  *
+/** = Description
   * This method resizes the view, without moving its left and top sides.
   * It adds horizontal coordinate units to the width and vertical units to
   * the height of the view.
@@ -971,12 +989,13 @@ HView = HClass.extend({
   * doesn't have a parent or isn't attached to a window, this method
   * merely alter its frame and bounds rectangle.
   *
-  * Parameters:
-  *  _horizonal - Horizonal units to add to the width (negative units subtract)
-  *  _vertical - Vertical units to add to the height (negative units subtract)
+  * = Parameters
+  *  +_horizonal+::  Horizonal units to add to the width (negative units subtract)
+  *  +_vertical+::   Vertical units to add to the height (negative units subtract)
   *
-  * See also:
-  *  <resizeTo> <offsetTo> <offsetBy> <HRect> <rect> <bounds>
+  * = Returns
+  * +self+
+  *
   **/
   resizeBy: function(_horizontal, _vertical) {
     var _rect = this.rect;
@@ -987,8 +1006,7 @@ HView = HClass.extend({
     return this;
   },
 
-/** method: resizeTo
-  *
+/** = Description
   * This method makes the view width units wide
   * and height units high. This method adjust the right and bottom
   * components of the frame rectangle accordingly.
@@ -1002,12 +1020,13 @@ HView = HClass.extend({
   * doesn't have a parent or isn't attached to a window, this method
   * merely alter its frame and bounds rectangle.
   *
-  * Parameters:
-  *  _width - The new width of the view.
-  *  _height - The new height of the view.
+  * +Parameters+
+  *  +_width+::  The new width of the view.
+  *  +_height+:: The new height of the view.
   *
-  * See also:
-  *  <resizeBy> <offsetTo> <offsetBy> <HRect> <rect> <bounds>
+  * = Returns
+  * +self+
+  *
   **/
   resizeTo: function(_width, _height) {
     var _rect = this.rect;
@@ -1018,8 +1037,7 @@ HView = HClass.extend({
     return this;
   },
 
-/** method: offsetTo
-  *
+/** = Descripion
   * This method moves the view to a new coordinate. It adjusts the 
   * left and top components of the frame rectangle accordingly.
   * 
@@ -1032,15 +1050,15 @@ HView = HClass.extend({
   * doesn't have a parent or isn't attached to a window, this method
   * merely alter its frame and bounds rectangle.
   *
-  * Parameters (using component numeric values):
-  *  _x - The new x-coordinate of the view.
-  *  _y - The new y-coordinate of the view.
+  * = Parameters:
+  *  +_x+::     The new x-coordinate of the view.
+  *  +_y+::     The new y-coordinate of the view.
   *
-  * Parameters (using a <HPoint> instance):
-  *  _point - The new coordinate point of the view.
+  *  +_point+:: The new coordinate point of the view.
   *
-  * See also:
-  *  <resizeBy> <resizeTo> <offsetBy> <HRect.offsetTo> <rect> <bounds>
+  * = Returns
+  * +self+
+  *
   **/
   offsetTo: function() {
     this.rect.offsetTo.apply(this.rect, arguments);
@@ -1048,9 +1066,11 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: moveTo
-  *
-  * Alias method for <offsetTo>
+/** = Description
+  * Alias method for offsetTo.
+  * 
+  * = Returns
+  * +self+
   *
   **/
   moveTo: function() {
@@ -1058,8 +1078,7 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: offsetBy
-  *
+/** = Description
   * This method re-positions the view without changing its size.
   * It adds horizontal coordinate units to the x coordinate and vertical
   * units to the y coordinate of the view.
@@ -1073,12 +1092,13 @@ HView = HClass.extend({
   * doesn't have a parent or isn't attached to a window, this method
   * merely alter its frame and bounds rectangle.
   *
-  * Parameters:
-  *  _horizonal - Horizonal units to change the x coordinate (negative units subtract)
-  *  _vertical - Vertical units to add to change the y coordinate (negative units subtract)
+  * = Parameters
+  *  +_horizonal+::  Horizonal units to change the x coordinate (negative units subtract)
+  *  +_vertical+::   Vertical units to add to change the y coordinate (negative units subtract)
   *
-  * See also:
-  *  <resizeTo> <offsetTo> <resizeBy> <HRect> <rect> <bounds>
+  * = Returns
+  * +self+
+  *
   **/
   offsetBy: function(_horizontal, _vertical) {
     this.rect.offsetBy(_horizontal, _vertical);
@@ -1086,9 +1106,11 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: moveBy
+/** = Description
+  * Alias method for offsetBy.
   *
-  * Alias method for <offsetBy>
+  * = Returns
+  * +self+
   *
   **/
   moveBy: function() {
@@ -1096,12 +1118,12 @@ HView = HClass.extend({
     return this;
   },
 
-/** method: bringToFront
-  *
+/** = Description
   * Brings the view to the front by changing its Z-Index.
   *
-  * See also:
-  *  <sendToBack> <zIndex>
+  * = Returns
+  * +self+
+  *
   **/
   bringToFront: function() {
     if (this.parent) {
@@ -1113,13 +1135,15 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: bringToFrontOf
-  *
+/** = Descripion
   * Brings itself to the front of the given view by changing its Z-Index.
   * Only works on sibling views.
   *
-  * Parameters:
-  *  _view - The view to bring to the front of.
+  * = Parameters
+  *  +_view+::  The view to bring to the front of.
+  *
+  * = Returns
+  * +self+
   *
   **/
   bringToFrontOf: function(_view){
@@ -1131,13 +1155,15 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: sendToBackOf
-  *
+/** = Description
   * Sends itself to the back of the given view by changing its Z-Index.
   * Only works on sibling views.
   *
-  * Parameters:
-  *  _view - The view to send to the back of.
+  * = Parameters
+  *  +_view+::  The view to send to the back of.
+  *
+  * = Returns
+  * +self+
   *
   **/
   sendToBackOf: function(_view){
@@ -1149,9 +1175,11 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: sendBackward
-  *
+/** = Description
   * Sends itself one step backward by changing its Z-Index.
+  *
+  * = Returns
+  * +self+
   *
   **/
   sendBackward: function(){
@@ -1164,12 +1192,11 @@ HView = HClass.extend({
     return this;
   },
   
-/** method: bringForward
-  *
+/** = Description
   * Brings itself one step forward by changing its Z-Index.
   *
-  * Returns:
-  *  Success code. (true for success, false for no success)
+  * = Returns
+  * +self+
   *
   **/
   bringForward: function(){
@@ -1183,12 +1210,12 @@ HView = HClass.extend({
   },
   
 
-/** method: sendToBack
-  *
+/** = Description
   * Sends the view to the back by changing its Z-Index.
   *
-  * See also:
-  *  <bringToFront> <zIndex>
+  * = Returns
+  * +self+
+  *
   **/
   sendToBack: function() {
     if (this.parent) {
@@ -1200,15 +1227,12 @@ HView = HClass.extend({
     return this;
   },
 
-/** method: sendToBack
-  *
+/** = Description
   * Use this method to get the Z-Index of itself.
   *
-  * Returns:
+  * = Returns
   *  The current Z-Index value.
   *
-  * See also:
-  *  <bringToFront> <sendToBack>
   **/
   zIndex: function() {
     if (!this.parent) {
@@ -1218,24 +1242,23 @@ HView = HClass.extend({
     return this.parent.viewsZOrder.indexOf(this.viewId);
   },
   
-/** method: stringWidth
-  *
+/** = Description
   * Measures the characters encoded in length bytes of the string - or,
   * if no length is specified, the entire string up to the null character,
   * '0', which terminates it. The return value totals the width of all the
   * characters in coordinate units; it's the length of the baseline required
   * to draw the string.
   *
-  * Parameters:
-  * _string - The string to measure.
-  * _length - (optional) How many characters to count.
-  * _elemId - (optional) The element ID where the temporary string is created
-  *   in.
+  * = Parameters
+  * +_string+::  The string to measure.
+  * +_length+::  optional, How many characters to count.
+  * +_elemId+::  optional, The element ID where the temporary string is created
+  *              in.
   *
-  * Returns:
+  * = Returns
   * The width in pixels required to draw a string in the font.
   *
-  */
+  **/
   stringSize: function(_string, _length, _elemId, _wrap, _extraCss) {
     if (_length || _length === 0) {
       _string = _string.substring(0, _length);
@@ -1253,23 +1276,25 @@ HView = HClass.extend({
     var _stringElem = ELEM.make(_elemId);
     ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
+    ELEM.flushLoop();
     var _visibleSize=ELEM.getVisibleSize(_stringElem);
     ELEM.del(_stringElem);
     return _visibleSize;
   },
   
+/** Returns the string width
+  **/
   stringWidth: function(_string, _length, _elemId, _extraCss){
     return this.stringSize(_string, _length, _elemId, false, _extraCss)[0];
   },
   
+  /** Returns the string height.
+    **/
   stringHeight: function(_string, _length, _elemId, _extraCss){
     return this.stringSize(_string, _length, _elemId, true, _extraCss)[1];
   },
   
-/** method: pageX
-  *
-  * Returns:
-  *  The X coordinate that has the scrolled position calculated.
+/** Returns the X coordinate that has the scrolled position calculated.
   **/
   pageX: function() {
     var _x = 0;
@@ -1288,10 +1313,7 @@ HView = HClass.extend({
     return _x;
   },
   
-/** method: pageY
-  *
-  * Returns:
-  *  The Y coordinate that has the scrolled position calculated.
+/** Returns the Y coordinate that has the scrolled position calculated.
   **/
   pageY: function() {
     var _y = 0;
@@ -1310,35 +1332,30 @@ HView = HClass.extend({
     return _y;
   },
   
-/** method: pageLocation
-  *
-  * Returns:
-  *  The HPoint that has the scrolled position calculated.
+/** Returns the HPoint that has the scrolled position calculated.
   **/
   pageLocation: function() {
     return new HPoint(this.pageX(), this.pageY());
   },
   
-/** method: optimizeWidth
-  * 
+/** = Description
   * An abstract method that derived classes may implement, if they are able to
   * resize themselves so that their content fits nicely inside.
   * 
-  */
+  **/
   optimizeWidth: function() {
 
   },
   
   
-/** method: invalidatePositionCache
-  * 
+/** = Description
   * Invalidates event manager's element position cache for this view and its
   * subviews. Actual functionality is implemented in HControl.
   * 
-  * See also:
-  *   <HControl.invalidatePositionCache> <EventManager.invalidatePositionCache>
+  * = Returns
+  * +self+
   * 
-  */
+  **/
   invalidatePositionCache: function() {
     for(var i=0; i<this.views.length; i++) {
       HSystem.views[this.views[i]].invalidatePositionCache();
@@ -1347,22 +1364,19 @@ HView = HClass.extend({
   },
   
   
-/** method: bindDomElement
-  * 
+/** = Description
   * Binds a DOM element to the element manager's cache. This is a wrapper for
-  * the <Element Manager.elem_bind> that keeps track of the bound elements and
+  * the Element Manager.elem_bind that keeps track of the bound elements and
   * frees them from the element manager when the view is destroyed.
   * 
-  * Parameters:
-  *   _domElementId - The value of the DOM element's id attribute that is to be
-  *                   bound to the element cache.
+  * = Parameters
+  * +_domElementId+:: The value of the DOM element's id attribute that is
+  *                     to be bound to the element cache.
   * 
-  * Returns:
-  *   The element index id of the bound element.
+  * = Returns
+  * The element index id of the bound element.
   * 
-  * See also: 
-  *   <unbindDomElement> <Element Manager.elem_bind>
-  */
+  **/
   bindDomElement: function(_domElementId) {
     var _cacheId = ELEM.bindId(_domElementId);
     if (_cacheId) {
@@ -1372,19 +1386,16 @@ HView = HClass.extend({
   },
   
   
-/** method: unbindDomElement
-  * 
+/** = Description
   * Removes a DOM element from the element manager's cache. This is a wrapper
   * for the <Element Manager.elem_del>. This is used for safely removing DOM
   * nodes from the cache.
   * 
-  * Parameters:
-  *   _elementId - The id of the element in the element manager's cache that is
-  *                to be removed from the cache.
+  * = Parameters
+  *   +_elementId+:: The id of the element in the element manager's cache 
+  *                  that is to be removed from the cache.
   * 
-  * See also: 
-  *   <bindDomElement> <Element Manager.elem_del>
-  */
+  **/
   unbindDomElement: function(_elementId) {
     var _indexOfElementId = this._domElementBindings.indexOf(_elementId);
     if (_indexOfElementId > -1) {

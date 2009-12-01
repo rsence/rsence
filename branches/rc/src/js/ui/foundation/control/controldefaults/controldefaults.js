@@ -1,53 +1,57 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
-
-/** class: HComponentDefaults
-  *
-  * Define default setting here. Will be used, when no or invalid constructor options are supplied.
-  *
-  * vars: Settable Control-level defaults, override on construction
-  *  label - The visual value of the component
-  **/
-HComponentDefaults = HClass.extend({
+/*** = Description
+  ** Define default setting here. Will be used, when no or invalid constructor
+  ** options are supplied.
+  **
+  ** = Instance variables:
+  ** Settable Control-level defaults, override on construction 
+  ** +label+::  The visual value of the component
+***/
+HControlDefaults = HClass.extend({
   
-  // The visual value of a component:
+/** The default label. A label is the "visual value" of a component that
+  * operates on a "hidden" value.
+  **/
   label:    "",
+
+/** The default initial visibility of the component.
+  **/
   visible:  true,
   
-  // See <HControl.setEvents>.
+/** The default initial event responders to register to a component.
+  * By default no events are enabled.
+  **/
   events:   {},
   
-  // The default value. See <HControl.setValue>
+/** The default initial value of the component.
+  **/
   value:    0,
   
-  // The enabled/disabled flag. See <HControl.setEnabled>
+/** The default initial enabled state of the component.
+  **/
   enabled:  true,
+  
+/** The default initial active state of the component.
+  **/
   active:   false,
   
-  // Value Range -related
-  minValue: -2147483648, // signed 32bit
-  maxValue:  2147483648  // signed 32bit
+/** The default initial minimum value of the component.
+  **/
+  minValue: -2147483648, // negative max of signed 32bit
+  
+/** The default initial maximum value of the component.
+  **/
+  maxValue:  2147483648  // positive max of signed 32bit
   
 });
+
+// Alias for backwards-compatibility.
+HComponentDefaults = HControlDefaults;
 

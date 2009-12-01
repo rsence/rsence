@@ -1,43 +1,57 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
+
+/*** = Description
+  ** An interface to implement for classes that are members of +HValueMatrix+.
+  **
+  ** A HRadioButton is an example of an class that implements
+  ** the HValueMatrixInterface.
+***/
+HValueMatrixInterface = {
+  
+  componentBehaviour: ['view','control','matrix'],
+  
+/** = Description
+  * Standard +HControl+ constructor model.
+  * Passes parameters through to its base class's constructor,
+  * then calls +self.setValueMatrix+.
   *
   **/
-
-HValueMatrixComponentExtension = {
-  componentBehaviour: ['view','control','matrix'],
   constructor: function(_rect, _parent, _options) {
     this.base(_rect, _parent, _options);
     this.setValueMatrix();
   },
+  
+/** = Description
+  * Binds itself to the parent's HValueMatrix instance.
+  *
+  * Creates a valueMatrix member into the parent of itself, if none is present yet.
+  * Sets the +self.value+ to true or false depending on the parent's valueMatrix value.
+  *
+  **/
   setValueMatrix: function(){
     if(this.parent['valueMatrix'] === undefined){
-      this.parent.valueMatrix = new HValueMatrix();
+      this.parent.valueMatrix = HValueMatrix.nu();
     }
     this.valueMatrixIndex = this.parent.valueMatrix.addControl(this);
   },
+  
+/** Sets itself active using the parent's valueMatrix on the click event.
+  **/
   click: function(){
     if (this.parent.valueMatrix instanceof HValueMatrix) {
       this.parent.valueMatrix.setValue( this.valueMatrixIndex );
     }
   },
+  
+/** The destructor makes sure +self+ is released from the parent's valueMatrix
+  * upon destruction.
+  **/
   die: function(){
     if(this['parent']){
       if(this.parent['valueMatrix']){
@@ -48,7 +62,18 @@ HValueMatrixComponentExtension = {
   }
 };
 
+// Alias for backwards compatibility.
+HValueMatrixComponentExtension = HValueMatrixInterface;
+
+/*** = Description
+  ** A HValueMatrix operates a number of components that operate on boolean
+  ** values, like the HRadioButton using a separate value for selecting the
+  ** index of selected items.
+***/
 HValueMatrix = HClass.extend({
+  
+/** The constructor doesn't take parameters.
+  **/
   constructor: function(){
     // An array to hold member components
     this.ctrls = [];
@@ -57,11 +82,16 @@ HValueMatrix = HClass.extend({
     this.valueObj = new HDummyValue();
   },
   
+/** Method for value interfaces, called by the HValue instance when bound.
+  **/
   setValueObj: function(_valueObj){
     this.valueObj = _valueObj;
     this.setValue(_valueObj.value);
   },
   
+/** Method for value interfaces, the +_index+ is the 
+  * index of the item to select.
+  **/
   setValue: function(_index){
     if( _index !== this.value ){
       // Set the previous value object to false (reflects to its container component(s))
@@ -82,6 +112,8 @@ HValueMatrix = HClass.extend({
     }
   },
   
+/** A method for attaching a +HControl+ -derived class to the matrix.
+  **/
   addControl: function(_ctrl) {
     this.ctrls.push(_ctrl);
     var _newIndex = this.ctrls.length-1;
@@ -91,6 +123,8 @@ HValueMatrix = HClass.extend({
     return _newIndex;
   },
   
+/** A method for releasing a +HControl+ -derived class from the matrix.
+  **/
   release: function(_ctrl) {
     var _index = this.ctrls.indexOf(_ctrl);
     if(_index !== -1){

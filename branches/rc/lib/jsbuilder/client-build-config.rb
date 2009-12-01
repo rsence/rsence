@@ -1,25 +1,11 @@
-# -* coding: UTF-8 -*-
-###
-  # Riassence Core -- http://rsence.org/
-  #
-  # Copyright (C) 2007 Juha-Jarmo Heinonen <jjh@riassence.com>
-  #
-  # This file is part of Riassence Core.
-  #
-  # Riassence Core is free software: you can redistribute it and/or modify
-  # it under the terms of the GNU General Public License as published by
-  # the Free Software Foundation, either version 3 of the License, or
-  # (at your option) any later version.
-  #
-  # Riassence Core is distributed in the hope that it will be useful,
-  # but WITHOUT ANY WARRANTY; without even the implied warranty of
-  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  # GNU General Public License for more details.
-  #
-  # You should have received a copy of the GNU General Public License
-  # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  #
-  ###
+##   Riassence Framework
+ #   Copyright 2007 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+
 
 $_INC_NAME = 'js.inc'
 $_DONT_PACK_UNDEFINED = false
@@ -64,8 +50,8 @@ $_PACKAGES = {
     'thememanager',
     'markupview','morphanimation','view',
     'eventresponder','valueresponder',
-    'control',
     'dummyvalue','controldefaults',
+    'control',
     'dyncontrol'
   ],
   
@@ -85,7 +71,9 @@ $_PACKAGES = {
     
     'slider','vslider',
     'progressbar','progressindicator','imageview','splitview','stepper',
-    'validatorview','window','tab'
+    'validatorview','window','tab',
+    
+    'sheet', 'alert_sheet', 'confirm_sheet'
   ],
   
   ## Application to invoke when a client/server error is encountered ("Reload" dialog)
@@ -101,11 +89,13 @@ $_PACKAGES = {
   'datetime' => [
     'datetimevalue',
     'calendar',
-    'timesheet'
+    'timesheet','timesheet_item','timesheet_item_edit'
   ],
   
   'lists' => [
-    'checkboxlist'
+    'listitems',
+    'checkboxlist',
+    'radiobuttonlist'
   ],
   
   'json_renderer' => [
@@ -125,7 +115,7 @@ $_PACKAGES['allinone'] = $_PACKAGES['core'] + $_PACKAGES['controls'] + $_PACKAGE
 
 
 # Themes to include
-$_THEMES = ['default']
+$_THEMES = ['default','bright']
 
 # BASEPATH COMES FROM THE .sh FILE
 $_SRC_PATH = [ File.join(BASEPATH,'src') ]

@@ -1,47 +1,58 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
+/*** = Description
+  ** HMorphAnimation defines morphing animation.
+  **
+  ** HMorphAnimation is implemented by HView as an interface. 
+  ** Its methods define the functionality to zoom from the current geometry to a 
+  ** target geometry with animated intervals.
+***/
 HMorphAnimation = HClass.extend({
   
-/** method: animateTo
-  * 
+/** = Description
   * Moves the view smoothly into another location and/or size. The
   * onAnimationStart event on the view gets called when the animation starts.
   * 
-  * Parameters:
-  *   _obj - An instance of <HPoint> or <HRect>, depending on the desired 
-  *          animation result. When a point is passed, the view is moved in
-  *          that position. When a rect is passed, the view can also be resized
-  *          with or without moving to different coordinates.
-  *   _duration - (optional) The duration of the animation in milliseconds. The
-  *               default duration is 500 ms.
-  *   _fps - (optional) The frame rate for the animation. The default fps is 50.
+  * = Parameters:
+  * +_obj+::      An instance of <HPoint> or <HRect>, depending on the desired 
+  *               animation result. When a point is passed, the view is moved in
+  *               that position. When a rect is passed, the view can also be resized
+  *               with or without moving to different coordinates.
   * 
-  * See also: 
-  *   <stopAnimation> <onAnimationStart> <onAnimationEnd> <onAnimationCancel>
-  */
+  * +_duration+:: _optional_ The duration of the animation in milliseconds. The
+  *               default duration is 500 ms.
+  * 
+  * +_fps+::      _optional_ The frame rate for the animation. The default fps is 50.
+  *
+  * = Returns:
+  * +self+
+  *   
+  * = Usage:
+  * Creates a red view that animates to a new location:
+  *   HView.extend({
+  *     onAnimationEnd: function(){
+  *       this.die();
+  *     }
+  *   }).nu(
+  *     [ 0, 0, 300, 300 ],
+  *     HApplication.nu()
+  *   ).setStyle(
+  *     'background-color', 'red'
+  *   ).animateTo(
+  *     HRect.nu( 300, 300, 500, 500 )
+  *   );
+  *   
+  **/
   animateTo: function(_obj, _duration, _fps) {
-    
+    if(!this.drawn){
+      return this;
+    }
     // Redirect the method call to _animateTo(HRect).
     if(_obj instanceof HPoint) {
       var _rect = new HRect(_obj, _obj);
@@ -58,16 +69,13 @@ HMorphAnimation = HClass.extend({
   },
   
   
-/** method: stopAnimation
-  * 
+/** = Description
   * Stops the current animation for this view. If the view is not being
   * animated, this method has no effect.  The onAnimationEnd event on the view
   * gets called when the animation finishes (reaches the end position/size), but
   * onAnimationCancel gets called when this method is called while the animation
   * is still in action.
-  * 
-  * See also: 
-  *   <animateTo> <onAnimationStart> <onAnimationEnd> <onAnimationCancel>
+  *  
   */
   stopAnimation: function() {
     if (this._animateInterval) {
@@ -119,6 +127,9 @@ HMorphAnimation = HClass.extend({
       // its destination.
       this._animateInterval = window.setInterval(
         function() {
+          if(!_that){
+            return;
+          }
           _that._animateStep({
             startTime: _startTime,
             duration: _duration,
@@ -187,40 +198,41 @@ HMorphAnimation = HClass.extend({
     return this;
   },
   
-  
-/** event: onAnimationStart
-  *
+/** = Description
   * Extend the onAnimationStart method, if you want to do something special 
   * when this view starts animating.
   *
-  * See also:
-  *  <onAnimationEnd> <onAnimationCancel>
+  * = Usage:
+  *  HView.extend({
+  *     onAnimationStart: function() {
+  *       this.setStyle('background-color','green')
+  *     }, 
+  *     onAnimationEnd: function() {
+  *       this.setStyle('background-color','grey')}
+  *     }).nu(
+  *       [0,0,300,300],
+  *       HApplication.nu()
+  *     ).setStyle(
+  *       'background-color','blue'
+  *     ).animateTo(
+  *       HRect.nu(
+  *         300,300,700,700
+  *       )
+  *     );
+  *
   **/
   onAnimationStart: function() {
     
   },
   
-  
-/** event: onAnimationEnd
-  *
-  * Extend the onAnimationEnd method, if you want to do something special 
+/** Extend the onAnimationEnd method, if you want to do something special 
   * when an animation on this view is finished.
-  *
-  * See also:
-  *  <onAnimationStart> <onAnimationCancel>
   **/
   onAnimationEnd: function() {
     
   },
   
-  
-/** event: onAnimationCancel
-  *
-  * Extend the onAnimationCancel method, if you want to do something special 
-  * when an animation on this view gets cancelled.
-  *
-  * See also:
-  *  <onAnimationStart> <onAnimationEnd>
+/** Extend this method if functionality is desired upon cancellation of animation.
   **/
   onAnimationCancel: function() {
     

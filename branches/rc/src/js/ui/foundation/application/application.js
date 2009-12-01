@@ -1,63 +1,52 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
 
-/** class: HApplication
-  *
-  * *Simple application template.*
-  *
-  * Depends on <HSystem>
-  *
-  * HApplication instances are good namespaces to bind your client-side logic to.
-  * Feel free to extend HApplication to suit your needs. The primary default
-  * purpose is root-level component (<HView>) management and being the
-  * root controller for <onIdle> events.
-  *
-  * vars: Instance variables
-  *  type - '[HApplication]'
-  *  views - A list of child components bound to it through <HView>
-  *  parent - Usually <HSystem>
-  *  parents - An array containing parents, usually just <HSystem>
-  *  appId - The unique id of the app
-  *  isBusy - A flag that is true when the app is doing <onIdle> events or stopped.
-  *
-  * See Also:
-  *  <HSystem> <HView>
-  *
-  * Usage example:
-  *  > var myApp = new HApplication(10);
-  *  > var mySlider = new HSlider(new HRect(100,100,300,118),myApp,1.0,0.0,200.0);
-  *  > mySlider.draw();
-  *  > myApp.die();
-  **/
+/*** = Description
+  **
+  ** Simple application template.
+  **
+  ** Depends on <HSystem>
+  **
+  ** HApplication instances are good namespaces to bind your client-side logic to.
+  ** Feel free to extend HApplication to suit your needs. The primary default
+  ** purpose is root-level component (<HView>) management and being the
+  ** root controller for <onIdle> events.
+  **
+  ** = Instance members
+  ** +views+::    A list of child component ids bound to it via +HView+ and +HSystem+
+  ** +parent+::   Usually +HSystem+.
+  ** +parents+::  An array containing parent instances. In this case, just +HSystem+.
+  ** +isBusy+::   A flag that is true when the app is doing <onIdle> events or stopped.
+  **
+  ** = Usage
+  ** Creates the +HApplication+ instance +myApp+, makes a +HWindow+ instance
+  ** as its first view.
+  **   var myApp = HApplication.nu(10,'Sample Application');
+  **   HWindow.nu( [10,10,320,200], myApp, {label:'myWin'} );
+  **
+***/
 HApplication = HClass.extend({
+  
   componentBehaviour: ['app'],
-/** constructor: constructor
+  
+/** = Description
   *
-  * Parameter (optional):
-  *  _priority - An integer value (in ms) used for <onIdle> polling events.
+  * = Parameters
+  * All parameters are optional.
+  *
+  * +_priority+::   The priority, a number between 1 and Infinity. Smaller
+  *                 number means higher priority, affects onIdle polling.
+  *
+  * +_label+::      A label for the application; for process managers.
+  *
   **/
-  constructor: function(_priority,_label){
+  constructor: function(_priority, _label){
     
     // Special null viewId for HApplication instances,
     // they share a system-level root view; the document object
@@ -84,37 +73,36 @@ HApplication = HClass.extend({
     }
   },
   
-/** method: buildParents
+/** = Description
+  * Used by addView to build a +self.parents+ array of parent classes.
   *
-  * Used by addView to build a parents array of parent classes.
-  *
+  * = Parameters
+  * +_viewId+::   The target view's ID.
   **/
   buildParents: function(_viewId){
-    var _view = HSystem.views[_viewId];
+    var _view = HSystem.views[_viewId],
+        i = 0;
     _view.parent = this;
     _view.parents = [];
-    for(var _parentNum = 0; _parentNum < this.parents.length; _parentNum++) {
-      _view.parents.push(this.parents[_parentNum]);
+    for(; i < this.parents.length; i++) {
+      _view.parents.push(this.parents[i]);
     }
     _view.parents.push(this);
   },
   
-/** method: addView
+/** = Description
+  * Adds a view to the app, +HView+ defines an indentical structure for subviews.
   *
-  * Adds a view to the app, <HView> defines an indentical structure for subviews.
+  * Called from inside the +HView+ constructor and should be automatic for all 
+  * components that accept the +_parent+ parameter, usually the second argument,
+  * after the +HRect+ instance.
   *
-  * Called from inside the HView constructor and should be automatic for all 
-  * components that accept the 'parent' parameter, usually the second argument,
-  * after the <HRect>.
+  * = Parameters
+  * +_view+::   Usually +this+ inside +HView+ -derived components.
   *
-  * Parameter:
-  *  _view - Usually *this* inside <HView>-derivate components.
+  * = Returns
+  * The view ID.
   *
-  * Returns:
-  *  The parent view specific view id.
-  *
-  * See also:
-  *  <HView.addView> <removeView> <destroyView> <die>
   **/
   addView: function(_view) {
 
@@ -127,68 +115,62 @@ HApplication = HClass.extend({
     return _viewId;
   },
   
-/** method: removeView
+/** = Description
+  * Removes the view of the given +_viewId+.
   *
   * Call this if you need to remove a child view from its parent without
-  * destroying its element, making it in effect a view without parent.
-  * Useful, for example, for moving a view from one parent component to another.
+  * destroying its view, making it in effect a view without parent.
+  * Useful, for example, for moving a view from one parent component to
+  * another when dragging a component to a droppable container.
   *
-  * Parameters:
-  *  _viewId - The parent-specific view id. Actually an array index.
+  * = Parameters
+  * +_viewId+::   The view ID.
   *
-  * See also:
-  *  <addView> <HView.addView> <destroyView> <die>
   **/
   removeView: function(_viewId){
     HSystem.views[_viewId].remove();
   },
 
-/** method: destroyView
+/** = Description
+  * Removes and destructs the view of the given +_viewId+.
   *
-  * Call this if you need to remove a child view from its parent, destroying its
-  * child elements recursively and removing all DOM elements too.
+  * Call this if you need to remove a child view from its parent, destroying
+  * its child views recursively and removing all of the DOM elements too.
   *
-  * Parameters:
-  *  _viewId - The parent-specific view id. Actually an array index.
+  * = Parameters
+  * +_viewId+::   The view ID.
   *
-  * See also:
-  *  <addView> <HView.addView> <removeView> <die>
   **/
   destroyView: function(_viewId){
     HSystem.views[_viewId].die();
   },
   
-/** method: die
+/** = Description
+  * The destructor of the +HApplication+ instance.
   *
-  * Stops this application and destroys all the views currently in this
-  * application.
+  * Stops this application and destroys all its views recursively.
   *
-  * See also:
-  *  <HSystem.killApp> <destroyView>
   **/
   die: function(){
     HSystem.killApp(this.appId, false);
   },
   
   
-/** method: destroyAllViews
+/** = Description
+  * Destructs all views but doesn't destroy the +HApplication+ instance.
   *
-  * Deletes all the views added to this application but doesn't stop the
+  * Destroys all the views added to this application but doesn't destroy the
   * application itself.
   *
-  * See also:
-  *  <addView> <HView.addView> <removeView> <destroyView> <die>
   **/
   destroyAllViews: function(){
-    var i, _viewId;
-    for (i = 0; i < this.views.length; i++) {
-      _viewId = this.views[i];
-      HSystem.views[_viewId].die();
+    for(var i = 0; i < this.views.length; i++) {
+      HSystem.views[this.views[i]].die();
     }
   },
   
   
-  // calls the idle method of each view
+  /* Calls the idle method of each view. Don't extend this method. */
   _pollViews: function(){
     var i, _viewId, _view;
     for(i=0;i<this.views.length;i++){
@@ -200,11 +182,8 @@ HApplication = HClass.extend({
     }
   },
   
-/** method: startIdle
-  *
-  * Gets called by HSystem, is a separate method to make onIdle() extensions more failure resistant.
-  * Do not override or change!
-  *
+/** Gets called by +HSystem+. It makes +onIdle+ extensions more failure
+  * resistant. Do not extend.
   **/
   _startIdle: function(){
     HSystem.busyApps[ this.appId ] = true;
@@ -213,15 +192,13 @@ HApplication = HClass.extend({
     HSystem.busyApps[ this.appId ] = false;
   },
   
-/** event: onIdle
+/** = Description
+  * The receiver of the +onIdle+ "poll event". The app priority defines the interval.
   *
   * Extend this method, if you are going to perform regular actions in a app.
-  * Polled with the 'priority' interval timer given to <start>.
   *
-  * *Very useful for 'slow, infinite loops' that don't take all the client browser machine CPU cycles.*
+  * Intended for "slow infinite loops".
   *
-  * See also:
-  *  <start> <renice> <HSystem.reniceApp>
   **/
   onIdle: function(){
     /* Your code here */

@@ -1,7 +1,6 @@
 .timesheet_hours_col {
   position: absolute;
-  top: 11px; left: 0px; width: 32px; height: 576px;
-  line-height: 24px;
+  top: 0px; left: 0px; width: 32px;
   font-family: Arial, sans-serif;
   font-size: 11px;
   color: #666;
@@ -10,14 +9,14 @@
 }
 .timesheet_hours_row {
   position: absolute;
-  height: 24px; left: 0px; width: 32px;
+  left: 0px; width: 32px;
 }
 .timesheet_lines_col {
   position: absolute;
   top: 0px; left: 36px; right: 0px;
   border-left: 1px solid #aaa;
   border-bottom: 1px solid #aaa;
-  height: 576px;
+  border-right: 1px solid #aaa;
 }
 .timesheet_lines_row0,
 .timesheet_lines_row1 {

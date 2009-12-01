@@ -1,27 +1,12 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
-/*** class: HSlider
+/*** = Description
   **
   ** HSlider is a control unit that enables the user to choose a value in a range of values. 
   ** Sliders support both dragging the handle and clicking the mouse anywhere on the slider 
@@ -32,28 +17,62 @@
   ** A typical slider is a drag-able thumb along vertical or horizontal line. 
   ** Slider view or theme can be changed; the helmiTheme is used by default.
   **
-  ** vars: Instance variables
-  **  type - '[HSlider]'
-  **  value - Numeric value currently set to this object.
-  **  minValue - The minimum value that can be set to this object.
-  **  maxValue - The maximum value that can be set to this object.
+  ** = Instance variables
+  ** +value+::      Numeric value currently set to this object.
+  ** +minValue+::   The minimum value that can be set to this object.
+  ** +maxValue::    The maximum value that can be set to this object.
   **
-  ** Extends:
-  **  <HControl>
-  **
-  ** See also:
-  **  <HControl> <HVSlider>
-  ***/
+***/
 HSlider = HControl.extend({
   
   componentName: "slider",
   
-/** constructor: constructor
+  controlDefaults: (HControlDefaults.extend({
+      // The smallest allowed value
+      minValue: 0,
+      
+      // The biggest allowed value
+      maxValue: 1,
+      
+      // Interval in milliseconds for repeat
+      repeatDelay: 300,
+      
+      // Interval in milliseconds for repeat
+      repeatInterval: 50,
+      
+      // Inverse Scrollwheel axis:
+      // As there is only one scrollwheel event, sideways
+      // scrolling doesn't work logically for horizonal
+      // scrollbars by default, so set this to true to
+      // have horizonal sliders work logically
+      // with sideways scrolling, where supported.
+      inverseAxis: false
+  })),
+  
+/** = Description
+  * Like the +HControl.constructor+, except:
+  * Sets the default event responders to:
+  * - +mouseDown+: +false+
+  * - +mouseup+: +false+
+  * - +draggable+: +true+
+  * - +keyDown+: +true+
+  * - +keyUp+: +true+
+  * - +mouseWheel+: +true+
+  * Uses the following extra attributes to +_options+:
+  * +minValue+::  The smallest value the slider can set. Defaults to 0.
   *
-  * Parameters:
-  *   _rect - An <HRect> object that sets the position and dimensions of this control.
-  *   _parent - The parent view that this control is to be inserted in.
-  *   _options - (optional) All other parameters. See <HComponentDefaults>.
+  * +maxValue+::  The largest value the slider can set. Defaults to 1.
+  *
+  * +value+::     The the initial position of the slider. Defaults to 0.
+  *
+  * +repatDelay+::  The key repetition initial delay when changing the slider
+  *                 with cursor keys. Defaults to 300 (ms)
+  *
+  * +repeatInterval+::  The key repetition interval when changing the slider
+  *                     with cursor keys. Defaults to 50 (ms)
+  *
+  * +inverseAxis+::  Inverts the axis of the slider. Defaults to false.
+  *
   **/
   constructor: function(_rect,_parent,_options) {
     
@@ -74,36 +93,6 @@ HSlider = HControl.extend({
       };
     }
     
-    // Makes sure some other optional options are at some sane defaults
-    _options = HClass.extend({
-      
-      // The smallest allowed value
-      minValue: 0,
-      
-      // The biggest allowed value
-      maxValue: 1,
-      
-      // Interval in milliseconds for repeat
-      repeatDelay: 300,
-      
-      // Interval in milliseconds for repeat
-      repeatInterval: 50,
-      
-      // Inverse Scrollwheel axis:
-      // As there is only one scrollwheel event, sideways
-      // scrolling doesn't work logically for horizonal
-      // scrollbars by default, so set this to true to
-      // have horizonal sliders work logically
-      // with sideways scrolling, where supported.
-      inverseAxis: false
-      
-    }).extend(
-      
-      // Include user-specified overrides to options
-      _options
-      
-    ).nu(); // new instance of the HClass as _options
-    
     if(this.isinherited){
       this.base(_rect,_parent,_options);
     }
@@ -121,6 +110,7 @@ HSlider = HControl.extend({
     if(!this.isinherited){
       this.draw();
     }
+    
   },
   
   
@@ -136,15 +126,16 @@ HSlider = HControl.extend({
   **/
   setValue: function(_value) {
     if (_value < this.minValue) {
-      var _value = this.minValue;
+      _value = this.minValue;
     }
     if (_value > this.maxValue) {
-      var _value = this.maxValue;
+      _value = this.maxValue;
     }
     this.base(_value);
     if(this._thumbElemId){
       this.drawThumbPos();
     }
+    return this;
   },
   
 /** method: draw
@@ -352,10 +343,11 @@ HSlider = HControl.extend({
   
   // private method
   _value2px: function() {
+    var _pxrange;
     if(this._isVertical){
-      var _pxrange  = this.rect.height - this.thumbSize;
+      _pxrange  = this.rect.height - this.thumbSize;
     } else {
-      var _pxrange  = this.rect.width - this.thumbSize;
+      _pxrange  = this.rect.width - this.thumbSize;
     }
     var _intvalue = _pxrange * (
       (this.value-this.minValue) / (this.maxValue - this.minValue)
@@ -363,17 +355,18 @@ HSlider = HControl.extend({
     if ( this._isVertical ) {
       _intvalue = _pxrange - _intvalue;
     }
-    var _pxvalue = parseInt(_intvalue, 10)+'px';
+    _pxvalue = parseInt(_intvalue, 10)+'px';
     return _pxvalue;
   },
   
   
   // private method
   _pos2value: function(_mousePos) {
+    var _pxrange;
     if(this._isVertical){
-      var _pxrange  = this.rect.height - this.thumbSize;
+      _pxrange  = this.rect.height - this.thumbSize;
     } else {
-      var _pxrange  = this.rect.width - this.thumbSize;
+      _pxrange  = this.rect.width - this.thumbSize;
     }
     _mousePos -= (this.thumbSize/2);
     if(_mousePos < 0){
@@ -408,13 +401,13 @@ HSlider = HControl.extend({
     }
     _orientation = _orientation.toLowerCase();
     if(_orientation === this.prevOrientation){
-      return false;
+      return;
     }
     if(this['markupElemIds']===undefined){
-      return false;
+      return;
     }
     if(this.markupElemIds['control']===undefined){
-      return false;
+      return;
     }
     var _toggleCSS = this.toggleCSSClass,
         _ctrlId    = this.markupElemIds.control,

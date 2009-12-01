@@ -1,24 +1,11 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2009 Juha-Jarmo Heinonen <jjh@riassence.com>
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2009 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
+
 
 HCalendar = HControl.extend({
   componentName: 'calendar',
@@ -95,7 +82,7 @@ HCalendar = HControl.extend({
         row_height = Math.floor((this.rect.height-1-35)/6),
         week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(this.rect.width-3)+'px;height:'+row_height+'px;top:','px">'],
         week_html_suf = '</div>',
-        col_html_pre = ['<a href="javascript:HSystem.views['+this.viewId+'].setValue(',');" class="calendar_weeks_week_col','" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:','px">'],
+        col_html_pre = ['<a href="javascript:void(HSystem.views['+this.viewId+'].setValue(','));" class="calendar_weeks_week_col','" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:','px">'],
         col_html_suf = '</a>',
         col_week_pre = '<div class="calendar_weeks_week_col_wk" style="width:'+column_width+'px;height:'+row_height+'px;line-height:'+row_height+'px;left:0px">',
         col_week_suf = '</div>',

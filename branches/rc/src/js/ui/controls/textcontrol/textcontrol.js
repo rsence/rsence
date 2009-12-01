@@ -1,25 +1,10 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
 /*** class: HTextControl
   **
@@ -64,28 +49,34 @@ HTextControl = HControl.extend({
   drawSubviews: function(){
     if(this['markupElemIds']!==undefined){
       if(this.markupElemIds['label']!==undefined) {
-        var _size   = ELEM.getVisibleSize( this.elemId ),
-            _width  = _size[0],
-            _height = _size[1],
-            _input  = this.markupElemIds.value,
+        var _input  = this.markupElemIds.value,
             _label  = this.markupElemIds.label;
         if(BROWSER_TYPE.firefox){
-          ELEM.setStyle(_input,'padding-top','0px');
+          if(this.componentName === 'textarea'){
+            ELEM.setStyle(_input,'padding-top','0px');
+          }
+          else {
+            ELEM.setStyle(_input,'margin-top','1px');
+          }
           ELEM.setStyle(_input,'padding-left','0px');
           ELEM.setStyle(_label,'left','2px');
-          ELEM.setStyle(_label,'top','2px');
+          ELEM.setStyle(_label,'top','0px');
           ELEM.setStyle(_label,'right','2px');
           ELEM.setStyle(_label,'bottom','2px');
         }
-        else if(BROWSER_TYPE.ie7){
+        else if(BROWSER_TYPE.ie){
+          ELEM.flushLoop();
+          var _size   = ELEM.getVisibleSize( this.elemId ),
+              _width  = _size[0],
+              _height = _size[1];
           ELEM.setStyle(_input,'left','2px');
-          ELEM.setStyle(_input,'top','2px');
+          ELEM.setStyle(_input,'top','1px');
           ELEM.setStyle(_input,'padding-top','0px');
           ELEM.setStyle(_input,'padding-left','0px');
           ELEM.setStyle(_input,'padding-right','8px');
           ELEM.setStyle(_input,'padding-bottom','0px');
-          ELEM.setStyle(_input,'width',(_width-4)+'px');
-          ELEM.setStyle(_input,'height',(_height-4)+'px');
+          ELEM.setStyle(_input,'width',(_width-10)+'px');
+          ELEM.setStyle(_input,'height',(_height-2)+'px');
           ELEM.setStyle(_label,'left','0px');
           ELEM.setStyle(_label,'top','0px');
           ELEM.setStyle(_label,'right','0px');
@@ -111,6 +102,7 @@ HTextControl = HControl.extend({
         }
       }
     }
+    this.setEnabled(this.enabled);
   },
   
   setStyle: function(_name, _value, _cacheOverride) {
@@ -135,15 +127,17 @@ HTextControl = HControl.extend({
     this.base(_flag);
     if(this['markupElemIds']===undefined){return;}
     if(this.markupElemIds.value) {
-      ELEM.setAttr(this.markupElemIds.value,'disabled',!this.enabled);
+      ELEM.get(this.markupElemIds.value).disabled = !this.enabled;
     }
   },
   hasTextFocus: false,
   textFocus: function(){
     this.hasTextFocus = true;
+    return true;
   },
   textBlur: function(){
     this.hasTextFocus = false;
+    return true;
   },
   refreshValue: function(){
     if(this.markupElemIds){
@@ -155,9 +149,12 @@ HTextControl = HControl.extend({
   validateText: function(_value){
     return _value;
   },
+  getTextFieldValue: function(){
+    return ELEM.get(this.markupElemIds.value).value;
+  },
   textEnter: function(){
     if(this['markupElemIds']===undefined){return;}
-    var _value = this.validateText(ELEM.get(this.markupElemIds.value).value);
+    var _value = this.validateText( this.getTextFieldValue() );
     if(_value !== this.value.toString()){
       this.setValue(_value);
     }

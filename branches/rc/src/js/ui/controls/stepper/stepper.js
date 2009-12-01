@@ -1,25 +1,10 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
 
 /*** class: HStepper
   **
@@ -32,24 +17,7 @@ HStepper = HControl.extend({
   
   componentName: "stepper",
   
-  constructor: function(_rect,_parent,_options) {
-    
-    // Makes sure there is at least an empty options block
-    if (!_options) {
-      _options = {};
-    }
-    
-    // Makes sure the default events for HStepper are enabled
-    if (!_options.events) {
-      _options.events = {
-        mouseDown:  true,
-        keyDown:    true,
-        mouseWheel: true
-      };
-    }
-    
-    // Makes sure some other optional options are at some sane defaults
-    _options = HClass.extend({
+  controlDefaults: (HControlDefaults.extend({
       
       // The smallest allowed value
       minValue: 0,
@@ -66,12 +34,23 @@ HStepper = HControl.extend({
       // Boolean to control wrap-around behaviour
       wrapAround: false
       
-    }).extend(
-      
-      // Include user-specified overrides to options
-      _options
-      
-    ).nu(); // new instance of the HClass as _options
+  })),
+  
+  constructor: function(_rect,_parent,_options) {
+    
+    // Makes sure there is at least an empty options block
+    if (!_options) {
+      _options = {};
+    }
+    
+    // Makes sure the default events for HStepper are enabled
+    if (!_options.events) {
+      _options.events = {
+        mouseDown:  true,
+        keyDown:    true,
+        mouseWheel: true
+      };
+    }
     
     this.base( _rect, _parent, _options );
     

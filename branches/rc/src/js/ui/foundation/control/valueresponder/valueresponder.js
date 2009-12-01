@@ -1,37 +1,29 @@
-/**
-  * Riassence Core -- http://rsence.org/
-  *
-  * Copyright (C) 2008 Juha-Jarmo Heinonen <jjh@riassence.com>
-  * Copyright (C) 2006 Helmi Technologies Inc.
-  *
-  * This file is part of Riassence Core.
-  *
-  * Riassence Core is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * Riassence Core is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-  **/
+/*   Riassence Framework
+ *   Copyright 2006 Riassence Inc.
+ *   http://riassence.com/
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this software package. If not, contact licensing@riassence.com
+ */
+
+
+/*** = Description
+  ** Defines a minimal +HValue+ responder interface.
+  ** It's implemented by default by +HControl+.
+***/
 HValueResponder = HClass.extend({
   
-/** method: setValueObj
+/** = Description
+  * Binds an HValue compatible instance to the component's valueObj. Also 
+  * calls +self.setValue+. It should not be called from user code, instead
+  * use the +HValue+ instance method +bind+.
   *
-  * Binds an <HValue>-compatible instance to the component's valueObj. Also 
-  * calls <setValue>. It should not be called from user code, instead use <HValue.bind>.
+  * = Parameter
+  * +_aValueObj+::  The HValue instance object to bind.
   *
-  * Parameter:
-  *  _aValueObj - The new value object.
+  * = Returns
+  * +self+
   *
-  * See also:
-  *  <setValue> <setValueRange> <HValue.bind> <HValue.unbind> <HValueManager>
   **/
   setValueObj: function(_valueObj) {
     this.valueObj = _valueObj;
@@ -39,31 +31,47 @@ HValueResponder = HClass.extend({
     return this;
   },
   
+/** = Description
+  * Checks, if the value given as parameter differs from +self.value+.
+  *
+  * = Parameters
+  * +_value+::  The value to be tested.
+  *
+  * = Returns
+  * A boolean true (different) or false (same).
+  *
+  **/
   valueDiffers: function(_value){
     return (COMM.Values.encode(_value) !== COMM.Values.encode(this.value));
   },
-
   
-/** method: setValue
+/** = Description
+  * Assigns the object a new value.
   *
-  * Assigns the object a new value. Extend it, if your component needs to do
-  * something whenever the value changes.
+  * Extend it, if your component needs to do validation of the new value.
   *
-  * Parameter:
-  *  _value - The new value. Allowed values depend on the component type 
-  *           and other usage of the bound <HValue> instance.
+  * For +HControl+ instances, extend +refreshValue+ to do something when
+  * the +self.value+ has been set.
   *
-  * See also:
-  *  <setValueRange> <HValue> <HValueManager> <refresh>
+  * = Parameter
+  * +_value+::  The new value. Allowed values depend on the component type
+  *             and other usage of the bound +HValue+ instance +self.valueObj+.
+  *
+  * = Returns
+  * +self+
   *
   **/
   setValue: function(_value) {
-    if(_value === undefined){return;}
-    if(!this.valueObj){return;}
-    if(this.valueDiffers(_value)) {
+    if(_value !== undefined && this['valueObj'] && this.valueDiffers(_value)) {
+      var _valueManager = COMM.Values;
       this.value = _value;
-      this.valueObj.set(_value);
-      this.refresh();
+      if( _valueManager._builtins.indexOf( _valueManager.type(_value) ) === -1 ){
+        this.valueObj.set( _valueManager.clone( _value ) );
+      }
+      else {
+        this.valueObj.set( _value );
+      }
+      (this['refresh'] !== undefined) && (typeof this.refresh === 'function') && this.refresh();
     }
     return this;
   }
