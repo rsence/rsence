@@ -37,10 +37,10 @@ automated.
 
 The Riassence Framework Server is a thin application server with a simple, easy
 plugin-based architecture that essentially receives high-level session- and
-data-related events from the client. The RSence Client is a powerful, event
-powered GUI application framework with advanced operating system like features
-and a uniform developer-friendly API that also handles most of the data
-routing for you automatically. Most of the time both the user and developer
+data-related events from the client. The Riassence Framework Client is a powerful,
+(mostly) event driven GUI application framework with advanced operating system
+like features and a uniform developer-friendly API that also handles most of the
+data routing for you automatically. Most of the time both the user and developer
 can easily forget the fact that the Riassence Framework -powered applications
 run on the web.
 
