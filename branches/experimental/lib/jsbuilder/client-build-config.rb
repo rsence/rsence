@@ -74,7 +74,7 @@ $_PACKAGES = {
     'uploader',
     
     'slider','vslider',
-    'progressbar','progressindicator','imageview','splitview','stepper',
+    'progressbar','progressindicator','imageview','stepper',
     'validatorview','window','tab',
     
     'sheet', 'alert_sheet', 'confirm_sheet'
