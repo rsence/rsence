@@ -14,6 +14,12 @@ INSTALLATION
 
  - Install the most recent version of [http://www.macports.org/ MacPorts]
 
+ - Update rubygems to the most recent version, unless you do it regularly anyway:
+ 
+---
+  sudo gem update --system
+  sudo gem update
+---
 
 1.1.1 Mac OS X 10.4 and 10.5
 
@@ -22,7 +28,7 @@ INSTALLATION
 ---
   sudo port install ruby +thread_hooks
   sudo port install rb-rubygems
-  sudo port install sqlite3
+  sudo port install sqlite3-ruby
 ---
 
 
@@ -40,7 +46,7 @@ INSTALLATION
  - Install these packages:
 
 ---
-  sudo apt-get install build-essential ruby-full sqlite3 rubygems rake
+  sudo apt-get install build-essential ruby-full sqlite3-ruby rubygems rake
 ---
 
 
@@ -76,7 +82,7 @@ These ruby gems are required:
 
  - Required by persistent session storage:
 
-   - sqlite
+   - sqlite3-ruby
 
    - sequel
 
@@ -280,6 +286,12 @@ Riassence Client Framework.
  - More verbose log output is generated
 
 
+4.7. More command-line options
+
+---
+  rsence/bin/launch.rb help
+---
+
 
 5. PLUGIN DEPLOYMENT
 
@@ -326,7 +338,7 @@ If you followed, the previous steps, you are ready to deploy some software.
 6.1.1. Create a plugin bundle
 
 
- - Create a directory named "hello_world" inside the "rsence/server/plugins" directory.
+ - Create a directory named "hello_world" inside the "rsence/plugins" directory.
 
  - Create a ruby source file inside the "hello_world" directory named "hello_world.rb".
 
@@ -356,4 +368,6 @@ HelloWorld.new.register('hello_world')
 
 ---
 
+6.2. The Visitor Counter Plugin bundle
 
+Read the tutorial at: http://rsence.org/trac/wiki/Tutorials/VisitorCounter

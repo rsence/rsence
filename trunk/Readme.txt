@@ -1,6 +1,6 @@
 
-  Riassence Framework 1.0                                           2009/10/07
-  http://rsence.org/
+  Riassence Framework #{version}                                          #{date}
+  http://riassence.org/
 
 
 Free License: GPL
@@ -12,8 +12,8 @@ Commercial support and non-GPL licensing plans available at:
 
 
 Community support:
- - http://rsence.org/
- - IRC: #rsence on the IRCNet network
+ - http://riassence.org/
+ - IRC: #rsence on the IRCNet and FreeNode networks
 
 
 Installation
@@ -21,9 +21,9 @@ Installation
 For installation instructions, read the Install.txt document.
 
 
-What's new in 1.1?
+What's new?
 
-To see what changed between 1.0 and 1.1, read the Changes.txt document.
+To see what changed between the release versions, read the Changes.txt document.
 
 
 Introduction
@@ -35,12 +35,12 @@ and the interaction layer. Everything in the middle is abstracted as far as
 possible. Essentially all difficult, error-prone and boring tasks are
 automated.
 
-The RSence Server is a thin application server with a simple, easy
+The Riassence Framework Server is a thin application server with a simple, easy
 plugin-based architecture that essentially receives high-level session- and
-data-related events from the client. The RSence Client is a powerful, event
-powered GUI application framework with advanced operating system like features
-and a uniform developer-friendly API that also handles most of the data
-routing for you automatically. Most of the time both the user and developer
+data-related events from the client. The Riassence Framework Client is a powerful,
+(mostly) event driven GUI application framework with advanced operating system
+like features and a uniform developer-friendly API that also handles most of the
+data routing for you automatically. Most of the time both the user and developer
 can easily forget the fact that the Riassence Framework -powered applications
 run on the web.
 
@@ -67,7 +67,7 @@ Some highlights:
    features.
  * Automatic event-based data value management.
  * Wide cross-browser support; most browsers released within ten years are
-   fully supported, including mobile browsers like iPhone/iPod Touch Safari
-   and Symbian S60.
+   fully supported, including mobile browsers like iPhone/iPod Touch Safari,
+   the Symbian S60 default web browser and Opera Mobile.
  * Active, ongoing development since early 2006.
 
