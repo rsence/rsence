@@ -1,0 +1,8 @@
+:client_time:
+  :value: 0
+  :restore_default: false
+:location_href:
+  :value: ''
+  :restore_default: true
+  :responders:
+  - { :plugin: main, :method: url_responder }

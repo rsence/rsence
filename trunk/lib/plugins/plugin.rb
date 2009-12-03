@@ -22,13 +22,16 @@ class Plugin
   def initialize
     @inited = false
     @names  = []
+    @values = false
   end
   
   
   ## Extendables
   
   # Extend to do any initial configuration
+  # By default it calls init_values
   def init
+    init_values
   end
   
   # Extend to handle non-specific client calls to your specific plugin.
@@ -67,14 +70,18 @@ class Plugin
   # whenever a new session is created.
   # (reload or other page load without the ses_key
   # cookie set for an valid and active session)
+  # By default it calls init_ses_values
   def init_ses( msg )
+    init_ses_values( msg )
   end
   
   # extend this method to invoke actions
   # whenever a user restores an active session.
   # (reload or other page load with the ses_key
   # cookie set for an valid and active session)
+  # By default it calls restore_ses_values
   def restore_ses( msg )
+    restore_ses_values( msg )
   end
   
   # extend this method to invoke actions
@@ -111,12 +118,35 @@ class Plugin
   
 private
   ## Don't extend these:
+  
+  # This method looks looks for a file called 'values.yaml'
+  # in the plugin's path.
+  # If this file is found, it loads it for initial value definitions.
+  # These definitions are assigned as @values
+  def init_values
+    values_path = File.join( @path, 'values.yaml' )
+    if File.exist?( values_path )
+      @values = YAML.load( File.read( values_path ) )
+    end
+  end
+  
   # Returns all the names your plugin respond to.
   def name
     return @names.join(',')
   end
   
   ## Utilities
+  
+  # Returns or creates a new session hash for the plugin.
+  # Uses the first name registered for the plugin and converts
+  # it to a symbol.
+  def get_ses( msg )
+    name = @names.first.to_sym
+    unless msg.session.has_key?( name )
+      msg.session[ name ] = {}
+    end
+    return msg.session[ name ]
+  end
   
   # File reader utility,
   # practical for simple file data operations
@@ -148,14 +178,16 @@ private
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir
-  def require_js(name)
+  def read_js( name )
     full_path = File.join( @path, 'js', name+'.js' )
     return file_read( full_path )
   end
+  # old name for the read_js as an alias
+  alias require_js read_js
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir, but only once per session
-  def require_js_once(msg,name)
+  def require_js_once( msg, name )
     ses = msg.session
     if not ses.has_key?(:deps)
       ses[:deps] = []
@@ -169,8 +201,63 @@ private
     end
   end
   
+  # initializes a single session value
+  def init_ses_value( msg, value_name, value_properties )
+    ses = get_ses( msg )
+    if value_properties.has_key?(:value)
+      default_value = value_properties[:value]
+    else
+      default_value = 0
+    end
+    ses[value_name] = HValue.new( msg, default_value )
+    if value_properties.has_key?(:responders)
+      value_properties[:responders].each do |responder|
+        if responder.has_key?(:plugin)
+          responder_plugin = responder[:plugin]
+        else
+          responder_plugin = @names.first.to_sym
+        end
+        if responder.has_key?(:method)
+          ses[value_name].bind( responder_plugin, responder[:method] )
+        end
+      end
+    end
+  end
+  
+  # Initializes session values, if a values.yaml file is in the bundle.
+  def init_ses_values( msg )
+    return unless @values
+    @values.each do | value_name, value_properties |
+      init_ses_value( msg, value_name, value_properties )
+    end
+  end
+  
+  # restores session values to default, unless specified otherwise
+  def restore_ses_values( msg )
+    return unless @values
+    ses = get_ses( msg )
+    @values.each do | value_name, value_properties |
+      if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
+        unless value_properties[:restore_default] == false
+          if value_properties.has_key?(:value)
+            default_value = value_properties[:value]
+          else
+            default_value = 0
+          end
+          ses[value_name].set( msg, default_value )
+        end
+      else
+        init_ses_value( msg, value_name, value_properties )
+      end
+    end
+  end
+  
   # Utility method for HValue reference extraction from ruby to js hashes.
-  def extract_hvalues_from_hash( ses_hash )
+  def values_js( msg, ses=false )
+    # backwards-compatible with pre-1.3 behaviour
+    ses = msg if msg.class == Hash
+    # gets the session automatically, if false
+    ses = get_ses( msg ) unless ses
     js_references = []
     ses_hash.each_key do |key_name|
       if ses_hash[key_name].class == HValue
@@ -179,22 +266,20 @@ private
     end
     return "{#{js_references.join(', ')}}"
   end
+  # old name for the values_js method as an alias
+  alias extract_hvalues_from_hash values_js
   
   # Riassence Framework dependency reader, just supply it 
   # with everything you need, it keeps track of
   # what's loaded.
-  def include_js(msg, dependencies=[])
-    
+  def include_js( msg, dependencies=[] )
     ses = msg.session
-    
     # check, if the session has a dependency array
     if not ses.has_key?( :deps )
       # make an array of dependencies for this session, if not already done
       ses[:deps] = []
     end
-    
     dependencies = [dependencies] if dependencies.class == String
-    
     # Check the required dependencies until everything is loaded.
     dependencies.each do |dependency|
       unless ses[:deps].include?( dependency )
