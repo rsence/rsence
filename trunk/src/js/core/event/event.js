@@ -652,7 +652,8 @@ EVENT = {
   **/
   startDragging: function(_ctrl) {
     var _this = EVENT;
-    _this.dragItems.push(_ctrl.elemId);
+    _this.dragItems = [_ctrl.elemId];
+    _this.focus(_ctrl);
     _this.changeActiveControl(_ctrl);
     _ctrl.startDrag(_this.status[_this.crsrX], _this.status[_this.crsrY]);
   },
