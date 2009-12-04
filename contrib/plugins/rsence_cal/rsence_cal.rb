@@ -1,6 +1,6 @@
 #--
 ##   Riassence Framework
- #   Copyright 2008 Riassence Inc.
+ #   Copyright 2009 Riassence Inc.
  #   http://riassence.com/
  #
  #   You should have received a copy of the GNU General Public License along
@@ -8,88 +8,48 @@
  ##
  #++
 
-class RiassenceCal < Plugin
-  def init
-    @cal_path = File.join( @path, 'db', 'rsence_cal.db' )
-    create_db unless File.exist? @cal_path
-  end
-  def open
-    @db = Sequel.sqlite @cal_path
-    @gui = GUIParser.new( self, 'rsence_cal' )
-  end
-  def close
-    @db.disconnect
-  end
-  def path; @path; end
-  def get_ses( msg )
-    msg.session[:rsence_cal] = {} unless msg.session.has_key?(:rsence_cal)
-    return msg.session[:rsence_cal]
-  end
+
+# = Riassence Calendar
+# This plugin demonstrates a plugin that handles fairly complex data and
+# a GUI based entirely on YAML data (converted to JSON by GUIParser).
+#
+# The Riassence Calendar application itself is a test case for some more
+# complex data handling. It's a calendaring application with support for
+# multiple calendars and daily time sheets. It's inspired by iCal.
+#
+# It will later incorporate fancy stuff like a CalDAV servlet, OpenID
+# authentication and multi-user collaborative calendaring.
+#
+# NOTE: This plugin requires RIassence Framework
+# trunk revision 875 or newer.
+#
+# NOTE: This is still a work in progress.
+#
+class RiassenceCal < GUIPlugin
+  
+  # Uses an sqlite database for storing the calendars.
+  # The PluginSqliteDB module handles the database
+  # initialization automatically.
+  include PluginSqliteDB
+  
+  # In addition to the new (as of r875) features in Plugin,
+  # just updates a few dynamic values, all the rest is defined in
+  # the "values.yaml" file and initialized by the Plugin base class.
   def init_ses( msg )
-    ses = get_ses( msg )
-    time_now = Time.now.to_i
-    default_values = {
-      :calendar_day  => time_now,
-      :calendar_list => calendars_list,
-      :calendar_id   => calendars_list.first[:value],
-      :entries_tab   => 0,
-      :entries_day_name => 'Saturday 31.10.',
-      :entries_day   => [],
-      :entries_day_edit => {
-        'create'   => [],
-        'delete'   => [],
-        'modify'   => [],
-        'response' => []
-      },
-      :entries_wday0_name => 'Mon 26.10.',
-      :entries_wday0 => [],
-      :entries_wday1_name => 'Tue 27.10.',
-      :entries_wday1 => [],
-      :entries_wday2_name => 'Wed 28.10.',
-      :entries_wday2 => [],
-      :entries_wday3_name => 'Thu 29.10.',
-      :entries_wday3 => [],
-      :entries_wday4_name => 'Fri 30.10.',
-      :entries_wday4 => [],
-      :entries_wday5_name => 'Sat 31.10.',
-      :entries_wday5 => [],
-      :entries_wday6_name => 'Sun 1.11.',
-      :entries_wday6 => []
-    }
-    default_keep = [ :calendar_day, :calendar_id, :entries_tab ]
-    default_values.each do |value_name, default_value|
-      if not ses.has_key?( value_name )
-        ses[value_name] = HValue.new( msg, default_value )
-      elsif not default_keep.include?( value_name )
-        ses[value_name].set( msg, default_value )
-      end
-    end
+    super
     update_entries_day_names( msg )
     update_entries( msg )
-    values_bind = [
-      [:calendar_day, 'change_calendar_day'],
-      [:calendar_id,  'change_calendar_id' ],
-      [:entries_day_edit, 'edit_entry' ]
-    ]
-    values_bind.each do |value_name,method_name|
-      ses[value_name].bind( 'rsence_cal', method_name )
-    end
   end
   alias restore_ses init_ses
-  def init_ui( msg )
-    include_js( msg, ['default_theme','controls','datetime','lists','json_renderer'] )
-    ses = msg.session[:rsence_cal]
-    params = {
-      :values => @gui.values( ses )
-    }
-    @gui.init( msg, params )
-  end
   
+  # Responder for entry editing from the client.
+  # A fairly complicated example, it will be described in detail later.
   def edit_entry( msg, hvalue )
     data = hvalue.data.clone
     ses = get_ses( msg )
     cal_id = ses[:calendar_id].data
-    cal_day = ses[:calendar_day].data
+    t = Time.at( ses[:calendar_day].data )
+    cal_day = Time.gm( t.year, t.month, t.mday, 0, 0, 0 ).to_i
     data['response'] = []
     data['create'].each do |item|
       time_begin = cal_day + (item['timeBegin']*60*60)
@@ -100,7 +60,6 @@ class RiassenceCal < Plugin
         :title       => item['label'],
         :calendar_id => cal_id
       )
-      puts "item_id: #{item_id.inspect}"
       data['response'].push( {
         'id' => item['id'],
         'modify' => {
@@ -128,45 +87,70 @@ class RiassenceCal < Plugin
     end
     data['delete'] = []
     hvalue.set( msg, data )
+    update_entries( msg )
     return true
   end
+  
+  # Responder for calendar date changes.
+  # Sends an updated list of entries to the client
+  # and updates the names of the day.
   def change_calendar_day( msg, hvalue )
     update_entries_day_names( msg )
     update_entries( msg )
     return true
   end
+  
+  # Responder for calendar changes.
+  # Sends an updated list of entries to the client.
   def change_calendar_id( msg, hvalue )
     update_entries( msg )
     return true
   end
-
-private
-  def create_db
-    db = Sequel.sqlite(@cal_path)
-    unless db.table_exists?(:calendars)
-      db.create_table :calendars do
-        primary_key :id
-        String :title
-      end
-      calendars = db[:calendars]
-      calendars.insert(:title => 'Default')
+  
+  # Creates two tables:
+  # calendars::      Stores a list of calendars
+  # cal_entries::    Stores a list of entries related to 
+  #                  the calendar they belong to.
+  # Called by PluginSqliteDB when creating the database.
+  def create_db_tables
+    @db.create_table :calendars do
+      primary_key :id
+      String :title
     end
-    unless db.table_exists?(:cal_entries)
-      db.create_table :cal_entries do
-        primary_key :id
-        String :title
-        Number :time_begin
-        Number :time_end
-        Number :calendar_id
-      end
+    calendars = @db[:calendars]
+    calendars.insert(:title => 'Default')
+    @db.create_table :cal_entries do
+      primary_key :id
+      String :title
+      Number :time_begin
+      Number :time_end
+      Number :calendar_id
     end
   end
+  
+private
+  
+  # Returns the current time as UTC seconds since epoch
+  def time_now
+    return Time.now.to_i
+  end
+  
+  # Selects and returns a list of calendars
   def calendars_list
     @db[:calendars].select(:id => :value, :title => :label).all
   end
+  
+  # Returns the first calendar id
+  def calendars_list_first_id
+    @db[:calendars].select(:id).first[:id]
+  end
+  
+  # Returns a list of calendar ids
   def calendars_selected
     @db[:calendars].select(:id).map {|row| row[:id]}
   end
+  
+  # Selects all the entries within the same day as +time_within+
   def entries_day(msg, time_within)
     time = Time.at(time_within.data).utc
     time_begin = Time.gm( time.year, time.month, time.mday ).to_i
@@ -177,15 +161,22 @@ private
       :time_begin => time_begin..time_end
     }).all
   end
+  
+  # Returns the offset of time (in seconds) compared to +time+.
+  # +target_wday+ is the day number within the same week as +time+
   def same_week_offset( time, target_wday )
     day_secs = 60*60*24
     wday_sel = Time.at(time).utc.wday - 1
     wday_sel = 6 if wday_sel == -1
     return (target_wday-wday_sel)*day_secs
   end
+  
+  # Update localized long or short week days for the weekday fields.
+  # The localization itself needs more work.
   def update_entries_day_names( msg )
     ses = get_ses( msg )
-    time = Time.at( ses[:calendar_day].data ).utc
+    t = Time.at( ses[:calendar_day].data )
+    time = Time.gm( t.year, t.month, t.mday, 0, 0, 0 ).utc
     names = {
       :long  => %w(Sunday Monday Tuesday Wednesday Thursday Friday Saturday),
       :short => %w(Sun Mon Tue Wed Thu Fri Sat)
@@ -204,6 +195,9 @@ private
       ses[value_name].set( msg, day_name )
     end
   end
+  
+  # Returns the hours of the day of the +time+ given.
+  # The hour is in decimal format, so 6.5 means "06:30"
   def time_to_decimal_hour( time )
     t = Time.at( time ).utc
     time_begin_day = Time.gm( t.year, t.month, t.mday, 0, 0, 0 ).to_i
@@ -212,6 +206,8 @@ private
     hour = ( (mins / 60.0) * 2 ).round * 0.5
     return hour
   end
+  
+  # Selects all the entries of the calendar +cal_id+ within the full day of the time +time_begin+.
   def select_day_entries( cal_id, time_begin )
     entries = []
     time_end = time_begin+86400
@@ -233,10 +229,12 @@ private
     end
     return entries
   end
+  
+  # Updates all timesheet entries at once.
   def update_entries( msg )
     ses = get_ses( msg )
     cal_id = ses[:calendar_id].data
-    t = Time.at( ses[:calendar_day].data ).utc
+    t = Time.at( ses[:calendar_day].data )
     time = Time.gm( t.year, t.month, t.mday, 0, 0, 0 ).to_i
     [ [ :entries_day,   0 ],
       [ :entries_wday0, same_week_offset( time, 0 ) ],
@@ -252,5 +250,8 @@ private
     end
     return true
   end
+  
 end
+
+# Initialize and register the plugin:
 RiassenceCal.new.register('rsence_cal')
