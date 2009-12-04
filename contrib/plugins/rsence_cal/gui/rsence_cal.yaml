@@ -1,5 +1,10 @@
 type: GUITree
 version: 0.4
+dependencies: 
+  - default_theme
+  - controls
+  - datetime
+  - lists
 
 class: HApplication
 options: '20'
@@ -12,6 +17,7 @@ subviews:
       collapseButton: true
       closeButton: true
       minSize: [ 700, 500 ]
+      maxSize: [ 935, 645 ]
     define:
       - class: BoldString
         extend: HStringView
