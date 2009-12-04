@@ -971,7 +971,7 @@ EVENT = {
     else if (e.detail) {
       _delta = 0 - (e.detail / 3);
     }
-    if (BROWSER_TYPE.opera) {
+    if (BROWSER_TYPE.opera || BROWSER_TYPE.safari) {
       _delta = 0 - _delta;
     }
     for (; i !== _this.focused.length; i++) {
