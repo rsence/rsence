@@ -13,6 +13,14 @@ require 'plugins/plugin'
 # It uses JSONRenderer on the client to build user interfaces.
 require 'plugins/guiparser'
 
+# gui_plugin.rb is an extension of Plugin that uses
+# GUIParser to init the gui automatically.
+require 'plugins/gui_plugin'
+
+# plugin_sqlite_db.rb contains automatic local sqlite database
+# creation for a plugin that includes it.
+require 'plugins/plugin_sqlite_db'
+
 # soapserve contains an extended hsoaplet for pluginmanager usage
 begin
   require 'http/soap/soapserve'

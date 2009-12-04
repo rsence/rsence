@@ -9,12 +9,33 @@
 module Riassence
 module Server
 
+# This class automatically loads a YAML file from "gui" subdirectory of a plugin.
+# Extend your plugin from the GUIPlugin class instead of the Plugin class to make
+# this work automatically.
+# = Usage:
+# Initialize like this from inside a plugin method. This will load the "gui/my_gui.yaml" file.
+#   @gui = GUIParser.new( self, 'my_gui' )
+# To make the client render the contents of the yaml do this:
+#   ses = get_ses( msg )
+#   params = { :values => @gui.values( ses ) }
+#   @gui.init( msg, params )
 class GUIParser
+  
+  # Use this method to send the client all commands required to construct the GUI Tree using JSONRenderer.
+  # = Parameters
+  # +msg+::    The +Message+ instance +msg+ used all over the place.
+  # +params+:: An hash containing all parameters referred from the YAML file.
   def init( msg, params )
     gui_data = YAML.load( @yaml_src )
     parse_gui( gui_data, params )
+    if gui_data.has_key?('dependencies')
+      @parent.include_js( msg, gui_data['dependencies'] )
+      gui_data.delete('dependencies')
+    end
     msg.reply "JSONRenderer.nu( #{gui_data.to_json} );"
   end
+  
+  # Use this method to extract all the value id's of the +ses+ hash.
   def values( ses )
     ids = {}
     ses.each do | key, value |
@@ -24,7 +45,10 @@ class GUIParser
     end
     return ids
   end
+  
 private
+
+  # Parses the gui data using params. Called from +init+.
   def parse_gui( gui_data, params )
     data_class = gui_data.class
     if data_class == Array
@@ -46,6 +70,8 @@ private
     end
     return gui_data
   end
+  
+  # Searches the params hash for parameters whenever encountered a Symbol in the YAML.
   def get_params( params_path, params )
     item = params_path.shift
     if params.class == Hash
@@ -62,6 +88,11 @@ private
     end
     return ''
   end
+  
+  # Loads the YAML file.
+  # = Parameters
+  # +parent+::   The Plugin instance called from, use +self+ when constructing in a Plugin method.
+  # +gui_name+:: The name of the YAML file in the gui subdirectory of the plugin bundle.
   def initialize( parent, gui_name )
     @parent = parent
     @yaml_src = File.read(

@@ -9,9 +9,7 @@
 module Riassence
 module Server
 
-=begin
-Plugin is an abstract class for rsence server-side application logic.
-=end
+# Plugin is an abstract class for rsence server-side application logic.
 class Plugin
   
   attr_writer :path
@@ -204,7 +202,9 @@ private
   # initializes a single session value
   def init_ses_value( msg, value_name, value_properties )
     ses = get_ses( msg )
-    if value_properties.has_key?(:value)
+    if value_properties.has_key?(:value_call)
+      default_value = init_value_call( msg, value_properties[:value_call] )
+    elsif value_properties.has_key?(:value)
       default_value = value_properties[:value]
     else
       default_value = 0
@@ -215,7 +215,7 @@ private
         if responder.has_key?(:plugin)
           responder_plugin = responder[:plugin]
         else
-          responder_plugin = @names.first.to_sym
+          responder_plugin = @names.first
         end
         if responder.has_key?(:method)
           ses[value_name].bind( responder_plugin, responder[:method] )
@@ -232,6 +232,55 @@ private
     end
   end
   
+  # Returns a value based on the :method and :plugin members of the value_call hash.
+  # The call is made via msg.run
+  # Contents:
+  # :plugin is the name of the plugin to call.
+  #   - It's optional and defaults to the local plugin instance.
+  # :method is the name of the method to call
+  # :args is the extra parameters to pass to the method
+  #   - It's optional and the default is no :args
+  #   - It must be an Array, if defined
+  # :uses_msg is a boolean that defines if msg is the first argument or not
+  #   - It's optional and defaults to true
+  def init_value_call( msg, value_call )
+    value_call_method = value_call[:method]
+    if value_call.has_key?(:plugin)
+      value_call_plugin = value_call[:plugin]
+    else
+      value_call_plugin = false
+    end
+    if value_call.has_key?(:args)
+      if value_call.has_key?(:uses_msg) and value_call[:uses_msg] != false
+        if value_call_plugin
+          return msg.run( value_call_plugin, value_call_method, msg, *value_call[:args] )
+        else
+          return self.method( value_call_method ).call( msg, *value_call[:args] )
+        end
+      else
+        if value_call_plugin
+          return msg.run( value_call_plugin, value_call_method, *value_call[:args] )
+        else
+          return self.method( value_call_method ).call( *value_call[:args] )
+        end
+      end
+    else
+      if value_call.has_key?(:uses_msg) and value_call[:uses_msg] != false
+        if value_call_plugin
+          return msg.run( value_call_plugin, value_call_method, msg )
+        else
+          return self.method( value_call_method ).call( msg )
+        end
+      else
+        if value_call_plugin
+          return msg.run( value_call_plugin, value_call_method )
+        else
+          return self.method( value_call_method ).call( )
+        end
+      end
+    end
+  end
+  
   # restores session values to default, unless specified otherwise
   def restore_ses_values( msg )
     return unless @values
@@ -239,7 +288,9 @@ private
     @values.each do | value_name, value_properties |
       if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
         unless value_properties[:restore_default] == false
-          if value_properties.has_key?(:value)
+          if value_properties.has_key?(:value_call)
+            default_value = init_value_call( msg, value_properties[:value_call] )
+          elsif value_properties.has_key?(:value)
             default_value = value_properties[:value]
           else
             default_value = 0
