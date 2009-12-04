@@ -1,0 +1,53 @@
+:calendar_day:
+  :value_call:
+    :method: time_now
+    :uses_msg: false
+  :restore_default: false
+  :responders:
+  - { :method: change_calendar_day }
+:calendar_list:
+  :value_call:
+    :method: calendars_list
+    :uses_msg: false
+:calendar_id:
+  :value_call:
+    :method: calendars_list_first_id
+    :uses_msg: false
+  :restore_default: false
+  :responders:
+  - { :method: change_calendar_id }
+:entries_tab:
+  :value: 0
+  :restore_default: false
+:entries_day_name: {}
+:entries_day:
+  :value: []
+:entries_day_edit:
+  :value:
+    create: []
+    delete: []
+    modify: []
+    response: []
+  :responders:
+  - { :method: edit_entry }
+:entries_wday0_name: {}
+:entries_wday0:
+  :value: []
+:entries_wday1_name: {}
+:entries_wday1:
+  :value: []
+:entries_wday2_name: {}
+:entries_wday2:
+  :value: []
+:entries_wday3_name: {}
+:entries_wday3:
+  :value: []
+:entries_wday4_name: {}
+:entries_wday4:
+  :value: []
+:entries_wday5_name: {}
+:entries_wday5:
+  :value: []
+:entries_wday6_name: {}
+:entries_wday6:
+  :value: []
