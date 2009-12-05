@@ -310,9 +310,9 @@ private
     # gets the session automatically, if false
     ses = get_ses( msg ) unless ses
     js_references = []
-    ses_hash.each_key do |key_name|
-      if ses_hash[key_name].class == HValue
-        js_references.push( "#{key_name.to_s}: HVM.values['#{ses_hash[key_name].val_id}']" )
+    ses.each_key do |key_name|
+      if ses[key_name].class == HValue
+        js_references.push( "#{key_name.to_s}: HVM.values['#{ses[key_name].val_id}']" )
       end
     end
     return "{#{js_references.join(', ')}}"
