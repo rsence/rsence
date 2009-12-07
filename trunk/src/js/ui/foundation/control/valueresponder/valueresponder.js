@@ -27,6 +27,9 @@ HValueResponder = HClass.extend({
   **/
   setValueObj: function(_valueObj) {
     this.valueObj = _valueObj;
+    if(this['value'] === undefined || (this.value === null && _valueObj.value !== null)){
+      this.value = _valueObj.value;
+    }
     this.setValue(_valueObj.value);
     return this;
   },
