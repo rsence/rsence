@@ -58,7 +58,10 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
     --run-config-wizard     Runs configuration wizard
                               Runs by default, if no local
                               configuration files were found.
+    --no-rescan             Doesn't rescan the plugins even when in debug mode.
     --profile               Turns on profiling
+                              - Runs everything considerable slower!
+                              - Shown a table displaying the results on stop.
     --help                  This message
     -h                      This message
   
