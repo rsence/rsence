@@ -91,7 +91,7 @@ class IndexHtmlPlugin < ServletPlugin
       end
     end
     
-    unless ARGV.include?('-no-rescan')
+    unless ARGV.include?('-no-rescan') or ARGV.include?('--no-rescan')
       puts "re-scanning plugins."
       begin
         $PLUGINS.rescan()
