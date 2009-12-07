@@ -164,20 +164,14 @@ class Main < Plugin
     ## Sets the client into poll mode, unless the :delayed_calls -array is empty
     if ses[:boot] > 1
       if ses[:delayed_calls].empty?
-        if ses[:title_loading] == true
-          msg.reply( "document.title = #{$config[:indexhtml_conf][:loaded_title].to_json};" )
-          ses[:title_loading] = false
-        end
-        msg.reply( "COMM.Transporter.poll(0);" )
-        ses[:poll_mode] = false
+        end_polling( msg, ses )
       else
-        msg.reply( "COMM.Transporter.poll(#{$config[:transporter_conf][:client_poll_priority]});" )
-        ses[:poll_mode] = true
+        start_polling( msg, ses )
       end
     end
   end
   
-  # When nothing is delayed and the fifth poll has been made,
+  # When nothing is delayed and the second poll has been made (init_ui called),
   # sets the client to non-polling-mode, having only HValue
   # changes trigger new requests. SesWatcher makes this happen
   # regularly.
@@ -189,6 +183,14 @@ class Main < Plugin
       end
       msg.reply "COMM.Transporter.poll(0);"
       ses[:poll_mode] = false
+    end
+  end
+  
+  # Starts polling.
+  def start_polling( msg, ses )
+    if ses[:poll_mode] == false
+      msg.reply( "COMM.Transporter.poll(#{$config[:transporter_conf][:client_poll_priority]});" )
+      ses[:poll_mode] = true
     end
   end
   
