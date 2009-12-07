@@ -1,5 +1,5 @@
 
-  Riassence Framework #{version}                                          #{date}
+  Riassence Framework 1.3.trunk                                      20??-??-??
   http://riassence.org/
 
 
