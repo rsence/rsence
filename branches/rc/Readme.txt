@@ -1,5 +1,5 @@
 
-  Riassence Framework 1.2                                           2009/12/01
+  Riassence Framework 1.2.1                                          2009/12/08
   http://riassence.org/
 
 
