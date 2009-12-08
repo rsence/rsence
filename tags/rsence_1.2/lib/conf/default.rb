@@ -48,9 +48,9 @@ class Configuration
         if item.class == Array
           target[key] = [] unless target.has_key?(key)
           array_merge( target[key], item )
-          if key == :plugin_paths
-            puts target[key].inspect
-          end
+          # if key == :plugin_paths
+          #   puts target[key].inspect
+          # end
         elsif item.class == Hash
           target[key] = {} unless target.has_key?key
           hash_merge( target[key], item )

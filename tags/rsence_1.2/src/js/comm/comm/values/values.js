@@ -76,7 +76,7 @@ COMM.Values = HClass.extend({
   s: function(_id,_data){
     var _this = this;
     _data = _this.decode(_data);
-    _this.values[_id].set(_data);
+    _this.values[_id].s(_data);
   },
   
 /** = Description

@@ -1,5 +1,5 @@
 
-This is the 1.2.0 (r868) release version of Riassence Framework.
+This is the 1.2.1 (r872) release version of Riassence Framework.
 
 Check the website for updates.
 http://riassence.org/

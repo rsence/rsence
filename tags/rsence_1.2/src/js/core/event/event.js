@@ -652,7 +652,8 @@ EVENT = {
   **/
   startDragging: function(_ctrl) {
     var _this = EVENT;
-    _this.dragItems.push(_ctrl.elemId);
+    _this.dragItems = [_ctrl.elemId];
+    _this.focus(_ctrl);
     _this.changeActiveControl(_ctrl);
     _ctrl.startDrag(_this.status[_this.crsrX], _this.status[_this.crsrY]);
   },
@@ -970,7 +971,7 @@ EVENT = {
     else if (e.detail) {
       _delta = 0 - (e.detail / 3);
     }
-    if (BROWSER_TYPE.opera) {
+    if (BROWSER_TYPE.opera || BROWSER_TYPE.safari) {
       _delta = 0 - _delta;
     }
     for (; i !== _this.focused.length; i++) {

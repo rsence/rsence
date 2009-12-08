@@ -1,4 +1,25 @@
 
+Changes between Riassence Framework 1.2.0 and 1.2.1:
+
+Client Changes:
+ - COMM.Values bug fixed:
+   - Client won't resync a value that was set from the server and is already
+     identical on the client.
+ - EVENT bugs fixed:
+   - Reversed the scroll wheel direction on Safari and other WebKit browsers.
+   - The startDragging method now clears previous responders properly when
+     directing the event to the new responder.
+ - HControl bug fixed:
+   - If a component is constructed as a value range, sets the minValue and
+     maxValue before binding a HValue instance.
+
+Server Changes:
+ - Removed debug message of plugin directories of the config.
+ - Removed annoying warning message about localhost cookies, when accessing 'localhost'.
+
+
+
+
 Changes between Riassence Framework 1.1 and 1.2:
 
 Client Changes:
