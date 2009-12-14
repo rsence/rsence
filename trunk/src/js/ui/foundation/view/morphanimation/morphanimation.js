@@ -178,14 +178,14 @@ HMorphAnimation = HClass.extend({
           // The value of the property at this time.
           var _propNow = _obj.transition(_cTime, _from, (_to - _from),
             _obj.duration);
-          this.setStyle(_obj.props[i].prop, _propNow + _obj.props[i].unit);
+          ELEM.setStyle(this.elemId,_obj.props[i].prop, _propNow + _obj.props[i].unit);
         }
       }
       
     } else {
       // Animation is done, clear the interval and finalize the animation.
       for (i = 0; i < _obj.props.length; i++) {
-        this.setStyle(_obj.props[i].prop,
+        ELEM.setStyle(this.elemId,_obj.props[i].prop,
           _obj.props[i].to + _obj.props[i].unit);
       }
       this._animationDone = true;
