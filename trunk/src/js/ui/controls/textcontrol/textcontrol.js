@@ -193,6 +193,8 @@ HTextControl = HControl.extend({
   * HNumericTextControl is an extension of HTextControl that
   * validates the input as a number. It supports value ranges.
   *
+  * If you need decimal numbers (floating-point), pass the 
+  * decimalNumber: true option to the constructor.
   **/
 HNumericTextControl = HTextControl.extend({
   
@@ -213,7 +215,12 @@ HNumericTextControl = HTextControl.extend({
     if(isNaN(_value)){
       _value = this.value;
     }
-    _value = parseInt(_value,10);
+    if(this.options.decimalNumber){
+      _value = parseFloat(_value);
+    }
+    else{
+      _value = parseInt(_value,10);
+    }
     if(_value>this.options.maxValue){
       _value = this.options.maxValue;
     }
