@@ -32,11 +32,6 @@ class Plugin
     init_values
   end
   
-  # Extend to handle non-specific client calls to your specific plugin.
-  # (When the plugin specified, but the method not specified)
-  def run( msg )
-  end
-  
   # Extend to handle client-side plugin kill post-cleanup
   # For example, reset the state, so the plugin can be recalled.
   def release( msg )
@@ -44,10 +39,6 @@ class Plugin
   
   # Extend to handle client calls even if your plugin was not specifically called.
   def idle( msg )
-  end
-
-  # Extend to handle calls, even if specific client calls to plugin and method are specified.
-  def any( msg )
   end
   
   # Extend to manage stream or database opening etc..
