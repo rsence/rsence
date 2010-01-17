@@ -33,19 +33,27 @@ class Plugin
   
   # Extend to handle non-specific client calls to your specific plugin.
   # (When the plugin specified, but the method not specified)
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def run( msg )
   end
   
   # Extend to handle client-side plugin kill post-cleanup
   # For example, reset the state, so the plugin can be recalled.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def release( msg )
   end
   
   # Extend to handle client calls even if your plugin was not specifically called.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def idle( msg )
   end
 
   # Extend to handle calls, even if specific client calls to plugin and method are specified.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def any( msg )
   end
   
@@ -67,6 +75,8 @@ class Plugin
   # whenever a new session is created.
   # (reload or other page load without the ses_key
   # cookie set for an valid and active session)
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def init_ses( msg )
   end
   
@@ -74,17 +84,22 @@ class Plugin
   # whenever a user restores an active session.
   # (reload or other page load with the ses_key
   # cookie set for an valid and active session)
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def restore_ses( msg )
   end
   
   # extend this method to invoke actions
   # whenever a user's session is cloned.
-  # this one is called before resore_ses.
+  # this one is called before restore_ses.
   # this happens when a user opens a new
   # another browser window or tab while
   # the old session is still active.
   # source_ses is the "old" session, which
   # was the source of the cloning.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +source_session+:: The +session+ to be cloned.
   def cloned_target( msg, source_session )
   end
   
@@ -94,12 +109,17 @@ class Plugin
   # target_ses is the "new" session, which
   # was the target when cloning the
   # current session.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +target_sessions+:: The +session+ which was target when cloning the current session.
   def cloned_source( msg, target_sessions )
   end
   
   # Registers the plugin respond to messages prefixed +name+
   # Call multiple times to make your plugin to respond
   # to several names.
+  # ==== Parameters
+  # +name+:: The name which plugin will be registered.
   def register( name )
     raise "DuplicateAppNameFound: #{name.inspect}" if PluginManager.plugins.has_key?(name)
     PluginManager.plugins[ name ] = self
@@ -120,6 +140,8 @@ private
   
   # File reader utility,
   # practical for simple file data operations
+  # ==== Parameters
+  # +path+:: Path to read +File+ from.
   def file_read( path )
     if path[0].chr != '/' and path[0..1] != '..'
       path = File.join( @path, path )
@@ -130,6 +152,9 @@ private
   
   # File writer utility,
   # practical for simple file data operations
+  # ==== Parameters
+  # +path+:: Path to write data.
+  # +data+:: Data to write.
   def file_write( path, data )
     if path[0].chr != '/' and path[0..1] != '..'
       path = File.join( @path, path )
@@ -148,6 +173,9 @@ private
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir
+  # ==== Parameters
+  # +name+:: The name of the javascript without the ending .js. Javascript is 
+  #          included from the directory named 'js' inside the plugin folder.
   def require_js(name)
     full_path = File.join( @path, 'js', name+'.js' )
     return file_read( full_path )
@@ -155,6 +183,10 @@ private
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir, but only once per session
+  # ==== Parameters
+  # +msg+::  The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +name+:: The name of the javascript without the ending .js. Javascript is 
+  #          included from the directory named 'js' inside the plugin folder.
   def require_js_once(msg,name)
     ses = msg.session
     if not ses.has_key?(:deps)
@@ -170,6 +202,8 @@ private
   end
   
   # Utility method for HValue reference extraction from ruby to js hashes.
+  # ==== Parameters
+  # +ses_hash+:: Session hash to extract values from.
   def extract_hvalues_from_hash( ses_hash )
     js_references = []
     ses_hash.each_key do |key_name|
@@ -183,6 +217,10 @@ private
   # Riassence Framework dependency reader, just supply it 
   # with everything you need, it keeps track of
   # what's loaded.
+  # ===== Parameters
+  # +msg+::          The +Message+ instance that contains session and 
+  #                  request-response -related mappings and utility methods.
+  # +dependencies+:: Array of dependencies.
   def include_js(msg, dependencies=[])
     
     ses = msg.session
