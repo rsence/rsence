@@ -146,6 +146,10 @@ COMM.Values = HClass.extend({
   *
   **/
   type: function(_obj){
+    if(_obj === null || _obj === undefined){
+      console.log('null or undefined obj:',_obj);
+      return '-';
+    }
     var _type = (typeof _obj).slice(0,1);
     if(this._builtins.indexOf(_type)!==-1){
       return _type;
@@ -357,6 +361,10 @@ COMM.Values = HClass.extend({
   *
   **/
   clone: function( _obj ){
+    if(_obj === null || _obj === undefined){
+      console.log('null or undefined obj:',_obj);
+      return _obj;
+    }
     var _item,
         _cloned;
     if( _obj instanceof Array ){
