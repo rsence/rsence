@@ -21,10 +21,13 @@ HTextControl = HControl.extend({
   componentName: "textcontrol",
   
   controlDefaults: (HControlDefaults.extend({
+    refreshOnBlur: true,
+    refreshOnInput: true,
     constructor: function(_ctrl){
       if(!this.events){
         this.events = {
-          textEnter: true
+          textEnter: true,
+          mouseWheel: true
         };
       }
     }
@@ -45,7 +48,9 @@ HTextControl = HControl.extend({
 
 /** = Description
   * Tweaks the input element to fit the match the size properly
-  * in different browsers.
+  * in different browsers. Can't be done reliably by using just
+  * the theme css, because some browsers are broken
+  * regarding styling of input elements.
   *
   **/
   drawSubviews: function(){
@@ -106,7 +111,7 @@ HTextControl = HControl.extend({
     }
     this.setEnabled(this.enabled);
   },
-
+  
   setStyle: function(_name, _value, _cacheOverride) {
     if (!this['markupElemIds']||!this.markupElemIds['value']) {
       return;
@@ -121,11 +126,14 @@ HTextControl = HControl.extend({
       ELEM.get(this.markupElemIds.value).disabled = !this.enabled;
     }
   },
+  
+/** This flag is true, when the text input field has focus.
+  **/
   hasTextFocus: false,
 
 /** = Description
-  * textFocus function
-  *
+  * Special event for text entry components.
+  * Called when the input field gains focus.
   *
   **/
   textFocus: function(){
@@ -134,12 +142,15 @@ HTextControl = HControl.extend({
   },
 
 /** = Description
-  * textBlur function
-  *
+  * Special event for text entry components.
+  * Called when the input field loses focus.
   *
   **/
   textBlur: function(){
     this.hasTextFocus = false;
+    if(this.options.refreshOnBlur){
+      this.refreshValue();
+    }
     return true;
   },
 
@@ -149,42 +160,183 @@ HTextControl = HControl.extend({
   *
   **/
   refreshValue: function(){
-    if(this.markupElemIds){
-      if(this.markupElemIds.value){
-        ELEM.get(this.markupElemIds.value).value = this.value;
-      }
-    }
+    this.setTextFieldValue( this.value );
   },
 
 /** = Description
-  * validateText function
-  *
+  * Placeholder method for validation of the value.
   *
   **/
   validateText: function(_value){
     return _value;
   },
-
-/*** = Description
-  ** getTextFieldValue function
-  **
-  **
-  ***/
-  getTextFieldValue: function(){
-    return ELEM.get(this.markupElemIds.value).value;
-  },
-
+  
 /** = Description
-  * Receives the textEnter event to update the value
+  * Returns the input element or null, if no input element created (yet).
+  *
+  **/
+  getInputElement: function(){
+    if( this.markupElemIds && this.markupElemIds.value ){
+      return ELEM.get(this.markupElemIds.value);
+    }
+    return null;
+  },
+  
+/** = Description
+  * Returns the value of the input element.
+  *
+  **/
+  getTextFieldValue: function(){
+    var _inputElement = this.getInputElement();
+    if( _inputElement === null ){
+      return '';
+    }
+    return _inputElement.value;
+  },
+  
+/** = Description
+  * Sets the value of the input element.
+  *
+  * = Parameters
+  * +_value+::  The value to set.
+  *
+  **/
+  setTextFieldValue: function(_value){
+    var _inputElement = this.getInputElement(),
+        _selectionRange = this.getSelectionRange();
+    if( _inputElement === null ){
+      return;
+    }
+    if( _inputElement.value !== String(_value) ){
+      _inputElement.value = _value;
+    }
+    this.setSelectionRange( _selectionRange[0], _selectionRange[1] );
+  },
+  
+  // returns a random number prefixed and suffixed with '---'
+  _randomMarker: function(){
+    return '---'+Math.round((1+Math.random())*10000)+'---';
+  },
+  
+/** = Description
+  * Returns the selection (or text cursor position) of the input element
+  * as an +Array+ like +[ startOffset, endOffset ]+.
+  *
+  **/
+  getSelectionRange: function(){
+    var _inputElement = this.getInputElement();
+    if( _inputElement === null || this.hasTextFocus === false ){
+      return [ 0, 0 ];
+    }
+    if(document.selection){
+      // Internet Explorer
+      
+      var
+      
+      // create a range object
+      _range = document.selection.createRange(),
+      
+      // original range text
+      _rangeText = _range.text,
+      _rangeLength = _rangeText.length,
+      
+      // make a copy of the text and replace \r\n with \n
+      _origValue = _inputElement.value.replace(/\r\n/g, "\n"),
+      
+      _markerValue,
+      _markerLength,
+      _markerIndex,
+      
+      // create random marker to replace the text with
+      _marker = this._randomMarker();
+      
+      // re-generate marker if it's found in the text.
+      while( _origValue.indexOf( _marker ) !== -1){
+        _marker = this._randomMarker();
+      }
+      
+      _markerLength = _marker.length;
+      
+      // temporarily set the text of the selection to the unique marker
+      _range.text = _marker;
+      
+      _markerValue = _inputElement.value.replace(/\r\n/g, "\n");
+      
+      _range.text = _rangeText;
+      
+      _markerIndex = _markerValue.indexOf( _marker );
+      
+      return [
+        _markerIndex,
+        _markerIndex + _rangeLength
+      ];
+    }
+    else if (_inputElement.selectionStart){
+      // Mozilla - Gecko
+      return [
+        _inputElement.selectionStart,
+        _inputElement.selectionEnd
+      ];
+    }
+    else {
+      // no support
+      return [ 0, 0 ];
+    }
+  },
+  
+/** = Description
+  * Sets the selection (or text cursor position) of the input element.
+  *
+  * = Parameters
+  * +_selectionStart+::   The start of the selection (or an Array containing
+  *                       both start and end offset, see below).
+  * +_selectionEnd+::     The end offset of the selection.
+  *
+  * = Note
+  * - +_selectionStart+ can also be given as an +Array+
+  *   like +[ startOffset, endOffset ]+.
+  * - If the +_selectionEnd+ is omitted, no selection is made; the text 
+  *   cursor is positioned at the startOffset instead.
+  **/
+  setSelectionRange: function( _selectionStart, _selectionEnd ){
+    if( _selectionStart instanceof Array ){
+      _selectionEnd = _selectionStart[1];
+      _selectionStart = _selectionStart[0];
+    }
+    if( _selectionEnd === undefined ){
+      _selectionEnd = _selectionStart;
+    }
+    var _inputElement = this.getInputElement();
+    if( _inputElement === null || this.hasTextFocus === false ){
+      return;
+    }
+    if(_inputElement.createTextRange){
+      // Internet Explorer
+      var _range = _inputElement.createTextRange();
+      _range.move( 'character', _selectionStart, _selectionEnd );
+      _range.select();
+    }
+    else if (_inputElement.selectionStart){
+      // Mozilla - Gecko
+      _inputElement.setSelectionRange( _selectionStart, _selectionEnd );
+    }
+  },
+  
+/** = Description
+  * Receives the +textEnter+ event to update the value
   * based on what's (potentially) entered in the text input field.
   *
   **/
   textEnter: function(){
-    if(this['markupElemIds']===undefined){return;}
-    var _value = this.validateText( this.getTextFieldValue() );
-    if(_value !== this.value.toString()){
-      this.setValue(_value);
+    this.setValue(
+      this.validateText(
+        this.getTextFieldValue()
+      )
+    );
+    if(this.options.refreshOnInput){
+      this.refreshValue();
     }
+    return false;
   }
   
 });
@@ -212,14 +364,14 @@ HNumericTextControl = HTextControl.extend({
   *
   **/
   validateText: function(_value){
-    if(isNaN(_value)){
-      _value = this.value;
-    }
     if(this.options.decimalNumber){
       _value = parseFloat(_value);
     }
     else{
       _value = parseInt(_value,10);
+    }
+    if(isNaN(_value)){
+      _value = this.value;
     }
     if(_value>this.options.maxValue){
       _value = this.options.maxValue;
@@ -227,23 +379,9 @@ HNumericTextControl = HTextControl.extend({
     else if(_value<this.options.minValue){
       _value = this.options.minValue;
     }
-    if(this['markupElemIds'] && this.markupElemIds['value']){
-      var _elem = ELEM.get(this.markupElemIds.value);
-      if(_elem.value != _value){
-        _elem.value = _value;
-      }
-    }
     return _value;
-  },
-
-/** = Description
-  * When changing the value, passes it on to the validateText method
-  * before setting the value itself.
-  *
-  **/
-  setValue: function(_value){
-    this.base(this.validateText(_value));
   }
+
 });
 
 
