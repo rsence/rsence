@@ -9,7 +9,9 @@
 module Riassence
 module Server
 
+=begin
 # Plugin is an abstract class for rsence server-side application logic.
+=end
 class Plugin
   
   attr_writer :path
@@ -34,10 +36,14 @@ class Plugin
   
   # Extend to handle client-side plugin kill post-cleanup
   # For example, reset the state, so the plugin can be recalled.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def release( msg )
   end
   
   # Extend to handle client calls even if your plugin was not specifically called.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def idle( msg )
   end
   
@@ -60,6 +66,8 @@ class Plugin
   # (reload or other page load without the ses_key
   # cookie set for an valid and active session)
   # By default it calls init_ses_values
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def init_ses( msg )
     init_ses_values( msg )
   end
@@ -69,6 +77,8 @@ class Plugin
   # (reload or other page load with the ses_key
   # cookie set for an valid and active session)
   # By default it calls restore_ses_values
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def restore_ses( msg )
     restore_ses_values( msg )
   end
@@ -81,6 +91,9 @@ class Plugin
   # the old session is still active.
   # source_ses is the "old" session, which
   # was the source of the cloning.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +source_session+:: The +session+ to be cloned.
   def cloned_target( msg, source_session )
   end
   
@@ -90,12 +103,17 @@ class Plugin
   # target_ses is the "new" session, which
   # was the target when cloning the
   # current session.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +target_sessions+:: The +session+ which was target when cloning the current session.
   def cloned_source( msg, target_sessions )
   end
   
   # Registers the plugin respond to messages prefixed +name+
   # Call multiple times to make your plugin to respond
   # to several names.
+  # ==== Parameters
+  # +name+:: The name which plugin will be registered.
   def register( name )
     raise "DuplicateAppNameFound: #{name.inspect}" if PluginManager.plugins.has_key?(name)
     PluginManager.plugins[ name ] = self
@@ -129,6 +147,8 @@ private
   # Returns or creates a new session hash for the plugin.
   # Uses the first name registered for the plugin and converts
   # it to a symbol.
+  # ==== Parameters
+  # +msg+:: The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def get_ses( msg )
     name = @names.first.to_sym
     unless msg.session.has_key?( name )
@@ -139,6 +159,8 @@ private
   
   # File reader utility,
   # practical for simple file data operations
+  # ==== Parameters
+  # +path+:: Path to read +File+ from.
   def file_read( path )
     if path[0].chr != '/' and path[0..1] != '..'
       path = File.join( @path, path )
@@ -148,7 +170,10 @@ private
   end
   
   # File writer utility,
-  # practical for simple file data operations
+  # practical for simple file data operations.
+  # ==== Parameters
+  # +path+:: Path to write data.
+  # +data+:: Data to write.
   def file_write( path, data )
     if path[0].chr != '/' and path[0..1] != '..'
       path = File.join( @path, path )
@@ -167,6 +192,9 @@ private
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir
+  # ==== Parameters
+  # +name+:: The name of the javascript without the ending .js. Javascript is 
+  #          included from the directory named 'js' inside the plugin folder.
   def read_js( name )
     full_path = File.join( @path, 'js', name+'.js' )
     return file_read( full_path )
@@ -176,6 +204,10 @@ private
   
   # Javascript inclusion utility.
   # Reads js sources from your plugin's dir, but only once per session
+  # ==== Parameters
+  # +msg+::  The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +name+:: The name of the javascript without the ending .js. Javascript is 
+  #          included from the directory named 'js' inside the plugin folder.
   def require_js_once( msg, name )
     ses = msg.session
     if not ses.has_key?(:deps)
@@ -191,6 +223,12 @@ private
   end
   
   # initializes a single session value
+  # ==== Parameters
+  # +msg+::              The +Message+ instance that contains session and 
+  #                      request-response -related mappings and utility methods.
+  # +value_name+::       Name of the value for the session value.
+  # +value_properties+:: Checks if the property array has :value_call for a method or :value for a value.
+  #                      If neither is present defaults to value 0.
   def init_ses_value( msg, value_name, value_properties )
     ses = get_ses( msg )
     if value_properties.has_key?(:value_call)
@@ -216,6 +254,8 @@ private
   end
   
   # Initializes session values, if a values.yaml file is in the bundle.
+  # ==== Parameters
+  # +msg+::  The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def init_ses_values( msg )
     return unless @values
     @values.each do | value_name, value_properties |
@@ -273,6 +313,8 @@ private
   end
   
   # restores session values to default, unless specified otherwise
+  # ==== Parameters
+  # +msg+::  The +Message+ instance that contains session and request-response -related mappings and utility methods.
   def restore_ses_values( msg )
     return unless @values
     ses = get_ses( msg )
@@ -295,6 +337,9 @@ private
   end
   
   # Utility method for HValue reference extraction from ruby to js hashes.
+  # ==== Parameters
+  # +msg+::  The +Message+ instance that contains session and request-response -related mappings and utility methods.
+  # +ses+::  Session to extract values from. If not defined, will extract from the current session.
   def values_js( msg, ses=false )
     # backwards-compatible with pre-1.3 behaviour
     ses = msg if msg.class == Hash
@@ -314,6 +359,10 @@ private
   # Riassence Framework dependency reader, just supply it 
   # with everything you need, it keeps track of
   # what's loaded.
+  # ===== Parameters
+  # +msg+::          The +Message+ instance that contains session and 
+  #                  request-response -related mappings and utility methods.
+  # +dependencies+:: Array of dependencies.
   def include_js( msg, dependencies=[] )
     ses = msg.session
     # check, if the session has a dependency array
