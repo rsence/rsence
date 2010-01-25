@@ -44,7 +44,7 @@ class GUIPlugin < Plugin
   end
   
   # Makes include_js public to enable calls to it from GUIParser
-  public :include_js
+  public :include_js, :read_js_once
   
 end
 
