@@ -931,17 +931,17 @@ EVENT = {
     if (_this.activeControl && _this.focusOptions[_this.activeControl.elemId].keyUp === true) {
       _this.activeControl.keyUp(_theKeyCode);
     }
-    // Remove the key from the realtime array, inserted in keyDown
-    _keyCodeIndex = _this.status[_this.keysDown].indexOf(_theKeyCode);
-    if (_keyCodeIndex !== -1) {
-      _this.status[_this.keysDown].splice(_keyCodeIndex, 1);
-    }
     for (; i < _this.textEnterCtrls.length; i++) {
       _ctrlId = _this.textEnterCtrls[i];
       _ctrl = HSystem.views[_ctrlId];
       if (_ctrl.textEnter) {
         _ctrl.textEnter();
       }
+    }
+    // Remove the key from the realtime array, inserted in keyDown
+    _keyCodeIndex = _this.status[_this.keysDown].indexOf(_theKeyCode);
+    if (_keyCodeIndex !== -1) {
+      _this.status[_this.keysDown].splice(_keyCodeIndex, 1);
     }
   },
 
