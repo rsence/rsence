@@ -465,7 +465,7 @@ private
   # the +suffix+ is the file extension.
   def compose_plugin_path( path, prefix=false, suffix=false )
     if suffix
-      path = "#{name}#{suffix}" unless path.end_with?(suffix)
+      path = "#{path}#{suffix}" unless path.end_with?(suffix)
     end
     if prefix
       path = File.join( prefix, path )
@@ -478,8 +478,8 @@ private
   
   # Returns the source code of the javascript file +name+ in the 'js'
   # subdirectory of the plugin bundle.
-  def read_js( name )
-    file_read( compose_plugin_path( name, 'js', '.js' ) )
+  def read_js( js_name )
+    file_read( compose_plugin_path( js_name, 'js', '.js' ) )
   end
   
   # Deprecated name of +#read_js+
@@ -491,12 +491,12 @@ private
   # an empty string on the subsequent calls.
   #
   # Returns false otherwise.
-  def read_js_once( msg, name )
+  def read_js_once( msg, js_name )
     ses = msg.session
     if not ses.has_key?(:deps)
       ses[:deps] = []
     end
-    path = compose_plugin_path( name, 'js', '.js' )
+    path = compose_plugin_path( js_name, 'js', '.js' )
     unless ses[:deps].include?( path )
       ses[:deps].push( path )
       return file_read( path )
