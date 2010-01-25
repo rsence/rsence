@@ -253,8 +253,10 @@ COMM.Values = HClass.extend({
     return '"' + _str + '"';
   },
   
-  // Encodes the native character set to url-encoded unicode
+  // Encodes the native character set to url-encoded unicode.
+  // Likely causes issues with non-ascii strings, shouldn't be called (for now).
   _encodeString: function(_str){
+    console.log( 'WARNING: encodeString called with string: ',_str );
     var _outStr;
     try {
       _outStr = unescape( encodeURIComponent( _str ) );
@@ -300,7 +302,9 @@ COMM.Values = HClass.extend({
       switch(_type){
         case 'b': _str = String(_obj); break;
         case 'n': _str = String(_obj); break;
-        case 's': _str = _this._quoteString(_this._encodeString(_obj)); break;
+        case 's': _str = _this._quoteString(_obj); break;
+        // Might need further investigation, but _encodeString is disabled for now:
+        // case 's': _str = _this._quoteString(_this._encodeString(_obj)); break;
         case 'd': _str = '"@'+String(_obj.getTime()/1000)+'"'; break;
         case 'a': _str = _this._encodeArr(_obj); break;
         case 'h': _str = _this._encodeHash(_obj); break;
