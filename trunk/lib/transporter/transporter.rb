@@ -99,15 +99,6 @@ class Transporter
         end
       end
       
-      ## Calls validators for changed values
-      begin
-        $VALUES.validate( msg )
-      rescue => e
-        response_success = false
-        xhr_error_handler( msg, :valuemanager_validate_error, e.message )
-        xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: $VALUES.validate failed." )
-      end
-      
       ## Calls the restore_ses of plugins, when a session is restored (page reload with previously active session)
       if msg.restored_session
         
@@ -147,6 +138,15 @@ class Transporter
           xhr_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: $PLUGINS.delegate 'cloned_source' failed." )
         end
+      end
+      
+      ## Calls validators for changed values
+      begin
+        $VALUES.validate( msg )
+      rescue => e
+        response_success = false
+        xhr_error_handler( msg, :valuemanager_validate_error, e.message )
+        xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: $VALUES.validate failed." )
       end
       
       ### Allows every plugin to respond to the idle call
