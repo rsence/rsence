@@ -32,7 +32,13 @@ class GUIParser
       @parent.include_js( msg, gui_data['dependencies'] )
       gui_data.delete('dependencies')
     end
-    msg.reply "JSONRenderer.nu( #{gui_data.to_json} );"
+    if gui_data.has_key?('include')
+      gui_data['include'].each do | js_file |
+        js_src = @parent.read_js_once( msg, js_file )
+        msg.reply( js_src )
+      end
+    end
+    msg.reply( "JSONRenderer.nu( #{gui_data.to_json} );" )
   end
   
   # Use this method to extract all the value id's of the +ses+ hash.
@@ -52,11 +58,11 @@ private
   def parse_gui( gui_data, params )
     data_class = gui_data.class
     if data_class == Array
-      gui_data.each_with_index do |item,i|
+      gui_data.each_with_index do | item, i |
         gui_data[i] = parse_gui( item, params )
       end
     elsif data_class == Hash
-      gui_data.each do |key,value|
+      gui_data.each do | key, value |
         gui_data[key] = parse_gui( value, params )
       end
     elsif data_class == Symbol
