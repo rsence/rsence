@@ -1,0 +1,33 @@
+# List of nick names
+:nick_list:
+  :value_call:
+    :method: nick_list
+    :uses_msg: false
+
+# The user's own nick name entry value
+:nick:
+  :value_call:
+    :method: init_nick
+    :uses_msg: true
+
+# A list of chat lines, server -> client only,
+# contains an array-packed array of new items.
+:chat_lines:
+  :value_call:
+    :method: init_lines
+    :uses_msg: true
+
+# The user's own chat text input line
+:chat_line:
+  :value: ''
+  :restore_default: false
+  :responders:
+    - :method: chat_line
+
+# The submit button for sending the
+# input line / nick change to the chat
+# handler (and other users)
+:chat_submit:
+  :value: 0
+  :responders:
+    - :method: chat_submit

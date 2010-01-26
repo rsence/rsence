@@ -1,0 +1,102 @@
+type: GUITree
+version: 0.4
+dependencies:
+  - default_theme
+  - controls
+include:
+  - chat_view
+
+class: HApplication
+extend:
+  # Extend the constructor to receive the options defined.
+  constructor: |
+    function( options ){
+      this.base( options.priority, options.label );
+    }
+  escapeHTML: |
+    function(text){
+      return text.replace(/\&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+options:
+  # The options are passed on to the constructor of the class, see above.
+  priority: 100
+  # A small priority number makes the onIdle calls more frequent,
+  # a large priority number makes the onIdle calls less frequent.
+  label: Simple Chat
+subviews:
+  - # Creates a window to contain the components.
+    class: HWindow
+    rect: [ 10, 10, 600, 400 ]
+    options:
+      closeButton: true
+      label: Simple Chat
+    subviews:
+      - # Nick list
+        class: HStringView
+        rect: [ 8, 8, 120, null, null, 32 ]
+        extend:
+          # styles the nick list with scroll bars and a border
+          drawSubviews: |
+            function(){
+              ELEM.setStyle(this.elemId,'overflow','auto');
+              ELEM.setStyle(this.elemId,'border','1px solid #999');
+            }
+        
+          # updates the nick list when the value is changed
+          refreshValue: |
+            function(){
+              var htmlArr = [];
+              for(var i=0; i < this.value.length; i++){
+                htmlArr.push(
+                  this.app.escapeHTML( this.value[i] )
+                );
+              }
+              ELEM.setHTML(this.markupElemIds.value,htmlArr.join('<br />'));
+            }
+        options:
+          valueObjId: :values.nick_list
+      - # Own nick
+        class: HTextControl
+        rect: [ 8, null, 120, 20, null, 8 ]
+        options:
+          valueObjId: :values.nick
+      - # Chat history
+        class: ChatView
+        rect: [ 136, 8, null, null, 8, 32 ]
+        options:
+          valueObjId: :values.chat_lines
+      - # Chat line
+        class: HTextControl
+        rect: [ 136, null, null, 20, 96, 8 ]
+        extend:
+          # responds to the enter key, simulates a click of the submitButton
+          textEnter: |
+            function(keyCode){
+              var
+              keysPressed = EVENT.status[ EVENT.keysDown ],
+              returnPressed = (keysPressed.indexOf( Event.KEY_RETURN ) !== -1);
+              if(returnPressed){
+                this.app.submitButton.click();
+              }
+              else {
+                this.base();
+              }
+              return false;
+            }
+        options:
+          valueObjId: :values.chat_line
+      - # Chat submit
+        class: HClickValueButton
+        rect: [ null, null, 80, 24, 8, 6 ]
+        extend:
+          # makes a reference of itself in the app, the chat line above refers to it.
+          drawSubviews: |
+            function(){
+              this.app.submitButton = this;
+            }
+        options:
+          label: Send
+          valueObjId: :values.chat_submit
+          events:
+            click: true
+            textEnter: true
