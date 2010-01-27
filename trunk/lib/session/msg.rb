@@ -10,16 +10,33 @@ module Riassence
 module Server
 require 'util/gzstring'
 
-
-## The +Message+ instance that contains session and request-response related 
-## mappings and utility methods.
+## Due to the single instance architecture of +Plugin+, instances of Message 
+## class are used for communication between sessions and +Plugin+ instance. 
+## The +Message+ instance contains session and request-response related 
+## mappings and utility methods. 
 ##
 ## The Message object is initialized as 'msg' in SessionManager.
 ## It's passed around the system as the user/session -object namespace,
 ## much like 'self' is passed around in python methods.
 ## 
-## Using the msg object saves considerate amounts of cpu cycles and memory,
+## Using the msg object saves considerate amounts of CPU cycles and memory,
 ## because it allows single instances of any classes that handle user data.
+## 
+## == HValue Initialization Example
+## +HValue+ is closely related to +Message+ as instances of +HValue+ are
+## used to send data between sessions and the server. This is a small
+## code snippet about how to initialize several HValues as the session
+## is initialized. 
+## 
+## def init_ses( msg )
+##   msg.session[:session_name] = {    
+##     :hvalue1     => HValue.new( msg, @firstvalue ),
+##     :hvalue2     => HValue.new( msg, @secondvalue ),
+##     :hvalue3     => HValue.new( msg, @thirdvalue )
+##   }
+## end
+## 
+
 class Message
   # Session data placeholder, assigned by SessionManager.
   attr_accessor :session 
@@ -54,7 +71,7 @@ class Message
   attr_accessor :buffer
   # The request success flag.
   attr_accessor :response_success
-  # The 'special' browser's presense.
+  # Special flag for Internet Explorer as it's the only browser which needs own support routines on the server side.
   attr_reader   :ie6
   
   
@@ -103,7 +120,6 @@ class Message
     @ses_key = ses_key
   end
   
-  # 
   def error_msg( error_js )
     @error_js = error_js
     # response_done
@@ -113,7 +129,7 @@ class Message
     buffer.to_json
   end
   
-  # called to flush buffer
+  # Called to flush buffer.
   def response_done
     return if @response_sent
     if not @response_success

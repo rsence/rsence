@@ -30,6 +30,8 @@ class BlobObj
   end
 end
 module ObjBlob
+  
+  # Serves a blob object. Will expire by default. Returns ID as URI.
   def serve_blobobj( msg, blob_obj, no_expire=false )
     # gets a new, unique identifier
     ticket_id = @randgen.gen
@@ -44,6 +46,7 @@ module ObjBlob
     return uri
   end
   
+  # Deletes blob object by ID. 
   def del_blobobj( ticket_id, ses_id=false )
     if @raw_uris.has_key?( ticket_id )
       @raw_uris.delete( rsrc_id )
@@ -55,12 +58,14 @@ module ObjBlob
     end
   end
   
+  # Increases expiration time by keep_alive in seconds.
   def push_keepalive_blobobj( ticket_id, keep_alive )
     expiry_time = Time.now.to_i+keep_alive
     @expire_blobobj[expiry_time] = [] unless @expire_blobobj.has_key?(expiry_time)
     @expire_blobobj[expiry_time].push( ticket_id )
   end
   
+  # Removes all expired blob objects.
   def expire_keepalive_blobobjs
     curr_time = Time.now.to_i
     @expire_blobobj.keys.sort.each do |exp_time|

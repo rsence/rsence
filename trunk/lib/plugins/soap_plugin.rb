@@ -12,7 +12,7 @@ module Riassence
 module Server
 
 ## Initialize SOAPPlugin with its fully qualified urn, for instance:
-#  soap_plug = SOAPPlugin.new( 'urn:TestPlugin' )
+##  soap_plug = SOAPPlugin.new( 'urn:TestPlugin' )
 class SOAPPlugin
 
 

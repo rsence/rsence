@@ -16,14 +16,12 @@ require 'ext/randgen'
 module Riassence
 module Server
 
-=begin
- ValueManager provides automagic, transparent syncronization of values between client and server.
-=end
+## ValueManager provides automagic, transparent syncronization of values between client and server.
 class ValueManager
   
   attr_accessor :randgen
   
-  ## Initializes the member value handler objects.
+  # Initializes the member value handler objects.
   def initialize
     
     @config = $config[:values_conf]
@@ -33,7 +31,7 @@ class ValueManager
     
   end
   
-  ## Re-constructs all stored values and sends them to the client
+  # Re-constructs all stored values and sends them to the client
   def resend_session_values( msg )
     
     # with disposable keys enabled,
@@ -87,7 +85,7 @@ class ValueManager
     
   end
   
-  ### Parses the json from the client and passes it on to associated values
+  # Parses the json from the client and passes it on to associated values
   def xhr( msg, syncdata_str )
     
     # parses the json data sent by the client
@@ -104,7 +102,7 @@ class ValueManager
     end
   end
   
-  ### Sets a value by id
+  # Sets a value by id
   def set( msg, val_id, val_data )
     
     # get the session data of this session
@@ -115,7 +113,7 @@ class ValueManager
     val_obj.set( msg, val_data )
   end
   
-  ### Validates the new data of all client-side-modified session-bound values
+  # Validates the new data of all client-side-modified session-bound values
   def validate( msg )
     
     # get the session data of this session
@@ -129,7 +127,7 @@ class ValueManager
     
   end
   
-  ### Sends the new data of all server-side-modified session-bound values to the client
+  # Sends the new data of all server-side-modified session-bound values to the client
   def sync_client( msg )
     
     # get the session data of this session

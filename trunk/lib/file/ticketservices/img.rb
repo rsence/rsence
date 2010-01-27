@@ -14,7 +14,8 @@ module Server
 module TicketService
 module Img
   
-  # removes image data and references
+  # Removes image data and references. Image is removed with
+  # its ID which is the same as its URI.
   def del_img( img_id, ses_id=false )
     if ses_id and @imgs[:ses_ids].has_key?( ses_id )
       @imgs[:ses_ids][ses_id].delete( img_id ) if @imgs[:ses_ids][ses_id].include?( img_id )
@@ -22,14 +23,15 @@ module Img
     @imgs[:by_id].delete( img_id ) if @imgs[:by_id].has_key?( img_id )
   end
   
-  # extends expiration time of disposable files, essentially for keep-alive requests
+  # Extends expiration time of disposable files, essentially for keep-alive
+  # requests. Image URI is used as an ID and extension is given as seconds.
   def push_keepalive( img_id, keep_alive )
     expiry_time = Time.now.to_i+keep_alive
     @expires[expiry_time] = [] unless @expires.has_key?(expiry_time)
     @expires[expiry_time].push( img_id )
   end
   
-  # removes all expired images
+  # Removes all expired images.
   def expire_keepalives
     curr_time = Time.now.to_i
     @expires.keys.sort.each do |exp_time|

@@ -14,12 +14,12 @@ module Server
 module TicketService
 module Rsrc
   
-  # removes static data by id
+  # Removes static data by ID.
   def del_rsrc( rsrc_id )
     @raw_uris.delete( rsrc_id )
   end
   
-  # serves static resources
+  # Serves static resources. ID returned by function.
   def serve_rsrc( content, content_type )
     
     rsrc_id = @randgen.gen

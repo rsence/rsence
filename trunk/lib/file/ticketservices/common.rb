@@ -13,15 +13,18 @@ module Server
 module TicketService
 module Common
   
-  attr_accessor :raw_uris, :imgs, :content_types
+
+  attr_accessor :raw_uris # :nodoc:
+  attr_accessor :imgs # :nodoc:
+  attr_accessor :content_types # :nodoc:
   
   # Helper method to return the time formatted according to the HTTP RFC
   def httime(time)
     return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
-  # Initializes storage
-  def initialize
+  # Initializes storage.
+  def initialize # :nodoc:
     
     # storage for tickets to be expired by expiry time
     # as the key and an array of ids in array as the value
@@ -92,11 +95,15 @@ module Common
     
   end
   
-  def shutdown
+  # Disconnects connection to the database.
+  def shutdown # :nodoc:
     @db.disconnect
   end
   
-  # serves files and images
+  # Serves files and images by returning an URI. Content is given as second 
+  # parameter. Optional third defaults to 'PNG' and defines the format. 
+  # Optional fourth parameter is where there are two possibilities :img 
+  # and :file, defaults to :img. URI works as an ID for data.
   def serve( msg, content, format='PNG', type=:img )
     
     # gets a new, unique identifier
@@ -150,11 +157,12 @@ module Common
     return uri
   end
   
-  # serves images
+  # Alias for +Ticketserve#serve+.
   alias serve_img serve
   
-  ## flushes disposable storage when the session expires
-  def expire_ses( ses_id )
+  # Flushes disposable storage when the session expires. Session id is given
+  # as a parameter.
+  def expire_ses( ses_id ) # :nodoc:
     
     # flush images by session id
     if @imgs[:ses_ids].has_key?(ses_id)
@@ -206,8 +214,8 @@ module Common
     
   end
   
-  # serves stuff from get-request
-  def get( req, res, type=:img )
+  # Serves data based on get request. Is used automatically by +Broker+.
+  def get( req, res, type=:img ) # :nodoc:
     
     is_invalid = true
     

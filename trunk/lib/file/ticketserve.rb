@@ -31,14 +31,13 @@ require 'file/ticketservices/objblob' # smart object wrapper
 module Riassence
 module Server
 
-=begin
 
-TicketServe serves static and disposable data and images.
-It accepts Magick::Image objects too to render them only when really needed.
-Each serve-call returns an unique uri to pass to the client.
-It performs clean-ups based on session and request time-outs.
 
-=end
+## TicketServe serves static and disposable data and images.
+## It accepts Magick::Image objects too to render them only when really needed.
+## Each serve-call returns an unique uri to pass to the client.
+## It performs clean-ups based on session and request time-outs.
+
 class TicketServe
   
   include Riassence::Server::TicketService::Common

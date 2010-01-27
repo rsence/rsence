@@ -14,7 +14,7 @@ module Server
 module TicketService
 module Favicon
   
-  def favicon( req, res )
+  def favicon( req, res ) # :nodoc:
     
     res.status = 200
     
@@ -28,6 +28,7 @@ module Favicon
     
   end
   
+  # Sets favicon. First parameter is favicon data and the second one is content type which defaults to false.
   def set_favicon( ico_data, content_type=false )
     @raw_uris['favicon.ico'][0] = content_type if content_type
     @raw_uris['favicon.ico'][1] = ico_data.size.to_s

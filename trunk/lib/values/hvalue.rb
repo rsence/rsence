@@ -10,18 +10,17 @@
 module Riassence
 module Server
 
-=begin
-HValue is the server-side representation of the client's HValue object.
-It's the 'messenger' to syncronize server-client data and is smart enough
-to validate and process itself as well as tell the client-side
-representation of itself.
-=end
+
+## HValue is the server-side representation of the client's HValue object.
+## It's the 'messenger' to syncronize server-client data and is smart enough
+## to validate and process itself as well as tell the client-side
+## representation of itself.
 class HValue
   
   attr_reader :valid, :sync, :val_id, :data, :members
   attr_writer :valid, :val_id
   
-  ## method for binding the value to the session data
+  # Method for binding the value to the session data.
   def add( msg )
     
     # get the value storage from the session data
@@ -47,6 +46,8 @@ class HValue
     
   end
   
+  # +HValue+ constructor. Binds HValue automatically to the +Message+ instance
+  # given as parameter. Data given as second parameter. 
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
@@ -69,20 +70,20 @@ class HValue
     
   end
   
-  ## Binds the value to the plugin method (both as
-  ## strings; plugin as the name registered in PluginManager)
-  ##
-  ## It uses strings instead of '...method(...)' because
-  ## it won't work with marshal. Strings are easier and work
-  ## as well.
+  # Binds the value to the plugin method (both as
+  # strings; plugin as the name registered in PluginManager)
+  #
+  # It uses strings instead of '...method(...)' because
+  # it won't work with marshal. Strings are easier and work
+  # as well.
   def bind( plugin_name, method_name )
     @members[plugin_name] = [] unless @members.has_key?( plugin_name )
     @members[plugin_name].push( method_name ) unless @members[plugin_name].include?( method_name )
     return true
   end
   
-  ## Releases the binding of the value, both params as
-  ## in bind, but optional (false = 'wildcard')
+  # Releases the binding of the value, both params as
+  # in bind, but optional (false = 'wildcard')
   def release( plugin_name=false, method_name=false )
     return release_all if not plugin_name and not method_name
     return false unless @members.has_key?( plugin_name )
@@ -94,16 +95,16 @@ class HValue
     return true
   end
   
-  ## release all members
+  ## Releases all members.
   def release_all
     @members = {}
     return true
   end
   
-  # the unbind method can be used as an alias to release (as in the client)
+  # The unbind method can be used as an alias to release (as in the client).
   alias unbind release
   
-  ## tell all bound instances that the value is changed
+  # Tell all bound instances that the value is changed.
   def tell( msg )
     invalid_count = 0
     @members.each_key do |plugin_name|
@@ -117,7 +118,7 @@ class HValue
     end
   end
   
-  ## handle client updates
+  # Handle client updates.
   def from_client( msg, data )
     
     # only process changes, if different from the one already stored.
@@ -146,7 +147,7 @@ class HValue
     end
   end
   
-  ## sets the data
+  # Sets the data. 
   def set( msg, data, dont_tell_client=false )
     
     @data   = data
@@ -161,7 +162,7 @@ class HValue
     end
   end
   
-  ## tell the client that the value changed
+  # Tell the client that the value changed.
   def to_client( msg )
     if @is_new_to_client
       ## Initialize a new client value
@@ -174,7 +175,7 @@ class HValue
     end
   end
   
-  ## clean up self
+  # Clean up self.
   def die( msg=false )
     
     release_all
