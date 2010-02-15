@@ -171,7 +171,7 @@ class HValue
       @is_new_to_client = false
     else
       ## Sets the client value
-      msg.reply_value "HVM.s( #{@val_id.to_json}, #{@data.to_json} );" 
+      msg.reply_value "HVM.s(#{@val_id.to_json},#{@data.to_json});" 
     end
   end
   
