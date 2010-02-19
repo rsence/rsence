@@ -1,0 +1,48 @@
+type: GUITree
+version: 0.4
+dependencies:
+  - default_theme
+  - controls
+
+class: HApplication
+options: '200'
+subviews:
+  - class: HView
+    extend:
+      drawSubviews: |
+        function(){
+          this.setStyle('border-top','1px solid #666');
+          this.setStyle('background-color','#999');
+        }
+    rect: [ 0, null, null, 32, 0, 0 ]
+    subviews:
+      - class: HClickValueButton
+        rect: [ 4, 4, 128, 24 ]
+        options:
+          label: 'Clock'
+          valueObjId: :values.clock
+          events: { click: true }
+      - class: HClickValueButton
+        rect: [ 138, 4, 128, 24 ]
+        options:
+          label: 'Inflation Calculator'
+          valueObjId: :values.inflation_calc
+          events: { click: true }
+      - class: HClickValueButton
+        rect: [ 268, 4, 128, 24 ]
+        options:
+          label: 'Riassence Calendar'
+          valueObjId: :values.rsence_cal
+          events: { click: true }
+      - class: HClickValueButton
+        rect: [ 398, 4, 128, 24 ]
+        options:
+          label: 'Simple Chat'
+          valueObjId: :values.simple_chat
+          events: { click: true }
+      - class: HClickValueButton
+        rect: [ 528, 4, 128, 24 ]
+        options:
+          label: 'Unit Converter'
+          valueObjId: :values.unit_converter
+          events: { click: true }
