@@ -17,7 +17,7 @@ subviews:
       collapseButton: true
       closeButton: true
       minSize: [ 700, 500 ]
-      maxSize: [ 935, 645 ]
+      maxSize: [ 940, 650 ]
     define:
       - class: BoldString
         extend: HStringView
