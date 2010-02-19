@@ -40,13 +40,20 @@ class SimpleChat < GUIPlugin
   
   # Ensures there is an entry in the chat handler for this session.
   def restore_ses( msg )
+    ensure_chat_ses( msg )
+    super
+  end
+  
+  # Updates / ensures the chat handler knows this session is online
+  def ensure_chat_ses( msg )
     ses_id = msg.ses_id
-    unless @chat.has_ses?( ses_id )
+    if @chat.has_ses?( ses_id )
+      @chat.update_ses( ses_id )
+    else
       ses = get_ses( msg )
       nick = ses[:nick].data
       @chat.init_ses( msg.ses_id, nick )
     end
-    super
   end
   
   # Signals the chat handler to restore its data and
@@ -116,7 +123,7 @@ class SimpleChat < GUIPlugin
   # Updates the session (prevents "ping timeout" in chat handler) and polls for changes.
   def idle( msg )
     super
-    @chat.update_ses( msg.ses_id )
+    ensure_chat_ses( msg )
     chat_lines( msg ) if msg.session[:main][:boot] > 4
   end
   
