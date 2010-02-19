@@ -28,6 +28,8 @@ subviews:
     class: HWindow
     rect: [ 10, 10, 600, 400 ]
     options:
+      zoomButton: true
+      collapseButton: true
       closeButton: true
       label: Simple Chat
     subviews:
