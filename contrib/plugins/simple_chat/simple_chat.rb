@@ -28,7 +28,13 @@ class SimpleChat < GUIPlugin
   def init
     super
     load( compose_plugin_path( 'lib/chat_handler.rb' ) )
-    @chat = ChatHandler.new( self )
+    conf_yaml = file_read( 'config.yaml' )
+    if conf_yaml
+      @conf = YAML.load( conf_yaml )
+    else
+      @conf = { :timeout_secs => 15, :buffer_lines => 1000, :poll_ms => 500 }
+    end
+    @chat = ChatHandler.new( self, @conf[:timeout_secs], @conf[:buffer_lines] )
   end
   
   # Passes on the init_ses method to the chat handler before calling
@@ -156,7 +162,7 @@ class SimpleChat < GUIPlugin
   # In addition to the default gui rendering, changes the poll frequency to 0.5 seconds
   def init_ui( msg )
     super
-    msg.reply "sesWatcher.timeoutSecs=500;"
+    msg.reply "sesWatcher.timeoutSecs=#{@conf[:poll_ms]};"
   end
   
 end

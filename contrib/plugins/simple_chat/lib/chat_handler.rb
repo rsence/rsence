@@ -20,7 +20,7 @@ class ChatHandler
   
   # Initializes the class using +plugin+ as
   # the parameter (assigned as @plugin in the instance)
-  def initialize( plugin )
+  def initialize( plugin, timeout_secs=15, buffer_lines=1000 )
     # placeholder / default data structure
     @data = default_data
     # placeholder for the background thread
@@ -28,7 +28,9 @@ class ChatHandler
     # reference to the plugin using this handler
     @plugin = plugin
     # setting that defines how long before a "ping timeout"
-    @timeout_secs = 15
+    @timeout_secs = timeout_secs
+    # amount of lines to keep in buffer
+    @buffer_lines = buffer_lines
     # paths to the persistent data files
     @data_path = @plugin.compose_plugin_path( 'data/chat_data.yaml' )
   end
@@ -55,7 +57,7 @@ class ChatHandler
   # crops the chat buffer to 1000 lines (if longer) and deletes expired sessions.
   def clean
     # crops the log buffer length to 1000 lines
-    @data[:lines].shift while @data[:lines].length > 1000
+    @data[:lines].shift while @data[:lines].length > @buffer_lines
     time_now = Time.now.to_i
     @data[:ses_meta].each_key do | ses_id |
       delete_ses( ses_id ) if ses_expired?( ses_id, time_now )

@@ -1,0 +1,10 @@
+
+# How often should the client poll?
+:poll_ms: 500
+
+# How long to wait before disconnecting a user from the chat?
+:timeout_secs: 15
+
+# Chat transcript length in lines to keep.
+:buffer_lines: 1000
+
