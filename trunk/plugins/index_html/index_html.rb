@@ -41,7 +41,7 @@ class IndexHtmlPlugin < ServletPlugin
   end
   
   def close
-    $TICKETSERVE.del_rsrc( @riassence_gif_id )
+    # $TICKETSERVE.del_rsrc( @riassence_gif_id )
     $TICKETSERVE.del_rsrc( @loading_gif_id )
   end
   
@@ -94,7 +94,9 @@ class IndexHtmlPlugin < ServletPlugin
     unless ARGV.include?('-no-rescan') or ARGV.include?('--no-rescan')
       puts "re-scanning plugins."
       begin
+        close
         $PLUGINS.rescan()
+        open
       rescue => e
         puts "=="*40 if $DEBUG_MODE
         puts "IndexHtml::PluginsRescanError: $PLUGINS.rescan failed."
