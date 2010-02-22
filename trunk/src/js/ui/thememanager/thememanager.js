@@ -264,15 +264,27 @@ HThemeManager = HClass.extend({
     if (null === _cached || undefined === _cached) { 
       var _markupUrl = this._markupUrl( _themeName, _componentName, _themePath ),
           _markup = this.fetch( _markupUrl, null, null, false );
-      // Save an empty string to template cache to prevent repeated failing
-      // requests.
-      if (null === _markup || undefined === _markup) {
-        _markup = "";
-      }
-      HThemeManager._tmplCache[_themeName][_componentName] = _markup;
-      return _markup;
+      return this.setMarkup( _themeName, _componentName, _markup );
     }
     return _cached;
+  },
+  
+/** = Description
+  * Sets the html template for the theme and component name combination.
+  *
+  * = Parameters
+  * +_themeName+::     The name of the template to use..
+  * +_componentName+:: The name of the component template.
+  * +_markup+::        The content of the html markup.
+  **/
+  setMarkup: function( _themeName, _componentName, _markup ){
+    // Save an empty string to template cache to prevent repeated failing
+    // requests.
+    if (null === _markup || undefined === _markup) {
+      _markup = "";
+    }
+    this._tmplCache[_themeName][_componentName] = _markup;
+    return _markup;
   },
   
 /** = Description
@@ -313,14 +325,6 @@ HThemeManager = HClass.extend({
   },
   
   
-/** = Description
-  * Called via HView to determine the valid path prefix to aid
-  * finding theme- and component-specific image files.
-  *
-  * = Returns
-  * A valid path, for example: '/helmi/themes/helmiTheme/gfx/'
-  *
-  **/
   _componentGfxPath: function( _themeName, _componentName, _themePath ) {
     var _urlPrefix      = this._urlPrefix( _themeName, _componentName, _themePath ),
         _url = this._joinPath( _urlPrefix, 'gfx' );
@@ -334,10 +338,11 @@ HThemeManager = HClass.extend({
   },
   
   
+/** = Description
+  * Returns the full path of the +_fileName+ given. Uses the default theme.
+  **/
   getThemeGfxFile: function( _fileName ) {
-    
     return this.getThemeGfxPath() + _fileName;
-    
   },
   
   
