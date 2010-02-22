@@ -16,7 +16,7 @@ module Server
 ## servlet_plug.register_get( /\/about\/.*/ )
 ## servlet_plug.register_post( '/mailsender' )
 ## servlet_plug.register( /\/feedback\/.*/ )
-class ServletPlugin
+class Servlet
   
   # Initializes and registers the ServletPlugin.
   def initialize
@@ -94,8 +94,9 @@ class ServletPlugin
   
 end
 
-end
-end
+ServletPlugin = Servlet
 
+end
+end
 
 
