@@ -19,18 +19,22 @@ require 'rack'
 require $config[:http_server][:rack_require]
 
 # Methods that return rack the selected handler
-def rack_webrick_handler; Rack::Handler::WEBrick; end
-def rack_ebb_handler;     Rack::Handler::Ebb;     end
-def rack_thin_handler;    Rack::Handler::Thin;    end
-def rack_mongrel_handler; Rack::Handler::Mongrel; end
+def rack_webrick_handler;  Rack::Handler::WEBrick;  end
+def rack_ebb_handler;      Rack::Handler::Ebb;      end
+def rack_thin_handler;     Rack::Handler::Thin;     end
+def rack_mongrel_handler;  Rack::Handler::Mongrel;  end
+def rack_unicorn_handler;  Rack::Handler::Unicorn;  end
+def rack_rainbows_handler; Rack::Handler::Rainbows; end
 
 # Selects the handler for Rack
 $config[:http_server][:rack_handler] = self.method({
-  'fuzed'   => :rack_fuzed_handler,
-  'webrick' => :rack_webrick_handler,
-  'ebb'     => :rack_ebb_handler,
-  'thin'    => :rack_thin_handler,
-  'mongrel' => :rack_mongrel_handler
+  'fuzed'    => :rack_fuzed_handler,
+  'webrick'  => :rack_webrick_handler,
+  'ebb'      => :rack_ebb_handler,
+  'thin'     => :rack_thin_handler,
+  'mongrel'  => :rack_mongrel_handler,
+  'unicorn'  => :rack_unicorn_handler,
+  'rainbows' => :rack_rainbows_handler
 }[$config[:http_server][:rack_require]]).call
 
 # Debug mode switch. The debug mode is intended for developers, not production.
@@ -41,7 +45,7 @@ require 'file/filecache'
 require 'file/fileserve'
 
 # TicketServe caches and serves the disposable and static resources.
-require 'file/ticketserve'
+# require 'file/ticketserve'
 
 # ValueManager syncronizes value objects
 require 'values/valuemanager'
@@ -236,12 +240,10 @@ class HTTPDaemon < Riassence::Server::Daemon::Base
     $FILECACHE   = $config[:filecache]
     $config[:fileserve]       = FileServe.new
     $FILESERVE   = $config[:fileserve]
-    $config[:ticketserve]     = TicketServe.new
-    $TICKETSERVE = $config[:ticketserve]
     
-    # indexhtml functionality going to servlet
-    #$config[:indexhtml]       = IndexHtml.new
-    #$INDEXHTML   = $config[:indexhtml]
+    # TicketServe is a plugin now:
+    # $config[:ticketserve]     = TicketServe.new
+    # $TICKETSERVE = $config[:ticketserve]
     
     $config[:valuemanager]    = ValueManager.new
     $VALUES      = $config[:valuemanager]

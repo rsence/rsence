@@ -8,8 +8,6 @@
  ##
  #++
 
-module Riassence
-module Server
 module TicketService
 module Common
   
@@ -21,78 +19,6 @@ module Common
   # Helper method to return the time formatted according to the HTTP RFC
   def httime(time)
     return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
-  end
-  
-  # Initializes storage.
-  def initialize # :nodoc:
-    
-    # storage for tickets to be expired by expiry time
-    # as the key and an array of ids in array as the value
-    @expires = {}
-    @expire_files = {}
-    @expire_blobobj = {}
-    
-    # storage for disposable images
-    @imgs = {
-      
-      # id is used as the uri
-      :by_id   => {},
-      
-      # list of image ids by session id
-      :ses_ids => {}
-    }
-    
-    # storage for other disposable data
-    @files = {
-      
-      # id is used as the uri
-      :by_id   => {},
-      
-      # list of image ids by session id
-      :ses_ids => {}
-    }
-    
-    # an randgen instance used for generating ids (84B long)
-    @randgen = RandGen.new( 84 )
-    
-    # supported image content types
-    @content_types = {
-      'GIF' => 'image/gif',
-      'PNG' => 'image/png',
-      'JPG' => 'image/jpeg'
-    }
-    
-    # static data, initially for invalid/not found error-gif
-    # also all serve_rsrc items
-    @raw_uris = {
-      'invalid.gif' => ['image/gif','53',['749464839316700090000800000000004e7ebe129f400000000000c200000000700090000020c0c8f70a9c810e0229ea2da1a000b3'].pack('h*')],
-      'favicon.ico' => ['image/gif','371',['749464839316010001005d00005e5e3dd1d1a1ca7dbf983cfeb9dc5ff8f848db1effbd1fff27279609a600cacae9e0e0d0dcaeff8e8fff030303010101848424afffff0000007be7008c8c9bffffff878b9e0eba712fcfffb2b282e9c6000d5900020202bd3a70ababbaf8f834f9f9f9f8f8f887fafafafa49060606fefefe0707700707074e3bc2939353ce6cd50404007d7d6cfafafa8edb34dcfcfc0f0d97fbfbfb000000000000000000000000000000000000000000000000000000000000000000000000000000000000129f401000000000c20000000001000100006009040801058c8420e91a258ca41744380506934656846910140e04051092ca650688d282bc2072bb5303e0728c2330d6fbb15a78249291bbf0d0811102353410124677285190b2e524e110e0f208b890a13176a480b0725211c889b16227a44101f0027931b1d171a745a010b2caea82f15845c9627182e2a2e050f5007af0f1a203329bf52be032d2213ca4501021501400b3'].pack('h*')]
-    }
-    
-    @upload_slots = {
-      # upload slots
-      :by_id => {
-        # random key      mime    max_size session_id 
-        # 'test123'  => [ '*/*',  15000,   12         ]
-      },
-      # processed uploads
-      :uploaded => {
-        # same key as :by_id  rsence_uploads:id
-        # 'test123'  =>       [37483,37546,38759]
-      },
-      # upload ids by session id
-      :ses_ids => {
-        # 12 => ['test123']
-      }
-    }
-    
-    @blob_objs = {
-      :by_id   => {},
-      :ses_ids => {}
-    }
-    
-    @db = Sequel.connect( $config[:database][:ses_db] )
-    
   end
   
   # Disconnects connection to the database.
@@ -215,7 +141,7 @@ module Common
   end
   
   # Serves data based on get request. Is used automatically by +Broker+.
-  def get( req, res, type=:img ) # :nodoc:
+  def get_ticket( req, res, type=:img ) # :nodoc:
     
     is_invalid = true
     
@@ -370,7 +296,5 @@ module Common
     
   end
   
-end
-end
 end
 end

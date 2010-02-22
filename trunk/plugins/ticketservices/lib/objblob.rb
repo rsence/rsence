@@ -9,8 +9,6 @@
  #++
 
 
-module Riassence
-module Server
 module TicketService
 class BlobObj
   def initialize(data,mime)
@@ -81,7 +79,5 @@ module ObjBlob
       end
     end
   end
-end
-end
 end
 end

@@ -57,13 +57,14 @@ class Broker
         puts "/SOAP: #{uri.inspect}"
         $TRANSPORTER.soap( @request, @response )
   
-      ## /up handles the uploads inited for ticketserve
-      ## the second part of the uri contains the disposable
-      ## upload key that has a server-side mapping to the
-      ## user's session
-      elsif uri[0..2] == broker_urls[:u]
-        puts "/U: #{uri.inspect}" if $DEBUG_MODE
-        $TICKETSERVE.upload( @request, @response )
+      # ## /up handles the uploads inited for ticketserve
+      # ## the second part of the uri contains the disposable
+      # ## upload key that has a server-side mapping to the
+      # ## user's session
+      # elsif uri[0..2] == broker_urls[:u]
+      #   puts "/U: #{uri.inspect}" if $DEBUG_MODE
+      #   $TICKETSERVE.upload( @request, @response )
+      
       ## nothing matched, display 404
       else
         puts "/404: #{uri.inspect}" if $DEBUG_MODE
@@ -99,40 +100,40 @@ class Broker
         # == '/H/'
         puts "/H: #{uri.inspect}" if $DEBUG_MODE
         $FILESERVE.get( @request, @response )
-    
-      ## /i returns disposable RMagick objects rendered to data
-      elsif uri.match( /^#{broker_urls[:i]}/ )
-        puts "/i: #{uri.inspect}" if $DEBUG_MODE
-        $TICKETSERVE.get( @request, @response, :img )
-    
-      ## /d returns static data resources
-      elsif uri.match( /^#{broker_urls[:d]}/ )
-        puts "/d: #{uri.inspect}" if $DEBUG_MODE
-        $TICKETSERVE.get( @request, @response, :rsrc )
-    
-      ## /f return disposable data resources
-      elsif uri.match( /^#{broker_urls[:f]}/ )
-        puts "/f: #{uri.inspect}" if $DEBUG_MODE
-        $TICKETSERVE.get( @request, @response, :file )
-    
-      ## /B return smart data objects
-      elsif uri.match( /^#{broker_urls[:b]}/ )
-        puts "/b: #{uri.inspect}" if $DEBUG_MODE
-        $TICKETSERVE.get( @request, @response, :blobobj )
-    
-      ## special case for favicon
-      elsif uri == broker_urls[:favicon]
-        $TICKETSERVE.favicon( @request, @response )
-    
-      ## empty html page for the uploader iframe
-      elsif uri == broker_urls[:uploader_iframe]
-        puts "/U/iframe_html: #{uri.inspect}" if $DEBUG_MODE
-        @response.status = 200
-        http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
-        @response['content-type'] = 'text/html; charset=UTF-8'
-        @response['content-length'] = http_body.size.to_s
-        @response.body = http_body
-    
+      
+      # ## /i returns disposable RMagick objects rendered to data
+      # elsif uri.match( /^#{broker_urls[:i]}/ )
+      #   puts "/i: #{uri.inspect}" if $DEBUG_MODE
+      #   $TICKETSERVE.get( @request, @response, :img )
+      #     
+      # ## /d returns static data resources
+      # elsif uri.match( /^#{broker_urls[:d]}/ )
+      #   puts "/d: #{uri.inspect}" if $DEBUG_MODE
+      #   $TICKETSERVE.get( @request, @response, :rsrc )
+      #     
+      # ## /f return disposable data resources
+      # elsif uri.match( /^#{broker_urls[:f]}/ )
+      #   puts "/f: #{uri.inspect}" if $DEBUG_MODE
+      #   $TICKETSERVE.get( @request, @response, :file )
+      #     
+      # ## /B return smart data objects
+      # elsif uri.match( /^#{broker_urls[:b]}/ )
+      #   puts "/b: #{uri.inspect}" if $DEBUG_MODE
+      #   $TICKETSERVE.get( @request, @response, :blobobj )
+      #     
+      # ## special case for favicon
+      # elsif uri == broker_urls[:favicon]
+      #   $TICKETSERVE.favicon( @request, @response )
+      #     
+      # ## empty html page for the uploader iframe
+      # elsif uri == broker_urls[:uploader_iframe]
+      #   puts "/U/iframe_html: #{uri.inspect}" if $DEBUG_MODE
+      #   @response.status = 200
+      #   http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
+      #   @response['content-type'] = 'text/html; charset=UTF-8'
+      #   @response['content-length'] = http_body.size.to_s
+      #   @response.body = http_body
+      
       ## nothing matched, display 404
       else
         puts "/404: #{uri.inspect}" if $DEBUG_MODE

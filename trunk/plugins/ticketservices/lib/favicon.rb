@@ -9,8 +9,6 @@
  #++
 
 
-module Riassence
-module Server
 module TicketService
 module Favicon
   
@@ -36,7 +34,5 @@ module Favicon
     
   end
   
-end
-end
 end
 end

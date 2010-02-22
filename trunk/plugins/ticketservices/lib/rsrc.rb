@@ -9,8 +9,6 @@
  #++
 
 
-module Riassence
-module Server
 module TicketService
 module Rsrc
   
@@ -32,7 +30,5 @@ module Rsrc
     uri = File.join($config[:broker_urls][:d],rsrc_id)
   end
   
-end
-end
 end
 end

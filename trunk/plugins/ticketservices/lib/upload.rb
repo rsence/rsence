@@ -44,8 +44,6 @@ create table rsence_uploads (
 
 require 'sequel'
 
-module Riassence
-module Server
 module TicketService
 module Upload
   
@@ -206,21 +204,3 @@ module Upload
   end
 end
 end
-end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

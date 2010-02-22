@@ -9,8 +9,6 @@
  #++
 
 
-module Riassence
-module Server
 module TicketService
 module TicketFile
   
@@ -54,8 +52,6 @@ module TicketFile
     return serve( msg, content, [content_type, filename], :file)
   end
   
-end
-end
 end
 end
 

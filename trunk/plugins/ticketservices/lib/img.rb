@@ -9,8 +9,6 @@
  #++
 
 
-module Riassence
-module Server
 module TicketService
 module Img
   
@@ -48,7 +46,5 @@ module Img
     end
   end
   
-end
-end
 end
 end
