@@ -38,68 +38,73 @@ require 'util/gzstring'
 ## 
 
 class Message
+  
   # Session data placeholder, assigned by SessionManager.
   attr_accessor :session 
-  # The session identifier placeholder, assigned by SessionManager.
-  attr_accessor :ses_id
+  
   # New session flag, check it in your code to decide
   # what to do, when a new session is encountered.
   # In plugins, this usually means that some Values
   # need to be created and bound or possibly that a
   # user_id mapping needs to be done.
   attr_accessor :new_session
+  
   # Old session first xhr flag, check it in your code
   # to decide what to do, when a restored session is
   # encountered. The old Values are automatically present,
   # so you should at least not re-create or re-bind them.
   attr_accessor :restored_session
+  
   # Contains the source ses on the first request after this
   # session was cloned from another session.
   attr_accessor :cloned_source 
+  
   # Contains the target sessions packed in an array on
   # the first request after another session was cloned
   # from this session.
   attr_accessor :cloned_targets
+  
   # The session is not valid by default, it's set
   # by SessionManager, if everything seems ok.
   attr_accessor :ses_valid 
+  
   # The http request object.
   attr_accessor :request 
+  
   # The http response object.
   attr_accessor :response
+  
   # Response output.
   attr_accessor :buffer
+  
   # The request success flag.
   attr_accessor :response_success
-  # Special flag for Internet Explorer as it's the only browser which needs own support routines on the server side.
-  attr_reader   :ie6
   
   
   # Message is initialized with a valid +Request+ and +Response+ objects. 
-  # These are generated automatically by a webserver
   def initialize( request, response )
     @request  = request
     @response_success = false
     @response = response
-    @session     = {}
+    @session  = nil
     @buffer = []
+    
     # Value response output.
     @value_buffer = []
-    @ses_id      = 0
+    
     # The session key placeholder.
     @ses_key = false
-    @ie6         = (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
     @new_session      = false
     @restored_session = false
     @cloned_source = false
     @cloned_targets = false
     @ses_valid = false
     @error_js = ''
-    # It's better to evaluate plain text than to respond with js.
+    
     @response.content_type = 'text/javascript; charset=utf-8'
     @response['cache-control'] = 'no-cache'
     
-    # gnu-ziped responses:
+    # gnu-zipped responses:
     if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not $config[:no_gzip]
       @response['content-encoding'] = 'gzip'
       @do_gzip = true
@@ -110,6 +115,11 @@ class Message
     @response_sent = false
   end
   
+  # Returns true for Internet Explorer 6.0
+  def ie6
+    return request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0')
+  end
+  
   # Expire the session.
   def expire_session
     $SESSION.expire_session( @ses_id )
@@ -118,6 +128,24 @@ class Message
   # Define the session key.
   def ses_key=(ses_key)
     @ses_key = ses_key
+  end
+  
+  # Returns the user id
+  def user_id
+    @session[:user_id]
+  end
+  
+  # Setter for the user id
+  def user_id=(user_id)
+    @session[:user_id] = user_id
+  end
+  
+  def ses_id
+    @session[:ses_id]
+  end
+  
+  def ses_id=(ses_id)
+    @session[:ses_id] = ses_id
   end
   
   def error_msg( error_js )
@@ -173,7 +201,7 @@ class Message
     @buffer.push( data )
   end
   
-  # For valuemanager; insert changed values BEFORE other js.
+  # For value manager; insert changed values BEFORE other js.
   def reply_value(data)
     puts data if $config[:trace]
     @value_buffer.push( data )
@@ -188,7 +216,7 @@ class Message
   # second optional parameter +img_format+ defaults to 'PNG' and defines 
   # the format of served picture.
   def serve_img( img_obj, img_format='PNG' )
-    return $TICKETSERVE.serve_img( self, img_obj, img_format )
+    return run('ticket','serve_img', self, img_obj, img_format )
   end
   
   # Sends any binary to be served, returns a disposable uri. First parameter
@@ -196,26 +224,27 @@ class Message
   # to 'text/plain' and third, also optional defines the filename which 
   # defaults to 'untitled.txt'.
   def serve_file( file_data, content_type='text/plain', filename='untitled.txt' )
-    return $TICKETSERVE.serve_file( self, file_data, content_type, filename )
+    return run('ticket','serve_file', self, file_data, content_type, filename )
   end
   
   # Sends any binary to be served, returns a static uri.
   #
-  # IMPORTANT: PLEASE call unserve_rsrc manually, when you
+  # IMPORTANT: PLEASE call +release_rsrc+ manually, when you
   # don't need the resource anymore! Otherwise TicketServe will
   # keep on chugging more memory every time you serve something.
   #
   # HINT: Usually, it's a better idea to use serve_img or
   # serve_file instead.
   def serve_rsrc( rsrc_data, content_type='text/plain' )
-    return $TICKETSERVE.serve_rsrc( self, rsrc_data, content_type )
+    return run('ticket','serve_rsrc',self, rsrc_data, content_type )
   end
   
   # Removes the uri served, you HAVE TO call this manually when
   # you are done serving something! Takes the uri as its only parameter.
-  def unserve_rsrc( uri )
-    $TICKETSERVE.del_rsrc( uri[3..-1] )
+  def release_rsrc( uri )
+    run('ticket','del_rsrc', uri[3..-1] )
   end
+  alias unserve_rsrc release_rsrc
   
   # Calls registered plugin +plugin+ method +plugin_method+ with any +args+
   def run( plugin_name, plug_method, *args )

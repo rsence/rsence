@@ -104,7 +104,6 @@ class SessionManager < SessionStorage
     
     ### Set the session data and id to the message object
     msg.session = ses_data
-    msg.ses_id  = ses_id
     
     # Flag the session as new, so associated
     # plugins know when to create new data
@@ -160,7 +159,6 @@ class SessionManager < SessionStorage
     
     ### Bind the session data and id to the message object
     msg.session = ses_data
-    msg.ses_id  = ses_id
     
   end
   
@@ -180,7 +178,6 @@ class SessionManager < SessionStorage
     @session_keys[ ses_sha ] = ses_id
     @session_cookie_keys.delete( old_data[:cookie_key] )
     @session_cookie_keys[ cookie_key ] = ses_id
-    msg.ses_id = ses_id
     msg.ses_key = ses_key
     msg.session = ses_data
     if @clone_targets.has_key? old_id
