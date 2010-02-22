@@ -10,23 +10,6 @@
 
 
 module TicketService
-class BlobObj
-  def initialize(data,mime)
-    @data = data
-    @mime = mime
-  end
-  def mime
-    return @mime
-  end
-  def data
-    return @data
-  end
-  def size
-    return @data.size
-  end
-  def close
-  end
-end
 module ObjBlob
   
   # Serves a blob object. Will expire by default. Returns ID as URI.

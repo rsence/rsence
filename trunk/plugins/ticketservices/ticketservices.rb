@@ -195,14 +195,79 @@ $config[:ticketserve] = ticketserve
 $TICKETSERVE          = ticketserve
 
 # Plugin API for ticket services
-class TicketServices < Plugin
+class TicketAPI < Plugin
+  class BlobObj
+    def initialize(data,mime)
+      @data = data
+      @mime = mime
+    end
+    def mime
+      return @mime
+    end
+    def data
+      return @data
+    end
+    def size
+      return @data.size
+    end
+    def close
+    end
+  end
   def set_ticketserve( ticketserve )
     @ticketserve = ticketserve
   end
+  def serve( msg, content, format='PNG', type=:img )
+    @ticketserve.serve( msg, content, format, type )
+  end
+  def expire_ses( msg )
+    @ticketserve.expire_ses( msg.ses_id )
+  end
+  def set_favicon( ico_data, content_type=false )
+    @ticketserve.set_favicon( ico_data, content_type )
+  end
+  def del_file( msg, file_id )
+    @ticketserve.del_file( file_id, msg.ses_id )
+  end
+  def serve_file( msg, content='', content_type='text/plain', filename='' )
+    @ticketserve.serve_file( msg, content, content_type, filename )
+  end
+  def del_img( msg, img_id )
+    @ticketserve.del_img( img_id, msg.ses_id )
+  end
+  def serve_img( msg, content, format='PNG', type=:img )
+    @ticketserve.serve_img( msg, content, format, type )
+  end
+  def proto_obj
+    return BlobObj
+  end
+  def serve_obj( msg, blob_obj, no_expire=false )
+    @ticketserve.serve_blobobj( msg, blob_obj, no_expire )
+  end
+  def del_obj( msg, ticket_id )
+    @ticketserve.del_blobobj( ticket_id, msg.ses_id )
+  end
+  def del_rsrc( rsrc_id )
+    @ticketserve.del_rsrc( rsrc_id )
+  end
+  def serve_rsrc( content, content_type )
+    @ticketserve.serve_rsrc( content, content_type )
+  end
+  def get_uploads( ticket_id, with_data=false )
+    @ticketserve.get_uploads( ticket_id, with_data )
+  end
+  def del_upload( ticket_id, row_id )
+    @ticketserve.del_upload( ticket_id, row_id )
+  end
+  def del_uploads( msg, ticket_id )
+    @ticketserve.del_uploads( ticket_id, msg.ses_id )
+  end
+  def upload_key( msg, value_key, max_size=1000000, mime_allow=/(.*?)\/(.*?)/, allow_multi=true )
+    @ticketserve.upload_key( msg, value_key, max_size, mime_allow, allow_multi )
+  end
 end
 
-ticketservices = TicketServices.new
-ticketservices.register( 'ticket' )
-ticketservices.set_ticketserve( ticketserve )
+ticket = TicketAPI.new
+ticket.register( 'ticket' )
+ticket.set_ticketserve( ticketserve )
 
 
