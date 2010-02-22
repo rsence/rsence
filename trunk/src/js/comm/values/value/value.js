@@ -53,7 +53,6 @@ HValue = HClass.extend({
   **/
   constructor: function(_id,_value){
     this.id    = _id;
-    this.type  = '[HValue]';
     this.value = _value;
     this.views = [];
     if(_id){
