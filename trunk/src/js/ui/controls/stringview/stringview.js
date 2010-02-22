@@ -32,6 +32,7 @@ HStringView = HControl.extend({
       return;
     }
     ELEM.setStyle(this.markupElemIds.value, _name, _value, _cacheOverride);
+    return this;
   },
   
 /** = Description

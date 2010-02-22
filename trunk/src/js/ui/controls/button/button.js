@@ -21,6 +21,7 @@ HButton = HControl.extend({
   **/
   setStyle: function(_name, _value){
     ELEM.setStyle(this.markupElemIds.label,_name,_value);
+    return this;
   }
 });
 
