@@ -81,21 +81,21 @@ class Broker
     
     uri_matched = $TRANSPORTER.servlet( :get, @request, @response )
     
-    unless uri_matched
-      
-      broker_urls = $config[:broker_urls]
-      
-      ## /H processes client framework files (js & themes)
-      if uri.match( /^#{broker_urls[:h]}/ )
-        # == '/H/'
-        puts "/H: #{uri.inspect}" if $DEBUG_MODE
-        $FILESERVE.get( @request, @response )
-      
-      ## nothing matched, display 404
-      else
-        not_found
-      end
-    end
+    not_found unless uri_matched
+    #   
+    #   broker_urls = $config[:broker_urls]
+    #   
+    #   ## /H processes client framework files (js & themes)
+    #   if uri.match( /^#{broker_urls[:h]}/ )
+    #     # == '/H/'
+    #     puts "/H: #{uri.inspect}" if $DEBUG_MODE
+    #     $FILESERVE.get( @request, @response )
+    #   
+    #   ## nothing matched, display 404
+    #   else
+    #     not_found
+    #   end
+    # end
     
   end
   

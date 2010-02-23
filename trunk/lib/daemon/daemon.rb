@@ -41,11 +41,8 @@ $config[:http_server][:rack_handler] = self.method({
 $DEBUG_MODE  = $config[:debug_mode]
 
 # JSServe / JSCache caches and serves the pre-packaged js and theme -files.
-require 'file/filecache'
-require 'file/fileserve'
-
-# TicketServe caches and serves the disposable and static resources.
-# require 'file/ticketserve'
+# require 'file/filecache'
+# require 'file/fileserve'
 
 # ValueManager syncronizes value objects
 require 'values/valuemanager'
@@ -236,14 +233,10 @@ end
 
 class HTTPDaemon < Riassence::Server::Daemon::Base
   def self.start
-    $config[:filecache]       = FileCache.new
-    $FILECACHE   = $config[:filecache]
-    $config[:fileserve]       = FileServe.new
-    $FILESERVE   = $config[:fileserve]
-    
-    # TicketServe is a plugin now:
-    # $config[:ticketserve]     = TicketServe.new
-    # $TICKETSERVE = $config[:ticketserve]
+    # $config[:filecache]       = FileCache.new
+    # $FILECACHE   = $config[:filecache]
+    # $config[:fileserve]       = FileServe.new
+    # $FILESERVE   = $config[:fileserve]
     
     $config[:valuemanager]    = ValueManager.new
     $VALUES      = $config[:valuemanager]

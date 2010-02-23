@@ -7,15 +7,12 @@
  ##
 
 
-module Riassence
-module Server
-
 =begin
  FileCache scans and stores the ui path for javascript files and 
  (css/html/image) theme files compiled as the result of the client
  SDK's build_client.rb
 =end
-class FileCache
+class ClientPkgCache
   
   attr_reader :busy_scanning, :scan_time, :js_cache, :theme_cache, :gz_cache, :client_rev
   
@@ -172,5 +169,4 @@ class FileCache
   
 end
 
-end
-end
+

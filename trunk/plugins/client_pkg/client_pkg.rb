@@ -1,19 +1,28 @@
-##   Riassence Framework
- #   Copyright 2007 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
 
 
-module Riassence
-module Server
-
-=begin
- FileServe serves javascript and (css/html/image) theme files needed by the client from FileCache
-=end
-class FileServe
+class ClientPkg < Servlet
+  
+  # the library path of this plugin
+  lib_path = File.join( PluginManager.curr_plugin_path, 'lib' )
+  
+  # common functionality
+  require File.join(lib_path,'client_pkg_cache')
+  
+  def init
+    @client_cache = ClientPkgCache.new
+    
+    # backwards compatibility
+    $config[:filecache] = @client_cache
+    $FILECACHE = @client_cache
+  end
+  
+  def broker_urls
+    $config[:broker_urls]
+  end
+  
+  def match( uri, request_type )
+    uri.match( /^#{broker_urls[:h]}/ )
+  end
   
   # Helper method to return the time formatted according to the HTTP RFC
   def httime(time)
@@ -21,7 +30,7 @@ class FileServe
   end
   
   ## Responds to get-requests
-  def get( request, response )
+  def get( request, response, session )
     
     # Sets the response date header to the current time:
     response['Date'] = httime( Time.now )
@@ -202,8 +211,12 @@ class FileServe
     end
     
   end
-  
 end
 
-end
-end
+client_pkg = ClientPkg.new
+
+# backwards compatibility:
+$config[:fileserve] = client_pkg
+$FILESERVE = client_pkg
+
+
