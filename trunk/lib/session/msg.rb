@@ -117,7 +117,7 @@ class Message
   
   # Returns true for Internet Explorer 6.0
   def ie6
-    return request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0')
+    return (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
   end
   
   # Expire the session.
