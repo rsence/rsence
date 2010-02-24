@@ -10,7 +10,7 @@
   ** HRadiobuttonList expects the setListItems to be set. See HListItems.
   ** The value of the instance is the selected key in the listItems.
   ***/
-HRadiobuttonList = HControl.extend({
+HRadioButtonList = HControl.extend({
   drawSubviews: function(){
     this.setStyle('border','1px solid #999');
     this.setStyle('overflow-y','auto');
@@ -110,7 +110,7 @@ HRadiobuttonList = HControl.extend({
   }
 });
 
-
+HRadiobuttonList = HRadioButtonList;
 
 
 
