@@ -117,9 +117,7 @@ class PluginManager
     # loop through all plugin-mainlevel directories
     @dirs.each do |plugin_dir|
       
-      # makes sure the plugin dir is a dir
-      # (there might be files like readme.txt or licence.txt)
-      is_dir = FileTest.directory?( plugin_dir )
+      is_dir = File.directory?( plugin_dir )
       next unless is_dir
       
       scan_plugin_dir( plugin_dir )
@@ -127,6 +125,22 @@ class PluginManager
     end
     open
     @@curr_plugin_path = nil
+  end
+  
+  def plugin_error( e, err_location, err_location_descr, eval_repl=false )
+    err_msg = [
+      "*"*40,
+      err_location,
+      err_location_descr,
+      "#{e.class.to_s}, #{e.message}",
+      "Backtrace:",
+      "\t"+e.backtrace.join("\n\t"),
+      "*"*40
+    ].join("\n")+"\n"
+    if eval_repl
+      err_msg.gsub!('(eval):',"#{eval_repl}:")
+    end
+    $stderr.write( err_msg )
   end
   
   def scan_plugin_dir( plugin_dir )
@@ -157,15 +171,12 @@ class PluginManager
         ## eval the plugin source
         plugin_eval( filename )
       rescue => e
-        $stderr.write [
-          "*"*40,
+        plugin_error(
+          e,
           "Riassence::Server::PluginManager.scan_plugin_dir(#{plugin_dir})",
           "plugin: #{plugin_name.inspect}",
-          "#{e.class.to_s}, #{e.message}",
-          "Backtrace:",
-          "\t"+e.backtrace.join("\n\t").gsub('(eval):',File.join(plugin_dir,plugin_name,filename.to_s+'.rb:')),
-          "*"*40
-        ].join("\n")+"\n"
+          File.join(plugin_dir,plugin_name,filename.to_s+'.rb')
+        )
       end
     end
   end
@@ -175,7 +186,17 @@ class PluginManager
     # Create a new, anonymous module as the plugin namespace.
     module_ns = Module.new
     plugin_src = File.read( filename )
-    module_ns.module_eval( plugin_src )
+    begin
+      return module_ns.module_eval( plugin_src )
+    rescue => e
+      plugin_error(
+        e,
+        "Riassence::Server::PluginManager.plugin_eval",
+        "filename: #{filename.inspect}",
+        filename
+      )
+      return false
+    end
   end
   
   # Tells all plugins to open the files or databases they need.
@@ -209,7 +230,7 @@ class PluginManager
     flush
     close
     @@plugins = {}
-    @@servlets = []
+    @@servlets = {}
     scan
     open
   end
@@ -226,14 +247,24 @@ class PluginManager
     end
   end
   
-  @@servlets = []
+  @@servlets = {}
   def match_servlet_uri( uri, request_type=:get )
     match_score = {}
-    @@servlets.each_with_index do | servlet, i |
-      if servlet.match( uri, request_type )
-        score = servlet.score
-        match_score[ score ] = [] unless match_score.has_key? score
-        match_score[ score ].push( servlet )
+    @@servlets.each do | servlet_name, servlet |
+      begin
+        if servlet.match( uri, request_type )
+          score = servlet.score
+          match_score[ score ] = [] unless match_score.has_key? score
+          match_score[ score ].push( servlet_name )
+        end
+      rescue => e
+        plugin_error(
+          e,
+          "Riassence::Server::PluginManager.match_servlet_uri",
+          "servlet: #{servlet_name.inspect}, request_type: #{request_type.inspect}, uri: #{uri.inspect}",
+          servlet_name
+        )
+        return false
       end
     end
     match_scores = match_score.keys.sort
@@ -249,9 +280,29 @@ class PluginManager
     match_plugin = match_servlet_uri( request.fullpath, request_type )
     if match_plugin
       if request_type == :get
-        match_plugin.get( request, response, session )
+        begin
+          @@servlets[match_plugin].get( request, response, session )
+        rescue => e
+          plugin_error(
+            e,
+            "Riassence::Server::PluginManager.match_servlet",
+            "plugin: #{match_plugin.inspect}, method: get, uri: #{request.fullpath}",
+            match_plugin
+          )
+          return false
+        end
       elsif request_type == :post
-        match_plugin.post( request, response, session )
+        begin
+          @@servlets[match_plugin].post( request, response, session )
+        rescue => e
+          plugin_error(
+            e,
+            "Riassence::Server::PluginManager.match_servlet",
+            "plugin: #{match_servlet.inspect}, method: post, uri: #{request.fullpath}",
+            match_plugin
+          )
+          return false
+        end
       else
         return false
       end
@@ -262,17 +313,26 @@ class PluginManager
   end
   
   def delegate_servlet( method_name, *args )
-    @@servlets.each do |servlet|
+    @@servlets.each do |servlet_name,servlet|
       if servlet.respond_to? method_name
-        servlet.method( method_name ).call( *args )
+        begin
+          servlet.method( method_name ).call( *args )
+        rescue => e
+          plugin_error(
+            e,
+            "Riassence::Server::PluginManager.delegate_servlet",
+            "plugin: #{servlet_name.inspect}, method: #{method_name.inspect}, args: #{args_clean(args)}",
+            servlet_name
+          )
+        end
       end
     end
   end
   
   def PluginManager.add_servlet( servlet )
-    idx = @@servlets.size
-    @@servlets.push( servlet )
-    return idx
+    servlet_name = File.split( @@curr_plugin_path )[1]
+    @@servlets[servlet_name] = servlet
+    return servlet_name
   end
   
   def args_clean(args)
@@ -295,15 +355,12 @@ class PluginManager
         begin
           plugin.send( method, *args )
         rescue => e
-          $stderr.write [
-            "*"*40,
-            "Riassence::Server::PluginManager.delegate(...)",
+          plugin_error(
+            e,
+            "Riassence::Server::PluginManager.delegate",
             "plugin: #{plugin_name.inspect}, method: #{method.inspect}, args: #{args_clean(args)}",
-            "#{e.class.to_s}, #{e.message}",
-            "Backtrace:",
-            "\t#{e.backtrace.join("\n\t").gsub('(eval):',"#{plugin}:")}",
-            "*"*40
-          ].join("\n")+"\n"
+            plugin_name
+          )
         end
       end
     end
@@ -315,7 +372,16 @@ class PluginManager
     ## 
     if @@plugins.has_key?( plugin_name )
       if @@plugins[plugin_name].respond_to?( method_name )
-        return @@plugins[plugin_name].method( method_name ).call(*args)
+        begin
+          return @@plugins[plugin_name].method( method_name ).call(*args)
+        rescue => e
+          plugin_error(
+            e,
+            "Riassence::Server::PluginManager.run_plugin",
+            "plugin: #{plugin_name.inspect}, method: #{method_name.inspect}, args: #{args_clean(args)}",
+            plugin_name
+          )
+        end
       end
     end
   end

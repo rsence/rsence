@@ -114,7 +114,7 @@ class Main < Plugin
     # Deletes the initial "Loading, please wait..." -message
     msg.reply "ELEM.del(ELEM.bindId('loading'));"
     # Delegates the init_ui method to each plugin to signal bootstrap completion.
-    $PLUGINS.delegate( 'init_ui', msg )
+    msg.pluginmanager.delegate( 'init_ui', msg )
   end
   
   # Flushes commands in the :delayed_calls array

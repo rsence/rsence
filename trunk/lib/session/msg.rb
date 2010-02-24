@@ -80,9 +80,20 @@ class Message
   # The request success flag.
   attr_accessor :response_success
   
+  # Reference to Transporter
+  attr_accessor :transporter
+  
+  # Reference to ValueManager
+  attr_accessor :valuemanager
+  
+  # Reference to SessionManager
+  attr_accessor :sessionmanager
+  
+  # Reference to PluginManager
+  attr_accessor :pluginmanager
   
   # Message is initialized with a valid +Request+ and +Response+ objects. 
-  def initialize( request, response )
+  def initialize( transporter, request, response )
     @request  = request
     @response_success = false
     @response = response
@@ -100,6 +111,12 @@ class Message
     @cloned_targets = false
     @ses_valid = false
     @error_js = ''
+    
+    # global instances
+    @transporter    = transporter
+    @valuemanager   = @transporter.valuemanager
+    @sessionmanager = @transporter.sessionmanager
+    @pluginmanager  = @transporter.pluginmanager
     
     @response.content_type = 'text/javascript; charset=utf-8'
     @response['cache-control'] = 'no-cache'
@@ -122,7 +139,7 @@ class Message
   
   # Expire the session.
   def expire_session
-    $SESSION.expire_session( @ses_id )
+    @sessionmanager.expire_session( @ses_id )
   end
   
   # Define the session key.
@@ -248,7 +265,7 @@ class Message
   
   # Calls registered plugin +plugin+ method +plugin_method+ with any +args+
   def run( plugin_name, plug_method, *args )
-    $PLUGINS.run_plugin( plugin_name, plug_method, *args)
+    @pluginmanager.run_plugin( plugin_name, plug_method, *args)
   end
   
   

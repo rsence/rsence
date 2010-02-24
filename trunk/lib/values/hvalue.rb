@@ -51,7 +51,7 @@ class HValue
   def initialize( msg, data )
     
     ## Get an unique integer id for the value
-    @val_id   = $VALUES.randgen.gen
+    @val_id   = msg.valuemanager.randgen.gen
     
     ## set the data of the hvalue
     set( msg, data, true )
@@ -109,7 +109,7 @@ class HValue
     invalid_count = 0
     @members.each_key do |plugin_name|
       @members[plugin_name].each do |method_name|
-        invalid_count += 1 unless $PLUGINS.run_plugin( plugin_name, method_name, msg, self ) 
+        invalid_count += 1 unless msg.pluginmanager.run_plugin( plugin_name, method_name, msg, self ) 
       end
     end
     if invalid_count == 0

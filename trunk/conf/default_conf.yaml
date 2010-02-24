@@ -1,3 +1,5 @@
+
+#### Server configuration
 #
 # The :base_url specifies the prefix for all default http responders.
 :base_url: '/'
@@ -261,4 +263,166 @@
   #:log_fn: /var/log/rsence.log
 }
 #
+# Entered by code, empty container
 :broker_urls: { }
+
+
+#### Client package build configuration
+#
+#
+:client_pkg:
+  
+  # Source directories to scan
+  :src_dirs:
+    
+    # Riassence Client Framework
+    - src/js
+    
+    # How to include your own custom js package directory:
+    # - /home/me/code/extra_components
+  
+  # List of theme names to include and pack
+  :theme_names:
+    - default  # Makes default_theme.js containing css and html templates
+    - bright   # Makes bright_theme.js containing css and html templates
+  
+  # List of packages to build
+  :packages:
+    
+    # The core package, loaded by default using index_html
+    core:
+      - class             # HClass
+      - elem              # ELEM
+      - event             # EVENT
+      - sha               # SHAClass
+      - system            # HSystem
+      - application       # HApplication
+      - comm              # COMM
+      - queue             # COMM.Queue
+      - session           # COMM.Session
+      - transporter       # COMM.Transporter
+      - sessionwatcher    # COMM.SessionWatcher
+      - urlresponder      # COMM.URLResponder
+      - autosync          # ( automatic sync setup )
+      - values            # COMM.Values
+      - value             # HValue
+      - jsloader          # COMM.JSLoader
+      - json_renderer     # COMM.JSONRenderer
+      - valuematrix       # HValueMatrixInterface & HValueMatrix
+      - point             # HPoint
+      - rect              # HRect
+      - thememanager      # HThemeManager
+      - markupview        # HMarkupView
+      - morphanimation    # HMorphAnimation
+      - view              # HView
+      - eventresponder    # HEventResponder
+      - valueresponder    # HValueResponder
+      - dummyvalue        # HDummyValue
+      - controldefaults   # HControlDefaults
+      - control           # HControl
+      - dyncontrol        # HDynControl
+    
+    # The default collection of simple control widgets (components)
+    controls:
+      - button            # HButton & HClickValueButton
+      - checkbox          # HCheckbox
+      - radiobutton       # HRadioButton
+      - stringview        # HStringView
+      - textcontrol       # HTextControl
+      - passwordcontrol   # HPasswordControl
+      - textarea          # HTextArea
+      - uploader          # HUploader
+      - slider            # HSlider
+      - vslider           # HVSlider
+      - progressbar       # HProgressBar
+      - progressindicator # HProgressIndicator
+      - imageview         # HImageView
+      - stepper           # HStepper
+      - validatorview     # HValidatorView
+      - window            # HWindow
+      - tab               # HTab & HTabView & HTabItem
+      - sheet             # HSheet
+      - alert_sheet       # HAlertSheet
+      - confirm_sheet     # HConfirmSheet
+    
+    # Server error message application ( the Reload / Reset Session dialog )
+    servermessage:
+      - reloadapp # ReloadApp
+    
+    # Special package for Internet Explorer 6.0
+    iefix:
+      - iefix
+    
+    # Date and time -related control widgets (components)
+    # These are not complete; they are still under development
+    # and will be included in the controls package when finalized.
+    datetime:
+      - datetimevalue       # HDateTime
+      - calendar            # HCalendar
+      - timesheet           # HTimeSheet
+      - timesheet_item      # HTimeSheetItem
+      - timesheet_item_edit # HTimeSheetItemEditor
+    
+    # List related control widgets (components)
+    # These are not complete; they are still under development
+    # and will be included in the controls package when finalized.
+    lists:
+      - listitems           # HListItems
+      - checkboxlist        # HCheckboxList
+      - radiobuttonlist     # HRadiobuttonList
+  
+  # Special packages that include other packages (not used currently)
+  :compound_packages:
+    # allinone:
+    #   - core
+    #   - iefix
+    #   - default_theme
+    #   - bright_theme
+    #   - controls
+    #   - lists
+    #   - datetime
+  
+  # List of variables and other names beginning
+  # with a underscore that should not be obfuscated
+  :reserved_names:
+    - _ID
+    - _WIDTH
+    - _width
+    - _HEIGHT
+    - _height
+    - _
+  
+  # List of file extensions considered graphics image types.
+  # Used for theme graphics inclusion.
+  :gfx_formats:
+    - .jpg
+    - .gif
+    - .png
+    - .swf
+  
+  # The name of the include file
+  :js_inc: js.inc
+  
+  # If disabled, makes packages out of single source bundles automatically
+  :dont_pack_undefined: true
+  
+  # Replacement prefix for obfuscated names
+  :repl_prefix: _
+  
+  # If enabled, doesn't obfuscate code (useful for debugging)
+  :no_obfuscation: false
+  
+  # If enabled, doesn't remove whitespace (useful for debugging)
+  :no_whitespace_removal: false
+  
+  # If enabled, doesn't make gzipped packages
+  :no_gzip: false
+  
+  # The strategy for gzip, a number between 0 and 9
+  #  - 0 means largest size, but fast compression
+  #  - 9 means smallest size, but slow compression
+  #  - any number in between is a compromise
+  :gz_strategy: 9
+
+
+

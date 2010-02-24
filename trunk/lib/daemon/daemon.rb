@@ -40,19 +40,6 @@ $config[:http_server][:rack_handler] = self.method({
 # Debug mode switch. The debug mode is intended for developers, not production.
 $DEBUG_MODE  = $config[:debug_mode]
 
-# JSServe / JSCache caches and serves the pre-packaged js and theme -files.
-# require 'file/filecache'
-# require 'file/fileserve'
-
-# ValueManager syncronizes value objects
-require 'values/valuemanager'
-
-# SessionManager creates, validates, stores and expires sessions
-require 'session/sessionmanager'
-
-# PluginManager handles all the plugins
-require 'plugins/pluginmanager'
-
 # Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
 require 'transporter/transporter'
 
@@ -231,19 +218,8 @@ module Daemon
   end
 end
 
-class HTTPDaemon < Riassence::Server::Daemon::Base
+class HTTPDaemon < Daemon::Base
   def self.start
-    # $config[:filecache]       = FileCache.new
-    # $FILECACHE   = $config[:filecache]
-    # $config[:fileserve]       = FileServe.new
-    # $FILESERVE   = $config[:fileserve]
-    
-    $config[:valuemanager]    = ValueManager.new
-    $VALUES      = $config[:valuemanager]
-    $config[:sessionmanager]  = SessionManager.new
-    $SESSION     = $config[:sessionmanager]
-    $config[:plugins]         = PluginManager.new
-    $PLUGINS     = $config[:plugins]
     $config[:transporter]     = Transporter.new
     $TRANSPORTER = $config[:transporter]
     

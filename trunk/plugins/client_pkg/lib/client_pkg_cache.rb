@@ -14,7 +14,7 @@
 =end
 class ClientPkgCache
   
-  attr_reader :busy_scanning, :scan_time, :js_cache, :theme_cache, :gz_cache, :client_rev
+  attr_reader :scan_time, :js_cache, :theme_cache, :gz_cache, :client_rev, :last_modified
   
   # A lock flag for preventing different threads from
   # scanning simultaneously in debug mode
@@ -23,7 +23,7 @@ class ClientPkgCache
   # Initially, scan.
   def initialize
     @client_rev = 0
-    scan_dirs
+    # scan_dirs
   end
   
   # Helper method to return the suffix of a file
@@ -36,6 +36,16 @@ class ClientPkgCache
     return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
+  def set_cache( js, gz, themes )
+    @js_cache    = js
+    @gz_cache    = gz
+    @theme_cache = themes
+    time_now = Time.now
+    @client_rev  = time_now.to_i.to_s
+    @last_modified = httime( time_now )
+  end
+  
+=begin  
   # Helper method to read files from the given path and returns an array
   # with the data itself, last-modified time of the file formatted as a
   # http datetime string and the size of the file in bytes
@@ -166,7 +176,8 @@ class ClientPkgCache
     end
     
   end
-  
+=end
+
 end
 
 

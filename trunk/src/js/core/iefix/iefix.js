@@ -19,12 +19,6 @@ function ie_early_fixes() {
   
   ie_htc_path = _src.substring(0, _src.lastIndexOf("/") + 1);
   
-  console = {
-    log: function(){
-      
-    }
-  };
-
 }
 ie_early_fixes();
 

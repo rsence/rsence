@@ -26,11 +26,11 @@ class Servlet
   end
   
   # Servlet ID
-  attr_reader :servlet_id
+  attr_reader :name
   def register # :nodoc
     
     ## registers itself as a soap servant
-    @servlet_id = PluginManager.add_servlet( self )
+    @name = PluginManager.add_servlet( self )
     
     
   end

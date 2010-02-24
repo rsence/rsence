@@ -17,15 +17,60 @@ module Server
 
 class Transporter
   
+  # ValueManager syncronizes value objects
+  require 'values/valuemanager'
+  
+  # SessionManager creates, validates, stores and expires sessions
+  require 'session/sessionmanager'
+
+  # PluginManager handles all the plugins
+  require 'plugins/pluginmanager'
+  
+  attr_accessor :valuemanager, :sessionmanager, :pluginmanager
+  
   def initialize
     @config = $config[:transporter_conf]
+    
+    @valuemanager = ValueManager.new
+    @sessionmanager = SessionManager.new( self )
+    @pluginmanager = PluginManager.new
+    
+    
+    # Used by:
+    #   plugins/index_html/index_html.rb
+    #   lib/daemon/daemon.rb
+    $PLUGINS     = @pluginmanager
+    
+    
+    # Used by:
+    #   plugins/main/main.rb
+    #   lib/daemon/daemon.rb
+    $SESSION = @sessionmanager
+    
   end
   
   def servlet( request_type, request, response )
-    #msg = $SESSION.init_msg( request, response, true )
-    #session = msg.session
-    session = {}
-    $PLUGINS.match_servlet( request_type, request, response, session )
+    broker_urls = $config[:broker_urls]
+    uri = request.fullpath
+    ## /x handles xhr without cookies
+    if uri == broker_urls[:x]
+      puts "/x: #{uri.inspect}" if $DEBUG_MODE
+      xhr( request, response, false )
+      return true
+    ## /hello handles the first xhr (with cookies, for session key)
+    elsif uri == broker_urls[:hello]
+      puts "/hello: #{uri.inspect}" if $DEBUG_MODE
+      xhr( request, response, true )
+      return true
+    ## /SOAP handles SOAP Requests
+    elsif uri == broker_urls[:soap]
+      puts "/SOAP: #{uri.inspect}"
+      soap( request, response )
+      return true
+    else
+      session = {}
+      return @pluginmanager.match_servlet( request_type, request, response, session )
+    end
   end
   
   ## handles incoming SOAP requests
@@ -35,7 +80,7 @@ class Transporter
   
   # wrapper for the session manager stop client functionality
   def xhr_error_handler(msg,err_name,err_extra_descr='')
-    $SESSION.stop_client_with_message( msg,
+    @sessionmanager.stop_client_with_message( msg,
       @config[:messages][err_name][:title],
       @config[:messages][err_name][:descr]+err_extra_descr,
       @config[:messages][err_name][:uri]
@@ -60,7 +105,7 @@ class Transporter
     cookies = false unless $config[:session_conf][:session_cookies]
     
     # Creates the msg object, also checks or creates a new session; verifies session keys and such
-    msg = $SESSION.init_msg( request, response, cookies )
+    msg = @sessionmanager.init_msg( request, response, cookies )
     
     response_success = true
     
@@ -91,11 +136,11 @@ class Transporter
       if request.query.has_key?( 'values' )
         syncdata_str = request.query[ 'values' ]
         begin
-          $VALUES.xhr( msg, syncdata_str )
+          @valuemanager.xhr( msg, syncdata_str )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :valuemanager_xhr_error, e.message )
-          xhr_traceback_handler( e, "Transporter::ValueManagerXHRError: $VALUES.xhr failed." )
+          xhr_traceback_handler( e, "Transporter::ValueManagerXHRError: @valuemanager.xhr failed." )
         end
       end
       
@@ -106,65 +151,65 @@ class Transporter
         
         if msg.cloned_source
           begin
-            $PLUGINS.delegate( 'cloned_target', msg, msg.cloned_source )
+            @pluginmanager.delegate( 'cloned_target', msg, msg.cloned_source )
           rescue => e
             response_success = false
             xhr_error_handler( msg, :plugin_delegate_cloned_target_error, e.message )
-            xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: $PLUGINS.delegate 'cloned_target' failed." )
+            xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: @pluginmanager.delegate 'cloned_target' failed." )
           end
         end
         
         begin
-          $PLUGINS.delegate( 'restore_ses', msg )
+          @pluginmanager.delegate( 'restore_ses', msg )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: $PLUGINS.delegate 'restore_ses' failed." )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: @pluginmanager.delegate 'restore_ses' failed." )
         end
         
       elsif msg.new_session
         begin
-          $PLUGINS.delegate( 'init_ses', msg )
+          @pluginmanager.delegate( 'init_ses', msg )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: $PLUGINS.delegate 'init_ses' failed." )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: @pluginmanager.delegate 'init_ses' failed." )
         end
       elsif msg.cloned_targets
         begin
-          $PLUGINS.delegate( 'cloned_source', msg, msg.cloned_targets )
+          @pluginmanager.delegate( 'cloned_source', msg, msg.cloned_targets )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: $PLUGINS.delegate 'cloned_source' failed." )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @pluginmanager.delegate 'cloned_source' failed." )
         end
       end
       
       ## Calls validators for changed values
       begin
-        $VALUES.validate( msg )
+        @valuemanager.validate( msg )
       rescue => e
         response_success = false
         xhr_error_handler( msg, :valuemanager_validate_error, e.message )
-        xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: $VALUES.validate failed." )
+        xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: @valuemanager.validate failed." )
       end
       
       ### Allows every plugin to respond to the idle call
       begin
-        $PLUGINS.idle( msg )
+        @pluginmanager.idle( msg )
       rescue => e
         response_success = false
         xhr_error_handler( msg, :plugin_idle_error, e.message )
-        xhr_traceback_handler( e, "Transporter::PluginIdleError: $PLUGINS.idle failed." )
+        xhr_traceback_handler( e, "Transporter::PluginIdleError: @pluginmanager.idle failed." )
       end
       
       ### Processes outgoing values to client
       begin
-        $VALUES.sync_client( msg )
+        @valuemanager.sync_client( msg )
       rescue => e
         response_success = false
         xhr_error_handler( msg, :valuemanager_sync_client_error, e.message )
-        xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: $VALUES.sync_client failed." )
+        xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: @valuemanager.sync_client failed." )
       end
       
     else

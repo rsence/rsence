@@ -78,7 +78,7 @@ class IndexHtmlPlugin < ServletPlugin
     
     puts "re-buffering client files"
     begin
-      $FILECACHE.check_scan
+      #$FILECACHE.check_scan
       @client_rev = $FILECACHE.client_rev
     rescue => e
       puts "=="*40 if $DEBUG_MODE

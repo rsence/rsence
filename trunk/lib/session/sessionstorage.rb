@@ -49,6 +49,8 @@ class SessionStorage
     ## Disposable keys (new ses_key each request)
     @config = $config[:session_conf]
     
+    @db_uri = $config[:database][:ses_db]
+    
     db_init
     
   end
@@ -65,65 +67,27 @@ class SessionStorage
     @db.drop_table(:rsence_test)
   end
   
+  def db_open
+    ## Tests if database has sufficient privileges
+    begin
+      @db = Sequel.connect(@db_uri)
+      db_test
+      @db.disconnect
+      @db = Sequel.connect(@db_uri)
+    rescue => e
+      $stderr.write( "SessionStorage: error #{e.inspect}\nReverting to default database.\n" )
+      @db_uri = "sqlite://#{File.join(SERVER_PATH,'var','db','rsence_ses.db')}"
+      @db = Sequel.connect(@db_uri)
+      db_test
+      @db.disconnect
+      @db = Sequel.connect(@db_uri)
+    end
+  end
+  
   ## Checks database connectivity and loads stored sessions from the database
   def db_init
     
-    db_uri = $config[:database][:ses_db]
-    
-    ## Tests if database has sufficient privileges
-    begin
-      @db = Sequel.connect(db_uri)
-      db_test
-    rescue => e
-      $stderr.write( "SessionStorage: error #{e.inspect}\nReverting to default database.\n" )
-      db_url = "sqlite://#{File.join(SERVER_PATH,'var','db','rsence_ses.db')}"
-      @db = Sequel.connect(db_uri)
-      db_test
-    end
-    
-    ## Creates the 'rsence_session' table, if necessary
-    ## This table is used to store sessions
-    unless @db.table_exists?(:rsence_session)
-      puts "Creating session table..." if $DEBUG_MODE
-      @db.create_table :rsence_session do
-        primary_key :id
-        String      :cookie_key
-        String      :ses_key
-        Number      :ses_timeout
-        Number      :user_id
-        Boolean     :ses_active
-        Number      :ses_stored
-        Blob        :ses_data
-      end
-    end
-    
-    ## Creates the 'rsence_version' table, if necessary
-    ## This table is used to check for the need of future database upgrades
-    unless @db.table_exists?(:rsence_version)
-      puts "Creating version info table..." if $DEBUG_MODE
-      @db.create_table :rsence_version do
-        Number :version
-      end
-      @db[:rsence_version].insert(:version => 586)
-    end
-    
-    ## Creates the 'rsence_uploads' table, if necessary
-    ## This table is used for storing temporary uploads before processing
-    unless @db.table_exists?(:rsence_uploads)
-      puts "Creating uploads table..." if $DEBUG_MODE
-      @db.create_table :rsence_uploads do
-        primary_key :id
-        foreign_key :ses_id, :rsence_session
-        Number      :upload_date
-        Boolean     :upload_done
-        String      :ticket_id
-        Number      :file_size
-        String      :file_name
-        String      :file_mime
-        Blob        :file_data
-      end
-    end
-    rsence_version = @db[:rsence_version].select(:version).all[0][:version]
+    db_open
     
     ## 
     if @config[:reset_sessions]
@@ -133,13 +97,65 @@ class SessionStorage
       restore_sessions()
     end
     
+    ## Creates the 'rsence_session' table, if necessary
+    ## This table is used to store sessions
+    unless @db.table_exists?(:rsence_session)
+      puts "Creating session table..." if $DEBUG_MODE
+      @db.create_table :rsence_session do
+        primary_key( :id )
+        column( :cookie_key,  String  )
+        column( :ses_key,     String  )
+        column( :ses_timeout, Integer )
+        column( :user_id,     Integer )
+        column( :ses_active,  TrueClass )
+        column( :ses_stored,  Integer )
+        column( :ses_data,    File    )
+      end
+      @db.disconnect
+      db_open
+    end
+    
+    ## Creates the 'rsence_version' table, if necessary
+    ## This table is used to check for the need of future database upgrades
+    unless @db.table_exists?(:rsence_version)
+      puts "Creating version info table..." if $DEBUG_MODE
+      @db.create_table :rsence_version do
+        Integer :version
+      end
+      @db[:rsence_version].insert(:version => 586)
+      @db.disconnect
+      db_open
+    end
+    
+    ## Creates the 'rsence_uploads' table, if necessary
+    ## This table is used for storing temporary uploads before processing
+    unless @db.table_exists?(:rsence_uploads)
+      puts "Creating uploads table..." if $DEBUG_MODE
+      @db.create_table :rsence_uploads do
+        primary_key( :id )
+        foreign_key( :ses_id, :rsence_session )
+        column( :upload_date, Integer )
+        column( :upload_done, Integer )
+        column( :ticket_id,   String  )
+        column( :file_size,   Integer )
+        column( :file_name,   String  )
+        column( :file_mime,   String  )
+        column( :file_data,   File    )
+      end
+      @db.disconnect
+      db_open
+    end
+    rsence_version = @db[:rsence_version].select(:version).all[0][:version]
+    
     return true
   end
   
   ## Deletes all rows from rsence_session as well as rsence_uploads
   def reset_sessions
-    @db[:rsence_session].delete
-    @db[:rsence_uploads].delete
+    @db[:rsence_session].delete if @db.table_exists?(:rsence_session)
+    @db[:rsence_uploads].delete if @db.table_exists?(:rsence_uploads)
+    @db.disconnect
+    db_open
   end
   
   ## Restores all saved sessions from db to ram

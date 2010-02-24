@@ -33,9 +33,13 @@ class SessionManager < SessionStorage
   include Digest
   
   ## Makes everything ready to run
-  def initialize
+  def initialize( transporter )
     
-    super
+    super()
+    
+    @transporter = transporter
+    
+    @valuemanager = @transporter.valuemanager
     
     ## 'Unique' Random String generator for ses_key:s and cookie_key:s
     @randgen   = RandGen.new( @config[:key_length] )
@@ -289,7 +293,7 @@ class SessionManager < SessionStorage
         ses_id = msg.ses_id
         ses_key = msg.session[:ses_key]
         cookie_key = msg.session[:cookie_key]
-        $VALUES.resend_session_values( msg )
+        @valuemanager.resend_session_values( msg )
       elsif ses_status
         # delete the old cookie key:
         @session_cookie_keys.delete( cookie_key )
@@ -313,7 +317,7 @@ class SessionManager < SessionStorage
         
         # tells ValueManager to re-send client-side HValue objects
         # with data to the client
-        $VALUES.resend_session_values( msg )
+        @valuemanager.resend_session_values( msg )
       
       # if the session is not valid, make sure to mark the
       # cookie key as invalid (false)
@@ -408,7 +412,7 @@ class SessionManager < SessionStorage
     ## client needs to be initialized.
     ## The client's ses_id is the server's ses_key.
     if not request.query.has_key?( 'ses_key' )
-      return Message.new( request, response )
+      return Message.new( @transporter, request, response )
     else
       
       ## get the ses_key from the request query:
@@ -419,7 +423,7 @@ class SessionManager < SessionStorage
       ## object, which is passed around where
       ## request/response/user/session -related
       ## data is needed.
-      msg = Message.new( request, response )
+      msg = Message.new( @transporter, request, response )
       
       ## The client tells that its ses_key is '0',
       ## until the server tells it otherwise.
