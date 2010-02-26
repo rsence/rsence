@@ -2,7 +2,7 @@
  * html_min - compression of whitespace. Keeps #{, ${ templates intact.
  *
  * Author:  Domen Puncer <domen@cba.si>
- * License: BSD
+ * License: MIT
  *
  */
 

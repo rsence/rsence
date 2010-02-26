@@ -2,7 +2,7 @@
  * jscompress - compression of _words into _0.._Z, _00...
  *
  * Author:  Domen Puncer <domen@cba.si>
- * License: BSD
+ * License: MIT
  *
  * Ideas taken from js_builder.rb (Riassence Framework) by Juha-Jarmo Heinonen <jjh@riassence.com>
  */

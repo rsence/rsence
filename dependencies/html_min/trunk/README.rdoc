@@ -27,5 +27,5 @@ This used to be a fixed part of the Riassence Framework, but it's distributed as
 == License:
 
   Author:  Domen Puncer <domen@cba.si>
-  License: BSD
+  License: MIT
 
