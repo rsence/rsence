@@ -25,7 +25,7 @@ This used to be a fixed part of the Riassence Framework, but it's distributed as
 
 == Install:
 
-* sudo gem install rsence-randgen
+* sudo gem install randgen
 
 == License:
 

@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.name      = 'randgen'
   s.author    = 'Juha-Jarmo Heinonen'
   s.email     = 'o@rsence.org'
-  s.version   = '1.0.2'
+  s.version   = '1.0.3'
   s.date      = '2010-02-26'
   s.homepage  = 'http://www.riassence.org/'
   s.summary   = 'Riassence RandGen'
