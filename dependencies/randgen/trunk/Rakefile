@@ -1,0 +1,9 @@
+# -*- ruby -*-
+
+require 'rubygems'
+require 'hoe'
+
+Hoe.spec 'rsence_randgen' do
+  self.rubyforge_name = 'rsence-randgenx'
+end
+
