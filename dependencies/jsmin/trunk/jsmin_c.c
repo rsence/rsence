@@ -306,9 +306,10 @@ static VALUE jsmin_convert(VALUE self, VALUE str)
 
 static VALUE cl;
 
-void Init_jsmin()
+void Init_jsmin_c()
 {
 	cl = rb_define_class("JSMin", rb_cObject);
 	rb_define_method(cl, "initialize", jsmin_initialize, 0);
 	rb_define_method(cl, "convert", jsmin_convert, 1);
+	rb_define_method(cl, "minimize", jsmin_convert, 1);
 }
