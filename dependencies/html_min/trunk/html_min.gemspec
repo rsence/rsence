@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.name      = 'html_min'
   s.author    = 'Domen Puncer'
   s.email     = 'domen@cba.si'
-  s.version   = '0.1.0'
+  s.version   = '0.1.1'
   s.date      = '2010-02-26'
   s.homepage  = 'http://www.riassence.org/'
   s.summary   = 'Riassence HTMLMin'
