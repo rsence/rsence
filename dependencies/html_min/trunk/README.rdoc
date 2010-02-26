@@ -1,0 +1,31 @@
+
+
+= Riassence HTMLMin
+
+* http://rsence.org/
+
+
+== Description:
+
+Simple C extension that squeezes HTML files quickly by removing white space.
+This used to be a fixed part of the Riassence Framework, but it's distributed as a separate gem now.
+
+== Usage:
+
+  require 'html_min'
+  
+  # Makes a HTMLMin instance that squeezes the white-space in html data.
+  html_min = HTMLMin.new
+  
+  # Generate a single rangom string
+  squeezed_html = html_min.minimize( File.read('document.html') )
+
+== Install:
+
+* sudo gem install html_min
+
+== License:
+
+  Author:  Domen Puncer <domen@cba.si>
+  License: BSD
+
