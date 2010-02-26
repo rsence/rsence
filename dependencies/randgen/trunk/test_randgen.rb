@@ -3,7 +3,7 @@ require "rubygems"
 require "randgen"
 
 class TestRandgen < Test::Unit::TestCase
-  def init_rand
+  def test_init
     rand = RandGen.new( 64 )
   end
   def test_types
@@ -18,4 +18,4 @@ class TestRandgen < Test::Unit::TestCase
     assert_equal( 100, rand.gen_many( 100 ).length )
   end
 end
-puts "test ok"
+
