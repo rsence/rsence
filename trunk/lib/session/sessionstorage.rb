@@ -89,14 +89,6 @@ class SessionStorage
     
     db_open
     
-    ## 
-    if @config[:reset_sessions]
-      puts "Resetting all sessions..."
-      reset_sessions()
-    else
-      restore_sessions()
-    end
-    
     ## Creates the 'rsence_session' table, if necessary
     ## This table is used to store sessions
     unless @db.table_exists?(:rsence_session)
@@ -146,6 +138,14 @@ class SessionStorage
       db_open
     end
     rsence_version = @db[:rsence_version].select(:version).all[0][:version]
+    
+    ## 
+    if @config[:reset_sessions]
+      puts "Resetting all sessions..."
+      reset_sessions()
+    else
+      restore_sessions()
+    end
     
     return true
   end
