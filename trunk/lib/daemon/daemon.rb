@@ -124,6 +124,16 @@ module Daemon
     end
     
     def self.daemonize(daemon)
+      if ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
+        warn "Running on Microsoft Windows: no concept of pid; not able to background."
+        case !ARGV.empty? && ARGV[0]
+        when 'start'
+          self.start_win32(daemon)
+        else
+          puts "Invalid command. Please specify one of the following: start or help."
+          exit
+        end
+      end
       case !ARGV.empty? && ARGV[0]
       when 'status'
         self.print_status(daemon)
@@ -140,6 +150,11 @@ module Daemon
         puts "Invalid command. Please specify one of the following: start, stop, restart, status, save or help."
         exit
       end
+    end
+    def self.start_win32(daemon)
+      daemon.start
+      daemon.stop
+      exit
     end
     def self.start(daemon)
       is_running = self.status(daemon)
@@ -223,7 +238,9 @@ class HTTPDaemon < Daemon::Base
     $config[:transporter]     = Transporter.new
     $TRANSPORTER = $config[:transporter]
     
-    Daemon::Controller.log_io(self)
+    unless ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
+      Daemon::Controller.log_io(self)
+    end
     
     # This is the main http server instance:
     $config[:broker] = Broker.start(
