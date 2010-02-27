@@ -76,20 +76,34 @@ These ruby gems are required:
 
  - rack
 
- - thin (or another rack-compatible http server library)
+ - A rack handler, one of the following are suggested:
+ 
+   - mongrel (solid, pretty fast works reliably)
+   
+   - thin (quick, but not the most reliable)
+   
+   - webrick (very slow; use as last resort)
 
  - json
+ 
+ - yaml
 
+ - jsmin_c (js whitespace removal)
+ 
+ - jscompress (js namespace compression/obfuscation)
+ 
+ - html_min (html whitespace removal)
+ 
+ - cssmin (css whitespace removal)
+ 
  - Required by persistent session storage:
 
-   - sqlite3-ruby
+   - sqlite3-ruby (or other sequel -compatible database adapter)
 
    - sequel
 
 
 These ruby gems are recommended. The system will run without them but manual reconfiguration might be needed.
-
- - cssmin
 
  - highline (not required, if you don't need the setup wizard)
 
@@ -102,7 +116,31 @@ These ruby gems are recommended. The system will run without them but manual rec
 2.1. Command-line installation example of the gems
 
 ---
-  sudo gem install rake highline rack thin soap4r rmagick json sequel
+  sudo gem install rake highline rack mongrel soap4r rmagick json sequel sqlite3-ruby cssmin randgen jsmin_c jscompress html_min
+---
+
+2.2. Installation requirements for Windows
+---
+  
+  Install ruby 1.8.7:
+    - http://rubyinstaller.org/download.html
+    - Follow included instructions
+    - Install the Development Kit (same page)
+  
+  Install rmagick first from:
+    - Download rmagick-win32 from http://rubyforge.org/projects/rmagick/
+    - Follow included instructions
+  
+  Install the sqlite3.dll from:
+    - Download sqlitedll from http://www.sqlite.org/download.html
+    - Extract sqlite3.dll into \ruby\bin or other directory in PATH
+  
+  In the cmd prompt do:
+    - gem install rake highline rack mongrel soap4r rmagick json sequel sqlite3-ruby cssmin randgen jsmin_c jscompress html_min
+  
+  Note 1: Configure http with mongrel or webrick
+  Note 2: Ensure the session database string doesn't include the "C:" -part (if using sqlite)
+  
 ---
 
 
