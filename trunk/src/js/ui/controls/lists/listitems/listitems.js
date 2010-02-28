@@ -22,6 +22,10 @@ HListItems = HValueResponder.extend({
       if (_options['valueObj'] !== undefined) {
         _options.valueObj.bind( this );
       }
+      else if(_options['value'] !== undefined) {
+        this.value = _options.value;
+        this.refresh();
+      }
     }
   },
   _warningMessage: function(_messageText){
