@@ -373,14 +373,14 @@
   
   # Special packages that include other packages (not used currently)
   :compound_packages:
-    # allinone:
-    #   - core
-    #   - iefix
-    #   - default_theme
-    #   - bright_theme
-    #   - controls
-    #   - lists
-    #   - datetime
+    allinone:
+      - core
+      - iefix
+      - default_theme
+      - bright_theme
+      - controls
+      - lists
+      - datetime
   
   # List of variables and other names beginning
   # with a underscore that should not be obfuscated
