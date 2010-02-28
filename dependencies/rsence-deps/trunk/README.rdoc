@@ -1,0 +1,52 @@
+
+== 1. ABOUT
+
+This is a dummy package listing the dependencies of (always) the latest version of Riassence Framework.
+
+More info: http://riassence.org/
+
+The following chapter is from the Install.txt
+
+== 2. RUBY PACKAGES (RUBY GEMS)
+
+These ruby gems are required:
+
+ - rake (not required, if you have a system package of it installed)
+
+ - rack
+
+ - A rack handler, one of the following are suggested:
+ 
+   - mongrel (solid, pretty fast works reliably)
+   
+   - thin (quick, but not the most reliable)
+   
+   - webrick (very slow; use as last resort)
+
+ - json
+ 
+ - yaml
+
+ - jsmin_c (js whitespace removal)
+ 
+ - jscompress (js namespace compression/obfuscation)
+ 
+ - html_min (html whitespace removal)
+ 
+ - cssmin (css whitespace removal)
+ 
+ - Required by persistent session storage:
+
+   - sqlite3-ruby (or other sequel -compatible database adapter)
+
+   - sequel
+
+
+These ruby gems are recommended. The system will run without them but manual reconfiguration might be needed.
+
+ - highline (not required, if you don't need the setup wizard)
+
+ - soap4r (not required, if you don't need to create SOAP services)
+
+ - rmagick (not required, but used by many projects)
+
