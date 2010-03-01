@@ -21,8 +21,8 @@
 :chat_line:
   :value: ''
   :restore_default: false
-  :responders:
-    - :method: chat_line
+  # :responders:
+  #   - :method: chat_line
 
 # The submit button for sending the
 # input line / nick change to the chat

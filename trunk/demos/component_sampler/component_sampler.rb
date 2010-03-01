@@ -5,14 +5,14 @@ class ComponentSampler < GUIPlugin
   end
   def serve_checker_pattern_gif
     return if @checker_pattern_gif_url
-    @checker_pattern_gif_url = $TICKETSERVE.serve_rsrc(
+    @checker_pattern_gif_url = @plugins[:ticketserve].serve_rsrc(
       file_read( 'js/checker_pattern.gif' ),
       'image/gif'
     )
   end
   def release_checker_pattern_gif
     return unless @checker_pattern_gif_url
-    $TICKETSERVE.del_rsrc( @checker_pattern_gif_url )
+    @plugins[:ticketserve].del_rsrc( @checker_pattern_gif_url )
   end
   def open
     super
@@ -50,4 +50,3 @@ class ComponentSampler < GUIPlugin
     }
   end
 end
-ComponentSampler.new.register('component_sampler')
