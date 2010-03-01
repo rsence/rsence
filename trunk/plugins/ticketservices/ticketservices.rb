@@ -16,7 +16,7 @@ rescue LoadError
   warn "Warning: RMagick not installed, ticketserve images will not be supported."
 end
 
-require 'ext/randgen'
+require 'randgen'
 
 ## TicketServe serves static and disposable data and images.
 ## It accepts Magick::Image objects too to render them only when really needed.
@@ -25,7 +25,7 @@ require 'ext/randgen'
 class TicketServe < Servlet
   
   # the library path of this plugin
-  lib_path = File.join( PluginManager.curr_plugin_path, 'lib' )
+  lib_path = File.join( @@bundle_path, 'lib' )
   
   # common functionality
   require File.join(lib_path,'common')
@@ -56,7 +56,7 @@ class TicketServe < Servlet
   include TicketService::ObjBlob
   
   def broker_urls
-    $config[:broker_urls]
+    ::Riassence::Server.config[:broker_urls]
   end
   
   def match( uri, request_type )
@@ -182,17 +182,12 @@ class TicketServe < Servlet
       :ses_ids => {}
     }
     
-    @db = Sequel.connect( $config[:database][:ses_db] )
+    @db = Sequel.connect( ::Riassence::Server.config[:database][:ses_db] )
     
   end
   
 end
-
 ticketserve = TicketServe.new
-
-# Global bindings for backwards functionality:
-$config[:ticketserve] = ticketserve
-$TICKETSERVE          = ticketserve
 
 # Plugin API for ticket services
 class TicketAPI < Plugin

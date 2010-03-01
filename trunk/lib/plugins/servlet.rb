@@ -6,9 +6,6 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module Riassence
-module Server
-
 ## Register the ServletPlugin with a regular expression that
 ## should match its uri. Alternatively just a string, but
 ## that needs to be an exact match.
@@ -18,21 +15,23 @@ module Server
 ## servlet_plug.register( /\/feedback\/.*/ )
 class Servlet
   
+  include PluginUtil
+  
   # Initializes and registers the ServletPlugin.
   def initialize
-    @path = PluginManager.curr_plugin_path
+    @info    = @@bundle_info
+    @name    = @@bundle_name
+    @path    = @@bundle_path
+    @plugins = @@plugin_manager
     register
-    init
+    @inited = false
   end
   
   # Servlet ID
-  attr_reader :name
+  attr_reader :name, :path, :info, :inited
   def register # :nodoc
-    
-    ## registers itself as a soap servant
-    @name = PluginManager.add_servlet( self )
-    
-    
+    @plugins.register_bundle( self, @name )
+    @inited = true
   end
   
   ## Extendables
@@ -59,44 +58,8 @@ class Servlet
     
   end
   
-  # Extend to do any initial configuration. Not doing anything by default.
-  def init
-  end
-  
-  # Extend to manage stream or database opening etc.
-  # It is called when everything is set to go after all plugins are 
-  # loaded / reloaded. Not doing anything by default.
-  def open
-  end
-  
-  # Extend to save your plugin state, when the system is going down.
-  # Not doing anything by default.
-  def flush
-  end
-  
-  # Extend to manage stream or database closing etc.
-  # It is called before plugins are loaded / reloaded. Not doing anything by 
-  # default.
-  def close
-  end
-  
-  ## Utilities
-  
-  # File reader utility,
-  # practical for simple file data operations.
-  # Path given as parameter.
-  def file_read( path )
-    if path[0].chr != '/' and path[0..1] != '..'
-      path = File.join( @path, path )
-    end
-    return File.read( path )
-  end
-  
 end
 
 ServletPlugin = Servlet
-
-end
-end
 
 

@@ -13,8 +13,14 @@
 module Riassence
 module Server
 
-# Restful provides the basic structure for Broker
-require 'http/restful'
+require 'rubygems'
+require 'rack'
+
+## Minimally WEBrick -compatible response object
+require 'http/response'
+
+## Minimally WEBrick -compatible request object
+require 'http/request'
 
 =begin
 
@@ -23,7 +29,42 @@ require 'http/restful'
 =end
 
 class Broker
-  include RestfulDispatcher
+  
+  def call(env)
+    request  = Request.new(env)
+    response = Response.new
+    request_method = request.request_method.downcase
+    dispatcher = dispatcher_class.new( request, response )
+    dispatcher.send(request_method)
+    content_type = dispatcher.content_type
+    response.header['Content-Length'] = response.body.length.to_s unless response.header.has_key?('Content-Length')
+    return [response.status, response.header, response.body]
+  end
+  
+  def dispatcher_class
+    @dispatcher ||= Class.new(self.class) do
+      attr_accessor :content_type
+      def initialize(request,response)
+        @request  = request
+        @response = response
+      end
+    end
+  end
+  
+  def self.start( transporter, handler, host, port)
+    @@transporter = transporter
+    conf = ::Riassence::Server.config[:http_server][:latency]
+    if conf == 0
+      @@ping_sim = false
+    else
+      @@ping_sim = conf/1000.0
+    end
+    handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
+  end
+  
+  def self.included(receiver)
+    receiver.extend( SingletonMethods )
+  end
   
   def not_found
     puts "/404: #{@request.fullpath.inspect}" if $DEBUG_MODE
@@ -37,18 +78,18 @@ class Broker
   ## Post requests are always xhr requests
   def post
     
-    sleep $config[:http_server][:latency]/1000.0 unless $config[:http_server][:latency] == 0
+    sleep @@ping_sim if @@ping_sim
     
-    not_found unless $TRANSPORTER.servlet( :post, @request, @response )
+    not_found unless @@transporter.servlet( :post, @request, @response )
     
   end
   
   ## Get requests are different, depending on the uri requested
   def get
     
-    sleep $config[:http_server][:latency]/1000.0 unless $config[:http_server][:latency] == 0
+    sleep @@ping_sim if @@ping_sim
     
-    not_found unless $TRANSPORTER.servlet( :get, @request, @response )
+    not_found unless @@transporter.servlet( :get, @request, @response )
     
   end
   

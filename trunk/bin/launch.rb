@@ -27,7 +27,7 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
   Usage:
     #{__FILE__} command [params]
 
-  Command is one of:"
+  Command is one of:
     status     Tells if Riassence Framework Server is running or not
     start      Starts Riassence Framework Server
     stop       Stops Riassence Framework Server
@@ -41,8 +41,6 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
     --trace-delegate        Traces plugin method delegation to stdout
     --root-path <PATH>      Define the PATH to rsence server
                               Defaults to 'bin'
-    --client-path <PATH>    Define the PATH to the built rsence client
-                              Defaults to '../client'
     --port PORT             Define the http PORT to use, defaults to '8001'
     --latency MS            Simulate network latency, value in milliseconds
     --addr <ADDRESS>        Define the IPv4 ADDRESS to bind to.

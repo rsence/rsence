@@ -14,7 +14,7 @@ require 'json'
 require 'session/msg'
 
 ## Unique random number generator:
-require 'ext/randgen'
+require 'randgen'
 
 ## SessionStorage is the superclass of SessionManager
 require 'session/sessionstorage'
@@ -40,6 +40,8 @@ class SessionManager < SessionStorage
     @transporter = transporter
     
     @valuemanager = @transporter.valuemanager
+    
+    @plugins = @transporter.plugins
     
     ## 'Unique' Random String generator for ses_key:s and cookie_key:s
     @randgen   = RandGen.new( @config[:key_length] )
@@ -240,7 +242,7 @@ class SessionManager < SessionStorage
   def stop_client_with_message( msg,
                                 title = 'Unknown Issue',
                                 descr = 'No issue description given.',
-                                uri = $config[:indexhtml_conf][:respond_address] )
+                                uri = ::Riassence::Server.config[:index_html][:respond_address] )
     msg.error_msg( [
       "jsLoader.load('default_theme');",
       "jsLoader.load('controls');",
@@ -384,7 +386,7 @@ class SessionManager < SessionStorage
     
     ## Only match the handshaking address of rsence,
     ## prevents unneccessary cookie-juggling in xhr's
-    ses_cookie_path    = $config[:broker_urls][:hello]
+    ses_cookie_path    = ::Riassence::Server.config[:broker_urls][:hello]
     
     ## Formats the cookie to string
     ## (through array, to keep it readable in the source)

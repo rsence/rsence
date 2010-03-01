@@ -12,7 +12,7 @@
 require 'rubygems'
 require 'highline/import'
 
-require 'ext/randgen'
+require 'randgen'
 
 class ConfigWizard
   
@@ -22,10 +22,10 @@ class ConfigWizard
     return Marshal.restore( Marshal.dump(source_hash) )
   end
   
-  # returns a pound ('#') char, unless @conf and $config values differ
+  # returns a pound ('#') char, unless @conf and @config values differ
   def cdiff(confkeys)
     conf1 = @conf
-    conf2 = $config
+    conf2 = @config
     # recurse into config hash
     confkeys.each do |confkey|
       conf1 = conf1[confkey]
@@ -42,6 +42,7 @@ class ConfigWizard
   
   # makes a copy of the default configuration for comparisons
   def initialize( config )
+    @config = config
     @conf = {
       :database      => hash_deep_copy( config[:database] ),
       :http_server   => hash_deep_copy( config[:http_server] )

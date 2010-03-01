@@ -6,9 +6,6 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module Riassence
-module Server
-
 # Include this module in your plugin class to automatically
 # create and connect/disconnect an sqllite database.
 # The plugin instance will have a @db Sequel object refering
@@ -73,5 +70,3 @@ module PluginSqliteDB
   end
 end
 
-end
-end

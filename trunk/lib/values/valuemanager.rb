@@ -11,7 +11,7 @@
 require 'values/hvalue'
 
 # RandomGenerator produces unique, random values
-require 'ext/randgen'
+require 'randgen'
 
 module Riassence
 module Server
@@ -24,7 +24,7 @@ class ValueManager
   # Initializes the member value handler objects.
   def initialize
     
-    @config = $config[:values_conf]
+    @config = ::Riassence::Server.config[:session_conf]
     
     ## 'Unique' Random String generator for HValue keys (passed on to the client)
     @randgen = RandGen.new( @config[:key_length] )

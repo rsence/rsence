@@ -38,7 +38,7 @@
   :bg_color:            '#ffffff'
   #
   # how many milliseconds to wait before doing an idle poll
-  :server_poll_interval: 10000 # 10 seconds
+  :server_poll_interval: 2000 # 2 seconds
 #
 # Switches on debug-mode:
 #  - Generates more output
@@ -61,7 +61,7 @@
   :bind_address:  '0.0.0.0'
   #
   # Rack handler to use, defaults to thin
-  :rack_require: thin
+  :rack_require: mongrel
   #
   # The rack handler; entered automatically.
   :rack_handler: null
@@ -78,104 +78,17 @@
 # Paths to scan for available plugins
 :plugin_paths: [ ]
 #
-# The global Transporter instance will be bound to:
-:transporter: null
-#
-# The global IndexHtml instance will be bound to:
-:indexhtml: null
-#
-# The global FileCache instance will be bound to:
-:filecache: null
-#
-# The global FileServe instance will be bound to:
-:fileserve: null
-#
-# The global TicketServe instance will be bound to:
-:ticketserve: null
-#
-# The global Broker instance will be bound to:
-:broker: null
-#
-# The global SessionManager instance will be bound to:
-:sessionmanager: null
-#
-# The global PluginManager instance will be bound to:
-:plugins: null
+# List of files that include strings
+:string_files: [
+  "conf/default_strings.yaml"
+]
 #
 # Transporter settings:
 :transporter_conf:
   #
   # The HApplication priority of the client, when actively polling.
   :client_poll_priority: 60
-  #
-  # Message strings
-  :messages:
-    #
-    # If the client fails on javascript, display this:
-    :client_error:
-      :title: 'ClientError'
-      :descr: 'Javascript execution error:'
-      :uri:   '/'
-    #
-    # If the filecache fails, display this:
-    :filecache_error:
-      :title: 'FileCacheError'
-      :descr: 'FileCache failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugins_rescan_error:
-      :title: 'PluginsRescanError'
-      :descr: 'The initialization of a plugin failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :valuemanager_xhr_error:
-      :title: 'ValueSyncError'
-      :descr: 'Data value synchronization failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :valuemanager_validate_error:
-      :title: 'ValueValidationError'
-      :descr: 'The value validation failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :valuemanager_sync_client_error:
-      :title:  'SyncClientError'
-      :descr:  'The value syncronization to the client failed with error:'
-      :uri:    '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugin_delegate_restore_ses_error:
-      :title: 'RestoreSesError'
-      :descr: 'The plugin delegation process for restore_ses failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugin_delegate_init_ses_error:
-      :title: 'InitSesError'
-      :descr: 'The plugin delegation process for init_ses failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins delegation of the cloned_target event fails, display this:
-    :plugin_delegate_cloned_target_error:
-      :title: 'ClonedTargetError'
-      :descr: 'The plugin delegation process for cloned_target failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins delegation of the cloned_source event fails, display this:
-    :plugin_delegate_cloned_source_error:
-      :title: 'ClonedSourceError'
-      :descr: 'The plugin delegation process for cloned_source failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugin_idle_error:
-      :title: 'PluginIdleError'
-      :descr: 'The idle event failed for a plugin with error:'
-      :uri:   '/'
+#
 #
 # Session-related settings
 :session_conf:
@@ -234,19 +147,8 @@
 #
 # Database configuration
 :database:
-  # these two params are kept for backwards compatibility; not actually used.
-  :root_setup:
-    :host: "127.0.0.1"
-    :user: 'root'
-    :pass: ''
-    :db: 'mysql'
-  :auth_setup:
-    :host: '127.0.0.1'
-    :user: 'rsence'
-    :pass: ''
-    :db: 'rsence'
   # Session database storage string. Leave empty here to enable the wizard for storage.
-  #:ses_db: 'sqlite:///var/lib/rsence/db/ses.db'
+  :ses_db: 'sqlite://var/lib/rsence/db/ses.db'
 
 #
 # ValueManager settings

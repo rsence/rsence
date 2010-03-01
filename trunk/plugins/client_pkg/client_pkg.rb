@@ -9,7 +9,7 @@
 class ClientPkg < Servlet
   
   # the library path of this plugin
-  lib_path = File.join( PluginManager.curr_plugin_path, 'lib' )
+  lib_path = File.join( @@bundle_path, 'lib' )
   
   # The ClientPkgCache class:
   require File.join(lib_path,'client_pkg_cache')
@@ -54,12 +54,23 @@ class ClientPkg < Servlet
             @last_change = Time.now
             @client_build.run
             @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
-            `say "Autobuild complete!"` if ARGV.include?('-say')
+            puts "Autobuilt."
+            if ARGV.include?('-say')
+              Thread.new do
+                Thread.pass
+                system('say "Autobuilt."')
+              end
+            end
           end
           sleep 3
         end
       end
     end
+    
+  end
+  
+  def client_cache
+    @client_cache
   end
   
   def close
@@ -67,6 +78,9 @@ class ClientPkg < Servlet
       @thr.kill!
       @thr = false
     end
+    @client_build.flush
+    @client_build = nil
+    @client_cache = nil
     @build_logger.close
   end
   
@@ -77,24 +91,16 @@ class ClientPkg < Servlet
     @build_logger = BuildLogger.new( File.join(@path,'log','build_log') )
     @build_logger.open
     
-    @client_build = ClientPkgBuild.new( $config[:client_pkg], @build_logger )
+    @client_build = ClientPkgBuild.new( ::Riassence::Server.config[:client_pkg], @build_logger )
     @last_change = Time.new
     @client_build.run
     
     @client_cache = ClientPkgCache.new
     @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
     
-    # Used by:
-    #  - plugins/index_html/index_html.rb
-    $FILECACHE = @client_cache
   end
   
 end
 
-client_pkg = ClientPkg.new
-
-# Used by:
-#  - plugins/index_html/index_html.rb
-$FILESERVE = client_pkg
-
+ClientPkg.new
 

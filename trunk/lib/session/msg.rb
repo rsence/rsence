@@ -87,13 +87,16 @@ class Message
   attr_accessor :valuemanager
   
   # Reference to SessionManager
-  attr_accessor :sessionmanager
+  attr_accessor :sessions
   
   # Reference to PluginManager
-  attr_accessor :pluginmanager
+  attr_accessor :plugins
   
   # Message is initialized with a valid +Request+ and +Response+ objects. 
   def initialize( transporter, request, response )
+    
+    @config = ::Riassence::Server.config
+    
     @request  = request
     @response_success = false
     @response = response
@@ -115,14 +118,14 @@ class Message
     # global instances
     @transporter    = transporter
     @valuemanager   = @transporter.valuemanager
-    @sessionmanager = @transporter.sessionmanager
-    @pluginmanager  = @transporter.pluginmanager
+    @sessions = @transporter.sessions
+    @plugins  = @transporter.plugins
     
     @response.content_type = 'text/javascript; charset=utf-8'
     @response['cache-control'] = 'no-cache'
     
     # gnu-zipped responses:
-    if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not $config[:no_gzip]
+    if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not @config[:no_gzip]
       @response['content-encoding'] = 'gzip'
       @do_gzip = true
     else
@@ -139,7 +142,7 @@ class Message
   
   # Expire the session.
   def expire_session
-    @sessionmanager.expire_session( @ses_id )
+    @sessions.expire_session( @ses_id )
   end
   
   # Define the session key.
@@ -214,13 +217,13 @@ class Message
   # Sends data to the client, usually
   # javascript, but is valid for any data.
   def reply(data)
-    puts data if $config[:trace]
+    puts data if @config[:trace]
     @buffer.push( data )
   end
   
   # For value manager; insert changed values BEFORE other js.
   def reply_value(data)
-    puts data if $config[:trace]
+    puts data if @config[:trace]
     @value_buffer.push( data )
   end
   
@@ -265,7 +268,7 @@ class Message
   
   # Calls registered plugin +plugin+ method +plugin_method+ with any +args+
   def run( plugin_name, plug_method, *args )
-    @pluginmanager.run_plugin( plugin_name, plug_method, *args)
+    @plugins.run_plugin( plugin_name, plug_method, *args)
   end
   
   

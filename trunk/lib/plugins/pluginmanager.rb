@@ -6,6 +6,25 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+
+def eval_bundle( params )
+  mod = Module.new do
+    @@bundle_path    = params[:bundle_path   ]
+    @@bundle_name    = params[:bundle_name   ]
+    @@bundle_info    = params[:bundle_info   ]
+    @@plugin_manager = params[:plugin_manager]
+    load params[:src_path]
+  end
+  # mod.module_eval( params[:src] )
+  return mod
+end
+
+module Riassence
+module Server
+
+# Contains the PluginUtil module which has common methods for the bundle classes
+require 'plugins/plugin_util'
+
 # plugin.rb contains the Plugin skeleton class
 require 'plugins/plugin'
 
@@ -21,110 +40,163 @@ require 'plugins/gui_plugin'
 # creation for a plugin that includes it.
 require 'plugins/plugin_sqlite_db'
 
-# soapserve contains an extended hsoaplet for pluginmanager usage
-begin
-  require 'http/soap/soapserve'
-  SKIP_SOAPSERVE = true
-rescue RegexpError
-  # happens with soap4r-1.5.8 on ruby-1.9.1:
-  puts "soap4r failed; /SOAP will not work!"
-  SKIP_SOAPSERVE = true
-end
-
-# soap_plugin includes a SOAPPlugin class, that includes plug-and-play SOAP access
-require 'plugins/soap_plugin'
-
-# servlet includes the ServletPlugin class, for handling any requests / responses
+# servlet includes the Servlet class, for handling any requests / responses
 require 'plugins/servlet'
 
-module Riassence
-module Server
-
-=begin
- PluginManager manages plugins and delegates messages to and between them to respond to messages.
-=end
+## = Abstract
+## PluginManager is the service that loads and provides method delegation
+## amongst all installed plugins.
+##
+## = Usage
+## plugin_paths = [ 'plugins', '/home/me/rsence/plugins' ]
+## myPluginManager = Riassence::Server::PluginManager.new( plugin_paths )
+##
 class PluginManager
   
-  # hash of associated plugins
-  @@plugins = {}
+  attr_reader :transporter, :sessions
   
-  # the current plugin path during scan
-  @@curr_plugin_path = nil
-  
-  ### SOAPServe Instance
-  ## Example usage, provides all public methods of HelloServant (a regular class)
-  # hello_servant = HelloServant.new
-  # @@soap_serve.add_servant( hello_servant, 'urn:HelloServant' )
-  @@soap_serve = nil
-  # list of method accessors of the private, but required methods in SOAPPlugin instances:
-  @@soap_plugins = []
-  
-  # dirlist is an array of directories to scan for available plugins
-  #
-  # Creates a new plugin instance, scans for available plugins in +dirlist+
-  def initialize
-    @dirs = $config[:plugin_paths]
-    
-    scan()
-    
+  # Initialize with a list of directories as plugin_paths.
+  # It's an array containing all plugin directories to scan.
+  def initialize( transporter, plugin_paths )
+    @transporter = transporter
+    @sessions = transporter.sessions
+    @plugin_paths = plugin_paths
+    rescan
   end
   
-  ### Access to the @soap_serve instance of SOAPServe
-  def PluginManager.soap_serve
-    @@soap_serve
-  end
-  
-  ### Routes requests and responses from transporter:
-  def PluginManager.soap( request, response )
-    @@soap_serve.process( request, response )
-  end
-  
-  # Access to the list of plugins
-  def PluginManager.plugins
-    return @@plugins
-  end
-  
-  # Application module access to its own path
-  def PluginManager.curr_plugin_path
-    return @@curr_plugin_path
-  end
-  
-  ### destroys soapserve (to free all instances)
-  def deinit_soapserve
-    @@soap_serve = nil
-    @@soap_plugins = []
-  end
-  
-  ### initializes soapserve
-  def init_soapserve
-    return if SKIP_SOAPSERVE == true
-    @@soap_serve = SOAP::SOAPServe.new
-  end
-  
-  ### Adds soapserve instance
-  def PluginManager.add_soap_plugin( plug_instance, urn, plugin_methods )
-    @@soap_serve.add_servant( plug_instance, urn )
-    @@soap_plugins.push( plugin_methods )
-  end
-  
-  # Loads pluginlicotions from the list of plugin directories.
-  def scan
-    
-    ## Reset soapserve
-    deinit_soapserve
-    init_soapserve
-    
-    # loop through all plugin-mainlevel directories
-    @dirs.each do |plugin_dir|
-      
-      is_dir = File.directory?( plugin_dir )
-      next unless is_dir
-      
-      scan_plugin_dir( plugin_dir )
-      
+  # Top-level method for scanning all plugin directories.
+  # Clears previously loaded plugins.
+  def rescan
+    @registry = {}
+    @info     = {}
+    @aliases  = {}
+    @servlets = []
+    @plugin_paths.each do |path|
+      next unless File.directory? path
+      scan_plugindir( path )
     end
-    open
-    @@curr_plugin_path = nil
+    delegate( :open )
+  end
+  
+  def registry( plugin_name )
+    return @registry[ plugin_name ]
+  end
+  alias [] registry
+  
+  # Scans a directory of plugins, calls +load_plugin+ for bundles that match
+  # the definition of a plugin bundle.
+  #  - Skips bundles starting with a dot
+  #  - Skips bundles without a ruby source file with the same
+  #    name as the directory (plus '.rb').
+  #  - Skips bundles containing a file or directory named 'disabled'
+  def scan_plugindir( path )
+    Dir.entries(path).each do |bundle_name|
+      next if bundle_name =~ /&\./
+      bundle_path = File.expand_path( File.join( path, bundle_name ) )
+      next unless File.directory?( bundle_path )
+      bundle_file = bundle_name+'.rb'
+      next unless File.exists?( File.join( bundle_path, bundle_file ) )
+      next if File.exists?( File.join( bundle_path, 'disabled' ) )
+      
+      load_bundle( bundle_path, bundle_name.to_sym, bundle_file )
+    end
+  end
+  
+  # Gets plugin information
+  def bundle_info( bundle_path )
+    
+    bundle_name = File.split( bundle_path )[1]
+    
+    # Default bundle information
+    info = {
+      # The human-readable product name of the package
+      :title => bundle_name.capitalize,
+      
+      # The human-readable version of the package
+      :version => '0.0.0',
+      
+      # A brief description of the package (rdoc formatting supported)
+      :description => 'No Description given',
+      
+      # A flag (when false) prevents the plugin from automatically reload when changed.
+      :reloadable => false,
+      
+      # A flag (when false) enables automatic construction
+      # of the Plugin and Servlet classes contained.
+      :inits_self => true,
+      
+      # System version requirement.
+      :sys_version => '>= 1.0.0'
+      
+    }
+    
+    info_path = File.join( bundle_path, 'info.yaml' )
+    if File.exists?( info_path )
+      info_yaml = YAML.load( File.read( info_path ) )
+      info_yaml.each do |info_key,info_value|
+        info[ info_key.to_sym ] = info_value
+      end
+    end
+    return info
+    
+  end
+  
+  # Loads a plugin bundle.
+  def load_bundle( bundle_path, bundle_name, bundle_file )
+    bundle_file_path = File.join( bundle_path, bundle_file )
+    
+    bundle_info = bundle_info( bundle_path )
+    
+    bundle_src = File.read( bundle_file_path )
+    
+    module_ns = eval_bundle( {
+      :bundle_path    => bundle_path,
+      :bundle_name    => bundle_name,
+      :bundle_info    => bundle_info,
+      :plugin_manager => self,
+      :src_path       => bundle_file_path,
+      :src            => bundle_src
+    } )
+    
+    unless bundle_info[:inits_self]
+      module_ns.constants.each do |module_const_name|
+        module_const = module_ns.const_get( module_const_name )
+        if module_const.class == Class
+          superclass = module_const.superclass
+          if [ Servlet, Plugin ].include? superclass
+            module_const.new
+          else
+            puts "unknown plugin bundle superclass: #{superclass.to_s}"
+          end
+        end
+      end
+    end
+  end
+  
+  def register_bundle( inst, bundle_name )
+    bundle_name = bundle_name.to_sym
+    if @registry.has_key?( bundle_name )
+      if registry[ bundle_name ] != inst
+        warn "Tried to register a conflicting bundle name: #{bundle_name.inspect}; ignoring"
+      else
+        warn "Use @plugins.register_alias to register more than one name per plugin."
+        register_alias( inst.name.to_sym, bundle_name )
+      end
+    else
+      inst.init if inst.respond_to? :init and not inst.inited
+      @registry[ bundle_name ] = inst
+      if inst.respond_to?( :match )
+        @servlets.push( bundle_name )
+      end
+    end
+  end
+  
+  def register_alias( bundle_name, alias_name )
+    if @aliases.has_key?( alias_name.to_sym )
+      warn "Alias already taken: #{alias_name.inspect}"
+    else
+      @aliases[ alias_name ] = bundle_name.to_sym
+    end
   end
   
   def plugin_error( e, err_location, err_location_descr, eval_repl=false )
@@ -137,120 +209,20 @@ class PluginManager
       "\t"+e.backtrace.join("\n\t"),
       "*"*40
     ].join("\n")+"\n"
+    puts
+    puts "eval repl: #{eval_repl}"
+    puts
     if eval_repl
-      err_msg.gsub!('(eval):',"#{eval_repl}:")
+      err_msg = err_msg.gsub('from (eval):',"from #{eval_repl}:")
     end
     $stderr.write( err_msg )
   end
   
-  def scan_plugin_dir( plugin_dir )
-    # goes through all plugins in the
-    # plugin dir in alphabetical order:
-    Dir.new(plugin_dir).sort.each do |plugin_name|
-      
-      # skip, if the plugin starts with a dot, like '.svn', '.' and '..'
-      dot_file = (plugin_name =~ /^\./)
-      next if dot_file
-      
-      # sets the plugin path
-      @@curr_plugin_path = File.join(plugin_dir,plugin_name)
-      
-      # checks that the plugin is a dir
-      is_dir = File.directory?( @@curr_plugin_path )
-      next unless is_dir
-      
-      # expects to find a 'plugin_dir/plugin_name/plugin_name.rb' file
-      filename = File.join( @@curr_plugin_path, "#{plugin_name}.rb" )
-      next unless File.exist?( filename )
-      
-      # if the plugin contains a 'disabled' flag-file, it skips to the next
-      disabled_path = File.join( @@curr_plugin_path, 'disabled' )
-      next if File.exist?( disabled_path )
-      
-      begin
-        ## eval the plugin source
-        plugin_eval( filename )
-      rescue => e
-        plugin_error(
-          e,
-          "Riassence::Server::PluginManager.scan_plugin_dir(#{plugin_dir})",
-          "plugin: #{plugin_name.inspect}",
-          File.join(plugin_dir,plugin_name,filename.to_s+'.rb')
-        )
-      end
-    end
-  end
-  
-  ### Evaluates the plugin as a string in an anonymous module
-  def plugin_eval( filename )
-    # Create a new, anonymous module as the plugin namespace.
-    module_ns = Module.new
-    plugin_src = File.read( filename )
-    begin
-      return module_ns.module_eval( plugin_src )
-    rescue => e
-      plugin_error(
-        e,
-        "Riassence::Server::PluginManager.plugin_eval",
-        "filename: #{filename.inspect}",
-        filename
-      )
-      return false
-    end
-  end
-  
-  # Tells all plugins to open the files or databases they need.
-  def open
-    delegate_soap( :open )
-    delegate_servlet( 'open' )
-    delegate( 'open' )
-  end
-  
-  # Tells all plugins that a request happened and gives the msg-parameter to them.
-  def idle( msg )
-    delegate( 'idle', msg )
-  end
-  
-  # Tells all plugins to flush their data.
-  def flush
-    delegate_soap( :flush )
-    delegate_servlet( 'flush' )
-    delegate( 'flush' )
-  end
-  
-  # Tells all plugins that they are about to be terminated.
-  def close
-    delegate_soap( :close )
-    delegate_servlet( 'close' )
-    delegate( 'close' )
-  end
-  
-  # Restarts all running plugins
-  def rescan
-    flush
-    close
-    @@plugins = {}
-    @@servlets = {}
-    scan
-    open
-  end
-  
-  # Called when everything is going down
-  def shutdown
-    flush
-    close
-  end
-  
-  def delegate_soap( method_name )
-    @@soap_plugins.each do |method_hash|
-      method_hash[ method_name ].call
-    end
-  end
-  
-  @@servlets = {}
   def match_servlet_uri( uri, request_type=:get )
     match_score = {}
-    @@servlets.each do | servlet_name, servlet |
+    @servlets.each do | servlet_name |
+      servlet = @registry[ servlet_name ]
+      next unless servlet.respond_to?( request_type )
       begin
         if servlet.match( uri, request_type )
           score = servlet.score
@@ -264,126 +236,77 @@ class PluginManager
           "servlet: #{servlet_name.inspect}, request_type: #{request_type.inspect}, uri: #{uri.inspect}",
           servlet_name
         )
-        return false
       end
     end
     match_scores = match_score.keys.sort
     if match_scores.empty?
       return false
     else
-      match_servlets = match_score[ match_scores[0] ]
-      return match_servlets[ rand( match_servlets.size ) ]
+      matches_order = []
+      matches_best  = match_score[ match_scores[0] ]
+      if matches_best.size > 1
+        matches_best = matches_best[ rand( matches_best.size ) ]
+      else
+        matches_best = matches_best.first
+      end
+      matches_order.push( matches_best )
+      match_score.keys.sort.each do |match_n|
+        match_score[ match_n ].each do | match_name |
+          matches_order.push( match_name ) unless matches_order.include? match_name
+        end
+      end
+      return matches_order
     end
   end
   
-  def match_servlet( request_type, request, response, session )
-    match_plugin = match_servlet_uri( request.fullpath, request_type )
-    if match_plugin
-      if request_type == :get
-        begin
-          @@servlets[match_plugin].get( request, response, session )
-        rescue => e
-          plugin_error(
-            e,
-            "Riassence::Server::PluginManager.match_servlet",
-            "plugin: #{match_plugin.inspect}, method: get, uri: #{request.fullpath}",
-            match_plugin
-          )
-          return false
-        end
-      elsif request_type == :post
-        begin
-          @@servlets[match_plugin].post( request, response, session )
-        rescue => e
-          plugin_error(
-            e,
-            "Riassence::Server::PluginManager.match_servlet",
-            "plugin: #{match_servlet.inspect}, method: post, uri: #{request.fullpath}",
-            match_plugin
-          )
-          return false
-        end
+  def delegate( method_name, *args )
+    @registry.each do | plugin_name, plugin |
+      if plugin.respond_to?( method_name )
+        plugin.send( method_name, *args  )
+      end
+    end
+  end
+  
+  def shutdown
+    delegate( :flush )
+    delegate( :close )
+  end
+  
+  def run_plugin( plugin_name, method_name, *args )
+    plugin_name = plugin_name.to_sym
+    if @registry.has_key?( plugin_name )
+      if @registry[ plugin_name ].respond_to?( method_name )
+        return @registry[ plugin_name ].send( method_name, *args )
       else
+        puts "No method #{method_name.inspect} for plugin #{plugin_name.inspect}"
         return false
       end
-      return true
     else
+      puts "No such plugin: #{plugin_name.inspect}"
       return false
     end
   end
   
-  def delegate_servlet( method_name, *args )
-    @@servlets.each do |servlet_name,servlet|
-      if servlet.respond_to? method_name
-        begin
-          servlet.method( method_name ).call( *args )
-        rescue => e
-          plugin_error(
-            e,
-            "Riassence::Server::PluginManager.delegate_servlet",
-            "plugin: #{servlet_name.inspect}, method: #{method_name.inspect}, args: #{args_clean(args)}",
-            servlet_name
-          )
-        end
+  def match_servlet( request_type, request, response, session )
+    request_uri = request.fullpath
+    matches_order = match_servlet_uri( request_uri, request_type )
+    return false unless matches_order
+    matches_order.each do |servlet_name|
+      begin
+        @registry[servlet_name].send( request_type, request, response, session )
+        return true
+      rescue => e
+        puts "Plugin error?"
+        plugin_error(
+          e,
+          "Riassence::Server::PluginManager.match_servlet",
+          "servlet_name: #{servlet_name.inspect}, request_type: #{request_type.inspect}",
+          servlet_name
+        )
+        next
       end
     end
-  end
-  
-  def PluginManager.add_servlet( servlet )
-    servlet_name = File.split( @@curr_plugin_path )[1]
-    @@servlets[servlet_name] = servlet
-    return servlet_name
-  end
-  
-  def args_clean(args)
-    outp = []
-    args.each do |arg|
-      if arg.class == Message
-        arg = "<#msg..>"
-      end
-      outp.push(arg)
-    end
-    return outp.inspect
-  end
-  
-  ### Check if each plugin handles +method+, and if so, call it, passing +args+ as a parameter
-  def delegate(method, *args)
-    @@plugins.keys.sort.each do |plugin_name|
-      plugin = @@plugins[plugin_name]
-      puts "delegating method #{method.inspect} to plugin #{plugin.names.inspect}" if ARGV.include?('--trace-delegate')
-      if plugin.respond_to?(method)
-        begin
-          plugin.send( method, *args )
-        rescue => e
-          plugin_error(
-            e,
-            "Riassence::Server::PluginManager.delegate",
-            "plugin: #{plugin_name.inspect}, method: #{method.inspect}, args: #{args_clean(args)}",
-            plugin_name
-          )
-        end
-      end
-    end
-  end
-  
-  ### Runs a plugin's (named +plugin_name+) method (named +method_name+) with the supplied +args+
-  def run_plugin( plugin_name, method_name, *args )
-    
-    ## 
-    if @@plugins.has_key?( plugin_name )
-      if @@plugins[plugin_name].respond_to?( method_name )
-        begin
-          return @@plugins[plugin_name].method( method_name ).call(*args)
-        rescue => e
-          plugin_error(
-            e,
-            "Riassence::Server::PluginManager.run_plugin",
-            "plugin: #{plugin_name.inspect}, method: #{method_name.inspect}, args: #{args_clean(args)}",
-            plugin_name
-          )
-        end
-      end
-    end
+    return false
   end
   
 end

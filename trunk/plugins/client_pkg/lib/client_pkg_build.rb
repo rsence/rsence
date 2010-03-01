@@ -9,9 +9,9 @@
 
 class ClientPkgBuild
   
-  require 'ext/jsmin'
-  require 'ext/jscompress'
-  require 'ext/html_min'
+  require 'jsmin_c'
+  require 'jscompress'
+  require 'html_min'
   require 'util/gzstring'
   
   def read_file( path )
@@ -169,11 +169,11 @@ class ClientPkgBuild
     @destination_files.each_key do | package_name |
       indexes.push( @destination_files[ package_name ] )
     end
-    @@jscompress.build_indexes( indexes.join("\n") )
+    @jscompress.build_indexes( indexes.join("\n") )
   end
   
   def pre_convert(jsc_data)
-    return @@jscompress.compress( jsc_data )
+    return @jscompress.compress( jsc_data )
   end
   
   def minimize_data
@@ -344,12 +344,6 @@ class ClientPkgBuild
   
   attr_reader :js, :gz, :themes
   
-  # JSCompress compresses js by "obfuscating" 
-  # all variables beginning with an underscore "_",
-  # eg. "_this" -> "_0", except
-  # those specified in the @reserved_names array
-  @@jscompress = JSCompress.new( $config[:client_pkg][:reserved_names] )
-  
   def initialize( config, logger )
     
     @logger = logger
@@ -373,11 +367,20 @@ class ClientPkgBuild
     # reserved_names is supposed to be a list of reserved words (words that shouldn't be compressed)
     @reserved_names = config[:reserved_names]
     
-    # makes sure the specified dirs are ok
-    return if not setup_dirs
+    # JSCompress compresses js by "obfuscating" 
+    # all variables beginning with an underscore "_",
+    # eg. "_this" -> "_0", except
+    # those specified in the @reserved_names array
+    @jscompress = JSCompress.new( config[:reserved_names] )
+    
+    # HTMLMin compresses css and html by removing whitespace
+    @html_min = HTMLMin.new
     
     # JSMin removes js white-space (makes the source shorter)
     @jsmin = JSMin.new
+    
+    # makes sure the specified dirs are ok
+    return if not setup_dirs
     
     begin
       require 'rubygems'
@@ -388,9 +391,6 @@ class ClientPkgBuild
       @css_min = false
     end
     
-    # HTMLMin compresses css and html by removing whitespace
-    @html_min = HTMLMin.new
-    
     # contains a list of theme gfx extensions allowed
     @gfx_formats = config[:gfx_formats]
     
@@ -400,8 +400,8 @@ class ClientPkgBuild
     @no_obfuscation = config[:no_obfuscation]
     @no_whitespace_removal = config[:no_whitespace_removal]
     @js_inc = config[:js_inc]
-    @debug = false
-    @quiet = true
+    @debug = (not $DEBUG_MODE)
+    @quiet = (not $DEBUG_MODE)
   end
   
   def find_newer( src_dir, newer_than )
@@ -464,12 +464,8 @@ class ClientPkgBuild
     @logger.log(  "#{package_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(9)} | #{jsc_size.to_s.rjust(6)} #{percent1.rjust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.rjust(4)}" )
   end
   
-  ### returns html theme piece for special case optimization
-  ##def html( theme_name ); @html_by_theme[ theme_name ]; end
-  ##def css(  theme_name ); @css_by_theme[  theme_name ]; end
-  ##
-  ##def flush
-  ##  @jscompress.free_indexes
-  ##end
+  def flush
+   @jscompress.free_indexes
+  end
 end
 

@@ -6,9 +6,6 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module Riassence
-module Server
-
 ## The GUIPlugin extends Plugin by automatically initializing an GUIParser
 ## instance as @gui
 ## It makes the include_js method public to enable automatic dependency
@@ -34,11 +31,8 @@ class GUIPlugin < Plugin
   # Automatically initializes an GUIParser instance as @gui
   def init
     super
-    @gui = GUIParser.new( self, @names.first )
+    @gui = GUIParser.new( self, @name )
   end
-  
-  # Makes @path public to enable GUIParser
-  attr_reader :path
   
   # Extend this method to return custom params to GUIParser#init.
   # Called from init_ui.
@@ -61,6 +55,4 @@ class GUIPlugin < Plugin
   
 end
 
-end
-end
 

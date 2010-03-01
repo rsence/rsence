@@ -109,7 +109,7 @@ class HValue
     invalid_count = 0
     @members.each_key do |plugin_name|
       @members[plugin_name].each do |method_name|
-        invalid_count += 1 unless msg.pluginmanager.run_plugin( plugin_name, method_name, msg, self ) 
+        invalid_count += 1 unless msg.plugins.run_plugin( plugin_name, method_name, msg, self ) 
       end
     end
     if invalid_count == 0
@@ -264,7 +264,7 @@ class UploadValue < HValue
       elsif upload_state == 2
         # "upload state: waiting to process."
         
-        uploads = $TICKETSERVE.get_uploads(upload_key,true)
+        uploads = msg.plugins[:ticketservices].get_uploads(upload_key,true)
         if uploads.size == 1
           uploaded_data = uploads[0]
           
@@ -280,7 +280,7 @@ class UploadValue < HValue
             end
             
           end
-          $TICKETSERVE.del_uploads(upload_key,msg.ses_id)
+          msg.plugins[:ticketservices].del_uploads(upload_key,msg.ses_id)
         else
           # "upload, amount of uploads: #{uploads.size}"
         end
@@ -314,7 +314,7 @@ class UploadValue < HValue
     return true
   end
   def setup_upload(msg,hvalue,size_bytes=500*1024,accept_mime=/image\/(.*?)/,allow_multi=false)
-    upload_key = $TICKETSERVE.upload_key(msg,hvalue.val_id,size_bytes,accept_mime,allow_multi)
+    upload_key = msg.plugins[:ticketservices].upload_key(msg,hvalue.val_id,size_bytes,accept_mime,allow_multi)
     hvalue.set( msg, upload_key )
   end
 end

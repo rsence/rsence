@@ -47,9 +47,9 @@ class SessionStorage
     }
     
     ## Disposable keys (new ses_key each request)
-    @config = $config[:session_conf]
+    @config = ::Riassence::Server.config[:session_conf]
     
-    @db_uri = $config[:database][:ses_db]
+    @db_uri = ::Riassence::Server.config[:database][:ses_db]
     
     db_init
     
@@ -184,6 +184,8 @@ class SessionStorage
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
       ses_data_dump = Marshal.dump( ses_data )
+      @db.disconnect
+      db_open
       @db[:rsence_session].filter(
         :id => ses_id
       ).update(
@@ -233,7 +235,7 @@ class SessionStorage
     @sessions.delete( ses_id )
     
     # Removes all ticket-based storage bound to the session
-    $TICKETSERVE.expire_ses( ses_id )
+    @plugins[:ticketservices].expire_ses( ses_id )
     
     # target -> source cleanup
     if @clone_sources.has_key?( ses_id )

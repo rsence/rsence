@@ -6,9 +6,6 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module Riassence
-module Server
-
 ## = Abstract
 ## The Plugin class is the base class for extending server logic.
 ## A single Plugin instance serves the requests of all sessions,
@@ -303,18 +300,21 @@ module Server
 ##
 class Plugin
   
-  # The +path+ is the absolute path to the directory where the plugin resides.
-  attr_writer :path
+  include PluginUtil
   
   # The +names+ is a list of (usually just one) names the plugin is registered under.
-  attr_reader :names
+  attr_reader :name, :path, :info, :inited
   
   # The constructor should not take any parameters. In most cases, it's better
   # to extend the +#init+ method, because it's called after the plugin is set up.
   def initialize
-    @inited = false
-    @names  = []
-    @values = false
+    @inited  = false
+    @info    = @@bundle_info
+    @name    = @@bundle_name
+    @path    = @@bundle_path
+    @plugins = @@plugin_manager
+    @values  = false
+    register unless @info[:inits_self]
   end
   
   # Extend this method to do any initial tasks before other methods are called.
@@ -325,25 +325,6 @@ class Plugin
   
   # Extend this method to do any tasks every time the client makes a request.
   def idle( msg )
-  end
-  
-  # Extend this method to open objects like streams and database connections.
-  # It is called when everything is constructed after all plugins are loaded.
-  def open
-  end
-  
-  # Extend to save your plugin state or store any data that needs to be
-  # persistent. It's always called before close, but doesn't necessarily mean
-  # a close call is imminent.
-  def flush
-  end
-  
-  # Extend this method to close objects like streams and database connections.
-  # It's called when plugins are about to be destructed, so don't expect any
-  # calls after it has been called. When this method is called, it's the last
-  # chance to save persistent data before being destructed, so implement
-  # the +#flush+ method for primarily storing data.
-  def close
   end
   
   # Extend this method to invoke actions, when a new session is created.
@@ -389,13 +370,18 @@ class Plugin
   # into the system. Otherwise, it's subject to destruction
   # and garbage collection. Use the +name+ parameter to 
   # give the (unique) name of your plugin.
-  def register( name )
-    raise "DuplicateAppNameFound: #{name.inspect}" if PluginManager.plugins.has_key?(name)
-    PluginManager.plugins[ name ] = self
-    @names << name
-    @path = File.expand_path( PluginManager.curr_plugin_path )
-    init if not @initied
-    @inited = true
+  def register( name=false )
+    if @inited
+      @plugins.register_alias( @name, name )
+    else
+      if name
+        name = name.to_s
+      else
+        name = @name
+      end
+      @plugins.register_bundle( self, name )
+      @inited = true
+    end
   end
   
 private
@@ -414,9 +400,9 @@ private
   end
   
   # Returns all the names your plugin respond to.
-  def name
-    return @names.first
-  end
+  # def name
+  #   return @names.first
+  # end
   
   
   # Returns or creates a new session hash for the plugin.
@@ -428,52 +414,6 @@ private
       msg.session[ name_sym ] = {}
     end
     return msg.session[ name_sym ]
-  end
-  
-  # Returns the contents of the file given as +path+.
-  #
-  # The plugin bundle's path is used as the prefix, unless +path+ starts with '/' or '..'
-  #
-  # If the file doesn't exist, it returns +false+.
-  def file_read( path )
-    path = compose_plugin_path( path )
-    return false unless File.exist?( path )
-    return File.read( path )
-  end
-  
-  # Writes the +data+ into the file +path+.
-  #
-  # The plugin bundle's path is used as the prefix, unless +path+ starts with '/' or '..'
-  #
-  # It returns a success code (+false+ for failure and +true+ for success).
-  def file_write( path, data )
-    path = compose_plugin_path( path )
-    begin
-      datafile = File.open( path, 'wb' )
-      datafile.write( data )
-      datafile.close
-      return true
-    rescue => e
-      warn "file_write error for path #{path} #{e}"
-      return false
-    end
-  end
-  alias file_save file_write
-  
-  # Makes a full path using the plugin bundle as the 'local path'.
-  # The (optional) +prefix+ is a subdirectory in the bundle,
-  # the +suffix+ is the file extension.
-  def compose_plugin_path( path, prefix=false, suffix=false )
-    if suffix
-      path = "#{path}#{suffix}" unless path.end_with?(suffix)
-    end
-    if prefix
-      path = File.join( prefix, path )
-    end
-    if path[0].chr != '/' and path[0..1] != '..'
-      path = File.join( @path, path )
-    end
-    return path
   end
   
   # Returns the source code of the javascript file +name+ in the 'js'
@@ -560,7 +500,7 @@ private
         if responder.has_key?(:plugin)
           responder_plugin = responder[:plugin]
         else
-          responder_plugin = @names.first
+          responder_plugin = @name
         end
         if responder.has_key?(:method)
           ses[value_name].bind( responder_plugin, responder[:method] )
@@ -712,6 +652,4 @@ private
   
 end
 
-end
-end
 

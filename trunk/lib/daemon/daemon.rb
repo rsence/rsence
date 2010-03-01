@@ -16,7 +16,7 @@ require 'rubygems'
 require 'rack'
 
 # Loads the selected web-server (default is 'thin')
-require $config[:http_server][:rack_require]
+require Riassence::Server.config[:http_server][:rack_require]
 
 # Methods that return rack the selected handler
 def rack_webrick_handler;  Rack::Handler::WEBrick;  end
@@ -27,7 +27,7 @@ def rack_unicorn_handler;  Rack::Handler::Unicorn;  end
 def rack_rainbows_handler; Rack::Handler::Rainbows; end
 
 # Selects the handler for Rack
-$config[:http_server][:rack_handler] = self.method({
+Riassence::Server.config[:http_server][:rack_handler] = self.method({
   'fuzed'    => :rack_fuzed_handler,
   'webrick'  => :rack_webrick_handler,
   'ebb'      => :rack_ebb_handler,
@@ -35,10 +35,10 @@ $config[:http_server][:rack_handler] = self.method({
   'mongrel'  => :rack_mongrel_handler,
   'unicorn'  => :rack_unicorn_handler,
   'rainbows' => :rack_rainbows_handler
-}[$config[:http_server][:rack_require]]).call
+}[Riassence::Server.config[:http_server][:rack_require]]).call
 
 # Debug mode switch. The debug mode is intended for developers, not production.
-$DEBUG_MODE  = $config[:debug_mode]
+$DEBUG_MODE  = Riassence::Server.config[:debug_mode]
 
 # Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
 require 'transporter/transporter'
@@ -59,10 +59,10 @@ module Daemon
   
   class Base
     def self.pid_fn
-      $config[:daemon][:pid_fn]
+      Riassence::Server.config[:daemon][:pid_fn]
     end
     def self.log_fn
-      $config[:daemon][:log_fn]
+      Riassence::Server.config[:daemon][:log_fn]
     end
     def self.daemonize
       Controller.daemonize(self)
@@ -170,8 +170,10 @@ module Daemon
         exit if fork
         PidFile.store(daemon, Process.pid)
         Signal.trap('USR1') do 
-          $PLUGINS.shutdown
-          $SESSION.shutdown
+          if @transporter != nil
+            @transporter.plugins.shutdown if @transporter.plugins
+            @transporter.sessions.shutdown if @transporter.session
+          end
         end
         Signal.trap('USR2') do 
           puts "Alive."
@@ -235,32 +237,30 @@ end
 
 class HTTPDaemon < Daemon::Base
   def self.start
-    $config[:transporter]     = Transporter.new
-    $TRANSPORTER = $config[:transporter]
+    @transporter = Transporter.new
     
     unless ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
       Daemon::Controller.log_io(self)
     end
     
     # This is the main http server instance:
-    $config[:broker] = Broker.start(
-      $config[:http_server][:rack_handler],
-      $config[:http_server][:bind_address],
-      $config[:http_server][:port]
+    @broker = Broker.start(
+      @transporter,
+      Riassence::Server.config[:http_server][:rack_handler],
+      Riassence::Server.config[:http_server][:bind_address],
+      Riassence::Server.config[:http_server][:port]
     )
-    $BROKER      = $config[:broker]
-  
-    yield $BROKER if block_given?
+    
+    yield @broker if block_given?
   end
   def self.restart
     self.stop
-    $BROKER = nil
-    $config[:broker] = nil
+    @broker = nil
     self.start
   end
   def self.stop
-    $PLUGINS.shutdown if $PLUGINS
-    $SESSION.shutdown if $SESSION
+    @transporter.plugins.shutdown
+    @transporter.sessions.shutdown
   end
 end
 

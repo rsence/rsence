@@ -48,7 +48,7 @@ require 'rubygems'
 require 'yaml'
 require 'json'
 
-$config = YAML.load( File.read( File.join( SERVER_PATH, 'conf', 'default_conf.yaml' ) ) )
+config = YAML.load( File.read( File.join( SERVER_PATH, 'conf', 'default_conf.yaml' ) ) )
 
 ## Create default local configuratation override file, if it does not exist:
 local_config_file_paths = [
@@ -91,7 +91,7 @@ local_config_file_paths.each do |local_config_file_path|
   if File.exists? local_config_file_path and File.file? local_config_file_path
     if local_config_file_path.end_with? '.yaml'
       local_conf = YAML.load( File.read( local_config_file_path ) )
-      hash_merge( $config, local_conf )
+      hash_merge( config, local_conf )
       local_config_file_path_found = true
     else
       warn "Only Yaml configuration files are allowed at this time."
@@ -193,7 +193,7 @@ class Logger
   end
 end
 
-conf = $config[:client_pkg]
+conf = config[:client_pkg]
 dst_dir = File.join( SERVER_PATH, 'client' )
 if ARGV.length > 0
   unless ['-d','-auto','--auto','-say','--config','--root-path'].include?( ARGV[0] )

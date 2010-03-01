@@ -6,9 +6,6 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module Riassence
-module Server
-
 # This class automatically loads a YAML file from "gui" subdirectory of a plugin.
 # Extend your plugin from the GUIPlugin class instead of the Plugin class to make
 # this work automatically.
@@ -20,6 +17,8 @@ module Server
 #   params = { :values => @gui.values( ses ) }
 #   @gui.init( msg, params )
 class GUIParser
+  
+  include ::Riassence::Server
   
   # Use this method to send the client all commands required to construct the GUI Tree using JSONRenderer.
   # = Parameters
@@ -105,8 +104,6 @@ private
       File.join( parent.path, 'gui', "#{gui_name}.yaml" )
     )
   end
-end
-end
 
 end
 

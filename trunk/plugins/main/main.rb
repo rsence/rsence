@@ -7,22 +7,21 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
  #++
-class SessionTimeout < ServletPlugin
+
+class Main < Plugin
+  
   def match( uri, request_type )
-    if request_type == :post and uri == File.join($config[:broker_urls][:hello],'goodbye')
+    if request_type == :post and uri == File.join(::Riassence::Server.config[:broker_urls][:hello],'goodbye')
       return true
     end
     return false
   end
+  
   def post( req, res, ses )
-    msg = $SESSION.init_msg( req, res, true )
+    msg = @plugins.sessions.init_msg( req, res, true )
     msg.expire_session()
     msg.response_done
   end
-end
-SessionTimeout.new
-
-class Main < Plugin
   
   # url_responder gets called whenever the
   # page location.href changes, enabled virtual uris
@@ -51,7 +50,7 @@ class Main < Plugin
       if virtual_uri == '/sign_out'
         msg.reply( [
           'COMM.Transporter.stop=true;',
-          "location.href=#{$config[:indexhtml_conf][:respond_address].to_json};"
+          "location.href=#{::Riassence::Server.config[:index_html][:respond_address].to_json};"
         ].join('') )
         msg.expire_session()
       end
@@ -93,7 +92,7 @@ class Main < Plugin
   
   # Initializes the client-side COMM.urlResponder and sesWatcher
   def boot0( msg, ses )
-    msg.reply("ELEM.setStyle(0,'background-color','#{$config[:main_plugin][:bg_color]}');")
+    msg.reply("ELEM.setStyle(0,'background-color','#{::Riassence::Server.config[:main_plugin][:bg_color]}');")
     
     ## url_responder is bound in the client-space
     ## to tell the server its status by updating its value
@@ -105,7 +104,7 @@ class Main < Plugin
     # 5000ms = 5secs
     
     client_time_id = ses[:client_time].val_id.to_json
-    poll_interval = $config[:main_plugin][:server_poll_interval]
+    poll_interval = ::Riassence::Server.config[:main_plugin][:server_poll_interval]
     msg.reply "sesWatcher = COMM.SessionWatcher.nu(#{poll_interval},#{client_time_id});"
   end
   
@@ -114,7 +113,7 @@ class Main < Plugin
     # Deletes the initial "Loading, please wait..." -message
     msg.reply "ELEM.del(ELEM.bindId('loading'));"
     # Delegates the init_ui method to each plugin to signal bootstrap completion.
-    msg.pluginmanager.delegate( 'init_ui', msg )
+    msg.plugins.delegate( 'init_ui', msg )
   end
   
   # Flushes commands in the :delayed_calls array
@@ -178,7 +177,7 @@ class Main < Plugin
   def end_polling( msg, ses )
     if ses[:poll_mode] == true
       if ses[:title_loading] == true
-        msg.reply("document.title = #{$config[:indexhtml_conf][:loaded_title].to_json};")
+        msg.reply("document.title = #{::Riassence::Server.config[:index_html][:loaded_title].to_json};")
         ses[:title_loading] = false
       end
       msg.reply "COMM.Transporter.poll(0);"
@@ -189,7 +188,7 @@ class Main < Plugin
   # Starts polling.
   def start_polling( msg, ses )
     if ses[:poll_mode] == false
-      msg.reply( "COMM.Transporter.poll(#{$config[:transporter_conf][:client_poll_priority]});" )
+      msg.reply( "COMM.Transporter.poll(#{::Riassence::Server.config[:transporter_conf][:client_poll_priority]});" )
       ses[:poll_mode] = true
     end
   end

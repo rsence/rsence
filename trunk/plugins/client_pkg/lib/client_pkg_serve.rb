@@ -1,7 +1,7 @@
 
 module ClientPkgServe
   def broker_urls
-    $config[:broker_urls]
+    ::Riassence::Server.config[:broker_urls]
   end
   
   def match( uri, request_type )
@@ -20,15 +20,15 @@ module ClientPkgServe
     response['Date'] = httime( Time.now )
     
     # Controls caching with headers based on the configuration
-    if $config[:cache_maximize]
-      response['Expires'] = httime(Time.now+$config[:cache_expire])
+    if ::Riassence::Server.config[:cache_maximize]
+      response['Expires'] = httime(Time.now+::Riassence::Server.config[:cache_expire])
     
     else
       response['Cache-Control'] = 'no-cache'
     end
     
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
-    support_gzip = false if $config[:no_gzip]
+    support_gzip = false if ::Riassence::Server.config[:no_gzip]
     if request.header.has_key?('user-agent')
       ua = request.header['user-agent']
       is_symbian = ua.include?("SymbianOS")
@@ -38,7 +38,7 @@ module ClientPkgServe
     end
     
     ## Split path into an array for determining what to serve
-    request_uri = '/'+request.path.match( /^#{$config[:broker_urls][:h]}(.*)$/ )[1]
+    request_uri = '/'+request.path.match( /^#{::Riassence::Server.config[:broker_urls][:h]}(.*)$/ )[1]
     
     request_path = request_uri.split( '/' )
     
@@ -145,7 +145,7 @@ module ClientPkgServe
       has_theme_file = has_theme_part and @client_cache.theme_cache[theme_name][theme_part].has_key?( req_file )
       
       
-      if not has_theme_file and theme_file == 'common.css'
+      if not has_theme_file and req_file == 'common.css'
         response.status = 200
         response.content_type = 'text/css'
         response.body = ''
@@ -154,14 +154,14 @@ module ClientPkgServe
       if not has_theme
         response.status = 404
         response.body   = '404 - Theme Not Found'
-        puts "Theme not found, avail: #{@client_cache.theme_cache.inspect}" if $DEBUG_MODE
+        puts "Theme #{theme_name} not found, avail: #{@client_cache.theme_cache.keys.join(', ')}" if $DEBUG_MODE
       elsif not has_theme_part
         response.status = 503
         response.body   = '503 - Invalid Theme Part Request'
       elsif not has_theme_file
         response.status = 404
         response.body   = '404 - Theme Resource Not Found'
-        puts "File not found, avail: #{@client_cache.theme_cache[theme_name][theme_part].keys.inspect}" if $DEBUG_MODE
+        puts "File not found, avail: #{@client_cache.theme_cache[theme_name][theme_part].keys.join(', ')}" if $DEBUG_MODE
       else
         
         response.status = 200

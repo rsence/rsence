@@ -26,50 +26,62 @@ class Transporter
   # PluginManager handles all the plugins
   require 'plugins/pluginmanager'
   
-  attr_accessor :valuemanager, :sessionmanager, :pluginmanager
+  attr_accessor :valuemanager, :sessions, :plugins
   
   def initialize
-    @config = $config[:transporter_conf]
+    @config = ::Riassence::Server.config[:transporter_conf]
     
     @valuemanager = ValueManager.new
-    @sessionmanager = SessionManager.new( self )
-    @pluginmanager = PluginManager.new
-    
-    
-    # Used by:
-    #   plugins/index_html/index_html.rb
-    #   lib/daemon/daemon.rb
-    $PLUGINS     = @pluginmanager
+    @sessions = SessionManager.new( self )
+    @plugins = PluginManager.new( self, ::Riassence::Server.config[:plugin_paths] )
     
     
     # Used by:
     #   plugins/main/main.rb
-    #   lib/daemon/daemon.rb
-    $SESSION = @sessionmanager
+    $SESSION = @sessions
     
   end
   
   def servlet( request_type, request, response )
-    broker_urls = $config[:broker_urls]
+    broker_urls = ::Riassence::Server.config[:broker_urls]
     uri = request.fullpath
-    ## /x handles xhr without cookies
-    if uri == broker_urls[:x]
-      puts "/x: #{uri.inspect}" if $DEBUG_MODE
-      xhr( request, response, false )
-      return true
-    ## /hello handles the first xhr (with cookies, for session key)
-    elsif uri == broker_urls[:hello]
-      puts "/hello: #{uri.inspect}" if $DEBUG_MODE
-      xhr( request, response, true )
-      return true
-    ## /SOAP handles SOAP Requests
-    elsif uri == broker_urls[:soap]
-      puts "/SOAP: #{uri.inspect}"
-      soap( request, response )
-      return true
+    # if $DEBUG_MODE and uri == $config[:index_html][:respond_address] and request_type == :get
+    #   unless ARGV.include?('-no-rescan') or ARGV.include?('--no-rescan')
+    #     puts "Reloading plugins."
+    #     if ARGV.include?('-say')
+    #       Thread.new do
+    #         Thread.pass
+    #         system('say "Reloading plugins."')
+    #       end
+    #     end
+    #     @plugins.rescan
+    #     puts "Plugins reloaded."
+    #     if ARGV.include?('-say')
+    #       Thread.new do
+    #         Thread.pass
+    #         system('say "Plugins reloaded."')
+    #       end
+    #     end
+    #   end
+    # end
+    
+    if request_type == :post
+      ## /x handles xhr without cookies
+      if uri == broker_urls[:x]
+        xhr( request, response, false )
+        return true
+      ## /hello handles the first xhr (with cookies, for session key)
+      elsif uri == broker_urls[:hello]
+        xhr( request, response, true )
+        return true
+      ## /SOAP handles SOAP Requests
+      elsif uri == broker_urls[:soap]
+        soap( request, response )
+        return true
+      end
     else
       session = {}
-      return @pluginmanager.match_servlet( request_type, request, response, session )
+      return @plugins.match_servlet( request_type, request, response, session )
     end
   end
   
@@ -80,7 +92,7 @@ class Transporter
   
   # wrapper for the session manager stop client functionality
   def xhr_error_handler(msg,err_name,err_extra_descr='')
-    @sessionmanager.stop_client_with_message( msg,
+    @sessions.stop_client_with_message( msg,
       @config[:messages][err_name][:title],
       @config[:messages][err_name][:descr]+err_extra_descr,
       @config[:messages][err_name][:uri]
@@ -102,10 +114,10 @@ class Transporter
   ## handles incoming XMLHttpRequests from the browser
   def xhr(request, response, cookies=false)
     
-    cookies = false unless $config[:session_conf][:session_cookies]
+    cookies = false unless ::Riassence::Server.config[:session_conf][:session_cookies]
     
     # Creates the msg object, also checks or creates a new session; verifies session keys and such
-    msg = @sessionmanager.init_msg( request, response, cookies )
+    msg = @sessions.init_msg( request, response, cookies )
     
     response_success = true
     
@@ -123,7 +135,7 @@ class Transporter
       # If cookies are true, it means the url base needs to
       # be changed from /hello to /x to prevent further cookie juggling.
       if cookies
-        msg.reply("COMM.Transporter.url=#{$config[:broker_urls][:x].to_json};")
+        msg.reply("COMM.Transporter.url=#{::Riassence::Server.config[:broker_urls][:x].to_json};")
       end
       
       # Appends a 'new session.' message for new sessions in $DEBUG_MODE:
@@ -151,37 +163,37 @@ class Transporter
         
         if msg.cloned_source
           begin
-            @pluginmanager.delegate( 'cloned_target', msg, msg.cloned_source )
+            @plugins.delegate( :cloned_target, msg, msg.cloned_source )
           rescue => e
             response_success = false
             xhr_error_handler( msg, :plugin_delegate_cloned_target_error, e.message )
-            xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: @pluginmanager.delegate 'cloned_target' failed." )
+            xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: @plugins.delegate 'cloned_target' failed." )
           end
         end
         
         begin
-          @pluginmanager.delegate( 'restore_ses', msg )
+          @plugins.delegate( :restore_ses, msg )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: @pluginmanager.delegate 'restore_ses' failed." )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: @plugins.delegate 'restore_ses' failed." )
         end
         
       elsif msg.new_session
         begin
-          @pluginmanager.delegate( 'init_ses', msg )
+          @plugins.delegate( :init_ses, msg )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: @pluginmanager.delegate 'init_ses' failed." )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: @plugins.delegate 'init_ses' failed." )
         end
       elsif msg.cloned_targets
         begin
-          @pluginmanager.delegate( 'cloned_source', msg, msg.cloned_targets )
+          @plugins.delegate( :cloned_source, msg, msg.cloned_targets )
         rescue => e
           response_success = false
           xhr_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @pluginmanager.delegate 'cloned_source' failed." )
+          xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @plugins.delegate 'cloned_source' failed." )
         end
       end
       
@@ -196,11 +208,11 @@ class Transporter
       
       ### Allows every plugin to respond to the idle call
       begin
-        @pluginmanager.idle( msg )
+        @plugins.delegate( :idle, msg )
       rescue => e
         response_success = false
         xhr_error_handler( msg, :plugin_idle_error, e.message )
-        xhr_traceback_handler( e, "Transporter::PluginIdleError: @pluginmanager.idle failed." )
+        xhr_traceback_handler( e, "Transporter::PluginIdleError: @plugins.idle failed." )
       end
       
       ### Processes outgoing values to client

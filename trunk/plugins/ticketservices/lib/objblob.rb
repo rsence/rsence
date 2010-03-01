@@ -23,7 +23,7 @@ module ObjBlob
       @blob_objs[:ses_ids][msg.ses_id].push( ticket_id )
       @blob_objs[:by_id][ticket_id] = [msg.ses_id,blob_obj]
     end
-    uri = File.join($config[:broker_urls][:b],ticket_id)
+    uri = File.join(::Riassence::Server.config[:broker_urls][:b],ticket_id)
     return uri
   end
   
