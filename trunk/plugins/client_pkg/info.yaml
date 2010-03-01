@@ -1,0 +1,25 @@
+
+# The human-readable product name of the package
+title: Client Resource Package
+
+# The human-readable version of the package
+version: 2.0.0
+
+# A brief description of the package (rdoc formatting supported)
+description: |
+  This Bundle contains:
+    - The ClientPkg Servlet for managing client builds and serving the results.
+    - The ClientPkgBuild class for doing the builds.
+    - The ClientPkgCache class for storing the build results.
+    - The ClientPkgServe module that handles the request handling.
+
+# A flag (when false) prevents the plugin from automatically reload when changed.
+reloadable: false
+
+# A flag (when false) enables automatic construction
+# of the Plugin and Servlet classes contained.
+inits_self: true
+
+# System version requirement.
+sys_version: '>= 2.0.0'
+

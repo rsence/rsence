@@ -30,25 +30,7 @@ public
 #        you want them to be accessible through SOAP!
 private
   
-  ## Extendables
-  
-  # Extend to do any initial configuration
-  def init
-  end
-  
-  # Extend to manage stream or database opening etc..
-  # It is called when everything is set to go after all plugins are loaded / reloaded.
-  def open
-  end
-  
-  # Extend to save your plugin state, when the system is going down.
-  def flush
-  end
-  
-  # Extend to manage stream or database closing etc..
-  # It is called before plugins are loaded / reloaded
-  def close
-  end
+  include PluginUtil
   
   ### Registers a plugin with the name +name+
   def register( urn )
@@ -71,16 +53,6 @@ private
     
   end
   
-  ## Utilities
-  
-  # File reader utility,
-  # practical for simple file data operations
-  def file_read( path )
-    if path[0].chr != '/' and path[0..1] != '..'
-      path = File.join( @path, path )
-    end
-    return File.read( path )
-  end
   
 end
 
