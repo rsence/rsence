@@ -70,7 +70,7 @@ subviews:
               label: 'HClickValueButton'
               value: 0
           - class: HClickValueButton
-            rect: [32, 60, 160, 24]
+            rect: [ 32, 60, 160, 24 ]
             options:
               label: 'HClickValueButton'
               value: 1
