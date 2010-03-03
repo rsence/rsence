@@ -8,22 +8,24 @@
 
 
 def eval_bundle( params )
-  mod = Module.new do
+  src_path = params[:src_path]
+  puts src_path
+  mod = Module.new do |m|
     @@bundle_path    = params[:bundle_path   ]
     @@bundle_name    = params[:bundle_name   ]
     @@bundle_info    = params[:bundle_info   ]
     @@plugin_manager = params[:plugin_manager]
-    if params[:bundle_info][:reloadable] == false
-      require params[:src_path][0..-4]
+    if params[:bundle_info][:inits_self] == false
+      puts "using eval"
+      m::module_eval( File.read(src_path) )
+    elsif params[:bundle_info][:reloadable] == false
+      puts "using require"
+      require src_path[0..-4]
     else
-      load params[:src_path]
+      puts "using load"
+      load src_path
     end
-    puts self.included_modules.inspect
-    # self.constants.each do |const|
-    #   puts const.inspect
-    # end
   end
-  # mod.module_eval( params[:src] )
   return mod
 end
 
@@ -127,7 +129,7 @@ class PluginManager
       :description => 'No Description given',
       
       # A flag (when false) prevents the plugin from automatically reload when changed.
-      :reloadable => false,
+      :reloadable => true,
       
       # A flag (when false) enables automatic construction
       # of the Plugin and Servlet classes contained.
@@ -171,17 +173,19 @@ class PluginManager
       module_ns.constants.each do |module_const_name|
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class
-          super_classes = []
-          while supr_class = module_const.superclass
-            supr_classes.push( supr_class )
-          end
-          require 'pp'; pp supr_classes
-          if supr_classes.include?( Servlet )
-            module_const.new
-          elsif supr_classes.include?( Plugin )
-            module_const.new
-          else
-            puts "unknown plugin bundle superclass: #{superclass.to_s}"
+          puts "is class"
+          module_const.ancestors.each do |ancestor|
+            puts "ancestor: #{ancestor.to_s.inspect}"
+            if ancestor.to_s == "Servlet"
+              module_const.new
+              break
+            elsif ancestor.to_s == "Plugin"
+              module_const.new.register( bundle_name )
+              break
+            elsif ancestor.to_s == "Object"
+              puts "Can't init class: #{module_const.to_s}"
+              break
+            end
           end
         end
       end

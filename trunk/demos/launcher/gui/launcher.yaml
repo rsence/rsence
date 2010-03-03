@@ -50,5 +50,5 @@ subviews:
         rect: [ 528, 4, 128, 24 ]
         options:
           label: 'Component Sampler'
-          valueObjId: :values.unit_converter
+          valueObjId: :values.component_sampler
           events: { click: true }
