@@ -37,7 +37,7 @@ class GUIParser
         msg.reply( js_src )
       end
     end
-    msg.reply( "JSONRenderer.nu( #{gui_data.to_json} );" )
+    msg.reply( "JSONRenderer.nu(#{gui_data.to_json});", true )
   end
   
   # Use this method to extract all the value id's of the +ses+ hash.
@@ -53,6 +53,10 @@ class GUIParser
   
 private
 
+  def json_fun( value )
+    JSON.parse( "[#{value}]" ).first
+  end
+  
   # Parses the gui data using params. Called from +init+.
   def parse_gui( gui_data, params )
     data_class = gui_data.class
@@ -72,6 +76,8 @@ private
         sym_arr = [ sym_str ]
       end
       return get_params( sym_arr, params )
+    elsif data_class == String and gui_data.strip.start_with?('function(')
+      return @parent.plugins[:client_pkg].squeeze( "a="+json_fun( gui_data.to_json ) )[3..-1]
     end
     return gui_data
   end

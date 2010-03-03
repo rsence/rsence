@@ -77,6 +77,8 @@ class Message
   # Response output.
   attr_accessor :buffer
   
+  attr_accessor :value_buffer
+  
   # The request success flag.
   attr_accessor :response_success
   
@@ -156,6 +158,11 @@ class Message
     @ses_key = ses_key
   end
   
+  # Getter for session key.
+  def ses_key
+    return @ses_key
+  end
+  
   # Returns the user id
   def user_id
     @session[:user_id]
@@ -222,7 +229,9 @@ class Message
   
   # Sends data to the client, usually
   # javascript, but is valid for any data.
-  def reply(data)
+  def reply(data,dont_squeeze=false)
+    data.strip!
+    data = @plugins[:client_pkg].squeeze( data ) unless dont_squeeze
     puts data if @config[:trace]
     @buffer.push( data )
   end

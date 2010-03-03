@@ -184,10 +184,10 @@ class ClientPkgBuild
     @destination_files.each_key do | package_name |
       jsc_data = @destination_files[package_name]
       unless @debug
-        unless @no_obfuscation
+        unless @no_whitespace_removal
           jsc_data = @jsmin.convert( jsc_data )
         end
-        unless @no_whitespace_removal
+        unless @no_obfuscation
           jsc_data = pre_convert( jsc_data )
         end
       end
@@ -207,6 +207,18 @@ class ClientPkgBuild
         print_stat( package_name, js_size, jsc_size, gz_size )
       end
     end
+  end
+  
+  def squeeze( js )
+    unless @no_whitespace_removal
+      begin
+        js = @jsmin.convert( js )
+      rescue IndexError => e
+        warn "js can't get smaller using js; just ignoreng jsmin" if @debug
+      end
+    end
+    js = @jscompress.compress( js ) unless @no_obfuscation
+    return js
   end
   
   def build_themes
@@ -342,7 +354,7 @@ class ClientPkgBuild
   
   #delete: @js_dst_dir, @themes_dst_dir, 
   
-  attr_reader :js, :gz, :themes
+  attr_reader :js, :gz, :themes, :jsmin, :jscompress
   
   def initialize( config, logger )
     

@@ -26,6 +26,7 @@ class IndexHtmlPlugin < ServletPlugin
   end
   
   def init
+    @randgen = RandGen.new( 40 )
     ::Riassence::Server.config[:index_html][:instance] = self
   end
   
@@ -58,7 +59,8 @@ class IndexHtmlPlugin < ServletPlugin
     # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     @index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],@client_rev))
-    @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
+    # @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
+    @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:x])
     @index_html.gsub!('__NOSCRIPT__',::Riassence::Server.config[:index_html][:noscript])
     
     deps_src = ''
@@ -78,31 +80,38 @@ class IndexHtmlPlugin < ServletPlugin
     # @index_date = httime( Time.now )
   end
   
-  def session_index_html( msg )
-    return @index_html.gsub('__STARTUP_SEQUENCE__','console.log("hello");')
-  end
-  
-  class FakeResponse
-    attr_reader :headers, :status, :body
-    def initialize
-      @body = ''
-      @status = 0
-      @headers = {}
+  def session_index_html( request, response )
+    ses_key = @randgen.gen
+    sha_key = Digest::SHA1.hexdigest( ses_key )
+    buffer = [
+      "var qP=function(cmd){COMM.Queue.push(cmd);};"
+    ]
+    req_num = 0
+    3.times do |req_num|
+      msg = @plugins.transporter.xhr(
+        request, response, {
+          :servlet => true,
+          :cookie  => (req_num==0),
+          :query   => {
+            'ses_key' => "#{req_num}:.o.:#{sha_key}"
+          }
+        }
+      )
+      buffer += msg.value_buffer
+      msg.buffer.each do |buffer_item|
+        buffer.push( "qP(function(){#{buffer_item}});")
+      end
+      ses_key = msg.ses_key
+      sha_key = Digest::SHA1.hexdigest( ses_key + sha_key )
+      # buffer = [ msg.ses_key, msg.value_buffer, msg.buffer ]
     end
-    def []=( key, value )
-      @headers[key] = value
-      # puts "ignored header key: #{key.inspect} value: #{value.inspect}"
-    end
-    def body=(body)
-      @body += body
-    end
-    def content_type=(content_type)
-      # puts "ignored content_type: #{content_type.inspect}"
-      @headers['content-type'] = content_type
-    end
-    def status=(status)
-      @status = status
-    end
+    buffer.unshift( "COMM.Session.newKey(#{ses_key.to_json});" )
+    buffer.unshift( "COMM.Session.sha_key=#{sha_key.to_json};" )
+    buffer.unshift( "COMM.Session.req_num=#{req_num};" )
+    
+    buffer.each {|b|puts b}
+    # require 'pp'; pp buffer
+    return @index_html.gsub('__STARTUP_SEQUENCE__', buffer.join )
   end
   
   ## Outputs a static web page.
@@ -126,14 +135,7 @@ class IndexHtmlPlugin < ServletPlugin
     #   response.body = @index_gzip
     # else
     
-    
-    # msg = @plugins.transporter.sessions.init_msg( request, fake_response, true )
-    msg = false
-    fake_response = FakeResponse.new
-    @plugins.transporter.xhr( request, fake_response, { :servlet => true, :cookie => true } )
-    puts fake_response.body.inspect
-    
-    index_html = session_index_html( msg )
+    index_html = session_index_html( request, response )
     
     response['Content-Length'] = index_html.length
     response.body = index_html

@@ -49,10 +49,8 @@ class Launcher < GUIPlugin
   def idle( msg )
     super
     if msg.session.has_key?(:main) and msg.session[:main][:boot] == 0
-      msg.run( 'main', 'boot0', msg, msg.session[:main] )
-      msg.reply "ELEM.del(ELEM.bindId('loading'));"
+      @plugins[:main].dont_init_ui( msg )
       init_ui( msg )
-      msg.session[:main][:boot] = 2
     end
   end
 end

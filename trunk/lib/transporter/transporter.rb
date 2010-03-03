@@ -143,7 +143,7 @@ class Transporter
       
       # If cookies are true, it means the url base needs to
       # be changed from /hello to /x to prevent further cookie juggling.
-      if cookies
+      if options[:cookies] and not options[:servlet]
         msg.reply("COMM.Transporter.url=#{::Riassence::Server.config[:broker_urls][:x].to_json};")
       end
       
@@ -242,7 +242,12 @@ class Transporter
     
     msg.response_success = response_success
     
-    msg.response_done()
+    unless options[:servlet]
+      msg.response_done()
+    end
+    
+    return msg
+    
   end
   
 end

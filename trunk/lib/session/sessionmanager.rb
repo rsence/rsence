@@ -32,6 +32,8 @@ class SessionManager < SessionStorage
   
   include Digest
   
+  attr_reader :randgen
+  
   ## Makes everything ready to run
   def initialize( transporter )
     
@@ -386,7 +388,11 @@ class SessionManager < SessionStorage
     
     ## Only match the handshaking address of rsence,
     ## prevents unneccessary cookie-juggling in xhr's
-    ses_cookie_path    = ::Riassence::Server.config[:broker_urls][:hello]
+    if @config[:trust_cookies]
+      ses_cookie_path    = '/'
+    else
+      ses_cookie_path    = ::Riassence::Server.config[:broker_urls][:hello]
+    end
     
     ## Formats the cookie to string
     ## (through array, to keep it readable in the source)
@@ -408,6 +414,12 @@ class SessionManager < SessionStorage
     
     cookies = options[:cookies]
     
+    if options.has_key?(:query)
+      query = options[:query]
+    else
+      query = request.query
+    end
+    
     ## Perform old-session cleanup on all xhr:s
     expire_sessions
     
@@ -415,13 +427,13 @@ class SessionManager < SessionStorage
     ## The client defaults to '0', which means the
     ## client needs to be initialized.
     ## The client's ses_id is the server's ses_key.
-    if not request.query.has_key?( 'ses_key' )
+    if not query.has_key?( 'ses_key' )
       return Message.new( @transporter, request, response, options )
     else
       
       ## get the ses_key from the request query:
-      ses_key = request.query[ 'ses_key' ]
-      
+      ses_key = query[ 'ses_key' ]
+      puts "ses key: #{ses_key}"
       ## The message object binds request, response
       ## and all user/session -related data to one
       ## object, which is passed around where

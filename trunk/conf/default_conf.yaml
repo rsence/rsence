@@ -112,10 +112,10 @@
   :timeout_secs:       900 # 15 minutes
   #
   # Key length controls the length of the random-part of the key.
-  :key_length:   64
+  :key_length:   12
   #
   # Cookie keys are this many times longer than xhr keys
-  :cookie_key_multiplier: 3
+  :cookie_key_multiplier: 2
   #
   #
   # When enabled, deletes all old sessions upon server startup.

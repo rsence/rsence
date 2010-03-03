@@ -84,6 +84,10 @@ class ClientPkg < Servlet
     @build_logger.close
   end
   
+  def squeeze( js )
+    @client_build.squeeze( js )
+  end
+  
   def init
     
     @thr = false

@@ -110,10 +110,12 @@ class Main < Plugin
   
   # Calls the init_ui method of each loaded plugin and removes the loading -message
   def boot1( msg, ses )
-    # Deletes the initial "Loading, please wait..." -message
-    msg.reply "ELEM.del(ELEM.bindId('loading'));"
     # Delegates the init_ui method to each plugin to signal bootstrap completion.
-    msg.plugins.delegate( 'init_ui', msg )
+    msg.plugins.delegate( 'init_ui', msg ) unless ses[:dont_init_ui]
+  end
+  
+  def dont_init_ui( msg )
+    get_ses( msg )[:dont_init_ui] = true
   end
   
   # Flushes commands in the :delayed_calls array
