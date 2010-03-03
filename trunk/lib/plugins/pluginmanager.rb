@@ -13,7 +13,15 @@ def eval_bundle( params )
     @@bundle_name    = params[:bundle_name   ]
     @@bundle_info    = params[:bundle_info   ]
     @@plugin_manager = params[:plugin_manager]
-    load params[:src_path]
+    if params[:bundle_info][:reloadable] == false
+      require params[:src_path][0..-4]
+    else
+      load params[:src_path]
+    end
+    puts self.included_modules.inspect
+    # self.constants.each do |const|
+    #   puts const.inspect
+    # end
   end
   # mod.module_eval( params[:src] )
   return mod
@@ -159,6 +167,7 @@ class PluginManager
     } )
     
     unless bundle_info[:inits_self]
+      puts "#{bundle_name}: #{module_ns.constants.inspect}"
       module_ns.constants.each do |module_const_name|
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class

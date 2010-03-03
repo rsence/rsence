@@ -19,3 +19,7 @@
   :value: 0
   :responders:
   - { :method: unit_converter }
+:component_sampler:
+  :value: 0
+  :responders:
+  - { :method: component_sampler }

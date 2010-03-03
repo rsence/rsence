@@ -155,7 +155,7 @@ class SessionManager < SessionStorage
       targets = []
       @clone_targets[ ses_id ].length.times do |n|
         target_id  = @clone_targets[ ses_id ].shift
-        warn "target_id: #{target_id}"
+        # warn "target_id: #{target_id}"
         target_ses = @sessions[ target_id ]
         if @sessions.has_key?( target_id ) and @sessions[ target_id ].class == Hash
           targets.push( target_ses )
@@ -433,7 +433,7 @@ class SessionManager < SessionStorage
       
       ## get the ses_key from the request query:
       ses_key = query[ 'ses_key' ]
-      puts "ses key: #{ses_key}"
+      # puts "ses key: #{ses_key}"
       ## The message object binds request, response
       ## and all user/session -related data to one
       ## object, which is passed around where

@@ -85,7 +85,7 @@ class ClientPkg < Servlet
   end
   
   def squeeze( js )
-    @client_build.squeeze( js )
+    return @client_build.squeeze( js )
   end
   
   def init

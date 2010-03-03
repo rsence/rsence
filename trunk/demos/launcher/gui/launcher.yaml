@@ -46,3 +46,9 @@ subviews:
           label: 'Unit Converter'
           valueObjId: :values.unit_converter
           events: { click: true }
+      - class: HClickValueButton
+        rect: [ 528, 4, 128, 24 ]
+        options:
+          label: 'Component Sampler'
+          valueObjId: :values.unit_converter
+          events: { click: true }

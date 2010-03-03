@@ -54,7 +54,7 @@ class IndexHtmlPlugin < ServletPlugin
     
     @index_html = @index_html_src.clone
     
-    @index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:loading_title])
+    @index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:title])
     # @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
@@ -82,12 +82,13 @@ class IndexHtmlPlugin < ServletPlugin
   
   def session_index_html( request, response )
     ses_key = @randgen.gen
-    sha_key = Digest::SHA1.hexdigest( ses_key )
+    sha_key = ''
     buffer = [
       "var qP=function(cmd){COMM.Queue.push(cmd);};"
     ]
     req_num = 0
     3.times do |req_num|
+      sha_key = Digest::SHA1.hexdigest( ses_key + sha_key )
       msg = @plugins.transporter.xhr(
         request, response, {
           :servlet => true,
@@ -99,47 +100,49 @@ class IndexHtmlPlugin < ServletPlugin
       )
       buffer += msg.value_buffer
       msg.buffer.each do |buffer_item|
-        buffer.push( "qP(function(){#{buffer_item}});")
+        # if ::Riassence::Server.config[:]
+        # buffer.push( "qP(function(){#{buffer_item};console.log(#{buffer_item.to_json});});")
+        buffer.push( "qP(function(){#{buffer_item};});")
       end
       ses_key = msg.ses_key
-      sha_key = Digest::SHA1.hexdigest( ses_key + sha_key )
       # buffer = [ msg.ses_key, msg.value_buffer, msg.buffer ]
     end
     buffer.unshift( "COMM.Session.newKey(#{ses_key.to_json});" )
     buffer.unshift( "COMM.Session.sha_key=#{sha_key.to_json};" )
     buffer.unshift( "COMM.Session.req_num=#{req_num};" )
-    
-    buffer.each {|b|puts b}
+    # buffer.each {|b|puts b}
     # require 'pp'; pp buffer
-    return @index_html.gsub('__STARTUP_SEQUENCE__', buffer.join )
+    index_html = @index_html.dup
+    return index_html.gsub('__STARTUP_SEQUENCE__', buffer.join("\n") )
   end
   
   ## Outputs a static web page.
   def get( request, response, ses )
     
+    index_html = session_index_html( request, response )
+    
+    support_gzip = (request.header.has_key?('accept-encoding') and \
+                    request.header['accept-encoding'].include?('gzip')) \
+                    and not ::Riassence::Server.config[:no_gzip]
+    
     response.status = 200
     
     response['Content-Type'] = 'text/html; charset=UTF-8'
-    
     response['Date'] = httime( Time.now )
-    
     response['Server'] = 'Riassence Framework'
     
-    # support_gzip = (request.header.has_key?('accept-encoding') and \
-    #                 request.header['accept-encoding'].include?('gzip')) \
-    #                 and not ::Riassence::Server.config[:no_gzip]
-    
-    # if support_gzip
-    #   response['Content-Length'] = @content_size_gzip
-    #   response['Content-Encoding'] = 'gzip'
-    #   response.body = @index_gzip
-    # else
-    
-    index_html = session_index_html( request, response )
-    
-    response['Content-Length'] = index_html.length
-    response.body = index_html
-    # end
+    if support_gzip
+      index_gzip = GZString.new('')
+      gzwriter = Zlib::GzipWriter.new( index_gzip, 9 )
+      gzwriter.write( index_html )
+      gzwriter.close
+      response['Content-Length'] = index_gzip.length
+      response['Content-Encoding'] = 'gzip'
+      response.body = index_gzip
+    else
+      response['Content-Length'] = index_html.length
+      response.body = index_html
+    end
   end
   
 end

@@ -82,7 +82,6 @@ class Main < Plugin
     ses[:url] = [nil,nil]
     ses[:delayed_calls] = []
     ses[:poll_mode] = true
-    ses[:title_loading] = true
   end
   
   # Interface for adding delayed calls
@@ -178,10 +177,6 @@ class Main < Plugin
   # regularly.
   def end_polling( msg, ses )
     if ses[:poll_mode] == true
-      if ses[:title_loading] == true
-        msg.reply("document.title = #{::Riassence::Server.config[:index_html][:loaded_title].to_json};")
-        ses[:title_loading] = false
-      end
       msg.reply "COMM.Transporter.poll(0);"
       ses[:poll_mode] = false
     end

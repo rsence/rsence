@@ -185,7 +185,7 @@ class ClientPkgBuild
       jsc_data = @destination_files[package_name]
       unless @debug
         unless @no_whitespace_removal
-          jsc_data = @jsmin.convert( jsc_data )
+          jsc_data = @jsmin.minimize( jsc_data )
         end
         unless @no_obfuscation
           jsc_data = pre_convert( jsc_data )
@@ -212,9 +212,9 @@ class ClientPkgBuild
   def squeeze( js )
     unless @no_whitespace_removal
       begin
-        js = @jsmin.convert( js )
+        js = @jsmin.minimize( js )
       rescue IndexError => e
-        warn "js can't get smaller using js; just ignoreng jsmin" if @debug
+        warn "js can't get smaller using js; just ignoring jsmin"
       end
     end
     js = @jscompress.compress( js ) unless @no_obfuscation
@@ -241,7 +241,7 @@ class ClientPkgBuild
       theme_html_js = theme_html_js_arr.join('')
       unless @debug
         unless @no_obfuscation
-          theme_html_js = @jsmin.convert( theme_html_js )
+          theme_html_js = @jsmin.minimize( theme_html_js )
         end
         unless @no_whitespace_removal
           theme_html_js = pre_convert( theme_html_js )

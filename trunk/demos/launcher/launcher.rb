@@ -43,13 +43,25 @@ class Launcher < GUIPlugin
   def unit_converter( msg, val )
     gui_starter( msg, val, 'unit_converter' )
   end
+  def component_sampler( msg, val )
+    gui_starter( msg, val, 'component_sampler' )
+  end
+  
+  def init_ses( msg )
+    super
+    @plugins[:main].dont_init_ui( msg )
+  end
+  
+  def restore_ses( msg )
+    super
+    @plugins[:main].dont_init_ui( msg )
+  end
   
   # Prevents the main plugin to call init_ui on the second request
   # (boot 1) by setting it to 2 on the 1st request.
   def idle( msg )
     super
-    if msg.session.has_key?(:main) and msg.session[:main][:boot] == 0
-      @plugins[:main].dont_init_ui( msg )
+    if msg.session.has_key?(:main) and msg.session[:main][:boot] == 1
       init_ui( msg )
     end
   end
