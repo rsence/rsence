@@ -130,17 +130,23 @@ module Daemon
     end
     
     def self.daemonize(daemon)
+      cmd = ARGV[0]
       if ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
-        warn "Running on Microsoft Windows: no concept of pid; not able to background."
-        case !ARGV.empty? && ARGV[0]
-        when 'start'
-          self.start_win32(daemon)
-        else
-          puts "Invalid command. Please specify one of the following: start or help."
+        if cmd == 'start'
+          warn "Running on Microsoft Windows: unable to background. Using the run command instead of start"
+          cmd = 'run'
+        elsif cmd != 'run'
+          puts "Invalid command: #{cmd.inspect}. Windows supports only run and help."
           exit
         end
       end
-      case !ARGV.empty? && ARGV[0]
+      elsif not cmd or not %w[status start stop restart save run].include?( cmd )
+        puts "Invalid command. Please specify one of the following: run, start, stop, restart, status, save or help."
+        exit
+      end
+      case cmd
+      when 'run'
+        self.start_fg(daemon)
       when 'status'
         self.print_status(daemon)
       when 'start'
@@ -152,12 +158,9 @@ module Daemon
         self.start(daemon)
       when 'save'
         self.save(daemon)
-      else
-        puts "Invalid command. Please specify one of the following: start, stop, restart, status, save or help."
-        exit
       end
     end
-    def self.start_win32(daemon)
+    def self.start_fg(daemon)
       daemon.start
       daemon.stop
       exit
