@@ -99,27 +99,33 @@ module Daemon
       return false
     end
     
+    def self.open_log( outpath, errpath )
+      if File.exist?( outpath )
+        STDOUT.reopen( outpath, "a" )
+      else
+        STDOUT.reopen( outpath, "w" )
+      end
+      if File.exist?( errpath )
+        STDERR.reopen( errpath, "a" )
+      else
+        STDERR.reopen( errpath, "w" )
+      end
+      STDOUT.sync = true
+      STDERR.sync = true
+    end
+    
     def self.log_io(daemon)
-      Thread.new do
-        outpath = "#{daemon.log_fn}.stdout"
-        errpath = "#{daemon.log_fn}.stderr"
-        if $DEBUG_MODE
+      outpath = "#{daemon.log_fn}.stdout"
+      errpath = "#{daemon.log_fn}.stderr"
+      if $DEBUG_MODE
+        Thread.new do
           puts "Waiting 2 seconds before switching output to log file #{outpath} and .../#{File.split(errpath)[1]}"
           sleep 2
           puts "Switching to stdin and stdout to log mode. Follow the log file to see further server output."
+          self.open_log( outpath, errpath )
         end
-        if File.exist?( outpath )
-          STDOUT.reopen( outpath, "a" )
-        else
-          STDOUT.reopen( outpath, "w" )
-        end
-        if File.exist?( errpath )
-          STDERR.reopen( errpath, "a" )
-        else
-          STDERR.reopen( errpath, "w" )
-        end
-        STDOUT.sync = true
-        STDERR.sync = true
+      else
+        self.open_log( outpath, errpath )
       end
     end
     
@@ -193,13 +199,16 @@ module Daemon
       end
       
       timeout = Time.now + 10
-      sleep 0.01 until self.status(daemon) or timeout < Time.now
+      sleep 0.1 until self.status(daemon) or timeout < Time.now
       
       if timeout < Time.now
         puts "Riassence Framework did not start, please check the logfile."
       else
         puts "Riassence Framework is running now."
       end
+      
+      sleep 2.5 if $DEBUG_MODE
+      
       #Process.kill("USR2", File.read(daemon.pid_fn).to_i)
     end
     def self.save(daemon,is_restart=false)
@@ -243,7 +252,7 @@ class HTTPDaemon < Daemon::Base
       Daemon::Controller.log_io(self)
     end
     
-    # This is the main http server instance:
+    # This is the main http handler instance:
     @broker = Broker.start(
       @transporter,
       Riassence::Server.config[:http_server][:rack_handler],
@@ -252,6 +261,7 @@ class HTTPDaemon < Daemon::Base
     )
     
     yield @broker if block_given?
+    
   end
   def self.restart
     self.stop
