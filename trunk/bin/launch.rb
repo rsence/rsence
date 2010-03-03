@@ -13,12 +13,47 @@ if RUBY_VERSION.to_f >= 1.9
   Encoding.default_external = Encoding::ASCII_8BIT
 end
 
+is_win = ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
+
+if is_win
+  commands = %w[help run]
+else
+  commands = %w[help start stop restart status run]
+end
+
 if ARGV.include?('--help') or ARGV.include?('-h') or
    ARGV.include?('help') or not (
-    ARGV.include?('start') or ARGV.include?('stop') or 
-    ARGV.include?('restart') or ARGV.include?('status') or
-    ARGV.include?('save')
+    commands.include?(ARGV[0])
   )
+  
+  if is_win
+    extra_cmd_help = ''
+    extra_cmd_examples = %{
+    #{__FILE__} run --log-fg
+    #{__FILE__} run -d
+    #{__FILE__} run --latency 150
+    #{__FILE__} run --server mongrel --port 8080 --addr 127.0.0.1
+}
+  else
+    extra_cmd_help = %{\
+    status     Tells if Riassence Framework Server is running or not
+    start      Starts Riassence Framework Server
+    stop       Stops Riassence Framework Server
+    restart    Restarts Riassence Framework Server
+    save       Saves Riassence Framework Server session data
+}
+    extra_cmd_examples = %{\
+    #{__FILE__} status
+    #{__FILE__} start
+    #{__FILE__} stop
+    #{__FILE__} save
+    #{__FILE__} restart
+    #{__FILE__} restart -d --reset-sessions
+    #{__FILE__} restart --latency 150
+    #{__FILE__} restart --server mongrel --port 8080 --addr 127.0.0.1
+}
+  end
+  
   puts %{
 
   Riassence Framework is RIA client and server. This help message contains
@@ -28,14 +63,11 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
     #{__FILE__} command [params]
 
   Command is one of:
-    status     Tells if Riassence Framework Server is running or not
-    start      Starts Riassence Framework Server
-    stop       Stops Riassence Framework Server
-    restart    Restarts Riassence Framework Server
-    save       Saves Riassence Framework Server session data
-    help       This message
+    run        Run in foreground (exit with ctrl-c)
+#{extra_cmd_help}    help       This message
   
   Params:
+    --log-fg                Don't write log into file (writes to foreground)
     -d                      Debug/Development mode
     --trace-js              Write content of msg.reply calls to stdout
     --trace-delegate        Traces plugin method delegation to stdout
@@ -64,15 +96,8 @@ if ARGV.include?('--help') or ARGV.include?('-h') or
     -h                      This message
   
   Examples:
-    #{__FILE__} status
-    #{__FILE__} start
-    #{__FILE__} stop
-    #{__FILE__} save
-    #{__FILE__} restart
-    #{__FILE__} restart -d --reset-sessions
-    #{__FILE__} restart --latency 150
-    #{__FILE__} restart --server mongrel --port 8080 --addr 127.0.0.1
-  
+    #{__FILE__} run
+#{extra_cmd_examples}  
   Further information:
      http://riassence.org/
 

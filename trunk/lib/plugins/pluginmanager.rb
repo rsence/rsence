@@ -278,7 +278,7 @@ class PluginManager
     delegate( :close )
   end
   
-  def run_plugin( plugin_name, method_name, *args )
+  def call( plugin_name, method_name, *args )
     plugin_name = plugin_name.to_sym
     if @registry.has_key?( plugin_name )
       if @registry[ plugin_name ].respond_to?( method_name )
@@ -293,6 +293,8 @@ class PluginManager
     end
   end
   
+  alias run_plugin call
+  
   def match_servlet( request_type, request, response, session )
     request_uri = request.fullpath
     matches_order = match_servlet_uri( request_uri, request_type )
@@ -302,7 +304,6 @@ class PluginManager
         @registry[servlet_name].send( request_type, request, response, session )
         return true
       rescue => e
-        puts "Plugin error?"
         plugin_error(
           e,
           "Riassence::Server::PluginManager.match_servlet",

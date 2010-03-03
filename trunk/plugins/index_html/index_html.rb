@@ -37,8 +37,8 @@ class IndexHtmlPlugin < ServletPlugin
     end
     #@deps = []
     @index_html_src = file_read( ::Riassence::Server.config[:index_html][:index_tmpl] )
-    loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
-    @loading_gif_id = @plugins[:ticketservices].serve_rsrc( loading_gif, 'image/gif' )
+    # loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
+    # @loading_gif_id = @plugins[:ticketservices].serve_rsrc( loading_gif, 'image/gif' )
     # riassence_gif = File.read( File.join( @path, 'img/riassence.gif' ) )
     # @riassence_gif_id = $TICKETSERVE.serve_rsrc( riassence_gif, 'image/gif' )
     render_index_html
@@ -54,7 +54,7 @@ class IndexHtmlPlugin < ServletPlugin
     @index_html = @index_html_src.clone
     
     @index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:loading_title])
-    @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
+    # @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     @index_html.gsub!('__CLIENT_REV__',@client_rev)
     @index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],@client_rev))
@@ -67,36 +67,77 @@ class IndexHtmlPlugin < ServletPlugin
     end
     @index_html.gsub!('__SCRIPT_DEPS__',deps_src)
     
-    @index_gzip = GZString.new('')
-    gzwriter = Zlib::GzipWriter.new( @index_gzip, Zlib::BEST_SPEED )
-    gzwriter.write( @index_html )
-    gzwriter.close
+    # @index_gzip = GZString.new('')
+    # gzwriter = Zlib::GzipWriter.new( @index_gzip, Zlib::BEST_SPEED )
+    # gzwriter.write( @index_html )
+    # gzwriter.close
     
-    @content_size = @index_html.size
-    @content_size_gzip = @index_gzip.size
+    # @content_size = @index_html.size
+    # @content_size_gzip = @index_gzip.size
     
-    @index_date = httime( Time.now )
+    # @index_date = httime( Time.now )
+  end
+  
+  def session_index_html( msg )
+    return @index_html.gsub('__STARTUP_SEQUENCE__','console.log("hello");')
+  end
+  
+  class FakeResponse
+    attr_reader :headers, :status, :body
+    def initialize
+      @body = ''
+      @status = 0
+      @headers = {}
+    end
+    def []=( key, value )
+      @headers[key] = value
+      # puts "ignored header key: #{key.inspect} value: #{value.inspect}"
+    end
+    def body=(body)
+      @body += body
+    end
+    def content_type=(content_type)
+      # puts "ignored content_type: #{content_type.inspect}"
+      @headers['content-type'] = content_type
+    end
+    def status=(status)
+      @status = status
+    end
   end
   
   ## Outputs a static web page.
-  def get(request, response, session)
+  def get( request, response, ses )
+    
     response.status = 200
+    
     response['Content-Type'] = 'text/html; charset=UTF-8'
-    response['Date'] = @index_date
+    
+    response['Date'] = httime( Time.now )
+    
     response['Server'] = 'Riassence Framework'
     
-    support_gzip = (request.header.has_key?('accept-encoding') and \
-                    request.header['accept-encoding'].include?('gzip')) \
-                    and not ::Riassence::Server.config[:no_gzip]
+    # support_gzip = (request.header.has_key?('accept-encoding') and \
+    #                 request.header['accept-encoding'].include?('gzip')) \
+    #                 and not ::Riassence::Server.config[:no_gzip]
     
-    if support_gzip
-      response['Content-Length'] = @content_size_gzip
-      response['Content-Encoding'] = 'gzip'
-      response.body = @index_gzip
-    else
-      response['Content-Length'] = @content_size
-      response.body = @index_html
-    end
+    # if support_gzip
+    #   response['Content-Length'] = @content_size_gzip
+    #   response['Content-Encoding'] = 'gzip'
+    #   response.body = @index_gzip
+    # else
+    
+    
+    # msg = @plugins.transporter.sessions.init_msg( request, fake_response, true )
+    msg = false
+    fake_response = FakeResponse.new
+    @plugins.transporter.xhr( request, fake_response, { :servlet => true, :cookie => true } )
+    puts fake_response.body.inspect
+    
+    index_html = session_index_html( msg )
+    
+    response['Content-Length'] = index_html.length
+    response.body = index_html
+    # end
   end
   
 end

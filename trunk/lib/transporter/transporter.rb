@@ -68,11 +68,11 @@ class Transporter
     if request_type == :post
       ## /x handles xhr without cookies
       if uri == broker_urls[:x] and @sessions.accept_requests
-        xhr( request, response, false )
+        xhr( request, response, { :cookies => true, :servlet => false } )
         return true
       ## /hello handles the first xhr (with cookies, for session key)
       elsif uri == broker_urls[:hello] and @sessions.accept_requests
-        xhr( request, response, true )
+        xhr( request, response, { :cookies => true, :servlet => false } )
         return true
       else
         session = {}
@@ -115,13 +115,18 @@ class Transporter
   end
   
   ## handles incoming XMLHttpRequests from the browser
-  def xhr(request, response, cookies=false)
+  def xhr(request, response, options = { :cookies => false, :servlet => false } )
     
-    cookies = false unless ::Riassence::Server.config[:session_conf][:session_cookies]
+    session_conf = ::Riassence::Server.config[:session_conf]
+    
+    options[:cookies] = false unless options.has_key?(:cookies)
+    
+    if session_conf[:session_cookies] and session_conf[:trust_cookies]
+      options[:cookies] = true
+    end
     
     # Creates the msg object, also checks or creates a new session; verifies session keys and such
-    
-    msg = @sessions.init_msg( request, response, cookies )
+    msg = @sessions.init_msg( request, response, options )
     
     response_success = true
     

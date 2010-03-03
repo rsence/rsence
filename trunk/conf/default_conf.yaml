@@ -96,6 +96,12 @@
   # Enable cookie-based sessions
   :session_cookies: true
   #
+  # Trusting the cookies means ignoring the client protocol session key exchange.
+  # Enabled by default, because in most cases, extreme security measures aren't necessary
+  # and the drawback of having an invalid session because a tcp packet got lost isn't
+  # tolerable as a default setting.
+  :trust_cookies: true
+  #
   # The comment string in the session cookie
   :ses_cookie_comment: "Riassence Framework Session Key"
   #

@@ -93,7 +93,7 @@ class Message
   attr_accessor :plugins
   
   # Message is initialized with a valid +Request+ and +Response+ objects. 
-  def initialize( transporter, request, response )
+  def initialize( transporter, request, response, options )
     
     @config = ::Riassence::Server.config
     
@@ -102,6 +102,8 @@ class Message
     @response = response
     @session  = nil
     @buffer = []
+    
+    @options = options
     
     # Value response output.
     @value_buffer = []
@@ -121,15 +123,19 @@ class Message
     @sessions = @transporter.sessions
     @plugins  = @transporter.plugins
     
-    @response.content_type = 'text/javascript; charset=utf-8'
-    @response['cache-control'] = 'no-cache'
-    
-    # gnu-zipped responses:
-    if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not @config[:no_gzip]
-      @response['content-encoding'] = 'gzip'
-      @do_gzip = true
-    else
+    if options[:servlet]
       @do_gzip = false
+    else
+      @response.content_type = 'text/javascript; charset=utf-8'
+      @response['cache-control'] = 'no-cache'
+      
+      # gnu-zipped responses:
+      if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not @config[:no_gzip]
+        @response['content-encoding'] = 'gzip'
+        @do_gzip = true
+      else
+        @do_gzip = false
+      end
     end
     
     @response_sent = false

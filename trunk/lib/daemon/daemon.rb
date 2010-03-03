@@ -139,13 +139,14 @@ module Daemon
           puts "Invalid command: #{cmd.inspect}. Windows supports only run and help."
           exit
         end
-      end
       elsif not cmd or not %w[status start stop restart save run].include?( cmd )
         puts "Invalid command. Please specify one of the following: run, start, stop, restart, status, save or help."
         exit
       end
       case cmd
       when 'run'
+        puts "Starting as a foreground process."
+        puts "Enter CTRL-C to stop."
         self.start_fg(daemon)
       when 'status'
         self.print_status(daemon)
@@ -161,8 +162,14 @@ module Daemon
       end
     end
     def self.start_fg(daemon)
+      ['INT', 'TERM', 'KILL'].each do |signal|
+        Signal.trap(signal) do
+          puts "Got signal #{signal.inspect}"
+          daemon.stop
+          exit
+        end
+      end
       daemon.start
-      daemon.stop
       exit
     end
     def self.start(daemon)
@@ -251,7 +258,7 @@ class HTTPDaemon < Daemon::Base
   def self.start
     @transporter = Transporter.new
     
-    unless ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
+    unless ARGV.include?('--log-fg')
       Daemon::Controller.log_io(self)
     end
     

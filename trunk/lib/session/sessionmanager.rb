@@ -404,7 +404,9 @@ class SessionManager < SessionStorage
   end
   
   ### Creates a message and checks the session
-  def init_msg( request, response, cookies=false )
+  def init_msg( request, response, options = { :cookies => false, :servlet => false } )
+    
+    cookies = options[:cookies]
     
     ## Perform old-session cleanup on all xhr:s
     expire_sessions
@@ -414,7 +416,7 @@ class SessionManager < SessionStorage
     ## client needs to be initialized.
     ## The client's ses_id is the server's ses_key.
     if not request.query.has_key?( 'ses_key' )
-      return Message.new( @transporter, request, response )
+      return Message.new( @transporter, request, response, options )
     else
       
       ## get the ses_key from the request query:
@@ -425,7 +427,7 @@ class SessionManager < SessionStorage
       ## object, which is passed around where
       ## request/response/user/session -related
       ## data is needed.
-      msg = Message.new( @transporter, request, response )
+      msg = Message.new( @transporter, request, response, options )
       
       ## The client tells that its ses_key is '0',
       ## until the server tells it otherwise.
