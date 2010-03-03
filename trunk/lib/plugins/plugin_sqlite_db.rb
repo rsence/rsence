@@ -20,7 +20,7 @@ module PluginSqliteDB
     unless File.directory?( db_dir )
       Dir.mkdir( db_dir )
     end
-    @db_path = File.join( db_dir, "#{@names.first}.db" )
+    @db_path = File.join( db_dir, "#{@name}.db" )
     unless File.exist?( @db_path )
       @db = Sequel.sqlite( @db_path )
       create_db_tables

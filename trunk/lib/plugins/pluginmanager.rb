@@ -162,8 +162,14 @@ class PluginManager
       module_ns.constants.each do |module_const_name|
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class
-          superclass = module_const.superclass
-          if [ Servlet, Plugin ].include? superclass
+          super_classes = []
+          while supr_class = module_const.superclass
+            supr_classes.push( supr_class )
+          end
+          require 'pp'; pp supr_classes
+          if supr_classes.include?( Servlet )
+            module_const.new
+          elsif supr_classes.include?( Plugin )
             module_const.new
           else
             puts "unknown plugin bundle superclass: #{superclass.to_s}"

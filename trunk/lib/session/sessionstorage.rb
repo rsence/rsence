@@ -53,7 +53,11 @@ class SessionStorage
     
     db_init
     
+    @accept_requests = true
+    
   end
+  
+  attr_reader :accept_requests
   
   def db_test
     if @db.table_exists?(:rsence_test)
@@ -67,30 +71,35 @@ class SessionStorage
     @db.drop_table(:rsence_test)
   end
   
-  def db_open
-    ## Tests if database has sufficient privileges
-    begin
-      @db = Sequel.connect(@db_uri)
-      db_test
-      @db.disconnect
-      @db = Sequel.connect(@db_uri)
-    rescue => e
-      $stderr.write( "SessionStorage: error #{e.inspect}\nReverting to default database.\n" )
-      @db_uri = "sqlite://#{File.join(SERVER_PATH,'var','db','rsence_ses.db')}"
-      @db = Sequel.connect(@db_uri)
-      db_test
-      @db.disconnect
-      @db = Sequel.connect(@db_uri)
-    end
+  def db_close
+    @db.disconnect
   end
   
-  ## Checks database connectivity and loads stored sessions from the database
-  def db_init
-    
+  def db_open
+    @db = Sequel.connect(@db_uri)
+  end
+  
+  # def db_open
+  #   ## Tests if database has sufficient privileges
+  #   begin
+  #     @db = Sequel.connect(@db_uri)
+  #     db_test
+  #     db_close
+  #     @db = Sequel.connect(@db_uri)
+  #   rescue => e
+  #     $stderr.write( "SessionStorage: error #{e.inspect}\nReverting to default database.\n" )
+  #     @db_uri = "sqlite://#{File.join(SERVER_PATH,'var','db','rsence_ses.db')}"
+  #     @db = Sequel.connect(@db_uri)
+  #     db_test
+  #     db_close
+  #     @db = Sequel.connect(@db_uri)
+  #   end
+  # end
+  
+  ## Creates the 'rsence_session' table, if necessary
+  ## This table is used to store sessions
+  def create_session_table
     db_open
-    
-    ## Creates the 'rsence_session' table, if necessary
-    ## This table is used to store sessions
     unless @db.table_exists?(:rsence_session)
       puts "Creating session table..." if $DEBUG_MODE
       @db.create_table :rsence_session do
@@ -103,24 +112,28 @@ class SessionStorage
         column( :ses_stored,  Integer )
         column( :ses_data,    File    )
       end
-      @db.disconnect
-      db_open
     end
-    
-    ## Creates the 'rsence_version' table, if necessary
-    ## This table is used to check for the need of future database upgrades
+    db_close
+  end
+  
+  ## Creates the 'rsence_version' table, if necessary
+  ## This table is used to check for the need of future database upgrades
+  def create_version_table
+    db_open
     unless @db.table_exists?(:rsence_version)
       puts "Creating version info table..." if $DEBUG_MODE
       @db.create_table :rsence_version do
         Integer :version
       end
       @db[:rsence_version].insert(:version => 586)
-      @db.disconnect
-      db_open
     end
-    
-    ## Creates the 'rsence_uploads' table, if necessary
-    ## This table is used for storing temporary uploads before processing
+    db_close
+  end
+  
+  ## Creates the 'rsence_uploads' table, if necessary
+  ## This table is used for storing temporary uploads before processing
+  def create_uploads_table
+    db_open
     unless @db.table_exists?(:rsence_uploads)
       puts "Creating uploads table..." if $DEBUG_MODE
       @db.create_table :rsence_uploads do
@@ -134,12 +147,28 @@ class SessionStorage
         column( :file_mime,   String  )
         column( :file_data,   File    )
       end
-      @db.disconnect
-      db_open
     end
+    db_close
+  end
+  
+  # returns the version in the rsence_version table
+  def table_version
+    db_open
     rsence_version = @db[:rsence_version].select(:version).all[0][:version]
+    db_close
+    return rsence_version
+  end
+  
+  ## Checks database connectivity and loads stored sessions from the database
+  def db_init
     
-    ## 
+    create_session_table
+    create_version_table
+    create_uploads_table
+    
+    ## Used for future upgrades:
+    # version = table_version
+    
     if @config[:reset_sessions]
       puts "Resetting all sessions..."
       reset_sessions()
@@ -152,15 +181,16 @@ class SessionStorage
   
   ## Deletes all rows from rsence_session as well as rsence_uploads
   def reset_sessions
+    db_open
     @db[:rsence_session].delete if @db.table_exists?(:rsence_session)
     @db[:rsence_uploads].delete if @db.table_exists?(:rsence_uploads)
-    @db.disconnect
-    db_open
+    db_close
   end
   
   ## Restores all saved sessions from db to ram
   def restore_sessions
     puts "Restoring sessions..." if $DEBUG_MODE
+    db_open
     @db[:rsence_session].all do |ses_row|
       ses_id = ses_row[:id]
       ses_data_dump = ses_row[:ses_data]
@@ -176,16 +206,16 @@ class SessionStorage
         @session_cookie_keys[ ses_data[:cookie_key] ] = ses_id
       end
     end
+    db_close
   end
   
   ## Stores all sessions to db from ram
   def store_sessions
     puts "Storing sessions..." if $DEBUG_MODE
+    db_open
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
       ses_data_dump = Marshal.dump( ses_data )
-      @db.disconnect
-      db_open
       @db[:rsence_session].filter(
         :id => ses_id
       ).update(
@@ -197,25 +227,29 @@ class SessionStorage
         :ses_stored  => Time.now.to_i
       )
     end
+    db_close
   end
   
   ## Shut-down signal, triggers store_sessions for now
   def shutdown
+    @accept_requests = false
     puts "Session shutdown in progress..." if $DEBUG_MODE
     store_sessions
-    @db.disconnect
     puts "Session shutdown complete." if $DEBUG_MODE
   end
   
   
   ## Returns a new, unique session identifier by storing the params to the database
   def new_ses_id( cookie_key, ses_key, timeout_secs, user_id=0 )
-    return @db[:rsence_session].insert(
+    db_open
+    new_id = @db[:rsence_session].insert(
       :cookie_key  => cookie_key,
       :ses_key     => ses_key,
       :ses_timeout => timeout_secs,
       :user_id     => user_id
     )
+    db_close
+    return new_id
   end
   
   ## Expires a session by its identifier
@@ -235,7 +269,7 @@ class SessionStorage
     @sessions.delete( ses_id )
     
     # Removes all ticket-based storage bound to the session
-    @plugins[:ticketservices].expire_ses( ses_id )
+    @plugins[:ticketservices].expire_ses( ses_id ) if @plugins
     
     # target -> source cleanup
     if @clone_sources.has_key?( ses_id )
@@ -252,8 +286,10 @@ class SessionStorage
       @clone_targets.delete( ses_id ) if @clone_targets.has_key?( ses_id )
     end
     
+    db_open
     # Deletes the session's row from the database
     @db[:rsence_session].filter(:id => ses_id).delete
+    db_close
     
   end
   

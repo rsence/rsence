@@ -67,17 +67,20 @@ class Transporter
     
     if request_type == :post
       ## /x handles xhr without cookies
-      if uri == broker_urls[:x]
+      if uri == broker_urls[:x] and @sessions.accept_requests
         xhr( request, response, false )
         return true
       ## /hello handles the first xhr (with cookies, for session key)
-      elsif uri == broker_urls[:hello]
+      elsif uri == broker_urls[:hello] and @sessions.accept_requests
         xhr( request, response, true )
         return true
+      else
+        session = {}
+        return @plugins.match_servlet( request_type, request, response, session )
       ## /SOAP handles SOAP Requests
-      elsif uri == broker_urls[:soap]
-        soap( request, response )
-        return true
+      # elsif uri == broker_urls[:soap]
+      #   soap( request, response )
+      #   return true
       end
     else
       session = {}
@@ -86,9 +89,9 @@ class Transporter
   end
   
   ## handles incoming SOAP requests
-  def soap(request, response)
-    PluginManager.soap( request, response )
-  end
+  # def soap(request, response)
+  #   PluginManager.soap( request, response )
+  # end
   
   # wrapper for the session manager stop client functionality
   def xhr_error_handler(msg,err_name,err_extra_descr='')
@@ -117,6 +120,7 @@ class Transporter
     cookies = false unless ::Riassence::Server.config[:session_conf][:session_cookies]
     
     # Creates the msg object, also checks or creates a new session; verifies session keys and such
+    
     msg = @sessions.init_msg( request, response, cookies )
     
     response_success = true

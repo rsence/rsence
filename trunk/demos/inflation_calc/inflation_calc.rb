@@ -13,11 +13,10 @@
 # calculating values and how to initialize values and user interfaces
 # without YAML.
 #
-$LOAD_PATH << PluginManager.curr_plugin_path
-require 'lib/inflation_calc_responder'
 class InflationCalc < Plugin
   
   # See lib/inflation_calc_responder, it contains the calculate method.
+  load( File.join( @@bundle_path, 'lib', 'inflation_calc_responder.rb' ) )
   include InflationCalcResponder
   
   # Initialize session structure
