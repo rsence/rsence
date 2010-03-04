@@ -81,6 +81,11 @@ class PluginManager
     @info     = {}
     @aliases  = {}
     @servlets = []
+    @types    = {
+      :gui     => [],
+      :plugin  => [],
+      :servlet => []
+    }
     @plugin_paths.each do |path|
       next unless File.directory? path
       scan_plugindir( path )

@@ -37,6 +37,7 @@ class GUIParser
         msg.reply( js_src )
       end
     end
+    gui_name = @parent.name
     msg.reply( "JSONRenderer.nu(#{gui_data.to_json});", true )
   end
   

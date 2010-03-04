@@ -44,10 +44,20 @@ class GUIPlugin < Plugin
     }
   end
   
+  # Sends gui specification to the main plugin
+  def spec_ui( msg )
+    
+  end
+  
   # Automatically inits the UI using GUIParser#init.
   # Passes on the return value of gui_params.
   def init_ui( msg )
     @gui.init( msg, gui_params( msg ) )
+  end
+  
+  # Automatically kills the UI using GUIParser#kill
+  def kill_ui( msg )
+    @gui.kill( msg )
   end
   
   # Makes include_js public to enable calls to it from GUIParser

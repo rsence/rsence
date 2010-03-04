@@ -614,10 +614,10 @@ private
     js_references = []
     ses.each_key do |key_name|
       if ses[key_name].class == HValue
-        js_references.push( "#{key_name.to_s}: HVM.values['#{ses[key_name].val_id}']" )
+        js_references.push( "#{key_name.to_s}:HVM.values['#{ses[key_name].val_id}']" )
       end
     end
-    return "{#{js_references.join(', ')}}"
+    return "{#{js_references.join(',')}}"
   end
   
   # Deprecated name of +#values_js+
