@@ -1,5 +1,0 @@
-<PUBLIC:COMPONENT lightWeight="true">
-<script type="text/javascript">
-  element.attachEvent("onreadystatechange", iefix.htcStyleEntry);
-</script>
-</PUBLIC:COMPONENT>

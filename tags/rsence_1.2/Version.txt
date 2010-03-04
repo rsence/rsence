@@ -1,6 +1,0 @@
-
-This is the 1.2.1 (r891) release version of Riassence Framework.
-
-Check the website for updates.
-http://riassence.org/
-

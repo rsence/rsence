@@ -1,1 +1,0 @@
-if(COMM['JSONLoader']===undefined){
