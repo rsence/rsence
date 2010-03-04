@@ -1,0 +1,12 @@
+label: 'HStringView'
+descr_height: 150
+descr: |
+  <p>HStringView is a view component that represents a non-editable line of text. Commonly, stringview is used as a label to control elements that do not have implicit labels (text fields, checkboxes and radio buttons, and menus). Some form controls automatically have labels associated with them (press buttons) while most do not have (text fields, checkboxes and radio buttons, and sliders etc.).</p>
+yaml_height: 200
+yaml: |
+  subviews:
+  - class: HStringView
+    rect: [ 32, 32, 130, 24 ]
+    options:
+      value: "HStringView"
+sample_height: 100
