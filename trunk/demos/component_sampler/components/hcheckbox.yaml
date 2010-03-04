@@ -1,0 +1,31 @@
+label: 'HCheckbox'
+descr_height: 100
+descr: |
+  <p>Simple checkbox component, toggles the value of itself between true and false.</p>
+yaml_height: 380
+yaml: |
+  subviews:
+  - class: HCheckbox
+    rect: [ 32, 32, 130, 24 ]
+    options:
+      label: 'HCheckbox'
+      value: true
+  - class: HCheckbox
+    rect: [ 32, 60, 130, 24 ]
+    options:
+      label: 'HCheckbox'
+      value: false
+      enabled: true
+  - class: HCheckbox
+    rect: [ 170, 32, 130, 24 ]
+    options:
+      label: 'HCheckbox'
+      value: true
+      enabled: false
+  - class: HCheckbox
+    rect: [ 170, 60, 130, 24 ]
+    options:
+      label: 'HCheckbox'
+      value: false
+      enabled: false
+sample_height: 100
