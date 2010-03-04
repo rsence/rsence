@@ -92,6 +92,7 @@ class Main < Plugin
   # Initializes the client-side COMM.urlResponder and sesWatcher
   def boot0( msg, ses )
     
+=begin
     msg.reply %{
     
     Riassence = {
@@ -181,7 +182,8 @@ class Main < Plugin
     };
     
     }
-    
+=end
+
     msg.reply("ELEM.setStyle(0,'background-color','#{::Riassence::Server.config[:main_plugin][:bg_color]}');")
     
     ## url_responder is bound in the client-space
