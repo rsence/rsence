@@ -144,8 +144,8 @@ class Message
   end
   
   # Returns true for Internet Explorer 6.0
-  def ie6
-    return (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
+  def ie6;
+    (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
   end
   
   # Expire the session.
@@ -160,7 +160,7 @@ class Message
   
   # Getter for session key.
   def ses_key
-    return @ses_key
+    @ses_key
   end
   
   # Returns the user id
@@ -251,7 +251,7 @@ class Message
   # second optional parameter +img_format+ defaults to 'PNG' and defines 
   # the format of served picture.
   def serve_img( img_obj, img_format='PNG' )
-    return run('ticket','serve_img', self, img_obj, img_format )
+    call(:ticket,:serve_img, self, img_obj, img_format )
   end
   
   # Sends any binary to be served, returns a disposable uri. First parameter
@@ -259,7 +259,7 @@ class Message
   # to 'text/plain' and third, also optional defines the filename which 
   # defaults to 'untitled.txt'.
   def serve_file( file_data, content_type='text/plain', filename='untitled.txt' )
-    return run('ticket','serve_file', self, file_data, content_type, filename )
+    call(:ticket,:serve_file, self, file_data, content_type, filename )
   end
   
   # Sends any binary to be served, returns a static uri.
@@ -271,21 +271,21 @@ class Message
   # HINT: Usually, it's a better idea to use serve_img or
   # serve_file instead.
   def serve_rsrc( rsrc_data, content_type='text/plain' )
-    return run('ticket','serve_rsrc',self, rsrc_data, content_type )
+    call(:ticket,:serve_rsrc,self, rsrc_data, content_type )
   end
   
   # Removes the uri served, you HAVE TO call this manually when
   # you are done serving something! Takes the uri as its only parameter.
   def release_rsrc( uri )
-    run('ticket','del_rsrc', uri[3..-1] )
+    run(:ticket,:del_rsrc, uri[3..-1] )
   end
   alias unserve_rsrc release_rsrc
   
   # Calls registered plugin +plugin+ method +plugin_method+ with any +args+
-  def run( plugin_name, plug_method, *args )
-    @plugins.run_plugin( plugin_name, plug_method, *args)
+  def call( plugin_name, plug_method, *args )
+    @plugins.call( plugin_name, plug_method, *args)
   end
-  
+  alias run call
   
 end
 
