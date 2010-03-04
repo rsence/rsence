@@ -36,44 +36,18 @@ subviews:
       - class: SampleTabItem
         rect: [ 0 ]
         options: :components.button
-      - class: HTabItem
+      - class: SampleTabItem
         rect: [ 0 ]
-        options:
-          label: 'HClickValueButton'
-        subviews:
-        - class: HStringView
-          rect: [ 8, 8, null, 20, 8, null ]
-          options:
-            value: '<b style="font-size:16px;">HClickValueButton</b>'
-        - class: HStringView
-          rect: [ 8, 32, null, 60, 8, null ]
-          options:
-            value: 'A special button operating its value.<br />Click changes its <b>value</b> to <b>1 (disabled)</b>.'
-        - class: HStringView
-          rect: [ 8, 100, null, 20, 8, null ]
-          options:
-            value: 'YAML:'
-        - class: HTextArea
-          rect: [ 8, 120, null, 100, 8, null ]
-          options:
-            value: | 
-              class: HClickValueButton
-              rect: [ 32, 32, 160, 24 ]
-              options:
-                label: 'HClickValueButton' 
-        - class: SampleView
-          rect: [ 8, 228, null, 100, 8, null ]
-          subviews:
-          - class: HClickValueButton
-            rect: [ 32, 32, 160, 24 ]
-            options:
-              label: 'HClickValueButton'
-              value: 0
-          - class: HClickValueButton
-            rect: [ 32, 60, 160, 24 ]
-            options:
-              label: 'HClickValueButton'
-              value: 1
+        options: :components.hcheckbox
+      - class: SampleTabItem
+        rect: [ 0 ]
+        options: :components.hradiobutton
+      - class: SampleTabItem
+        rect: [ 0 ]
+        options: :components.hstringview
+      - class: SampleTabItem
+        rect: [ 0 ]
+        options: :components.htextcontrol
       - class: HTabItem
         rect: [ 0 ]
         options:
@@ -180,115 +154,6 @@ subviews:
             options:
               orientation: 'E'
               enabled: false
-      - class: HTabItem
-        rect: [ 0 ]
-        options:
-          label: 'HCheckbox'
-        subviews:
-        - class: HStringView
-          rect: [ 8, 8, null, 20, 8, null ]
-          options:
-            value: '<b style="font-size:16px;">HCheckbox</b>'
-        - class: HStringView
-          rect: [ 8, 32, null, 60, 8, null ]
-          options:
-            value: 'Standard checkbox.<br />Its <b>value</b> is true (checked) or false (unchecked).'
-        - class: HStringView
-          rect: [ 8, 100, null, 20, 8, null ]
-          options:
-            value: 'YAML:'
-        - class: HTextArea
-          rect: [ 8, 120, null, 100, 8, null ]
-          options:
-            value: | 
-              class: HCheckbox
-              rect: [ 32, 32, 180, 24 ]
-              options:
-                label: 'HCheckbox'
-                value: true
-        - class: SampleView
-          rect: [ 8, 228, null, 100, 8, null ]
-          subviews:
-          - class: HCheckbox
-            rect: [ 32, 32, 130, 24 ]
-            options:
-              label: 'HCheckbox'
-              value: true
-          - class: HCheckbox
-            rect: [ 32, 60, 130, 24 ]
-            options:
-              label: 'HCheckbox'
-              value: false
-              enabled: true
-          - class: HCheckbox
-            rect: [ 170, 32, 130, 24 ]
-            options:
-              label: 'HCheckbox'
-              value: true
-              enabled: false
-          - class: HCheckbox
-            rect: [ 170, 60, 130, 24 ]
-            options:
-              label: 'HCheckbox'
-              value: false
-              enabled: false
-      - class: HTabItem
-        rect: [ 0 ]
-        options:
-          label: 'HRadioButton'
-        subviews:
-        - class: HStringView
-          rect: [ 8, 8, null, 20, 8, null ]
-          options:
-            value: '<b style="font-size:16px;">HRadioButton</b>'
-        - class: HStringView
-          rect: [ 8, 32, null, 60, 8, null ]
-          options:
-            value: 'Standard radiobutton.<br />Its <b>value</b> is true (selected) or false (not selected).<br />'
-        - class: HStringView
-          rect: [ 8, 100, null, 20, 8, null ]
-          options:
-            value: 'YAML:'
-        - class: HTextArea
-          rect: [ 8, 120, null, 100, 8, null ]
-          options:
-            value: | 
-              class: HRadioButton
-              rect: [ 32, 32, 130, 24 ]
-              options:
-                label: 'HRadioButton'
-                value: true
-        - class: SampleView
-          rect: [ 8, 228, null, 100, 8, null ]
-          subviews:
-          - class: HView
-            rect: [ 0, 0, 162, 100]
-            subviews:
-            - class: HRadioButton
-              rect: [ 32, 32, 130, 24 ]
-              options:
-                label: 'HRadioButton'
-                value: true
-            - class: HRadioButton
-              rect: [ 32, 60, 130, 24 ]
-              options:
-                label: 'HRadioButton'
-                value: false
-          - class: HView
-            rect: [ 162, 0, 162, 100]
-            subviews:
-            - class: HRadioButton
-              rect: [ 32, 32, 130, 24 ]
-              options:
-                label: 'HRadioButton'
-                value: true
-                enabled: false
-            - class: HRadioButton
-              rect: [ 32, 60, 130, 24 ]
-              options:
-                label: 'HRadioButton'
-                value: false
-                enabled: false
       - class: HTabItem
         rect: [ 0 ]
         options:

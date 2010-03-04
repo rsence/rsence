@@ -12,7 +12,6 @@
   ** that do not have implicit labels (text fields, checkboxes and radio buttons, and menus). 
   ** Some form controls automatically have labels associated with them (press buttons) 
   ** while most do not have (text fields, checkboxes and radio buttons, and sliders etc.).  
-  ** HStringView view or theme can be changed; the helmiTheme is used by default.
   **
   ** = Instance variables
   ** +type+::   '[HStringView]'
