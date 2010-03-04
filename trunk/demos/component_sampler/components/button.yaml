@@ -1,8 +1,9 @@
 label: 'HButton'
-descr_height: 100
+descr_height: 160
 descr: |
-  <p>A plain button.<br />On mouseUp event changes its <b>value</b> to <b>1</b>.</p>
-yaml_height: 180
+  <p>Simple button component, designed to be extended for any actual functionality above regular HControl. It's limited to 24px height by the default theme, because it's much simpler to render that way.</p>
+  <p>HClickValueButton is a simple HButton extension, operates on its value so it's useful for sending button clicks to the server and the like. For the value responder, reset the value to 0 when read to make the button clickable again.</p>
+yaml_height: 350
 yaml: |
   subviews:
   - class: HButton
@@ -14,4 +15,14 @@ yaml: |
     options:
       label: 'HButton'
       enabled: false
+  - class: HClickValueButton
+    rect: [ 200, 32, 160, 24 ]
+    options:
+      label: 'HClickValueButton'
+      value: 0
+  - class: HClickValueButton
+    rect: [ 200, 60, 160, 24 ]
+    options:
+      label: 'HClickValueButton'
+      value: 1
 sample_height: 100

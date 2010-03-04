@@ -1,0 +1,16 @@
+label: 'HTextControl'
+descr_height: 150
+descr: |
+  <p>HTextControl is a control unit that represents an editable input line of text. Commonly, textcontrol is used as a single text field in the request forms. HTextControl view or theme can be changed; the default_theme is used by default</p>
+yaml_height: 200
+yaml: |
+  subviews:
+  - class: HTextControl
+    rect: [ 32, 32, 200, 100 ]
+    options:
+      value: "HTextControl"
+  - class: HTextControl
+    rect: [ 32, 140, 200, 100 ]
+    options:
+      value: "HTextControl"
+sample_height: 270
