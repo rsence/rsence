@@ -1,0 +1,17 @@
+label: 'HUploader'
+descr_height: 160
+descr: |
+  <p>please add description</p>
+yaml_height: 350
+yaml: |
+  subviews:
+  - class: HUploader
+    rect: [ 32, 32, 160, 24 ]
+    options:
+      label: 'HUploader'
+  - class: HUploader
+    rect: [ 32, 60, 160, 24 ]
+    options:
+      label: 'HUploader'
+      enabled: false
+sample_height: 100

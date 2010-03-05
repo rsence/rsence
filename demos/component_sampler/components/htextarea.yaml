@@ -1,0 +1,17 @@
+label: 'HTextArea'
+descr_height: 150
+descr: |
+  <p>please add description</p>
+yaml_height: 200
+yaml: |
+  subviews:
+  - class: HTextArea
+    rect: [ 32, 32, 200, 100 ]
+    options:
+      value: "HTextArea"
+  - class: HTextArea
+    rect: [ 32, 140, 200, 100 ]
+    options:
+      value: "HTextArea"
+      enabled: false
+sample_height: 270

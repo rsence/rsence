@@ -1,0 +1,32 @@
+label: 'HVSlider'
+descr_height: 160
+descr: |
+  <p>please add description</p>
+yaml_height: 450
+yaml: |
+  subviews:
+  - class: HVSlider
+    rect: [ 32, 32, 24, 150 ]
+  - class: HVSlider
+    rect: [ 60, 32, 24, 150 ]
+    options:
+      orientation: 'W'
+  - class: HVSlider
+    rect: [ 88, 32, 24, 150 ]
+    options:
+      orientation: 'E'
+  - class: HVSlider
+    rect: [ 116, 32, 24, 150 ]
+    options:
+      enabled: false
+  - class: HVSlider
+    rect: [ 144, 32, 24, 150 ]
+    options:
+      orientation: 'W'
+      enabled: false
+  - class: HVSlider
+    rect: [ 172, 32, 24, 150 ]
+    options:
+      orientation: 'E'
+      enabled: false
+sample_height: 200
