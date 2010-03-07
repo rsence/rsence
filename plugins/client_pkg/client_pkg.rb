@@ -50,17 +50,22 @@ class ClientPkg < Servlet
       @thr = Thread.new do
         Thread.pass
         while true
-          if @client_build.bundle_changes( @last_change )
-            @last_change = Time.now
-            @client_build.run
-            @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
-            puts "Autobuilt."
-            if ARGV.include?('-say')
-              Thread.new do
-                Thread.pass
-                system('say "Autobuilt."')
+          puts "checking"
+          begin
+            if client_build.bundle_changes( @last_change )
+              @last_change = Time.now.to_i
+              client_build.run
+              client_cache.set_cache( client_build.js, client_build.gz, client_build.themes )
+              puts "Autobuilt."
+              if ARGV.include?('-say')
+                Thread.new do
+                  Thread.pass
+                  system('say "Autobuilt."')
+                end
               end
             end
+          rescue => e
+            warn e.inspect
           end
           sleep 3
         end
@@ -69,9 +74,9 @@ class ClientPkg < Servlet
     
   end
   
-  def client_cache
-    @client_cache
-  end
+  def client_build; @client_build; end
+  
+  def client_cache; @client_cache; end
   
   def close
     if @thr
@@ -96,7 +101,7 @@ class ClientPkg < Servlet
     @build_logger.open
     
     @client_build = ClientPkgBuild.new( ::Riassence::Server.config[:client_pkg], @build_logger )
-    @last_change = Time.new
+    @last_change = Time.new.to_i
     @client_build.run
     
     @client_cache = ClientPkgCache.new
