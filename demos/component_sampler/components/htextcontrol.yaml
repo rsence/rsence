@@ -6,11 +6,12 @@ yaml_height: 200
 yaml: |
   subviews:
   - class: HTextControl
-    rect: [ 32, 32, 200, 100 ]
+    rect: [ 32, 32, 200, 24 ]
     options:
       value: "HTextControl"
   - class: HTextControl
-    rect: [ 32, 140, 200, 100 ]
+    rect: [ 32, 60, 200, 24 ]
     options:
       value: "HTextControl"
+      enabled: false
 sample_height: 270

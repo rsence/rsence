@@ -52,15 +52,18 @@ subviews:
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.hradiobutton
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.huploader
       - class: HTabItem
         rect: [ 0 ]
         options:
-          label: Inputs
+          label: Text
         subviews:
         - class: HTab
           rect: [ 0, 0, null, null, 8, 8 ]
           options:
-            valueObjId: :values.tab_0_0_0
+            valueObjId: :values.tab_0_0_1
           subviews:
           - class: SampleTabItem
             rect: [ 0 ]
@@ -74,55 +77,19 @@ subviews:
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.htextarea
-          - class: SampleTabItem
-            rect: [ 0 ]
-            options: :components.huploader
+      - class: HTabItem
+        rect: [ 0 ]
+        options:
+          label: Sliders
+        subviews:
+        - class: HTab
+          rect: [ 0, 0, null, null, 8, 8 ]
+          options:
+            valueObjId: :values.tab_0_0_2
+          subviews:
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.hslider
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.hvslider
-          - class: HTabItem
-            rect: [ 0 ]
-            options:
-              label: 'HCheckboxList'
-            subviews:
-            - class: HStringView
-              rect: [ 8, 8, null, 20, 8, null ]
-              options:
-                value: '<b style="font-size:16px;">HCheckboxList</b>'
-            - class: HStringView
-              rect: [ 8, 32, null, 60, 8, null ]
-              options:
-                value: 'Standard checkboxlist.<br />Its <b>value</b> is true (selected) or false (not selected).<br />'
-            - class: HStringView
-              rect: [ 8, 100, null, 20, 8, null ]
-              options:
-                value: 'YAML:'
-            - class: HTextArea
-              rect: [ 8, 120, null, 100, 8, null ]
-              options:
-                value: | 
-                  class: HRadioButton
-                  rect: [ 32, 32, 130, 24 ]
-                  options:
-                    label: 'HRadioButton'
-                    value: true
-            - class: SampleView
-              rect: [ 8, 228, null, 100, 8, null ]
-              subviews:
-              - class: HCheckboxList
-                rect: [ 0, 0, 162, 100 ]
-                options:
-                  value: [ 0 ]
-                subviews:
-                - class: HListItems
-                  rect: [ 0 ] #dummy rect
-                  options:
-                    value:
-                    - label: CheckBox1
-                      value: 1
-                    - label: CheckBox2
-                      value: 0
-          
