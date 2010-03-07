@@ -40,6 +40,8 @@ subviews:
         subviews:
         - class: HTab
           rect: [ 0, 0, null, null, 8, 8 ]
+          options:
+            valueObjId: :values.tab_0_0_0
           subviews:
           - class: SampleTabItem
             rect: [ 0 ]
@@ -57,6 +59,8 @@ subviews:
         subviews:
         - class: HTab
           rect: [ 0, 0, null, null, 8, 8 ]
+          options:
+            valueObjId: :values.tab_0_0_0
           subviews:
           - class: SampleTabItem
             rect: [ 0 ]
