@@ -1,7 +1,7 @@
 label: 'HUploader'
 descr_height: 160
 descr: |
-  <p>please add description</p>
+  <p>HUploader class</p>
 yaml_height: 350
 yaml: |
   subviews:

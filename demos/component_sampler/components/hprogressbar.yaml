@@ -1,0 +1,20 @@
+label: 'HProgressBar'
+descr_height: 160
+descr: |
+  <p>HProgressBar is a control unit used to convey the progress of a task, such as a download or file transfer. In other words, it is a component indicating a percentage of a total task has completed.</p>
+  <p>Use the maxValue to define the point of progress at the end and use value to define the point of progress.</p>
+yaml_height: 450
+yaml: |
+  subviews:
+  - class: HProgressBar
+    rect: [ 32, 32, 24, 150 ]
+    options:
+      maxValue: 3
+      value: 2
+  - class: HProgressBar
+    rect: [ 60, 32, 24, 150 ]
+    options:
+      enabled: false
+      maxValue: 3
+      value: 2
+sample_height: 200

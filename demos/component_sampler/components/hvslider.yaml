@@ -1,7 +1,7 @@
 label: 'HVSlider'
 descr_height: 160
 descr: |
-  <p>please add description</p>
+  <p>HVSlider (vertical version of the slider control) is a control unit that enables the user to choose a value in a range of values. Sliders support both dragging the handle and clicking the mouse anywhere on the slider to move the handle towards the mouse, as well as keyboard support after the handle is in active mode. Naturally, sliders are commonly used as colour mixers, volume controls, graphical equalizers and seekers in media applications. A typical slider is a drag-able knob along vertical or horizontal line.</p>
 yaml_height: 450
 yaml: |
   subviews:

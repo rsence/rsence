@@ -14,4 +14,4 @@ yaml: |
     options:
       value: "HTextControl"
       enabled: false
-sample_height: 270
+sample_height: 115

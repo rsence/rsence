@@ -1,7 +1,7 @@
 label: 'HTextArea'
 descr_height: 150
 descr: |
-  <p>please add description</p>
+  <p>HTextArea is a scrollable multi-line area that displays editable plain text.</p>
 yaml_height: 200
 yaml: |
   subviews:

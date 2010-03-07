@@ -9,4 +9,4 @@ yaml: |
     rect: [ 32, 32, 130, 24 ]
     options:
       value: "HStringView"
-sample_height: 100
+sample_height: 75

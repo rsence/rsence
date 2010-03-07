@@ -93,3 +93,19 @@ subviews:
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.hvslider
+      - class: HTabItem
+        rect: [ 0 ]
+        options:
+          label: Progress Views
+        subviews:
+        - class: HTab
+          rect: [ 0, 0, null, null, 8, 8 ]
+          options:
+            valueObjId: :values.tab_0_0_3
+          subviews:
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hprogressbar
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hprogressindicator
