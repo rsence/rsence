@@ -13,24 +13,35 @@ SampleTabItem = HClass.extend({
       }
     );
     
-    /* YAML Label: */
+    var _sampleTop = _options.descr_height+42,
+        _sampleHeight = (_options.sample_height > _options.yaml_height)?_options.sample_height:_options.yaml_height;
+    
+    /* Sample Label: */
     HStringView.nu(
-      [ 8, _options.descr_height+16, null, 20, 8, null ],
+      [ 8, _sampleTop-16, null, 20, 8, null ],
       _tabItem, {
-        value: 'YAML:'
+        value: '<b>Visual sample:</b>'
+      }
+    );
+    
+    /* YAML Source label: */
+    HStringView.nu(
+      [ null, _sampleTop-16, 400, 20, 8, null ],
+      _tabItem, {
+        value: '<b>YAML source:</b>'
       }
     );
     
     /* YAML Source: */
     HTextArea.nu(
-      [ 8, _options.descr_height+42, null, _options.yaml_height, 8, null ],
+      [ null, _sampleTop, 400, _sampleHeight, 8, null ],
       _tabItem, {
         value: _options.yaml
       }
     );
     
     var _sampleView = SampleView.nu(
-      [ 8, _options.descr_height+50+_options.yaml_height, null, _options.sample_height, 8, null ],
+      [ 8, _sampleTop, null, _sampleHeight, 416, null ],
       _tabItem
     );
     
