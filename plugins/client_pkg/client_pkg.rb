@@ -50,7 +50,6 @@ class ClientPkg < Servlet
       @thr = Thread.new do
         Thread.pass
         while true
-          puts "checking"
           begin
             if client_build.bundle_changes( @last_change )
               @last_change = Time.now.to_i

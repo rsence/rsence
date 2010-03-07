@@ -1476,7 +1476,7 @@ HView = HClass.extend({
       _string = _string.substring(0, _length);
     }
     if (!_elemId && _elemId !== 0) {
-      _elemId = this.elemId;
+      _elemId = 0; //this.elemId;
     }
     if (!_extraCss) {
       _extraCss = '';

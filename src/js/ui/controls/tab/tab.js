@@ -152,7 +152,7 @@ HTab = HControl.extend({
         _tabLabelHTML='',
         _labelTextWidth=this.stringWidth(_tabLabel),
         _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
-        _tab = new HTabView( [0,this.tabLabelHeight,null,null,0,0] ,this),
+        _tab = HTabView.nu( [0,this.tabLabelHeight,null,null,0,0] ,this),
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
     _tabIdx = this.tabs.length;
     if(this.tabLabelNoHTMLPrefix){
