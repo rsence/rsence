@@ -1,0 +1,27 @@
+label: 'HWindow'
+descr_height: 160
+descr: |
+  <p>The HWindow component can contain subviews and its position and size is modifiable by the user (within limits). Its label is the title of the HWindow and its constructor support a few additions to the set of HDynControl#controlDefaults. See #controlDefaults</p>
+yaml_height: 380
+yaml: |
+  subviews:
+  - class: HWindow
+    rect: [ 32, 32, 150, 150 ]
+  - class: HWindow
+    rect: [ 32, 190, 150, 150 ]  
+    options:
+      enabled: false
+  - class: HWindow
+    rect: [ 190, 32, 150, 150 ]
+    options:
+      zoomButton: true
+      collapseButton: true
+      closeButton: true
+  - class: HWindow
+    rect: [ 190, 190, 150, 150 ]
+    options:
+      enabled: false
+      zoomButton: true
+      collapseButton: true
+      closeButton: true
+sample_height: 400

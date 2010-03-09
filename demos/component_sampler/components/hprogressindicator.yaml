@@ -8,8 +8,4 @@ yaml: |
   subviews:
   - class: HProgressIndicator
     rect: [ 32, 32, 200, 24 ]
-  - class: HProgressIndicator
-    rect: [ 32, 60, 200, 24 ]
-    options:
-      enabled: false
 sample_height: 115

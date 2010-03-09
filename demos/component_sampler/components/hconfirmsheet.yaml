@@ -1,0 +1,10 @@
+label: 'HConfirmSheet'
+descr_height: 160
+descr: |
+  <p>Simple confirm sheet control. Acts like HAlertSheet but has a cancel button as well.</p>
+yaml_height: 380
+yaml: |
+  subviews:
+  - class: HConfirmSheet
+    rect: [ 32, 32, 440, 99 ]
+sample_height: 150

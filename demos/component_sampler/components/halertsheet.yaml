@@ -1,0 +1,10 @@
+label: 'HAlertSheet'
+descr_height: 160
+descr: |
+  <p>HAlertSheet is a simple alert notification control.</p>
+yaml_height: 380
+yaml: |
+  subviews:
+  - class: HAlertSheet
+    rect: [ 32, 32, 440, 99 ]
+sample_height: 150

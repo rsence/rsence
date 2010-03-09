@@ -1,0 +1,11 @@
+label: 'HImageView'
+descr_height: 160
+descr: |
+  <p>HImageView is a control unit intended to display images on the screen through the HTML <IMG> tag. The HImageView class is a container to visualize images loaded via URL. It supports scaling via two class methods, scaleToFit and scaleToOriginal. If the image is unable to be loaded, a default blank image will be rendered.</p>
+yaml_height: 380
+yaml: |
+  subviews:
+  - class: HImageView
+    rect: [ 32, 32, 440, 99 ]
+    options:
+      value: http://rsence.org/Riassence_Framework_Smaller.gif

@@ -93,10 +93,13 @@ subviews:
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.hvslider
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hstepper
       - class: HTabItem
         rect: [ 0 ]
         options:
-          label: Progress Views
+          label: Progress Bars and Views
         subviews:
         - class: HTab
           rect: [ 0, 0, null, null, 8, 8 ]
@@ -109,3 +112,34 @@ subviews:
           - class: SampleTabItem
             rect: [ 0 ]
             options: :components.hprogressindicator
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.himageview
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hvalidatorview
+      - class: HTabItem
+        rect: [ 0 ]
+        options:
+          label: Miscellaneous
+        subviews:
+        - class: HTab
+          rect: [ 0, 0, null, null, 8, 8 ]
+          options:
+            valueObjId: :values.tab_0_0_4
+          subviews:
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hwindow
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.htab
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hsheet
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.halertsheet
+          - class: SampleTabItem
+            rect: [ 0 ]
+            options: :components.hconfirmsheet
