@@ -226,7 +226,7 @@ HControl = HView.extend({
       _this.isinherited = false;
     }
     
-    var _isValueRange = (_options.minValue && _options.maxValue),
+    var _isValueRange = (_options.minValue || _options.maxValue),
         _label = _options.label,
         _events = _options.events;
     
@@ -237,14 +237,15 @@ HControl = HView.extend({
       _this.hide();
     }
     
-    _this.setLabel(_label);
-    _this.setEvents(_events);
-    _this.setEnabled(_options.enabled);
-    
     if(_isValueRange) {
       _this.minValue = _options.minValue;
       _this.maxValue = _options.maxValue;
     }
+    
+    _this.setLabel(_label);
+    _this.setEvents(_events);
+    _this.setEnabled(_options.enabled);
+    
     if(_options.valueObj){
       _options.valueObj.bind(_this);
     }

@@ -51,10 +51,10 @@ class ClientPkg < Servlet
         Thread.pass
         while true
           begin
-            if client_build.bundle_changes( @last_change )
+            if @client_build.bundle_changes( @last_change )
               @last_change = Time.now.to_i
-              client_build.run
-              client_cache.set_cache( client_build.js, client_build.gz, client_build.themes )
+              @client_build.run
+              @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
               puts "Autobuilt."
               if ARGV.include?('-say')
                 Thread.new do

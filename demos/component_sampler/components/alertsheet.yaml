@@ -7,4 +7,6 @@ yaml: |
   subviews:
   - class: HAlertSheet
     rect: [ 32, 32, 440, 99 ]
+    options:
+      label: "<b>Alert Message</b><br />Goes here."
 sample_height: 150

@@ -8,10 +8,16 @@ yaml: |
   - class: HTextArea
     rect: [ 32, 32, 200, 100 ]
     options:
-      value: "HTextArea"
+      value:  |
+        HTextArea contains several
+        lines of 
+        text
   - class: HTextArea
     rect: [ 32, 140, 200, 100 ]
     options:
-      value: "HTextArea"
+      value: |
+        HTextArea contains several
+        lines of 
+        text
       enabled: false
 sample_height: 270

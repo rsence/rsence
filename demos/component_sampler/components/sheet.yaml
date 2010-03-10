@@ -7,4 +7,9 @@ yaml: |
   subviews:
   - class: HSheet
     rect: [ 32, 32, 440, 99 ]
+    subviews:
+    - class: HButton
+      rect: [ 16, null, null, 24, 16, 8 ]
+      options:
+        label: Something Inside
 sample_height: 150

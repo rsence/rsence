@@ -465,7 +465,7 @@ EVENT = {
     var _this = EVENT,
         _elemId = _ctrl.elemId,
         _elem = ELEM.get(_elemId);
-    if (_this.focused[_elemId] === false && _this.dragItems.indexOf(_elemId) === -1) {
+    if (_this.focused[_elemId] === false ){ // && _this.dragItems.indexOf(_elemId) === -1) {
       Event.stopObserving(_elem, 'mouseover', _this._mouseOver);
       Event.observe(_elem, 'mouseout', _this._mouseOut);
       _this.focused[_elemId] = true;
@@ -485,7 +485,7 @@ EVENT = {
     var _this = EVENT,
         _elemId = _ctrl.elemId,
         _elem = ELEM.get(_elemId);
-    if (_this.focused[_elemId] === true && _this.dragItems.indexOf(_elemId) === -1) {
+    if (_this.focused[_elemId] === true ){ // && _this.dragItems.indexOf(_elemId) === -1) {
       Event.stopObserving(_elem, 'mouseout', _this._mouseOut);
       Event.observe(_elem, 'mouseover', _this._mouseOver);
       _this.focused[_elemId] = false;

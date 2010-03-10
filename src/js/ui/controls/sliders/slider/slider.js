@@ -39,8 +39,9 @@ HSlider = HControl.extend({
     repeatDelay: 300,
     repeatInterval: 50,
     inverseAxis: false,
+    events: null,
     constructor: function(_ctrl){
-      if(!this.events){
+      if(this.events === null){
         this.events = {
           draggable: true,
           keyDown: true,
@@ -136,8 +137,9 @@ HSlider = HControl.extend({
     _x -= this._originX;
     _y -= this._originY;
     
-    var _rawVal = this._isVertical?_y:_x;
-    var _value = this._pos2value(_rawVal);
+    var _rawVal = this._isVertical?_y:_x,
+        _value = this._pos2value(_rawVal);
+    
     this.setValue(_value);
   },
   

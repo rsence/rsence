@@ -1,4 +1,4 @@
-label: 'HTab and HTabItem'
+label: HTab
 descr_height: 160
 descr: |
   <p>HTabItem is a wrapper for creating tabs as subviews when using JSONRenderer. rect is ignored parent is the HTab instance options may contain the following: select: true|false, passed on to addTab label: true|false, passed on to addTab</p>
@@ -11,21 +11,21 @@ yaml: |
       - class: HTabItem
         rect: [ 0 ]
         options:
-          label: "Tab"
+          label: "Outer Tab 1"
         subviews:
           - class: HTab
-            rect: [ 2, 0, null, null, 8, 8 ]
+            rect: [ 8, 8, null, null, 8, 8 ]
             subviews:
               - class: HTabItem
                 rect: [ 0 ]
                 options:
-                  label: "Tab"
+                  label: "Inner Tab 1"
               - class: HTabItem
                 rect: [ 0 ]
                 options:
-                  label: "Tab"
+                  label: "Inner Tab 2"
       - class: HTabItem
         rect: [ 0 ]
         options:
-          label: "Tab"
+          label: "Outer Tab 2"
 sample_height: 500

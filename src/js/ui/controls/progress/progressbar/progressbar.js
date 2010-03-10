@@ -24,10 +24,13 @@ HProgressBar = HControl.extend({
 /** Sets the width of the progress bar when the value changes. **/
   refreshValue: function(){
     if( this.drawn && this.markupElemIds.value ){
-      var _visibleWidth = ELEM.getVisibleSize( this.elemId )[0]-this.themeWidthInset,
-          _unitWidth = _visibleWidth/this.maxValue,
-          _progressWidth = Math.round(_unitWidth * this.value);
+      var _visibleWidth = this.rect.width-this.themeWidthInset,
+          _progressWidth = Math.round(_visibleWidth * this.value);
       this.setStyleOfPart('value','width',_progressWidth+'px');
     }
+  },
+  onIdle: function(){
+    this.base();
+    this.refreshValue();
   }
 });

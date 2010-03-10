@@ -22,7 +22,9 @@ HProgressIndicator = HView.extend({
     _this.setStyle( 'border', '1px solid #999' );
     _this.setStyle( 'background-color', '#ccc' );
     var _height = _this.rect.height,
-        _width = ELEM.getVisibleSize( _this.elemId )[0]-2;
+        _visibleWidth = ELEM.getVisibleSize( _this.elemId )[0],
+        _width = (_visibleWidth===0)?_this.rect.width:_visibleWidth;
+    _width -= 2;
     _this['_rect'+0] = HRect.nu( 0,0,_height,_height );
     _this['_rect'+1] = HRect.nu( _width-_height, 0, _width, _height );
     _this._indicator = HView.nu( HRect.nu( _this['_rect'+0] ), _this );

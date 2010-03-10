@@ -31,11 +31,6 @@ class IndexHtmlPlugin < ServletPlugin
   end
   
   def open
-    if @plugins[:client_pkg].client_cache
-      @client_rev = @plugins[:client_pkg].client_cache.client_rev
-    else
-      @client_rev = Time.now.to_i.to_s
-    end
     #@deps = []
     @index_html_src = file_read( ::Riassence::Server.config[:index_html][:index_tmpl] )
     # loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
@@ -57,8 +52,9 @@ class IndexHtmlPlugin < ServletPlugin
     index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:title])
     # @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
-    index_html.gsub!('__CLIENT_REV__',@client_rev)
-    index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],@client_rev))
+    client_rev = @plugins[:client_pkg].client_cache.client_rev
+    index_html.gsub!('__CLIENT_REV__',client_rev)
+    index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],client_rev))
     # @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
     index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:x])
     index_html.gsub!('__NOSCRIPT__',::Riassence::Server.config[:index_html][:noscript])

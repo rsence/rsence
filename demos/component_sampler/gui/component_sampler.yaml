@@ -12,7 +12,7 @@ class: HApplication
 extend:
   constructor: |
     function(_options){
-      this.base(2000,'Component Sampler');
+      this.base(20,'Component Sampler');
       this.options = _options;
     }
 options:

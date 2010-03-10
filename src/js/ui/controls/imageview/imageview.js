@@ -21,11 +21,9 @@ HImageView = HControl.extend({
     scaleToFit: true,
     value: null,
     constructor: function(_ctrl){
-      console.log('image control defaults value:',this.value);
       if(this.value===null){
         // default to a blank image
         this.value = _ctrl.getThemeGfxPath() + "/blank.gif";
-        console.log( "image orig value:",this.value );
       }
     }
   })),
@@ -33,7 +31,6 @@ HImageView = HControl.extend({
   _makeScaleToFit: function(_parentId){
     var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
     this.elemId = ELEM.make(_parentId,'img');
-    console.log('image value',_value);
     ELEM.setAttr(this.elemId,'src',_value);
     ELEM.setAttr(this.elemId,'alt',this.label);
     ELEM.setAttr(this.elemId,'title',this.label);
