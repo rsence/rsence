@@ -78,6 +78,8 @@ class Broker
   ## Post requests are always xhr requests
   def post
     
+    puts "post: #{@request.fullpath}" if $DEBUG_MODE
+    
     sleep @@ping_sim if @@ping_sim
     
     not_found unless @@transporter.servlet( :post, @request, @response )
@@ -87,9 +89,9 @@ class Broker
   ## Get requests are different, depending on the uri requested
   def get
     
-    sleep @@ping_sim if @@ping_sim
+    puts "get: #{@request.fullpath}" if $DEBUG_MODE
     
-    puts "#{@request.fullpath}"
+    sleep @@ping_sim if @@ping_sim
     
     not_found unless @@transporter.servlet( :get, @request, @response )
     

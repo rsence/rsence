@@ -9,20 +9,20 @@
 
 def eval_bundle( params )
   src_path = params[:src_path]
-  puts src_path
+  # puts src_path
   mod = Module.new do |m|
     @@bundle_path    = params[:bundle_path   ]
     @@bundle_name    = params[:bundle_name   ]
     @@bundle_info    = params[:bundle_info   ]
     @@plugin_manager = params[:plugin_manager]
     if params[:bundle_info][:inits_self] == false
-      puts "using eval"
+      # puts "using eval"
       m::module_eval( File.read(src_path) )
     elsif params[:bundle_info][:reloadable] == false
-      puts "using require"
+      # puts "using require"
       require src_path[0..-4]
     else
-      puts "using load"
+      # puts "using load"
       load src_path
     end
   end
@@ -71,12 +71,72 @@ class PluginManager
     @transporter = transporter
     @sessions = transporter.sessions
     @plugin_paths = plugin_paths
-    rescan
+    puts "Loading plugins..."
+    scan_plugins
+    puts "Plugins loaded."
+    puts "Riassence Framework is online."
+    if $DEBUG_MODE
+      @thr = Thread.new do
+        Thread.pass
+        while true
+          begin
+            changed_plugins!
+          rescue => e
+            warn e.inspect
+          end
+          sleep 3
+        end
+      end
+    end
+  end
+  
+  def changed_plugins!
+    @plugin_paths.each do |path|
+      next unless File.directory? path
+      Dir.entries(path).each do |bundle_name|
+        next if bundle_name =~ /&\./
+        bundle_path = File.expand_path( File.join( path, bundle_name ) )
+        next unless File.directory?( bundle_path )
+        bundle_file = bundle_name+'.rb'
+        next unless File.exists?( File.join( bundle_path, bundle_file ) )
+        if File.exists?( File.join( bundle_path, 'disabled' ) )
+          if @registry.has_key?( bundle_name.to_sym )
+            puts "Disabling bundle #{bundle_name}..."
+            unload_bundle( bundle_name.to_sym )
+            if ARGV.include?('-say')
+              Thread.new do
+                Thread.pass
+                system(%{say "Unloaded #{bundle_name.to_s}."})
+              end
+            end
+          end
+        else
+          if not @registry.has_key?( bundle_name.to_sym )
+            puts "Loading bundle #{bundle_name}..."
+            #load_plugin( changed_plugin )
+            if ARGV.include?('-say')
+              Thread.new do
+                Thread.pass
+                system(%{say "Loaded #{bundle_name.to_s}."})
+              end
+            end
+          else
+            # puts "Checking if bundle #{bundle_name} is changed..."
+            # if ARGV.include?('-say')
+            #   Thread.new do
+            #     Thread.pass
+            #     system(%{say "Reloaded #{bundle_name.to_s}."})
+            #   end
+            # end
+          end
+        end
+      end
+    end
   end
   
   # Top-level method for scanning all plugin directories.
   # Clears previously loaded plugins.
-  def rescan
+  def scan_plugins
     @registry = {}
     @info     = {}
     @aliases  = {}
@@ -106,10 +166,10 @@ class PluginManager
   #  - Skips bundles containing a file or directory named 'disabled'
   def scan_plugindir( path )
     Dir.entries(path).each do |bundle_name|
-      puts "bundle_name: #{bundle_name}"
+      # puts "bundle_name: #{bundle_name}"
       next if bundle_name =~ /&\./
       bundle_path = File.expand_path( File.join( path, bundle_name ) )
-      puts "#{File.stat(bundle_path).inspect}"
+      # puts "#{File.stat(bundle_path).inspect}"
       next unless File.directory?( bundle_path )
       bundle_file = bundle_name+'.rb'
       next unless File.exists?( File.join( bundle_path, bundle_file ) )
@@ -160,9 +220,17 @@ class PluginManager
   
   # Loads a plugin bundle.
   def load_bundle( bundle_path, bundle_name, bundle_file )
+    
+    if @registry.has_key?( bundle_name.to_sym )
+      warn "Warning: Bundle #{bundle_name} already loaded."
+      return
+    end
+    
     bundle_file_path = File.join( bundle_path, bundle_file )
     
     bundle_info = bundle_info( bundle_path )
+    
+    @info[bundle_name.to_sym] = bundle_info
     
     bundle_src = File.read( bundle_file_path )
     
@@ -176,13 +244,13 @@ class PluginManager
     } )
     
     unless bundle_info[:inits_self]
-      puts "#{bundle_name}: #{module_ns.constants.inspect}"
+      # puts "#{bundle_name}: #{module_ns.constants.inspect}"
       module_ns.constants.each do |module_const_name|
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class
-          puts "is class"
+          # puts "is class"
           module_const.ancestors.each do |ancestor|
-            puts "ancestor: #{ancestor.to_s.inspect}"
+            # puts "ancestor: #{ancestor.to_s.inspect}"
             if ancestor.to_s == "Servlet"
               module_const.new
               break
@@ -197,6 +265,10 @@ class PluginManager
         end
       end
     end
+  end
+  
+  def unload_bundle( bundle_name )
+    require 'pp'; pp @registry[ bundle_name ]
   end
   
   def register_bundle( inst, bundle_name )

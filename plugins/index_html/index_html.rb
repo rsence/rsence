@@ -55,8 +55,7 @@ class IndexHtmlPlugin < ServletPlugin
     client_rev = @plugins[:client_pkg].client_cache.client_rev
     index_html.gsub!('__CLIENT_REV__',client_rev)
     index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],client_rev))
-    # @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
-    index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:x])
+    index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
     index_html.gsub!('__NOSCRIPT__',::Riassence::Server.config[:index_html][:noscript])
     
     deps_src = ''
@@ -116,7 +115,7 @@ class IndexHtmlPlugin < ServletPlugin
   
   ## Outputs a static web page.
   def get( request, response, ses )
-    puts "index_html"
+    # puts "index_html"
     # index_html = session_index_html( request, response )
     index_html = render_index_html
     
