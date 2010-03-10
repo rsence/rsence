@@ -21,23 +21,30 @@ HImageView = HControl.extend({
     scaleToFit: true,
     value: null,
     constructor: function(_ctrl){
+      console.log('image control defaults value:',this.value);
       if(this.value===null){
         // default to a blank image
         this.value = _ctrl.getThemeGfxPath() + "/blank.gif";
+        console.log( "image orig value:",this.value );
       }
     }
   })),
   
   _makeScaleToFit: function(_parentId){
+    var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
     this.elemId = ELEM.make(_parentId,'img');
-    ELEM.setAttr(this.elemId,'src',this.value);
+    console.log('image value',_value);
+    ELEM.setAttr(this.elemId,'src',_value);
     ELEM.setAttr(this.elemId,'alt',this.label);
+    ELEM.setAttr(this.elemId,'title',this.label);
   },
   _makeScaleToOriginal: function(_parentId){
+    var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
     this.elemId = ELEM.make(_parentId,'div');
-    ELEM.setStyle(this.elemId,'background-image','url('+this.value+')');
+    ELEM.setStyle(this.elemId,'background-image','url('+_value+')');
     ELEM.setStyle(this.elemId,'background-position','0px 0px');
     ELEM.setStyle(this.elemId,'background-repeat','no-repeat');
+    ELEM.setAttr(this.elemId,'title',this.label);
   },
   _makeElem: function(_parentId){
     if(this.options.scaleToFit){
@@ -53,7 +60,12 @@ HImageView = HControl.extend({
   * 
   **/
   refreshValue: function(){
-    ELEM.setAttr(this.elemId,'src',this.value);
+    if(this.options.scaleToFit){
+      ELEM.setAttr(this.elemId,'src',this.value);
+    }
+    else{
+      ELEM.setStyle(this.elemId,'background-image','url('+this.value+')');
+    }
   },
   
 /** = Description
@@ -61,7 +73,10 @@ HImageView = HControl.extend({
   *
   **/
   refreshLabel: function(){
-    ELEM.setAttr(this.elemId,'alt',this.label);
+    if(this.options.scaleToFit){
+      ELEM.setAttr(this.elemId,'alt',this.label);
+    }
+    ELEM.setAttr(this.elemId,'title',this.label);
   },
   
 /** = Description

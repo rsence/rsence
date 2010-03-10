@@ -52,22 +52,22 @@ class IndexHtmlPlugin < ServletPlugin
   
   def render_index_html
     
-    @index_html = @index_html_src.clone
+    index_html = @index_html_src.clone
     
-    @index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:title])
+    index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:title])
     # @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
-    @index_html.gsub!('__CLIENT_REV__',@client_rev)
-    @index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],@client_rev))
+    index_html.gsub!('__CLIENT_REV__',@client_rev)
+    index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],@client_rev))
     # @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
-    @index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:x])
-    @index_html.gsub!('__NOSCRIPT__',::Riassence::Server.config[:index_html][:noscript])
+    index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:x])
+    index_html.gsub!('__NOSCRIPT__',::Riassence::Server.config[:index_html][:noscript])
     
     deps_src = ''
     ::Riassence::Server.config[:index_html][:deps].each do |dep|
       deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
     end
-    @index_html.gsub!('__SCRIPT_DEPS__',deps_src)
+    index_html.gsub!('__SCRIPT_DEPS__',deps_src)
     
     # @index_gzip = GZString.new('')
     # gzwriter = Zlib::GzipWriter.new( @index_gzip, Zlib::BEST_SPEED )
@@ -78,6 +78,8 @@ class IndexHtmlPlugin < ServletPlugin
     # @content_size_gzip = @index_gzip.size
     
     # @index_date = httime( Time.now )
+    
+    return index_html
   end
   
   def session_index_html( request, response )
@@ -112,14 +114,15 @@ class IndexHtmlPlugin < ServletPlugin
     buffer.unshift( "COMM.Session.req_num=#{req_num};" )
     # buffer.each {|b|puts b}
     # require 'pp'; pp buffer
-    index_html = @index_html.dup
+    index_html = render_index_html
     return index_html.gsub('__STARTUP_SEQUENCE__', buffer.join("\n") )
   end
   
   ## Outputs a static web page.
   def get( request, response, ses )
-    
-    index_html = session_index_html( request, response )
+    puts "index_html"
+    # index_html = session_index_html( request, response )
+    index_html = render_index_html
     
     support_gzip = (request.header.has_key?('accept-encoding') and \
                     request.header['accept-encoding'].include?('gzip')) \
@@ -130,6 +133,7 @@ class IndexHtmlPlugin < ServletPlugin
     response['Content-Type'] = 'text/html; charset=UTF-8'
     response['Date'] = httime( Time.now )
     response['Server'] = 'Riassence Framework'
+    response['Cache-Control'] = 'no-cache'
     
     if support_gzip
       index_gzip = GZString.new('')

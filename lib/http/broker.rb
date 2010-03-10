@@ -89,6 +89,8 @@ class Broker
     
     sleep @@ping_sim if @@ping_sim
     
+    puts "#{@request.fullpath}"
+    
     not_found unless @@transporter.servlet( :get, @request, @response )
     
   end

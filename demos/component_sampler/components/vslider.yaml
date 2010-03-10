@@ -10,11 +10,11 @@ yaml: |
   - class: HVSlider
     rect: [ 60, 32, 24, 150 ]
     options:
-      orientation: 'W'
+      orientation: W
   - class: HVSlider
     rect: [ 88, 32, 24, 150 ]
     options:
-      orientation: 'E'
+      orientation: E
   - class: HVSlider
     rect: [ 116, 32, 24, 150 ]
     options:
@@ -22,11 +22,11 @@ yaml: |
   - class: HVSlider
     rect: [ 144, 32, 24, 150 ]
     options:
-      orientation: 'W'
+      orientation: W
       enabled: false
   - class: HVSlider
     rect: [ 172, 32, 24, 150 ]
     options:
-      orientation: 'E'
+      orientation: E
       enabled: false
 sample_height: 200

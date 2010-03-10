@@ -106,8 +106,10 @@ class PluginManager
   #  - Skips bundles containing a file or directory named 'disabled'
   def scan_plugindir( path )
     Dir.entries(path).each do |bundle_name|
+      puts "bundle_name: #{bundle_name}"
       next if bundle_name =~ /&\./
       bundle_path = File.expand_path( File.join( path, bundle_name ) )
+      puts "#{File.stat(bundle_path).inspect}"
       next unless File.directory?( bundle_path )
       bundle_file = bundle_name+'.rb'
       next unless File.exists?( File.join( bundle_path, bundle_file ) )

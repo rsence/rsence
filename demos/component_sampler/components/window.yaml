@@ -6,22 +6,21 @@ yaml_height: 380
 yaml: |
   subviews:
   - class: HWindow
-    rect: [ 32, 32, 150, 150 ]
+    rect: [ 32, 32, 200, 150 ]
   - class: HWindow
-    rect: [ 32, 190, 150, 150 ]  
+    rect: [ 32, 190, 200, 150 ]  
     options:
-      enabled: false
+      label: Two
   - class: HWindow
-    rect: [ 190, 32, 150, 150 ]
+    rect: [ 250, 32, 200, 150 ]
     options:
-      zoomButton: true
-      collapseButton: true
+      label: Three
       closeButton: true
   - class: HWindow
-    rect: [ 190, 190, 150, 150 ]
+    rect: [ 250, 190, 200, 150 ]
     options:
-      enabled: false
-      zoomButton: true
-      collapseButton: true
+      label: Four
       closeButton: true
+      collapseButton: true
+      zoomButton: true
 sample_height: 400

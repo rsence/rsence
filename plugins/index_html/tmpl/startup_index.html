@@ -17,6 +17,13 @@ HCLIENT_BASE='__CLIENT_BASE__';
 HCLIENT_HELLO='__CLIENT_HELLO__';
 HThemeManager.themePath='__CLIENT_BASE__/themes';
 
+/** Startup sequence: **/
+COMM.Transporter.busy = true;
+LOAD(function(){
+__STARTUP_SEQUENCE__
+COMM.Transporter.busy = false;
+});
+
 </script>
 
 </head><body id="body"><noscript>__NOSCRIPT__</noscript></body></html>
