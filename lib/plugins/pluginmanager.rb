@@ -113,7 +113,8 @@ class PluginManager
         else
           if not @registry.has_key?( bundle_name.to_sym )
             puts "Loading bundle #{bundle_name}..."
-            #load_plugin( changed_plugin )
+            load_bundle( bundle_path, bundle_name.to_sym, bundle_name+'.rb' )
+            call( bundle_name.to_sym, :open )
             if ARGV.include?('-say')
               Thread.new do
                 Thread.pass
@@ -122,16 +123,49 @@ class PluginManager
             end
           else
             # puts "Checking if bundle #{bundle_name} is changed..."
-            # if ARGV.include?('-say')
-            #   Thread.new do
-            #     Thread.pass
-            #     system(%{say "Reloaded #{bundle_name.to_s}."})
-            #   end
-            # end
+            info = @info[bundle_name.to_sym]
+            if info[:reloadable] and plugin_changed?( bundle_name.to_sym )
+              puts "Bundle #{bundle_name} has changed, reloading..."
+              unload_bundle( bundle_name.to_sym )
+              load_bundle( bundle_path, bundle_name.to_sym, bundle_name+'.rb' )
+              call( bundle_name.to_sym, :open )
+              if ARGV.include?('-say')
+                Thread.new do
+                  Thread.pass
+                  system(%{say "Reloaded #{bundle_name.to_s}."})
+                end
+              end
+            end
           end
         end
       end
     end
+  end
+  
+  def unload_bundle( bundle_name )
+    if @registry.has_key?( bundle_name )
+      call( bundle_name, :flush )
+      call( bundle_name, :close )
+      @registry.delete( bundle_name )
+      @aliases.each do |a_name,b_name|
+        if b_name == bundle_name
+          @aliases.delete( a_name )
+        end
+      end
+      if @servlets.include?( bundle_name )
+        @servlets.delete( bundle_name )
+      end
+      if @info.include?( bundle_name )
+        @info.delete( bundle_name )
+      end
+    end
+  end
+  
+  def plugin_changed?( plugin_name )
+    info = @info[plugin_name]
+    last_changed = info[:last_changed]
+    newest_change = most_recent( info[:path], last_changed )
+    return last_changed < newest_change
   end
   
   # Top-level method for scanning all plugin directories.
@@ -141,11 +175,11 @@ class PluginManager
     @info     = {}
     @aliases  = {}
     @servlets = []
-    @types    = {
-      :gui     => [],
-      :plugin  => [],
-      :servlet => []
-    }
+    # @types    = {
+    #   :gui     => [],
+    #   :plugin  => [],
+    #   :servlet => []
+    # }
     @plugin_paths.each do |path|
       next unless File.directory? path
       scan_plugindir( path )
@@ -167,7 +201,7 @@ class PluginManager
   def scan_plugindir( path )
     Dir.entries(path).each do |bundle_name|
       # puts "bundle_name: #{bundle_name}"
-      next if bundle_name =~ /&\./
+      next if bundle_name[0].chr == '.'
       bundle_path = File.expand_path( File.join( path, bundle_name ) )
       # puts "#{File.stat(bundle_path).inspect}"
       next unless File.directory?( bundle_path )
@@ -177,6 +211,26 @@ class PluginManager
       
       load_bundle( bundle_path, bundle_name.to_sym, bundle_file )
     end
+  end
+  
+  # Finds the most recent file in the path
+  def most_recent( bundle_path, newest_date=0 )
+    path_date = File.stat( bundle_path ).mtime.to_i
+    if path_date > newest_date
+      # puts "File is newer: #{bundle_path}"
+      newest_date = path_date
+    end
+    if File.directory?( bundle_path )
+      Dir.entries( bundle_path ).each do |entry_name|
+        next if entry_name[0].chr == '.'
+        full_path = File.join( bundle_path, entry_name )
+        unless File.directory?( full_path )
+          next unless entry_name.include?('.') and ['yaml','js','rb'].include?( entry_name.split('.')[-1] )
+        end
+        newest_date = most_recent( full_path, newest_date )
+      end
+    end
+    return newest_date
   end
   
   # Gets plugin information
@@ -203,7 +257,16 @@ class PluginManager
       :inits_self => true,
       
       # System version requirement.
-      :sys_version => '>= 1.0.0'
+      :sys_version => '>= 1.0.0',
+      
+      # Path to bundle
+      :path => bundle_path,
+      
+      # Name of bundle
+      :name => bundle_name.to_sym,
+      
+      # Last change
+      :last_changed => most_recent( bundle_path  )
       
     }
     
@@ -265,10 +328,6 @@ class PluginManager
         end
       end
     end
-  end
-  
-  def unload_bundle( bundle_name )
-    require 'pp'; pp @registry[ bundle_name ]
   end
   
   def register_bundle( inst, bundle_name )
