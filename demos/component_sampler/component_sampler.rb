@@ -12,7 +12,7 @@ class ComponentSampler < GUIPlugin
   end
   def release_checker_pattern_gif
     return unless @checker_pattern_gif_url
-    @plugins[:ticketserve].del_rsrc( @checker_pattern_gif_url )
+    @plugins[:ticketservices].del_rsrc( @checker_pattern_gif_url )
   end
   def open
     super
