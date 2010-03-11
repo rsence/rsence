@@ -90,6 +90,16 @@ class PluginManager
     end
   end
   
+  def method_missing( sym, *args, &block )
+    if @registry.has_key?(sym)
+      if args == [] and block == nil
+        return @registry[sym]
+      elsif block == nil
+        call( sym, *args )
+      end
+    end
+  end
+  
   def changed_plugins!
     @plugin_paths.each do |path|
       next unless File.directory? path
