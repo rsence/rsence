@@ -17,6 +17,8 @@ class Main < Plugin
     return false
   end
   
+  def score; 100; end
+  
   def post( req, res, ses )
     msg = @plugins.sessions.init_msg( req, res, true )
     msg.expire_session()
