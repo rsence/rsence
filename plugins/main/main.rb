@@ -20,7 +20,7 @@ class Main < Plugin
   def score; 100; end
   
   def post( req, res, ses )
-    msg = @plugins.sessions.init_msg( req, res, true )
+    msg = @plugins.sessions.init_msg( req, res, { :cookies => true } )
     msg.expire_session()
     msg.response_done
   end
