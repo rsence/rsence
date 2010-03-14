@@ -1,0 +1,31 @@
+type: GUITree
+version: 0.4
+dependencies:
+- default_theme
+- controls
+include:
+- lifegrid
+
+class: HApplication
+extend:
+  # Extend the constructor to receive the options defined.
+  constructor: |
+    function( options ){
+      this.base( options.priority, options.label );
+    }
+options:
+  # The options are passed on to the constructor of the class, see above.
+  priority: 100
+  # A small priority number makes the onIdle calls more frequent,
+  # a large priority number makes the onIdle colls less frequent.
+  label: GUI Test
+subviews:
+  - class: HWindow
+    rect: [ 10, 10, 600, 600 ]
+    subviews:
+      - class: LifeGrid
+        rect: [ 0, 0, 600, 600 ]
+        options:
+          valueObjId: :values.grid
+          tile_width: :settings.tile_width
+          tile_height: :settings.tile_height
