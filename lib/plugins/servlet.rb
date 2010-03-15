@@ -18,9 +18,13 @@ class Servlet
   include PluginUtil
   
   # Initializes and registers the ServletPlugin.
-  def initialize
+  def initialize( name = false )
     @info    = @@bundle_info
-    @name    = @@bundle_name
+    if name
+      @name = name
+    else
+      @name    = @@bundle_name
+    end
     @path    = @@bundle_path
     @plugins = @@plugin_manager
     register

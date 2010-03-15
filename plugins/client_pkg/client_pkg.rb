@@ -6,7 +6,42 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+# puts "Module.nesting: #{Module.nesting.inspect}"
+# puts "Options: #{Options.inspect}"
+# def method_missing( *foo )
+#   puts "variable missing: #{foo.inspect}"
+# end
+# BUNDLE_PATH = self.bundle_path
+# puts "singleton_methods: #{singleton_methods.inspect}"
+
 class ClientPkg < Servlet
+  
+  # def accessor( *args )
+  #   puts "accessor args: #{args.inspect}"
+  # end
+  
+  # puts "----"
+  # puts bundle_path
+  # 
+  # puts self.methods.inspect
+  # 
+  # def class_variable_get( *foo )
+  #   puts "*"
+  #   puts foo.inspect
+  # end
+  # puts "="
+  # 
+  # def self.method_missing( method_name, *args, &block )
+  #   if method_name == :bundle_path
+  #     return Module.nesting[1].bundle_path
+  #   elsif method_name == :bundle_name
+  #     return Module.nesting[1].bundle_name
+  #   elsif method_name == :bundle_info
+  #     return Module.nesting[1].bundle_info
+  #   elsif method_name == :plugin_manager
+  #     return Module.nesting[1].plugin_manager
+  #   end
+  # end
   
   # the library path of this plugin
   lib_path = File.join( @@bundle_path, 'lib' )
@@ -45,6 +80,18 @@ class ClientPkg < Servlet
     end
   end
   
+  def rebuild_client
+    until not @build_busy
+      sleep 0.5
+    end
+    @build_busy = true
+    @client_build.setup_dirs
+    @last_change = Time.now.to_i
+    @client_build.run
+    @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
+    @build_busy = false
+  end
+  
   def open
     if not @thr and $DEBUG_MODE
       @thr = Thread.new do
@@ -52,9 +99,7 @@ class ClientPkg < Servlet
         while true
           begin
             if @client_build.bundle_changes( @last_change )
-              @last_change = Time.now.to_i
-              @client_build.run
-              @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
+              rebuild_client
               puts "Autobuilt."
               if ARGV.include?('-say')
                 Thread.new do
@@ -72,6 +117,31 @@ class ClientPkg < Servlet
     end
     
   end
+  
+  def add_src_dir( src_dir ); @client_build.add_src_dir( src_dir ); end
+  def add_src_dirs( src_dirs ); @client_build.add_src_dirs( src_dirs ); end
+  def del_src_dir( src_dir ); @client_build.del_src_dir( src_dir ); end
+  def del_src_dirs( src_dirs ); @client_build.del_src_dirs( src_dirs ); end
+  
+  def add_theme( theme_name ); @client_build.add_theme( theme_name ); end
+  def add_themes( theme_names ); @client_build.add_themes( theme_names ); end
+  def del_theme( theme_name ); @client_build.del_theme( theme_name ); end
+  def del_themes( theme_names ); @client_build.del_themes( theme_names ); end
+  
+  def add_package( pkg_name, pkg_items ); @client_build.add_package( pkg_name, pkg_items ); end
+  def add_packages( packages ); @client_build.add_packages( packages ); end
+  def del_package( pkg_name ); @client_build.del_package( pkg_name ); end
+  def del_packages( packages ); @client_build.del_packages( packages ); end
+  
+  def add_reserved_name( reserved_name ); @client_build.add_reserved_name( reserved_name ); end
+  def add_reserved_names( reserved_names ); @client_build.add_reserved_names( reserved_names ); end
+  def del_reserved_name( reserved_name ); @client_build.del_reserved_name( reserved_name ); end
+  def del_reserved_names( reserved_names ); @client_build.del_reserved_names( reserved_names ); end
+  
+  def add_gfx_format( gfx_format_name ); @client_build.add_gfx_format( gfx_format_name ); end
+  def add_gfx_formats( gfx_format_names ); @client_build.add_gfx_formats( gfx_format_names ); end
+  def del_gfx_format( gfx_format_name ); @client_build.del_gfx_format( gfx_format_name ); end
+  def del_gfx_formats( gfx_format_names ); @client_build.del_gfx_formats( gfx_format_names ); end
   
   def client_build; @client_build; end
   
@@ -100,11 +170,10 @@ class ClientPkg < Servlet
     @build_logger.open
     
     @client_build = ClientPkgBuild.new( ::Riassence::Server.config[:client_pkg], @build_logger )
-    @last_change = Time.new.to_i
-    @client_build.run
-    
     @client_cache = ClientPkgCache.new
-    @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
+    
+    @build_busy = false
+    rebuild_client
     
   end
   

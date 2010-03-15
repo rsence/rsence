@@ -185,7 +185,7 @@ class ClientPkgBuild
       jsc_data = @destination_files[package_name]
       unless @debug
         unless @no_whitespace_removal
-          jsc_data = @jsmin.minimize( jsc_data )
+          jsc_data = @jsmin.minimize( jsc_data ).strip
         end
         unless @no_obfuscation
           jsc_data = pre_convert( jsc_data )
@@ -212,7 +212,7 @@ class ClientPkgBuild
   def squeeze( js )
     unless @no_whitespace_removal
       begin
-        js = @jsmin.minimize( js )
+        js = @jsmin.minimize( js ).strip
       rescue IndexError => e
         warn "js can't get smaller using js; just ignoring jsmin"
       end
@@ -241,7 +241,7 @@ class ClientPkgBuild
       theme_html_js = theme_html_js_arr.join('')
       unless @debug
         unless @no_obfuscation
-          theme_html_js = @jsmin.minimize( theme_html_js )
+          theme_html_js = @jsmin.minimize( theme_html_js ).strip
         end
         unless @no_whitespace_removal
           theme_html_js = pre_convert( theme_html_js )
@@ -350,6 +350,81 @@ class ClientPkgBuild
     
     return true
     
+  end
+  
+  def add_src_dir( src_dir )
+    @src_dirs.push( src_dir ) unless @src_dirs.include? src_dir
+  end
+  def add_src_dirs( src_dirs )
+    src_dirs.each { |src_dir| add_src_dir( src_dir ) }
+  end
+  def del_src_dir( src_dir )
+    @src_dirs.delete( src_dir ) if @src_dirs.include? src_dir
+  end
+  def del_src_dirs( src_dirs )
+    src_dirs.each { |src_dir| del_src_dir( src_dir ) }
+  end
+  
+  def add_theme( theme_name )
+    @theme_names.push( theme_name ) unless @theme_names.include? theme_name
+  end
+  def add_themes( theme_names )
+    theme_names.each { |theme_name| add_theme( theme_name ) }
+  end
+  def del_theme( theme_name )
+    @theme_names.delete( theme_name ) if @theme_names.include? theme_name
+  end
+  def del_themes( theme_names )
+    theme_names.each { |theme_name| del_theme( theme_name ) }
+  end
+  
+  def add_package( pkg_name, pkg_items )
+    if @packages.has_key?( pkg_name )
+      warn "Package #{pkg_name} already exists, ignoring."
+    else
+      @packages[ pkg_name ] = pkg_items
+      @package_names = @packages.keys
+    end
+  end
+  def add_packages( packages )
+    packages.each do | pkg_name, pkg_items |
+      add_package( pkg_name, pkg_items )
+    end
+  end
+  def del_package( pkg_name )
+    if @packages.has_key?( pkg_name )
+      @packages.delete( pkg_name )
+      @package_names = @packages.keys
+    end
+  end
+  def del_packages( packages )
+    packages.each { |pkg_name| del_package( pkg_name ) }
+  end
+  
+  def add_reserved_name( reserved_name )
+    @reserved_names.push( reserved_name ) unless @reserved_names.include? reserved_name
+  end
+  def add_reserved_names( reserved_names )
+    reserved_names.each { |n| add_reserved_name( n ) }
+  end
+  def del_reserved_name( reserved_name )
+    @reserved_names.delete( reserved_name ) if @resered_names.include? reserved_name
+  end
+  def del_reserved_names( reserved_names )
+    reserved_names.each { |n| del_reserved_name( n ) }
+  end
+  
+  def add_gfx_format( gfx_format )
+    @gfx_formats.push( gfx_format ) unless @gfx_formats.include? gfx_format
+  end
+  def add_gfx_formats( gfx_formats )
+    gfx_formats.each { |gfx_format| add_gfx_format( gfx_format ) }
+  end
+  def del_gfx_format( gfx_format )
+    @gfx_formats.delete( gfx_format ) if @gfx_formats.include? gfx_format
+  end
+  def del_gfx_formats( gfx_formats )
+    gfx_formats.each { |gfx_format| del_gfx_format( gfx_format ) }
   end
   
   #delete: @js_dst_dir, @themes_dst_dir, 

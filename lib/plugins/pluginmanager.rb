@@ -9,20 +9,16 @@
 
 def eval_bundle( params )
   src_path = params[:src_path]
-  # puts src_path
   mod = Module.new do |m|
     @@bundle_path    = params[:bundle_path   ]
     @@bundle_name    = params[:bundle_name   ]
     @@bundle_info    = params[:bundle_info   ]
     @@plugin_manager = params[:plugin_manager]
     if params[:bundle_info][:inits_self] == false
-      # puts "using eval"
       m::module_eval( File.read(src_path) )
     elsif params[:bundle_info][:reloadable] == false
-      # puts "using require"
       require src_path[0..-4]
     else
-      # puts "using load"
       load src_path
     end
   end
@@ -307,14 +303,32 @@ class PluginManager
     
     bundle_src = File.read( bundle_file_path )
     
-    module_ns = eval_bundle( {
-      :bundle_path    => bundle_path,
-      :bundle_name    => bundle_name,
-      :bundle_info    => bundle_info,
-      :plugin_manager => self,
-      :src_path       => bundle_file_path,
-      :src            => bundle_src
-    } )
+    if RUBY_VERSION.to_f >= 1.9
+      src_path = bundle_file_path
+      plugin_manager = self
+      module_ns = Module.new do |m|
+        @@bundle_path    = bundle_path
+        @@bundle_name    = bundle_name
+        @@bundle_info    = bundle_info
+        @@plugin_manager = plugin_manager
+        def m.bundle_path; @@bundle_path; end
+        # puts "using eval"
+        # m::module_eval( File.read(src_path) )
+        # puts "using require"
+        # require src_path[0..-4]
+        puts "using load"
+        load src_path
+      end
+    else
+      module_ns = eval_bundle( {
+        :bundle_path    => bundle_path,
+        :bundle_name    => bundle_name,
+        :bundle_info    => bundle_info,
+        :plugin_manager => self,
+        :src_path       => bundle_file_path,
+        :src            => bundle_src
+      } )
+    end
     
     unless bundle_info[:inits_self]
       # puts "#{bundle_name}: #{module_ns.constants.inspect}"
