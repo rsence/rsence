@@ -185,15 +185,15 @@ class ClientPkgBuild
       jsc_data = @destination_files[package_name]
       unless @debug
         unless @no_whitespace_removal
-          jsc_data = @jsmin.minimize( jsc_data ).strip
+          jsc_data = @jsmin.minimize( jsc_data ) #.strip
         end
         unless @no_obfuscation
           jsc_data = pre_convert( jsc_data )
         end
       end
-      @js[package_name] = jsc_data
+      @js[package_name] = jsc_data.strip
       unless @no_gzip
-        gz_data = gzip_string( jsc_data )
+        gz_data = gzip_string( @js[package_name] )
         @gz[package_name] = gz_data
       end
       unless @quiet
@@ -212,13 +212,13 @@ class ClientPkgBuild
   def squeeze( js )
     unless @no_whitespace_removal
       begin
-        js = @jsmin.minimize( js ).strip
+        js = @jsmin.minimize( js )#.strip
       rescue IndexError => e
         warn "js can't get smaller using js; just ignoring jsmin"
       end
     end
     js = @jscompress.compress( js ) unless @no_obfuscation
-    return js
+    return js.strip
   end
   
   def build_themes
@@ -241,15 +241,15 @@ class ClientPkgBuild
       theme_html_js = theme_html_js_arr.join('')
       unless @debug
         unless @no_obfuscation
-          theme_html_js = @jsmin.minimize( theme_html_js ).strip
+          theme_html_js = @jsmin.minimize( theme_html_js ) #.strip
         end
         unless @no_whitespace_removal
           theme_html_js = pre_convert( theme_html_js )
         end
       end
-      @js[theme_name+'_theme'] = theme_html_js
+      @js[theme_name+'_theme'] = theme_html_js.strip
       unless @no_gzip
-        theme_html_gz = gzip_string( theme_html_js )
+        theme_html_gz = gzip_string( @js[theme_name+'_theme'] )
         @gz[theme_name+'_theme'] = theme_html_gz
       end
       unless @quiet

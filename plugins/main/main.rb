@@ -10,8 +10,15 @@
 
 class Main < Plugin
   
+  def init
+    super
+    @conf  = ::Riassence::Server.config[:index_html]
+    @bconf = ::Riassence::Server.config[:broker_urls]
+  end
+  
   def match( uri, request_type )
-    if request_type == :post and uri == File.join(::Riassence::Server.config[:broker_urls][:hello],'goodbye')
+    if request_type == :post and
+       uri == File.join(@bconf[:hello],'goodbye')
       return true
     end
     return false
@@ -50,9 +57,10 @@ class Main < Plugin
       # built-in support for signing out, deletes the
       # server-side session and reloads the page
       if virtual_uri == '/sign_out'
+        resp_addr = @conf[:respond_address]
         msg.reply( [
           'COMM.Transporter.stop=true;',
-          "location.href=#{::Riassence::Server.config[:index_html][:respond_address].to_json};"
+          "location.href=#{resp_addr.to_json};"
         ].join('') )
         msg.expire_session()
       end

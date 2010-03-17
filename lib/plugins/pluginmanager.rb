@@ -231,7 +231,7 @@ class PluginManager
         next if entry_name[0].chr == '.'
         full_path = File.join( bundle_path, entry_name )
         unless File.directory?( full_path )
-          next unless entry_name.include?('.') and ['yaml','js','rb'].include?( entry_name.split('.')[-1] )
+          next unless entry_name.include?('.') and ['yaml','rb'].include?( entry_name.split('.')[-1] )
         end
         newest_date = most_recent( full_path, newest_date )
       end
@@ -320,7 +320,7 @@ class PluginManager
         load src_path
       end
     else
-      module_ns = eval_bundle( {
+      module_ns         = eval_bundle( {
         :bundle_path    => bundle_path,
         :bundle_name    => bundle_name,
         :bundle_info    => bundle_info,
@@ -399,13 +399,13 @@ class PluginManager
     $stderr.write( err_msg )
   end
   
-  def match_servlet_uri( uri, request_type=:get )
+  def match_servlet_uri( uri, req_type=:get )
     match_score = {}
     @servlets.each do | servlet_name |
       servlet = @registry[ servlet_name ]
-      next unless servlet.respond_to?( request_type )
+      next unless servlet.respond_to?( req_type )
       begin
-        if servlet.match( uri, request_type )
+        if servlet.match( uri, req_type )
           score = servlet.score
           match_score[ score ] = [] unless match_score.has_key? score
           match_score[ score ].push( servlet_name )
@@ -414,7 +414,7 @@ class PluginManager
         plugin_error(
           e,
           "Riassence::Server::PluginManager.match_servlet_uri",
-          "servlet: #{servlet_name.inspect}, request_type: #{request_type.inspect}, uri: #{uri.inspect}",
+          "servlet: #{servlet_name.inspect}, req_type: #{req_type.inspect}, uri: #{uri.inspect}",
           servlet_name
         )
       end
@@ -470,19 +470,19 @@ class PluginManager
   
   alias run_plugin call
   
-  def match_servlet( request_type, request, response, session )
-    request_uri = request.fullpath
-    matches_order = match_servlet_uri( request_uri, request_type )
+  def match_servlet( req_type, req, resp, session )
+    req_uri = req.fullpath
+    matches_order = match_servlet_uri( req_uri, req_type )
     return false unless matches_order
     matches_order.each do |servlet_name|
       begin
-        @registry[servlet_name].send( request_type, request, response, session )
+        @registry[servlet_name].send( req_type, req, resp, session )
         return true
       rescue => e
         plugin_error(
           e,
           "Riassence::Server::PluginManager.match_servlet",
-          "servlet_name: #{servlet_name.inspect}, request_type: #{request_type.inspect}",
+          "servlet_name: #{servlet_name.inspect}, req_type: #{req_type.inspect}",
           servlet_name
         )
         next

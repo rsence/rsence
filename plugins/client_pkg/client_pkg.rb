@@ -63,6 +63,8 @@ class ClientPkg < Servlet
       @log_file = nil
     end
     def log( str )
+      puts str
+      return
       if @last_time < Time.now - 30
         @last_time = Time.now
         @log_file.write( %{--- #{@last_time.strftime("%Y-%m-%d %H:%M:%S")} ---\n} )
@@ -82,11 +84,12 @@ class ClientPkg < Servlet
   
   def rebuild_client
     until not @build_busy
+      puts "build busy, sleeping.."
       sleep 0.5
     end
     @build_busy = true
-    @client_build.setup_dirs
     @last_change = Time.now.to_i
+    @client_build.setup_dirs
     @client_build.run
     @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
     @build_busy = false
