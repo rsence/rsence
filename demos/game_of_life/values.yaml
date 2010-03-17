@@ -1,4 +1,0 @@
-:grid:
-  :value_call:
-    :method: get_state
-    :uses_msg: false
