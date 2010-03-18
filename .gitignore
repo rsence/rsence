@@ -1,3 +1,4 @@
+conf/local_conf.yaml
 var/*
 disabled
 .DS_Store
