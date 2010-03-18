@@ -1,5 +1,0 @@
-Generic File System Mounter
-
-DEPENDENCIES:
-Ffiruby-filemagic is used for MIME content-types and such.
-  - Check installation instructions from http://github.com/glongman/ffiruby-filemagic/tree/master
