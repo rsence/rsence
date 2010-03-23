@@ -67,6 +67,23 @@ if ARGV.include?('--config')
   local_config_file_paths.push( argv_conf_file )
 end
 
+def array_merge( target, source )
+  source.each do |item|
+    unless target.include?(item)
+      if item.class == Array
+        sub_arr = []
+        array_merge( sub_arr, item )
+        target.push( sub_arr )
+      elsif item.class == Hash
+        sub_hash = {}
+        hash_merge( sub_hash, item )
+        target.push( sub_hash )
+      else
+        target.push( item )
+      end
+    end
+  end
+end
 def hash_merge( target, source )
   source.each do |key,item|
     if not target.has_key?key or target[key] != item
@@ -110,7 +127,7 @@ class JSBuilder < ClientPkgBuild
     @quiet = false
   end
   def flush
-    @@jscompress.free_indexes
+    @jscompress.free_indexes
   end
   def ensure_client_dir
     dst_dir = @conf[:dst_dir]
