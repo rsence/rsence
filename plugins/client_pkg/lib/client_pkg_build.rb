@@ -217,7 +217,10 @@ class ClientPkgBuild
         warn "js can't get smaller using js; just ignoring jsmin"
       end
     end
-    js = @jscompress.compress( js ) unless @no_obfuscation
+    unless @no_obfuscation
+      @jscompress.build_indexes( js )
+      js = @jscompress.compress( js )
+    end
     return js.strip
   end
   
@@ -552,7 +555,7 @@ class ClientPkgBuild
   end
   
   def flush
-   @jscompress.free_indexes
+    @jscompress.free_indexes
   end
 end
 
