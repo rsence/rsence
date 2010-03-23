@@ -7,19 +7,28 @@
  ##
 
 
-def eval_bundle( params )
+def bundle_loader( params )
   src_path = params[:src_path]
   mod = Module.new do |m|
     @@bundle_path    = params[:bundle_path   ]
     @@bundle_name    = params[:bundle_name   ]
     @@bundle_info    = params[:bundle_info   ]
     @@plugin_manager = params[:plugin_manager]
-    if params[:bundle_info][:inits_self] == false
-      m::module_eval( File.read(src_path) )
-    elsif params[:bundle_info][:reloadable] == false
-      require src_path[0..-4]
-    else
-      load src_path
+    begin
+      if params[:bundle_info][:inits_self] == false
+        m::module_eval( File.read(src_path) )
+      elsif params[:bundle_info][:reloadable] == false
+        require src_path[0..-4]
+      else
+        load src_path
+      end
+    rescue => e
+      @@plugin_manager.plugin_error(
+        e,
+        'BundleLoaderError',
+        "An error occurred while loading the plugin bundle #{@@bundle_name}.",
+        @@bundle_path
+      )
     end
   end
   return mod
@@ -320,7 +329,7 @@ class PluginManager
         load src_path
       end
     else
-      module_ns         = eval_bundle( {
+      module_ns         = bundle_loader( {
         :bundle_path    => bundle_path,
         :bundle_name    => bundle_name,
         :bundle_info    => bundle_info,
