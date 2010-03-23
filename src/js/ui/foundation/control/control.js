@@ -307,54 +307,6 @@ HControl = HView.extend({
   },
   
 /** = Description
-  * Enables the HControl instance, if the enabled flag is true, and disables 
-  * it if enabled is false. A disabled HControl won't respond events. 
-  * Component themes reflect the disabled state typically with 
-  * a dimmer appearance.
-  *
-  * = Parameters
-  * +_flag+:: Boolean; true enables, false disables.
-  *
-  * = Returns
-  * +this+
-  *
-  **/
-  setEnabled: function(_flag) {
-    
-    var _this = this,
-        _elemId = this.elemId,
-        _sysViews = HSystem.views,
-        i = 0,
-        _views = _this.views,
-        _viewsLen = _views.length;
-    
-    // Enable/disable the children first.
-    for (; i < _viewsLen; i++) {
-      _sysViews[_views[i]].setEnabled(_flag);
-    }
-    
-    if (_this.enabled === _flag) {
-      // No change in enabled status, do nothing.
-      return this;
-    }
-    
-    _this.enabled = _flag;
-    
-    if(_flag) {
-      EVENT.reg(_this, _this.events);
-    }
-    else {
-      EVENT.unreg(this);
-    }
-    
-    // Toggle the CSS class: enabled/disabled
-    _this.toggleCSSClass(_elemId, HControl.CSS_ENABLED, _flag);
-    _this.toggleCSSClass(_elemId, HControl.CSS_DISABLED, !_flag);
-    return this;
-  },
-  
-  
-/** = Description
   * Assigns the object a new value range. Used for sliders, steppers etc. Calls
   * setValue with the value given.
   *

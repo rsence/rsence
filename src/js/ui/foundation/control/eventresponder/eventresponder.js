@@ -143,26 +143,75 @@ HEventResponder = HClass.extend({
         keyUp:      false,
         mouseWheel: false,
         textEnter:  false,
-        click:      false
+        click:      false,
+        resize:     false
       }).nu();
     }
     if(_events) {
       this.events.extend( _events );
     }
     this.events.ctrl = this;
-    EVENT.focusOptions[this.elemId] = this.events;
-    var _mmoveStatus = this.events.mouseMove,
-        _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
-    if (_mmoveStatus && (_mmoveIndex===-1)){
-      EVENT.coordListeners.push(this.elemId);
-    }
-    else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
-      EVENT.coordListeners.splice(_mmoveIndex,1);
-    }
-    
+    // EVENT.focusOptions[this.elemId] = this.events;
+    // var _mmoveStatus = this.events.mouseMove,
+    //     _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
+    // if (_mmoveStatus && (_mmoveIndex===-1)){
+    //   EVENT.coordListeners.push(this.elemId);
+    // }
+    // else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
+    //   EVENT.coordListeners.splice(_mmoveIndex,1);
+    // }
+    EVENT.reg( this, this.events);
     return this;
   },
 
+/** = Description
+  * Enables the HControl instance, if the enabled flag is true, and disables 
+  * it if enabled is false. A disabled HControl won't respond events. 
+  * Component themes reflect the disabled state typically with 
+  * a dimmer appearance.
+  *
+  * = Parameters
+  * +_flag+:: Boolean; true enables, false disables.
+  *
+  * = Returns
+  * +this+
+  *
+  **/
+  setEnabled: function(_flag) {
+    
+    var _this = this,
+        _elemId = this.elemId,
+        _sysViews = HSystem.views,
+        i = 0,
+        _views = _this.views,
+        _viewsLen = _views.length;
+    
+    // Enable/disable the children first.
+    for (; i < _viewsLen; i++) {
+      _sysViews[_views[i]].setEnabled(_flag);
+    }
+    
+    if (_this.enabled === _flag) {
+      // No change in enabled status, do nothing.
+      return this;
+    }
+    
+    _this.enabled = _flag;
+    
+    if(_flag) {
+      EVENT.reg(_this, _this.events);
+    }
+    else {
+      EVENT.unreg(this);
+    }
+    
+    // Toggle the CSS class: enabled/disabled
+    _this.toggleCSSClass(_elemId, HControl.CSS_ENABLED, _flag);
+    _this.toggleCSSClass(_elemId, HControl.CSS_DISABLED, !_flag);
+    return this;
+  },
+  
+  
 /** = Description
   * Alternative flag setter for the mouseMove event type. If set to true, 
   * starts listening to mouseDown events when the component has focus.

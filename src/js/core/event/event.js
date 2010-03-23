@@ -415,6 +415,9 @@ EVENT = {
     for (; i < _this.resizeListeners.length; i++) {
       _ctrlID = _this.resizeListeners[i];
       _ctrl = HSystem.views[_ctrlID];
+      if (_ctrl['resize']) {
+        _ctrl.resize();
+      }
       if (_ctrl['onResize']) {
         _ctrl.onResize();
       }
