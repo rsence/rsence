@@ -37,6 +37,15 @@ module PluginUtil
     return File.read( path )
   end
   
+  def yaml_read( path )
+    file_data = file_read( path )
+    if not file_data
+      return false
+    else
+      return YAML.load( file_data )
+    end
+  end
+  
   def method_undefined?( *args )
     puts "Method undefined: #{args.inspect}"
   end
