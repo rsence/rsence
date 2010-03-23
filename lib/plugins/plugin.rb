@@ -313,14 +313,13 @@ class Plugin
     @name    = @@bundle_name
     @path    = @@bundle_path
     @plugins = @@plugin_manager
-    @values  = false
     register unless @info[:inits_self]
   end
   
   # Extend this method to do any initial tasks before other methods are called.
   # By default init_values is called to load the +values.yaml+ configuration file.
   def init
-    init_values
+    @values = init_values
   end
   
   # Extend this method to do any tasks every time the client makes a request.
@@ -393,10 +392,8 @@ private
   #
   # These definitions are accessible as the +@values+ attribute.
   def init_values
-    values_path = File.join( @path, 'values.yaml' )
-    if File.exist?( values_path )
-      @values = YAML.load( File.read( values_path ) )
-    end
+    values_path = compose_plugin_path( 'values.yaml' )
+    return yaml_read( values_path )
   end
   
   # Returns all the names your plugin respond to.
