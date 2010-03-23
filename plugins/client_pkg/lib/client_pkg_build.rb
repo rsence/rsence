@@ -64,13 +64,15 @@ class ClientPkgBuild
   
   def read_gfx( src_path_theme, tgt_hash_gfx )
     gfx_size = 0
-    src_files_gfx = File.join( src_path_theme, 'gfx' )
-    if File.exist?( src_files_gfx )
-      Dir.entries( src_files_gfx ).each do |src_gfx_filename|
-        src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
-        if @gfx_formats.include?( src_file_gfx[-4..-1] )
-          tgt_hash_gfx[src_gfx_filename] = read_file( src_file_gfx )
-          gfx_size += File.stat( src_file_gfx ).size
+    src_files_gfx_path = File.join( src_path_theme, 'gfx' )
+    [ src_path_theme, src_files_gfx_path ].each do |src_files_gfx|
+      if File.exist?( src_files_gfx )
+        Dir.entries( src_files_gfx ).each do |src_gfx_filename|
+          src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
+          if @gfx_formats.include?( src_file_gfx[-4..-1] )
+            tgt_hash_gfx[src_gfx_filename] = read_file( src_file_gfx )
+            gfx_size += File.stat( src_file_gfx ).size
+          end
         end
       end
     end
@@ -87,27 +89,33 @@ class ClientPkgBuild
       } unless @theme_sizes.has_key?( theme_name )
       tgt_hash_theme = @themes[theme_name]
       src_path_theme = File.join( bundle_dir, 'themes', theme_name )
-      src_file_css = File.join( src_path_theme, 'css', bundle_name+'.css' )
-      if File.exist?( src_file_css )
-        ( css_data, gz_css ) = read_css( src_file_css )
-        tgt_hash_css = tgt_hash_theme[:css][bundle_name] = {
-          :data => css_data,
-          :gzip => gz_css
-        }
-        @theme_sizes[   theme_name ][:css][0] += File.stat( src_file_css ).size
-        @theme_sizes[   theme_name ][:css][1] += css_data.size
-        @css_by_theme[  theme_name ][ bundle_name ] = css_data
+      [ File.join( src_path_theme, bundle_name+'.css' ),
+        File.join( src_path_theme, 'css', bundle_name+'.css' )
+      ].each do |src_file_css|
+        if File.exist?( src_file_css )
+          ( css_data, gz_css ) = read_css( src_file_css )
+          tgt_hash_css = tgt_hash_theme[:css][bundle_name] = {
+            :data => css_data,
+            :gzip => gz_css
+          }
+          @theme_sizes[   theme_name ][:css][0] += File.stat( src_file_css ).size
+          @theme_sizes[   theme_name ][:css][1] += css_data.size
+          @css_by_theme[  theme_name ][ bundle_name ] = css_data
+        end
       end
-      src_file_html = File.join( src_path_theme, 'html', bundle_name+'.html' )
-      if File.exist?( src_file_html )
-        ( html_data, gz_html ) = read_html( src_file_html )
-        tgt_hash_html = tgt_hash_theme[:html][bundle_name] = {
-          :data => html_data,
-          :gzip => gz_html
-        }
-        @theme_sizes[   theme_name ][:html][0] += File.stat( src_file_html ).size
-        @theme_sizes[   theme_name ][:html][1] += html_data.size
-        @html_by_theme[ theme_name ][ bundle_name ] = html_data
+      [ File.join( src_path_theme, bundle_name+'.html' ),
+        File.join( src_path_theme, 'html', bundle_name+'.html' )
+      ].each do |src_file_html|
+        if File.exist?( src_file_html )
+          ( html_data, gz_html ) = read_html( src_file_html )
+          tgt_hash_html = tgt_hash_theme[:html][bundle_name] = {
+            :data => html_data,
+            :gzip => gz_html
+          }
+          @theme_sizes[   theme_name ][:html][0] += File.stat( src_file_html ).size
+          @theme_sizes[   theme_name ][:html][1] += html_data.size
+          @html_by_theme[ theme_name ][ bundle_name ] = html_data
+        end
       end
       tgt_hash_gfx = tgt_hash_theme[:gfx]
       gfx_size = read_gfx( src_path_theme, tgt_hash_gfx )
