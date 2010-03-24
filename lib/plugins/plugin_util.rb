@@ -32,7 +32,7 @@ module PluginUtil
   #
   # If the file doesn't exist, it returns +false+.
   def file_read( path )
-    path = compose_plugin_path( path )
+    path = bundle_path( path )
     return false unless File.exist?( path )
     return File.read( path )
   end
@@ -56,7 +56,7 @@ module PluginUtil
   #
   # It returns a success code (+false+ for failure and +true+ for success).
   def file_write( path, data )
-    path = compose_plugin_path( path )
+    path = bundle_path( path )
     begin
       datafile = File.open( path, 'wb' )
       datafile.write( data )
@@ -72,7 +72,7 @@ module PluginUtil
   # Makes a full path using the plugin bundle as the 'local path'.
   # The (optional) +prefix+ is a subdirectory in the bundle,
   # the +suffix+ is the file extension.
-  def compose_plugin_path( path, prefix=false, suffix=false )
+  def bundle_path( path, prefix=false, suffix=false )
     if suffix
       path = "#{path}#{suffix}" unless path.end_with?(suffix)
     end
@@ -84,6 +84,8 @@ module PluginUtil
     end
     return path
   end
+  
+  alias compose_plugin_path bundle_path
   
   # Helper method to return the time formatted according to the HTTP RFC
   def httime(time=false)

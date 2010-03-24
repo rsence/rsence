@@ -177,7 +177,7 @@ class ClientPkgBuild
     @destination_files.each_key do | package_name |
       indexes.push( @destination_files[ package_name ] )
     end
-    @jscompress.build_indexes( indexes.join("\n") )
+    @jscompress.build_indexes( indexes.join("\n") ) unless @no_obfuscation
   end
   
   def pre_convert(jsc_data)
@@ -251,10 +251,10 @@ class ClientPkgBuild
       theme_html_js_arr.push "HThemeManager.useCSS(#{theme_css_template_data.to_json}); "
       theme_html_js = theme_html_js_arr.join('')
       unless @debug
-        unless @no_obfuscation
+        unless @no_whitespace_removal
           theme_html_js = @jsmin.minimize( theme_html_js ) #.strip
         end
-        unless @no_whitespace_removal
+        unless @no_obfuscation
           theme_html_js = pre_convert( theme_html_js )
         end
       end
