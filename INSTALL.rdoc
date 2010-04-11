@@ -1,0 +1,291 @@
+
+This guide is also available in HTML at http://rsence.org/trac/wiki/QuickStart
+
+= Installation
+
+If you already have a working ruby environment, the easiest way to install is just do:
+
+ gem install rsence-deps
+
+
+== 1. System Dependencies
+
+This is a list of system level dependencies. You only need to do this step once.
+
+=== 1.1. Mac OS X
+
+This applies to all version of Mac OS X
+
+* Install a recent version of *XCode* from http://developer.apple.com/mac/ to install the essential development tools.
+* Install the most recent version of *MacPorts* from http://www.macports.org/
+* Proceed with step 1.1.1. *or* 1.1.2. according to your version of Mac OS X
+
+==== 1.1.1. Mac OS X 10.4 and 10.5
+
+This step applies only to Mac OS X 10.4 Tiger and 10.5 Leopard
+
+* Install these packages using Terminal:
+
+  sudo port install ruby +thread_hooks
+  sudo port install rb-rubygems
+  sudo port install sqlite3-ruby
+
+==== 1.1.2 Mac OS X 10.6
+
+This step applies only to Mac OS X 10.6 Snow Leopard
+
+* Install this package using Terminal:
+
+  sudo port install sqlite3
+
+
+==== 1.2. Debian and Ubuntu GNU Linux
+
+This step applies only to Debian, Ubuntu and similar Linux distributions.
+
+* Install these packages:
+
+  sudo apt-get install build-essential ruby-full sqlite3-ruby rubygems rake
+
+
+=== 1.3. Microsoft Windows
+
+Minimal Windows compatibility (Windows has no support for background processes and other UNIX-like features. It works fine for development, but it's not a suggested environment for production.
+Windows compatibility is tested on Windows XP SP3.
+
+Install ruby 1.8.7:
+* http://rubyinstaller.org/download.html
+* Follow included instructions
+* Install the Development Kit (same page)
+  
+Install rmagick first from:
+* Download rmagick-win32 from http://rubyforge.org/projects/rmagick/
+* Follow included instructions
+  
+Install the sqlite3.dll from:
+* Download sqlitedll from http://www.sqlite.org/download.html
+* Extract sqlite3.dll into C:\\ruby\\bin or other directory in PATH
+
+In the command prompt run:
+  gem install rsence-deps
+
+NOTICE:
+* Configure http with either *mongrel* or *webrick*
+* Ensure the session database string doesn't include the "C:" -part (when using sqlite)
+* Only the *run* (foreground) mode is supported; no start, stop, restart etc commands because backgrounding isn't possible on Windows unless configured as a Service
+* Prefix all commands with ruby
+
+==== 1.99. Other UNIX / Linux systems:
+
+This step applies to systems not listed above.
+
+You'll have to figure out how to install the dependencies on your own, but generally this is the list of software you should look for:
+
+* Ruby
+  * Version 1.8.7 or newer
+  * http://ruby-lang.org/
+* Rake
+  * Ruby replacement for make, needed for rubygems
+* Sqlite
+* RubyGems
+* A standard set of compilers and build tools
+
+
+== 2. Ruby Dependencies
+
+The easiest way of installing a suggested set of these ruby gems is:
+  gem install rsence-deps
+
+This is equivalent to:
+  gem install rake highline rack mongrel soap4r rmagick json sequel sqlite3-ruby cssmin randgen jsmin_c jscompress html_min
+
+=== 2.1 Detailed list of ruby dependencies
+
+* *rake*
+  * Ruby build tool
+  * Not necessarily required via ruby gems, if installed via a system-level package
+  * http://rake.rubyforge.org/
+* *rack*
+  * Abstract ruby web server interface
+  * http://rack.rubyforge.org/
+  * Additionally, you need a rack handler, one of the following is suggested:
+    * *unicorn*
+      * Suggested for production deployment
+      * Use Apache, Nginx or similar front-ends for virtualhosts, SSL and such.
+      * http://unicorn.bogomips.org/
+    * *mongrel*
+      * Suggested for development use.
+      * Solid
+      * Pretty fast
+      * Reliable
+      * http://github.com/fauna/mongrel
+    * *thin*
+      * Quick
+      * Not as stable or reliable as mongrel
+      * http://code.macournoyer.com/thin/
+    * *webrick*
+      * No installation needed, part of the standard library
+      * Very slow
+      * Use as last resort
+* *json*
+  * Library for JSON - Ruby - JSON object conversion.
+  * http://flori.github.com/json/
+  * http://json.org/
+* *yaml*
+  * Library for handling YAML files
+  * Part of the standard library of Ruby 1.9 and newer
+  * http://yaml4r.sourceforge.net/doc/
+  * http://www.yaml.org/
+* *jsmin_c*
+  * Javascript whitespace removal library
+* *jscompress*
+  * Javascript compression and obfuscation library
+* *html_min*
+  * HTML whitespace removal library
+* *cssmin*
+  * CSS whitespace removal library
+* *sequel*
+  * http://www.sequel.org/
+  * Additionally, you need a sequel driver for your database
+    * *sqlite3-ruby*
+      * Lightweight SQL library
+    * Other database adapters compatible with sequel are fine. Just configure your setup accordingly.
+* *highline*
+  * Not needed, if you configure manually.
+* soap4r
+  * Optional, but required if you create SOAP services using the soap plugin
+  * Not recommended
+* rmagick
+  * Optional, but suggested
+
+
+== 3. Setting up RSence
+
+=== 3.1. Download RSence
+
+There are two main options: *release* and *development*. Choose one of these:
+* *release*:
+  * Latest stable release version.
+  * Strongly suggested for development and production use.
+  * Install as a gem:
+    gem install rsence
+  * *or* Manually download from:
+    * http://rsence.org/
+* *development*:
+  * The latest stable bleeding-edge version.
+  * Clone the GIT repository on github:
+    * http://github.com/rsence/rsence
+
+=== 3.2. Setting up
+
+==== 3.2.1. Start RSence in the development mode with logs printed to the standard output:
+  bin/run -d --log-fg
+
+==== 3.2.2. Configuration
+When starting up RSence for the first time, a configuration wizard is run. Just press return on the questions to use the default configuration. The default option is captilized: pressing return at a "Y/n" prompt will select "Y"
+
+
+==== 3.3.3. Open a web browser
+* By defalt, the RSence listens on port 8001
+* To test it, open the address http://127.0.0.1:8001/
+* If everything works:
+  * Currently: An empty, white page without error messages is a sign of success.
+  * FIX 1:
+    * A welcome message is displayed
+    * Disables itself by touching a "disabled" file in its own directory.
+    * Implement the standard "runonce" plugin.
+  * FIX 2:
+    * A setup review / configuration plugin
+    * Implement the standard "setup" plugin.
+
+==== 3.3.4. Stop the server
+Just press CTRL-C in the terminal.
+
+==== 3.3.5. Manual configuration
+Edit the conf/local_conf.yaml file. To see all available options at their default state, see conf/default_conf.yaml
+
+
+== 4. Controlling the process
+For development purposes (and the only option on Microsoft Windows):
+
+Starting in foreground mode:
+  bin/run
+
+Starting in foreground mode with debug mode:
+  bin/run -d
+
+Starting in forefround mode with debug and logging in foreground:
+  bin/run -d --log-fg
+
+Stopping in foreground mode: Press CTRL-C
+
+*NOTE: on Microsoft Windows:*
+* Either just double-click the *run.rb* file in the bin directory or prefix all commands in the command prompt with *ruby*
+* No backgrounding is supported, unless *run.rb* is configured as a Service.
+
+=== 4.1. Starting the server in background mode
+In the background mode, standard output and standard errors are logged in the var/log directory and the pidfile is written in the var/pid directory.
+  bin/start
+
+=== 4.2. Stopping the server in background mode
+  bin/stop
+
+=== 4.3. Checking the server status in background mode
+  bin/status
+
+=== 4.4. Restarting the server in background mode
+  bin/restart
+
+=== 4.5. Re-setting the sessions
+This is needed only, if the session storage becomes corrupt or you just want to start with a clean set of sessions.
+Just apply the --reset-sessions option after the run, start or restart command in the command prompt.
+  bin/restart --reset-sessions
+
+*NOTE: All the sessions currently connected clients are invalidated and need to reload the page*
+
+=== 4.6. Running in development mode
+Just apply the -d option after the *run*, *start* or *restart* command in the command prompt.
+  bin/restart -d
+
+==== 4.6.1. What does development mode do?
+* Plugins are reloaded automatically in the background, if they are changed, disabled, added or removed.
+* Javascript packages are automatically re-built, if they are changed.
+* Verbose logging
+
+=== 4.7. Other command-line options
+Just run this command to see the available options:
+  bin/help
+
+=== 4.8. Running RSence using rackup
+  rackup conf/config.ru
+
+=== 4.9. Running RSence using unicorn
+  unicorn conf/config.ru -c conf/unicorn.conf
+
+== 5. Plugin Deployment
+
+If you followed, the previous steps, you are ready to deploy some software.
+* In development mode (see 4.6.), plugins are (re/un)loaded when:
+  * Adding a new plugin into the plugins directory
+  * Removing a plugin from the plugins directory
+  * Disabling a plugin by creating a file or folder named "disabled" in the plugin's bundle directory
+  * Enabling a plugin by removing a file or folder named "disabled" in the plugin's bundle directory
+  * The plugin's ruby or yaml files are made.
+
+* In production mode, a server restart is required (see 4.4.)
+
+* By default, the "plugins" directory in the "rsence" directory is the only plugin directory.
+  * Edit the configuration file to enable other directories.
+* Sample plugins are available at http://rsence.org/
+
+
+=== 5.1. Deploying plugins
+Copy or move a plugin bundle directory into the "plugins" directory.
+
+=== 5.2. Un-deploying plugins
+Move a plugin bundle out of the the "plugins" directory.
+
+=== 5.3. Temporarily disabling a plugin
+Create an empty file named "disabled" in the plugin bundle to disable it.
+  touch rsence/plugins/legacy/disabled
+
