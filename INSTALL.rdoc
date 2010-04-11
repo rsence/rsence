@@ -274,7 +274,7 @@ If you followed, the previous steps, you are ready to deploy some software.
   * Removing a plugin from the plugins directory
   * Disabling a plugin by creating a file or folder named "disabled" in the plugin's bundle directory
   * Enabling a plugin by removing a file or folder named "disabled" in the plugin's bundle directory
-  * The plugin's ruby or yaml files are made.
+  * The plugin's ruby or yaml files are changed.
 
 * In production mode, a server restart is required (see 4.4.)
 
