@@ -13,8 +13,7 @@ require 'values/hvalue'
 # RandomGenerator produces unique, random values
 require 'randgen'
 
-module Riassence
-module Server
+module RSence
 
 ## ValueManager provides automagic, transparent syncronization of values between client and server.
 class ValueManager
@@ -24,7 +23,7 @@ class ValueManager
   # Initializes the member value handler objects.
   def initialize
     
-    @config = ::Riassence::Server.config[:session_conf]
+    @config = ::RSence.config[:session_conf]
     
     ## 'Unique' Random String generator for HValue keys (passed on to the client)
     @randgen = RandGen.new( @config[:key_length] )
@@ -150,4 +149,4 @@ end
 
 
 end
-end
+

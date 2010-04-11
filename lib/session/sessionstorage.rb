@@ -12,8 +12,8 @@ require 'sequel'
 ## HValue class for session restoration
 require 'values/hvalue'
 
-module Riassence
-module Server
+
+module RSence
 
 =begin
 SessionStorage doesn't do anything by itself, it's simply
@@ -47,9 +47,9 @@ class SessionStorage
     }
     
     ## Disposable keys (new ses_key each request)
-    @config = ::Riassence::Server.config[:session_conf]
+    @config = ::RSence.config[:session_conf]
     
-    @db_uri = ::Riassence::Server.config[:database][:ses_db]
+    @db_uri = ::RSence.config[:database][:ses_db]
     
     db_init
     
@@ -310,5 +310,5 @@ class SessionStorage
 end
 
 end
-end
+
 

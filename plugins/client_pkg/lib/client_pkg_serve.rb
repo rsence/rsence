@@ -1,7 +1,7 @@
 
 module ClientPkgServe
   def broker_urls
-    ::Riassence::Server.config[:broker_urls]
+    ::RSence.config[:broker_urls]
   end
   
   def match( uri, request_type )
@@ -20,15 +20,15 @@ module ClientPkgServe
     response['Date'] = httime( Time.now )
     
     # Controls caching with headers based on the configuration
-    if ::Riassence::Server.config[:cache_maximize]
-      response['Expires'] = httime(Time.now+::Riassence::Server.config[:cache_expire])
+    if ::RSence.config[:cache_maximize]
+      response['Expires'] = httime(Time.now+::RSence.config[:cache_expire])
     
     else
       response['Cache-Control'] = 'no-cache'
     end
     
     support_gzip = (request.header.has_key?('accept-encoding') and request.header['accept-encoding'].include?('gzip'))
-    support_gzip = false if ::Riassence::Server.config[:no_gzip]
+    support_gzip = false if ::RSence.config[:no_gzip]
     if request.header.has_key?('user-agent')
       ua = request.header['user-agent']
       is_symbian = ua.include?("SymbianOS")
@@ -38,7 +38,7 @@ module ClientPkgServe
     end
     
     ## Split path into an array for determining what to serve
-    request_uri = '/'+request.path.match( /^#{::Riassence::Server.config[:broker_urls][:h]}(.*)$/ )[1]
+    request_uri = '/'+request.path.match( /^#{::RSence.config[:broker_urls][:h]}(.*)$/ )[1]
     
     request_path = request_uri.split( '/' )
     

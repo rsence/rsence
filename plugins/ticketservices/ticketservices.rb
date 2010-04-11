@@ -56,7 +56,7 @@ class TicketServe < Servlet
   include TicketService::ObjBlob
   
   def broker_urls
-    ::Riassence::Server.config[:broker_urls]
+    ::RSence.config[:broker_urls]
   end
   
   def match( uri, request_type )
@@ -182,7 +182,7 @@ class TicketServe < Servlet
       :ses_ids => {}
     }
     
-    @db = Sequel.connect( ::Riassence::Server.config[:database][:ses_db] )
+    @db = Sequel.connect( ::RSence.config[:database][:ses_db] )
     
   end
   

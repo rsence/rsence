@@ -12,8 +12,8 @@ class Main < Plugin
   
   def init
     super
-    @conf  = ::Riassence::Server.config[:index_html]
-    @bconf = ::Riassence::Server.config[:broker_urls]
+    @conf  = ::RSence.config[:index_html]
+    @bconf = ::RSence.config[:broker_urls]
   end
   
   def match( uri, request_type )
@@ -104,7 +104,7 @@ class Main < Plugin
     
     msg.reply read_js( 'riassence_ns' )
 
-    msg.reply("ELEM.setStyle(0,'background-color','#{::Riassence::Server.config[:main_plugin][:bg_color]}');")
+    msg.reply("ELEM.setStyle(0,'background-color','#{::RSence.config[:main_plugin][:bg_color]}');")
     
     ## url_responder is bound in the client-space
     ## to tell the server its status by updating its value
@@ -116,7 +116,7 @@ class Main < Plugin
     # 5000ms = 5secs
     
     client_time_id = ses[:client_time].val_id.to_json
-    poll_interval = ::Riassence::Server.config[:main_plugin][:server_poll_interval]
+    poll_interval = ::RSence.config[:main_plugin][:server_poll_interval]
     msg.reply "sesWatcher = COMM.SessionWatcher.nu(#{poll_interval},#{client_time_id});"
     
     
@@ -200,7 +200,7 @@ class Main < Plugin
   # Starts polling.
   def start_polling( msg, ses )
     if ses[:poll_mode] == false
-      msg.reply( "COMM.Transporter.poll(#{::Riassence::Server.config[:transporter_conf][:client_poll_priority]});" )
+      msg.reply( "COMM.Transporter.poll(#{::RSence.config[:transporter_conf][:client_poll_priority]});" )
       ses[:poll_mode] = true
     end
   end

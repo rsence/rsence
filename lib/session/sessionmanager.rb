@@ -19,8 +19,7 @@ require 'randgen'
 ## SessionStorage is the superclass of SessionManager
 require 'session/sessionstorage'
 
-module Riassence
-module Server
+module RSence
 
 require 'digest/sha1'
 
@@ -244,7 +243,7 @@ class SessionManager < SessionStorage
   def stop_client_with_message( msg,
                                 title = 'Unknown Issue',
                                 descr = 'No issue description given.',
-                                uri = ::Riassence::Server.config[:index_html][:respond_address] )
+                                uri = ::RSence.config[:index_html][:respond_address] )
     msg.error_msg( [
       "jsLoader.load('default_theme');",
       "jsLoader.load('controls');",
@@ -391,7 +390,7 @@ class SessionManager < SessionStorage
     if @config[:trust_cookies]
       ses_cookie_path    = '/'
     else
-      ses_cookie_path    = ::Riassence::Server.config[:broker_urls][:hello]
+      ses_cookie_path    = ::RSence.config[:broker_urls][:hello]
     end
     
     ## Formats the cookie to string
@@ -488,6 +487,5 @@ class SessionManager < SessionStorage
 end
 
 
-end
 end
 

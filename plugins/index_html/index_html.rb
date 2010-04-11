@@ -14,7 +14,7 @@
 class IndexHtmlPlugin < ServletPlugin
   
   def match( uri, method )
-    if uri == ::Riassence::Server.config[:index_html][:respond_address] and method == :get
+    if uri == ::RSence.config[:index_html][:respond_address] and method == :get
       return true
     else
       return false
@@ -27,12 +27,12 @@ class IndexHtmlPlugin < ServletPlugin
   
   def init
     @randgen = RandGen.new( 40 )
-    ::Riassence::Server.config[:index_html][:instance] = self
+    ::RSence.config[:index_html][:instance] = self
   end
   
   def open
     #@deps = []
-    @index_html_src = file_read( ::Riassence::Server.config[:index_html][:index_tmpl] )
+    @index_html_src = file_read( ::RSence.config[:index_html][:index_tmpl] )
     # loading_gif = File.read( File.join( @path, 'img/loading.gif' ) )
     # @loading_gif_id = @plugins[:ticketservices].serve_rsrc( loading_gif, 'image/gif' )
     # riassence_gif = File.read( File.join( @path, 'img/riassence.gif' ) )
@@ -49,17 +49,17 @@ class IndexHtmlPlugin < ServletPlugin
     
     index_html = @index_html_src.clone
     
-    index_html.gsub!('__DEFAULT_TITLE__',::Riassence::Server.config[:index_html][:title])
+    index_html.gsub!('__DEFAULT_TITLE__',::RSence.config[:index_html][:title])
     # @index_html.gsub!('__LOADING_GIF_ID__',@loading_gif_id)
     # @index_html.gsub!('__RIASSENCE_GIF_ID__',@riassence_gif_id)
     client_rev = @plugins[:client_pkg].client_cache.client_rev
     index_html.gsub!('__CLIENT_REV__',client_rev)
-    index_html.gsub!('__CLIENT_BASE__',File.join(::Riassence::Server.config[:broker_urls][:h],client_rev))
-    index_html.gsub!('__CLIENT_HELLO__',::Riassence::Server.config[:broker_urls][:hello])
-    index_html.gsub!('__NOSCRIPT__',::Riassence::Server.config[:index_html][:noscript])
+    index_html.gsub!('__CLIENT_BASE__',File.join(::RSence.config[:broker_urls][:h],client_rev))
+    index_html.gsub!('__CLIENT_HELLO__',::RSence.config[:broker_urls][:hello])
+    index_html.gsub!('__NOSCRIPT__',::RSence.config[:index_html][:noscript])
     
     deps_src = ''
-    ::Riassence::Server.config[:index_html][:deps].each do |dep|
+    ::RSence.config[:index_html][:deps].each do |dep|
       deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
     end
     index_html.gsub!('__SCRIPT_DEPS__',deps_src)
@@ -97,7 +97,7 @@ class IndexHtmlPlugin < ServletPlugin
       )
       buffer += msg.value_buffer
       msg.buffer.each do |buffer_item|
-        # if ::Riassence::Server.config[:]
+        # if ::RSence.config[:]
         # buffer.push( "qP(function(){#{buffer_item};console.log(#{buffer_item.to_json});});")
         buffer.push( "qP(function(){#{buffer_item};});")
       end
@@ -121,7 +121,7 @@ class IndexHtmlPlugin < ServletPlugin
     
     support_gzip = (request.header.has_key?('accept-encoding') and \
                     request.header['accept-encoding'].include?('gzip')) \
-                    and not ::Riassence::Server.config[:no_gzip]
+                    and not ::RSence.config[:no_gzip]
     
     response.status = 200
     

@@ -16,7 +16,7 @@ require 'rubygems'
 require 'rack'
 
 # Loads the selected web-server (default is 'thin')
-require Riassence::Server.config[:http_server][:rack_require]
+require RSence.config[:http_server][:rack_require]
 
 # Methods that return rack the selected handler
 def rack_webrick_handler;  Rack::Handler::WEBrick;  end
@@ -27,7 +27,7 @@ def rack_unicorn_handler;  Rack::Handler::Unicorn;  end
 def rack_rainbows_handler; Rack::Handler::Rainbows; end
 
 # Selects the handler for Rack
-Riassence::Server.config[:http_server][:rack_handler] = self.method({
+RSence.config[:http_server][:rack_handler] = self.method({
   'fuzed'    => :rack_fuzed_handler,
   'webrick'  => :rack_webrick_handler,
   'ebb'      => :rack_ebb_handler,
@@ -35,10 +35,10 @@ Riassence::Server.config[:http_server][:rack_handler] = self.method({
   'mongrel'  => :rack_mongrel_handler,
   'unicorn'  => :rack_unicorn_handler,
   'rainbows' => :rack_rainbows_handler
-}[Riassence::Server.config[:http_server][:rack_require]]).call
+}[RSence.config[:http_server][:rack_require]]).call
 
 # Debug mode switch. The debug mode is intended for developers, not production.
-$DEBUG_MODE  = Riassence::Server.config[:debug_mode]
+$DEBUG_MODE  = RSence.config[:debug_mode]
 
 # Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
 require 'transporter/transporter'
@@ -47,8 +47,7 @@ require 'transporter/transporter'
 require 'http/broker'
 
 
-module Riassence
-module Server
+module RSence
 
 # adapted from:
 # http://snippets.dzone.com/posts/show/2265
@@ -59,10 +58,10 @@ module Daemon
   
   class Base
     def self.pid_fn
-      Riassence::Server.config[:daemon][:pid_fn]
+      RSence.config[:daemon][:pid_fn]
     end
     def self.log_fn
-      Riassence::Server.config[:daemon][:log_fn]
+      RSence.config[:daemon][:log_fn]
     end
     def self.daemonize
       Controller.daemonize(self)
@@ -265,9 +264,9 @@ class HTTPDaemon < Daemon::Base
     # This is the main http handler instance:
     @broker = Broker.start(
       @transporter,
-      Riassence::Server.config[:http_server][:rack_handler],
-      Riassence::Server.config[:http_server][:bind_address],
-      Riassence::Server.config[:http_server][:port]
+      RSence.config[:http_server][:rack_handler],
+      RSence.config[:http_server][:bind_address],
+      RSence.config[:http_server][:port]
     )
     
     yield @broker if block_given?
@@ -284,6 +283,5 @@ class HTTPDaemon < Daemon::Base
   end
 end
 
-end
 end
 

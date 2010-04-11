@@ -18,7 +18,7 @@
 #   @gui.init( msg, params )
 class GUIParser
   
-  include ::Riassence::Server
+  include ::RSence
   
   # Use this method to send the client all commands required to construct the GUI Tree using JSONRenderer.
   # = Parameters

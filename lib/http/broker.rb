@@ -10,8 +10,7 @@
 
 
 
-module Riassence
-module Server
+module RSence
 
 require 'rubygems'
 require 'rack'
@@ -53,7 +52,7 @@ class Broker
   
   def self.start( transporter, handler, host, port)
     @@transporter = transporter
-    conf = ::Riassence::Server.config[:http_server][:latency]
+    conf = ::RSence.config[:http_server][:latency]
     if conf == 0
       @@ping_sim = false
     else
@@ -100,5 +99,4 @@ class Broker
   
 end
 
-end
 end

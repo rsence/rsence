@@ -20,9 +20,7 @@ def load_legacy( local_config_file_path )
   require local_config_file_path[0..-4]
 end
 
-module Riassence
-module Server
-
+module RSence
 
 class Configuration
   def array_merge( target, source )
@@ -217,7 +215,6 @@ def self.config
   @@config
 end
 
-end
 end
 
 

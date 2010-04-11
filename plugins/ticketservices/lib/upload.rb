@@ -49,7 +49,7 @@ module Upload
   
   def upload(request,response)
     
-    ticket_id = req.unparsed_uri.match(/^#{::Riassence::Server.config[:broker_urls][:u]}(.*)$/)[1]
+    ticket_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:u]}(.*)$/)[1]
     value_id  = request.query['value_id']
     
     if not @upload_slots[:by_id].has_key?(ticket_id)

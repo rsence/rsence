@@ -7,8 +7,7 @@
  ##
 
 
-module Riassence
-module Server
+module RSence
 
 
 ## HValue is the server-side representation of the client's HValue object.
@@ -319,7 +318,6 @@ class UploadValue < HValue
   end
 end
 
-end
 end
 
 

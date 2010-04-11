@@ -11,11 +11,10 @@
 
 require 'http/soap/hsoaplet'
 
-module Riassence
-module Server
+module RSence
 
 =begin
- Riassence::Server::SOAP::SOAPServe provides Riassence-specific SOAP access to Riassence::Server::Pluginmanager
+ RSence::SOAP::SOAPServe provides Riassence-specific SOAP access to RSence::Pluginmanager
 =end
 module SOAP
   class SOAPServe < ::SOAP::RPC::HSoaplet
@@ -23,5 +22,4 @@ module SOAP
   end
 end
 
-end
 end

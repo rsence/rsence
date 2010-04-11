@@ -6,8 +6,7 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module Riassence
-module Server
+module RSence
 require 'util/gzstring'
 
 ## Due to the single instance architecture of +Plugin+, instances of Message 
@@ -97,7 +96,7 @@ class Message
   # Message is initialized with a valid +Request+ and +Response+ objects. 
   def initialize( transporter, request, response, options )
     
-    @config = ::Riassence::Server.config
+    @config = ::RSence.config
     
     @request  = request
     @response_success = false
@@ -289,5 +288,4 @@ class Message
   
 end
 
-end
 end

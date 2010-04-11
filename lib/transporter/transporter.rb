@@ -8,8 +8,8 @@
  ##
  #++
 
-module Riassence
-module Server
+
+module RSence
 
 =begin
   Transporter is the counterpart to the client's HTransporter xhr engine.
@@ -29,11 +29,11 @@ class Transporter
   attr_accessor :valuemanager, :sessions, :plugins
   
   def initialize
-    @config = ::Riassence::Server.config[:transporter_conf]
+    @config = ::RSence.config[:transporter_conf]
     
     @valuemanager = ValueManager.new
     @sessions = SessionManager.new( self )
-    @plugins = PluginManager.new( self, ::Riassence::Server.config[:plugin_paths] )
+    @plugins = PluginManager.new( self, ::RSence.config[:plugin_paths] )
     
     
     # Used by:
@@ -43,7 +43,7 @@ class Transporter
   end
   
   def servlet( request_type, request, response )
-    broker_urls = ::Riassence::Server.config[:broker_urls]
+    broker_urls = ::RSence.config[:broker_urls]
     uri = request.fullpath
     # if $DEBUG_MODE and uri == $config[:index_html][:respond_address] and request_type == :get
     #   unless ARGV.include?('-no-rescan') or ARGV.include?('--no-rescan')
@@ -117,7 +117,7 @@ class Transporter
   ## handles incoming XMLHttpRequests from the browser
   def xhr(request, response, options = { :cookies => false, :servlet => false } )
     
-    session_conf = ::Riassence::Server.config[:session_conf]
+    session_conf = ::RSence.config[:session_conf]
     
     options[:cookies] = false unless options.has_key?(:cookies)
     
@@ -144,7 +144,7 @@ class Transporter
       # If cookies are true, it means the url base needs to
       # be changed from /hello to /x to prevent further cookie juggling.
       if options[:cookies] and not options[:servlet]
-        msg.reply("COMM.Transporter.url=#{::Riassence::Server.config[:broker_urls][:x].to_json};")
+        msg.reply("COMM.Transporter.url=#{::RSence.config[:broker_urls][:x].to_json};")
       end
       
       # Appends a 'new session.' message for new sessions in $DEBUG_MODE:
@@ -252,5 +252,4 @@ class Transporter
   
 end
 
-end
 end

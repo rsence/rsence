@@ -12,8 +12,7 @@
 require 'rubygems'
 require 'rack'
 
-module Riassence
-module Server
+module RSence
 
 class Request < Rack::Request
   attr_reader :header, :path, :query
@@ -67,5 +66,4 @@ class Request < Rack::Request
 end
 
 
-end
 end

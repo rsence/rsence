@@ -9,8 +9,7 @@
  #++
 
 
-module Riassence
-module Server
+module RSence
 
 class ResponseBody < Array
   def +(body_data)
@@ -61,4 +60,4 @@ class Response
 end
 
 end
-end
+

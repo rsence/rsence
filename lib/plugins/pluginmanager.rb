@@ -34,8 +34,8 @@ def bundle_loader( params )
   return mod
 end
 
-module Riassence
-module Server
+
+module RSence
 
 # Contains the PluginUtil module which has common methods for the bundle classes
 require 'plugins/plugin_util'
@@ -64,7 +64,7 @@ require 'plugins/servlet'
 ##
 ## = Usage
 ## plugin_paths = [ 'plugins', '/home/me/rsence/plugins' ]
-## myPluginManager = Riassence::Server::PluginManager.new( plugin_paths )
+## myPluginManager = RSence::PluginManager.new( plugin_paths )
 ##
 class PluginManager
   
@@ -313,6 +313,8 @@ class PluginManager
     bundle_src = File.read( bundle_file_path )
     
     if RUBY_VERSION.to_f >= 1.9
+      puts "ruby 1.9.x"
+      puts "ruby version: #{RUBY_VERSION.inspect}"
       src_path = bundle_file_path
       plugin_manager = self
       module_ns = Module.new do |m|
@@ -351,6 +353,7 @@ class PluginManager
               module_const.new
               break
             elsif ancestor.to_s == "Plugin"
+              puts "bundle_name: #{bundle_name}"
               module_const.new.register( bundle_name )
               break
             elsif ancestor.to_s == "Object"
@@ -422,7 +425,7 @@ class PluginManager
       rescue => e
         plugin_error(
           e,
-          "Riassence::Server::PluginManager.match_servlet_uri",
+          "RSence::PluginManager.match_servlet_uri",
           "servlet: #{servlet_name.inspect}, req_type: #{req_type.inspect}, uri: #{uri.inspect}",
           servlet_name
         )
@@ -490,7 +493,7 @@ class PluginManager
       rescue => e
         plugin_error(
           e,
-          "Riassence::Server::PluginManager.match_servlet",
+          "RSence::PluginManager.match_servlet",
           "servlet_name: #{servlet_name.inspect}, req_type: #{req_type.inspect}",
           servlet_name
         )
@@ -502,5 +505,4 @@ class PluginManager
   
 end
 
-end
 end

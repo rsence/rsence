@@ -1,7 +1,7 @@
 
 module PluginUtil
   
-  include Riassence::Server
+  include RSence
 
   # Extend to do any initial configuration. Not doing anything by default.
   def init

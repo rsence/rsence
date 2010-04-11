@@ -3,8 +3,13 @@ class LegacyPlugin < Servlet
   def init
     super
     $PLUGINS = @plugins
-    $config  = ::Riassence::Server.config
+    $config  = ::RSence.config
     $TICKETSERVE = @plugins[:ticketservices]
   end
 end
 
+module ::Riassence
+  module Server
+    include RSence
+  end
+end

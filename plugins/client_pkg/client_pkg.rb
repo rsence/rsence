@@ -172,7 +172,7 @@ class ClientPkg < Servlet
     @build_logger = BuildLogger.new( File.join(@path,'log','build_log') )
     @build_logger.open
     
-    @client_build = ClientPkgBuild.new( ::Riassence::Server.config[:client_pkg], @build_logger )
+    @client_build = ClientPkgBuild.new( ::RSence.config[:client_pkg], @build_logger )
     @client_cache = ClientPkgCache.new
     
     @build_busy = false

@@ -44,7 +44,7 @@ module Common
       # checks, that the format is a supported image type
       unless @content_types.keys.include?( format )
         puts "ImgServe.serve: invalid format (#{format.inspect})" if $DEBUG_MODE
-        return File.join(::Riassence::Server.config[:broker_urls][:i],'invalid.gif')
+        return File.join(::RSence.config[:broker_urls][:i],'invalid.gif')
       end
       
       # changes the format to GIF for IE6
@@ -55,7 +55,7 @@ module Common
       storage_arr = [format,0,content,msg.ses_id]
       
       # return an uri that will respond to the data
-      uri = File.join(::Riassence::Server.config[:broker_urls][:i],"#{ticket_id}.#{format.downcase}")
+      uri = File.join(::RSence.config[:broker_urls][:i],"#{ticket_id}.#{format.downcase}")
     
     # serve file
     elsif type == :file
@@ -69,7 +69,7 @@ module Common
       storage_hash = @files
       storage_arr = [content_type,content_size,content,msg.ses_id,filename]
       
-      uri = File.join(::Riassence::Server.config[:broker_urls][:f],ticket_id)
+      uri = File.join(::RSence.config[:broker_urls][:f],ticket_id)
     end
     
     # makes sure, that the storage array has a sub-array for sessions (to aid session-based cleanup)
@@ -147,7 +147,7 @@ module Common
     
     if type == :img
       
-      img_id = req.unparsed_uri.match(/^#{::Riassence::Server.config[:broker_urls][:i]}(.*)$/)[1]
+      img_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:i]}(.*)$/)[1]
       
       if img_id == nil
         puts "ImgServe.fetch_img: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
@@ -198,7 +198,7 @@ module Common
       
     
     elsif type == :file
-      file_id = req.unparsed_uri.match(/^#{::Riassence::Server.config[:broker_urls][:f]}(.*)$/)[1]
+      file_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:f]}(.*)$/)[1]
       if file_id == nil
         puts "fileServe.fetch_file: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         file_id = 'invalid.gif'
@@ -229,7 +229,7 @@ module Common
       end
     
     elsif type == :blobobj
-      blobobj_id = req.unparsed_uri.match(/^#{::Riassence::Server.config[:broker_urls][:b]}(.*)$/)[1]
+      blobobj_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:b]}(.*)$/)[1]
       if blobobj_id == nil
         puts "fileServe.fetch_blobobj: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         blobobj_id = 'invalid.gif'
@@ -264,7 +264,7 @@ module Common
       end
       
     elsif type == :rsrc
-      rsrc_id = req.unparsed_uri.match(/^#{::Riassence::Server.config[:broker_urls][:d]}(.*)$/)[1]
+      rsrc_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:d]}(.*)$/)[1]
       if rsrc_id == nil
         puts "rsrcServe.fetch_rsrc: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
         rsrc_id = 'invalid.gif'
@@ -290,7 +290,7 @@ module Common
     res['Content-Length'] = content_size
     
     res['Date'] = httime( Time.now )
-    res['Expires'] = httime(Time.now+::Riassence::Server.config[:cache_expire])
+    res['Expires'] = httime(Time.now+::RSence.config[:cache_expire])
     
     res.body = content
     
