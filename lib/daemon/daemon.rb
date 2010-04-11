@@ -70,6 +70,8 @@ module Daemon
   
   module PidFile
     def self.store(daemon, pid)
+      dir_path_pid = File.split( daemon.pid_fn )[0]
+      FileUtils.mkdir_p( dir_path_pid ) unless File.exists? dir_path_pid
       File.open(daemon.pid_fn, 'w') {|f| f << pid}
     end
     def self.recall(daemon)
@@ -99,6 +101,10 @@ module Daemon
     end
     
     def self.open_log( outpath, errpath )
+      dir_path_out = File.split( outpath )[0]
+      FileUtils.mkdir_p( dir_path_out ) unless File.exists? dir_path_out
+      dir_path_err = File.split( outpath )[0]
+      FileUtils.mkdir_p( dir_path_err ) unless File.exists? dir_path_err
       if File.exist?( outpath )
         STDOUT.reopen( outpath, "a" )
       else
