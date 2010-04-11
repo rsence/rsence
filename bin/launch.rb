@@ -116,5 +116,5 @@ $LOAD_PATH << File.join( SERVER_PATH, 'lib' )
 
 ## Riassence Daemon controls
 require 'daemon/daemon'
-Riassence::Server::HTTPDaemon.daemonize
+RSence::HTTPDaemon.daemonize
 
