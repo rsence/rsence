@@ -1,11 +1,12 @@
 
-This guide is also available in HTML at http://rsence.org/trac/wiki/QuickStart
-
 = Installation
 
-If you already have a working ruby environment, the easiest way to install is just do:
+If you already have a working ruby environment and know what to do, the easiest way is just:
 
  gem install rsence-deps
+ gem install rsence
+
+Otherwise, follow these instructions:
 
 
 == 1. System Dependencies
@@ -48,23 +49,23 @@ This step applies only to Debian, Ubuntu and similar Linux distributions.
   sudo apt-get install build-essential ruby-full sqlite3-ruby rubygems rake
 
 
-=== 1.3. Microsoft Windows
+==== 1.3. Microsoft Windows
 
 Minimal Windows compatibility (Windows has no support for background processes and other UNIX-like features. It works fine for development, but it's not a suggested environment for production.
 Windows compatibility is tested on Windows XP SP3.
 
 Install ruby 1.8.7:
-* http://rubyinstaller.org/download.html
+* Download *ruby 1.8.7* (or newer) from http://rubyinstaller.org/download.html
 * Follow included instructions
-* Install the Development Kit (same page)
+* Install the *Development Kit* (same page)
   
 Install rmagick first from:
-* Download rmagick-win32 from http://rubyforge.org/projects/rmagick/
+* Download *rmagick-win32* from http://rubyforge.org/projects/rmagick/
 * Follow included instructions
   
-Install the sqlite3.dll from:
-* Download sqlitedll from http://www.sqlite.org/download.html
-* Extract sqlite3.dll into C:\\ruby\\bin or other directory in PATH
+Install the *sqlite3.dll* from:
+* Download *sqlitedll* from http://www.sqlite.org/download.html
+* Extract *sqlite3.dll* into C:\\ruby\\bin or other directory in PATH
 
 In the command prompt run:
   gem install rsence-deps
@@ -86,9 +87,12 @@ You'll have to figure out how to install the dependencies on your own, but gener
   * http://ruby-lang.org/
 * Rake
   * Ruby replacement for make, needed for rubygems
-* Sqlite
+* Sqlite3
+  * Simple SQL library
 * RubyGems
+  * Ruby package manager
 * A standard set of compilers and build tools
+  * gcc, make etc.
 
 
 == 2. Ruby Dependencies
@@ -111,7 +115,7 @@ This is equivalent to:
   * Additionally, you need a rack handler, one of the following is suggested:
     * *unicorn*
       * Suggested for production deployment
-      * Use Apache, Nginx or similar front-ends for virtualhosts, SSL and such.
+      * Use Apache, Nginx or similar front-ends for virtual hosts, SSL and such.
       * http://unicorn.bogomips.org/
     * *mongrel*
       * Suggested for development use.
@@ -182,11 +186,11 @@ There are two main options: *release* and *development*. Choose one of these:
   bin/run -d --log-fg
 
 ==== 3.2.2. Configuration
-When starting up RSence for the first time, a configuration wizard is run. Just press return on the questions to use the default configuration. The default option is captilized: pressing return at a "Y/n" prompt will select "Y"
+When starting up RSence for the first time, a configuration wizard is run. Just press return on the questions to use the default configuration. The default option is upper case: pressing return at a "Y/n" prompt will select "Y"
 
 
 ==== 3.3.3. Open a web browser
-* By defalt, the RSence listens on port 8001
+* By default, the RSence listens on port 8001
 * To test it, open the address http://127.0.0.1:8001/
 * If everything works:
   * Currently: An empty, white page without error messages is a sign of success.
@@ -214,7 +218,7 @@ Starting in foreground mode:
 Starting in foreground mode with debug mode:
   bin/run -d
 
-Starting in forefround mode with debug and logging in foreground:
+Starting in foreground mode with debug and logging in foreground:
   bin/run -d --log-fg
 
 Stopping in foreground mode: Press CTRL-C
