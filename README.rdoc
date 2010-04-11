@@ -5,31 +5,13 @@ http://rsence.org/
 
 === Introduction
 
-RSence is a Rich Internet Application (RIA) Framework with a focus on using the server for backend tasks and the client for user interfaces and the interaction layer. Everything in the middle is abstracted as far as possible. Essentially all difficult, error-prone and boring tasks are automated.
+RSence is primarily a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies. RSence uses the server for backend tasks and the client to provide responsive user interfaces. The server is a highly optimized Ruby framework for writing applications as plugin bundles containing all resources needed per plugin. The client is a highly optimized Javascript framework with an API similar to many object-oriented desktop frameworks. RSence is not primarily targeted for creating html web sites, there are plenty of other tools for that purpose.
 
-The Riassence Framework Server is a thin application server with a simple, easy plugin-based architecture that essentially receives high-level session- and data-related events from the client. The Riassence Framework Client is a powerful, (mostly) event driven GUI application framework with advanced operating system like features and a uniform developer-friendly API that also handles most of the data routing for you automatically. Most of the time both the user and developer can easily forget the fact that the Riassence Framework -powered applications run on the web.
+=== Installation (pre-release):
 
+ gem install rsence --pre
 
-==== Some highlights:
-
-* Client supports UI rendering from JSON structures. These structures can obviously be stored in YAML- or XML-files as well as databases and such.
-* Automatic session management.
-* Secure sessions with one-time session keys using cryptographic hashing, so the same key is never transferred twice.
-* Full, skinnable (themeable) Widgets that use a common, uniform API.
-* Plug and play plugin-based server architecture makes deployment as easy as dropping a plugin budle into a plugin directory.
-* Powerful client compression- and packaging system keep the bandwidth requirements low.
-* No waste of server- and client CPU cycles; reloading of the web page is not a requirement while using a Riassence Framework -powered applications.
-* All operations are asyncronous and smooth by design, the user does not have to wait for the server.
-* Memory-efficient plugin architecture with advanced messaging features.
-* Automatic event-based data value management.
-* Wide cross-browser support; most browsers released within ten years are fully supported, including mobile browsers like iPhone/iPod Touch Safari, the Symbian S60 default web browser and Opera Mobile.
-* Developed since 2006.
-
-=== Installation:
-
- gem install rsence
-
-For more detailed installation instructions, read the INSTALL.rdoc document.
+For more detailed installation and usage instructions, read the INSTALL.rdoc document.
 
 === Licensing:
 * Free: *GPL*
