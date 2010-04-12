@@ -28,10 +28,22 @@
 ##
 class GUIPlugin < Plugin
   
+  @@default_yaml_src = %{
+type: GUITree
+version: 0.5
+
+class: HApplication
+options:
+  label: "Dummy Application"
+}
+  
   # Automatically initializes an GUIParser instance as @gui
   def init
     super
-    @gui = GUIParser.new( self, @name )
+    yaml_src = file_read( "gui/#{@name}.yaml" )
+    yaml_src = file_read( "gui/main.yaml" ) unless yaml_src
+    yaml_src = @@default_yaml_src unless yaml_src
+    @gui = GUIParser.new( self, yaml_src )
     @client_pkgs = false
   end
   

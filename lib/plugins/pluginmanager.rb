@@ -221,7 +221,10 @@ class PluginManager
       # puts "#{File.stat(bundle_path).inspect}"
       next unless File.directory?( bundle_path )
       bundle_file = bundle_name+'.rb'
-      next unless File.exists?( File.join( bundle_path, bundle_file ) )
+      if not File.exists?( File.join( bundle_path, bundle_file ) )
+        bundle_file = 'main.rb'
+        next unless File.exists?( File.join( bundle_path, bundle_file ) )
+      end
       next if File.exists?( File.join( bundle_path, 'disabled' ) )
       
       load_bundle( bundle_path, bundle_name.to_sym, bundle_file )

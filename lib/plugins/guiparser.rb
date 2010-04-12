@@ -103,13 +103,11 @@ private
   
   # Loads the YAML file.
   # = Parameters
-  # +parent+::   The Plugin instance called from, use +self+ when constructing in a Plugin method.
-  # +gui_name+:: The name of the YAML file in the gui subdirectory of the plugin bundle.
-  def initialize( parent, gui_name )
+  # +parent+::    The Plugin instance called from, use +self+ when constructing in a Plugin method.
+  # +yaml_src+::  The YAML source template for the GUI
+  def initialize( parent, yaml_src )
     @parent = parent
-    @yaml_src = File.read(
-      File.join( parent.path, 'gui', "#{gui_name}.yaml" )
-    )
+    @yaml_src = yaml_src
   end
 
 end
