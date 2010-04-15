@@ -172,6 +172,11 @@ HView = HClass.extend({
   **/
   rect: null,
   
+/** An reference to the options block given as the constructor
+  * parameter _options.
+  **/
+  options: null,
+  
 /** = Description
   * Constructs the logic part of a HView.
   * The view still needs to be drawn on screen. To do that, call draw after
@@ -273,10 +278,19 @@ HView = HClass.extend({
   *  [ 23, 75, 200, 100, 23, 75 ]
   *
   **/
-  constructor: function(_rect, _parent) {
+  constructor: function(_rect, _parent, _options) {
+    
+    if( !_options ){
+      _options = {};
+    }
+    this.options = _options;
     
     // Moved these to the top to ensure safe theming operation
-    if(!this.theme){
+    if( _options.theme ){
+      this.theme = _options.theme;
+      this.preserveTheme = true;
+    }
+    else if(!this.theme){
       this.theme = HThemeManager.currentTheme;
       this.preserveTheme = false;
     }
@@ -651,6 +665,17 @@ HView = HClass.extend({
         this.drawMarkup();
       }
       this.drawSubviews();
+      if(this.options.style){
+        var
+        _style = this.options.style,
+        _styleItem, _styleKey, _styleValue, i = 0;
+        for(;i<_style.length;i++){
+          _styleItem  = _style[i];
+          _styleKey   = _styleItem[0];
+          _styleValue = _styleItem[1];
+          this.setStyle(_styleKey,_styleValue);
+        }
+      }
     }
     this.refresh();
     return this;

@@ -67,11 +67,6 @@ HControl = HView.extend({
   **/
   active: null,
   
-/** An reference to the options block given as the constructor
-  * parameter _options.
-  **/
-  options: null,
-  
 /** -- Use this object to specify class-specific default settings. ++
   * The controlDefaults is a HControlDefaults object that is extended
   * in the constructor with the options block given. The format of
@@ -215,14 +210,13 @@ HControl = HView.extend({
     var _this = this;
     
     _options = (_this.controlDefaults.extend(_options)).nu(this);
-    _this.options = _options;
     
     if(_this.isinherited) {
-      _this.base(_rect, _parent);
+      _this.base(_rect, _parent, _options);
     }
     else {
       _this.isinherited = true;
-      _this.base(_rect, _parent);
+      _this.base(_rect, _parent, _options);
       _this.isinherited = false;
     }
     
