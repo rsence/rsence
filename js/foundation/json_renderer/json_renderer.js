@@ -23,7 +23,7 @@
 ***/
 COMM.JSONRenderer = HClass.extend({
   
-  version: 0.4,
+  version: 0.5,
 
 /** = Description
   * Renders JSON structured data, see some of the demos for usage examples.
@@ -85,6 +85,23 @@ COMM.JSONRenderer = HClass.extend({
     
   },
   findInScope: function( _className ){
+    if(_className.indexOf('.') !== -1){
+      var _splitClass = _className.split('.'),
+          j = 1,
+          _classPart = _splitClass[0],
+          _classFull = this.findInScope( _classPart );
+      if( !_classFull ){
+        return false;
+      }
+      for( ; j < _splitClass.length ; j++ ){
+        _classPart = _splitClass[j];
+        _classFull = _classFull[ _classPart ];
+        if( !_classFull ){
+          return false;
+        }
+      }
+      return _classFull;
+    }
     var _class = false,
         _scopes = this.scopes,
         i = _scopes.length-1,
@@ -135,6 +152,9 @@ COMM.JSONRenderer = HClass.extend({
         i,
         
         _subView;
+    
+    // console.log('className:',_className,' class:',_class);
+    
     this.scopeDepth ++;
     this.scopes.push({});
     try{
