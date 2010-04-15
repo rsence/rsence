@@ -1,4 +1,4 @@
-Riassence = {
+RSence = {
   
   // List of apps initialized utilizing GUITrees, by GUIPlugin name
   apps: { },
@@ -62,18 +62,19 @@ Riassence = {
         sigInput: _sigInput,
         sigOutput: _sigOutput,
         icon: { url: _iconUrl, width: null, height: null },
-        pid: this.app.appId,
+        pid: this.appId,
         views: []
       };
       
       _this.valueObj = _valueObj;
       _this.value = _valueObj.value;
       
-      // 
-      _this.renderer = COMM.JSONRenderer.extend({
-        
-      }).nu( this.value, this );
+      // _this.app = _this;
       
+      // 
+      // _this.renderer = COMM.JSONRenderer.extend({
+      //   
+      // }).nu( _this.value, _this );
     },
     
     die: function(){
