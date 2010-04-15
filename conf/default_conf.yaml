@@ -19,7 +19,7 @@
   :index_tmpl: 'tmpl/index.html'
   #
   # The index.html page <title>
-  :title: 'Riassence Framework'
+  :title: 'RSence'
   #  
   :noscript: '<h1>Sorry!</h1><p>This site requires a Javascript -capable web browser.</p><p>Please enable Javascript or upgrade your browser.</p>'
   #
@@ -100,7 +100,7 @@
   :trust_cookies: true
   #
   # The comment string in the session cookie
-  :ses_cookie_comment: "Riassence Framework Session Key"
+  :ses_cookie_comment: "RSence Session Key"
   #
   # Disposable keys. When enabled, runs in a more secure way and changes the session key on each xhr.
   :disposable_keys:    true
@@ -180,7 +180,7 @@
   # Source directories to scan
   :src_dirs:
     
-    # Riassence Client Framework
+    # RSence Client Framework
     - js
     
     # How to include your own custom js package directory:
@@ -229,6 +229,8 @@
     
     # The default collection of simple control widgets (components)
     controls:
+      - centerview        # Simple view for centering purposes
+      - scrollview        # Simple view for scrolling
       - button            # HButton & HClickValueButton
       - checkbox          # HCheckbox
       - radiobutton       # HRadioButton
