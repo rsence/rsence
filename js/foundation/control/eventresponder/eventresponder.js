@@ -41,6 +41,11 @@
 ***/
 HEventResponder = HClass.extend({
   
+/** Default event listeners.
+  **/
+  defaultEvents: {
+  },
+  
 /** = Description
   * The event responder interface for +HControl+.
   * Registers the events defined by boolean properties of 
@@ -133,7 +138,7 @@ HEventResponder = HClass.extend({
   **/
   setEvents: function(_events) {
     if(!this.events) {
-      this.events = HClass.extend({
+      this.events = HClass.extend( {
         mouseMove:  false,
         mouseDown:  false,
         mouseUp:    false,
@@ -145,10 +150,10 @@ HEventResponder = HClass.extend({
         textEnter:  false,
         click:      false,
         resize:     false
-      }).nu();
+      } ).extend( this.defaultEvents ).nu();
     }
     if(_events) {
-      this.events.extend( _events );
+      this.events = this.events.extend( _events );
     }
     this.events.ctrl = this;
     // EVENT.focusOptions[this.elemId] = this.events;
