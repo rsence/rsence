@@ -41,6 +41,8 @@ HView = HClass.extend({
   **/
   isAbsolute: true,
   
+  displayMode: 'block',
+  
 /** True, if the coordinates are right-aligned.
   * False, if the coordinates are left-aligned.
   * Uses flexRightOffset if true. Defined with 6-item arrays
@@ -166,7 +168,7 @@ HView = HClass.extend({
   
 /** The isHidden flog reflects the visibility of the view.
   **/
-  isHidden: true,
+  isHidden: false,
   
 /** The +HRect+ instance bound to +self+ using the +constructor+ or +setRect+.
   **/
@@ -298,6 +300,10 @@ HView = HClass.extend({
       this.preserveTheme = true;
     }
     
+    if(_options.visible === false) {
+      this.isHidden = true;
+    }
+    
     // adds the parentClass as a "super" object
     this.parent = _parent;
     
@@ -328,7 +334,6 @@ HView = HClass.extend({
     
     if(!this.isinherited) {
       this.draw();
-      this.show();
     }
   },
   
@@ -610,11 +615,11 @@ HView = HClass.extend({
     
       // Show the rectangle once it gets created, unless visibility was set to
       // hidden in the constructor.
-      if(undefined === _this.isHidden || _this.isHidden === false) {
+      if(_this.isHidden === undefined || _this.isHidden === false) {
         _styl( _elemId, 'visibility', 'inherit', true);
       }
     
-      _styl( _elemId, 'display', 'block', true);
+      _styl( _elemId, 'display', _this.displayMode, true);
     
       _this._updateZIndex();
     
@@ -675,6 +680,9 @@ HView = HClass.extend({
           _styleValue = _styleItem[1];
           this.setStyle(_styleKey,_styleValue);
         }
+      }
+      if(!this.isHidden){
+        this.show();
       }
     }
     this.refresh();
@@ -738,7 +746,7 @@ HView = HClass.extend({
       }
     }
     
-    ELEM.setStyle(this.elemId, 'display', 'block' );
+    ELEM.setStyle(this.elemId, 'display', this.displayMode );
     return this;
   },
   
@@ -1032,7 +1040,7 @@ HView = HClass.extend({
       var _setStyl = ELEM.setStyle,
           _elemId  = this.elemId;
       _setStyl(_elemId,'visibility', 'inherit');
-      _setStyl(_elemId,'display', 'block');
+      _setStyl(_elemId,'display', this.displayMode);
       this.isHidden = false;
     }
     return this;

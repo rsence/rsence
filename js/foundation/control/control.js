@@ -224,13 +224,6 @@ HControl = HView.extend({
         _label = _options.label,
         _events = _options.events;
     
-    if(_options.visible) {
-      _this.show();
-    }
-    else {
-      _this.hide();
-    }
-    
     if(_isValueRange) {
       _this.minValue = _options.minValue;
       _this.maxValue = _options.maxValue;
