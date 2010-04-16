@@ -1,5 +1,5 @@
 /*   Riassence Framework
- *   Copyright 2006 Riassence Inc.
+ *   Copyright 2010 Riassence Inc.
  *   http://riassence.com/
  *
  *   You should have received a copy of the GNU General Public License along
