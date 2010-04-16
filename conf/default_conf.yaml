@@ -219,6 +219,7 @@
       - thememanager      # HThemeManager
       - markupview        # HMarkupView
       - morphanimation    # HMorphAnimation
+      - viewdefaults      # HViewDefaults
       - view              # HView
       - eventresponder    # HEventResponder
       - valueresponder    # HValueResponder
@@ -226,11 +227,12 @@
       - controldefaults   # HControlDefaults
       - control           # HControl
       - dyncontrol        # HDynControl
+      - centerview        # HCenterView
+      - scrollview        # HScrollView
+      - inlineview        # HInlineView
     
     # The default collection of simple control widgets (components)
     controls:
-      - centerview        # Simple view for centering purposes
-      - scrollview        # Simple view for scrolling
       - button            # HButton & HClickValueButton
       - checkbox          # HCheckbox
       - radiobutton       # HRadioButton
