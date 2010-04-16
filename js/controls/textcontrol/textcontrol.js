@@ -20,17 +20,14 @@ HTextControl = HControl.extend({
   
   componentName: "textcontrol",
   
+  defaultEvents: {
+    textEnter: true,
+    mouseWheel: true
+  },
+  
   controlDefaults: (HControlDefaults.extend({
     refreshOnBlur: true,
-    refreshOnInput: true,
-    constructor: function(_ctrl){
-      if(!this.events){
-        this.events = {
-          textEnter: true,
-          mouseWheel: true
-        };
-      }
-    }
+    refreshOnInput: true
   })),
   
 /** = Description

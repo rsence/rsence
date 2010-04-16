@@ -27,6 +27,10 @@ HDynControl = HControl.extend({
   
   preserveTheme: true,
   
+  defaultEvents: {
+    draggable: true
+  },
+  
 /** = Description
   * In addition to the standard HControl#constructor options,
   * the following properties can be set:
@@ -78,11 +82,6 @@ HDynControl = HControl.extend({
       }
       if(!this.maxY){
         this.maxY = _winHeight-this.minSize[1];
-      }
-      if(!this.events){
-        this.events = {
-          draggable: true
-        };
       }
       if(!this.resizeNW){
         this.resizeNW = [ 1, 1 ];

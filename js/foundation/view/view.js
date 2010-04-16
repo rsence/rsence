@@ -41,7 +41,21 @@ HView = HClass.extend({
   **/
   isAbsolute: true,
   
+/** The display mode to use.
+  * Defaults to 'block'.
+  * The other sane alternative is 'inline'.
+  **/
   displayMode: 'block',
+  
+/** The visual value of a component, usually a String.
+  * See +#setLabel+.
+  **/
+  label: null,
+  
+/** When true, calls the +refreshLabel+ method whenever
+  * +self.label+ is changed.
+  **/
+  refreshOnLabelChange: true,
   
 /** True, if the coordinates are right-aligned.
   * False, if the coordinates are left-aligned.
@@ -179,6 +193,13 @@ HView = HClass.extend({
   **/
   options: null,
   
+/** The viewDefaults is a HViewDefaults object that is extended
+  * in the constructor with the options block given. The format of
+  * it is an Object.
+  * It's only used when not extended via HControl, see HControl#controlDefaults.
+  **/
+  viewDefaults: HViewDefaults,
+  
 /** = Description
   * Constructs the logic part of a HView.
   * The view still needs to be drawn on screen. To do that, call draw after
@@ -285,7 +306,12 @@ HView = HClass.extend({
     if( !_options ){
       _options = {};
     }
+    if(!this.isinherited){
+      _options = (this.viewDefaults.extend(_options)).nu(this);
+    }
+    
     this.options = _options;
+    this.label = _options.label;
     
     // Moved these to the top to ensure safe theming operation
     if( _options.theme ){
@@ -784,6 +810,9 @@ HView = HClass.extend({
     if(this.optimizeWidthOnRefresh) {
       this.optimizeWidth();
     }
+    if(this.refreshOnLabelChange){
+      this.refreshLabel();
+    }
     return this;
   },
 
@@ -940,7 +969,10 @@ HView = HClass.extend({
   *
   **/
   setStyleOfPart: function(_partName, _name, _value, _cacheOverride) {
-    if (!this.markupElemIds[_partName]) {
+    if (!this['markupElemIds']){
+      console.log('Warning, setStyleOfPart: no markupElemIds');
+    }
+    else if (!this.markupElemIds[_partName]) {
       console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
@@ -1558,6 +1590,50 @@ HView = HClass.extend({
     return _x;
   },
   
+/** = Description
+  * Sets the label on a control component: the text that's displayed in 
+  * HControl extensions. Visual functionality is implemented in component 
+  * theme templates and refreshLabel method extensions.
+  *
+  * Avoid extending directly, extend +refreshLabel+ instead.
+  *
+  * = Parameters
+  * +_label+:: The text the component should display.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  setLabel: function(_label) {
+    var _this = this,
+        _differs = (_label !== _this.label);
+    if(_differs){
+      _this.label = _label;
+      _this.options.label = _label;
+      _this.refresh();
+    }
+    return this;
+  },
+  
+/** = Description
+  * Called when the +self.label+ has been changed. By default
+  * tries to update the label element defined in the theme of
+  * the component. Of course, the HControl itself doesn't
+  * define a theme, so without a theme doesn't do anything.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  refreshLabel: function(){
+    if(this.markupElemIds){
+      if(this.markupElemIds['label']){
+        ELEM.setHTML(this.markupElemIds.label,this.label);
+      }
+    }
+    return this;
+  },
+  
 /** Returns the Y coordinate that has the scrolled position calculated.
   **/
   pageY: function() {
@@ -1586,7 +1662,8 @@ HView = HClass.extend({
 /** = Description
   * An abstract method that derived classes may implement, if they are able to
   * resize themselves so that their content fits nicely inside.
-  * 
+  * Similar to pack, might be renamed when components are written to
+  * be savvy of this feature.
   **/
   optimizeWidth: function() {
 

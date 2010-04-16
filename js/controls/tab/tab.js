@@ -41,13 +41,12 @@ HTab = HControl.extend({
   refreshOnValueChange: true,
   refreshOnLabelChange: false,
   
+  defaultEvents: {
+    click: true
+  },
+  
   controlDefaults: (HControlDefaults.extend({
     constructor: function(_ctrl){
-      if(!this.events){
-        this.events = {
-          mouseDown: true
-        };
-      }
       this.tabInit(_ctrl);
     },
     tabInit: function(_ctrl){
@@ -193,16 +192,16 @@ HTab = HControl.extend({
   },
   
 /** = Description
-  * mouseDown function
+  * click function
   *
   * = Parameters
   * +_x+::
   * +_y+::
   *
   **/
-  mouseDown: function(_x,_y){
+  click: function(_x,_y){
     if(this.tabTriggerLink){
-      this.setMouseDown(false);
+      this.setClickable(false);
       return;
     }
     _x -= this.pageX();

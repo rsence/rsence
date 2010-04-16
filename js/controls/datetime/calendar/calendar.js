@@ -14,7 +14,9 @@
 HCalendar = HControl.extend({
   componentName: 'calendar',
   weekdays_localized: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-  
+  defaultEvents: {
+    mouseWheel: true
+  },
 /** = Description
   * Calls HCalendar#nextMonth or HCalendar#prevMonth based on delta 
   * of mouseWheel. 
@@ -34,6 +36,9 @@ HCalendar = HControl.extend({
   *
   **/
   refreshLabel: function(){
+    if(!this['markupElemIds']){
+      return;
+    }
     var _weekdays_localized = this.weekdays_localized,
         _weekdays_width = Math.floor(this.rect.width/_weekdays_localized.length),
         _weekdays_html = [],

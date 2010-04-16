@@ -33,23 +33,19 @@ HSlider = HControl.extend({
   
   componentName: "slider",
   
+  defaultEvents: {
+    draggable: true,
+    keyDown: true,
+    keyUp: true,
+    mouseWheel: true
+  },
+  
   controlDefaults: (HControlDefaults.extend({
     minValue: 0,
     maxValue: 1,
     repeatDelay: 300,
     repeatInterval: 50,
-    inverseAxis: false,
-    events: null,
-    constructor: function(_ctrl){
-      if(this.events === null){
-        this.events = {
-          draggable: true,
-          keyDown: true,
-          keyUp: true,
-          mouseWheel: true
-        };
-      }
-    }
+    inverseAxis: false
   })),
   
   refreshOnValueChange: false,

@@ -25,15 +25,6 @@ HControl = HView.extend({
   **/
   refreshOnValueChange: true,
   
-/** A flag: when true, calls the +refreshLabel+ method whenever
-  * +self.label+ is changed.
-  **/
-  refreshOnLabelChange: true,
-  
-/** The visual value of a component, usually a String. See setLabel.
-  **/
-  label: null,
-  
 /** The event object structure that specifies which events to listen to.
   **/
   events: null,
@@ -77,7 +68,7 @@ HControl = HView.extend({
 /** = Description
   * The constructor of HControl implements the same model as HView, 
   * but accepts a third parameter: the options object, that contain 
-  * optional properties, like the value, label and events.
+  * optional properties, like the value and events.
   *
   * = Parameters
   * +_rect+::     An instance of +HRect+, defines the position and size of views.
@@ -185,7 +176,7 @@ HControl = HView.extend({
   *               HValue instance overrides the +value+ option.
   * +label+::     The label of the component. It's usually a text (or html)
   *               String. Its meaning differs between components.
-  *               See +setLabel+ and +refreshLabel+
+  *               See +#setLabel+ and +#refreshLabel+
   * +visible+::   A Boolean value defining the initial visibility of the
   *               component. A true value means visible and false means
   *               hidden.
@@ -221,7 +212,6 @@ HControl = HView.extend({
     }
     
     var _isValueRange = (_options.minValue || _options.maxValue),
-        _label = _options.label,
         _events = _options.events;
     
     if(_isValueRange) {
@@ -229,7 +219,6 @@ HControl = HView.extend({
       _this.maxValue = _options.maxValue;
     }
     
-    _this.setLabel(_label);
     _this.setEvents(_events);
     _this.setEnabled(_options.enabled);
     
@@ -266,31 +255,6 @@ HControl = HView.extend({
     }
     EVENT.unreg(_this);
     _this.base();
-  },
-  
-/** = Description
-  * Sets the label on a control component: the text that's displayed in 
-  * HControl extensions. Visual functionality is implemented in component 
-  * theme templates and refreshLabel method extensions.
-  *
-  * Avoid extending directly, extend +refreshLabel+ instead.
-  *
-  * = Parameters
-  * +_label+:: The text the component should display.
-  *
-  * = Returns
-  * +self+
-  *
-  **/
-  setLabel: function(_label) {
-    var _this = this,
-        _differs = (_label !== _this.label);
-    if(_differs){
-      _this.label = _label;
-      _this.options.label = _label;
-      _this.refresh();
-    }
-    return this;
   },
   
 /** = Description
@@ -338,25 +302,6 @@ HControl = HView.extend({
   },
   
 /** = Description
-  * Called when the +self.label+ has been changed. By default
-  * tries to update the label element defined in the theme of
-  * the component. Of course, the HControl itself doesn't
-  * define a theme, so without a theme doesn't do anything.
-  *
-  * = Returns
-  * +self+
-  *
-  **/
-  refreshLabel: function(){
-    if(this.markupElemIds){
-      if(this.markupElemIds['label']){
-        ELEM.setHTML(this.markupElemIds.label,this.label);
-      }
-    }
-    return this;
-  },
-  
-/** = Description
   * Called mostly internally whenever a property change requires usually visual
   * action. It's called by methods like setLabel and setValue. 
   * Extends HView.refresh. The boolean properties refreshOnValueChange and 
@@ -374,9 +319,6 @@ HControl = HView.extend({
     if(this.drawn){
       if(this.refreshOnValueChange){
         this.refreshValue();
-      }
-      if(this.refreshOnLabelChange){
-        this.refreshLabel();
       }
     }
     return this;

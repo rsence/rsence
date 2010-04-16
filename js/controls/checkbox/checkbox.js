@@ -13,15 +13,9 @@
 HCheckbox = HButton.extend({
   componentName: 'checkbox',
   
-  controlDefaults: (HControlDefaults.extend({
-    constructor: function(){
-      if(!this.events){
-        this.events = {
-          click: true
-        }
-      }
-    }
-  })),
+  defaultEvents: {
+    click: true
+  },
   
 /** Toggles the value checked / unchecked.
   **/

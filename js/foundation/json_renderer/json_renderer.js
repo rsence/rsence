@@ -48,6 +48,7 @@ COMM.JSONRenderer = HClass.extend({
     this.view = this.renderNode( this.data, this.parent );
   },
   defineInScope: function( _definition ){
+    console.log('definedInScope(',_definition,')');
     var _isArr = (_definition instanceof Array),
         _isObj = (_definition instanceof Object);
     if( _isArr || !_isObj ){
@@ -85,6 +86,9 @@ COMM.JSONRenderer = HClass.extend({
     
   },
   findInScope: function( _className ){
+    if(_className === undefined){
+      return false;
+    }
     if(_className.indexOf('.') !== -1){
       var _splitClass = _className.split('.'),
           j = 1,
@@ -152,7 +156,6 @@ COMM.JSONRenderer = HClass.extend({
         i,
         
         _subView;
-    
     // console.log('className:',_className,' class:',_class);
     
     this.scopeDepth ++;
