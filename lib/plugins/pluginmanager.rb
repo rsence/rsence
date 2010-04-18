@@ -234,11 +234,12 @@ class PluginManager
   # Finds the most recent file in the path
   def most_recent( bundle_path, newest_date=0 )
     path_date = File.stat( bundle_path ).mtime.to_i
-    if path_date > newest_date
+    is_dir = File.directory?( bundle_path )
+    if path_date > newest_date and not is_dir
       # puts "File is newer: #{bundle_path}"
       newest_date = path_date
     end
-    if File.directory?( bundle_path )
+    if is_dir
       Dir.entries( bundle_path ).each do |entry_name|
         next if entry_name[0].chr == '.'
         full_path = File.join( bundle_path, entry_name )
