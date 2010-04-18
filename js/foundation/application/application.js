@@ -204,4 +204,4 @@ HApplication = HClass.extend({
     /* Your code here */
   }
 });
-
+HApplication.implement(HValueResponder);

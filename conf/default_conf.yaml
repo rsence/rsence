@@ -201,6 +201,7 @@
       - event             # EVENT
       - sha               # SHAClass
       - system            # HSystem
+      - valueresponder    # HValueResponder
       - application       # HApplication
       - comm              # COMM
       - queue             # COMM.Queue
@@ -222,7 +223,6 @@
       - viewdefaults      # HViewDefaults
       - view              # HView
       - eventresponder    # HEventResponder
-      - valueresponder    # HValueResponder
       - dummyvalue        # HDummyValue
       - controldefaults   # HControlDefaults
       - control           # HControl
