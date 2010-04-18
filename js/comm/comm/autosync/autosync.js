@@ -9,7 +9,6 @@
 // Starts the synchronization upon page load.
 LOAD(
   function(){
-    COMM.URLResponder.implement(HValueResponder);
     COMM.urlResponder=COMM.URLResponder.nu();
     urlResponder=COMM.urlResponder; // backwards compatibility
     COMM.Transporter.url=HCLIENT_HELLO;
