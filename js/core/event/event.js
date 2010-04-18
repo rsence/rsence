@@ -380,16 +380,24 @@ EVENT = {
   **/
   unreg: function(_ctrl) {
     var _this = EVENT,
-    _elemId,
-    _elem;
+        _elemId,
+        _elem;
     if (_ctrl === this.activeControl) {
       _this.changeActiveControl(null);
     }
     _elemId = _ctrl.elemId;
     _elem = ELEM.get(_elemId);
-    this.listeners[_elemId] = false;
-    this.focused[_elemId] = false;
-    this._coordCache[_elemId] = null;
+    
+    _this._coordCache[_elemId] = null;
+    
+    _this.listeners[_elemId] = false;
+    _this.focused[_elemId] = false;
+    _this.focusOptions[_elemId] = { ctrl: _ctrl };
+    var _coordListenIdx = _this.coordListeners.indexOf(_elemId);
+    if (_coordListenIdx !== -1) {
+      _this.coordListeners.splice(_coordListenIdx, 1);
+    }
+    
     var _textEnterIndex = _this.textEnterCtrls.indexOf(_ctrl.viewId);
     if (_textEnterIndex !== -1) {
       _this.textEnterCtrls.splice(_textEnterIndex, 1);

@@ -207,7 +207,7 @@ HEventResponder = HClass.extend({
       EVENT.reg(_this, _this.events);
     }
     else {
-      EVENT.unreg(this);
+      EVENT.unreg(_this);
     }
     
     // Toggle the CSS class: enabled/disabled
