@@ -692,6 +692,7 @@ HView = HClass.extend({
     var _isDrawn = this.drawn;
     this.drawRect();
     if(!_isDrawn){
+      this.firstDraw();
       if(this['componentName']!==undefined){
         this.drawMarkup();
       }
@@ -707,12 +708,23 @@ HView = HClass.extend({
           this.setStyle(_styleKey,_styleValue);
         }
       }
+      if(this.options.html){
+        this.setHTML(this.options.html);
+      }
       if(!this.isHidden){
         this.show();
       }
     }
     this.refresh();
     return this;
+  },
+  
+/** = Description
+  * Called once, before the layout of the view is initially drawn.
+  * Doesn't do anything by itself, but provides an extension point.
+  *
+  **/
+  firstDraw: function(){
   },
   
 /** = Description
