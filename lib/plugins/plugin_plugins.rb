@@ -10,38 +10,38 @@
 module PluginPlugins
   def init
     super
-    @plugs = RSence::PluginManager.new( [ bundle_path('plugins') ] )
+    @plugin_plugins = RSence::PluginManager.new( [ bundle_path('plugins') ] )
   end
   def open
     super
-    @plugs.delegate(:open)
+    @plugin_plugins.delegate(:open)
   end
   def close
     super
-    @plugs.delegate(:close)
+    @plugin_plugins.delegate(:close)
   end
   def flush
     super
-    @plugs.delegate(:flush)
+    @plugin_plugins.delegate(:flush)
   end
   def idle( msg )
     super
-    @plugs.delegate(:idle,msg)
+    @plugin_plugins.delegate(:idle,msg)
   end
   def init_ses( msg )
     super
-    @plugs.delegate(:init_ses,msg)
+    @plugin_plugins.delegate(:init_ses,msg)
   end
   def restore_ses( msg )
     super
-    @plugs.delegate(:restore_ses,msg)
+    @plugin_plugins.delegate(:restore_ses,msg)
   end
   def cloned_target( msg, source_session )
     super
-    @plugs.delegate(:cloned_target,msg,source_session)
+    @plugin_plugins.delegate(:cloned_target,msg,source_session)
   end
   def cloned_source( msg, target_session )
     super
-    @plugs.delegate(:cloned_source,msg,target_session)
+    @plugin_plugins.delegate(:cloned_source,msg,target_session)
   end
 end
