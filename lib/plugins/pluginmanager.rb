@@ -58,6 +58,9 @@ require 'plugins/plugin_sqlite_db'
 # servlet includes the Servlet class, for handling any requests / responses
 require 'plugins/servlet'
 
+# Interface for plugins in a plugin bundle
+require 'plugins/plugin_plugins'
+
 ## = Abstract
 ## PluginManager is the service that loads and provides method delegation
 ## amongst all installed plugins.
@@ -72,15 +75,17 @@ class PluginManager
   
   # Initialize with a list of directories as plugin_paths.
   # It's an array containing all plugin directories to scan.
-  def initialize( transporter, plugin_paths )
-    @transporter = transporter
-    @sessions = transporter.sessions
+  def initialize( plugin_paths, transporter=nil, autoreload=false )
+    if transporter
+      @transporter = transporter
+      @sessions = transporter.sessions
+    end
     @plugin_paths = plugin_paths
     puts "Loading plugins..."
     scan_plugins
     puts "Plugins loaded."
     puts "Riassence Framework is online."
-    if $DEBUG_MODE
+    if autoreload
       @thr = Thread.new do
         Thread.pass
         while true

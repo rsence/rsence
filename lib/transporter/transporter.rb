@@ -33,8 +33,7 @@ class Transporter
     
     @valuemanager = ValueManager.new
     @sessions = SessionManager.new( self )
-    @plugins = PluginManager.new( self, ::RSence.config[:plugin_paths] )
-    
+    @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, $DEBUG_MODE )
     
     # Used by:
     #   plugins/main/main.rb
