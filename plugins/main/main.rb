@@ -110,6 +110,7 @@ class Main < Plugin
     ## to tell the server its status by updating its value
     location_href_id = ses[:location_href].val_id.to_json
     msg.reply "COMM.Values.values[#{location_href_id}].bind(COMM.urlResponder);"
+    
     ## This enables SesWatcher that changes :client_time every 60 seconds.
     ## It makes the client to poll the server on regular intervals, when polling mode
     ## is disabled.
