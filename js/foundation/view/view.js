@@ -57,6 +57,10 @@ HView = HClass.extend({
   **/
   refreshOnLabelChange: true,
   
+/** Escapes HTML in the label when true.
+  **/
+  escapeLabelHTML: false,
+  
 /** True, if the coordinates are right-aligned.
   * False, if the coordinates are left-aligned.
   * Uses flexRightOffset if true. Defined with 6-item arrays
@@ -801,6 +805,34 @@ HView = HClass.extend({
   setHTML: function( _html ) {
     ELEM.setHTML( this.elemId, _html );
     return this;
+  },
+  
+/** = Description
+  * Wrapper for setHTML, sets escaped html, if tags and such are present.
+  *
+  * = Parameters
+  * +_text+:: The text to set. If it contains any html, it's escaped.
+  *
+  * = Returns
+  * +self+
+  **/
+  setText: function( _text ) {
+    return this.setHTML( this.escapeHTML( _text ) );
+  },
+  
+/** = Description
+  * Method to escape HTML from text.
+  *
+  * Converts < to &lt; and > to &gt; and & to &amp;
+  *
+  * = Parameters
+  * +_html+:: The html to escape.
+  *
+  * = Returns
+  * A string with the html escaped.
+  **/
+  escapeHTML: function( _html ) {
+    return _html.replace(/&/gmi, '&amp;').replace(/>/gmi, '&gt;').replace(/</gmi, '&lt;');
   },
   
 /** = Description
@@ -1617,6 +1649,9 @@ HView = HClass.extend({
   *
   **/
   setLabel: function(_label) {
+    if(this.escapeLabelHTML){
+      _label = this.escapeHTML( _label );
+    }
     var _this = this,
         _differs = (_label !== _this.label);
     if(_differs){
