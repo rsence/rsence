@@ -132,7 +132,7 @@ COMM.JSONRenderer = HClass.extend({
         // Currently only HView -derived classes are supported, so 
         // the rect is mandatory.
         _rect = _dataNode['rect'],
-        _hasRect = (_rect !== undefined) && (_rect instanceof Array),
+        _hasRect = (_rect !== undefined) && (_rect instanceof Array || typeof _rect === 'string'),
         
         // Checks, if any sub-views are defined.
         _hasSubviews = _dataNode['subviews'] !== undefined,
@@ -157,7 +157,6 @@ COMM.JSONRenderer = HClass.extend({
         
         _subView;
     // console.log('className:',_className,' class:',_class);
-    
     this.scopeDepth ++;
     this.scopes.push({});
     try{
