@@ -49,35 +49,31 @@ COMM.JSLoader = HClass.extend({
   *
   **/
   load: function(_jsName){
-    var _this = this;
-    if((_this._loadedJS.indexOf(_jsName)!==-1)) {
+    var _this = this,
+        _isFullUrl = _jsName.slice(0,7) === 'http://' || _jsName.slice(0,8) === 'https://',
+        _url = _isFullUrl?_jsName:_this.uri+_jsName+'.js';
+    if((_this._loadedJS.indexOf(_url)!==-1)) {
       return;
     }
     COMM.Queue.pause();
-    _this._loadedJS.push(_jsName);
-    if(BROWSER_TYPE.ie || BROWSER_TYPE.symbian){
-      _this._req = COMM.request(
-        _this.uri+_jsName+'.js', {
-          onSuccess: function(_resp){
-            COMM.Queue.unshiftEval(_resp.X.responseText);
-            COMM.Queue.resume();
-          },
-          onFailure: _this._fail,
-          method: 'GET',
-          async: true
+    _this._loadedJS.push(_url);
+    var _script = document.createElement('script');
+    if(BROWSER_TYPE.ie){
+      _script.onreadystatechange = function(){
+        if(this.readyState === 'loaded' || this.readyState === 'complete'){
+          COMM.Queue.resume();
         }
-      );
+      };
     }
     else {
-      // The following doesn't always work reliably on Internet Explorer:
-      var _script = document.createElement('script');
-      _script.onload = function(){COMM.Queue.resume();};
-      _script.src = _this.uri+_jsName+'.js';
-      _script.type = 'text/javascript';
-      document.getElementsByTagName('head')[0].appendChild(_script);
+      _script.onload = function(){
+        COMM.Queue.resume();
+      };
     }
+    _script.src = _url;
+    _script.type = 'text/javascript';
+    document.getElementsByTagName('head')[0].appendChild(_script);
   }
-  
 });
 
 /** -- Global reference ++ **/
