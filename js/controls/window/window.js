@@ -106,6 +106,9 @@ HWindow = HDynControl.extend({
         this.resizeSE = [ 16, 16 ];
       }
     },
+    maxX: 'auto',
+    maxY: 'auto',
+    maxSize: 'auto',
     resizeW:   4,
     resizeE:   4,
     resizeN:   4,
@@ -210,11 +213,12 @@ HWindow = HDynControl.extend({
   * button has been clicked
   **/
   windowZoom: function(){
-    var _maxRect = HRect.nu(
+    var _maxSize = this.options.maxSize === 'auto' ? this.parentSize() : this.options.maxSize,
+        _maxRect = HRect.nu(
           this.options.minX,
           this.options.minY,
-          this.options.maxSize[0],
-          this.options.maxSize[1]
+          _maxSize[0],
+          _maxSize[1]
         ),
         _fitsRect = HRect.nu( this.rect ),
         i = 0,
@@ -233,14 +237,14 @@ HWindow = HDynControl.extend({
         _fitsRect.setHeight(_bottom);
       }
     }
-    if(_fitsRect.width > this.options.maxSize[0]){
-      _fitsRect.setWidth( this.options.maxSize[0] );
+    if(_fitsRect.width > _maxSize[0]){
+      _fitsRect.setWidth( _maxSize[0] );
     }
     else if(_fitsRect.width < this.options.minSize[0]){
       _fitsRect.setWidth( this.options.minSize[0] );
     }
-    if(_fitsRect.height > this.options.maxSize[1]){
-      _fitsRect.setHeight( this.options.maxSize[1] );
+    if(_fitsRect.height > _maxSize[1]){
+      _fitsRect.setHeight( _maxSize[1] );
     }
     else if(_fitsRect.height < this.options.minSize[1]){
       _fitsRect.setHeight( this.options.minSize[1] );
