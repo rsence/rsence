@@ -488,6 +488,7 @@ HDynControl = HControl.extend({
     }
     this.setStyle('cursor','default');
     this._initActionFlag();
+    EVENT.resize(); // Triggers the window resize event (automatic event for the browser's window).
     return true; // prevents text selection
   }
 });
