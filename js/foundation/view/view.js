@@ -859,7 +859,27 @@ HView = HClass.extend({
     }
     return this;
   },
-
+  
+/** Gets the size of the parent. If the parent is the document body, uses the browser window size.
+  **/
+  parentSize: function(){
+    if(this.parent.elemId === 0){
+      var _winSize = ELEM.windowSize();
+      return [ _winSize[0], _winSize[1] ];
+    }
+    else{
+      var _rect = this.parent.rect;
+      return [ _rect.width, _rect.height ];
+    }
+  },
+  
+/** Returns the maximum rect using the #parentSize.
+  **/
+  maxRect: function(){
+    var _parentSize = this.parentSize();
+    return [ 0, 0, _parentSize[0], _parentSize[1] ];
+  },
+  
 /** = Description
   * Replaces the rect of the component with a new HRect instance and
   * then refreshes the display.
@@ -875,6 +895,9 @@ HView = HClass.extend({
   setRect: function(_rect) {
     if (this.rect) {
       this.rect.release(this);
+    }
+    if(typeof _rect === 'string'){
+      _rect = this[_rect]();
     }
     if(_rect instanceof Array){
       var _arrLen = _rect.length,
