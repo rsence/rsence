@@ -54,6 +54,7 @@
   text-align: center;
   color: #000;
   line-height: 26px;
+  overflow: hidden;
   text-align: center; vertical-align: middle;
   font-family: Arial, sans-serif;
   font-size: 12px; font-weight: bold;
