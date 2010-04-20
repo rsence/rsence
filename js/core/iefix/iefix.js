@@ -41,13 +41,17 @@ iefix = {
   // finds the next parent with fixed or absolute positioning:
   // NOTICE: .init() makes ._layoutHeight() from this by replacing width with height
   layoutWidth: function(_element) {
-    var _this=iefix,_parent,i=0,
+    var _this=iefix,
+        _parent,
+        i=0,
         // gets the parent from which the width is calculated
         _layoutParent=_element.offsetParent;
     while(_layoutParent&&!_this._hasLayout(_layoutParent)){
       _layoutParent=_layoutParent.offsetParent;
     }
-    if(!_layoutParent._resizewidthElements){_layoutParent._resizewidthElements=[];}
+    if(!_layoutParent._resizewidthElements){
+      _layoutParent._resizewidthElements=[];
+    }
     if(!_element._addedResizewidthFix){
       _layoutParent._resizewidthElements.push(_element);
       _parent=_layoutParent;
@@ -185,20 +189,26 @@ iefix = {
     }
   },
   
-  _noStyleTagNames: ['PARAM'],
+  _noStyleTagNames: ['PARAM','HTML'],
   // applies fixes to the _element
   inlineStyleChanged: function(_element){
-    var _this=iefix,_currentStyle;
-    _currentStyle=_element.currentStyle;
-    if(_this._noStyleTagNames.indexOf(_element.tagName)!==-1){ return; }
+    var _this=iefix,
+        _currentStyle=_element.currentStyle;
+    if(_this._noStyleTagNames.indexOf(_element.tagName)!==-1){
+      return;
+    }
     // check if element needs to be positioned from the right
     try{
-      if((_currentStyle.position==="absolute"||_currentStyle.position==="fixed")&&_currentStyle.left!=="auto"&&_currentStyle.right!=="auto"&&_currentStyle.width==="auto"){
+      var _posMatch = (_currentStyle.position==="absolute"||_currentStyle.position==="fixed"),
+          _resizeWidth = _element._resizewidth,
+          _resizeHeight = _element._resizeheight,
+          _autoRight = _currentStyle.right==="auto",
+          _autoBottom = _currentStyle.bottom==="auto";
+      if(_resizeWidth||(_posMatch&&!_autoRight)){
         _this.resizeRight(_element);
       }
-    
     // check if element needs to be positioned from the bottom
-      if((_currentStyle.position==="absolute"||_currentStyle.position==="fixed")&&_currentStyle.top!=="auto"&&_currentStyle.bottom!=="auto"&&_currentStyle.height==="auto"){
+      if(_resizeHeight||(_posMatch&&!_autoBottom)){
         _this.resizeBottom(_element);
         // TODO: needs line height calculation here too for elements smaller than the line height or font size
       }
@@ -207,7 +217,7 @@ iefix = {
       if(_element.currentStyle.opacity){_this.fixOpacity(_element);}
       
     } catch(e) {
-      alert("iefix error! element:"+_element.tagName+" e:"+e.description);
+      console.log("iefix error! element:",_element);
     }
     
     // check if background image needs to be fixed:
@@ -228,7 +238,7 @@ iefix = {
   _traverseTree: function(_element){
     var _this=iefix;
     _this._traverseCount++;
-    //window.status = 'traversecount: '+_this._traverseCount;
+    // console.log( 'traversecount: '+_this._traverseCount );
     _element=_element||document.documentElement;
     while(_element){
       if(_element.nodeType===1){
@@ -338,7 +348,7 @@ ie_fixes=function(){
   }
 };
 ie_fixes();
-window.onresize=function(){iefix.setWinSize();iefix._traverseTree();};
+// window.onresize=function(){iefix.setWinSize();iefix._traverseTree();};
 
 
 
