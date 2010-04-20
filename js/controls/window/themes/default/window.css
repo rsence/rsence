@@ -161,6 +161,7 @@
   cursor: se-resize;
   z-index: 10000;
   background-position: -59px -35px;
+  font-size: 0px;
   background-image: #{this.getCssFilePath('window_parts1.png')};
 }
 
