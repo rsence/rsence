@@ -35,6 +35,8 @@ HApplication = HClass.extend({
   
   componentBehaviour: ['app'],
   
+  elemId: 0,
+  
 /** = Description
   *
   * = Parameters
@@ -204,4 +206,4 @@ HApplication = HClass.extend({
     /* Your code here */
   }
 });
-HApplication.implement(HValueResponder);
+HApplication.implement(HValueResponder.nu());
