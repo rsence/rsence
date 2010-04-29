@@ -10,8 +10,8 @@
 <div class="textcontrol_se"></div>
 <div class="textcontrol_sw"></div>
 
-<div id="label#{_ID}" title="#{this.label}" class="textcontrol_input_parent">
-  <textarea class="textcontrol_input" style="resize:none;"
+<div id="label#{_ID}" title="#{this.label}" class="textarea_input_parent">
+  <textarea class="textarea_input" style="resize:none;" #{this.enabled?'':'disabled'}
     onfocus="HSystem.views[#{this.viewId}].textFocus();" 
     onblur="HSystem.views[#{this.viewId}].textBlur();" 
     id="value#{_ID}">#{this.value}</textarea>
