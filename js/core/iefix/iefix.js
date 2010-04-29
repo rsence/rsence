@@ -75,11 +75,11 @@ iefix = {
     return (_layoutParent||document.documentElement).clientWidth;
   },
   
-  // calculates the border width of the _element:
-  // NOTICE: .init() makes ._getBorderHeight() from this by replacing Width with Height
-  getBorderWidth: function(_element){
-    return _element.offsetWidth-_element.clientWidth;
-  },
+  // // calculates the border width of the _element:
+  // // NOTICE: .init() makes ._getBorderHeight() from this by replacing Width with Height
+  // getBorderWidth: function(_element){
+  //   return _element.offsetWidth-_element.clientWidth;
+  // },
   
   // calculates the actual value in pixels from _value:
   getPixelValue: function(_element,_value) {
@@ -107,13 +107,13 @@ iefix = {
     return _this.getPixelValue(_element, _value);
   },
   
-  // calculates padding width of the _element:
-  // NOTICE: .init() makes .getPaddingHeight() from this by replacing Left/Right/Width with Top/Bottom/Height
-  // NOTICE: .init() also makes ._getMarginWidth() and ._getMarginHeight from this.
-  getPaddingWidth: function(_element) {
-    var _this=iefix;
-    return _this.getPixelWidth(_element,_element.currentStyle.paddingLeft)+_this.getPixelWidth(_element,_element.currentStyle.paddingRight);
-  },
+  // // calculates padding width of the _element:
+  // // NOTICE: .init() makes .getPaddingHeight() from this by replacing Left/Right/Width with Top/Bottom/Height
+  // // NOTICE: .init() also makes ._getMarginWidth() and ._getMarginHeight from this.
+  // getPaddingWidth: function(_element) {
+  //   var _this=iefix;
+  //   return _this.getPixelWidth(_element,_element.currentStyle.paddingLeft)+_this.getPixelWidth(_element,_element.currentStyle.paddingRight);
+  // },
   
   // calculates element's position from the right edge of the parent:
   // NOTICE: .init() makes _resizeBottom() from this by replacing left/width with top/height
@@ -126,7 +126,8 @@ iefix = {
     if(parseInt(_element.runtimeStyle.width,10)===_width){return;}
     _element.runtimeStyle.width="";
     if(_element.offsetWidth<_width){
-      _width-=_this.getBorderWidth(_element)+_this.getPaddingWidth(_element);
+      // Disabled, because no-one uses quirks mode anymore, right?
+      // _width-=_this.getBorderWidth(_element)+_this.getPaddingWidth(_element);
       if(_width<0){_width=0;}
       _element.runtimeStyle.width=_width;
     }
@@ -210,7 +211,11 @@ iefix = {
     // check if element needs to be positioned from the bottom
       if(_resizeHeight||(_posMatch&&!_autoBottom)){
         _this.resizeBottom(_element);
-        // TODO: needs line height calculation here too for elements smaller than the line height or font size
+        if(parseInt(_element.height)>parseInt(_element.fontSize,10)){
+          // TODO: needs line height calculation here too for elements smaller than the line height or font size
+          _element.fontSize = _element.height;
+          _element.lineHeight = _element.height;
+        }
       }
     
     // check if opacity needs to be fixed:
@@ -269,10 +274,10 @@ iefix = {
     //this.pngCheck = new RegExp("((\.gif)|(\.jpg))$", "i"); // needs more work
     // needed for png hack
     _this.blankGifPath=ie_htc_path+"0.gif";
-    eval("_this.getMarginWidth="+String(_this.getPaddingWidth).replace(/padding/g,"margin"));
-    eval("_this.getPaddingHeight="+String(_this.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
-    eval("_this.getMarginHeight="+String(_this.getPaddingHeight).replace(/padding/g,"margin"));
-    eval("_this.getBorderHeight="+String(_this.getBorderWidth).replace(/Width/g,"Height"));
+    // eval("_this.getMarginWidth="+String(_this.getPaddingWidth).replace(/padding/g,"margin"));
+    // eval("_this.getPaddingHeight="+String(_this.getPaddingWidth).replace(/Width/g,"Height").replace(/Left/g,"Top").replace(/Right/g,"Bottom"));
+    // eval("_this.getMarginHeight="+String(_this.getPaddingHeight).replace(/padding/g,"margin"));
+    // eval("_this.getBorderHeight="+String(_this.getBorderWidth).replace(/Width/g,"Height"));
     eval("_this.layoutHeight="+String(_this.layoutWidth).replace(/Width/g,"Height").replace(/width/g,"height").replace(/Right/g,"Bottom"));
     eval("_this.getPixelHeight="+String(_this.getPixelWidth).replace(/Width/g,"Height"));
     eval("_this.resizeBottom="+String(_this.resizeRight).replace(/Width/g,"Height").replace(/width/g,"height").replace(/left/g,"top").replace(/right/g,"bottom"));
@@ -287,7 +292,7 @@ iefix = {
     }
   },
   
-  _traverseStyleProperties: ['width','height','left','top','right','bottom','display','position'],
+  _traverseStyleProperties: ['width','height','left','top','right','bottom','display','position','visibility'],
   //_traverseStyleProperties: ['right','bottom','width','height'],
   
   //_elemEntryCount: 0,
