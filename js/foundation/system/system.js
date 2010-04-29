@@ -16,7 +16,7 @@
   ** so there is no real need to access +HSystem+ directly from user-level code.
   **
 ***/
-HSystem = HClass.extend({
+HSystem = {
   
 /** When the focus behaviour is 1, clicking on any subview brings
   * the window to front, if attached to a HWindow instance.
@@ -27,7 +27,7 @@ HSystem = HClass.extend({
   windowFocusBehaviour: 1,
   
 /** Singleton class; has no constructor **/
-  constructor: null,
+  // constructor: null,
   
 /** An array of HApplication instances, index is the appId **/
   apps: [],
@@ -357,9 +357,9 @@ HSystem = HClass.extend({
       }
     }
   }
-
+};
   
-});
+// });
 
 // Starts the ticking, when the document is loaded:
 LOAD(
