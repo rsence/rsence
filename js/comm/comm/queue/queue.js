@@ -105,7 +105,7 @@ COMM.Queue = HApplication.extend({
         else {
           _function = _item[0];
           _arguments = _item[1];
-          _function.call(_arg);
+          _function.apply(this,_arguments);
         }
       }
       
