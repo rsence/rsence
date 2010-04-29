@@ -3,6 +3,7 @@
 .hslider_track {
   position: absolute;
   height: 7px; top: 7px;
+  font-size: 0px;
   background-image: #{this.getCssFilePath('hslider_tracks.png')};
 }
 
@@ -36,6 +37,7 @@
 .hslider_thumb {
   position: absolute;
   top: 0px; height: 21px; width: 21px;
+  font-size: 0px;
   background-position: 0px 0px;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }

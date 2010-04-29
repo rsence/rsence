@@ -3,6 +3,7 @@
 .vslider_track {
   position: absolute;
   width: 7px; left: 7px;
+  font-size: 0px;
   background-image: #{this.getCssFilePath('vslider_tracks.png')};
 }
 
@@ -35,6 +36,7 @@
 
 .vslider_thumb {
   position: absolute;
+  font-size: 0px;
   left: 0px; width: 21px; height: 21px;
   background-position: 0px 0px;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
