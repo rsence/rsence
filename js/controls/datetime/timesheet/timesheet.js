@@ -47,7 +47,7 @@ HTimeSheet = HControl.extend({
     for(; hour < 24; hour++){
       hours.push('<div style="line-height:'+rowHeight+'px;height:'+rowHeight+'px;top:'+Math.round((hour*rowHeight)-lineHeight)+'px" class="timesheet_hours_row">'+hour+':00</div>');
     }
-    ELEM.setHTML(this.markupElemIds.label,hours.join(''));
+    this.markupElemIds && this.markupElemIds.label && ELEM.setHTML(this.markupElemIds.label,hours.join(''));
     this.refreshState();
   },
   
@@ -62,7 +62,7 @@ HTimeSheet = HControl.extend({
     for(; line < 48; line++){
       lines.push('<div style="top:'+(line*lineHeight)+'px" class="timesheet_lines_row'+(line%2)+'"></div>');
     }
-    ELEM.setHTML(this.markupElemIds.state,lines.join(''));
+    this.markupElemIds && this.markupElemIds.label && ELEM.setHTML(this.markupElemIds.state,lines.join(''));
   },
   dragItem: false,
   
