@@ -46,7 +46,7 @@ Event = {
   **/
   isLeftClick: function(e) {
     // IE: left 1, middle 4, right 2
-    if (ELEM._is_ie || ELEM._is_safari) {
+    if (BROWSER_TYPE.ie || BROWSER_TYPE.safari) {
       return (e.button === 1);
     }
     else {
@@ -141,7 +141,7 @@ Event = {
 
 // Activates the garbage collector of Internet Explorer 
 // when the document is unloaded:
-if (ELEM._is_ie) {
+if (BROWSER_TYPE.ie) {
   Event.observe(window, "unload", Event.unloadCache, false);
 }
 
@@ -262,24 +262,24 @@ EVENT = {
 /** Starts event listening.
   **/
   start: function() {
-    var _globalEventTargetElement = ELEM._is_ie?document:window,
-        _this = EVENT,
-        _eventMap = [
-          ['mousemove', _this.mouseMove],
-          ['mouseup', _this.mouseUp],
-          ['mousedown', _this.mouseDown],
-          ['click', _this.click],
-          ['keyup', _this.keyUp],
-          ['keydown', _this.keyDown],
-          ['keypress', _this.keyPress],
-          ['contextmenu', _this.contextMenu],
-          ['resize', _this.resize],
-          ['mousewheel', _this.mouseWheel]
-        ],
-        i = 0;
-    for (; i !== _eventMap.length; i++) {
-      Event.observe(_globalEventTargetElement, _eventMap[i][0], _eventMap[i][1]);
-    }
+    var _globalEventTargetElement = BROWSER_TYPE.ie?document:window,
+        _this = EVENT;
+        // _eventMap = [
+    Event.observe( _globalEventTargetElement, 'mousemove', _this.mouseMove );
+    Event.observe( _globalEventTargetElement, 'mouseup', _this.mouseUp );
+    Event.observe( _globalEventTargetElement, 'mousedown', _this.mouseDown );
+    Event.observe( _globalEventTargetElement, 'click', _this.click );
+    Event.observe( _globalEventTargetElement, 'keyup', _this.keyUp );
+    Event.observe( _globalEventTargetElement, 'keydown', _this.keyDown );
+    Event.observe( _globalEventTargetElement, 'keypress', _this.keyPress );
+    Event.observe( _globalEventTargetElement, 'contextmenu', _this.contextMenu );
+    Event.observe( _globalEventTargetElement, 'resize', _this.resize );
+    Event.observe( _globalEventTargetElement, 'mousewheel', _this.mouseWheel );
+        // ],
+        // i = 0;
+    // for (; i !== _eventMap.length; i++) {
+    // Event.observe(_globalEventTargetElement, _eventMap[i][0], _eventMap[i][1]);
+    // }
     if (window.addEventListener) {
       window.addEventListener('DOMMouseScroll', EVENT.mouseWheel, false);
       window.addEventListener('resize', EVENT.resize, false);
@@ -338,7 +338,7 @@ EVENT = {
     // Binds the class to the element (so it can be called on the event)
     _elemId = _ctrl.elemId;
     _elem = ELEM.get(_elemId);
-    if (ELEM._is_ie) {
+    if (BROWSER_TYPE.ie) {
       _elem.setAttribute('ctrl', _ctrl);
     }
     else {
