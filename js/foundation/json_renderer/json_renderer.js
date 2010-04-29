@@ -48,7 +48,6 @@ COMM.JSONRenderer = HClass.extend({
     this.view = this.renderNode( this.data, this.parent );
   },
   defineInScope: function( _definition ){
-    console.log('definedInScope(',_definition,')');
     var _isArr = (_definition instanceof Array),
         _isObj = (_definition instanceof Object);
     if( _isArr || !_isObj ){
