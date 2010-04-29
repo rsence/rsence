@@ -132,7 +132,7 @@ HThemeManager = HClass.extend({
   **/
   getCssFilePath: function( _fileName ){
     var _themeName      = this._cssEvalParams[0];
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && (BROWSER_TYPE.ie6 || BROWSER_TYPE.symbian) ){
       return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
     }
     else {
@@ -171,7 +171,7 @@ HThemeManager = HClass.extend({
     
     var _style, _styleSheet, _head;
     
-    if(ELEM._is_ie) {
+    if(BROWSER_TYPE.ie) {
       // Internet Explorer (at least 6.x; check what 7.x does)
       _style         = document.createStyleSheet();
       _style.cssText = _cssText;
@@ -331,7 +331,7 @@ HThemeManager = HClass.extend({
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _fileName ){
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && ELEM._is_ie6){
+    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && BROWSER_TYPE.ie6){
       return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath), _fileName.replace('.png','-ie6.gif') );
     }
     return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath), _fileName );
