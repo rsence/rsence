@@ -68,21 +68,22 @@ HClass.prototype = {
   
  /* The property copying method. */
   extend: function(_source, _value) {
-    var _extend = HClass.prototype.extend;
+    var _extend = HClass.prototype.extend,
+        _ancestor, _method, _previous, _returnValue, i, _name, _prototype, _protected;
     if (arguments.length === 2) {
-      var _ancestor = this[_source];
+      _ancestor = this[_source];
       // only methods are inherited
       if ((_ancestor instanceof Function) && (_value instanceof Function) &&
           _ancestor.valueOf() !== _value.valueOf() && (/\bbase\b/).test(_value)) {
-        var _method = _value;
+        _method = _value;
         _value = function() {
           // saves the this.base that is the this.base method of this child
-          var _previous = this.base;
+          _previous = this.base;
           // copies previous this.base from the direction from HClass
           this.base = _ancestor;
           // current class's method is called
           // now inside the function when called this.base points to parent method
-          var _returnValue = _method.apply(this, arguments);
+          _returnValue = _method.apply(this, arguments);
           // then because event this function can be called from child method
           // resets the base to as is was before calling this function
           this.base = _previous;
@@ -98,19 +99,19 @@ HClass.prototype = {
       return this[_source] = _value;
     // this is called when called by HClass.extend
     } else if (_source) {
-      var _prototype = {toSource: null};
-      var _protected = ["toString", "valueOf"];
+      _prototype = {toSource: null};
+      _protected = ["toString", "valueOf"];
       // we want default constructor function
       if (HClass._prototyping) {
         // 3. index
         _protected.push("constructor");
       }
-      for (var i = 0; (_name = _protected[i]); i++) {
+      for (i = 0; (_name = _protected[i]); i++) {
         if (_source[_name] !== _prototype[_name]) {
           _extend.call(this, _name, _source[_name]);
         }
       }
-      for (var _name in _source) {
+      for (_name in _source) {
         if (!_prototype[_name]) {
           _extend.call(this, _name, _source[_name]);
         }
@@ -186,7 +187,8 @@ HClass.prototype = {
   **/
 HClass.extend = function(_instance, _static) {
   // reference to HClass's prototype extend method (HClass's class structure extend method)
-  var _extend = HClass.prototype.extend;
+  var _extend = HClass.prototype.extend,
+      _prototype, _constructor, _klass, _object;
   // if _instance is undefined,null,"" etc. creates object so that code below works
   if (!_instance) {
     _instance = {};
@@ -194,15 +196,15 @@ HClass.extend = function(_instance, _static) {
   HClass._prototyping = true;
   // this is base for single instance or prototype (class structure) for object that are created
   // from this class
-  var _prototype = new this;
+  _prototype = new this;
   // copies properties and methods from _instance to _prototype (class structure)
   _extend.call(_prototype, _instance);
   // this constructor came from _instance
-  var _constructor = _prototype.constructor;
+  _constructor = _prototype.constructor;
   _prototype.constructor = this;
   delete HClass._prototyping;
   
-  var _klass = function() {
+  _klass = function() {
     if (!HClass._prototyping) {
       _constructor.apply(this, arguments);
     }
@@ -224,7 +226,7 @@ HClass.extend = function(_instance, _static) {
   _extend.call(_klass, _static);
   // if _constructor is marked as null returns the created instance (that is also class structure for
   // instances if class is returned
-  var _object = (_constructor !== null) ? _klass : _prototype;
+  _object = (_constructor !== null) ? _klass : _prototype;
   if (_object.init instanceof Function) {
     _object.init();
   }
@@ -279,23 +281,22 @@ var Base = HClass;
 
 // Array fix
 if ([]['indexOf']===undefined) {
-  Object.extend = function(destination, source) {
-    for (property in source) {
-      destination[property] = source[property];
-    }
-    return destination;
-  };
-  Object.extend(Array.prototype, {
-    indexOf: function(_anObject){
-      var i = 0, l = this.length;
-      for (; i < l; i++) {
-        if (this[i] === _anObject) {
-          return i;
-        }
+  // Object.extend = function(_destination, _source) {
+  //   for (var _property in _source) {
+  //     _destination[_property] = _source[_property];
+  //   }
+  //   return _destination;
+  // };
+  // Object.extend(Array.prototype, {
+  Array.prototype.indexOf = function(_anObject){
+    var i = 0, l = this.length;
+    for (; i < l; i++) {
+      if (this[i] === _anObject) {
+        return i;
       }
-      return -1;
     }
-  });
+    return -1;
+  };
 }
 
 
@@ -304,7 +305,7 @@ try {
 
 // console.log surrogate for browsers without a console
 if(window['console']===undefined){
-  console = {
+  window.console = {
     log: function(){
     }
   };
