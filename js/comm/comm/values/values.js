@@ -364,7 +364,7 @@ COMM.Values = HClass.extend({
   * A copy of the object.
   *
   **/
-  clone: function( _obj ){
+  clone: function( _obj, _shallow ){
     if(_obj === null || _obj === undefined){
       console.log('null or undefined obj:',_obj);
       return _obj;
@@ -374,14 +374,24 @@ COMM.Values = HClass.extend({
     if( _obj instanceof Array ){
       _cloned = [];
       for( _item = 0; _item < _obj.length; _item ++ ){
-        _cloned[ _item ] = this.clone( _obj[ _item ] );
+        if(_shallow){
+          _cloned[ _item ] = _obj[ _item ];
+        }
+        else {
+          _cloned[ _item ] = this.clone( _obj[ _item ] );
+        }
       }
       return _cloned;
     }
     else if( _obj instanceof Object ){
       _cloned = {};
       for( _item in _obj ){
-        _cloned[ _item ] = this.clone( _obj[ _item ] );
+        if(_shallow){
+          _cloned[ _item ] = _obj[ _item ];
+        }
+        else {
+          _cloned[ _item ] = this.clone( _obj[ _item ] );
+        }
       }
       return _cloned;
     }
