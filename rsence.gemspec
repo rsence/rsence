@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.date      = Time.now
   s.homepage  = 'http://www.rsence.org/'
   s.summary   = "Pre-Release 2.0 version of the RSence RIA GUI Framework. Don't use for production (yet)."
-  s.has_rdoc  = not s.version.ends_with?('.pre') # enable when release is ready
+  s.has_rdoc  = (not s.version.to_s.end_with?('.pre')) # enable when release is ready
   # s.require_path = '.'
   s.description = <<-END
 RSence is primarily a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies. RSence uses the server for backend tasks and the client to provide responsive user interfaces. The server is a highly optimized Ruby framework for writing applications as plugin bundles containing all resources needed per plugin. The client is a highly optimized Javascript framework with an API similar to many object-oriented desktop frameworks. RSence is not primarily targeted for creating html web sites, there are plenty of other tools for that purpose.
