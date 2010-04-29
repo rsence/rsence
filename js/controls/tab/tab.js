@@ -41,10 +41,6 @@ HTab = HControl.extend({
   refreshOnValueChange: true,
   refreshOnLabelChange: false,
   
-  defaultEvents: {
-    click: true
-  },
-  
   controlDefaults: (HControlDefaults.extend({
     constructor: function(_ctrl){
       this.tabInit(_ctrl);
@@ -79,7 +75,7 @@ HTab = HControl.extend({
   tabLabelElementTagName: 'div',
   tabLabelAlign: 'left',
   tabLabelFillBg: false,
-  tabTriggerLink: false,
+  tabTriggerLink: true,
   tabLabelNoHTMLPrefix: false,
   
 /** = Description
@@ -170,7 +166,7 @@ HTab = HControl.extend({
       ELEM.setAttr(_tabLabelElemId,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
     else if (this.tabTriggerLink){
-      ELEM.setAttr(_tabLabelElemId,'mouseup','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
+      ELEM.setAttr(_tabLabelElemId,'onclick','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
     else {
       this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
