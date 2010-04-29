@@ -156,6 +156,23 @@ HWindow = HDynControl.extend({
     return _rectRules;
   },
   
+  maxRect: function(){
+    var _rect = this.base();
+    if(_rect[2]<this.options.minSize[0]){
+      _rect[2] = this.options.minSize[0];
+    }
+    else if(_rect[2]>this.options.maxSize[0]){
+      _rect[2] = this.options.maxSize[0];
+    }
+    if(_rect[3]<this.options.minSize[1]){
+      _rect[3] = this.options.minSize[1];
+    }
+    else if(_rect[3]>this.options.maxSize[1]){
+      _rect[3] = this.options.maxSize[1];
+    }
+    return _rect;
+  },
+  
 /** Reports to HSystem that this window has the focus and the 
   * previously active window needs to blur 
   **/
