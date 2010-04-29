@@ -195,8 +195,7 @@ ELEM = {
 
   // deprecated; backwards-compatibility
   _replace: function(_id, _elem) {
-    var _this = ELEM;
-    _this._elements[_id] = _elem;
+    ELEM._elements[_id] = _elem;
   },
 
 /** = Description
@@ -374,7 +373,7 @@ ELEM = {
         h = _elem.offsetHeight,
         _parent = _elem.parentNode;
     while (_parent && _parent.nodeName.toLowerCase() !== 'body') {
-      if (!_this._is_ie) {
+      if (!BROWSER_TYPE.ie) {
         _parentOverflow = document.defaultView.getComputedStyle(
         _parent, null
         ).getPropertyValue('overflow');
@@ -505,17 +504,17 @@ ELEM = {
   **/
   setOpacity: function(_id, _opacity) {
     var _this = ELEM;
-    if (_opacity === 1 && _this._is_ie6) {
+    if (_opacity === 1 && BROWSER_TYPE.ie6) {
       _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, ''));
     }
     else {
       if (_opacity < 0.01) {
         _opacity = 0;
       }
-      if (_this._is_ie6) {
+      if (BROWSER_TYPE.ie6) {
         _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, '') + 'alpha(opacity=' + _opacity * 100 + ')');
       }
-      else if (_this._is_ie) {
+      else if (BROWSER_TYPE.ie) {
         (_this._elements[_id].style.setAttribute('opacity', _opacity));
       }
       else {
@@ -664,7 +663,7 @@ ELEM = {
   flushLoop: function(_delay) {
     var _this = ELEM;
     _this._flushLoopCount++;
-    if (_this._is_ie6 && (_this._flushLoopCount % 5 === 0) && _this._ieFixesNeeded) {
+    if (BROWSER_TYPE.ie6 && /* (_this._flushLoopCount % 5 === 0) && */ _this._ieFixesNeeded) {
       //window.status = 'traversetree0:'+_this._flushLoopCount;
       iefix._traverseTree();
       _this._ieFixesNeeded = false;
@@ -681,7 +680,7 @@ ELEM = {
     } else {
       if (!_this._needFlush) {
         // goto sleep mode
-        if (_this._is_ie6 && _this._ieFixesNeeded) {
+        if (BROWSER_TYPE.ie6 && _this._ieFixesNeeded) {
           //window.status = 'traversetree1:'+_this._flushLoopCount;
           iefix._traverseTree();
           _this._ieFixesNeeded = false;
@@ -961,7 +960,7 @@ ELEM = {
           _this.setOpacity(_id, _value);
         }
         else {
-          if( _this._is_ie ) {
+          if( BROWSER_TYPE.ie ) {
             var _camelKey = _key.replace(
               /((-)([a-z])(\w))/g,
               function($0, $1, $2, $3, $4) {
@@ -974,7 +973,7 @@ ELEM = {
             _elems[_id].style.setProperty(_key, _cached[_key], '');
           }
         }
-        if (_this._is_ie6) {
+        if (BROWSER_TYPE.ie6) {
           if (iefix._traverseStyleProperties.indexOf(_key) !== -1) {
             _this._ieFixesNeeded = true;
           }
@@ -1181,7 +1180,7 @@ ELEM = {
         _this.setOpacity(_id, _cached[_key]);
       }
       else {
-        if (_this._is_ie6) {
+        if (BROWSER_TYPE.ie6) {
           if (iefix._traverseStyleProperties.indexOf(_key) !== -1) {
             _this._ieFixesNeeded = true;
           }
@@ -1208,34 +1207,61 @@ ELEM = {
   
   /* The ELEM "post-constructor" */
   _init: function() {
-    var _this = ELEM,
-        _cmd,
-        _type,
-        _cmdResult;
-    if (_this._is_ie) {
-      ELEM.getStyle = _this._getStyleIE;
+    
+    var _this = ELEM;
+    
+    if (BROWSER_TYPE.ie6) {
+      _this.getStyle = _this._getStyleIE;
     }
-    if (_this._is_ie) {
-      ELEM._flushStyleCache = _this._flushStyleCacheIE;
+    if (BROWSER_TYPE.ie) {
+      _this._flushStyleCache = _this._flushStyleCacheIE;
     }
     
-    _this.bind(document.body);
+    if(!_this['_timer']){
+      _this.bind(document.body);
+    }
     
-    // creates an 'trash' for div elements
     if (_this._enableRecycler) {
       _this._trashId = _this.make(0, 'div');
       _this.setCSS(_this._trashId, "display:none;visibility:hidden;");
       _this.setAttr(_this._trashId, 'id', 'trashcan_' + _this._trashId);
     }
     
-    _this._timer = setTimeout( function(){ ELEM.flushLoop(ELEM._minDelay); }, _this._minDelay);
-    
-    if (!_this._domLoadQueue) {
-      return;
+    if(BROWSER_TYPE.symbian){
+      var TestClass = HClass.extend({
+        test: true,
+        constructor: null
+      });
+      // Symbian dies in the loop when loading itself cached on reload, restart loop by re-calling this function in 1 second.
+      if(!TestClass.test){
+        var _gotoOpera = confirm('Your Web Browser fails. Please restart the S60 Web Browser or install a better browser.\nDo you want to download and install Opera Mobile now?');
+        if(_gotoOpera){
+          location.href = 'http://www.opera.com/download/get.pl?sub=++++&id=32792&location=270&nothanks=yes';
+        }
+        // Can't do anything wightout proper JS support.
+        return;
+      }
     }
     
-    while (_this._domLoadQueue.length !== 0) {
-      _cmd = _this._domLoadQueue.shift();
+    _this._flushDomLoadQueueBusy = false;
+    while(!ELEM._initDone){
+      ELEM._flushDomLoadQueue();
+    }
+    _this._timer = setTimeout( function(){ if(!ELEM._flushDomLoadQueueBusy){ELEM.flushLoop(ELEM._minDelay); }}, ELEM._minDelay );
+    // _this._flushDomLoadQueueTimer = setInterval( function(){ELEM._flushDomLoadQueue();}, 10 );
+    
+    // alert(_this._minDelay);
+  },
+  
+  _flushDomLoadQueue: function(){
+    var _cmd,
+        _type,
+        _cmdResult;
+    if(ELEM._domLoadQueue.length === 0){
+      ELEM._initDone = true;
+    }
+    else {
+      _cmd = ELEM._domLoadQueue.shift();
       _type = (typeof _cmd);
       if (_type === 'function') {
         _cmd.call();
@@ -1243,58 +1269,45 @@ ELEM = {
       else if (_type === 'string') {
         _cmdResult = eval(_cmd);
         if (typeof _cmdResult === 'string') {
-          _this._domLoadQueue.push(_cmdResult);
+          ELEM._domLoadQueue.push(_cmdResult);
         }
       }
     }
-    _this._initDone = true;
   },
   
   /* Checks browser versions and starts the document load check */
   _warmup: function() {
     var _this = ELEM,
         _ua = navigator.userAgent,
-        _isIE = (document.all && _ua.indexOf("Opera") === -1),
-        _browserTypesTable = [
-          [ 'opera',    '_is_opera',   _ua.indexOf("Opera") !== -1           ],
-          [ 'safari',   '_is_safari',  _ua.indexOf("KHTML") !== -1           ],
-          [ 'symbian',  '_is_symbian', _ua.indexOf("SymbianOS") !== -1       ],
-          [ 'chrome',   '_is_chrome',  _ua.indexOf("Chrome") !== -1          ],
-          [ 'ie',       '_is_ie',      _isIE                                 ],
-          [ 'ie6',      '_is_ie6',     _isIE && _ua.indexOf("MSIE 6") !== -1 ],
-          [ 'ie7',      '_is_ie7',     _isIE && _ua.indexOf("MSIE 7") !== -1 ],
-          [ 'ie8',      '_is_ie8',     _isIE && _ua.indexOf("MSIE 8") !== -1 ],
-          [ 'firefox',  '_is_ff',      _ua.indexOf("Firefox") !== -1         ],
-          [ 'firefox2', '_is_ff2',     _ua.indexOf("Firefox/2.") !== -1      ],
-          [ 'firefox3', '_is_ff3',     _ua.indexOf("Firefox/3.") !== -1      ]
-        ],
-        i = 0,
-        _typeKeyGlobal,
-        _typeKeyLocal,
-        _typeBool;
-    for( ; i < _browserTypesTable.length; i++ ){
-      _typeKeyGlobal = _browserTypesTable[i][0];
-      _typeKeyLocal  = _browserTypesTable[i][1];
-      _typeBool      = _browserTypesTable[i][2];
-      BROWSER_TYPE[_typeKeyGlobal] = _typeBool;
-      _this[_typeKeyLocal] = _typeBool;
-    }
+        _isIE = (document.all && (_ua.indexOf("Opera") === -1)),
+        _browserType = BROWSER_TYPE;
+    _browserType.opera    = _ua.indexOf("Opera") !== -1;
+    _browserType.safari   = _ua.indexOf("KHTML") !== -1;
+    _browserType.symbian  = _ua.indexOf("SymbianOS") !== -1;
+    _browserType.chrome   = _ua.indexOf("Chrome") !== -1;
+    _browserType.ie       = _isIE;
+    _browserType.ie6      = _isIE && (_ua.indexOf("MSIE 6") !== -1);
+    _browserType.ie7      = _isIE && (_ua.indexOf("MSIE 7") !== -1);
+    _browserType.ie8      = _isIE && (_ua.indexOf("MSIE 8") !== -1);
+    _browserType.firefox  = _ua.indexOf("Firefox") !== -1;
+    _browserType.firefox2 = _ua.indexOf("Firefox/2.") !== -1;
+    _browserType.firefox3 = _ua.indexOf("Firefox/3.") !== -1;
     _this._domWaiter();
   },
   
   /* Adds commands to be run when the document load check turns true */
   _domLoader: function(_cmd) {
-    var _this = ELEM,
-        _type = (typeof _cmd);
-    if (_this._initDone === true) {
+    var _type = (typeof _cmd);
+    if (ELEM._initDone === true) {
       if( _type === 'string' ) {
         eval(_cmd);
       }
       else if (_type === 'function'){
         _cmd.call();
       }
-    } else {
-      _this._domLoadQueue.push(_cmd);
+    }
+    else {
+      ELEM._domLoadQueue.push(_cmd);
     }
   },
   
@@ -1304,7 +1317,7 @@ ELEM = {
         _this = ELEM;
     // A hack for ie (ripped from DomLoaded.js)
     // http://www.cherny.com/demos/onload/domloaded.js
-    if (_this._is_ie) {
+    if (BROWSER_TYPE.ie) {
       var _ie_proto = "javascript:void(0)";
       if (location.protocol === "https:") {
         _ie_proto = "src=//0";
@@ -1312,12 +1325,10 @@ ELEM = {
       document.write("<scr" + "ipt id=__ie_onload defer src=" + _ie_proto + "></scr" + "ipt>");
       var _ie_script = document.getElementById("__ie_onload");
       _ie_script.onreadystatechange = function() {
-        if (this.readyState === "complete") {
+        if ((this.readyState === "complete") && true) {
+          clearTimeout(ELEM._domLoadTimer);
           ELEM._domLoadStatus = true;
           ELEM._init();
-          delete ELEM._domLoadQueue;
-          clearTimeout(ELEM._domLoadTimer);
-          delete ELEM._domLoadTimer;
         }
       };
       // the event will trigger on ie, so we don't have to keep on polling:
@@ -1325,8 +1336,9 @@ ELEM = {
     }
 
     // Safari / KHTML readyness detection:
-    else if ((/KHTML|WebKit/i.test(navigator.userAgent)) &&
-    (/loaded|complete/.test(document.readyState))) {
+    else if (BROWSER_TYPE.safari && document.readyState === 'complete'){
+    // (/loaded|complete/.test(document.readyState))) {
+    // (/loaded|complete/.test(document.readyState))) {
       _this._domLoadStatus = true;
     }
 
@@ -1335,13 +1347,24 @@ ELEM = {
       _this._domLoadStatus = true;
     }
 
-    if (!_this._domLoadStatus) {
-      _this._domLoadTimer = setTimeout('ELEM._domWaiter()', ELEMTickerInterval * 10);
-    } else {
-      _this._init();
-      delete _this._domLoadQueue;
+    if (_this._domLoadStatus) {
       clearTimeout(_this._domLoadTimer);
-      delete _this._domLoadTimer;
+      if(BROWSER_TYPE.symbian){
+        // document.body.innerHTML produces beyond-wtf "fastinnerhtml!", maybe they "fixed" an unit test?
+        // see: http://trac.webkit.org/browser/S60/trunk/WebCore/khtml/html/html_elementimpl.cpp#L750
+        //document.body.innerHTML += '';
+        
+        // This check ensures we are use actually testing the beyond buggy S60 Web Browser.
+        // Better versions are handled like regular safari/webkit/chrome/khtml
+        BROWSER_TYPE.symbian = document.body.innerHTML === "fastinnerhtml!";
+        // var _timer = setTimeout(_this._init, 5000);
+      }
+      // else {
+        _this._init();
+      // }
+    }
+    else {
+      _this._domLoadTimer = setTimeout('ELEM._domWaiter()', ELEMTickerInterval * 10);
     }
   }
 };
