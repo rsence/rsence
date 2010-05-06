@@ -300,6 +300,13 @@ EOF
         exit
       end
     end
+    if valid_env?(@args[:env_path])
+      conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
+      @args[:conf_files].push( conf_file ) unless @args[:conf_files].include?( conf_file )
+    else
+      puts "invalid environment."
+      exit
+    end
     @startable = true
   end
   

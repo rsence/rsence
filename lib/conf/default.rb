@@ -114,13 +114,13 @@ class Configuration
     local_config_file_paths.each do |local_config_file_path|
       if File.exists? local_config_file_path and File.file? local_config_file_path
         if local_config_file_path.end_with? '.yaml'
+          puts "loading config file: #{local_config_file_path}" if args[:verbose]
           local_conf = YAML.load( File.read( local_config_file_path ) )
           unless local_conf.class == Hash
             warn "invalid configuration file: #{local_config_file_path.inspect}"
             next
           end
           hash_merge( config, local_conf )
-          require 'pp'; pp config[:database]
         elsif local_config_file_path.end_with? '.rb'
           warn "WARNING: '.rb' configuration files are deprecated!"
           # Legacy work-arounds
