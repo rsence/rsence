@@ -123,7 +123,7 @@ class PluginManager
           if @registry.has_key?( bundle_name.to_sym )
             puts "Disabling bundle #{bundle_name}..."
             unload_bundle( bundle_name.to_sym )
-            if ARGV.include?('-say')
+            if RSence.args[:say]
               Thread.new do
                 Thread.pass
                 system(%{say "Unloaded #{bundle_name.to_s}."})
@@ -135,7 +135,7 @@ class PluginManager
             puts "Loading bundle #{bundle_name}..."
             load_bundle( bundle_path, bundle_name.to_sym, bundle_name+'.rb' )
             call( bundle_name.to_sym, :open )
-            if ARGV.include?('-say')
+            if RSence.args[:say]
               Thread.new do
                 Thread.pass
                 system(%{say "Loaded #{bundle_name.to_s}."})
@@ -149,7 +149,7 @@ class PluginManager
               unload_bundle( bundle_name.to_sym )
               load_bundle( bundle_path, bundle_name.to_sym, bundle_name+'.rb' )
               call( bundle_name.to_sym, :open )
-              if ARGV.include?('-say')
+              if RSence.args[:say]
                 Thread.new do
                   Thread.pass
                   system(%{say "Reloaded #{bundle_name.to_s}."})

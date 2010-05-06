@@ -12,6 +12,10 @@ require 'rubygems'
 require 'rack'
 require 'yaml'
 
+if RUBY_VERSION.to_f >= 1.9
+  Encoding.default_external = Encoding::ASCII_8BIT
+end
+
 # Legacy:
 LIB_PATHS = []
 PIDPATH = File.join(SERVER_PATH,'var','run')
@@ -19,8 +23,6 @@ LOGPATH = File.join(SERVER_PATH,'var','log')
 def load_legacy( local_config_file_path )
   require local_config_file_path[0..-4]
 end
-
-module RSence
 
 class Configuration
   def array_merge( target, source )
@@ -55,10 +57,21 @@ class Configuration
       end
     end
   end
-  def initialize
+  def wizard
+    puts "Please answer the following questions, blank lines equal to the default in brackets:"
+    require 'conf/wizard'
+    if File.directory?( File.join( Dir.pwd, 'conf' ) )
+      wizard_conf_file = File.join( Dir.pwd, 'conf', 'local_conf.yaml' )
+    else
+      wizard_conf_file = File.join( SERVER_PATH, 'conf', 'local_conf.yaml' )
+    end
+    wizard_config_data = ConfigWizard.new(config).run( wizard_conf_file )
+    config.merge!( wizard_config_data )
+  end
+  def initialize(args)
     ## Paths for log and pid files
-    pidpath = File.join(SERVER_PATH,'var','run')
-    logpath = File.join(SERVER_PATH,'var','log')
+    pidpath = File.join(args[:env_path],'var','run')
+    logpath = File.join(args[:env_path],'var','log')
     
     yaml_conf_path = File.join( SERVER_PATH, 'conf', 'default_conf.yaml' )
     
@@ -69,10 +82,16 @@ class Configuration
     config = YAML.load( File.read( yaml_conf_path ) )
     config[:transporter_conf][:messages] = strings[:messages][:transporter]
     
-    default_plugins_path = File.join( SERVER_PATH, 'plugins' )
+    config[:client_pkg][:src_dirs].unshift( File.join( SERVER_PATH, 'js' ) )
     
+    default_plugins_path = File.join( SERVER_PATH, 'plugins' )
     unless config[:plugin_paths].include? default_plugins_path
       config[:plugin_paths].push( default_plugins_path )
+    end
+    
+    env_plugins_path = File.join( args[:env_path], 'plugins' )
+    unless config[:plugin_paths].include? env_plugins_path
+      config[:plugin_paths].push( env_plugins_path )
     end
     
     ## Paths of server libraries
@@ -84,18 +103,17 @@ class Configuration
     ## Create default local configuratation override file, if it does not exist:
     local_config_file_paths = [
       File.join(SERVER_PATH,'conf','local_conf.yaml'),
+      '/etc/rsence/config.yaml',
+      File.expand_path('~/.rsence/config.yaml'),
       File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.yaml' ),
-      File.join( Dir.pwd, 'conf', 'local_conf.yaml' ),
+      # File.join( Dir.pwd, 'conf', 'local_conf.yaml' ),
       File.join(SERVER_PATH,'conf','local_conf.rb'),
-      File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.rb' ),
-      File.join( Dir.pwd, 'conf', 'local_conf.rb' )
+      # File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.rb' ),
+      # File.join( Dir.pwd, 'conf', 'local_conf.rb' )
     ]
-    if ARGV.include?('--config')
-      argv_conf_file = ARGV[ARGV.index('--config')+1]
-      if not argv_conf_file.begin_with? '/'
-        argv_conf_file = File.join( Dir.pwd, conf_file )
-      end
-      local_config_file_paths.push( argv_conf_file )
+    
+    args[:conf_files].each do |conf_file|
+      local_config_file_paths.push( conf_file )
     end
     
     local_config_file_path_found = false
@@ -103,9 +121,14 @@ class Configuration
       if File.exists? local_config_file_path and File.file? local_config_file_path
         if local_config_file_path.end_with? '.yaml'
           local_conf = YAML.load( File.read( local_config_file_path ) )
+          unless local_conf.class == Hash
+            puts "invalid configuration file: #{local_config_file_path.inspect}"
+            exit
+          end
           hash_merge( config, local_conf )
           local_config_file_path_found = true
         elsif local_config_file_path.end_with? '.rb'
+          warn "WARNING: '.rb' configuration files are deprecated!"
           # Legacy work-arounds
           prev_pidpath = PIDPATH
           prev_logpath = LOGPATH
@@ -122,19 +145,6 @@ class Configuration
       end
     end
     
-    if not local_config_file_path_found or ARGV.include? '--run-wizard'
-      puts "NOTE:  No local configuration file found, running the, configuration wizard." unless ARGV.include? '--run-wizard'
-      puts "Please answer the following questions, blank lines equal to the default in brackets:"
-      require 'conf/wizard'
-      if File.directory?( File.join( Dir.pwd, 'conf' ) )
-        wizard_conf_file = File.join( Dir.pwd, 'conf', 'local_conf.yaml' )
-      else
-        wizard_conf_file = File.join( SERVER_PATH, 'conf', 'local_conf.yaml' )
-      end
-      wizard_config_data = ConfigWizard.new(config).run( wizard_conf_file )
-      config.merge!( wizard_config_data )
-    end
-    
     if not config[:database].has_key?( :ses_db ) and config[:database].has_key?( :auth_setup )
       warn "WARNING: The database is not configured with a :ses_db url."
       warn "         You are advised to convert the :root_setup and :auth_setup keys of"
@@ -146,13 +156,14 @@ class Configuration
     end
     
     
-    config[:trace] = true if ARGV.include?('--trace-js')
-    config[:debug_mode] = true if ARGV.include?('-d') or ARGV.include?('--debug')
-    config[:http_server][:latency] = ARGV[ARGV.index('--latency')+1].to_i if ARGV.include?('--latency')
-    config[:http_server][:port] = ARGV[ARGV.index('--port')+1].to_i if ARGV.include?('--port')
-    config[:http_server][:bind_address] = ARGV[ARGV.index('--addr')+1] if ARGV.include?('--addr')
-    config[:http_server][:rack_require] = ARGV[ARGV.index('--server')+1] if ARGV.include?('--server')
-    config[:session_conf][:reset_sessions] = true if ARGV.include?('--reset-sessions=true') or ARGV.include?('--reset-sessions')
+    config[:trace] = true if args[:trace_js]
+    config[:debug_mode] = true if args[:debug]
+    config[:http_server][:latency] = args[:latency]
+    config[:http_server][:port] = args[:port] if args[:port]
+    config[:http_server][:bind_address] = args[:addr] if args[:addr]
+    config[:http_server][:rack_require] = args[:server] if args[:server]
+    config[:session_conf][:reset_sessions] = true if args[:reset_ses]
+    
     config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless config[:daemon].has_key?(:pid_fn)
     config[:daemon][:log_fn] = File.join(logpath, "rsence") unless config[:daemon].has_key?(:log_fn)
     
@@ -209,12 +220,6 @@ class Configuration
     @config = config
   end
   attr_reader :config
-end
-@@config = Configuration.new.config
-def self.config
-  @@config
-end
-
 end
 
 

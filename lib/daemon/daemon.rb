@@ -8,9 +8,6 @@
  ##
  #++
 
-# Use the default configuration:
-require 'conf/default'
-
 # Use rubygems to load rack
 require 'rubygems'
 require 'rack'
@@ -47,7 +44,7 @@ require 'transporter/transporter'
 require 'http/broker'
 
 
-module RSence
+module ::RSence
 
 # adapted from:
 # http://snippets.dzone.com/posts/show/2265
@@ -64,7 +61,7 @@ module Daemon
       RSence.config[:daemon][:log_fn]
     end
     def self.daemonize
-      Controller.daemonize(self)
+      Controller.daemonize( self )
     end
   end
   
@@ -122,7 +119,7 @@ module Daemon
     def self.log_io(daemon)
       outpath = "#{daemon.log_fn}.stdout"
       errpath = "#{daemon.log_fn}.stderr"
-      if $DEBUG_MODE
+      if RSence.args[:verbose]
         Thread.new do
           puts "Waiting 2 seconds before switching output to log file #{outpath} and .../#{File.split(errpath)[1]}"
           sleep 2
@@ -134,35 +131,22 @@ module Daemon
       end
     end
     
-    def self.daemonize(daemon)
-      cmd = ARGV[0]
-      if ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
-        if cmd == 'start'
-          warn "Running on Microsoft Windows: unable to background. Using the run command instead of start"
-          cmd = 'run'
-        elsif cmd != 'run'
-          puts "Invalid command: #{cmd.inspect}. Windows supports only run and help."
-          exit
-        end
-      elsif not cmd or not %w[status start stop restart save run].include?( cmd )
-        puts "Invalid command. Please specify one of the following: run, start, stop, restart, status, save or help."
-        exit
-      end
-      case cmd
-      when 'run'
+    def self.daemonize( daemon )
+      case RSence.cmd
+      when :run
         puts "Starting as a foreground process."
         puts "Enter CTRL-C to stop."
         self.start_fg(daemon)
-      when 'status'
+      when :status
         self.print_status(daemon)
-      when 'start'
+      when :start
         self.start(daemon)
-      when 'stop'
+      when :stop
         self.stop(daemon)
-      when 'restart'
+      when :restart
         self.stop(daemon,true)
         self.start(daemon)
-      when 'save'
+      when :save
         self.save(daemon)
       end
     end
@@ -192,12 +176,16 @@ module Daemon
         PidFile.store(daemon, Process.pid)
         Signal.trap('USR1') do 
           if @transporter != nil
-            @transporter.plugins.shutdown if @transporter.plugins
-            @transporter.sessions.shutdown if @transporter.session
+            @transporter.plugins.delegate(:flush)
+            @transporter.sessions.store_sessions
+            # @transporter.plugins.shutdown if @transporter.plugins
+            # @transporter.sessions.shutdown if @transporter.session
           end
         end
         Signal.trap('USR2') do 
           puts "Alive."
+          # @transporter.plugins.delegate(:flush)
+          # @transporter.sessions.stare_sessions
         end
         ['INT', 'TERM', 'KILL'].each do |signal|
           Signal.trap(signal) do
@@ -222,7 +210,7 @@ module Daemon
         puts "Riassence Framework is running now."
       end
       
-      sleep 2.5 if $DEBUG_MODE
+      sleep 2.5 if RSence.args[:debug]
       
       #Process.kill("USR2", File.read(daemon.pid_fn).to_i)
     end
@@ -261,9 +249,10 @@ end
 
 class HTTPDaemon < Daemon::Base
   def self.start
+    
     @transporter = Transporter.new
     
-    unless ARGV.include?('--log-fg')
+    unless RSence.args[:log_fg]
       Daemon::Controller.log_io(self)
     end
     

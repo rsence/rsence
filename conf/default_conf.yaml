@@ -178,10 +178,10 @@
 :client_pkg:
   
   # Source directories to scan
-  :src_dirs:
+  :src_dirs: []
     
     # RSence Client Framework
-    - js
+    #- js
     
     # How to include your own custom js package directory:
     # - /home/me/code/extra_components
@@ -308,6 +308,8 @@
     - .gif
     - .png
     - .swf
+    - .svg
+    - .pdf
   
   # The name of the include file
   :js_inc: js.inc

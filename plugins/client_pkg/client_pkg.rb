@@ -104,7 +104,7 @@ class ClientPkg < Servlet
             if @client_build.bundle_changes( @last_change )
               rebuild_client
               puts "Autobuilt."
-              if ARGV.include?('-say')
+              if RSence.args[:say]
                 Thread.new do
                   Thread.pass
                   system('say "Autobuilt."')
