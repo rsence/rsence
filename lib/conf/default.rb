@@ -89,11 +89,6 @@ class Configuration
       config[:plugin_paths].push( default_plugins_path )
     end
     
-    env_plugins_path = File.join( args[:env_path], 'plugins' )
-    unless config[:plugin_paths].include? env_plugins_path
-      config[:plugin_paths].push( env_plugins_path )
-    end
-    
     ## Paths of server libraries
     lib_paths  = [
       ## already included in launch.rb; override this one in local config, if needed
@@ -116,17 +111,16 @@ class Configuration
       local_config_file_paths.push( conf_file )
     end
     
-    local_config_file_path_found = false
     local_config_file_paths.each do |local_config_file_path|
       if File.exists? local_config_file_path and File.file? local_config_file_path
         if local_config_file_path.end_with? '.yaml'
           local_conf = YAML.load( File.read( local_config_file_path ) )
           unless local_conf.class == Hash
-            puts "invalid configuration file: #{local_config_file_path.inspect}"
-            exit
+            warn "invalid configuration file: #{local_config_file_path.inspect}"
+            next
           end
           hash_merge( config, local_conf )
-          local_config_file_path_found = true
+          require 'pp'; pp config[:database]
         elsif local_config_file_path.end_with? '.rb'
           warn "WARNING: '.rb' configuration files are deprecated!"
           # Legacy work-arounds
@@ -138,23 +132,16 @@ class Configuration
           pidpath = PIDPATH if PIDPATH != prev_pidpath
           logpath = LOGPATH if LOGPATH != prev_logpath
           # /Legacy work-arounds
-          local_config_file_path_found = true
         else
           warn "Only Yaml and Ruby configuration files are allowed at this time."
         end
       end
     end
     
-    if not config[:database].has_key?( :ses_db ) and config[:database].has_key?( :auth_setup )
-      warn "WARNING: The database is not configured with a :ses_db url."
-      warn "         You are advised to convert the :root_setup and :auth_setup keys of"
-      warn "         config[:database] to the new url format."
-      db_auth = config[:database][:auth_setup]
-      config[:database][:ses_db] = "mysql://#{db_auth[:user]}:#{db_auth[:pass]}@#{db_auth[:host]}:#{db_auth[:port]}/#{db_auth[:db]}"
-      warn "      -> Performed automatic conversion of :auth_setup as"
-      warn "         config[:database][:ses_db] = #{config[:database][:ses_db].inspect}"
+    env_plugins_path = File.join( args[:env_path], 'plugins' )
+    unless config[:plugin_paths].include? env_plugins_path
+      config[:plugin_paths].push( env_plugins_path )
     end
-    
     
     config[:trace] = true if args[:trace_js]
     config[:debug_mode] = true if args[:debug]
@@ -167,6 +154,13 @@ class Configuration
     config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless config[:daemon].has_key?(:pid_fn)
     config[:daemon][:log_fn] = File.join(logpath, "rsence") unless config[:daemon].has_key?(:log_fn)
     
+    if config[:database][:ses_db].start_with?('sqlite://')
+      db_url = config[:database][:ses_db].split('sqlite://')[1]
+      unless db_url.start_with?('/')
+        db_url = File.join( args[:env_path], db_url )
+        config[:database][:ses_db] = "sqlite://#{db_url}"
+      end
+    end
     
     ## Broker configuration
     [   ## POST-requests
