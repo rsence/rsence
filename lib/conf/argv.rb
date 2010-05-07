@@ -95,7 +95,7 @@ Available options:
   
   --port <number>         The port number the http server listens to.
   
-  --addr <ip address>     THe IP address or netmask the http server listens to.
+  --addr <ip address>     The IP address or netmask the http server listens to.
                           '0.0.0.0' matches all interfaces.
                           '127.0.0.1' matches the local loopback interface.
   
@@ -195,7 +195,7 @@ Available options:
   
   --port <number>         The port number the http server listens to.
   
-  --addr <ip address>     THe IP address or netmask the http server listens to.
+  --addr <ip address>     The IP address or netmask the http server listens to.
 
 #{@@cmd_help[:path]}
 
