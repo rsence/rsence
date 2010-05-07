@@ -63,14 +63,17 @@ class ClientPkg < Servlet
       @log_file = nil
     end
     def log( str )
-      puts str
-      return
-      if @last_time < Time.now - 30
-        @last_time = Time.now
-        @log_file.write( %{--- #{@last_time.strftime("%Y-%m-%d %H:%M:%S")} ---\n} )
+      if ::RSence.args[:verbose]
+        puts str
+        return
+      else
+        if @last_time < Time.now - 30
+          @last_time = Time.now
+          @log_file.write( %{--- #{@last_time.strftime("%Y-%m-%d %H:%M:%S")} ---\n} )
+        end
+        @log_file.write( "#{str}\n" )
+        @log_file.flush
       end
-      @log_file.write( "#{str}\n" )
-      @log_file.flush
     end
     def open
       return if @log_file
@@ -169,7 +172,7 @@ class ClientPkg < Servlet
     
     @thr = false
     
-    @build_logger = BuildLogger.new( File.join(@path,'log','build_log') )
+    @build_logger = BuildLogger.new( File.join(::RSence.args[:env_path],'log','build_log') )
     @build_logger.open
     
     @client_build = ClientPkgBuild.new( ::RSence.config[:client_pkg], @build_logger )
