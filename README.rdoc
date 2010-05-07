@@ -1,15 +1,78 @@
 
-= RSence 2.0.pre                                                       2010-??-??
+= RSence 2.0.0.1.pre                                                       2010-??-??
 
 http://rsence.org/
 
-=== Introduction
+== Introduction
 
 RSence is primarily a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies. RSence uses the server for backend tasks and the client to provide responsive user interfaces. The server is a highly optimized Ruby framework for writing applications as plugin bundles containing all resources needed per plugin. The client is a highly optimized Javascript framework with an API similar to many object-oriented desktop frameworks. RSence is not primarily targeted for creating html web sites, there are plenty of other tools for that purpose.
 
-=== Installation (pre-release):
+
+== Installation (pre-release):
 
  gem install rsence --pre
+
+== Setting up a project (TODO; needs to be done manually still)
+
+ rsence initenv /path/of/project
+
+== Project anatomy:
+
+The expected structure of a project environment (where 'project_directory'
+is the directory of your project) is:
+
+  [dir]   project_directory   :: The directory of your project.
+    [dir]   conf              :: The directory of config files.
+      [file]  config.yaml     :: The config file to load by defult.
+    [dir]   var               :: Directory containing various runtime files.
+      [dir]  run              :: Directory containing PID files.
+      [dir]  log              :: Directory containing log files.
+      [dir]  db               :: Directory containing database files.
+    [dir]   plugins           :: Directory containing installed plugins.
+
+The 'config.yaml' file contains patches specific to your project.
+
+The configuration files are loaded and applied in this order:
+  1:  [rsence_install_path]/conf/default_conf.yaml
+  2:  [rsence_install_path]/conf/local_conf.yaml
+  3:  /etc/rsence/config.yaml
+  4:  ~/.rsence/config.yaml
+  5:  [project_directory]/conf/config.yaml
+  6:  Any files given using --conf parameters, in order of occurrence.
+ 
+The plugins directory contains the plugins installed in the project.
+
+== Running a project
+
+Each command-line tool command takes a number of options, the path defaults to the current working directory.
+
+=== Running in foregrond
+  rsence run /path/of/project
+
+=== Running in background
+  rsence start /path/of/project
+
+=== Stopiing from background
+  rsence stop /path/of/project
+
+=== Restarting in background
+  rsence restart /path/of/project
+
+=== Checking if project is running
+  rsence status /path/of/project
+
+== RSence command-line tool help
+
+=== Lists all available commands
+  rsence help
+
+=== Getting detailed instructions of a command
+  rsence help <command>
+
+eg:
+
+  rsence help run
+
 
 For more detailed installation and usage instructions, read the INSTALL.rdoc document.
 

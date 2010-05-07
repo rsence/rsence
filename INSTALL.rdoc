@@ -3,8 +3,7 @@
 
 If you already have a working ruby environment and know what to do, the easiest way is just:
 
- gem install rsence-deps
- gem install rsence
+ gem install rsence --pre
 
 Otherwise, follow these instructions:
 
@@ -183,7 +182,7 @@ There are two main options: *release* and *development*. Choose one of these:
 === 3.2. Setting up
 
 ==== 3.2.1. Start RSence in the development mode with logs printed to the standard output:
-  bin/run -d --log-fg
+  rsence run -df
 
 ==== 3.2.2. Configuration
 When starting up RSence for the first time, a configuration wizard is run. Just press return on the questions to use the default configuration. The default option is upper case: pressing return at a "Y/n" prompt will select "Y"
@@ -206,50 +205,49 @@ When starting up RSence for the first time, a configuration wizard is run. Just 
 Just press CTRL-C in the terminal.
 
 ==== 3.3.5. Manual configuration
-Edit the conf/local_conf.yaml file. To see all available options at their default state, see conf/default_conf.yaml
+Edit the conf/config.yaml file. To see all available options at their default state, see conf/default_conf.yaml
 
 
 == 4. Controlling the process
 For development purposes (and the only option on Microsoft Windows):
 
 Starting in foreground mode:
-  bin/run
+  rsence run
 
 Starting in foreground mode with debug mode:
-  bin/run -d
+  rsence run -d
 
 Starting in foreground mode with debug and logging in foreground:
-  bin/run -d --log-fg
+  rsence run -df
 
 Stopping in foreground mode: Press CTRL-C
 
 *NOTE: on Microsoft Windows:*
-* Either just double-click the *run.rb* file in the bin directory or prefix all commands in the command prompt with *ruby*
 * No backgrounding is supported, unless *run.rb* is configured as a Service.
 
 === 4.1. Starting the server in background mode
 In the background mode, standard output and standard errors are logged in the var/log directory and the pidfile is written in the var/pid directory.
-  bin/start
+  rsence start
 
 === 4.2. Stopping the server in background mode
-  bin/stop
+  rsence stop
 
 === 4.3. Checking the server status in background mode
-  bin/status
+  rsence status
 
 === 4.4. Restarting the server in background mode
-  bin/restart
+  rsence restart
 
 === 4.5. Re-setting the sessions
 This is needed only, if the session storage becomes corrupt or you just want to start with a clean set of sessions.
 Just apply the --reset-sessions option after the run, start or restart command in the command prompt.
-  bin/restart --reset-sessions
+  rsence restart --reset-sessions
 
 *NOTE: All the sessions currently connected clients are invalidated and need to reload the page*
 
 === 4.6. Running in development mode
 Just apply the -d option after the *run*, *start* or *restart* command in the command prompt.
-  bin/restart -d
+  rsence restart -d
 
 ==== 4.6.1. What does development mode do?
 * Plugins are reloaded automatically in the background, if they are changed, disabled, added or removed.
@@ -258,7 +256,7 @@ Just apply the -d option after the *run*, *start* or *restart* command in the co
 
 === 4.7. Other command-line options
 Just run this command to see the available options:
-  bin/help
+  rsence help
 
 === 4.8. Running RSence using rackup
   rackup conf/config.ru

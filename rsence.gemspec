@@ -15,7 +15,9 @@ END
   s.add_dependency( "rsence-deps", "934" )
   require 'rake'
   s.files = FileList[
-    'bin/*', 'lib/**/*', 'conf/*',
+    'bin/rsence',
+    'lib/**/*',
+    'conf/*',
     'plugins/client_pkg/**/*',
     'plugins/index_html/**/*',
     'plugins/main/**/*',
@@ -25,10 +27,7 @@ END
     'README.rdoc',
     'INSTALL.rdoc',
     'LICENSE',
-    'VERSION',
-    'var/run/.git_include',
-    'var/log/.git_include',
-    'var/db/.git_include'
+    'VERSION'
   ].to_a
   s.files.reject! { |fn| fn.start_with? "." }
   s.files.delete 'conf/local_conf.yaml'
