@@ -78,12 +78,6 @@ module Daemon
   
   module Controller
     
-    def self.print_status(daemon)
-      is_running = self.status(daemon)
-      puts "Riassence Framework is #{'not ' unless is_running}running"
-    end
-    
-    ## Status is not entirely reliable
     def self.status(daemon)
       if File.file?(daemon.pid_fn)
         begin
@@ -134,11 +128,9 @@ module Daemon
     def self.daemonize( daemon )
       case RSence.cmd
       when :run
-        puts "Starting as a foreground process."
+        puts "Starting as a foreground process." if RSence.args[:verbose]
         puts "Enter CTRL-C to stop."
         self.start_fg(daemon)
-      when :status
-        self.print_status(daemon)
       when :start
         self.start(daemon)
       when :stop
@@ -150,17 +142,43 @@ module Daemon
         self.save(daemon)
       end
     end
+    
     def self.start_fg(daemon)
-      ['INT', 'TERM', 'KILL'].each do |signal|
-        Signal.trap(signal) do
-          puts "Got signal #{signal.inspect}"
-          daemon.stop
+      if RSence.pid_support?
+        is_running = self.status(daemon)
+        if is_running
+          puts "Riassence Framework is already running. Stop it first."
           exit
+        elsif not is_running and File.file?(daemon.pid_fn)
+          puts "Stale pid file, removing.."
+          FileUtils.rm(daemon.pid_fn)
+        end
+        Signal.trap('USR1') do 
+          if @transporter != nil
+            @transporter.plugins.delegate(:flush)
+            @transporter.sessions.store_sessions
+            # @transporter.plugins.shutdown if @transporter.plugins
+            # @transporter.sessions.shutdown if @transporter.session
+          end
+        end
+        Signal.trap('USR2') do 
+          puts "Alive."
+          # @transporter.plugins.delegate(:flush)
+          # @transporter.sessions.stare_sessions
+        end
+        ['INT', 'TERM', 'KILL'].each do |signal|
+          Signal.trap(signal) do
+            puts "Got signal #{signal.inspect}"
+            daemon.stop
+            exit
+          end
         end
       end
+      PidFile.store(daemon,Process.pid) if RSence.pid_support?
       daemon.start
       exit
     end
+    
     def self.start(daemon)
       is_running = self.status(daemon)
       if is_running
@@ -214,6 +232,7 @@ module Daemon
       
       #Process.kill("USR2", File.read(daemon.pid_fn).to_i)
     end
+    
     def self.save(daemon,is_restart=false)
       if !File.file?(daemon.pid_fn)
         puts "Pid file not found. Is Riassence Framework started?"
@@ -228,6 +247,7 @@ module Daemon
         puts "Error, no such pid (#{pid}) running"
       end
     end
+    
     def self.stop(daemon,is_restart=false)
       self.save(daemon,is_restart)
       if !File.file?(daemon.pid_fn)
@@ -256,12 +276,14 @@ class HTTPDaemon < Daemon::Base
       Daemon::Controller.log_io(self)
     end
     
+    conf = RSence.config[:http_server]
+    
     # This is the main http handler instance:
     @broker = Broker.start(
       @transporter,
-      RSence.config[:http_server][:rack_handler],
-      RSence.config[:http_server][:bind_address],
-      RSence.config[:http_server][:port]
+      conf[:rack_handler],
+      conf[:bind_address],
+      conf[:port]
     )
     
     yield @broker if block_given?

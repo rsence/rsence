@@ -9,17 +9,19 @@
  #++
 
 module RSence
+def self.pid_support?
+  # true for non-windows
+  return (not ['i386-mingw32','x86-mingw32'].include?(RUBY_PLATFORM))
+end
 class ARGVParser
 
 @@version = File.read( File.join( SERVER_PATH, 'VERSION' ) ).strip
 
-is_win = ['i386-mingw32','x86-mingw32'].include? RUBY_PLATFORM
-
-if is_win
-  @@cmds = [ :run, :setup, :initenv, :version, :help ]
-else
+if RSence.pid_support?
   @@cmds = [ :run, :status, :start, :stop, :restart, :save, :setup,
              :initenv, :version, :help ]
+else
+  @@cmds = [ :run, :setup, :initenv, :version, :help ]
 end
 
 @@cmd_help = {}
@@ -93,9 +95,9 @@ Available options:
   
   --port <number>         The port number the http server listens to.
   
-  --addr <ip address>     THe IP address or netmask the http server listen to.
-                          '0.0.0.0' listens on all interfaces.
-                          '127.0.0.1' listens on the local loopback interface.
+  --addr <ip address>     THe IP address or netmask the http server listens to.
+                          '0.0.0.0' matches all interfaces.
+                          '127.0.0.1' matches the local loopback interface.
   
   --server <handler>      The Rack handler to use.
   
@@ -136,8 +138,12 @@ EOF
 usage: 'rsence start [options] [PATH]'
 
 The 'start' command starts RSence in the background (as a daemon).
-Use the 'stop' command to stop.
-Use the 'restart' command to restart.
+
+Use the 'stop' command to stop RSence.
+
+Use the 'restart' command to restart RSence in the background.
+
+Use the 'status' command to check if RSence is running.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
@@ -147,6 +153,8 @@ EOF
 usage: 'rsence stop [options] [PATH]'
 
 The 'stop' command stops RSence running in the background (as a daemon).
+
+Use the 'status' command to check if RSence is running.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
@@ -158,10 +166,39 @@ usage: 'rsence restart [options] [PATH]'
 The 'restart' command restarts RSence in the background (as a daemon).
 If RSence wasn't running before the 'restart' command was issued, the
 effect is the same as 'start'.
-Use the 'stop' command to stop.
+
+Use the 'stop' command to stop RSence.
+Use the 'status' command to check if RSence is running.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
+EOF
+
+@@cmd_help[:status] = <<-EOF
+usage: 'rsence status [options] [PATH]'
+
+The 'status' command checks if RSence is running.
+If started with the 'start', 'run' or 'restart' command, a PID file is written.
+Status checks if the PID file exists, if the RSence process responds and if
+the configured TCP port responds in the configured IP address.
+
+Available options:
+
+  --conf <file.yaml>      Use additional config file. You can give this option
+                          several times. The <file.yaml> is the configuration
+                          file to load.
+  
+  --debug (-d)            Debug mode. Shortcut for several options useful for
+                          developers. Not the preferred mode for production.
+  
+  --verbose (-v)          More verbose output. Also enabled by --debug
+  
+  --port <number>         The port number the http server listens to.
+  
+  --addr <ip address>     THe IP address or netmask the http server listens to.
+
+#{@@cmd_help[:path]}
+
 EOF
 
 @@cmd_help[:tail] = <<-EOF
@@ -187,7 +224,7 @@ EOF
     exit
   end
   
-  def parse_startup_argv
+  def init_args
     @args = {
       :env_path       => Dir.pwd,
       :conf_files     => [ ], # --conf
@@ -211,6 +248,10 @@ EOF
       :client_pkg_quiet                 => true,  # --build-verbose
       
     }
+  end
+  
+  def parse_startup_argv
+    init_args
     expect_option  = false
     option_name = false
     if @argv.length >= 2
@@ -359,29 +400,29 @@ EOF
     end
     plugin_path = File.join( path, 'plugins' )
     if not File.exists?( plugin_path )
-      warn "Warning; no plugin directory in project, expected: #{plugin_path.inspect}"
+      warn "Warning; no plugin directory in project, expected: #{plugin_path.inspect}" if @args[:verbose]
     elsif not File.directory?( plugin_path )
       puts "plugin directory not a directory, expected: #{plugin_path.inspect}"
       return false
     end
     var_path = File.join( path, 'var' )
     unless File.exists?( var_path )
-      warn "Warning: no var directory: Creating #{var_path.inspect}"
+      warn "Warning: no var directory: Creating #{var_path.inspect}" if @args[:verbose]
       Dir.mkdir( var_path )
     end
     var_run_path = File.join( var_path, 'run' )
     unless File.exists?( var_run_path )
-      warn "Warning: no var/run directory: Creating #{var_run_path.inspect}"
+      warn "Warning: no var/run directory: Creating #{var_run_path.inspect}" if @args[:verbose]
       Dir.mkdir( var_run_path )
     end
     var_log_path = File.join( var_path, 'log' )
     unless File.exists?( var_log_path )
-      warn "Warning: no var/log directory: Creating #{var_log_path.inspect}"
+      warn "Warning: no var/log directory: Creating #{var_log_path.inspect}" if @args[:verbose]
       Dir.mkdir( var_log_path )
     end
     var_db_path = File.join( var_path, 'db' )
     unless File.exists?( var_db_path )
-      warn "Warning: no var/db directory: Creating #{var_db_path.inspect}"
+      warn "Warning: no var/db directory: Creating #{var_db_path.inspect}" if @args[:verbose]
       Dir.mkdir( var_db_path )
     end
     return true
@@ -404,8 +445,134 @@ EOF
     exit
   end
   
+  def test_port( port, addr='127.0.0.1' )
+    require 'socket'
+    begin
+      sock = TCPsocket.open( addr, port )
+      sock.close
+      return true
+    rescue Errno::ECONNREFUSED
+      return false
+    end
+  end
+  
   def parse_status_argv
-    throw "parse_status_argv not implemented!"
+    init_args
+    expect_option  = false
+    option_name = false
+    if @argv.length >= 2
+      @argv[1..-1].each_with_index do |arg,i|
+        if expect_option
+          if [:port,:latency].include?(option_name) and arg.to_i.to_s != arg
+            puts "invalid #{option_nam.to_s}, expected number: #{arg.inspect}"
+            puts "Type 'rsence help #{@cmd.to_s}' for usage."
+            exit
+          elsif option_name == :conf_files
+            if not File.exists?( arg ) or not File.file?( arg )
+              puts "no such configuration file: #{arg.inspect}"
+              puts "Type 'rsence help #{@cmd.to_s}' for usage."
+              exit
+            else
+              @args[:conf_files].push( arg )
+            end
+          else
+            @args[option_name] = arg
+          end
+          expect_option = false
+        else
+          if arg.start_with?('--')
+            if arg == '--debug'
+              set_debug
+            elsif arg == '--verbose'
+              set_verbose
+            elsif arg == '--port'
+              expect_option = true
+              option_name = :port
+            elsif arg == '--addr'
+              expect_option = true
+              option_name = :addr
+            elsif arg == '--server'
+              expect_option = true
+              option_name = :server
+            elsif arg == '--conf' or arg == '--config'
+              expect_option = true
+              option_name = :conf_files
+            else
+              invalid_option(arg)
+            end
+          elsif arg.start_with?('-')
+            arg.split('')[1..-1].each do |chr|
+              if chr == 'd'
+                set_debug
+              elsif chr == 'v'
+                set_verbose
+              else
+                invalid_option(arg,chr)
+              end
+            end
+          elsif valid_env?(arg)
+            @args[:env_path] = File.expand_path(arg)
+            @args[:conf_files].push( File.expand_path( File.join( arg, 'conf', 'config.yaml' ) ) )
+          else
+            invalid_env( arg )
+          end
+        end
+      end
+      if expect_option
+        puts "no value for option #{option_name.to_s.inspect}"
+        puts "Type 'rsence help #{@cmd.to_s} for usage."
+        exit
+      end
+    end
+    if valid_env?(@args[:env_path])
+      conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
+      @args[:conf_files].push( conf_file ) unless @args[:conf_files].include?( conf_file )
+    else
+      puts "invalid environment."
+      exit
+    end
+    require 'conf/default'
+    config = Configuration.new(@args).config
+    # require 'daemon/daemon'
+    # puts "status: #{HTTPDaemon.daemonize.inspect}"
+    port = config[:http_server][:port]
+    addr = config[:http_server][:bind_address]
+    port_status = test_port( port, addr )
+    # port_msg = port_status ? 'responds' : 'does not respond'
+    # puts "TCP status: #{addr}:#{port} #{port_msg}" if @args[:verbose]
+    if RSence.pid_support?
+      pid_fn = config[:daemon][:pid_fn]
+      if File.exists?( pid_fn )
+        pid = File.read( pid_fn ).to_i
+        begin
+          pid_status = Process.kill('USR2',pid)
+        rescue Errno::ESRCH
+          pid_status = false
+        end
+        # pid_msg = pid_status == false ? 'not running' : 'responds'
+        # puts "process id (#{pid}) #{pid_msg}" if @args[:verbose]
+      else
+        puts "no PID file, unable to check process status" if @args[:verbose]
+        pid_status = nil
+      end
+    else
+      puts "no PID support, unable to check process status" if @args[:verbose]
+      pid_status = nil
+    end
+    if port_status
+      puts "TCP response from #{addr} port #{port}"
+    else
+      puts "No TCP response from #{addr} port #{port}."
+    end
+    if RSence.pid_support?
+      if pid_status == nil
+        puts "No process id, unable to check process status."
+      elsif pid_status == false
+        puts "No process running."
+      else
+        puts "Process id #{pid} responded with signal #{pid_status}."
+      end
+    end
   end
   
   def parse_save_argv
