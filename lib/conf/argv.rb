@@ -53,11 +53,10 @@ is the directory of your project) is:
   [dir]   project_directory   :: The directory of your project.
     [dir]   conf              :: The directory of config files.
       [file]  config.yaml     :: The config file to load by defult.
-    [dir]   var               :: Directory containing various runtime files.
-      [dir]  run              :: Directory containing PID files.
-      [dir]  log              :: Directory containing log files.
-      [dir]  db               :: Directory containing database files.
+    [dir]   db                :: Directory containing database files.
+    [dir]   log               :: Directory containing log files.
     [dir]   plugins           :: Directory containing installed plugins.
+    [dir]   run               :: Directory containing runtime pid files.
 
 The 'config.yaml' file contains patches specific to your project.
 
@@ -405,25 +404,20 @@ EOF
       puts "plugin directory not a directory, expected: #{plugin_path.inspect}"
       return false
     end
-    var_path = File.join( path, 'var' )
-    unless File.exists?( var_path )
-      warn "Warning: no var directory: Creating #{var_path.inspect}" if @args[:verbose]
-      Dir.mkdir( var_path )
+    run_path = File.join( path, 'run' )
+    unless File.exists?( run_path )
+      warn "Warning: no run directory: Creating #{run_path.inspect}" if @args[:verbose]
+      Dir.mkdir( run_path )
     end
-    var_run_path = File.join( var_path, 'run' )
-    unless File.exists?( var_run_path )
-      warn "Warning: no var/run directory: Creating #{var_run_path.inspect}" if @args[:verbose]
-      Dir.mkdir( var_run_path )
+    log_path = File.join( path, 'log' )
+    unless File.exists?( log_path )
+      warn "Warning: no log directory: Creating #{log_path.inspect}" if @args[:verbose]
+      Dir.mkdir( log_path )
     end
-    var_log_path = File.join( var_path, 'log' )
-    unless File.exists?( var_log_path )
-      warn "Warning: no var/log directory: Creating #{var_log_path.inspect}" if @args[:verbose]
-      Dir.mkdir( var_log_path )
-    end
-    var_db_path = File.join( var_path, 'db' )
-    unless File.exists?( var_db_path )
-      warn "Warning: no var/db directory: Creating #{var_db_path.inspect}" if @args[:verbose]
-      Dir.mkdir( var_db_path )
+    db_path = File.join( path, 'db' )
+    unless File.exists?( db_path )
+      warn "Warning: no db directory: Creating #{db_path.inspect}" if @args[:verbose]
+      Dir.mkdir( db_path )
     end
     return true
   end
@@ -662,7 +656,8 @@ def self.startup
   ## Riassence Daemon controls
   require 'daemon/daemon'
   puts "Starting RSence..." if self.args[:verbose]
-  HTTPDaemon.daemonize
+  daemon = HTTPDaemon.new
+  daemon.daemonize!
 end
 
 end

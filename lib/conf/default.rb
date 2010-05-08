@@ -70,8 +70,8 @@ class Configuration
   end
   def initialize(args)
     ## Paths for log and pid files
-    pidpath = File.join(args[:env_path],'var','run')
-    logpath = File.join(args[:env_path],'var','log')
+    pidpath = File.join( args[:env_path], 'run' )
+    logpath = File.join( args[:env_path], 'log' )
     
     yaml_conf_path = File.join( SERVER_PATH, 'conf', 'default_conf.yaml' )
     
