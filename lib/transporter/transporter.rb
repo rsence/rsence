@@ -34,11 +34,9 @@ class Transporter
     @valuemanager = ValueManager.new
     @sessions = SessionManager.new( self )
     @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, $DEBUG_MODE )
-    
-    # Used by:
-    #   plugins/main/main.rb
-    $SESSION = @sessions
-    
+    if RSence.launch_pid != Process.pid
+      Process.kill( 'TERM', RSence.launch_pid )
+    end
   end
   
   def servlet( request_type, request, response )
@@ -47,7 +45,7 @@ class Transporter
     # if $DEBUG_MODE and uri == $config[:index_html][:respond_address] and request_type == :get
     #   unless ARGV.include?('-no-rescan') or ARGV.include?('--no-rescan')
     #     puts "Reloading plugins."
-    #     if ARGV.include?('-say')
+    #     if RSence.args[:say]
     #       Thread.new do
     #         Thread.pass
     #         system('say "Reloading plugins."')
@@ -55,7 +53,7 @@ class Transporter
     #     end
     #     @plugins.rescan
     #     puts "Plugins reloaded."
-    #     if ARGV.include?('-say')
+    #     if RSence.args[:say]
     #       Thread.new do
     #         Thread.pass
     #         system('say "Plugins reloaded."')
