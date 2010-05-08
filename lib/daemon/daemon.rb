@@ -46,237 +46,251 @@ require 'http/broker'
 
 module ::RSence
 
-# adapted from:
-# http://snippets.dzone.com/posts/show/2265
-
-require 'fileutils'
-
-module Daemon
-  
-  class Base
-    def self.pid_fn
-      RSence.config[:daemon][:pid_fn]
-    end
-    def self.log_fn
-      RSence.config[:daemon][:log_fn]
-    end
-    def self.daemonize
-      Controller.daemonize( self )
-    end
-  end
-  
-  module PidFile
-    def self.store(daemon, pid)
-      dir_path_pid = File.split( daemon.pid_fn )[0]
-      FileUtils.mkdir_p( dir_path_pid ) unless File.exists? dir_path_pid
-      File.open(daemon.pid_fn, 'w') {|f| f << pid}
-    end
-    def self.recall(daemon)
-      IO.read(daemon.pid_fn).to_i rescue nil
-    end
-  end
-  
-  module Controller
-    
-    def self.status(daemon)
-      if File.file?(daemon.pid_fn)
-        begin
-          pid = File.read(daemon.pid_fn).to_i
-          pid && Process.kill('USR2',pid)
-          return true
-        rescue Errno::ESRCH => e
-          return false
-        end
-      end
-      return false
-    end
-    
-    def self.open_log( outpath, errpath )
-      dir_path_out = File.split( outpath )[0]
-      FileUtils.mkdir_p( dir_path_out ) unless File.exists? dir_path_out
-      dir_path_err = File.split( outpath )[0]
-      FileUtils.mkdir_p( dir_path_err ) unless File.exists? dir_path_err
-      if File.exist?( outpath )
-        STDOUT.reopen( outpath, "a" )
-      else
-        STDOUT.reopen( outpath, "w" )
-      end
-      if File.exist?( errpath )
-        STDERR.reopen( errpath, "a" )
-      else
-        STDERR.reopen( errpath, "w" )
-      end
-      STDOUT.sync = true
-      STDERR.sync = true
-    end
-    
-    def self.log_io(daemon)
-      outpath = "#{daemon.log_fn}.stdout"
-      errpath = "#{daemon.log_fn}.stderr"
-      if RSence.args[:verbose]
-        Thread.new do
-          puts "Waiting 2 seconds before switching output to log file #{outpath} and .../#{File.split(errpath)[1]}"
-          sleep 2
-          puts "Switching to stdin and stdout to log mode. Follow the log file to see further server output."
-          self.open_log( outpath, errpath )
-        end
-      else
-        self.open_log( outpath, errpath )
-      end
-    end
-    
-    def self.daemonize( daemon )
-      case RSence.cmd
-      when :run
-        puts "Starting as a foreground process." if RSence.args[:verbose]
-        puts "Enter CTRL-C to stop."
-        self.start_fg(daemon)
-      when :start
-        self.start(daemon)
-      when :stop
-        self.stop(daemon)
-      when :restart
-        self.stop(daemon,true)
-        self.start(daemon)
-      when :save
-        self.save(daemon)
-      end
-    end
-    
-    def self.start_fg(daemon)
-      if RSence.pid_support?
-        is_running = self.status(daemon)
-        if is_running
-          puts "Riassence Framework is already running. Stop it first."
-          exit
-        elsif not is_running and File.file?(daemon.pid_fn)
-          puts "Stale pid file, removing.."
-          FileUtils.rm(daemon.pid_fn)
-        end
-        Signal.trap('USR1') do 
-          if @transporter != nil
-            @transporter.plugins.delegate(:flush)
-            @transporter.sessions.store_sessions
-            # @transporter.plugins.shutdown if @transporter.plugins
-            # @transporter.sessions.shutdown if @transporter.session
-          end
-        end
-        Signal.trap('USR2') do 
-          puts "Alive."
-          # @transporter.plugins.delegate(:flush)
-          # @transporter.sessions.stare_sessions
-        end
-        ['INT', 'TERM', 'KILL'].each do |signal|
-          Signal.trap(signal) do
-            puts "Got signal #{signal.inspect}"
-            daemon.stop
-            exit
-          end
-        end
-      end
-      PidFile.store(daemon,Process.pid) if RSence.pid_support?
-      daemon.start
-      exit
-    end
-    
-    def self.start(daemon)
-      is_running = self.status(daemon)
-      if is_running
-        puts "Riassence Framework is already running. Try restart."
-        exit
-      elsif not is_running and File.file?(daemon.pid_fn)
-        puts "Stale pid file, removing.."
-        FileUtils.rm(daemon.pid_fn)
-      end
-      fork do
-        Process.setsid
-        exit if fork
-        PidFile.store(daemon, Process.pid)
-        Signal.trap('USR1') do 
-          if @transporter != nil
-            @transporter.plugins.delegate(:flush)
-            @transporter.sessions.store_sessions
-            # @transporter.plugins.shutdown if @transporter.plugins
-            # @transporter.sessions.shutdown if @transporter.session
-          end
-        end
-        Signal.trap('USR2') do 
-          puts "Alive."
-          # @transporter.plugins.delegate(:flush)
-          # @transporter.sessions.stare_sessions
-        end
-        ['INT', 'TERM', 'KILL'].each do |signal|
-          Signal.trap(signal) do
-            puts "Got signal #{signal.inspect}"
-            daemon.stop
-            exit
-          end
-        end
-        Signal.trap('HUP') {
-          daemon.restart
-        }
-        STDIN.reopen( "/dev/null" )
-        daemon.start
-      end
-      
-      timeout = Time.now + 10
-      sleep 0.1 until self.status(daemon) or timeout < Time.now
-      
-      if timeout < Time.now
-        puts "Riassence Framework did not start, please check the logfile."
-      else
-        puts "Riassence Framework is running now."
-      end
-      
-      sleep 2.5 if RSence.args[:debug]
-      
-      #Process.kill("USR2", File.read(daemon.pid_fn).to_i)
-    end
-    
-    def self.save(daemon,is_restart=false)
-      if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is Riassence Framework started?"
-        return if is_restart
-        exit
-      end
-      pid = File.read(daemon.pid_fn).to_i
-      begin
-        pid && Process.kill("USR1", pid)
-        puts "Session data saved."
-      rescue
-        puts "Error, no such pid (#{pid}) running"
-      end
-    end
-    
-    def self.stop(daemon,is_restart=false)
-      self.save(daemon,is_restart)
-      if !File.file?(daemon.pid_fn)
-        puts "Pid file not found. Is Riassence Framework started?"
-        return if is_restart
-        exit
-      end
-      pid = PidFile.recall(daemon)
-      begin
-        pid && Process.kill("TERM", pid)
-        puts "Riassence Framework is stopped now."
-      rescue
-        puts "Error, no such pid (#{pid}) running"
-      end
-      FileUtils.rm(daemon.pid_fn)
-    end
-  end
+@@launch_pid = Process.pid
+def self.launch_pid
+  return @@launch_pid
 end
 
-class HTTPDaemon < Daemon::Base
-  def self.start
+# The Controller module handles the damonizing
+# operations of the process referred to as +daemon+
+module Daemon
+  
+  # Writes the process id to disk, the pid_fn method of the daemon contains
+  # the name of the pid file.
+  def self.write_pid( daemon, pid )
+    File.open( daemon.pid_fn, 'w' ) do |pidfile|
+      pidfile.write( pid )
+    end
+  end
+  
+  # Reads the process id from disk, the pid_fn method of the daemon contains
+  # the name of the pid file. Returns nil on errors.
+  def self.read_pid( daemon )
+    File.read( daemon.pid_fn ).to_i rescue nil
+  end
+  
+  def self.responds?( daemon )
+    wait_signal_response( daemon, 'USR2' )
+  end
+  
+  # Reads the pid file and calls the process.
+  # Returns true if the process responds, false otherwise (no process)
+  def self.status( daemon )
+    pid = read_pid( daemon )
+    return nil if not pid
+    return responds?( daemon )
+  end
+  
+  # Redirects standard input and errors to the log files
+  def self.start_logging( daemon )
+    outpath = "#{daemon.log_fn}.stdout"
+    errpath = "#{daemon.log_fn}.stderr"
+    STDOUT.reopen( outpath, (File.exist?( outpath ) ? 'a' : 'w') )
+    STDOUT.sync = true
+    STDERR.reopen( errpath, (File.exist?( errpath ) ? 'a' : 'w') )
+    STDERR.sync = true
+  end
+  
+  def self.write_signal_response( daemon, signal )
+    sig_fn = daemon.pid_fn+'.response.'+signal
+    File.open(sig_fn,'w') do |file|
+      file.write(Process.pid.to_s)
+    end
+  end
+  
+  def self.delete_signal_response( daemon, signal )
+    sig_fn = daemon.pid_fn+'.response.'+signal
+    if File.file?( sig_fn )
+      File.delete( sig_fn )
+    end
+  end
+  
+  def self.wait_signal_response( daemon, signal, timeout = 10,
+                                 debug_pre = '<', debug_suf = '>', sleep_secs = 0.2 )
+    begin
+      if RSence.args[:verbose]
+        print debug_pre
+        STDOUT.flush
+      end
+      pid = read_pid( daemon )
+      sig_fn = daemon.pid_fn+'.response.'+signal
+      File.delete( sig_fn ) if File.file?( sig_fn )
+      status = Process.kill( signal, pid )
+      time_out = Time.now + timeout
+      until time_out > Time.now or File.file?( sig_fn )
+        if RSence.args[:verbose]
+          print "."
+          STDOUT.flush
+        end
+        sleep sleep_secs
+      end
+      sleep sleep_secs
+      if File.file?( sig_fn )
+        sig_pid = File.read( sig_fn ).to_i
+        if sig_pid != pid
+          puts "Warning, signal PID mismatch. Expected #{pid}, got #{sig_pid}"
+        end
+        File.delete( sig_fn )
+      else
+        puts "Warning, signal response file disappeared! Expected #{sig_fn}"
+      end
+      puts debug_suf if RSence.args[:verbose]
+      return true
+    rescue Errno::ESRCH
+      return false
+    end
+  end
+  
+  # Traps common kill signals
+  def self.trap_signals( daemon )
+    
+    # Triggered with 'kill -USR1 `cat rsence.pid`'
+    Signal.trap( 'USR1' ) do 
+      daemon.usr1
+      write_signal_response( daemon, 'USR1' )
+    end
+    Signal.trap('USR2') do 
+      daemon.usr2
+      write_signal_response( daemon, 'USR2' )
+    end
+    ['INT', 'TERM', 'KILL'].each do | signal |
+      Signal.trap( signal ) do
+        puts "RSence killed with signal #{signal.inspect}" if RSence.args[:verbose]
+        daemon.usr1
+        daemon.stop
+        # delete_signal_response( daemon, 'USR1' )
+        # delete_signal_response( daemon, 'USR2' )
+        File.delete( daemon.pid_fn ) if File.file?( daemon.pid_fn )
+        write_signal_response( daemon, signal )
+        puts "Shutdown complete."
+        exit
+      end
+    end
+    # Signal.trap('HUP') do
+    #   daemon.restart
+    # end
+  end
+  
+  def self.handle_pid( daemon )
+    if RSence.pid_support?
+      is_running = status( daemon )
+      if is_running
+        puts "RSence is already running."
+        puts "Stop the existing process first: see 'rsence help stop'"
+        if RSence.launch_pid != Process.pid
+          Process.kill( 'INT', RSence.launch_pid )
+        end
+        exit
+      elsif not is_running and File.file?( daemon.pid_fn )
+        puts "Stale pid file, removing.."
+        File.delete( daemon.pid_fn )
+      end
+      trap_signals( daemon )
+      pid = Process.pid
+      write_pid( daemon, pid ) 
+      return pid
+    else
+      return false
+    end
+  end
+  
+  def self.run( daemon )
+    handle_pid( daemon )
+    daemon.run
+    exit
+  end
+  
+  def self.start( daemon )
+    fork do
+      exit if fork
+      handle_pid( daemon )
+      daemon.start
+    end
+    Signal.trap('INT') do
+      puts "RSence startup failed. Please inspect the log and/or run in debug mode."
+      exit
+    end
+    Signal.trap('TERM') do
+      puts "RSence is online at http://#{daemon.addr}:#{daemon.port}/"
+      exit
+    end
+    sleep 1 while true
+  end
+  
+  # Sends the USR1 signal to the process, which in turn
+  # calls the save method of the daemon.
+  def self.save( daemon )
+    status_ = status( daemon )
+    if status_
+      if wait_signal_response( daemon, 'USR1', 10, 'saving.', 'saved', 0.3 )
+        puts "Session data saved."
+      else
+        puts "Warning: saving timed out! Session data not saved."
+      end
+    elsif status_ == false
+      puts "Warning, no such process (#{pid}) running: unable to save."
+    elsif status_ == nil
+      puts "No pid file: unable to save."
+    else
+      throw "Unexpected process status: #{status_.inspect}"
+    end
+  end
+  
+  # Sends the TERM signal to the process, which in turn
+  # calls the stop method of the daemon
+  def self.stop( daemon )#,is_restart=false)
+    status_ = status( daemon )
+    if status_
+      if wait_signal_response( daemon, 'TERM', 10, 'killing.', 'killed', 0.3 )
+        puts "RSence is terminated now."
+      else
+        puts "Warning: termination timed out!"
+        puts "RSence might still be running, please ensure manually."
+      end
+    elsif status_ == false
+      puts "Warning, no such process (#{pid}) running."
+    elsif status_ == nil
+      puts "Warning, no pid file (process not running)."
+    else
+      throw "Unexpected process status: #{status_.inspect}"
+    end
+  end
+  
+  # Main entry point called from the daemon process passing +self+ as +daemon+.
+  def self.daemonize( daemon )
+    
+    # Uses the command-line tool command to decide what to do.
+    case RSence.cmd
+    when :run
+      run( daemon )
+    when :start
+      start( daemon )
+    when :stop
+      stop( daemon )
+    when :restart
+      stop( daemon )
+      start( daemon )
+    when :save
+      save( daemon )
+    end
+  end
+  
+end
+
+# Simple process control, constructed here and called from Daemon::Controller
+class HTTPDaemon
+  
+  def run
+    puts "Starting as a foreground process." if RSence.args[:verbose]
+    puts "Press CTRL-C to terminate."
     
     @transporter = Transporter.new
     
-    unless RSence.args[:log_fg]
-      Daemon::Controller.log_io(self)
-    end
-    
     conf = RSence.config[:http_server]
+    
+    unless RSence.args[:log_fg]
+      Daemon.start_logging( self )
+    end
     
     # This is the main http handler instance:
     @broker = Broker.start(
@@ -286,19 +300,80 @@ class HTTPDaemon < Daemon::Base
       conf[:port]
     )
     
-    yield @broker if block_given?
+  end
+  
+  # Returns the pid file path.
+  def pid_fn
+    RSence.config[:daemon][:pid_fn]
+  end
+  
+  # Returns the log path.
+  def log_fn
+    RSence.config[:daemon][:log_fn]
+  end
+  
+  def addr
+    RSence.config[:http_server][:bind_address]
+  end
+  
+  def port
+    RSence.config[:http_server][:port]
+  end
+  
+  # Called by Controller#start, contains RSence-specific operations
+  def start
+    
+    @transporter = Transporter.new
+    
+    conf = RSence.config[:http_server]
+    
+    unless RSence.args[:log_fg]
+      Daemon.start_logging( self )
+      STDIN.reopen( "/dev/null" )
+    end
+    
+    Process.setsid
+    
+    # This is the main http handler instance:
+    @broker = Broker.start(
+      @transporter,
+      conf[:rack_handler],
+      conf[:bind_address],
+      conf[:port]
+    )
+    yield @broker
     
   end
-  def self.restart
-    self.stop
-    @broker = nil
-    self.start
-  end
-  def self.stop
+  
+  # Called by Controller#stop, contains RSence-specific operations
+  def stop
     @transporter.plugins.shutdown
     @transporter.sessions.shutdown
   end
+  
+  # Called on USR1 signals (save data)
+  def usr1
+    save
+  end
+  
+  # Save state
+  def save
+    puts "Saving."
+    @transporter.plugins.delegate(:flush)
+    @transporter.sessions.store_sessions
+    puts "Saved."
+  end
+  
+  # Called on USR2 signals ("Alive?")
+  def usr2
+    puts "Alive."
+  end
+  
+  # Main entry point, daemonizes itself using Controller.
+  def daemonize!
+    Daemon.daemonize( self )
+  end
+  
 end
 
 end
-
