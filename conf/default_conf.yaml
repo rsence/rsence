@@ -151,7 +151,7 @@
 # Database configuration
 :database:
   # Session database storage string. Leave empty here to enable the wizard for storage.
-  :ses_db: 'sqlite://var/db/ses.db'
+  :ses_db: 'sqlite://db/ses.db'
 
 #
 # ValueManager settings
