@@ -34,9 +34,6 @@ RSence.config[:http_server][:rack_handler] = self.method({
   'rainbows' => :rack_rainbows_handler
 }[RSence.config[:http_server][:rack_require]]).call
 
-# Debug mode switch. The debug mode is intended for developers, not production.
-$DEBUG_MODE  = RSence.config[:debug_mode]
-
 # Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
 require 'transporter/transporter'
 
@@ -92,53 +89,21 @@ module Daemon
   end
   
   def self.write_signal_response( daemon, signal )
-    sig_fn = daemon.pid_fn+'.response.'+signal
-    File.open(sig_fn,'w') do |file|
-      file.write(Process.pid.to_s)
-    end
+    pid = Process.pid.to_s
+    pid_fn = daemon.pid_fn
+    RSence::SIGComm.write_signal_response( pid, pid_fn, signal )
   end
   
   def self.delete_signal_response( daemon, signal )
-    sig_fn = daemon.pid_fn+'.response.'+signal
-    if File.file?( sig_fn )
-      File.delete( sig_fn )
-    end
+    pid_fn = daemon.pid_fn
+    RSence::SIGComm.delete_signal_response( pid_fn )
   end
   
   def self.wait_signal_response( daemon, signal, timeout = 10,
-                                 debug_pre = '<', debug_suf = '>', sleep_secs = 0.2 )
-    begin
-      if RSence.args[:verbose]
-        print debug_pre
-        STDOUT.flush
-      end
-      pid = read_pid( daemon )
-      sig_fn = daemon.pid_fn+'.response.'+signal
-      File.delete( sig_fn ) if File.file?( sig_fn )
-      status = Process.kill( signal, pid )
-      time_out = Time.now + timeout
-      until time_out > Time.now or File.file?( sig_fn )
-        if RSence.args[:verbose]
-          print "."
-          STDOUT.flush
-        end
-        sleep sleep_secs
-      end
-      sleep sleep_secs
-      if File.file?( sig_fn )
-        sig_pid = File.read( sig_fn ).to_i
-        if sig_pid != pid
-          puts "Warning, signal PID mismatch. Expected #{pid}, got #{sig_pid}"
-        end
-        File.delete( sig_fn )
-      else
-        puts "Warning, signal response file disappeared! Expected #{sig_fn}"
-      end
-      puts debug_suf if RSence.args[:verbose]
-      return true
-    rescue Errno::ESRCH
-      return false
-    end
+                                 debug_pre = false, debug_suf = false, sleep_secs = 0.2 )
+    pid = read_pid( daemon )
+    pid_fn = daemon.pid_fn
+    return RSence::SIGComm.wait_signal_response( pid, pid_fn, signal, timeout, debug_pre, debug_suf, sleep_secs )
   end
   
   # Traps common kill signals
@@ -158,20 +123,30 @@ module Daemon
         puts "RSence killed with signal #{signal.inspect}" if RSence.args[:verbose]
         daemon.usr1
         daemon.stop
-        # delete_signal_response( daemon, 'USR1' )
-        # delete_signal_response( daemon, 'USR2' )
-        File.delete( daemon.pid_fn ) if File.file?( daemon.pid_fn )
+        delete_stale_pids( daemon )
         write_signal_response( daemon, signal )
         puts "Shutdown complete."
         exit
       end
     end
-    # Signal.trap('HUP') do
-    #   daemon.restart
-    # end
+    Signal.trap('HUP') do
+      daemon.stop
+      daemon.start
+    end
   end
   
-  def self.handle_pid( daemon )
+  def self.delete_stale_pids( daemon )
+    ( pid_fn_path, pid_fn_name ) = File.split( daemon.pid_fn )
+    Dir.entries( pid_fn_path ).each do | item_fn |
+      item_path = File.join( pid_fn_path, item_fn )
+      if item_fn.start_with?( pid_fn_name ) and File.file?( item_path )
+        puts "Stale pid file (#{item_fn}), removing.." if RSence.args[:verbose]
+        File.delete( item_path )
+      end
+    end
+  end
+  
+  def self.init_pid( daemon )
     if RSence.pid_support?
       is_running = status( daemon )
       if is_running
@@ -181,9 +156,8 @@ module Daemon
           Process.kill( 'INT', RSence.launch_pid )
         end
         exit
-      elsif not is_running and File.file?( daemon.pid_fn )
-        puts "Stale pid file, removing.."
-        File.delete( daemon.pid_fn )
+      elsif not is_running
+        delete_stale_pids( daemon )
       end
       trap_signals( daemon )
       pid = Process.pid
@@ -195,7 +169,7 @@ module Daemon
   end
   
   def self.run( daemon )
-    handle_pid( daemon )
+    init_pid( daemon )
     daemon.run
     exit
   end
@@ -203,7 +177,7 @@ module Daemon
   def self.start( daemon )
     fork do
       exit if fork
-      handle_pid( daemon )
+      init_pid( daemon )
       daemon.start
     end
     Signal.trap('INT') do
@@ -248,7 +222,7 @@ module Daemon
         puts "RSence might still be running, please ensure manually."
       end
     elsif status_ == false
-      puts "Warning, no such process (#{pid}) running."
+      puts "Warning, no such process (#{read_pid(daemon)}) running."
     elsif status_ == nil
       puts "Warning, no pid file (process not running)."
     else
@@ -366,7 +340,7 @@ class HTTPDaemon
   
   # Called on USR2 signals ("Alive?")
   def usr2
-    puts "Alive."
+    puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- RSence version #{RSence.version} is running."
   end
   
   # Main entry point, daemonizes itself using Controller.
