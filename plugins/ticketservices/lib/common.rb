@@ -43,7 +43,7 @@ module Common
       
       # checks, that the format is a supported image type
       unless @content_types.keys.include?( format )
-        puts "ImgServe.serve: invalid format (#{format.inspect})" if $DEBUG_MODE
+        puts "ImgServe.serve: invalid format (#{format.inspect})" if RSence.args[:verbose]
         return File.join(::RSence.config[:broker_urls][:i],'invalid.gif')
       end
       
@@ -150,18 +150,18 @@ module Common
       img_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:i]}(.*)$/)[1]
       
       if img_id == nil
-        puts "ImgServe.fetch_img: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "ImgServe.fetch_img: invalid uri#1 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         img_id = 'invalid.gif'
       end
       
       img_id = img_id.split('.')[0]
       
       if img_id == nil
-        puts "ImgServe.fetch_img: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "ImgServe.fetch_img: invalid uri#2 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         img_id = 'invalid.gif'
       
       elsif img_id.size != 84
-        puts "ImgServe.fetch_img: invalid img_id (#{img_id.inspect})" if $DEBUG_MODE
+        puts "ImgServe.fetch_img: invalid img_id (#{img_id.inspect})" if RSence.args[:verbose]
         img_id = 'invalid.gif'
       end
       
@@ -200,15 +200,15 @@ module Common
     elsif type == :file
       file_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:f]}(.*)$/)[1]
       if file_id == nil
-        puts "fileServe.fetch_file: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "fileServe.fetch_file: invalid uri#1 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         file_id = 'invalid.gif'
       end
       file_id = file_id.split('.')[0]
       if file_id == nil
-        puts "fileServe.fetch_file: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "fileServe.fetch_file: invalid uri#2 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         file_id = 'invalid.gif'
       elsif file_id.size != 84
-        puts "fileServe.fetch_file: invalid file_id (#{file_id.inspect})" if $DEBUG_MODE
+        puts "fileServe.fetch_file: invalid file_id (#{file_id.inspect})" if RSence.args[:verbose]
         file_id = 'invalid.gif'
       end
       if @raw_uris.include?(file_id)
@@ -231,14 +231,14 @@ module Common
     elsif type == :blobobj
       blobobj_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:b]}(.*)$/)[1]
       if blobobj_id == nil
-        puts "fileServe.fetch_blobobj: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "fileServe.fetch_blobobj: invalid uri#1 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         blobobj_id = 'invalid.gif'
       end
       if blobobj_id == nil
-        puts "fileServe.fetch_blobobj: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "fileServe.fetch_blobobj: invalid uri#2 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         blobobj_id = 'invalid.gif'
       elsif blobobj_id.size != 84
-        puts "fileServe.fetch_blobobj: invalid blobobj_id (#{blobobj_id.inspect})" if $DEBUG_MODE
+        puts "fileServe.fetch_blobobj: invalid blobobj_id (#{blobobj_id.inspect})" if RSence.args[:verbose]
         blobobj_id = 'invalid.gif'
       end
       if @raw_uris.include?(blobobj_id)
@@ -266,15 +266,15 @@ module Common
     elsif type == :rsrc
       rsrc_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:d]}(.*)$/)[1]
       if rsrc_id == nil
-        puts "rsrcServe.fetch_rsrc: invalid uri#1 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "rsrcServe.fetch_rsrc: invalid uri#1 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         rsrc_id = 'invalid.gif'
       end
       rsrc_id = rsrc_id.split('.')[0]
       if rsrc_id == nil
-        puts "rsrcServe.fetch_rsrc: invalid uri#2 (#{req.unparsed_uri.inspect})" if $DEBUG_MODE
+        puts "rsrcServe.fetch_rsrc: invalid uri#2 (#{req.unparsed_uri.inspect})" if RSence.args[:verbose]
         rsrc_id = 'invalid.gif'
       elsif rsrc_id.size != 84
-        puts "rsrcServe.fetch_rsrc: invalid rsrc_id (#{rsrc_id.inspect})" if $DEBUG_MODE
+        puts "rsrcServe.fetch_rsrc: invalid rsrc_id (#{rsrc_id.inspect})" if RSence.args[:verbose]
         rsrc_id = 'invalid.gif'
       end
       if @raw_uris.include?(rsrc_id)

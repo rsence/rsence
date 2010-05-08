@@ -101,7 +101,7 @@ class SessionStorage
   def create_session_table
     db_open
     unless @db.table_exists?(:rsence_session)
-      puts "Creating session table..." if $DEBUG_MODE
+      puts "Creating session table..." if RSence.args[:verbose]
       @db.create_table :rsence_session do
         primary_key( :id )
         column( :cookie_key,  String  )
@@ -121,7 +121,7 @@ class SessionStorage
   def create_version_table
     db_open
     unless @db.table_exists?(:rsence_version)
-      puts "Creating version info table..." if $DEBUG_MODE
+      puts "Creating version info table..." if RSence.args[:verbose]
       @db.create_table :rsence_version do
         Integer :version
       end
@@ -135,7 +135,7 @@ class SessionStorage
   def create_uploads_table
     db_open
     unless @db.table_exists?(:rsence_uploads)
-      puts "Creating uploads table..." if $DEBUG_MODE
+      puts "Creating uploads table..." if RSence.args[:verbose]
       @db.create_table :rsence_uploads do
         primary_key( :id )
         foreign_key( :ses_id, :rsence_session )
@@ -189,7 +189,7 @@ class SessionStorage
   
   ## Restores all saved sessions from db to ram
   def restore_sessions
-    puts "Restoring sessions..." if $DEBUG_MODE
+    puts "Restoring sessions..." if RSence.args[:verbose]
     db_open
     @db[:rsence_session].all do |ses_row|
       ses_id = ses_row[:id]
@@ -211,7 +211,7 @@ class SessionStorage
   
   ## Stores all sessions to db from ram
   def store_sessions
-    puts "Storing sessions..." if $DEBUG_MODE
+    puts "Storing sessions..." if RSence.args[:verbose]
     db_open
     @sessions.each_key do |ses_id|
       ses_data = @sessions[ ses_id ]
@@ -233,9 +233,9 @@ class SessionStorage
   ## Shut-down signal, triggers store_sessions for now
   def shutdown
     @accept_requests = false
-    puts "Session shutdown in progress..." if $DEBUG_MODE
+    puts "Session shutdown in progress..." if RSence.args[:verbose]
     store_sessions
-    puts "Session shutdown complete." if $DEBUG_MODE
+    puts "Session shutdown complete." if RSence.args[:verbose]
   end
   
   

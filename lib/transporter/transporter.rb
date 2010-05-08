@@ -33,7 +33,7 @@ class Transporter
     
     @valuemanager = ValueManager.new
     @sessions = SessionManager.new( self )
-    @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, $DEBUG_MODE )
+    @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, RSence.args[:autoreload] )
     if RSence.launch_pid != Process.pid
       Process.kill( 'TERM', RSence.launch_pid )
     end
@@ -42,25 +42,6 @@ class Transporter
   def servlet( request_type, request, response )
     broker_urls = ::RSence.config[:broker_urls]
     uri = request.fullpath
-    # if $DEBUG_MODE and uri == $config[:index_html][:respond_address] and request_type == :get
-    #   unless ARGV.include?('-no-rescan') or ARGV.include?('--no-rescan')
-    #     puts "Reloading plugins."
-    #     if RSence.args[:say]
-    #       Thread.new do
-    #         Thread.pass
-    #         system('say "Reloading plugins."')
-    #       end
-    #     end
-    #     @plugins.rescan
-    #     puts "Plugins reloaded."
-    #     if RSence.args[:say]
-    #       Thread.new do
-    #         Thread.pass
-    #         system('say "Plugins reloaded."')
-    #       end
-    #     end
-    #   end
-    # end
     
     if request_type == :post
       ## /x handles xhr without cookies
@@ -74,21 +55,12 @@ class Transporter
       else
         session = {}
         return @plugins.match_servlet( request_type, request, response, session )
-      ## /SOAP handles SOAP Requests
-      # elsif uri == broker_urls[:soap]
-      #   soap( request, response )
-      #   return true
       end
     else
       session = {}
       return @plugins.match_servlet( request_type, request, response, session )
     end
   end
-  
-  ## handles incoming SOAP requests
-  # def soap(request, response)
-  #   PluginManager.soap( request, response )
-  # end
   
   # wrapper for the session manager stop client functionality
   def xhr_error_handler(msg,err_name,err_extra_descr='')
@@ -101,9 +73,9 @@ class Transporter
   
   # wrapper for tracebacks in xhr
   def xhr_traceback_handler(e,err_descr='Transporter::UnspecifiedError')
-    puts "=="*40 if $DEBUG_MODE
+    puts "=="*40 if RSence.args[:debug]
     puts err_descr
-    if $DEBUG_MODE
+    if RSence.args[:debug]
       puts "--"*40
       puts e.message
       puts "  #{e.backtrace.join("\n  ")}"
@@ -131,7 +103,7 @@ class Transporter
     if request.query.has_key?('err_msg')
       response_success = false
       client_error_msg = request.query['err_msg'].inspect
-      puts "\nCLIENT ERROR:\n#{client_error_msg}\n" if $DEBUG_MODE
+      puts "\nCLIENT ERROR:\n#{client_error_msg}\n" if RSence.args[:debug]
       xhr_error_handler(msg,:client_error,client_error_msg)
     end
     
@@ -144,11 +116,11 @@ class Transporter
         msg.reply("COMM.Transporter.url=#{::RSence.config[:broker_urls][:x].to_json};")
       end
       
-      # Appends a 'new session.' message for new sessions in $DEBUG_MODE:
-      puts "new session." if msg.new_session and $DEBUG_MODE
-      puts "restored session." if msg.restored_session and $DEBUG_MODE
-      puts "clone source." if msg.cloned_targets and $DEBUG_MODE
-      puts "clone target." if msg.cloned_source and $DEBUG_MODE
+      # Appends a 'new session.' message for new sessions in RSence.args[:verbose]:
+      puts "new session." if msg.new_session and RSence.args[:verbose]
+      puts "restored session." if msg.restored_session and RSence.args[:verbose]
+      puts "clone source." if msg.cloned_targets and RSence.args[:verbose]
+      puts "clone target." if msg.cloned_source and RSence.args[:verbose]
       
       ## Pass the client XML to the value manager
       if request.query.has_key?( 'values' )

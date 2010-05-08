@@ -66,7 +66,7 @@ class Broker
   end
   
   def not_found
-    puts "/404: #{@request.fullpath.inspect}" if $DEBUG_MODE
+    puts "/404: #{@request.fullpath.inspect}" if RSence.args[:verbose]
     @response.status = 404
     err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
     @response['content-type'] = 'text/html; charset=UTF-8'
@@ -77,7 +77,7 @@ class Broker
   ## Post requests are always xhr requests
   def post
     
-    puts "post: #{@request.fullpath}" if $DEBUG_MODE
+    puts "post: #{@request.fullpath}" if RSence.args[:verbose]
     
     sleep @@ping_sim if @@ping_sim
     
@@ -88,7 +88,7 @@ class Broker
   ## Get requests are different, depending on the uri requested
   def get
     
-    puts "get: #{@request.fullpath}" if $DEBUG_MODE
+    puts "get: #{@request.fullpath}" if RSence.args[:verbose]
     
     sleep @@ping_sim if @@ping_sim
     

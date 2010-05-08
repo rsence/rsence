@@ -154,7 +154,7 @@ class Main < Plugin
     until time_taken > 0.2 or ses[:delayed_calls].size == 0 or call_count == 0
       # gets the next call
       delayed_call = ses[:delayed_calls].shift
-      if $DEBUG_MODE
+      if RSence.args[:debug]
         puts "delayed_call: #{delayed_call.inspect}"
       end
       # strings are always javascript, used for segmenting client load

@@ -99,7 +99,7 @@ class ClientPkg < Servlet
   end
   
   def open
-    if not @thr and $DEBUG_MODE
+    if not @thr and RSence.args[:autoupdate]
       @thr = Thread.new do
         Thread.pass
         while true

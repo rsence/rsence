@@ -83,21 +83,21 @@ class TicketServe < Servlet
   def get( req, res, ses )
     uri = req.fullpath
     if uri.match( /^#{broker_urls[:i]}/ )
-      # puts "/i: #{uri.inspect}" if $DEBUG_MODE
+      puts "/i: #{uri.inspect}" if RSence.args[:verbose]
       get_ticket( req, res, :img )
     elsif uri.match( /^#{broker_urls[:d]}/ )
-      # puts "/d: #{uri.inspect}" if $DEBUG_MODE
+      puts "/d: #{uri.inspect}" if RSence.args[:verbose]
       get_ticket( req, res, :rsrc )
     elsif uri.match( /^#{broker_urls[:f]}/ )
-      # puts "/f: #{uri.inspect}" if $DEBUG_MODE
+      puts "/f: #{uri.inspect}" if RSence.args[:verbose]
       get_ticket( req, res, :file )
     elsif uri.match( /^#{broker_urls[:b]}/ )
-      # puts "/b: #{uri.inspect}" if $DEBUG_MODE
+      puts "/b: #{uri.inspect}" if RSence.args[:verbose]
       get_ticket( req, res, :blobobj )
     elsif uri == broker_urls[:favicon]
       favicon( req, res )
     elsif uri == broker_urls[:uploader_iframe]
-      # puts "/U/iframe_html: #{uri.inspect}" if $DEBUG_MODE
+      puts "/U/iframe_html: #{uri.inspect}" if RSence.args[:verbose]
       res.status = 200
       http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
       res['content-type'] = 'text/html; charset=UTF-8'
@@ -109,7 +109,7 @@ class TicketServe < Servlet
   def post( req, res, ses )
     uri = req.fullpath
     if uri[0..2] == broker_urls[:u]
-      puts "/U: #{uri.inspect}" if $DEBUG_MODE
+      puts "/U: #{uri.inspect}" if RSence.args[:verbose]
       upload( req, res )
     end
   end

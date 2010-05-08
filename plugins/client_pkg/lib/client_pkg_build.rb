@@ -320,8 +320,6 @@ class ClientPkgBuild
     minimize_data
     build_themes
     
-    #save_file( File.join( @js_dst_dir, 'built' ), Time.now.to_i.to_s )
-    
   end
   
   def setup_dirs
@@ -498,8 +496,8 @@ class ClientPkgBuild
     @no_obfuscation = config[:no_obfuscation]
     @no_whitespace_removal = config[:no_whitespace_removal]
     @js_inc = config[:js_inc]
-    @debug = (not $DEBUG_MODE)
-    @quiet = (not $DEBUG_MODE)
+    @debug = (not RSence.args[:debug])
+    @quiet = (not RSence.args[:verbose])
   end
   
   def find_newer( src_dir, newer_than )
@@ -528,19 +526,6 @@ class ClientPkgBuild
    end
    return false
   end
-  
-  ##def autorun
-  ##  while true
-  ##    newest = read_file( File.join( @js_dst_dir, 'built' ) ).to_i
-  ##    @logger.log( "waiting for changes..." )
-  ##    until bundle_changes( newest )
-  ##      sleep 3
-  ##    end
-  ##    flush
-  ##    run
-  ##    `say "Autobuild complete!"` if RSence.args[:say]
-  ##  end
-  ##end
   
   def print_stat( package_name, dst_size, jsc_size, gz_size )
     percent = 'n/a'

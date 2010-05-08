@@ -154,14 +154,14 @@ module ClientPkgServe
       if not has_theme
         response.status = 404
         response.body   = '404 - Theme Not Found'
-        puts "Theme #{theme_name} not found, avail: #{@client_cache.theme_cache.keys.join(', ')}" if $DEBUG_MODE
+        puts "Theme #{theme_name} not found, avail: #{@client_cache.theme_cache.keys.join(', ')}" if RSence.args[:verbose]
       elsif not has_theme_part
         response.status = 503
         response.body   = '503 - Invalid Theme Part Request'
       elsif not has_theme_file
         response.status = 404
         response.body   = '404 - Theme Resource Not Found'
-        puts "File not found, avail: #{@client_cache.theme_cache[theme_name][theme_part].keys.join(', ')}" if $DEBUG_MODE
+        puts "File not found, avail: #{@client_cache.theme_cache[theme_name][theme_part].keys.join(', ')}" if RSence.args[:verbose]
       else
         
         response.status = 200

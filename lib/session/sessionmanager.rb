@@ -362,7 +362,7 @@ class SessionManager < SessionStorage
     end
     
     if domain == 'localhost'
-      # warn "Warning: Cookies won't be set for 'localhost'. Use '127.0.0.1' instead." if $DEBUG_MODE
+      warn "Warning: Cookies won't be set for 'localhost'. Use '127.0.0.1' instead." if RSence.args[:debug]
       return
     end
     
