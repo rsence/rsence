@@ -1,4 +1,6 @@
 
+= NOTE: This installation manual isn't fully accurate at this time.
+
 = Installation
 
 If you already have a working ruby environment and know what to do, the easiest way is just:
