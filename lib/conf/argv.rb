@@ -7,7 +7,7 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
  #++
-
+require 'daemon/sigcomm'
 module RSence
 def self.pid_support?
   # true for non-windows
@@ -27,8 +27,8 @@ end
 @@cmd_help = {}
 
 @@cmd_help[:head] = <<-EOF
-usage: rsence <command> [options] [args]
 RSence command-line tool, version #{@@version}
+
 EOF
 
 @@cmd_help[:unknown] = "Unknown command: "
@@ -36,6 +36,8 @@ EOF
 @@cmd_help[:help_help] = "Type 'rsence help' for usage."
 
 @@cmd_help[:help_main] = <<-EOF
+usage: rsence <command> [options] [args]
+
 Type 'rsence help <command>' for help on a specific command.
 
 Available commands:
@@ -200,16 +202,31 @@ Available options:
 
 EOF
 
+@@cmd_help[:save] = <<-EOF
+usage: 'rsence save [options] [PATH]'
+
+The 'save' command signals the RSence process to tell the plugins to save their
+data and the session manager to save its session database.
+
+Available options:
+
+  --conf <file.yaml>      Use additional config file. You can give this option
+                          several times. The <file.yaml> is the configuration
+                          file to load.
+  
+  --debug (-d)            Debug mode. Shortcut for several options useful for
+                          developers. Not the preferred mode for production.
+  
+  --verbose (-v)          More verbose output. Also enabled by --debug
+
+#{@@cmd_help[:path]}
+
+EOF
+
 @@cmd_help[:tail] = <<-EOF
 RSence is a self-contained rich internet application client-server framework.
 For further information, see http://rsence.org/
 EOF
-
-  def initialize( argv )
-    @argv = argv
-    @startable = false
-    parse_argv
-  end
   
   def startable?; @startable; end
   
@@ -527,24 +544,16 @@ EOF
     end
     require 'conf/default'
     config = Configuration.new(@args).config
-    # require 'daemon/daemon'
-    # puts "status: #{HTTPDaemon.daemonize.inspect}"
     port = config[:http_server][:port]
     addr = config[:http_server][:bind_address]
     port_status = test_port( port, addr )
-    # port_msg = port_status ? 'responds' : 'does not respond'
-    # puts "TCP status: #{addr}:#{port} #{port_msg}" if @args[:verbose]
     if RSence.pid_support?
       pid_fn = config[:daemon][:pid_fn]
       if File.exists?( pid_fn )
         pid = File.read( pid_fn ).to_i
-        begin
-          pid_status = Process.kill('USR2',pid)
-        rescue Errno::ESRCH
-          pid_status = false
-        end
-        # pid_msg = pid_status == false ? 'not running' : 'responds'
-        # puts "process id (#{pid}) #{pid_msg}" if @args[:verbose]
+        pid_status = RSence::SIGComm.wait_signal_response(
+          pid, pid_fn, 'USR2', 3
+        )
       else
         puts "no PID file, unable to check process status" if @args[:verbose]
         pid_status = nil
@@ -553,24 +562,109 @@ EOF
       puts "no PID support, unable to check process status" if @args[:verbose]
       pid_status = nil
     end
-    if port_status
-      puts "TCP response from #{addr} port #{port}"
-    else
-      puts "No TCP response from #{addr} port #{port}."
-    end
     if RSence.pid_support?
       if pid_status == nil
         puts "No process id, unable to check process status."
       elsif pid_status == false
-        puts "No process running."
+        puts "No process running#{port_status ? ' but something responds on ' : ' and nothing responds on ' }#{addr}:#{port}."
       else
-        puts "Process id #{pid} responded with signal #{pid_status}."
+        puts "Process id #{pid} is running#{port_status ? ' and responds on ' : ', but does not respond on '}#{addr}:#{port}."
       end
     end
   end
   
   def parse_save_argv
-    throw "parse_save_argv not implemented!"
+    init_args
+    expect_option  = false
+    option_name = false
+    if @argv.length >= 2
+      @argv[1..-1].each_with_index do |arg,i|
+        if expect_option
+          if [:port,:latency].include?(option_name) and arg.to_i.to_s != arg
+            puts "invalid #{option_nam.to_s}, expected number: #{arg.inspect}"
+            puts "Type 'rsence help #{@cmd.to_s}' for usage."
+            exit
+          elsif option_name == :conf_files
+            if not File.exists?( arg ) or not File.file?( arg )
+              puts "no such configuration file: #{arg.inspect}"
+              puts "Type 'rsence help #{@cmd.to_s}' for usage."
+              exit
+            else
+              @args[:conf_files].push( arg )
+            end
+          else
+            @args[option_name] = arg
+          end
+          expect_option = false
+        else
+          if arg.start_with?('--')
+            if arg == '--debug'
+              set_debug
+            elsif arg == '--verbose'
+              set_verbose
+            elsif arg == '--conf' or arg == '--config'
+              expect_option = true
+              option_name = :conf_files
+            else
+              invalid_option(arg)
+            end
+          elsif arg.start_with?('-')
+            arg.split('')[1..-1].each do |chr|
+              if chr == 'd'
+                set_debug
+              elsif chr == 'v'
+                set_verbose
+              else
+                invalid_option(arg,chr)
+              end
+            end
+          elsif valid_env?(arg)
+            @args[:env_path] = File.expand_path(arg)
+            @args[:conf_files].push( File.expand_path( File.join( arg, 'conf', 'config.yaml' ) ) )
+          else
+            invalid_env( arg )
+          end
+        end
+      end
+      if expect_option
+        puts "no value for option #{option_name.to_s.inspect}"
+        puts "Type 'rsence help #{@cmd.to_s} for usage."
+        exit
+      end
+    end
+    if valid_env?(@args[:env_path])
+      conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
+      @args[:conf_files].push( conf_file ) unless @args[:conf_files].include?( conf_file )
+    else
+      puts "invalid environment."
+      exit
+    end
+    require 'conf/default'
+    config = Configuration.new(@args).config
+    if RSence.pid_support?
+      pid_fn = config[:daemon][:pid_fn]
+      if File.exists?( pid_fn )
+        pid = File.read( pid_fn ).to_i
+        pid_status = RSence::SIGComm.wait_signal_response(
+          pid, pid_fn, 'USR1', 30, 'Saving session data...', '.', 0.1, true
+        )
+      else
+        puts "no PID file, unable to signal the save command to the process" if @args[:verbose]
+        pid_status = nil
+      end
+    else
+      puts "no PID support, unable to signal the save command to the process" if @args[:verbose]
+      pid_status = nil
+    end
+    if RSence.pid_support?
+      if pid_status == nil
+        puts "No process id, unable to signal the save command to the process."
+      elsif pid_status == false
+        puts "No process running."
+      else
+        puts "Session data saved."
+      end
+    end
   end
   
   def parse_setup_argv
@@ -579,6 +673,29 @@ EOF
   
   def parse_initenv_argv
     throw "parse_initenv_argv not implemented!"
+  end
+  
+  def help( cmd )
+    cmd.to_sym! if cmd.class != Symbol
+    puts @@cmd_help[:head]
+    if @@cmd_help.has_key?(cmd)
+      puts @@cmd_help[cmd]
+    else
+      puts @@cmd_help[:help_main]
+    end
+    puts @@cmd_help[:tail]
+  end
+  
+  def version
+    @@version
+  end
+  
+  def cmd
+    @cmd
+  end
+  
+  def args
+    @args
   end
   
   def parse_argv
@@ -614,37 +731,23 @@ EOF
     end
   end
   
-  def help( cmd )
-    cmd.to_sym! if cmd.class != Symbol
-    puts @@cmd_help[:head]
-    if @@cmd_help.has_key?(cmd)
-      puts @@cmd_help[cmd]
-    else
-      puts @@cmd_help[:help_main]
-    end
-    puts @@cmd_help[:tail]
+  def parse( argv )
+    @argv = argv
+    @startable = false
+    parse_argv
   end
   
-  def version
-    puts @@version
-  end
-  
-  def cmd
-    @cmd
-  end
-  
-  def args
-    @args
+  def initialize
+    @startable = false
   end
   
 end
-
-@@argv_parser = ARGVParser.new( ARGV )
 
 def self.argv;    @@argv_parser;    end
 def self.cmd;     @@argv_parser.cmd;     end
 def self.args;    @@argv_parser.args;    end
 def self.startable?; @@argv_parser.startable?; end
+def self.version; @@argv_parser.version; end
 def self.startup
   puts "Loading configuration..." if self.args[:verbose]
   # Use the default configuration:
@@ -659,6 +762,8 @@ def self.startup
   daemon = HTTPDaemon.new
   daemon.daemonize!
 end
+@@argv_parser = ARGVParser.new
+@@argv_parser.parse( ARGV )
 
 end
 
