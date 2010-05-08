@@ -538,7 +538,7 @@ class ClientPkgBuild
   ##    end
   ##    flush
   ##    run
-  ##    `say "Autobuild complete!"` if ARGV.include?('-say')
+  ##    `say "Autobuild complete!"` if RSence.args[:say]
   ##  end
   ##end
   

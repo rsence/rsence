@@ -81,10 +81,9 @@ class PluginManager
       @sessions = transporter.sessions
     end
     @plugin_paths = plugin_paths
-    puts "Loading plugins..."
+    puts "Loading plugins..." if RSence.args[:verbose]
     scan_plugins
-    puts "Plugins loaded."
-    puts "Riassence Framework is online."
+    puts "Plugins loaded." if RSence.args[:verbose]
     if autoreload
       @thr = Thread.new do
         Thread.pass
