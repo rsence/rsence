@@ -106,6 +106,18 @@ module Daemon
     return RSence::SIGComm.wait_signal_response( pid, pid_fn, signal, timeout, debug_pre, debug_suf, sleep_secs )
   end
   
+  def self.trap_windows_signals( daemon )
+    ['INT'].each do | signal |
+      Signal.trap( signal ) do
+        puts "RSence killed with signal #{signal.inspect}" if RSence.args[:verbose]
+        daemon.usr1
+        daemon.stop
+        puts "Shutdown complete."
+        exit
+      end
+    end
+  end
+  
   # Traps common kill signals
   def self.trap_signals( daemon )
     
@@ -164,6 +176,7 @@ module Daemon
       write_pid( daemon, pid ) 
       return pid
     else
+      trap_windows_signals( daemon )
       return false
     end
   end
@@ -321,8 +334,7 @@ class HTTPDaemon
   
   # Called by Controller#stop, contains RSence-specific operations
   def stop
-    @transporter.plugins.shutdown
-    @transporter.sessions.shutdown
+    @transporter.shutdown
   end
   
   # Called on USR1 signals (save data)
@@ -332,10 +344,13 @@ class HTTPDaemon
   
   # Save state
   def save
-    puts "Saving."
+    puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Saving state..."
+    transporter_state = @transporter.online?
+    @transporter.online = false
     @transporter.plugins.delegate(:flush)
     @transporter.sessions.store_sessions
-    puts "Saved."
+    @transporter.online = transporter_state
+    puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- State saved."
   end
   
   # Called on USR2 signals ("Alive?")

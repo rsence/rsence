@@ -30,16 +30,38 @@ class Transporter
   
   def initialize
     @config = ::RSence.config[:transporter_conf]
-    
+    @accept_req = false
     @valuemanager = ValueManager.new
     @sessions = SessionManager.new( self )
-    @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, RSence.args[:autoreload] )
+    @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, RSence.args[:autoupdate] )
     if RSence.launch_pid != Process.pid
       Process.kill( 'TERM', RSence.launch_pid )
     end
   end
   
+  def online?
+    @accept_req
+  end
+  
+  def online=(state)
+    if RSence.args[:verbose]
+      if state
+        puts "RSence is online now."
+      else
+        puts "RSence is offline now."
+      end
+    end
+    @accept_req = state
+  end
+  
+  def shutdown
+    online=false
+    @plugins.shutdown
+    @sessions.shutdown
+  end
+  
   def servlet( request_type, request, response )
+    
     broker_urls = ::RSence.config[:broker_urls]
     uri = request.fullpath
     

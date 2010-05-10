@@ -121,7 +121,10 @@ class PluginManager
         if File.exists?( File.join( bundle_path, 'disabled' ) )
           if @registry.has_key?( bundle_name.to_sym )
             puts "Disabling bundle #{bundle_name}..."
+            online_status = @transporter.online?
+            @transporter.online = false
             unload_bundle( bundle_name.to_sym )
+            @transporter.online = online_status
             if RSence.args[:say]
               Thread.new do
                 Thread.pass
@@ -132,8 +135,11 @@ class PluginManager
         else
           if not @registry.has_key?( bundle_name.to_sym )
             puts "Loading bundle #{bundle_name}..."
+            online_status = @transporter.online?
+            @transporter.online = false
             load_bundle( bundle_path, bundle_name.to_sym, bundle_name+'.rb' )
             call( bundle_name.to_sym, :open )
+            @transporter.online = online_status
             if RSence.args[:say]
               Thread.new do
                 Thread.pass
@@ -145,9 +151,12 @@ class PluginManager
             info = @info[bundle_name.to_sym]
             if info[:reloadable] and plugin_changed?( bundle_name.to_sym )
               puts "Bundle #{bundle_name} has changed, reloading..."
+              online_status = @transporter.online?
+              @transporter.online = false
               unload_bundle( bundle_name.to_sym )
               load_bundle( bundle_path, bundle_name.to_sym, bundle_name+'.rb' )
               call( bundle_name.to_sym, :open )
+              @transporter.online = online_status
               if RSence.args[:say]
                 Thread.new do
                   Thread.pass
@@ -194,11 +203,6 @@ class PluginManager
     @info     = {}
     @aliases  = {}
     @servlets = []
-    # @types    = {
-    #   :gui     => [],
-    #   :plugin  => [],
-    #   :servlet => []
-    # }
     @plugin_paths.each do |path|
       next unless File.directory? path
       scan_plugindir( path )
@@ -219,10 +223,8 @@ class PluginManager
   #  - Skips bundles containing a file or directory named 'disabled'
   def scan_plugindir( path )
     Dir.entries(path).each do |bundle_name|
-      # puts "bundle_name: #{bundle_name}"
       next if bundle_name[0].chr == '.'
       bundle_path = File.expand_path( File.join( path, bundle_name ) )
-      # puts "#{File.stat(bundle_path).inspect}"
       next unless File.directory?( bundle_path )
       bundle_file = bundle_name+'.rb'
       if not File.exists?( File.join( bundle_path, bundle_file ) )
@@ -331,10 +333,6 @@ class PluginManager
         @@bundle_info    = bundle_info
         @@plugin_manager = plugin_manager
         def m.bundle_path; @@bundle_path; end
-        # puts "using eval"
-        # m::module_eval( File.read(src_path) )
-        # puts "using require"
-        # require src_path[0..-4]
         puts "using load"
         load src_path
       end
@@ -350,18 +348,14 @@ class PluginManager
     end
     
     unless bundle_info[:inits_self]
-      # puts "#{bundle_name}: #{module_ns.constants.inspect}"
       module_ns.constants.each do |module_const_name|
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class
-          # puts "is class"
           module_const.ancestors.each do |ancestor|
-            # puts "ancestor: #{ancestor.to_s.inspect}"
             if ancestor.to_s == "Servlet"
               module_const.new
               break
             elsif ancestor.to_s == "Plugin"
-              puts "bundle_name: #{bundle_name}"
               module_const.new.register( bundle_name )
               break
             elsif ancestor.to_s == "Object"
