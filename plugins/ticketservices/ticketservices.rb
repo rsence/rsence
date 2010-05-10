@@ -13,7 +13,7 @@ require 'rubygems'
 begin
   require 'RMagick'
 rescue LoadError
-  warn "Warning: RMagick not installed, ticketserve images will not be supported."
+  warn "Warning: RMagick not installed, ticketserve images will not be supported." if RSence.args[:verbose]
 end
 
 require 'randgen'
