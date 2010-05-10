@@ -36,7 +36,12 @@ HButton = HControl.extend({
   ** +1+::     Disabled, clicked
   ** +Other+:: Disabled, not clickable, not clicked
   ***/
-HClickValueButton = HButton.extend({
+HClickButton = HButton.extend({
+  
+  defaultEvents: {
+    click: true
+  },
+  
 /** = Description
   * Sets the button enabled if this.value is 0.
   *
@@ -55,3 +60,4 @@ HClickValueButton = HButton.extend({
   }
 });
 
+HClickValueButton = HClickButton;
