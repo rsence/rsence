@@ -171,6 +171,7 @@ class PluginManager
   end
   
   def unload_bundle( bundle_name )
+    puts "unloading bundle: #{bundle_name.inspect}" if RSence.args[:debug]
     if @registry.has_key?( bundle_name )
       call( bundle_name, :flush )
       call( bundle_name, :close )
@@ -308,7 +309,7 @@ class PluginManager
   
   # Loads a plugin bundle.
   def load_bundle( bundle_path, bundle_name, bundle_file )
-    
+    puts "loading bundle: #{bundle_name.inspect}" if RSence.args[:debug]
     if @registry.has_key?( bundle_name.to_sym )
       warn "Warning: Bundle #{bundle_name} already loaded."
       return
