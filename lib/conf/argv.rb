@@ -18,10 +18,10 @@ class ARGVParser
 @@version = File.read( File.join( SERVER_PATH, 'VERSION' ) ).strip
 
 if RSence.pid_support?
-  @@cmds = [ :run, :status, :start, :stop, :restart, :save, :setup,
+  @@cmds = [ :run, :status, :start, :stop, :restart, :save,
              :initenv, :version, :help ]
 else
-  @@cmds = [ :run, :setup, :initenv, :version, :help ]
+  @@cmds = [ :run, :initenv, :version, :help ]
 end
 
 @@cmd_help = {}
@@ -49,30 +49,6 @@ EOF
 The [PATH] is the RSence environment to use.
 The [PATH] defaults to the current working directory.
 
-The expected structure of a project environment (where 'project_directory'
-is the directory of your project) is:
-
-  [dir]   project_directory   :: The directory of your project.
-    [dir]   conf              :: The directory of config files.
-      [file]  config.yaml     :: The config file to load by defult.
-    [dir]   db                :: Directory containing database files.
-    [dir]   log               :: Directory containing log files.
-    [dir]   plugins           :: Directory containing installed plugins.
-    [dir]   run               :: Directory containing runtime pid files.
-
-The 'config.yaml' file contains patches specific to your project.
-
-The configuration files are loaded and applied in this order:
-  1:  [rsence_install_path]/conf/default_conf.yaml
-  2:  [rsence_install_path]/conf/local_conf.yaml
-  3:  /etc/rsence/config.yaml
-  4:  ~/.rsence/config.yaml
-  5:  [project_directory]/conf/config.yaml
-  6:  Any files given using --conf parameters, in order of occurrence.
- 
-The plugins directory contains the plugins installed in the project.
-
-See also the 'setup' and 'initenv' commands.
 EOF
 
 @@cmd_help[:options] = <<-EOF
@@ -100,7 +76,7 @@ Available options:
                           '0.0.0.0' matches all interfaces.
                           '127.0.0.1' matches the local loopback interface.
   
-  --server <handler>      The Rack handler to use.
+  --server <handler>      The Rack handler to use. Defaults to mongrel
   
   --reset-sessions (-r)   Resets all active sessions.
   
@@ -124,12 +100,69 @@ Available options:
   
 EOF
 
+@@cmd_help[:initenv] = <<-EOF
+usage: 'rsence initenv [options] [PATH]'
+
+The 'initenv' command creates a new RSence environment. 
+
+The expected structure of a project environment (where 'project_directory'
+is the directory of your project) is:
+
+ [d]  project_name       :  The name of your project.
+   [d]  conf             :  The directory of config files.
+     [f]  config.yaml    :  The config file to load by defult.
+   [d]  db               :  Directory containing database files.
+   [d]  log              :  Directory containing log files.
+   [d]  plugins          :  Directory containing installed plugins.
+   [d]  run              :  Directory containing runtime pid files.
+   [f]  README           :  Description of the environment directory.
+   [f]  VERSION          :  RSence version the environment was created with
+
+The 'config.yaml' file contains patches specific to your project.
+
+The configuration files are loaded and applied in this order:
+  1:  [rsence_install_path]/conf/default_conf.yaml
+  2:  [rsence_install_path]/conf/local_conf.yaml
+  3:  /etc/rsence/config.yaml
+  4:  ~/.rsence/config.yaml
+  5:  [project_directory]/conf/config.yaml
+  6:  Any files given using --conf parameters, in order of occurrence.
+ 
+The plugins directory contains the plugins that are run in the project.
+
+
+Available options:
+
+  --port <number>         The port number the http server listens to.
+  
+  --addr <ip address>     The IP address or netmask the http server listens to.
+                          '0.0.0.0' matches all interfaces.
+                          '127.0.0.1' matches the local loopback interface.
+                          Defaults to 0.0.0.0
+  
+  --server <handler>      The Rack handler to use. Defaults to mongrel
+  
+  --title <title>         The title of the index page.
+  
+  --database <conn_str>   Use the Sequel connection string to configure the
+                          default session database.
+  
+  --uri-prefix <path>     Configure RSence to use this http "directory" as
+                          the prefix. It defaults to the root directory: /
+  
+  --blank                 Doesn't install the Welcome -plugin.
+  
+  --non-interactive (-q)  Doesn't ask anything, just creates the environment
+                          with the options supplied.
+
+For further configuration, edit the config.yaml file.
+
+EOF
+
 @@cmd_help[:run] = <<-EOF
 usage: 'rsence run [options] [PATH]'
 
 The 'run' command starts RSence in foreground (no daemon). Exit with CTRL-C.
-This is the suggested mode for development and the only mode supported by
-Windows, because Windows is missing the concept of a process ID.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
@@ -144,7 +177,7 @@ Use the 'stop' command to stop RSence.
 
 Use the 'restart' command to restart RSence in the background.
 
-Use the 'status' command to check if RSence is running.
+Use the 'status' command to see if RSence is running.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
@@ -155,7 +188,7 @@ usage: 'rsence stop [options] [PATH]'
 
 The 'stop' command stops RSence running in the background (as a daemon).
 
-Use the 'status' command to check if RSence is running.
+Use the 'status' command to see if RSence is running.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
@@ -169,7 +202,8 @@ If RSence wasn't running before the 'restart' command was issued, the
 effect is the same as 'start'.
 
 Use the 'stop' command to stop RSence.
-Use the 'status' command to check if RSence is running.
+
+Use the 'status' command to see if RSence is running.
 
 #{@@cmd_help[:path]}
 #{@@cmd_help[:options]}
@@ -220,6 +254,42 @@ Available options:
   --verbose (-v)          More verbose output. Also enabled by --debug
 
 #{@@cmd_help[:path]}
+
+EOF
+
+@@cmd_help[:version] = <<-EOF
+usage: 'rsence version'
+
+The 'version' command simply outputs the version number of RSence.
+
+RSence follows the standard four-numbered sequence-based version identification
+scheme. The scheme is defined like: major.minor[.maintenance[.package]][.pre]
+
+The major number designates major changes in functionality, sometimes limiting
+backwards compatibility with software written for previous versions.
+
+The minor number designates minor changes in functionality, like minor or
+moderate changes in functinality that usually don't impact backwards
+compatibilty of software written for a previous release with the same major
+version.
+
+The maintenance number designates bug fixes and other minimal changes to
+the release. In a maintenance number change, no new features are introduced.
+
+The package number is a sequence used for the package release. Rubygems
+requires an unique version for each gem released, so pre-releases usually
+occupy the first package numbers of any release.
+
+The '.pre' suffix signifies a pre-release, like "Alpha" or "Beta". To
+install a prerelease version, gem requires the '--pre' command line argument.
+Release versions never have the '.pre' suffix. There are usually several
+package number increments of a new release.
+
+Version number conventions in written text should include both major and
+minor version numbers prefixed with 'RSence'. The maintennance number
+is usally not mentioned unless an issue is fix or such is discussed.
+
+For instance: "RSence 2.0 has undergone some major refactoring since 1.2.1"
 
 EOF
 
@@ -274,7 +344,7 @@ EOF
       @argv[1..-1].each_with_index do |arg,i|
         if expect_option
           if [:port,:latency].include?(option_name) and arg.to_i.to_s != arg
-            puts "invalid #{option_nam.to_s}, expected number: #{arg.inspect}"
+            puts "invalid #{option_name.to_s}, expected number: #{arg.inspect}"
             puts "Type 'rsence help #{@cmd.to_s}' for usage."
             exit
           elsif option_name == :conf_files
@@ -389,36 +459,36 @@ EOF
     @args[:say] = true
   end
   
-  def valid_env?( arg )
+  def valid_env?( arg, quiet=false )
     path = File.expand_path( arg )
     if not File.exists?( path )
-      puts "no such directory: #{path.inspect}"
+      puts "no such directory: #{path.inspect}" unless quiet
       return false
     elsif not File.directory?( path )
-      puts "not a directory: #{path.inspect}"
+      puts "not a directory: #{path.inspect}" unless quiet
       return false
     end
     conf_path = File.join( path, 'conf' )
     if not File.exists?( conf_path )
-      puts "no conf directory, expected: #{conf_path.inspect}"
+      puts "no conf directory, expected: #{conf_path.inspect}" unless quiet
       return false
     elsif not File.directory?( conf_path )
-      puts "not a conf directory, expected: #{conf_path.inspect}"
+      puts "not a conf directory, expected: #{conf_path.inspect}" unless quiet
       return false
     end
     conf_file = File.join( path, 'conf', 'config.yaml' )
     if not File.exists?(conf_file)
-      puts "missing conf file, expected: #{conf_file.inspect}"
+      puts "missing conf file, expected: #{conf_file.inspect}" unless quiet
       return false
     elsif not File.file?( conf_file )
-      puts "conf file not a file, expected: #{conf_file.inspect}"
+      puts "conf file not a file, expected: #{conf_file.inspect}" unless quiet
       return false
     end
     plugin_path = File.join( path, 'plugins' )
     if not File.exists?( plugin_path )
       warn "Warning; no plugin directory in project, expected: #{plugin_path.inspect}" if @args[:verbose]
     elsif not File.directory?( plugin_path )
-      puts "plugin directory not a directory, expected: #{plugin_path.inspect}"
+      puts "plugin directory not a directory, expected: #{plugin_path.inspect}" unless quiet
       return false
     end
     run_path = File.join( path, 'run' )
@@ -459,10 +529,14 @@ EOF
   def test_port( port, addr='127.0.0.1' )
     require 'socket'
     begin
+      addr = '127.0.0.1' if addr == '0.0.0.0'
       sock = TCPsocket.open( addr, port )
       sock.close
       return true
     rescue Errno::ECONNREFUSED
+      return false
+    rescue => e
+      warn e.inspect
       return false
     end
   end
@@ -474,8 +548,8 @@ EOF
     if @argv.length >= 2
       @argv[1..-1].each_with_index do |arg,i|
         if expect_option
-          if [:port,:latency].include?(option_name) and arg.to_i.to_s != arg
-            puts "invalid #{option_nam.to_s}, expected number: #{arg.inspect}"
+          if [:port].include?(option_name) and arg.to_i.to_s != arg
+            puts "invalid #{option_name.to_s}, expected number: #{arg.inspect}"
             puts "Type 'rsence help #{@cmd.to_s}' for usage."
             exit
           elsif option_name == :conf_files
@@ -502,9 +576,6 @@ EOF
             elsif arg == '--addr'
               expect_option = true
               option_name = :addr
-            elsif arg == '--server'
-              expect_option = true
-              option_name = :server
             elsif arg == '--conf' or arg == '--config'
               expect_option = true
               option_name = :conf_files
@@ -580,11 +651,7 @@ EOF
     if @argv.length >= 2
       @argv[1..-1].each_with_index do |arg,i|
         if expect_option
-          if [:port,:latency].include?(option_name) and arg.to_i.to_s != arg
-            puts "invalid #{option_nam.to_s}, expected number: #{arg.inspect}"
-            puts "Type 'rsence help #{@cmd.to_s}' for usage."
-            exit
-          elsif option_name == :conf_files
+          if option_name == :conf_files
             if not File.exists?( arg ) or not File.file?( arg )
               puts "no such configuration file: #{arg.inspect}"
               puts "Type 'rsence help #{@cmd.to_s}' for usage."
@@ -667,12 +734,301 @@ EOF
     end
   end
   
-  def parse_setup_argv
-    throw "parse_setup_argv not implemented!"
+  # asks y/n and returns boleans,
+  # the default tells if which one is for just enter
+  def yesno(default=false)
+    if default
+      question = "Y/n? "
+    else
+      question = "y/N? "
+    end
+    print question
+    answer = $stdin.gets.strip.downcase[0]
+    answer = answer.chr if answer
+    if answer == 'n'
+      return false
+    elsif answer == 'y'
+      return true
+    elsif answer == nil
+      return default
+    else
+      return nil
+    end
   end
   
   def parse_initenv_argv
-    throw "parse_initenv_argv not implemented!"
+    init_args
+    expect_option  = false
+    option_name    = false
+    valid_env      = false
+    interactive    = true
+    create_blank   = false
+    if @argv.length >= 2
+      @argv[1..-1].each_with_index do |arg,i|
+        if expect_option
+          if [:port].include?(option_name) and arg.to_i.to_s != arg
+            puts "invalid #{option_name.to_s}, expected number: #{arg.inspect}"
+            puts "Type 'rsence help #{@cmd.to_s}' for usage."
+            exit
+          else
+            @args[option_name] = arg
+          end
+          expect_option = false
+        else
+          if arg.start_with?('--')
+            if arg == '--port'
+              expect_option = true
+              option_name = :port
+            elsif arg == '--addr'
+              expect_option = true
+              option_name = :addr
+            elsif arg == '--server'
+              expect_option = true
+              option_name = :server
+            elsif arg == '--title'
+              expect_option = true
+              option_name = :title
+            elsif arg == '--database'
+              expect_option = true
+              option_name = :db
+            elsif arg == '--uri-prefix'
+              expect_option = true
+              option_name = :base_url
+            elsif arg == '--blank'
+              create_blank = true
+            elsif arg == '--non-interactive'
+              interactive = false
+            else
+              invalid_option(arg)
+            end
+          elsif arg.start_with?('-')
+            arg.split('')[1..-1].each do |chr|
+              if chr == 'q'
+                interactive = false
+              end
+            end
+          else
+            @args[:env_path] = File.expand_path(arg)
+          end
+        end
+      end
+      if expect_option
+        puts "no value for option #{option_name.to_s.inspect}"
+        puts "Type 'rsence help #{@cmd.to_s} for usage."
+        exit
+      end
+    end
+    if valid_env?(@args[:env_path],true)
+      puts "Environment already initialized."
+      exit
+    end
+    conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
+    if File.exists?(@args[:env_path])
+      if Dir.entries(@args[:env_path]).length > 2 # [ '.', '..' ]
+        puts "Environment directory #{@args[:env_path]} is not empty."
+        exit
+      end
+    end
+    
+    require 'conf/default'
+    default_config = Configuration.new(@args,true).config
+    
+    config = {
+      :base_url => (@args[:base_url] or default_config[:base_url]),
+      :http_server => {
+        :port   => (@args[:port] or default_config[:http_server][:port]),
+        :bind_address => (@args[:addr] or default_config[:http_server][:bind_address]),
+        :rack_require => (@args[:server] or default_config[:http_server][:rack_require])
+      },
+      :index_html => {
+        :title  => (@args[:title] or default_config[:index_html][:title])
+      },
+      :database => {
+        :ses_db => (@args[:db] or default_config[:database][:ses_db])
+      }
+    }
+    Signal.trap 'INT' do
+      puts
+      puts "Configuration aborted."
+      exit
+    end
+    if interactive
+      answers_ok = false
+      until answers_ok
+        puts <<-END
+
+Creating a new RSence environment at #{@args[:env_path]}
+
+RSence will first ask a few questions about your environment
+in order to initialize and prepare the project configuration.
+
+You may abort this command at any time by pressing CTRL-C
+Nothing will be written until you have answered all the questions.
+
+Pressing the ENTER (or RETURN) key at each prompt will choose the
+default option shown.
+If you are not sure about how to answer a question, press
+the ENTER (or RETURN) key to continue.
+
+        END
+      
+        require 'highline/import'
+    
+        say <<-END
+
+ Please enter the title of your project.
+ This title will be used in the default page title.
+ 
+        END
+        config[:index_html][:title] = ask("Project Title") do |q|
+          q.default = config[:index_html][:title]
+        end
+      
+        say <<-END
+
+
+
+ Please specify the connection string for the session database to use.
+ By default, a local SQLite database is created in the 'db' subdirectory
+ of the environment directory. Any database supported by Sequel is supported
+ by RSence.
+
+ For further information about database connection strings, read the Sequel
+ documentation at:
+ http://sequel.rubyforge.org/rdoc/files/doc/opening_databases_rdoc.html
+
+ You will also need the appropriate ruby driver for the database selected. If
+ none is installed, RSence will not be able to store persistent session data
+ between server restarts.
+
+        END
+        config[:database][:ses_db] = ask("Session database connection string") do |q|
+          q.default = config[:database][:ses_db]
+        end
+        say <<-END
+
+
+
+ Please enter a HTTP port for the server to listen to. This port must not be a
+ TCP port already in use.
+ 
+        END
+        config[:http_server][:port] = ask("HTTP Port:") do |q|
+          q.default = config[:http_server][:port]
+        end
+        say <<-END
+
+
+ Please enter a TCP/IP address for the HTTP server to listen to. This address 
+ must be an address configured by a network interface of this computer.
+
+ The address 0.0.0.0 matches any interfaces.
+ The address 127.0.0.1 matches only the localhost address, this address is
+ not accessible from any other computer.
+ 
+        END
+        config[:http_server][:bind_address] = ask("Interface TCP/IP address:") do |q|
+          q.default = config[:http_server][:bind_address]
+        end
+        
+        say <<-END
+
+
+ Please enter a root directory for RSence to respond in.
+ By default this is the root directory of the server: /
+ 
+        END
+        config[:base_url] = ask("URI Prefix:") do |q|
+          q.default = config[:base_url]
+        end
+        test_url = "http://#{config[:http_server][:bind_address]}:#{config[:http_server][:port]}#{config[:base_url]}"
+        say <<-END
+
+Configuration Summary
+
+ Please verify that the configuration is correct.
+ This configuration will be written into the configuration file:
+   #{conf_file}
+
+Title:       #{config[:index_html][:title]}
+
+Database:    #{config[:database][:ses_db]}
+
+HTTP Server:
+  Address:    #{config[:http_server][:bind_address]}
+  Port:       #{config[:http_server][:port]}
+  URI Prefix: #{config[:base_url]}
+  
+  This means the URL will be #{test_url}
+
+        END
+        print "Is the configuration correct, "
+        answers_ok = yesno(true)
+      end
+    else
+      test_url = "http://#{config[:http_server][:bind_address]}:#{config[:http_server][:port]}#{config[:base_url]}"
+    end
+    
+    puts "Creating directories..."
+    env_dir = @args[:env_path]
+    require 'fileutils'
+    FileUtils.mkdir_p( env_dir ) unless File.exists?( env_dir )
+    conf_dir = File.expand_path( 'conf', env_dir )
+    Dir.mkdir( conf_dir )
+    db_dir = File.expand_path( 'db', env_dir )
+    Dir.mkdir( db_dir )
+    log_dir = File.expand_path( 'log', env_dir )
+    Dir.mkdir( log_dir )
+    plugins_dir = File.expand_path( 'plugins', env_dir )
+    Dir.mkdir( plugins_dir )
+    run_dir = File.expand_path( 'run', env_dir )
+    Dir.mkdir( run_dir )
+    unless create_blank
+      welcome_plugin_dir = File.join( SERVER_PATH, 'setup', 'welcome' )
+      welcome_plugin_dst = File.join( plugins_dir, 'welcome' )
+      puts "Installing the welcome plugin. To remove it, just delete this folder:"
+      puts "  #{welcome_plugin_dst}"
+      FileUtils.cp_r( welcome_plugin_dir, welcome_plugin_dst )
+    end
+    puts "Creating files..."
+    conf_file = File.join( conf_dir, 'config.yaml' )
+    File.open( conf_file, 'w' ) {|f| f.write( YAML.dump( config ) ) }
+    readme_file = File.join( env_dir, 'README' )
+    File.open( readme_file, 'w' ) {|f| f.write( <<-END
+This directory contains a RSence environment titled '#{config[:index_html][:title]}'.
+Visit http://rsence.org/ for further information.
+    END
+    ) }
+    version_file = File.join( env_dir, 'VERSION' )
+    File.open( readme_file, 'w' ) {|f| f.write( "RSence Environment Version #{version.to_f}" ) }
+    puts <<-END
+
+#{'-='*39}-
+
+RSence project environment for '#{config[:index_html][:title]}' created.
+
+You may configure the environment by editing the file:
+
+  #{conf_file}
+
+If you would like to test this environment now, start the RSence server:
+
+  rsence run #{env_dir}
+
+Then point your browser to:
+
+  #{test_url}
+
+The latest documentation and further information is available at the
+RSence website:
+
+  http://rsence.org/
+
+
+Congratulations!
+
+    END
+    exit
   end
   
   def help( cmd )
@@ -711,7 +1067,7 @@ EOF
       if cmd == :help
         parse_help_argv
       elsif cmd == :version
-        version
+        puts version
         exit
       elsif [:run,:start,:stop,:restart].include? cmd
         parse_startup_argv
@@ -719,8 +1075,6 @@ EOF
         parse_status_argv
       elsif cmd == :save
         parse_save_argv
-      elsif cmd == :setup
-        parse_setup_argv
       elsif cmd == :initenv
         parse_initenv_argv
       end

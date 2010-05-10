@@ -68,7 +68,7 @@ class Configuration
     wizard_config_data = ConfigWizard.new(config).run( wizard_conf_file )
     config.merge!( wizard_config_data )
   end
-  def initialize(args)
+  def initialize( args, dont_expand_path=false )
     ## Paths for log and pid files
     pidpath = File.join( args[:env_path], 'run' )
     logpath = File.join( args[:env_path], 'log' )
@@ -154,12 +154,9 @@ class Configuration
     config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless config[:daemon].has_key?(:pid_fn)
     config[:daemon][:log_fn] = File.join(logpath, "rsence") unless config[:daemon].has_key?(:log_fn)
     
-    if config[:database][:ses_db].start_with?('sqlite://')
-      db_url = config[:database][:ses_db].split('sqlite://')[1]
-      unless db_url.start_with?('/')
-        db_url = File.join( args[:env_path], db_url )
-        config[:database][:ses_db] = "sqlite://#{db_url}"
-      end
+    if config[:database][:ses_db].start_with?('sqlite://') and not dont_expand_path
+      db_url = File.expand_path( config[:database][:ses_db].split('sqlite://')[1], args[:env_path] )
+      config[:database][:ses_db] = "sqlite://#{db_url}"
     end
     
     ## Broker configuration
