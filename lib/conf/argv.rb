@@ -1000,7 +1000,7 @@ Visit http://rsence.org/ for further information.
     END
     ) }
     version_file = File.join( env_dir, 'VERSION' )
-    File.open( readme_file, 'w' ) {|f| f.write( "RSence Environment Version #{version.to_f}" ) }
+    File.open( version_file, 'w' ) {|f| f.write( "RSence Environment Version #{version.to_f}" ) }
     puts <<-END
 
 #{'-='*39}-
