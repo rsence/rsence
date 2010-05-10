@@ -326,11 +326,7 @@ class ClientPkgBuild
     # make sure the src_dirs contain only absolute paths.
     # if not, use current working dir as a logical prefix
     @src_dirs.map! do |src_dir|
-      if src_dir[0].chr == '/'
-        src_dir
-      else
-        File.join( File.expand_path( Dir.pwd ), src_dir )
-      end
+      File.expand_path( src_dir )
     end
     
     @src_dirs.each do |src_dir|
