@@ -9,7 +9,7 @@
 # RSence 'Welcome' plugin
 class WelcomePlugin < GUIPlugin
   def disable_self
-    file_write( 'disabled' )
+    file_write( 'disabled', '' )
     @plugins.unload_bundle( @name )
   end
   
@@ -21,9 +21,9 @@ class WelcomePlugin < GUIPlugin
     return params
   end
   
-  def dont_show_again( msg, value )
-    close = get_ses(msg)[:close]
-    if value.data == 1 and close.data == 1
+  def close_button( msg, value )
+    dont_show_again = get_ses(msg)[:dont_show_again]
+    if (value.data == 1) and (dont_show_again.data == true)
       disable_self
     end
     return true

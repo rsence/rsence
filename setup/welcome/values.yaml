@@ -2,3 +2,5 @@
   :value: false
 :close:
   :value: 0
+  :responders:
+  - { :method: close_button }
