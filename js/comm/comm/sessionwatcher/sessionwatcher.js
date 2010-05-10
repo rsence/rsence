@@ -30,7 +30,7 @@ COMM.SessionWatcher = HApplication.extend({
     
     // gets the HValue represented by
     // sesTimeoutValueId (:client_time in server)
-    this.sesTimeoutValue = HVM.values[_sesTimeoutValueId];
+    this.sesTimeoutValue = COMM.Values.values[_sesTimeoutValueId];
     this.timeoutSecs = _timeoutSecs;
   },
   
