@@ -79,9 +79,7 @@ module PluginUtil
     if prefix
       path = File.join( prefix, path )
     end
-    if path[0].chr != '/' and path[0..1] != '..'
-      path = File.join( @path, path )
-    end
+    path = File.expand_path( path, @path )
     return path
   end
   
