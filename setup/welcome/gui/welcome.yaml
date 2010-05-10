@@ -1,0 +1,68 @@
+type: GUITree
+version: 0.6
+
+dependencies:
+  - default_theme
+  - controls
+
+class: RSence.GUIApp
+options:
+  title: Welcome App
+  priority: 20
+subviews:
+  - class: HSheet
+    rect: [ 0, 0, 600, 500 ]
+    bind: :values.close
+    extend:
+      refreshValue: |
+        function(){
+          this.base();
+          if ( this.value==1 ) {
+            this.app.die();
+          }
+        }
+    subviews:
+      - class: HScrollView
+        rect: [ 0, 0, 550, 300, 0, 42 ]
+        options:
+          scrollX: false
+          scrollY: auto
+          style:
+            - [ 'background-color', 'white' ]
+            - [ 'border-bottom', '1px solid black' ]
+        subviews:
+          - class: HImageView
+            rect: [ 18, 10, 559, 110 ]
+            options:
+              value: http://rsence.org/rsence_org_logo.gif
+          - class: HView
+            rect: [ null, 95, 310, 25, 35, null ]
+            options:
+              html: |
+                <i style="font-family:Helvetica,Arial,sans-serif;font-size:16px;">
+                  <a style="color:#28c;font-weight:bold" href="http://rsence.org/">http://www.rsence.org/</a>
+                </i>
+              style:
+                - - text-align
+                  - right
+          - class: HInlineView
+            rect: [ 0, 0, null, null, 0, 0 ]
+            options:
+              html: :text.welcome
+              style:
+                - - font-family
+                  - 'Helvetica, Arial, sans-serif'
+                - - font-size
+                  - 16px
+                - - line-height
+                  - 20px
+      - class: HClickValueButton
+        rect: [ null, null, 60, 24, 8, 8 ]
+        bind: :values.close
+        options:
+          label: Close
+      - class: HCheckbox
+        rect: [ null, null, 130, 24, 74, 8 ]
+        bind: :values.dont_show_again
+        options:
+          label: Don't show again
