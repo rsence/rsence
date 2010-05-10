@@ -133,6 +133,13 @@ COMM = {
     if(!_options.onSuccess){
       _this.onSuccess = function(resp){console.log('No success handler specified, response: ',resp);};
     }
+    if(!_options.on302){
+      /** Redirection handler **/
+      _this.on503 = function(_this){
+        var _retryAfter = parseInt(_this.X.getResponseHeader('Retry-After'),10)*1000,
+            _timeout = setTimeout(function(){COMM.request(_this.url,_this.options);},_retryAfter);
+      };
+    }
     _this.url = _url;
     _this.options = _options;
     _this.X   = _comm._XMLHttpRequest();
@@ -181,9 +188,9 @@ if(window['XMLHttpRequest']!==undefined){
     return new XMLHttpRequest();
   };
 }
-else if(BROWSER_TYPE.ie){
+else if(window.ActiveXObject){
   COMM._XMLHttpRequest = function(){
-    return new ActiveXObject("Msxml2.XMLHTTP");
+    return new ActiveXObject("Microsoft.XMLHTTP");
   };
 }
 else {

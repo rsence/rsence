@@ -30,6 +30,17 @@ require 'http/request'
 class Broker
   
   def call(env)
+    sleep @@ping_sim if @@ping_sim
+    unless @@transporter.online?
+      puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Server busy."
+      headers = {
+        'Retry-After' => '2',
+        'Content-Type' => 'text/plain',
+        'Refresh' => "2; #{env['REQUEST_URI']}",
+        'Content-Length' => '4'
+      }
+      return [ 503, headers, 'BUSY' ]
+    end
     request  = Request.new(env)
     response = Response.new
     request_method = request.request_method.downcase
@@ -58,6 +69,13 @@ class Broker
     else
       @@ping_sim = conf/1000.0
     end
+    Thread.new do
+      Thread.pass
+      until RSence.argv.test_port( port, host )
+        sleep 0.1
+      end
+      @@transporter.online = true
+    end
     handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
   end
   
@@ -79,8 +97,6 @@ class Broker
     
     puts "post: #{@request.fullpath}" if RSence.args[:verbose]
     
-    sleep @@ping_sim if @@ping_sim
-    
     not_found unless @@transporter.servlet( :post, @request, @response )
     
   end
@@ -89,8 +105,6 @@ class Broker
   def get
     
     puts "get: #{@request.fullpath}" if RSence.args[:verbose]
-    
-    sleep @@ping_sim if @@ping_sim
     
     not_found unless @@transporter.servlet( :get, @request, @response )
     
