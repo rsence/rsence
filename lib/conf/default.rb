@@ -138,10 +138,11 @@ class Configuration
       end
     end
     
-    env_plugins_path = File.join( args[:env_path], 'plugins' )
+    env_plugins_path = File.expand_path( 'plugins', args[:env_path] )
     unless config[:plugin_paths].include? env_plugins_path
       config[:plugin_paths].push( env_plugins_path )
     end
+    puts "plugin paths: #{config[:plugin_paths].inspect}" if args[:debug]
     
     config[:trace] = true if args[:trace_js]
     config[:debug_mode] = true if args[:debug]
