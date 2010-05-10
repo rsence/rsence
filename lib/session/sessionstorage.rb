@@ -51,7 +51,14 @@ class SessionStorage
     
     @db_uri = ::RSence.config[:database][:ses_db]
     
-    db_init
+    if db_test
+      @db_avail = true
+      db_init
+    else
+      @db_avail = false
+      puts "Warning: Session database is not available. Can't use persistent sessions."
+      @id_counter = 0
+    end
     
     @accept_requests = true
     
@@ -60,15 +67,34 @@ class SessionStorage
   attr_reader :accept_requests
   
   def db_test
-    if @db.table_exists?(:rsence_test)
+    begin
+      db_open
+      if @db.table_exists?(:rsence_test)
+        @db.drop_table(:rsence_test)
+      end
+      @db.create_table(:rsence_test) { primary_key :id; String :test }
+      test_id = @db[:rsence_test].insert( :test => 'TestFoo' )
+      @db[:rsence_test].filter( :id => test_id ).update( :test => 'TestFoo2' )
+      @db[:rsence_test].filter( :id => test_id ).delete
+      @db[:rsence_test].delete
       @db.drop_table(:rsence_test)
+      db_close
+      return true
+    rescue => e
+      if RSence.args[:debug]
+        err_msg = [
+          "ERROR: SssionStorage couldn't open database",
+          "#{e.class.to_s}, #{e.message}",
+          "Backtrace:",
+          "\t"+e.backtrace.join("\n\t")
+        ].join("\n")+"\n"
+        $stderr.write( err_msg )
+      elsif RSence.args[:verbose]
+        puts "Failed to open database '#{@db_uri}'."
+        puts "Run RSence in debug mode for full error output."
+      end
+      return false
     end
-    @db.create_table(:rsence_test) { primary_key :id; String :test }
-    test_id = @db[:rsence_test].insert( :test => 'TestFoo' )
-    @db[:rsence_test].filter( :id => test_id ).update( :test => 'TestFoo2' )
-    @db[:rsence_test].filter( :id => test_id ).delete
-    @db[:rsence_test].delete
-    @db.drop_table(:rsence_test)
   end
   
   def db_close
@@ -76,25 +102,13 @@ class SessionStorage
   end
   
   def db_open
-    @db = Sequel.connect(@db_uri)
+    # work-around for windows (drive letters causing confusion)
+    if @db_uri.start_with?('sqlite://')
+      @db = Sequel.sqlite( @db_uri.split('sqlite://')[1] )
+    else
+      @db = Sequel.connect(@db_uri)
+    end
   end
-  
-  # def db_open
-  #   ## Tests if database has sufficient privileges
-  #   begin
-  #     @db = Sequel.connect(@db_uri)
-  #     db_test
-  #     db_close
-  #     @db = Sequel.connect(@db_uri)
-  #   rescue => e
-  #     $stderr.write( "SessionStorage: error #{e.inspect}\nReverting to default database.\n" )
-  #     @db_uri = "sqlite://#{File.join(SERVER_PATH,'var','db','rsence_ses.db')}"
-  #     @db = Sequel.connect(@db_uri)
-  #     db_test
-  #     db_close
-  #     @db = Sequel.connect(@db_uri)
-  #   end
-  # end
   
   ## Creates the 'rsence_session' table, if necessary
   ## This table is used to store sessions
@@ -181,6 +195,10 @@ class SessionStorage
   
   ## Deletes all rows from rsence_session as well as rsence_uploads
   def reset_sessions
+    unless @db_avail
+      puts "Warning: Can't reset sessions: No database!" if RSence.args[:verbose]
+      return
+    end
     db_open
     @db[:rsence_session].delete if @db.table_exists?(:rsence_session)
     @db[:rsence_uploads].delete if @db.table_exists?(:rsence_uploads)
@@ -189,6 +207,10 @@ class SessionStorage
   
   ## Restores all saved sessions from db to ram
   def restore_sessions
+    unless @db_avail
+      puts "Warning: Can't restore sessions: No database!" if RSence.args[:verbose]
+      return
+    end
     puts "Restoring sessions..." if RSence.args[:verbose]
     db_open
     @db[:rsence_session].all do |ses_row|
@@ -211,6 +233,10 @@ class SessionStorage
   
   ## Stores all sessions to db from ram
   def store_sessions
+    unless @db_avail
+      puts "Warning: Can't store sessions: No database!" if RSence.args[:verbose]
+      return
+    end
     puts "Storing sessions..." if RSence.args[:verbose]
     db_open
     @sessions.each_key do |ses_id|
@@ -241,6 +267,10 @@ class SessionStorage
   
   ## Returns a new, unique session identifier by storing the params to the database
   def new_ses_id( cookie_key, ses_key, timeout_secs, user_id=0 )
+    unless @db_avail
+      @id_counter += 1
+      return @id_counter
+    end
     db_open
     new_id = @db[:rsence_session].insert(
       :cookie_key  => cookie_key,
@@ -286,10 +316,12 @@ class SessionStorage
       @clone_targets.delete( ses_id ) if @clone_targets.has_key?( ses_id )
     end
     
-    db_open
-    # Deletes the session's row from the database
-    @db[:rsence_session].filter(:id => ses_id).delete
-    db_close
+    if @db_avail
+      db_open
+      # Deletes the session's row from the database
+      @db[:rsence_session].filter(:id => ses_id).delete
+      db_close
+    end
     
   end
   
