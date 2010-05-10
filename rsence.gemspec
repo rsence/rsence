@@ -12,11 +12,12 @@ Gem::Specification.new do |s|
   s.description = <<-END
 RSence is primarily a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies. RSence uses the server for backend tasks and the client to provide responsive user interfaces. The server is a highly optimized Ruby framework for writing applications as plugin bundles containing all resources needed per plugin. The client is a highly optimized Javascript framework with an API similar to many object-oriented desktop frameworks. RSence is not primarily targeted for creating html web sites, there are plenty of other tools for that purpose.
 END
-  s.add_dependency( "rsence-deps", "934" )
+  s.add_dependency( "rsence-deps", "957" )
   require 'rake'
   s.files = FileList[
     'bin/rsence',
     'lib/**/*',
+    'setup/**/*',
     'conf/*',
     'plugins/client_pkg/**/*',
     'plugins/index_html/**/*',
