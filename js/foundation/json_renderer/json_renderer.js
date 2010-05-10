@@ -23,7 +23,7 @@
 ***/
 COMM.JSONRenderer = HClass.extend({
   
-  version: 0.5,
+  version: 0.6,
 
 /** = Description
   * Renders JSON structured data, see some of the demos for usage examples.
@@ -145,6 +145,10 @@ COMM.JSONRenderer = HClass.extend({
         _hasExtension = _dataNode['extend'] !== undefined,
         _extension    = _hasExtension?_dataNode['extend']:null,
         
+        // JS Extension block
+        _hasBind = _dataNode['bind'] !== undefined,
+        _bind    = _hasBind?_dataNode['bind']:null,
+        
         // JS Definition block
         _hasDefinition = _dataNode['define'] !== undefined,
         _definitions   = _hasDefinition?_dataNode['define']:null,
@@ -155,7 +159,6 @@ COMM.JSONRenderer = HClass.extend({
         i,
         
         _subView;
-    // console.log('className:',_className,' class:',_class);
     this.scopeDepth ++;
     this.scopes.push({});
     try{
@@ -189,9 +192,14 @@ COMM.JSONRenderer = HClass.extend({
           _class = _class.extend( _extBlock );
         }
         if(_hasOptions){
-          if(_options['valueObjId'] !== undefined){
-            var _valueObjId = _options['valueObjId'];
-            _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+          if(_hasBind){
+            _options.valueObj = COMM.Values.values[_bind];
+          }
+          else{
+            if(_options['valueObjId'] !== undefined){
+              var _valueObjId = _options['valueObjId'];
+              _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+            }
           }
         }
         // For HApplication -derived classes
@@ -201,6 +209,11 @@ COMM.JSONRenderer = HClass.extend({
         // For HView and HControl -derived classes
         else if(_hasRect){
           _instance = _class.nu(_rect,_parent,_options);
+        }
+        if(!_hasOptions){
+          if(_hasBind){
+            COMM.Values.values[_bind].bind(_instance);
+          }
         }
       }
       else if(!(!_class && _hasSubviews)) {
