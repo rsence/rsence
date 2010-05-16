@@ -11,7 +11,7 @@
  
  It just loads, caches and sends the page for now.
 =end
-class IndexHtmlPlugin < ServletPlugin
+class IndexHtmlPlugin < Servlet
   
   def match( uri, method )
     if uri == ::RSence.config[:index_html][:respond_address] and method == :get
@@ -42,7 +42,7 @@ class IndexHtmlPlugin < ServletPlugin
   
   def close
     # $TICKETSERVE.del_rsrc( @riassence_gif_id )
-    @plugins[:ticketservices].del_rsrc( @loading_gif_id )
+    @plugins[:ticket].del_rsrc( @loading_gif_id )
   end
   
   def render_index_html

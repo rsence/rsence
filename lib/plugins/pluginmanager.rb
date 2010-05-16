@@ -448,7 +448,16 @@ class PluginManager
   def delegate( method_name, *args )
     @registry.each do | plugin_name, plugin |
       if plugin.respond_to?( method_name )
-        plugin.send( method_name, *args  )
+        begin
+          plugin.send( method_name, *args  )
+        rescue => e
+          plugin_error(
+            e,
+            "RSence::PluginManager.delegate error",
+            "plugin_name: #{plugin_name.inspect}, method_name: #{method_name.inspect}",
+            plugin_name
+          )
+        end
       end
     end
   end
