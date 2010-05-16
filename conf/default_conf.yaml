@@ -126,7 +126,7 @@
   # If enabled, also check the maximum number of clones allowed in
   # :session_cookie_max_clones
   # Defaults to false, will be the default in a future version.
-  :clone_cookie_sessions: false
+  :clone_cookie_sessions: true
   #
   # This limits the amount of cloned targets of a source session.
   # NOTE: This has no effect yet, the code is not implemented.
