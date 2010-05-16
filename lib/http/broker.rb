@@ -47,7 +47,9 @@ class Broker
     dispatcher = dispatcher_class.new( request, response )
     dispatcher.send(request_method)
     content_type = dispatcher.content_type
-    response.header['Content-Length'] = response.body.length.to_s unless response.header.has_key?('Content-Length')
+    puts "encoding: #{response.body.encoding.inspect}"
+    response.header['Content-Length'] = response.body.size.to_s #unless response.header.has_key?('Content-Length')
+    # puts [response.status, response.header, response.body].inspect
     return [response.status, response.header, response.body]
   end
   
@@ -71,7 +73,9 @@ class Broker
     end
     Thread.new do
       Thread.pass
+      puts "testing port.. #{host.inspect}"
       until RSence.argv.test_port( port, host )
+        puts "port tested"
         sleep 0.1
       end
       @@transporter.online = true

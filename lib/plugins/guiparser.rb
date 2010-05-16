@@ -6,6 +6,8 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+module ::RSence
+module Plugins
 # This class automatically loads a YAML file from "gui" subdirectory of a plugin.
 # Extend your plugin from the GUIPlugin class instead of the Plugin class to make
 # this work automatically.
@@ -111,4 +113,5 @@ private
   end
 
 end
-
+end
+end

@@ -227,8 +227,4 @@ class Main < Plugin
   
 end
 
-## Initialize and register the plugin.
-main = Main.new.register( :main )
-
-
 

@@ -5,61 +5,65 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+# if RUBY_VERSION.to_f >= 1.9
+#   # with_module comes from:
+#   # http://coderrr.wordpress.com/2009/05/18/dynamically-adding-a-constant-nesting-in-ruby-1-9/
+#   module Kernel
+#     def with_module(*consts, &blk)
+#       slf = blk.binding.eval('self')
+#       l = lambda { slf.instance_eval(&blk) }
+#       consts.reverse.inject(l) {|l, k| lambda { k.class_eval(&l) } }.call
+#     end
+#   end
+# end
 
-
-def bundle_loader( params )
-  src_path = params[:src_path]
-  mod = Module.new do |m|
-    @@bundle_path    = params[:bundle_path   ]
-    @@bundle_name    = params[:bundle_name   ]
-    @@bundle_info    = params[:bundle_info   ]
-    @@plugin_manager = params[:plugin_manager]
-    begin
-      if params[:bundle_info][:inits_self] == false
-        m::module_eval( File.read(src_path) )
-      elsif params[:bundle_info][:reloadable] == false
-        require src_path[0..-4]
-      else
-        load src_path
-      end
-    rescue => e
-      @@plugin_manager.plugin_error(
-        e,
-        'BundleLoaderError',
-        "An error occurred while loading the plugin bundle #{@@bundle_name}.",
-        @@bundle_path
-      )
-    end
-  end
-  return mod
-end
-
+# def bundle_loader( params )
+#   src_path = params[:src_path]
+#   mod = Module.new do |m|
+#     @@bundle_path    = params[:bundle_path   ]
+#     @@bundle_name    = params[:bundle_name   ]
+#     @@bundle_info    = params[:bundle_info   ]
+#     @@plugin_manager = params[:plugin_manager]
+#     def m.bundle_path; @@bundle_path; end
+#     def m.bundle_name; @@bundle_name; end
+#     def m.bundle_info; @@bundle_info; end
+#     def m.bundle_manager; @@bundle_manager; end
+#     begin
+# #       if RUBY_VERSION.to_f >= 1.9
+# #         # with_module(m) do
+# #           src = File.read(src_path)
+# #           self.module_eval(
+# # <<-SRC
+# # puts %{--- bundle_path: #{bundle_path.inspect}}
+# # #{src}
+# # SRC
+# #           )
+# #         # end
+# #       else
+#         if params[:bundle_info][:inits_self] == false or RUBY_VERSION.to_f >= 1.9
+#           m::module_eval( File.read(src_path) )
+#         elsif params[:bundle_info][:reloadable] == false
+#           require src_path[0..-4]
+#         else
+#           load src_path
+#         end
+#       # end
+#     rescue => e
+#       @@plugin_manager.plugin_error(
+#         e,
+#         'BundleLoaderError',
+#         "An error occurred while loading the plugin bundle #{@@bundle_name}.",
+#         @@bundle_path
+#       )
+#     end
+#   end
+#   return mod
+# end
+# 
 
 module RSence
 
-# Contains the PluginUtil module which has common methods for the bundle classes
-require 'plugins/plugin_util'
-
-# plugin.rb contains the Plugin skeleton class
-require 'plugins/plugin'
-
-# guiparser.rb contains the Yaml serializer for gui trees.
-# It uses JSONRenderer on the client to build user interfaces.
-require 'plugins/guiparser'
-
-# gui_plugin.rb is an extension of Plugin that uses
-# GUIParser to init the gui automatically.
-require 'plugins/gui_plugin'
-
-# plugin_sqlite_db.rb contains automatic local sqlite database
-# creation for a plugin that includes it.
-require 'plugins/plugin_sqlite_db'
-
-# servlet includes the Servlet class, for handling any requests / responses
-require 'plugins/servlet'
-
-# Interface for plugins in a plugin bundle
-require 'plugins/plugin_plugins'
+require 'plugins/plugins'
 
 ## = Abstract
 ## PluginManager is the service that loads and provides method delegation
@@ -280,7 +284,7 @@ class PluginManager
       
       # A flag (when false) enables automatic construction
       # of the Plugin and Servlet classes contained.
-      :inits_self => true,
+      :inits_self => false,
       
       # System version requirement.
       :sys_version => '>= 1.0.0',
@@ -323,47 +327,32 @@ class PluginManager
     
     bundle_src = File.read( bundle_file_path )
     
-    if RUBY_VERSION.to_f >= 1.9
-      puts "ruby 1.9.x"
-      puts "ruby version: #{RUBY_VERSION.inspect}"
-      src_path = bundle_file_path
-      plugin_manager = self
-      module_ns = Module.new do |m|
-        @@bundle_path    = bundle_path
-        @@bundle_name    = bundle_name
-        @@bundle_info    = bundle_info
-        @@plugin_manager = plugin_manager
-        def m.bundle_path; @@bundle_path; end
-        puts "using load"
-        load src_path
-      end
-    else
-      module_ns         = bundle_loader( {
-        :bundle_path    => bundle_path,
-        :bundle_name    => bundle_name,
-        :bundle_info    => bundle_info,
-        :plugin_manager => self,
-        :src_path       => bundle_file_path,
-        :src            => bundle_src
-      } )
-    end
+    module_ns         = Plugins.bundle_loader( {
+      :bundle_path    => bundle_path,
+      :bundle_name    => bundle_name,
+      :bundle_info    => bundle_info,
+      :plugin_manager => self,
+      :src_path       => bundle_file_path,
+      :src            => bundle_src
+    } )
     
-    unless bundle_info[:inits_self]
+    if bundle_info[:inits_self]
+      warn "Plugins can't init them self anymore. Please fix plugin: #{bundle_name.inspect}"
+    else
       module_ns.constants.each do |module_const_name|
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class
-          module_const.ancestors.each do |ancestor|
-            if ancestor.to_s == "Servlet"
-              module_const.new
-              break
-            elsif ancestor.to_s == "Plugin"
-              module_const.new.register( bundle_name )
-              break
-            elsif ancestor.to_s == "Object"
-              puts "Can't init class: #{module_const.to_s}"
-              break
-            end
+          bundle_type = module_const.bundle_type
+          if [:Servlet, :Plugin, :GUIPlugin].include? bundle_type
+            bundle_inst = module_const.new( bundle_name, bundle_info, bundle_path, self )
+            bundle_inst.register( bundle_name ) if [ :Plugin, :GUIPlugin ].include?( bundle_type )
+            break
+          else
+            warn "Can't init class: #{module_const.to_s}"
+            break
           end
+        else
+          warn "module_const.class: #{module_const.class.inspect}"
         end
       end
     end
@@ -381,7 +370,8 @@ class PluginManager
     else
       inst.init if inst.respond_to? :init and not inst.inited
       @registry[ bundle_name ] = inst
-      if inst.respond_to?( :match )
+      if inst.respond_to?( :match ) and ( inst.respond_to?( :get ) or inst.respond_to?( :post ) )
+        puts " --- servlet: #{bundle_name.inspect}, #{inst.respond_to?(:match)}, #{inst.post}" if bundle_name == :welcome
         @servlets.push( bundle_name )
       end
     end
@@ -405,11 +395,11 @@ class PluginManager
       "\t"+e.backtrace.join("\n\t"),
       "*"*40
     ].join("\n")+"\n"
-    puts
-    puts "eval repl: #{eval_repl}"
-    puts
     if eval_repl
-      err_msg = err_msg.gsub('from (eval):',"from #{eval_repl}:")
+      puts
+      puts "plugin: #{eval_repl}"
+      puts
+      err_msg = err_msg.gsub(/^\t\(eval\)\:/s,"\t#{eval_repl}:")
     end
     $stderr.write( err_msg )
   end
@@ -490,6 +480,7 @@ class PluginManager
     matches_order = match_servlet_uri( req_uri, req_type )
     return false unless matches_order
     matches_order.each do |servlet_name|
+      puts "servlet name: #{servlet_name.inspect}" if RSence.args[:debug]
       begin
         @registry[servlet_name].send( req_type, req, resp, session )
         return true

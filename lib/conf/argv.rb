@@ -530,7 +530,13 @@ EOF
     require 'socket'
     begin
       addr = '127.0.0.1' if addr == '0.0.0.0'
-      sock = TCPsocket.open( addr, port )
+      puts 'sock...'
+      if RUBY_VERSION.to_f >= 1.9
+        sock = TCPSocket.open( addr, port )
+      else
+        sock = TCPsocket.open( addr, port )
+      end
+      puts '..sock'
       sock.close
       return true
     rescue Errno::ECONNREFUSED

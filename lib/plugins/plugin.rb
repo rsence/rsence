@@ -298,355 +298,356 @@
 ##    end
 ##    SessionLogger.new.register( 'ses_logger' )
 ##
-class Plugin
+module ::RSence
+  module Plugins
+    class PluginTemplate
+      include PluginUtil
+      def self.bundle_type; :Plugin; end
   
-  include PluginUtil
+      # The +names+ is a list of (usually just one) names the plugin is registered under.
+      attr_reader :name, :path, :info, :inited
   
-  # The +names+ is a list of (usually just one) names the plugin is registered under.
-  attr_reader :name, :path, :info, :inited
-  
-  # The constructor should not take any parameters. In most cases, it's better
-  # to extend the +#init+ method, because it's called after the plugin is set up.
-  def initialize
-    @inited  = false
-    @info    = @@bundle_info
-    @name    = @@bundle_name
-    @path    = @@bundle_path
-    @plugins = @@plugin_manager
-    register unless @info[:inits_self]
-  end
-  
-  # Extend this method to do any initial tasks before other methods are called.
-  # By default init_values is called to load the +values.yaml+ configuration file.
-  def init
-    @values = init_values
-  end
-  
-  # Extend this method to do any tasks every time the client makes a request.
-  def idle( msg )
-  end
-  
-  # Extend this method to invoke actions, when a new session is created.
-  # By default +#init_ses_values+ is called to initialize values defined in the 
-  # +values.yaml+ configuration file.
-  def init_ses( msg )
-    init_ses_values( msg )
-  end
-  
-  # Extend this method to invoke actions, when a previous session is restored.
-  # By default +#restore_ses_values+ is called to perform actions on values as
-  # defined in the +values.yaml+ configuration file.
-  def restore_ses( msg )
-    restore_ses_values( msg )
-  end
-  
-  # Extend this method to invoke actions, when the session
-  # is a clone of another session. It's called once, just
-  # before +#restore_ses+ is called.
-  #
-  # A session is cloned, when a user opens a another browser
-  # window or tab, while the previous session is still active.
-  #
-  # The +source_ses+ is the actual previous session object, which
-  # was used as the source of the clone.
-  def cloned_target( msg, source_session )
-  end
-  
-  # Extend this method to invoke actions, when the session
-  # has been cloned to another session. It's called once, just
-  # before +#restore_ses+ is called on the first request after
-  # the cloning happened.
-  #
-  # A session is cloned, when a user opens a another browser
-  # window or tab, while the previous session is still active.
-  #
-  # The +target_ses+ is the actual cloned session object, which
-  # is a copy of the current session.
-  def cloned_source( msg, target_sessions )
-  end
-  
-  # This method must be called to register the plugin instance
-  # into the system. Otherwise, it's subject to destruction
-  # and garbage collection. Use the +name+ parameter to 
-  # give the (unique) name of your plugin.
-  def register( name=false )
-    if @inited
-      @plugins.register_alias( @name, name )
-    else
-      if name
-        name = name.to_s
-      else
-        name = @name
+      # The constructor should not take any parameters. In most cases, it's better
+      # to extend the +#init+ method, because it's called after the plugin is set up.
+      def initialize( bundle_name, bundle_info, bundle_path, plugin_manager )
+        @inited  = false
+        @info    = bundle_info
+        @name    = bundle_name
+        @path    = bundle_path
+        @plugins = plugin_manager
+        register unless @info[:inits_self]
       end
-      @plugins.register_bundle( self, name )
-      @inited = true
-    end
-  end
   
-private
-  
-  # This method looks looks for a file called "values.yaml"
-  # in the plugin's bundle directory
-  #.
-  # If this file is found, it loads it for initial value definitions.
-  #
-  # These definitions are accessible as the +@values+ attribute.
-  def init_values
-    values_path = compose_plugin_path( 'values.yaml' )
-    return yaml_read( values_path )
-  end
-  
-  # Returns all the names your plugin respond to.
-  # def name
-  #   return @names.first
-  # end
-  
-  
-  # Returns or creates a new session hash for the plugin.
-  #
-  # Uses the first name registered for the plugin and converts it to a symbol.
-  def get_ses( msg )
-    name_sym = name.to_sym
-    unless msg.session.has_key?( name_sym )
-      msg.session[ name_sym ] = {}
-    end
-    return msg.session[ name_sym ]
-  end
-  
-  # Returns the source code of the javascript file +name+ in the 'js'
-  # subdirectory of the plugin bundle.
-  def read_js( js_name )
-    file_read( compose_plugin_path( js_name, 'js', '.js' ) )
-  end
-  
-  # Deprecated name of +#read_js+
-  alias require_js read_js
-  
-  # Like +#read_js+, but reads the file only once per session.
-  #
-  # Returns the contents of the file on the first call,
-  # an empty string on the subsequent calls.
-  #
-  # Returns false otherwise.
-  def read_js_once( msg, js_name )
-    ses = msg.session
-    if not ses.has_key?(:deps)
-      ses[:deps] = []
-    end
-    path = compose_plugin_path( js_name, 'js', '.js' )
-    unless ses[:deps].include?( path )
-      ses[:deps].push( path )
-      return file_read( path )
-    else
-      return ''
-    end
-  end
-  
-  # Deprecated name of +#read_js_once+
-  alias require_js_once read_js_once
-  
-  # Creates a new instance of HValue, assigns it as +value_name+ into the
-  # session and uses the +value_properties+ Hash to define the default
-  # value and value responders.
-  #
-  # This method is invoked automatically, when handling the properties
-  # of the +values.yaml+ configuration file of a new session.
-  #
-  # It's invoked by +#init_ses+ via +#init_ses_values+.
-  #
-  # Structure of +value_properties+, all top-level items are optional:
-  #
-  #   {
-  #     # Default value; defaults to 0
-  #     :value => 'foo',
-  #     
-  #     # A plugin method to call to define the default value instead of the one defined in :value
-  #     :value_call => {
-  #       :plugin => 'plugin_name', # defaults to the plugin where defined
-  #       :method => 'method_name', # mandatory; name of the method to call
-  #       :args => [ 1, 'foo', 3 ], # optional, list of parameter values for the :method
-  #       :uses_msg => true         # defaults to true; when false, doesn't pass the msg as the first parameter
-  #     },
-  #     
-  #     # Restore the default, when the session is restored; defaults to false
-  #     :restore_default => false,
-  #     
-  #     # List of value responder methods to bind.
-  #     :responders => [
-  #        {
-  #          :plugin => 'plugin_name', # defaults to the plugin where defined
-  #          :method => 'method_name'  # mandatory, name of the method to call
-  #        },
-  #        # You can supply as many responders as you like:
-  #        { :plugin => 'another_plugin', :method => 'another_method' }
-  #     ]
-  #   }
-  #
-  def init_ses_value( msg, value_name, value_properties )
-    ses = get_ses( msg )
-    if value_properties.has_key?(:value_call)
-      default_value = init_value_call( msg, value_properties[:value_call] )
-    elsif value_properties.has_key?(:value)
-      default_value = value_properties[:value]
-    else
-      default_value = 0
-    end
-    ses[value_name] = HValue.new( msg, default_value )
-    if value_properties.has_key?(:responders)
-      value_properties[:responders].each do |responder|
-        if responder.has_key?(:plugin)
-          responder_plugin = responder[:plugin]
-        else
-          responder_plugin = @name
-        end
-        if responder.has_key?(:method)
-          ses[value_name].bind( responder_plugin, responder[:method] )
-        end
+      # Extend this method to do any initial tasks before other methods are called.
+      # By default init_values is called to load the +values.yaml+ configuration file.
+      def init
+        @values = init_values
       end
-    end
-  end
   
-  # Initializes session values, if the contents of the +values.yaml+ 
-  # file is defined in the bundle directory and loaded in +#init_values+.
-  def init_ses_values( msg )
-    return unless @values
-    @values.each do | value_name, value_properties |
-      init_ses_value( msg, value_name, value_properties )
-    end
-  end
-  
-  # Returns a value based on the :method and :plugin members of the
-  # +value_call+ hash.
-  #
-  # The call is made via msg.run if the method is not defined in
-  # the local plugin bundle.
-  #
-  # This method is called from +#init_ses_value+.
-  #
-  # Structure of the +value_call+ Hash:
-  #   { :plugin => 'plugin_name', # defaults to the plugin where defined
-  #     :method => 'method_name', # mandatory; name of the method to call
-  #     :args => [ 1, 'foo', 3 ], # optional, list of parameter values for the :method
-  #     :uses_msg => true         # defaults to true; when false, doesn't pass the msg as the first parameter
-  #   }
-  def init_value_call( msg, value_call )
-    value_call_method = value_call[:method]
-    if value_call.has_key?(:plugin)
-      value_call_plugin = value_call[:plugin]
-    else
-      value_call_plugin = false
-    end
-    if value_call.has_key?(:args)
-      if value_call.has_key?(:uses_msg) and value_call[:uses_msg] != false
-        if value_call_plugin
-          return msg.run( value_call_plugin, value_call_method, msg, *value_call[:args] )
-        else
-          return self.method( value_call_method ).call( msg, *value_call[:args] )
-        end
-      else
-        if value_call_plugin
-          return msg.run( value_call_plugin, value_call_method, *value_call[:args] )
-        else
-          return self.method( value_call_method ).call( *value_call[:args] )
-        end
+      # Extend this method to do any tasks every time the client makes a request.
+      def idle( msg )
       end
-    else
-      if value_call.has_key?(:uses_msg) and value_call[:uses_msg] != false
-        if value_call_plugin
-          return msg.run( value_call_plugin, value_call_method, msg )
-        else
-          return self.method( value_call_method ).call( msg )
-        end
-      else
-        if value_call_plugin
-          return msg.run( value_call_plugin, value_call_method )
-        else
-          return self.method( value_call_method ).call( )
-        end
-      end
-    end
-  end
   
-  # Restores session values to default, unless specified otherwise.
-  #
-  # Called from +#restore_ses+
-  def restore_ses_values( msg )
-    return unless @values
-    ses = get_ses( msg )
-    @values.each do | value_name, value_properties |
-      if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
-        unless value_properties[:restore_default] == false
-          if value_properties.has_key?(:value_call)
-            default_value = init_value_call( msg, value_properties[:value_call] )
-          elsif value_properties.has_key?(:value)
-            default_value = value_properties[:value]
+      # Extend this method to invoke actions, when a new session is created.
+      # By default +#init_ses_values+ is called to initialize values defined in the 
+      # +values.yaml+ configuration file.
+      def init_ses( msg )
+        init_ses_values( msg )
+      end
+  
+      # Extend this method to invoke actions, when a previous session is restored.
+      # By default +#restore_ses_values+ is called to perform actions on values as
+      # defined in the +values.yaml+ configuration file.
+      def restore_ses( msg )
+        restore_ses_values( msg )
+      end
+  
+      # Extend this method to invoke actions, when the session
+      # is a clone of another session. It's called once, just
+      # before +#restore_ses+ is called.
+      #
+      # A session is cloned, when a user opens a another browser
+      # window or tab, while the previous session is still active.
+      #
+      # The +source_ses+ is the actual previous session object, which
+      # was used as the source of the clone.
+      def cloned_target( msg, source_session )
+      end
+  
+      # Extend this method to invoke actions, when the session
+      # has been cloned to another session. It's called once, just
+      # before +#restore_ses+ is called on the first request after
+      # the cloning happened.
+      #
+      # A session is cloned, when a user opens a another browser
+      # window or tab, while the previous session is still active.
+      #
+      # The +target_ses+ is the actual cloned session object, which
+      # is a copy of the current session.
+      def cloned_source( msg, target_sessions )
+      end
+  
+      # This method must be called to register the plugin instance
+      # into the system. Otherwise, it's subject to destruction
+      # and garbage collection. Use the +name+ parameter to 
+      # give the (unique) name of your plugin.
+      def register( name=false )
+        if @inited
+          @plugins.register_alias( @name, name )
+        else
+          if name
+            name = name.to_s
           else
-            default_value = 0
+            name = @name
           end
-          ses[value_name].set( msg, default_value )
+          @plugins.register_bundle( self, name )
+          @inited = true
         end
-      else
-        init_ses_value( msg, value_name, value_properties )
+      end
+  
+    private
+  
+      # This method looks looks for a file called "values.yaml"
+      # in the plugin's bundle directory
+      #.
+      # If this file is found, it loads it for initial value definitions.
+      #
+      # These definitions are accessible as the +@values+ attribute.
+      def init_values
+        values_path = compose_plugin_path( 'values.yaml' )
+        return yaml_read( values_path )
+      end
+  
+      # Returns all the names your plugin respond to.
+      # def name
+      #   return @names.first
+      # end
+  
+  
+      # Returns or creates a new session hash for the plugin.
+      #
+      # Uses the first name registered for the plugin and converts it to a symbol.
+      def get_ses( msg )
+        name_sym = name.to_sym
+        unless msg.session.has_key?( name_sym )
+          msg.session[ name_sym ] = {}
+        end
+        return msg.session[ name_sym ]
+      end
+  
+      # Returns the source code of the javascript file +name+ in the 'js'
+      # subdirectory of the plugin bundle.
+      def read_js( js_name )
+        file_read( compose_plugin_path( js_name, 'js', '.js' ) )
+      end
+  
+      # Deprecated name of +#read_js+
+      alias require_js read_js
+  
+      # Like +#read_js+, but reads the file only once per session.
+      #
+      # Returns the contents of the file on the first call,
+      # an empty string on the subsequent calls.
+      #
+      # Returns false otherwise.
+      def read_js_once( msg, js_name )
+        ses = msg.session
+        if not ses.has_key?(:deps)
+          ses[:deps] = []
+        end
+        path = compose_plugin_path( js_name, 'js', '.js' )
+        unless ses[:deps].include?( path )
+          ses[:deps].push( path )
+          return file_read( path )
+        else
+          return ''
+        end
+      end
+  
+      # Deprecated name of +#read_js_once+
+      alias require_js_once read_js_once
+  
+      # Creates a new instance of HValue, assigns it as +value_name+ into the
+      # session and uses the +value_properties+ Hash to define the default
+      # value and value responders.
+      #
+      # This method is invoked automatically, when handling the properties
+      # of the +values.yaml+ configuration file of a new session.
+      #
+      # It's invoked by +#init_ses+ via +#init_ses_values+.
+      #
+      # Structure of +value_properties+, all top-level items are optional:
+      #
+      #   {
+      #     # Default value; defaults to 0
+      #     :value => 'foo',
+      #     
+      #     # A plugin method to call to define the default value instead of the one defined in :value
+      #     :value_call => {
+      #       :plugin => 'plugin_name', # defaults to the plugin where defined
+      #       :method => 'method_name', # mandatory; name of the method to call
+      #       :args => [ 1, 'foo', 3 ], # optional, list of parameter values for the :method
+      #       :uses_msg => true         # defaults to true; when false, doesn't pass the msg as the first parameter
+      #     },
+      #     
+      #     # Restore the default, when the session is restored; defaults to false
+      #     :restore_default => false,
+      #     
+      #     # List of value responder methods to bind.
+      #     :responders => [
+      #        {
+      #          :plugin => 'plugin_name', # defaults to the plugin where defined
+      #          :method => 'method_name'  # mandatory, name of the method to call
+      #        },
+      #        # You can supply as many responders as you like:
+      #        { :plugin => 'another_plugin', :method => 'another_method' }
+      #     ]
+      #   }
+      #
+      def init_ses_value( msg, value_name, value_properties )
+        ses = get_ses( msg )
+        if value_properties.has_key?(:value_call)
+          default_value = init_value_call( msg, value_properties[:value_call] )
+        elsif value_properties.has_key?(:value)
+          default_value = value_properties[:value]
+        else
+          default_value = 0
+        end
+        ses[value_name] = HValue.new( msg, default_value )
+        if value_properties.has_key?(:responders)
+          value_properties[:responders].each do |responder|
+            if responder.has_key?(:plugin)
+              responder_plugin = responder[:plugin]
+            else
+              responder_plugin = @name
+            end
+            if responder.has_key?(:method)
+              ses[value_name].bind( responder_plugin, responder[:method] )
+            end
+          end
+        end
+      end
+  
+      # Initializes session values, if the contents of the +values.yaml+ 
+      # file is defined in the bundle directory and loaded in +#init_values+.
+      def init_ses_values( msg )
+        return unless @values
+        @values.each do | value_name, value_properties |
+          init_ses_value( msg, value_name, value_properties )
+        end
+      end
+  
+      # Returns a value based on the :method and :plugin members of the
+      # +value_call+ hash.
+      #
+      # The call is made via msg.run if the method is not defined in
+      # the local plugin bundle.
+      #
+      # This method is called from +#init_ses_value+.
+      #
+      # Structure of the +value_call+ Hash:
+      #   { :plugin => 'plugin_name', # defaults to the plugin where defined
+      #     :method => 'method_name', # mandatory; name of the method to call
+      #     :args => [ 1, 'foo', 3 ], # optional, list of parameter values for the :method
+      #     :uses_msg => true         # defaults to true; when false, doesn't pass the msg as the first parameter
+      #   }
+      def init_value_call( msg, value_call )
+        value_call_method = value_call[:method]
+        if value_call.has_key?(:plugin)
+          value_call_plugin = value_call[:plugin]
+        else
+          value_call_plugin = false
+        end
+        if value_call.has_key?(:args)
+          if value_call.has_key?(:uses_msg) and value_call[:uses_msg] != false
+            if value_call_plugin
+              return msg.run( value_call_plugin, value_call_method, msg, *value_call[:args] )
+            else
+              return self.method( value_call_method ).call( msg, *value_call[:args] )
+            end
+          else
+            if value_call_plugin
+              return msg.run( value_call_plugin, value_call_method, *value_call[:args] )
+            else
+              return self.method( value_call_method ).call( *value_call[:args] )
+            end
+          end
+        else
+          if value_call.has_key?(:uses_msg) and value_call[:uses_msg] != false
+            if value_call_plugin
+              return msg.run( value_call_plugin, value_call_method, msg )
+            else
+              return self.method( value_call_method ).call( msg )
+            end
+          else
+            if value_call_plugin
+              return msg.run( value_call_plugin, value_call_method )
+            else
+              return self.method( value_call_method ).call( )
+            end
+          end
+        end
+      end
+  
+      # Restores session values to default, unless specified otherwise.
+      #
+      # Called from +#restore_ses+
+      def restore_ses_values( msg )
+        return unless @values
+        ses = get_ses( msg )
+        @values.each do | value_name, value_properties |
+          if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
+            unless value_properties[:restore_default] == false
+              if value_properties.has_key?(:value_call)
+                default_value = init_value_call( msg, value_properties[:value_call] )
+              elsif value_properties.has_key?(:value)
+                default_value = value_properties[:value]
+              else
+                default_value = 0
+              end
+              ses[value_name].set( msg, default_value )
+            end
+          else
+            init_ses_value( msg, value_name, value_properties )
+          end
+        end
+      end
+  
+      # Extracts +HValue+ references as javascript from the session Hash.
+      # The +ses+ parameter is used for supplying a hash with the +HValue+
+      # instances. It's optional and defaults to the current plugin node in
+      # the active session.
+      # 
+      # The return value is a string representing a js object similar to
+      # the ruby Hash +ses+.
+      # 
+      # Sample usage:
+      #
+      #   values_js( msg, msg.session[:main] )
+      #
+      def values_js( msg, ses=false )
+        # backwards-compatible with pre-1.3 behaviour
+        ses = msg if msg.class == Hash
+        # gets the session automatically, if false
+        ses = get_ses( msg ) unless ses
+        js_references = []
+        ses.each_key do |key_name|
+          if ses[key_name].class == HValue
+            js_references.push( "#{key_name.to_s}:HVM.values['#{ses[key_name].val_id}']" )
+          end
+        end
+        return "{#{js_references.join(',')}}"
+      end
+  
+      # Deprecated name of +#values_js+
+      alias extract_hvalues_from_hash values_js
+  
+      # Tells the js client framework to load a list of dependency packages.
+      # It keeps track of what's loaded, so nothing library loaded twice.
+      #
+      # The +dependencies+ parameter is an Array of dependencies.
+      #
+      # Sample usage:
+      #
+      #   include_js( msg, [ 'default_theme', 'controls', 'lists', 'datetime' ] )
+      #
+      def include_js( msg, dependencies=[] )
+        ses = msg.session
+        # check, if the session has a dependency array
+        if not ses.has_key?( :deps )
+          # make an array of dependencies for this session, if not already done
+          ses[:deps] = []
+        end
+        dependencies = [dependencies] if dependencies.class == String
+        # Check the required dependencies until everything is loaded.
+        dependencies.each do |dependency|
+          unless ses[:deps].include?( dependency )
+            ses[:deps].push( dependency )
+            msg.reply(%{jsLoader.load("#{dependency}");})
+          end
+        end
       end
     end
   end
-  
-  # Extracts +HValue+ references as javascript from the session Hash.
-  # The +ses+ parameter is used for supplying a hash with the +HValue+
-  # instances. It's optional and defaults to the current plugin node in
-  # the active session.
-  # 
-  # The return value is a string representing a js object similar to
-  # the ruby Hash +ses+.
-  # 
-  # Sample usage:
-  #
-  #   values_js( msg, msg.session[:main] )
-  #
-  def values_js( msg, ses=false )
-    # backwards-compatible with pre-1.3 behaviour
-    ses = msg if msg.class == Hash
-    # gets the session automatically, if false
-    ses = get_ses( msg ) unless ses
-    js_references = []
-    ses.each_key do |key_name|
-      if ses[key_name].class == HValue
-        js_references.push( "#{key_name.to_s}:HVM.values['#{ses[key_name].val_id}']" )
-      end
-    end
-    return "{#{js_references.join(',')}}"
-  end
-  
-  # Deprecated name of +#values_js+
-  alias extract_hvalues_from_hash values_js
-  
-  # Tells the js client framework to load a list of dependency packages.
-  # It keeps track of what's loaded, so nothing library loaded twice.
-  #
-  # The +dependencies+ parameter is an Array of dependencies.
-  #
-  # Sample usage:
-  #
-  #   include_js( msg, [ 'default_theme', 'controls', 'lists', 'datetime' ] )
-  #
-  def include_js( msg, dependencies=[] )
-    ses = msg.session
-    # check, if the session has a dependency array
-    if not ses.has_key?( :deps )
-      # make an array of dependencies for this session, if not already done
-      ses[:deps] = []
-    end
-    dependencies = [dependencies] if dependencies.class == String
-    # Check the required dependencies until everything is loaded.
-    dependencies.each do |dependency|
-      unless ses[:deps].include?( dependency )
-        ses[:deps].push( dependency )
-        msg.reply(%{jsLoader.load("#{dependency}");})
-      end
-    end
-  end
-  
-  
 end
-
 

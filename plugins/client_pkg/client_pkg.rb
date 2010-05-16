@@ -6,55 +6,23 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-# puts "Module.nesting: #{Module.nesting.inspect}"
-# puts "Options: #{Options.inspect}"
-# def method_missing( *foo )
-#   puts "variable missing: #{foo.inspect}"
-# end
-# BUNDLE_PATH = self.bundle_path
-# puts "singleton_methods: #{singleton_methods.inspect}"
+# the library path of this plugin
+lib_path = File.join( bundle_path, 'lib' )
 
+# The ClientPkgCache class:
+require File.join( lib_path, 'client_pkg_cache' )
+
+# The ClientPkgServe module:
+require File.join( lib_path, 'client_pkg_serve' )
+
+# The ClientPkgBuild class:
+require File.join( lib_path, 'client_pkg_build' )
+
+
+## The ClientPkg plugin builds and serves the client packages.
 class ClientPkg < Servlet
   
-  # def accessor( *args )
-  #   puts "accessor args: #{args.inspect}"
-  # end
-  
-  # puts "----"
-  # puts bundle_path
-  # 
-  # puts self.methods.inspect
-  # 
-  # def class_variable_get( *foo )
-  #   puts "*"
-  #   puts foo.inspect
-  # end
-  # puts "="
-  # 
-  # def self.method_missing( method_name, *args, &block )
-  #   if method_name == :bundle_path
-  #     return Module.nesting[1].bundle_path
-  #   elsif method_name == :bundle_name
-  #     return Module.nesting[1].bundle_name
-  #   elsif method_name == :bundle_info
-  #     return Module.nesting[1].bundle_info
-  #   elsif method_name == :plugin_manager
-  #     return Module.nesting[1].plugin_manager
-  #   end
-  # end
-  
-  # the library path of this plugin
-  lib_path = File.join( @@bundle_path, 'lib' )
-  
-  # The ClientPkgCache class:
-  require File.join(lib_path,'client_pkg_cache')
-  
-  # The ClientPkgServe module:
-  require File.join(lib_path,'client_pkg_serve')
   include ClientPkgServe
-  
-  # The ClientPkgBuild class:
-  require File.join(lib_path,'client_pkg_build')
   
   class BuildLogger
     def initialize( log_path )
@@ -155,7 +123,7 @@ class ClientPkg < Servlet
   
   def close
     if @thr
-      @thr.kill!
+      @thr.kill
       @thr = false
     end
     @client_build.flush
@@ -185,5 +153,4 @@ class ClientPkg < Servlet
   
 end
 
-ClientPkg.new
 

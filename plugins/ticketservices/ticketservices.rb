@@ -18,41 +18,42 @@ end
 
 require 'randgen'
 
+# the library path of this plugin
+lib_path = File.join( bundle_path, 'lib' )
+
+# common functionality
+require File.join(lib_path,'common')
+
+# rsrc-related functionality
+require File.join(lib_path,'rsrc')
+
+# file-related functionality
+require File.join(lib_path,'file')
+
+# upload-related functionality
+require File.join(lib_path,'upload')
+
+# img-related functionality
+require File.join(lib_path,'img')
+
+# favicon-related functionality
+require File.join(lib_path,'favicon')
+
+# smart object wrapper
+require File.join(lib_path,'objblob')
+
 ## TicketServe serves static and disposable data and images.
 ## It accepts Magick::Image objects too to render them only when really needed.
 ## Each serve-call returns an unique uri to pass to the client.
 ## It performs clean-ups based on session and request time-outs.
-class TicketServe < Servlet
+class TicketServe < Plugin
   
-  # the library path of this plugin
-  lib_path = File.join( @@bundle_path, 'lib' )
-  
-  # common functionality
-  require File.join(lib_path,'common')
   include TicketService::Common
-  
-  # rsrc-related functionality
-  require File.join(lib_path,'rsrc')
   include TicketService::Rsrc
-  
-  # file-related functionality
-  require File.join(lib_path,'file')
   include TicketService::TicketFile
-  
-  # upload-related functionality
-  require File.join(lib_path,'upload')
   include TicketService::Upload
-  
-  # img-related functionality
-  require File.join(lib_path,'img')
   include TicketService::Img
-  
-  # favicon-related functionality
-  require File.join(lib_path,'favicon')
   include TicketService::Favicon
-  
-  # smart object wrapper
-  require File.join(lib_path,'objblob')
   include TicketService::ObjBlob
   
   def broker_urls
@@ -182,87 +183,109 @@ class TicketServe < Servlet
       :ses_ids => {}
     }
     
-    @db = Sequel.connect( ::RSence.config[:database][:ses_db] )
+    begin
+      db_uri = ::RSence.config[:database][:ses_db]
+      if db_uri.start_with?('sqlite://')
+        @db = Sequel.sqlite( db_uri.split('sqlite://')[1] )
+      else
+        @db = Sequel.connect( db_uri )
+      end
+    rescue => e
+      if RSence.args[:debug]
+        err_msg = [
+          "ERROR: TicketServices couldn't open database",
+          "#{e.class.to_s}, #{e.message}",
+          "Backtrace:",
+          "\t"+e.backtrace.join("\n\t")
+        ].join("\n")+"\n"
+        $stderr.write( err_msg )
+      elsif RSence.args[:verbose]
+        puts "Failed to open database '#{@db_uri}'."
+        puts "Run RSence in debug mode for full error output."
+      end
+      @upload_id = 0
+      @db = false
+    end
     
   end
   
 end
-ticketserve = TicketServe.new
+# ticketserve = TicketServe.new
 
 # Plugin API for ticket services
-class TicketAPI < Plugin
-  class BlobObj
-    def initialize(data,mime)
-      @data = data
-      @mime = mime
-    end
-    def mime
-      return @mime
-    end
-    def data
-      return @data
-    end
-    def size
-      return @data.size
-    end
-    def close
-    end
-  end
-  def set_ticketserve( ticketserve )
-    @ticketserve = ticketserve
-  end
-  def serve( msg, content, format='PNG', type=:img )
-    @ticketserve.serve( msg, content, format, type )
-  end
-  def expire_ses( msg )
-    @ticketserve.expire_ses( msg.ses_id )
-  end
-  def set_favicon( ico_data, content_type=false )
-    @ticketserve.set_favicon( ico_data, content_type )
-  end
-  def del_file( msg, file_id )
-    @ticketserve.del_file( file_id, msg.ses_id )
-  end
-  def serve_file( msg, content='', content_type='text/plain', filename='' )
-    @ticketserve.serve_file( msg, content, content_type, filename )
-  end
-  def del_img( msg, img_id )
-    @ticketserve.del_img( img_id, msg.ses_id )
-  end
-  def serve_img( msg, content, format='PNG', type=:img )
-    @ticketserve.serve_img( msg, content, format, type )
-  end
-  def proto_obj
-    return BlobObj
-  end
-  def serve_obj( msg, blob_obj, no_expire=false )
-    @ticketserve.serve_blobobj( msg, blob_obj, no_expire )
-  end
-  def del_obj( msg, ticket_id )
-    @ticketserve.del_blobobj( ticket_id, msg.ses_id )
-  end
-  def del_rsrc( rsrc_id )
-    @ticketserve.del_rsrc( rsrc_id )
-  end
-  def serve_rsrc( content, content_type )
-    @ticketserve.serve_rsrc( content, content_type )
-  end
-  def get_uploads( ticket_id, with_data=false )
-    @ticketserve.get_uploads( ticket_id, with_data )
-  end
-  def del_upload( ticket_id, row_id )
-    @ticketserve.del_upload( ticket_id, row_id )
-  end
-  def del_uploads( msg, ticket_id )
-    @ticketserve.del_uploads( ticket_id, msg.ses_id )
-  end
-  def upload_key( msg, value_key, max_size=1000000, mime_allow=/(.*?)\/(.*?)/, allow_multi=true )
-    @ticketserve.upload_key( msg, value_key, max_size, mime_allow, allow_multi )
-  end
-end
+# class TicketAPI < Plugin
+#   class BlobObj
+#     def initialize(data,mime)
+#       @data = data
+#       @mime = mime
+#     end
+#     def mime
+#       return @mime
+#     end
+#     def data
+#       return @data
+#     end
+#     def size
+#       return @data.size
+#     end
+#     def close
+#     end
+#   end
+#   def set_ticketserve( ticketserve )
+#     @ticketserve = ticketserve
+#   end
+#   def serve( msg, content, format='PNG', type=:img )
+#     @ticketserve.serve( msg, content, format, type )
+#   end
+#   def expire_ses( msg )
+#     @ticketserve.expire_ses( msg.ses_id )
+#   end
+#   def set_favicon( ico_data, content_type=false )
+#     @ticketserve.set_favicon( ico_data, content_type )
+#   end
+#   def del_file( msg, file_id )
+#     @ticketserve.del_file( file_id, msg.ses_id )
+#   end
+#   def serve_file( msg, content='', content_type='text/plain', filename='' )
+#     @ticketserve.serve_file( msg, content, content_type, filename )
+#   end
+#   def del_img( msg, img_id )
+#     @ticketserve.del_img( img_id, msg.ses_id )
+#   end
+#   def serve_img( msg, content, format='PNG', type=:img )
+#     @ticketserve.serve_img( msg, content, format, type )
+#   end
+#   def proto_obj
+#     return BlobObj
+#   end
+#   def serve_obj( msg, blob_obj, no_expire=false )
+#     @ticketserve.serve_blobobj( msg, blob_obj, no_expire )
+#   end
+#   def del_obj( msg, ticket_id )
+#     @ticketserve.del_blobobj( ticket_id, msg.ses_id )
+#   end
+#   def del_rsrc( rsrc_id )
+#     @ticketserve.del_rsrc( rsrc_id )
+#   end
+#   def serve_rsrc( content, content_type )
+#     @ticketserve.serve_rsrc( content, content_type )
+#   end
+#   def get_uploads( ticket_id, with_data=false )
+#     @ticketserve.get_uploads( ticket_id, with_data )
+#   end
+#   def del_upload( ticket_id, row_id )
+#     @ticketserve.del_upload( ticket_id, row_id )
+#   end
+#   def del_uploads( msg, ticket_id )
+#     @ticketserve.del_uploads( ticket_id, msg.ses_id )
+#   end
+#   def upload_key( msg, value_key, max_size=1000000, mime_allow=/(.*?)\/(.*?)/, allow_multi=true )
+#     @ticketserve.upload_key( msg, value_key, max_size, mime_allow, allow_multi )
+#   end
+# end
 
-ticket = TicketAPI.new
-ticket.register( 'ticket' )
-ticket.set_ticketserve( ticketserve )
+# ticket = TicketAPI.new
+# ticket.register( 'ticket' )
+# ticket.set_ticketserve( ticketserve )
 
 

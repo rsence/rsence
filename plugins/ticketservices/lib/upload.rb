@@ -74,27 +74,38 @@ module Upload
       else
         done_value = "2:::#{ticket_id}"
         ## Insert basic data about the upload and get its key
-        upload_id = @db[:rsence_uploads].insert(
-            :ses_id      => ses_id,
-            :ticket_id   => ticket_id,
-            :upload_date => Time.now.to_i,
-            :upload_done => false,
-            :file_name   => file_filename,
-            :file_size   => file_size,
-            :file_mime   => file_mimetype,
-            :file_data   => ''
-        )
+        insert_hash = {
+          :ses_id      => ses_id,
+          :ticket_id   => ticket_id,
+          :upload_date => Time.now.to_i,
+          :upload_done => false,
+          :file_name   => file_filename,
+          :file_size   => file_size,
+          :file_mime   => file_mimetype,
+          :file_data   => ''
+        }
+        if @db
+          upload_id = @db[:rsence_uploads].insert( insert_hash )
+        else
+          @upload_id += 1
+          upload_id = @upload_id
+          @upload_slots[:rsence_uploads] = {} unless @upload_slots.has_key?(:rsence_uploads)
+          @upload_slots[:rsence_uploads][upload_id] = insert_hash
+        end
         if not @upload_slots[:uploaded].has_key?(ticket_id)
           @upload_slots[:uploaded][ticket_id] = []
         end
         @upload_slots[:uploaded][ticket_id].push( upload_id )
         
-        ## Start a loop to read the tempfile as chunks of the upload into the
-        ## database (4k chunks, so mysql won't choke with its default settings)
-        @db[:rsence_uploads].filter(:id => upload_id).update(
+        update_hash = {
           :file_data   => file_data[:tempfile].read.to_sequel_blob,
           :upload_done => true
-        )
+        }
+        if @db
+          @db[:rsence_uploads].filter(:id => upload_id).update( update_hash )
+        else
+          @upload_slots[:rsence_uploads][upload_id].merge!( update_hash )
+        end
       end
     end
     
@@ -122,12 +133,16 @@ module Upload
     if @upload_slots[:uploaded].has_key?(ticket_id)
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         if with_data
-          row_datas = @db[:rsence_uploads].select(
-            :upload_date, :upload_done, :file_name,
-            :file_size, :file_mime, :file_data
-          ).filter(
-            :id => row_id
-          )
+          if @db
+            row_datas = @db[:rsence_uploads].select(
+              :upload_date, :upload_done, :file_name,
+              :file_size, :file_mime, :file_data
+            ).filter(
+              :id => row_id
+            )
+          else
+            row_datas = @upload_slots[:rsence_uploads][row_id]
+          end
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
@@ -141,12 +156,16 @@ module Upload
             uploads.push(row_hash)
           end
         else
-          row_datas = @db[:rsence_uploads].select(
-            :upload_date, :upload_done, :file_name,
-            :file_size, :file_mime
-          ).filter(
-            :id => row_id
-          )
+          if @db
+            row_datas = @db[:rsence_uploads].select(
+              :upload_date, :upload_done, :file_name,
+              :file_size, :file_mime
+            ).filter(
+              :id => row_id
+            )
+          else
+            row_datas = @upload_slots[:rsence_uploads][row_id]
+          end
           if row_datas.size == 1
             row_data = row_datas.first
             row_hash = {
@@ -167,7 +186,11 @@ module Upload
   
   def del_upload( ticket_id, row_id )
     @upload_slots[:uploaded][ticket_id].delete(row_id)
-    @db[:rsence_uploads].filter( :id => row_id ).delete
+    if @db
+      @db[:rsence_uploads].filter( :id => row_id ).delete
+    else
+      @upload_slots[:rsence_uploads].delete(row_id)
+    end
   end
   
   # removes uploaded files
@@ -180,15 +203,21 @@ module Upload
     if @upload_slots[:uploaded].has_key?( ticket_id )
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         @upload_slots[:uploaded][ticket_id].delete( row_id )
-        @db[:rsence_uploads].filter( :id => row_id ).delete
+        if @db
+          @db[:rsence_uploads].filter( :id => row_id ).delete
+        else
+          @upload_slots[:rsence_uploads].delete(row_id)
+        end
       end
       @upload_slots[:uploaded].delete( ticket_id )
     end
     if @upload_slots[:by_id].has_key?( ticket_id )
       @upload_slots[:by_id].delete( ticket_id )
     end
-    @db[:rsence_uploads].filter( :ticket_id => ticket_id ).delete
-    @db[:rsence_uploads].filter( :ses_id => ses_id ).delete
+    if @db
+      @db[:rsence_uploads].filter( :ticket_id => ticket_id ).delete
+      @db[:rsence_uploads].filter( :ses_id => ses_id ).delete
+    end
   end
   
   def upload_key(msg,value_key,max_size=1000000,mime_allow=/(.*?)\/(.*?)/,allow_multi=true)

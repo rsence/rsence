@@ -23,7 +23,7 @@ module Common
   
   # Disconnects connection to the database.
   def shutdown # :nodoc:
-    @db.disconnect
+    @db.disconnect if @db
   end
   
   # Serves files and images by returning an URI. Content is given as second 

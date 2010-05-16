@@ -118,6 +118,7 @@ class IndexHtmlPlugin < ServletPlugin
     # puts "index_html"
     # index_html = session_index_html( request, response )
     index_html = render_index_html
+    # index_html = index_html.encode(Encoding::BINARY)
     
     support_gzip = (request.header.has_key?('accept-encoding') and \
                     request.header['accept-encoding'].include?('gzip')) \
@@ -142,9 +143,8 @@ class IndexHtmlPlugin < ServletPlugin
       response['Content-Length'] = index_html.length
       response.body = index_html
     end
+    puts "index encoding: #{response.body.encoding.name}"
   end
   
 end
-
-index_html = IndexHtmlPlugin.new
 

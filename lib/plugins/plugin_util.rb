@@ -1,8 +1,28 @@
+##   Riassence Framework
+ #   Copyright 2010 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
 
+module ::RSence
+module Plugins
 module PluginUtil
   
   include RSence
 
+  # 
+  # def self.method_missing( name, *args, &block )
+  #   puts "method_missing:"
+  #   puts "  name: #{name.inspect}"
+  #   puts "  args: #{args.inspect}"
+  #   puts "  block: #{block.inspect}"
+  #   if name == :bundle_path
+  #     return Info.new( Module.nesting ).bundle_path
+  #   end
+  # end
+  
   # Extend to do any initial configuration. Not doing anything by default.
   def init
   end
@@ -91,4 +111,6 @@ module PluginUtil
     return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
+end
+end
 end

@@ -83,7 +83,7 @@ class SessionStorage
     rescue => e
       if RSence.args[:debug]
         err_msg = [
-          "ERROR: SssionStorage couldn't open database",
+          "ERROR: SessionStorage couldn't open database",
           "#{e.class.to_s}, #{e.message}",
           "Backtrace:",
           "\t"+e.backtrace.join("\n\t")

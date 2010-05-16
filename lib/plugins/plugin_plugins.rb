@@ -6,6 +6,8 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+module ::RSence
+module Plugins
 ## Interface to enable plugins in a plugin. Just include this in your subclass of Plugin.
 module PluginPlugins
   def init
@@ -44,4 +46,6 @@ module PluginPlugins
     super
     @plugin_plugins.delegate(:cloned_source,msg,target_session)
   end
+end
+end
 end

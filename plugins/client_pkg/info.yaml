@@ -18,7 +18,7 @@ reloadable: false
 
 # A flag (when false) enables automatic construction
 # of the Plugin and Servlet classes contained.
-inits_self: true
+inits_self: false
 
 # System version requirement.
 sys_version: '>= 2.0.0'

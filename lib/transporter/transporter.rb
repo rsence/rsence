@@ -40,6 +40,7 @@ class Transporter
   end
   
   def online?
+    puts "online: #{@accept_req.inspect}"
     @accept_req
   end
   
@@ -61,7 +62,6 @@ class Transporter
   end
   
   def servlet( request_type, request, response )
-    
     broker_urls = ::RSence.config[:broker_urls]
     uri = request.fullpath
     

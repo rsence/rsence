@@ -13,7 +13,13 @@ require 'rack'
 require 'yaml'
 
 if RUBY_VERSION.to_f >= 1.9
-  Encoding.default_external = Encoding::ASCII_8BIT
+  # Encoding.default_external = Encoding::BINARY
+  # Encoding.default_internal = Encoding::BINARY
+  class String
+    def each 
+      self.split($/).each { |e| yield e } 
+    end 
+  end
 end
 
 # Legacy:
@@ -193,7 +199,9 @@ class Configuration
         config[:broker_urls][broker_key] = default_uri
       end
     end
-    
+    # if RUBY_VERSION.to_f >= 1.9
+    #   config[:no_gzip] = true
+    # end
     # The default address of the index_html plugin
     unless config[:index_html].has_key?(:respond_address)
       config[:index_html][:respond_address] = File.join(config[:base_url])
