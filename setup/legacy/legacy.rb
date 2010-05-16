@@ -1,4 +1,5 @@
 
+# This Plugin contains some namespace mappings of what used to exist in RSence 1.x
 class LegacyPlugin < Servlet
   def init
     super
@@ -13,3 +14,4 @@ module ::Riassence
     include RSence
   end
 end
+
