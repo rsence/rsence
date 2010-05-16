@@ -480,7 +480,7 @@ class PluginManager
     matches_order = match_servlet_uri( req_uri, req_type )
     return false unless matches_order
     matches_order.each do |servlet_name|
-      puts "servlet name: #{servlet_name.inspect}" if RSence.args[:debug]
+      # puts "servlet name: #{servlet_name.inspect}" if RSence.args[:debug]
       begin
         @registry[servlet_name].send( req_type, req, resp, session )
         return true

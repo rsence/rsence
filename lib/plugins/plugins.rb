@@ -143,8 +143,15 @@ module Plugins
         # @@bundle_name    = params[:bundle_name   ]
         # @@bundle_info    = params[:bundle_info   ]
         # @@plugin_manager = params[:plugin_manager]
-        m.define_singleton_method( :bundle_path ) do
-          params[:bundle_path]
+        if RUBY_VERSION.to_f >= 1.9
+          m.define_singleton_method( :bundle_path ) do
+            params[:bundle_path]
+          end
+        # else
+          # puts m.private_methods.inspect
+          # m.send( :define_method, :bundle_path ) do
+          #   params[:bundle_path]
+          # end
         end
         # def self.bundle_path; @@bundle_path; end
         # def self.bundle_info; @@bundle_info; end
@@ -166,12 +173,27 @@ module Plugins
             super
           end
         end
-        def self.load_bundle( src_path )
-          plugin_src = File.read( src_path )
-          self::module_eval( plugin_src )
+        # def self.load_bundle( src_path )
+        
+        plugin_src = File.read( src_path )
+        unless RUBY_VERSION.to_f >= 1.9
+          plugin_src = ["bundle_path = #{params[:bundle_path].inspect}", plugin_src].join("\n")
         end
+        m.module_eval( plugin_src )
+          # if params[:bundle_info][:inits_self] == false
+          #   puts "using module_eval" if RSence.args[:debug]
+          #   plugin_src = File.read( src_path )
+          #   self.module_eval( plugin_src )
+          # elsif params[:bundle_info][:reloadable] == false # and not RUBY_VERSION.to_f >= 1.9
+          #   puts "using require" if RSence.args[:debug]
+          #   require src_path[0..-4]
+          # else
+          #   puts "using load" if RSence.args[:debug]
+          # end
+        # end
+        # end
       end
-      mod.load_bundle( src_path )
+      # mod.load_bundle( src_path )
       return mod
     rescue => e
       params[:plugin_manager].plugin_error(

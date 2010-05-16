@@ -40,7 +40,6 @@ class Transporter
   end
   
   def online?
-    puts "online: #{@accept_req.inspect}"
     @accept_req
   end
   

@@ -143,7 +143,6 @@ class IndexHtmlPlugin < ServletPlugin
       response['Content-Length'] = index_html.length
       response.body = index_html
     end
-    puts "index encoding: #{response.body.encoding.name}"
   end
   
 end

@@ -81,6 +81,8 @@ class TicketServe < Plugin
     return false
   end
   
+  def score; 200; end
+  
   def get( req, res, ses )
     uri = req.fullpath
     if uri.match( /^#{broker_urls[:i]}/ )
