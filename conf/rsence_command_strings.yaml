@@ -1,0 +1,444 @@
+# Strings for various methods
+:messages:
+  :invalid_option_expected_number: |+
+    Invalid option for <%%= option_name.to_s %>:
+      Expected number, got: <%%= arg.inspect %>.
+    
+    Type 'rsence help <%%= @cmd.to_s %>' for usage.
+  :no_such_configuration_file: |+
+    No such configuration file:
+      <%%= arg.inspect %>
+    
+    Type 'rsence help <%%= @cmd.to_s %>' for usage.
+  :no_value_for_option: |+
+    No value for option:
+      <%%= option_name.to_s.inspect %>
+    
+    Type 'rsence help <%%= @cmd.to_s %> for usage."
+  :no_such_directory: |
+    No such directory:
+      <%%= path.inspect %>
+  :not_a_directory: |
+    Not a directory:
+      <%%= path.inspect %>
+  :missing_conf_directory: |
+    Missing conf directory:
+      <%%= conf_path.inspect %>
+  :invalid_conf_directory: |
+    Not a conf directory:
+      <%%= conf_path.inspect %>
+  :missing_conf_file: |
+    Missing conf file:
+      <%%= conf_file.inspect %>
+  :invalid_conf_file_not_file: |
+    Invalid conf file, not a file:
+      <%%= conf_file.inspect %>
+  :warn_no_plugin_directory_in_project: |
+    Warning! No plugin directory in project, expected:
+      <%%= plugin_path.inspect %>
+  :plugin_directory_not_a_directory: |
+    Plugin directory not a directory, expected:
+      <%%= plugin_path.inspect %>
+  :warn_no_plugin_directory_in_project: |
+    Warning! No <%%= dir_name %> directory in project, creating:
+      <%%= dir_path.inspect %>
+  :invalid_environment: |
+    Invalid environment: <%%= env_path.inspect %>
+    
+    Type 'rsence help <%%= @cmd.to_s %>' for usage."
+    Type 'rsence help initenv' for environment initialization usage."
+  :invalid_option_chr: |
+    Invalid option character for option character block <%%= arg.inspect %>:
+      <%%= chr.inspect %>
+    
+    Type 'rsence help <%%= @cmd.to_s %>' for usage."
+  :invalid_option: |
+    Invalid option:
+      <%%= arg.inspect %>.
+    
+    Type 'rsence help <%%= @cmd.to_s %>' for usage."
+  :no_pid: |
+    No PID, unable to check process status.
+  :no_pid_file: |
+    No PID file, unable to check process status.
+  :no_pid_support: |
+    No PID support, unable to check process status.
+  :no_process_running_but_something_responds: |
+    No process running, but something responds on <%%= addr %>:<%%= port %>.
+  :no_process_running_and_nothing_responds: |
+    No process running, and nothing responds on <%%= addr %>:<%%= port %>.
+  :process_running_and_responds: |
+    Process ID <%%= pid %> is running and responds on <%%= addr %>:<%%= port %>.
+  :process_running_but_nothing_responds: |
+    Process ID <%%= pid %> is running, but does not respond on <%%= addr %>:<%%= port %>.
+  :saving_message: <
+    Saving session data...
+  :no_pid_unable_to_save: |
+    No PID, unable to signal the save command to the process.
+  :no_process_running: |
+    No process running.
+  :session_data_saved: |
+    Session data saved.
+# Strings for the initenv command
+:initenv:
+  :env_already_initialized: |
+    Environment already initialized.
+  :env_not_empty: |
+    Environment directory <%%= @args[:env_path] %> is not empty.
+  :creating_env: |+
+    
+    Creating a new RSence environment at <%%= @args[:env_path] %>
+    
+    RSence will first ask a few questions about your environment
+    in order to initialize and prepare the project configuration.
+    
+    You may abort this command at any time by pressing CTRL-C
+    Nothing will be written until you have answered all the questions.
+    
+    Pressing the ENTER (or RETURN) key at each prompt will choose the
+    default option shown.
+    If you are not sure about how to answer a question, press
+    the ENTER (or RETURN) key to continue.
+    
+  :enter_title: |+
+    
+     Please enter the title of your project.
+     This title will be used in the default page title.
+     
+  :project_title: Project Title
+  :enter_db_url: |+
+    
+    
+    
+     Please specify the connection string for the session database to use.
+     By default, a local SQLite database is created in the 'db' subdirectory
+     of the environment directory. Any database supported by Sequel is supported
+     by RSence.
+    
+     For further information about database connection strings, read the Sequel
+     documentation at:
+     http://sequel.rubyforge.org/rdoc/files/doc/opening_databases_rdoc.html
+    
+     You will also need the appropriate ruby driver for the database selected. If
+     none is installed, RSence will not be able to store persistent session data
+     between server restarts.
+    
+  :db_url: Session database connection string
+  :enter_http_port: |+
+    
+    
+    
+     Please enter a HTTP port for the server to listen to. This port must not be a
+     TCP port already in use.
+     
+  :http_port: HTTP Port
+  :enter_tcp_ip: |+
+    
+    
+     Please enter a TCP/IP address for the HTTP server to listen to. This address 
+     must be an address configured by a network interface of this computer.
+    
+     The address 0.0.0.0 matches any interfaces.
+     The address 127.0.0.1 matches only the localhost address, this address is
+     not accessible from any other computer.
+     
+  :tcp_ip: Interface TCP/IP address
+  :enter_root_dir: |+
+    
+    
+     Please enter a root directory for RSence to respond in.
+     By default this is the root directory of the server: /
+     
+  :root_dir: URI Prefix
+  :config_summary: |+
+    
+    Configuration Summary
+    
+     Please verify that the configuration is correct.
+     This configuration will be written into the configuration file:
+       <%%= conf_file %>
+    
+    Title:       <%%= config[:index_html][:title] %>
+    
+    Database:    <%%= config[:database][:ses_db] %>
+    
+    HTTP Server:
+      Address:    <%%= config[:http_server][:bind_address] %>
+      Port:       <%%= config[:http_server][:port] %>
+      URI Prefix: <%%= config[:base_url] %>
+      
+      This means the URL will be <%%= test_url %>
+    
+  :confirm_config: "Is the configuration correct, "
+  :creating_dirs: "Creating directories..."
+  :installing_welcome_plugin: |+
+      Installing the welcome plugin. To remove it, just delete this folder:
+        <%%= welcome_plugin_dst %>
+  :creating_files: "Creating files..."
+  :congratulations: |+
+    
+    <%= '-='*39 %>-
+    
+    RSence project environment for '<%%= config[:index_html][:title] %>' created.
+    
+    You may configure the environment by editing the file:
+    
+      <%%= conf_file %>
+    
+    If you would like to test this environment now, start the RSence server:
+    
+      rsence run <%%= env_dir %>
+    
+    Then point your browser to:
+    
+      <%%= test_url %>
+    
+    The latest documentation and further information is available at the
+    RSence website:
+    
+      http://rsence.org/
+    
+    
+    Congratulations!
+    
+  :readme: |
+    This directory contains a RSence environment titled '<%%= config[:index_html][:title] %>'.
+    Visit http://rsence.org/ for further information.
+# Help for the 'rsence' command line tool.
+:help:
+  :head: |+
+    RSence command-line tool, version <%= @@version %>
+  
+  :tail: |+
+    RSence is a self-contained rich internet application client-server framework.
+    For further information, see http://rsence.org/
+  :unknown: >
+    Unknown command: 
+
+  :help_help: >
+    Type 'rsence help' for usage.
+
+  :help_main: |+
+    usage: rsence <command> [options] [args]
+  
+    Type 'rsence help <command>' for help on a specific command.
+  
+    Available commands:
+       <%= help_avail_cmds %>
+  
+  :path: |+
+    The [PATH] is the RSence environment to use.
+    The [PATH] defaults to the current working directory.
+  
+  :options: |+
+    Available options:
+  
+      --conf <file.yaml>      Use additional config file. You can give this option
+                              several times. The <file.yaml> is the configuration
+                              file to load.
+  
+      --debug (-d)            Debug mode. Shortcut for several options useful for
+                              developers. Not the preferred mode for production.
+  
+      --verbose (-v)          More verbose output. Also enabled by --debug
+  
+      --log-fg (-f)           Directs the output of the log messages to stdout
+                              instead of the log files. Useful for development.
+  
+      --trace-js              Logs all js/json going through the msg object.
+  
+      --trace-delegate        Logs all plugin delegate calls.
+  
+      --port <number>         The port number the http server listens to.
+  
+      --addr <ip address>     The IP address or netmask the http server listens to.
+                              '0.0.0.0' matches all interfaces.
+                              '127.0.0.1' matches the local loopback interface.
+  
+      --server <handler>      The Rack handler to use. Defaults to mongrel
+  
+      --reset-sessions (-r)   Resets all active sessions.
+  
+      --auto-update (-a)      Automatically checks for changes in installed plugin
+                              and component bundles. Rebuilds changed component
+                              bundles and reload changed plugin bundles.
+                              Useful for development purposes.
+                              Also enabled by --debug
+  
+      --latency <number>      Sleeps <number> amount of milliseconds on every
+                              request. Useful for testing slow connections.
+  
+      --say (-S)              Uses speech synthesis via the 'say' command to
+                              provide audible feedback, when --auto-update is
+                              enabled. Says 'Autobuild complete.',
+                              'Loaded [plugin name].', 'Unloaded [plugin name].',
+                              'Reloaded [plugin name].', 'Reloading plugins.' and
+                              'Plugins reloaded.'
+                              Only available on Mac OS X and other systems with a
+                              'say' command installed.
+  
+  :initenv: |+
+    usage: 'rsence initenv [options] [PATH]'
+  
+    The 'initenv' command creates a new RSence environment. 
+  
+    The expected structure of a project environment (where 'project_directory'
+    is the directory of your project) is:
+  
+     [d]  project_name       :  The name of your project.
+       [d]  conf             :  The directory of config files.
+         [f]  config.yaml    :  The config file to load by defult.
+       [d]  db               :  Directory containing database files.
+       [d]  log              :  Directory containing log files.
+       [d]  plugins          :  Directory containing installed plugins.
+       [d]  run              :  Directory containing runtime pid files.
+       [f]  README           :  Description of the environment directory.
+       [f]  VERSION          :  RSence version the environment was created with
+  
+    The 'config.yaml' file contains patches specific to your project.
+  
+    The configuration files are loaded and applied in this order:
+      1:  [rsence_install_path]/conf/default_conf.yaml
+      2:  [rsence_install_path]/conf/local_conf.yaml
+      3:  /etc/rsence/config.yaml
+      4:  ~/.rsence/config.yaml
+      5:  [project_directory]/conf/config.yaml
+      6:  Any files given using --conf parameters, in order of occurrence.
+  
+    The plugins directory contains the plugins that are run in the project.
+  
+  
+    Available options:
+  
+      --port <number>         The port number the http server listens to.
+  
+      --addr <ip address>     The IP address or netmask the http server listens to.
+                              '0.0.0.0' matches all interfaces.
+                              '127.0.0.1' matches the local loopback interface.
+                              Defaults to 0.0.0.0
+  
+      --server <handler>      The Rack handler to use. Defaults to mongrel
+  
+      --title <title>         The title of the index page.
+  
+      --database <conn_str>   Use the Sequel connection string to configure the
+                              default session database.
+  
+      --uri-prefix <path>     Configure RSence to use this http "directory" as
+                              the prefix. It defaults to the root directory: /
+  
+      --blank                 Doesn't install the Welcome -plugin.
+  
+      --non-interactive (-q)  Doesn't ask anything, just creates the environment
+                              with the options supplied.
+                            
+    For further configuration, edit the config.yaml file.
+  
+  :run: |+
+    usage: 'rsence run [options] [PATH]'
+  
+    The 'run' command starts RSence in foreground (no daemon). Exit with CTRL-C.
+  
+  :start: |+
+    usage: 'rsence start [options] [PATH]'
+  
+    The 'start' command starts RSence in the background (as a daemon).
+  
+    Use the 'stop' command to stop RSence.
+  
+    Use the 'restart' command to restart RSence in the background.
+  
+    Use the 'status' command to see if RSence is running.
+  
+  :stop: |+
+    usage: 'rsence stop [options] [PATH]'
+  
+    The 'stop' command stops RSence running in the background (as a daemon).
+  
+    Use the 'status' command to see if RSence is running.
+  
+  :restart: |+
+    usage: 'rsence restart [options] [PATH]'
+  
+    The 'restart' command restarts RSence in the background (as a daemon).
+    If RSence wasn't running before the 'restart' command was issued, the
+    effect is the same as 'start'.
+  
+    Use the 'stop' command to stop RSence.
+  
+    Use the 'status' command to see if RSence is running.
+  
+  :status: |+
+    usage: 'rsence status [options] [PATH]'
+  
+    The 'status' command checks if RSence is running.
+    If started with the 'start', 'run' or 'restart' command, a PID file is written.
+    Status checks if the PID file exists, if the RSence process responds and if
+    the configured TCP port responds in the configured IP address.
+  
+    Available options:
+  
+      --conf <file.yaml>      Use additional config file. You can give this option
+                              several times. The <file.yaml> is the configuration
+                              file to load.
+    
+      --debug (-d)            Debug mode. Shortcut for several options useful for
+                              developers. Not the preferred mode for production.
+    
+      --verbose (-v)          More verbose output. Also enabled by --debug
+    
+      --port <number>         The port number the http server listens to.
+    
+      --addr <ip address>     The IP address or netmask the http server listens to.
+  
+  :save: |+
+    usage: 'rsence save [options] [PATH]'
+  
+    The 'save' command signals the RSence process to tell the plugins to save their
+    data and the session manager to save its session database.
+  
+    Available options:
+  
+      --conf <file.yaml>      Use additional config file. You can give this option
+                              several times. The <file.yaml> is the configuration
+                              file to load.
+    
+      --debug (-d)            Debug mode. Shortcut for several options useful for
+                              developers. Not the preferred mode for production.
+    
+      --verbose (-v)          More verbose output. Also enabled by --debug
+  
+  :version: |+
+    usage: 'rsence version'
+  
+    The 'version' command simply outputs the version number of RSence.
+  
+    RSence follows the standard four-numbered sequence-based version identification
+    scheme. The scheme is defined like: major.minor[.maintenance[.package]][.pre]
+  
+    The major number designates major changes in functionality, sometimes limiting
+    backwards compatibility with software written for previous versions.
+  
+    The minor number designates minor changes in functionality, like minor or
+    moderate changes in functinality that usually don't impact backwards
+    compatibilty of software written for a previous release with the same major
+    version.
+  
+    The maintenance number designates bug fixes and other minimal changes to
+    the release. In a maintenance number change, no new features are introduced.
+  
+    The package number is a sequence used for the package release. Rubygems
+    requires an unique version for each gem released, so pre-releases usually
+    occupy the first package numbers of any release.
+  
+    The '.pre' suffix signifies a pre-release, like "Alpha" or "Beta". To
+    install a prerelease version, gem requires the '--pre' command line argument.
+    Release versions never have the '.pre' suffix. There are usually several
+    package number increments of a new release.
+  
+    Version number conventions in written text should include both major and
+    minor version numbers prefixed with 'RSence'. The maintennance number
+    is usally not mentioned unless an issue is fix or such is discussed.
+  
+    For instance: "RSence 2.0 has undergone some major refactoring since 1.2.1"
+  

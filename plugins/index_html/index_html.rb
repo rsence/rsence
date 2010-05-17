@@ -1,4 +1,4 @@
-  ##   Riassence Framework
+##   RSence
  #   Copyright 2009 Riassence Inc.
  #   http://riassence.com/
  #
@@ -128,7 +128,7 @@ class IndexHtmlPlugin < Servlet
     
     response['Content-Type'] = 'text/html; charset=UTF-8'
     response['Date'] = httime( Time.now )
-    response['Server'] = 'Riassence Framework'
+    response['Server'] = 'RSence'
     response['Cache-Control'] = 'no-cache'
     
     if support_gzip

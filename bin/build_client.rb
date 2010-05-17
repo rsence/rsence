@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #--
-##   Riassence Framework
+##   RSence
  #   Copyright 2010 Riassence Inc.
  #   http://riassence.com/
  #
@@ -12,7 +12,7 @@
 if ARGV.include?('--help') or ARGV.include?('-h')
   puts %{
 
-  Riassence Framework Client Builder
+  RSence Client Builder
   This script builds the client into the DESTINATION_PATH that defaults to ./client
 
   Usage:

@@ -1,4 +1,4 @@
-##   Riassence Framework
+##   RSence
  #   Copyright 2009 Riassence Inc.
  #   http://riassence.com/
  #
@@ -40,7 +40,8 @@ class GUIParser
       end
     end
     gui_name = @parent.name
-    msg.reply( "JSONRenderer.nu(#{gui_data.to_json});", true )
+    json_data = JSON.dump( gui_data )
+    msg.reply( "JSONRenderer.nu(#{json_data});", true )
   end
   
   # Use this method to extract all the value id's of the +ses+ hash.

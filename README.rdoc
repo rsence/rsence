@@ -1,5 +1,5 @@
 
-= RSence 2.0.0.1.pre                                                       2010-??-??
+= RSence 2.0.0.6.pre                                                       2010-??-??
 
 http://rsence.org/
 
@@ -12,7 +12,7 @@ RSence is primarily a flexible and high-performance RIA framework aimed on build
 
  gem install rsence --pre
 
-== Setting up a project (TODO; needs to be done manually still)
+== Setting up a project
 
  rsence initenv /path/of/project
 

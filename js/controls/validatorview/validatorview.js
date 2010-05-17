@@ -1,4 +1,4 @@
-/*   Riassence Framework
+/*   RSence
  *   Copyright 2008 Riassence Inc.
  *   http://riassence.com/
  *
@@ -7,10 +7,6 @@
  */
 
 HValidatorView = HControl.extend({
-
-  controlDefaults: (HControlDefaults.extend({
-    value: false
-  })),
 
   constructor: function(_rect, _parent, _options) {
     if(_options){

@@ -1,5 +1,5 @@
 #--
-##   Riassence Framework
+##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
  #
