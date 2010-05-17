@@ -207,6 +207,9 @@ class Configuration
       config[:index_html][:respond_address] = File.join(config[:base_url])
     end
     
+    config[:client_pkg][:no_obfuscation] = true if args[:client_pkg_no_obfuscation]
+    config[:client_pkg][:no_whitespace_removal] = true if args[:client_pkg_no_whitespace_removal]
+    
     ## Uses the lib paths as search paths
     lib_paths.each do |lib_path|
       $LOAD_PATH << lib_path
