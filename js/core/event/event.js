@@ -1,4 +1,4 @@
-/*   Riassence Framework
+/*   RSence
  *   Copyright 2007 Riassence Inc.
  *   http://riassence.com/
  *

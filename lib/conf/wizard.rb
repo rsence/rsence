@@ -1,5 +1,5 @@
 #--
-##   Riassence Framework
+##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
  #
@@ -127,7 +127,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " HTTP Server configuration"
     puts 
-    puts "  Riassence Framework runs its HTTP Server as:"
+    puts "  RSence runs its HTTP Server as:"
     puts
     puts "  Server: #{@conf[:http_server][:rack_require].inspect}"
     puts " Address: #{@conf[:http_server][:bind_address].inspect}"
@@ -229,7 +229,7 @@ class ConfigWizard
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     puts " Session database configuration"
     puts
-    puts "  Riassence Framework requires a database for persistant"
+    puts "  RSence requires a database for persistant"
     puts "  session storage. This feature allows the server"
     puts "  to be restarted without losing user sessions."
     puts
@@ -269,7 +269,7 @@ class ConfigWizard
     puts
     puts
     puts "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-    puts " This Riassence Framework instance is not configured."
+    puts " This RSence instance is not configured."
     puts
     puts " To configure, create a configuration file:"
     puts "  #{local_config_file_path}"

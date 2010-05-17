@@ -1,3 +1,11 @@
+##   RSence
+ #   Copyright 2009 Riassence Inc.
+ #   http://riassence.com/
+ #
+ #   You should have received a copy of the GNU General Public License along
+ #   with this software package. If not, contact licensing@riassence.com
+ ##
+
 # unless RUBY_VERSION.to_f >= 1.9
 #   module Kernel
 #     def const_missing( name )

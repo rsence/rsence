@@ -1,5 +1,5 @@
 #--
-##   Riassence Framework
+##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
  #
@@ -26,7 +26,7 @@ class Response
     @status = 200
     @header = {
       'Content-Type' => 'text/plain',
-      'Server' => 'Riassence Framework'
+      'Server' => 'RSence'
     }
   end
   def body=(body_data)
