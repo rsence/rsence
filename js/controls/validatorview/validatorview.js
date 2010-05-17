@@ -8,6 +8,10 @@
 
 HValidatorView = HControl.extend({
 
+  controlDefaults: (HControlDefaults.extend({
+    value: false
+  })),
+
   constructor: function(_rect, _parent, _options) {
     if(_options){
       if(_options.valueField && _options.valueField.componentBehaviour[1] === 'control'){
