@@ -18,7 +18,10 @@ SERVER_PATH = File.split( File.expand_path(File.dirname(__FILE__)) )[0]
 $LOAD_PATH << SERVER_PATH
 $LOAD_PATH << File.join( SERVER_PATH, 'lib' )
 
+# Requires the ARGVParser that functions as the command-line user interface.
 require 'conf/argv'
 
+# Start RSence, if the command supplied was one of the ones
+# triggering a start and the environment is ok.
 RSence.startup if RSence.startable?
 
