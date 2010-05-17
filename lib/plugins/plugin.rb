@@ -493,7 +493,7 @@ module ::RSence
         else
           default_value = 0
         end
-        ses[value_name] = HValue.new( msg, default_value )
+        ses[value_name] = HValue.new( msg, default_value, { :name => "#{@name}.#{value_name}" } )
         if value_properties.has_key?(:responders)
           value_properties[:responders].each do |responder|
             if responder.has_key?(:plugin)

@@ -47,10 +47,14 @@ class HValue
   
   # +HValue+ constructor. Binds HValue automatically to the +Message+ instance
   # given as parameter. Data given as second parameter. 
-  def initialize( msg, data )
+  def initialize( msg, data, meta = { :name => nil } )
     
     ## Get an unique integer id for the value
-    @val_id   = msg.valuemanager.randgen.gen
+    if RSence.args[:debug] and meta[:name] and not msg.valuemanager.id_exists?( msg, meta[:name] )
+      @val_id   = meta[:name]
+    else
+      @val_id   = msg.valuemanager.randgen.gen
+    end
     
     ## set the data of the hvalue
     set( msg, data, true )

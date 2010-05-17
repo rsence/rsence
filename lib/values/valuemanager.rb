@@ -47,6 +47,7 @@ class ValueManager
         
         # make a new id
         new_id = @randgen.gen
+        new_id = @randgen.gen while id_exists?( msg, new_id )
         
         # get the hvalue
         val_obj = ses_values[:by_id][old_id]
@@ -82,6 +83,11 @@ class ValueManager
       end
     end
     
+  end
+  
+  # Verifies an 
+  def id_exists?( msg, new_id )
+    return msg.session[:values][:by_id].has_key?(new_id)
   end
   
   # Parses the json from the client and passes it on to associated values
