@@ -23,8 +23,9 @@ require 'plugins/plugin_plugins'
 module ::RSence
   module Plugins
     
-    # plugin.rb contains the Plugin skeleton class
     require 'plugins/plugin'
+    
+    # The PluginMaker mimic class creates the Plugin class from PluginTemplate
     def self.PluginMaker
       lambda do |ns|
         klass = Class.new( PluginTemplate ) do
@@ -39,9 +40,9 @@ module ::RSence
       end
     end
     
-    # gui_plugin.rb is an extension of Plugin that uses
-    # GUIParser to init the gui automatically.
     require 'plugins/gui_plugin'
+    
+    # The GUIPluginMaker mimic class creates the GUIPlugin class from GUIPluginTemplate
     def self.GUIPluginMaker
       lambda do |ns|
         klass = Class.new( GUIPluginTemplate ) do
@@ -56,8 +57,9 @@ module ::RSence
       end
     end
     
-    # servlet includes the Servlet class, for handling any requests / responses
     require 'plugins/servlet'
+    
+    # The ServletMaker mimic class creates the Servlet class from ServletTemplate
     def self.ServletMaker
       lambda do |ns|
         klass = Class.new( ServletTemplate ) do
@@ -72,6 +74,11 @@ module ::RSence
       end
     end
     
+    # Loads bundle according to the +params+ hash.
+    # Some essential params:
+    #  :src_path    => '/path/of/the_plugin/the_plugin.rb'
+    #  :bundle_path => '/path/of/the_plugin'
+    #  :bundle_name => :the_plugin
     def self.bundle_loader( params )
       src_path = params[:src_path]
       begin

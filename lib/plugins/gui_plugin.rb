@@ -6,28 +6,29 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-## The GUIPlugin extends Plugin by automatically initializing an GUIParser
-## instance as @gui
-## It makes the include_js method public to enable automatic dependency
-## loading based on the dependencies item in the YAML gui declaration.
-## It also makes the @path public.
-## It inits the gui automatically.
-## Extend the gui_params method to define your own params for the gui data.
-##
-## HValues can be defined inside values.yaml at the root directory of
-## plugin. The HValues may be linked directly with methods on the values.yaml
-## as well.
-##
-## == Values.yaml
-## :valuename:    # name of the HValue
-##  :value: 2.56  # defined value
-##  :responders:  # methods responding to the value on ruby code upon change
-##    - :method: validate_convert_factor
-##
-##
-##
 module ::RSence
   module Plugins
+    
+    ## The GUIPlugin extends Plugin by automatically initializing an GUIParser
+    ## instance as @gui
+    ## It makes the include_js method public to enable automatic dependency
+    ## loading based on the dependencies item in the YAML gui declaration.
+    ## It also makes the @path public.
+    ## It inits the gui automatically.
+    ## Extend the gui_params method to define your own params for the gui data.
+    ##
+    ## HValues can be defined inside values.yaml at the root directory of
+    ## plugin. The HValues may be linked directly with methods on the values.yaml
+    ## as well.
+    ##
+    ## == Values.yaml
+    ## :valuename:    # name of the HValue
+    ##  :value: 2.56  # defined value
+    ##  :responders:  # methods responding to the value on ruby code upon change
+    ##    - :method: validate_convert_factor
+    ##
+    ##
+    ##
     class GUIPluginTemplate < PluginTemplate
       def self.bundle_type; :GUIPlugin; end
   
