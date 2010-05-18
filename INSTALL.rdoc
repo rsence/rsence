@@ -7,6 +7,7 @@ If you already have a working ruby environment and know what to do, the easiest 
 
  gem install rsence --pre
 
+
 Otherwise, follow these instructions:
 
 
@@ -30,7 +31,6 @@ This step applies only to Mac OS X 10.4 Tiger and 10.5 Leopard
 
   sudo port install ruby +thread_hooks
   sudo port install rb-rubygems
-  sudo port install sqlite3-ruby
 
 ==== 1.1.2 Mac OS X 10.6
 
@@ -47,35 +47,49 @@ This step applies only to Debian, Ubuntu and similar Linux distributions.
 
 * Install these packages:
 
-  sudo apt-get install build-essential ruby-full sqlite3-ruby rubygems rake
+  sudo apt-get install build-essential ruby-full rubygems rake
 
 
 === 1.3. Microsoft Windows
 
-Minimal Windows compatibility (Windows has no support for background processes and other UNIX-like features. It works fine for development, but it's not a suggested environment for production.
-Windows compatibility is tested on Windows XP SP3.
+RSence works just fine on Windows too, with a few limitations.
+Windows compatibility has been officially tested on Windows XP SP3 and Windows 7 (64 bit).
 
-Install ruby 1.8.7:
-* Download *ruby 1.8.7* (or newer) from http://rubyinstaller.org/download.html
-* Follow included instructions
-* Install the *Development Kit* (same page)
-  
-Install rmagick first from:
-* Download *rmagick-win32* from http://rubyforge.org/projects/rmagick/
-* Follow included instructions
-  
-Install the *sqlite3.dll* from:
-* Download *sqlitedll* from http://www.sqlite.org/download.html
-* Extract *sqlite3.dll* into C:\\ruby\\bin or other directory in PATH
+==== 1.3.1. Install ruby 1.8.7:
+* Download Ruby 1.8.7-p249 (RC2) from http://rubyinstaller.org/download.html
+* Run the downloaded exe to install ruby
+  * In the installation and destination prompt, check these options:
+    * [x] Add Ruby executables to your PATH
+    * [x] Associate .rb and .rbw files with this Ruby installation
+* Download and Install the Development Kit from http://rubyinstaller.org/download.html
+  * Extract the included directories into the directory where you installed ruby.
+    * It's C:\ruby by default.
 
-In the command prompt run:
-  gem install rsence-deps
+==== 1.3.2. Install RSence
+* In the command prompt, run:
+  gem update --system
+  gem install rsence --pre
+  rsence help
 
-NOTICE:
-* Configure http with either *mongrel* or *webrick*
-* Ensure the session database string doesn't include the "C:" -part (when using sqlite)
-* Only the *run* (foreground) mode is supported; no start, stop, restart etc commands because backgrounding isn't possible on Windows unless configured as a Service
-* Prefix all commands with ruby
+==== 1.3.3. Create RSence environment
+
+This assumes you have \my_projects directory.
+Also, the 'my_project' project directory is just for illustration purposes.
+Use something else instead of those.
+
+* In the command prompt, run:
+  cd \my_projects
+  rsence initenv my_project
+* Answer the quetions
+* In the command prompt, run:
+  rsence run my_project
+* Open your web browser in the address as configured.
+  * If the address is 0.0.0.0, ether 127.0.0.1 instead.
+
+==== 1.3.4. Windows limitations
+If you install the sqlite dll and the sqlite3-ruby gem, you'll gain persistent sessions and the "Warning: Session database is not available. Can't use persistent sessions" message will disappear when starting up rsence. It's not, however depended on in the default install, because it's not strictly required and makes the first installation much easier.
+Backgrounding is not yet implemented, because POSIX signals are not fully implemented in windows and backgrounding requires some windows service hooks.
+
 
 === 1.99. Other UNIX / Linux systems:
 
