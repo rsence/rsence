@@ -35,7 +35,7 @@ module ::RSence
 type: GUITree
 version: 0.6
 
-class: HApplication
+class: RSence.GUIApp
 options:
   label: "Dummy Application"
 
