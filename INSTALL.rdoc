@@ -59,17 +59,17 @@ Windows compatibility has been officially tested on Windows XP SP3 and Windows 7
 * Download Ruby 1.8.7-p249 (RC2) from http://rubyinstaller.org/download.html
 * Run the downloaded exe to install ruby
   * In the installation and destination prompt, check these options:
-    * [x] Add Ruby executables to your PATH
-    * [x] Associate .rb and .rbw files with this Ruby installation
+    * Add Ruby executables to your PATH
+    * Associate .rb and .rbw files with this Ruby installation
 * Download and Install the Development Kit from http://rubyinstaller.org/download.html
   * Extract the included directories into the directory where you installed ruby.
     * It's C:\ruby by default.
 
 ==== 1.3.2. Install RSence
 * In the command prompt, run:
-  gem update --system
-  gem install rsence --pre
-  rsence help
+    gem update --system
+    gem install rsence --pre
+    rsence help
 
 ==== 1.3.3. Create RSence environment
 
@@ -78,17 +78,23 @@ Also, the 'my_project' project directory is just for illustration purposes.
 Use something else instead of those.
 
 * In the command prompt, run:
-  cd \my_projects
-  rsence initenv my_project
-* Answer the quetions
+    cd \my_projects
+    rsence initenv my_project
+* Answer the questions
 * In the command prompt, run:
-  rsence run my_project
+    rsence run my_project
 * Open your web browser in the address as configured.
   * If the address is 0.0.0.0, ether 127.0.0.1 instead.
+  * Using just defaults, the following url should work: http://127.0.0.1:8001/
 
 ==== 1.3.4. Windows limitations
-If you install the sqlite dll and the sqlite3-ruby gem, you'll gain persistent sessions and the "Warning: Session database is not available. Can't use persistent sessions" message will disappear when starting up rsence. It's not, however depended on in the default install, because it's not strictly required and makes the first installation much easier.
+If you install the sqlite dll and the sqlite3-ruby gem, you'll gain persistent sessions and this warning message will disappear:
+  Warning: Session database is not available. Can't use persistent sessions
+It's not, however, depended on in the default install, because it's not strictly required and makes the first installation much easier. Also, you can use any other database supported by Sequel instead of Sqlite.
+
 Backgrounding is not yet implemented, because POSIX signals are not fully implemented in windows and backgrounding requires some windows service hooks.
+
+However, if you run RSence under Cygwin, everything should work like on a unix machines.
 
 
 === 1.99. Other UNIX / Linux systems:
@@ -208,11 +214,8 @@ When starting up RSence for the first time, a configuration wizard is run. Just 
 * By default, the RSence listens on port 8001
 * To test it, open the address http://127.0.0.1:8001/
 * If everything works:
-  * Currently: An empty, white page without error messages is a sign of success.
-  * FIX 1:
     * A welcome message is displayed
-    * Disables itself by touching a "disabled" file in its own directory.
-    * Implement the standard "runonce" plugin.
+    * Check the "Don't show again" checkbox and click the "Close" button to make the 'welcome' plugin uninstall itself.
   * FIX 2:
     * A setup review / configuration plugin
     * Implement the standard "setup" plugin.
