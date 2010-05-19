@@ -228,14 +228,10 @@ module RSence
         :version => '0.0.0',
       
         # A brief description of the package (rdoc formatting supported)
-        :description => 'No Description given',
+        :description => 'No Description',
       
         # A flag (when false) prevents the plugin from automatically reload when changed.
         :reloadable => true,
-      
-        # A flag (when false) enables automatic construction
-        # of the Plugin and Servlet classes contained.
-        :inits_self => false,
       
         # System version requirement.
         :sys_version => '>= 1.0.0',
@@ -287,24 +283,20 @@ module RSence
         :src            => bundle_src
       } )
     
-      if bundle_info[:inits_self]
-        warn "Plugins can't init them self anymore. Please fix plugin: #{bundle_name.inspect}"
-      else
-        module_ns.constants.each do |module_const_name|
-          module_const = module_ns.const_get( module_const_name )
-          if module_const.class == Class
-            bundle_type = module_const.bundle_type
-            if [:Servlet, :Plugin, :GUIPlugin].include? bundle_type
-              bundle_inst = module_const.new( bundle_name, bundle_info, bundle_path, self )
-              bundle_inst.register( bundle_name ) if [ :Plugin, :GUIPlugin ].include?( bundle_type )
-              break
-            else
-              warn "Can't init class: #{module_const.to_s}"
-              break
-            end
+      module_ns.constants.each do |module_const_name|
+        module_const = module_ns.const_get( module_const_name )
+        if module_const.class == Class
+          bundle_type = module_const.bundle_type
+          if [:Servlet, :Plugin, :GUIPlugin].include? bundle_type
+            bundle_inst = module_const.new( bundle_name, bundle_info, bundle_path, self )
+            bundle_inst.register( bundle_name ) if [ :Plugin, :GUIPlugin ].include?( bundle_type )
+            break
           else
-            warn "module_const.class: #{module_const.class.inspect}"
+            warn "Can't init class: #{module_const.to_s}"
+            break
           end
+        else
+          warn "Invalid module_const.class: #{module_const.class.inspect}"
         end
       end
     end
