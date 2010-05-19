@@ -164,7 +164,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *highline*
   * Used by the initenv command.
 * rmagick
-  * Optional, but suggested, because RSence has RMagick -savvy features, like serving RMagick objects using ticketserve that are rendered only when requested.
+  * Optional, but suggested, because RSence has RMagick -savvy features, like serving RMagick objects using tickets that are rendered only when requested.
   * Some plugins depend on it directly.
 
 
@@ -173,7 +173,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 The primary installation method of RSence is via RubyGems.
 
 To ensure your RubyGems is up-to-date, run:
-  sude gem update --system
+  sudo gem update --system
 
 Even if RubyGems is up-to-date, ensure your installed gems are up-to-date, some of these are updated frequently. This will also update RSence release versions to the most recent version, if installed.
   sudo gem update
@@ -198,7 +198,7 @@ etc..
 
 ==== 3.2.1. Creating a RSence project environment
 
-To set up an environment for your RSence project, use the initenv command. In this example '/home/me/projects' is assumed as your project directory. Replace that with a path that matches your own enviroment. The RSence project directory must either be empty or will be created automatically.
+To set up an environment for your RSence project, use the initenv command. In this example '/home/me/projects' is assumed as your project directory. Replace that with a path that matches your own environment. The RSence project directory must either be empty or will be created automatically.
   rsence initenv /home/me/projects/my_first_rsence_project
 
 To see the options of the initenv command, use
@@ -212,7 +212,7 @@ The questions are:
 * Session database connection string
   * This is a database connection string for persistent RSence session storage. It allows keeping sessions valid even if RSence is restarted.
   * You'll need the appropriate database adapter, most database engines are supported.
-  * The simplest (and default) dabatase connection string is for a local Sqlite database.
+  * The simplest (and default) database connection string is for a local Sqlite database.
     * sqlite://db/ses.db
     * This default example string is for a database named 'ses.db' to be created in the 'db' subdirectory of your project directory.
   * The usual format is like any url, the following is for connecting to a mysql database named 'my_rsence_db' on the mysql server responding at 'localhost' on port '3306' using the username 'me' and password 'ins3cur3':
@@ -224,7 +224,7 @@ The questions are:
 * Interface TCP/IP address
   * This is the address RSence binds to.
   * '0.0.0.0' means RSence responds on all interface addresses configured on the computer.
-  * '127.0.0.1' means RSence respons only on localhost. For testing and development, use 127.0.01 instead of 'localhost' in the web browser url field, because cookies can't be set for 'localhost'.
+  * '127.0.0.1' means RSence responds only on localhost. For testing and development, use 127.0.01 instead of 'localhost' in the web browser url field, because cookies can't be set for 'localhost'.
   * Any other IP address requires the same exact address to be configured on the computer RSence is running on.
 * URI Prefix
   * This is by default the root directory, or /
@@ -232,7 +232,7 @@ The questions are:
 
 You may edit the conf/config.yaml at a later time to change these settings. The full list (and the defaults) are specified in the 'conf/default_conf.yaml' file in the installation directory of RSence.
 
-Any differencies in your local configuration replace the default. If the configuration option type is an Array, the defaults are not replaced, the defaults are appended to. If your configuration only has partial items of a Hash defined, only those are applied to the default.
+Any differences in your local configuration replace the default. If the configuration option type is an Array, the defaults are not replaced, the defaults are appended to. If your configuration only has partial items of a Hash defined, only those are applied to the default.
 
 ==== 3.2.2. Start RSence in the development mode with logs printed to the standard output:
 
@@ -307,16 +307,16 @@ Just apply the -d option after the *run*, *start* or *restart* command in the co
 
 ==== 4.4.1. What does development mode do?
 * Plugins are (re)loaded automatically in the background, if they are changed, disabled, added or removed.
-  * This is also enabled with the -a swich (--auto-update)
+  * This is also enabled with the -a switch (--auto-update)
 * Javascript packages are automatically re-built, if they are changed.
-  * This is also enabled with the -a swich (--auto-update)
+  * This is also enabled with the -a switch (--auto-update)
 * Much more verbose logging
 * Code obfuscation / minimizing options are turned off.
 
 === 4.5. Other command-line options
 Just run this command to see the available options:
   rsence help <command>
-eg:
+example:
   rsence help run
 
 === 4.6. Running RSence using rackup
