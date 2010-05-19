@@ -8,6 +8,10 @@
  ##
  #++
 
+warn "Current RSence rackup Broker implementation does not work."
+warn "Please try again in a future revision."
+exit
+
 if ARGV.include?('--root-path')
   SERVER_PATH = ARGV[ARGV.index('--root-path')+1]
 else

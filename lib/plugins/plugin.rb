@@ -6,300 +6,305 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-## = Abstract
-## The Plugin class is the base class for extending server logic.
-## A single Plugin instance serves the requests of all sessions,
-## which makes them very cpu and memory efficient compared to systems,
-## where the server classes are constructed and destructed for each
-## request.
-##
-## Plugins are designed to be contained in a plugin directory bundle and
-## to be loaded by the +PluginManager+, which is also responsible for
-## delegating the events and other calls throughout the system.
-##
-## == Anatomy of a plugin bundle
-## The plugin bundle contains all data needed to run the plugin. Design
-## your plugin without any hard-coded paths, remember that it's intended
-## to be deployed by "dropping" the whole plugin into one of the server's
-## plugins directories.
-##
-## The +PluginManager+ looks for such bundles and evaluates them into an
-## anonymous +Module+ namespace. The content of the ruby source file
-## is then responsible for including its libraries, constructing an
-## instance of itself and registering itself as a part of the system.
-##
-## It's advised to use the +GUIPlugin+ class for plugins that handle
-## user interfaces. Usage of the +Plugin+ bundle is advised to use
-## for plugins that provide extra functionality, value responders
-## and other utilities that supplement the user interface.
-##
-## You must call the +#register+ method after the class is constructed.
-## Otherwise, the class is not connected to the system and just discarded
-## and then garbage collected.
-##
-## == Messages
-## As a side effect of having single instances of plugins serve the requests
-## of all sessions, the request/response/session messaging is implemented
-## as messaging objects. These objects contain or delegate all the necessary
-## hooks required by the complete request/response cycle.
-##
-## The naming convention of the +Message+ instance is +msg+ and it's
-## given as the first parameter of methods needing it.
-##
-## Use +msg.ses_id+ to identify the session's serial number and +msg.user_id+
-## to identify the user's identity.
-##
-## Use the +msg.session+ +Hash+ to store any persistent data
-## associated with the user's session, preferably using the name of the
-## plugin or its registered name as the primary key entry in the Hash.
-## The session data is persistent; it's stored in the session database
-## by +SessionStorage+ automatically.
-##
-## The +msg+ instance also provides access to the +Request+ and +Response+
-## objects as +msg.request+ and +msg.response+, respectively.
-##
-## Use the +msg.run+ method to call other plugins.
-##
-## To append js source code to be evaluated in the client, use the +msg.reply+
-## call. The +msg.console+ call appends messages to the browser's js console.
-##
-##
-## == Session -related event methods
-## The +#get_ses+ method returns (or creates and returns) the entry in
-## the session based on the name your plugin is registered as. It's advised
-## to use this call instead of manually managing +msg.session+ in most cases.
-##
-## The +#idle+ method is called each time a client performs a data
-## synchronization or "idle poll" request.
-##
-## The +#init_ses+ method is called once in the same request a new session
-## is created. A new session is created, when a user enters accesses the
-## server the first time, or the first time after the previous session is 
-## expired.
-##
-## The +#init_ui+ method is called by the "main" plugin after the client has
-## booted successfully. The +GUIPlugin+ class extends this method to
-## automatically load and initialize the user interface from a data structure.
-##
-## The +#restore_ses+ method is called once in the same request an old
-## session is restored. A session is restored, when the user returns to
-## the page or reloads the page before the session is expired.
-##
-## === When the server is configured to restore previous sessions (default):
-## If the user accesses the same page using the same browser (in different
-## tabs or windows), only the most recently restored one is valid, while 
-## the previous ones are immediately invalidated.
-## If your application is intended to support several sessions per browser,
-## enable session cloning in the configuration file.
-##
-## === When the server is configured to restore and clone previous sessions:
-## When sessions are cloned, the previous session is not invalidated and
-## exists until timing out as a result of the web browser window being closed
-## or client computer losing network connectivity for a certain (configurable)
-## time frame.
-##
-## The +#cloned_target+ method is like +#restore_ses+, but called when 
-## the session is a clone of a previous session.
-##
-## The +#cloned_source+ method is called on the next request of the previous
-## session after it has been cloned.
-##
-## == Server event methods
-## Extend the +#init+ method to invoke constructor functionality that
-## depends on the plugin to be constructed and registered as a part of
-## the system.
-##
-## Extend the +#open+, +#flush+ and +#close+ methods to open, flush and close
-## streams or other similar functionality.
-##
-## == Data handling
-## The data exchange system exists to support bi-directional
-## data synchronization between the browser and the plugin. The values
-## are stored in the session as +HValue+ instances.
-##
-## Values support Hashes, Arrays, Strings, Numbers, Booleans and
-## combinations of them. The data is automatically converted between
-## ruby objects (server) and json objects (client).
-##
-## Each instance may be bound to plugin methods that are used as
-## value change notification responders.
-##
-## When a method is bound to the value, the method is called as an
-## event notification whenever the client has changed the value and
-## synchronizes it to the server. The responders act as validators
-## by default.
-##
-## Values are also bound in the client to classes implementing the
-## HValueResponder interface, like any derivate of HControl. See the
-## client documentation for instructions about using them.
-##
-## To define a value responder method, it needs to respond to exactly
-## two parameters: the +Message+ instance +msg+ and the HValue object
-## (in that order). The method's return value must be either +true+
-## or +false+. When the method returns +false+, the change is discarded
-## and the previously server-set value is sent back to the client.
-##
-## A minimal value responder method is defined like this:
-##
-##    def my_value_responder( msg, my_value )
-##      return true
-##    end
-##
-## To access the content of the value, use the +HValue#data+ attribute.
-##
-##    def int_between_100_and_200( msg, value )
-##      data = value.data.to_i
-##      return ( data >= 100 and data <= 200 )
-##    end
-##
-## To change the content of the value, use the +HValue#set+ method.
-##
-##    def int_between_100_and_200( msg, value )
-##      data = value.data.to_i
-##      value.set( msg, 100 ) if data < 100
-##      value.set( msg, 200 ) if data > 200
-##      return true
-##    end
-##
-## == Defining values
-## The simplest and recommended way of defining the values is to define
-## the value configuration file +values.yaml+. Its configuration is then
-## applied to sessions automatically.
-##
-## 
-## === Syntax reference of the contents of a +values.yaml+ file:
-##
-##    # The name of the value (:value_name).
-##    # A hash key in the yaml syntax
-##    :value_name:
-##      
-##      # All of these keys are optional!
-##      
-##      # Default value, a string "Foo" here.
-##      # Defaults to 0
-##      :value: Foo
-##      
-##      # A plugin method to call to define the default value
-##      # instead of the one defined in :value
-##      :value_call:
-##        :plugin: plugin_name # defaults to the plugin where defined
-##        
-##        # Mandatory; name of the method to call
-##        :method: method_name
-##        
-##        # Optional, list of parameter values for the :method
-##        :args:
-##          # three parameters: 1, 'foo', 3
-##          - 1
-##          - foo
-##          - 3
-##        
-##        # When false, doesn't pass the msg as the first parameter.
-##        # Defaults to true
-##        :uses_msg: true
-##      
-##      # Restore the default, when the session is restored; defaults to false
-##      :restore_default: false
-##      
-##      # List of value responder methods to bind.
-##      :responders:
-##        - 
-##          # name of plugin to call, defaults to the plugin where defined:
-##          :plugin: plugin_name
-##          
-##          # mandatory, name of the method to call
-##          :method: method_name
-##        
-##        # Another responder, this one using the same plugin where defined:
-##        - :method: another_method
-##    
-##    # Another value, this one just defining the defaults
-##    # by supplying an empty Hash:
-##    # (value: 0, default restored, no responders or calls)
-##    :value_with_defaults: {}
-##    
-##    # This value defines a Number (123) and doesn't restore
-##    # the default, when restoring the session.
-##    :one_two_three:
-##      :value: 123
-##      :restore_default: false
-##    
-##    # This value gets a random string and specifies a responder,
-##    # that ensures it's unique, if changed in the client.
-##    :random_unique_string:
-##      :value_call:
-##        :method:   get_unique_random_string
-##        :uses_msg: false
-##      :responders:
-##        - :method: ensure_unique_random_string
-##
-## = Examples
-## More examples are available in the repository;
-## http://svn.rsence.org/contrib/plugins
-## ..as well as the standard "main" plugin in the "plugins" directory.
-## 
-## 
-## == A minimal Plugin bundle
-## The minimal active plugin bundle (named "name_of_plugin")
-## is defined like this:
-##
-##    [dir] name_of_plugin
-##      |
-##      +---[file] name_of_plugin.rb
-##
-## This sample Plugin doesn't do anything except construct itself and
-## respond as 'name_of_plugin'.
-##
-##    Plugin.new.register('name_of_plugin')
-##
-## However, this is not very useful in itself, so you'll need to extend
-## its functionality to do anything useful.
-##
-## == A simple Plugin extension
-## This plugin logs session events to the logs/session_log file.
-##
-##    [dir] ses_logger
-##      |
-##      +---[file] ses_logger.rb
-##      |
-##      +---[dir] logs
-##            |
-##            +---[file] session_log
-##
-## == Contents of "ses_logger.rb"
-##
-##    class SessionLogger < Plugin
-##      def init
-##        super
-##        @logfile = false
-##      end
-##      def open
-##        log_path = compose_plugin_path( 'session_log', 'logs' )
-##        @logfile = File.open( log_path, 'a' )
-##      end
-##      def close
-##        @logfile.close if @logfile
-##        @logfile = false
-##      end
-##      def flush
-##        @logfile.flush if @logfile
-##      end
-##      def init_ses( msg )
-##        super
-##        @logfile.write( "#{Time.new} -- Session id #{msg.ses_id} was created.\n" )
-##      end
-##      def restore_ses( msg )
-##        super
-##        @logfile.write( "#{Time.new} -- Session id #{msg.ses_id} was restored.\n" )
-##      end
-##      def idle( msg )
-##        @logfile.write( "#{Time.new} -- Client of session id #{msg.ses_id} connected.\n" )
-##      end
-##    end
-##    SessionLogger.new.register( 'ses_logger' )
-##
 module ::RSence
   module Plugins
+    
+    ## = Abstract
+    ##
+    ## The PluginTemplate is used to create a Plugin mimic class in
+    ## Plugins.bundle_loader using the Plugins.PluginWrapper mimic.
+    ##
+    ## The Plugin class is the base class for extending server logic.
+    ## A single Plugin instance serves the requests of all sessions,
+    ## which makes them very cpu and memory efficient compared to systems,
+    ## where the server classes are constructed and destructed for each
+    ## request.
+    ##
+    ## Plugins are designed to be contained in a plugin directory bundle and
+    ## to be loaded by the +PluginManager+, which is also responsible for
+    ## delegating the events and other calls throughout the system.
+    ##
+    ## == Anatomy of a plugin bundle
+    ## The plugin bundle contains all data needed to run the plugin. Design
+    ## your plugin without any hard-coded paths, remember that it's intended
+    ## to be deployed by "dropping" the whole plugin into one of the server's
+    ## plugins directories.
+    ##
+    ## The +PluginManager+ looks for such bundles and evaluates them into an
+    ## anonymous +Module+ namespace. The content of the ruby source file
+    ## is then responsible for including its libraries, constructing an
+    ## instance of itself and registering itself as a part of the system.
+    ##
+    ## It's advised to use the +GUIPlugin+ class for plugins that handle
+    ## user interfaces. Usage of the +Plugin+ bundle is advised to use
+    ## for plugins that provide extra functionality, value responders
+    ## and other utilities that supplement the user interface.
+    ##
+    ## You must call the +#register+ method after the class is constructed.
+    ## Otherwise, the class is not connected to the system and just discarded
+    ## and then garbage collected.
+    ##
+    ## == Messages
+    ## As a side effect of having single instances of plugins serve the requests
+    ## of all sessions, the request/response/session messaging is implemented
+    ## as messaging objects. These objects contain or delegate all the necessary
+    ## hooks required by the complete request/response cycle.
+    ##
+    ## The naming convention of the +Message+ instance is +msg+ and it's
+    ## given as the first parameter of methods needing it.
+    ##
+    ## Use +msg.ses_id+ to identify the session's serial number and +msg.user_id+
+    ## to identify the user's identity.
+    ##
+    ## Use the +msg.session+ +Hash+ to store any persistent data
+    ## associated with the user's session, preferably using the name of the
+    ## plugin or its registered name as the primary key entry in the Hash.
+    ## The session data is persistent; it's stored in the session database
+    ## by +SessionStorage+ automatically.
+    ##
+    ## The +msg+ instance also provides access to the +Request+ and +Response+
+    ## objects as +msg.request+ and +msg.response+, respectively.
+    ##
+    ## Use the +msg.run+ method to call other plugins.
+    ##
+    ## To append js source code to be evaluated in the client, use the +msg.reply+
+    ## call. The +msg.console+ call appends messages to the browser's js console.
+    ##
+    ##
+    ## == Session -related event methods
+    ## The +#get_ses+ method returns (or creates and returns) the entry in
+    ## the session based on the name your plugin is registered as. It's advised
+    ## to use this call instead of manually managing +msg.session+ in most cases.
+    ##
+    ## The +#idle+ method is called each time a client performs a data
+    ## synchronization or "idle poll" request.
+    ##
+    ## The +#init_ses+ method is called once in the same request a new session
+    ## is created. A new session is created, when a user enters accesses the
+    ## server the first time, or the first time after the previous session is 
+    ## expired.
+    ##
+    ## The +#init_ui+ method is called by the "main" plugin after the client has
+    ## booted successfully. The +GUIPlugin+ class extends this method to
+    ## automatically load and initialize the user interface from a data structure.
+    ##
+    ## The +#restore_ses+ method is called once in the same request an old
+    ## session is restored. A session is restored, when the user returns to
+    ## the page or reloads the page before the session is expired.
+    ##
+    ## === When the server is configured to restore previous sessions (default):
+    ## If the user accesses the same page using the same browser (in different
+    ## tabs or windows), only the most recently restored one is valid, while 
+    ## the previous ones are immediately invalidated.
+    ## If your application is intended to support several sessions per browser,
+    ## enable session cloning in the configuration file.
+    ##
+    ## === When the server is configured to restore and clone previous sessions:
+    ## When sessions are cloned, the previous session is not invalidated and
+    ## exists until timing out as a result of the web browser window being closed
+    ## or client computer losing network connectivity for a certain (configurable)
+    ## time frame.
+    ##
+    ## The +#cloned_target+ method is like +#restore_ses+, but called when 
+    ## the session is a clone of a previous session.
+    ##
+    ## The +#cloned_source+ method is called on the next request of the previous
+    ## session after it has been cloned.
+    ##
+    ## == Server event methods
+    ## Extend the +#init+ method to invoke constructor functionality that
+    ## depends on the plugin to be constructed and registered as a part of
+    ## the system.
+    ##
+    ## Extend the +#open+, +#flush+ and +#close+ methods to open, flush and close
+    ## streams or other similar functionality.
+    ##
+    ## == Data handling
+    ## The data exchange system exists to support bi-directional
+    ## data synchronization between the browser and the plugin. The values
+    ## are stored in the session as +HValue+ instances.
+    ##
+    ## Values support Hashes, Arrays, Strings, Numbers, Booleans and
+    ## combinations of them. The data is automatically converted between
+    ## ruby objects (server) and json objects (client).
+    ##
+    ## Each instance may be bound to plugin methods that are used as
+    ## value change notification responders.
+    ##
+    ## When a method is bound to the value, the method is called as an
+    ## event notification whenever the client has changed the value and
+    ## synchronizes it to the server. The responders act as validators
+    ## by default.
+    ##
+    ## Values are also bound in the client to classes implementing the
+    ## HValueResponder interface, like any derivate of HControl. See the
+    ## client documentation for instructions about using them.
+    ##
+    ## To define a value responder method, it needs to respond to exactly
+    ## two parameters: the +Message+ instance +msg+ and the HValue object
+    ## (in that order). The method's return value must be either +true+
+    ## or +false+. When the method returns +false+, the change is discarded
+    ## and the previously server-set value is sent back to the client.
+    ##
+    ## A minimal value responder method is defined like this:
+    ##
+    ##    def my_value_responder( msg, my_value )
+    ##      return true
+    ##    end
+    ##
+    ## To access the content of the value, use the +HValue#data+ attribute.
+    ##
+    ##    def int_between_100_and_200( msg, value )
+    ##      data = value.data.to_i
+    ##      return ( data >= 100 and data <= 200 )
+    ##    end
+    ##
+    ## To change the content of the value, use the +HValue#set+ method.
+    ##
+    ##    def int_between_100_and_200( msg, value )
+    ##      data = value.data.to_i
+    ##      value.set( msg, 100 ) if data < 100
+    ##      value.set( msg, 200 ) if data > 200
+    ##      return true
+    ##    end
+    ##
+    ## == Defining values
+    ## The simplest and recommended way of defining the values is to define
+    ## the value configuration file +values.yaml+. Its configuration is then
+    ## applied to sessions automatically.
+    ##
+    ## 
+    ## === Syntax reference of the contents of a +values.yaml+ file:
+    ##
+    ##    # The name of the value (:value_name).
+    ##    # A hash key in the yaml syntax
+    ##    :value_name:
+    ##      
+    ##      # All of these keys are optional!
+    ##      
+    ##      # Default value, a string "Foo" here.
+    ##      # Defaults to 0
+    ##      :value: Foo
+    ##      
+    ##      # A plugin method to call to define the default value
+    ##      # instead of the one defined in :value
+    ##      :value_call:
+    ##        :plugin: plugin_name # defaults to the plugin where defined
+    ##        
+    ##        # Mandatory; name of the method to call
+    ##        :method: method_name
+    ##        
+    ##        # Optional, list of parameter values for the :method
+    ##        :args:
+    ##          # three parameters: 1, 'foo', 3
+    ##          - 1
+    ##          - foo
+    ##          - 3
+    ##        
+    ##        # When false, doesn't pass the msg as the first parameter.
+    ##        # Defaults to true
+    ##        :uses_msg: true
+    ##      
+    ##      # Restore the default, when the session is restored; defaults to false
+    ##      :restore_default: false
+    ##      
+    ##      # List of value responder methods to bind.
+    ##      :responders:
+    ##        - 
+    ##          # name of plugin to call, defaults to the plugin where defined:
+    ##          :plugin: plugin_name
+    ##          
+    ##          # mandatory, name of the method to call
+    ##          :method: method_name
+    ##        
+    ##        # Another responder, this one using the same plugin where defined:
+    ##        - :method: another_method
+    ##    
+    ##    # Another value, this one just defining the defaults
+    ##    # by supplying an empty Hash:
+    ##    # (value: 0, default restored, no responders or calls)
+    ##    :value_with_defaults: {}
+    ##    
+    ##    # This value defines a Number (123) and doesn't restore
+    ##    # the default, when restoring the session.
+    ##    :one_two_three:
+    ##      :value: 123
+    ##      :restore_default: false
+    ##    
+    ##    # This value gets a random string and specifies a responder,
+    ##    # that ensures it's unique, if changed in the client.
+    ##    :random_unique_string:
+    ##      :value_call:
+    ##        :method:   get_unique_random_string
+    ##        :uses_msg: false
+    ##      :responders:
+    ##        - :method: ensure_unique_random_string
+    ##
+    ## = Examples
+    ## More examples are available in the repository;
+    ## http://svn.rsence.org/contrib/plugins
+    ## ..as well as the standard "main" plugin in the "plugins" directory.
+    ## 
+    ## 
+    ## == A minimal Plugin bundle
+    ## The minimal active plugin bundle (named "name_of_plugin")
+    ## is defined like this:
+    ##
+    ##    [dir] name_of_plugin
+    ##      |
+    ##      +---[file] name_of_plugin.rb
+    ##
+    ## This sample Plugin doesn't do anything except construct itself and
+    ## respond as 'name_of_plugin'.
+    ##
+    ##    Plugin.new.register('name_of_plugin')
+    ##
+    ## However, this is not very useful in itself, so you'll need to extend
+    ## its functionality to do anything useful.
+    ##
+    ## == A simple Plugin extension
+    ## This plugin logs session events to the logs/session_log file.
+    ##
+    ##    [dir] ses_logger
+    ##      |
+    ##      +---[file] ses_logger.rb
+    ##      |
+    ##      +---[dir] logs
+    ##            |
+    ##            +---[file] session_log
+    ##
+    ## == Contents of "ses_logger.rb"
+    ##
+    ##    class SessionLogger < Plugin
+    ##      def init
+    ##        super
+    ##        @logfile = false
+    ##      end
+    ##      def open
+    ##        log_path = bundle_path( 'session_log', 'logs' )
+    ##        @logfile = File.open( log_path, 'a' )
+    ##      end
+    ##      def close
+    ##        @logfile.close if @logfile
+    ##        @logfile = false
+    ##      end
+    ##      def flush
+    ##        @logfile.flush if @logfile
+    ##      end
+    ##      def init_ses( msg )
+    ##        super
+    ##        @logfile.write( "#{Time.new} -- Session id #{msg.ses_id} was created.\n" )
+    ##      end
+    ##      def restore_ses( msg )
+    ##        super
+    ##        @logfile.write( "#{Time.new} -- Session id #{msg.ses_id} was restored.\n" )
+    ##      end
+    ##      def idle( msg )
+    ##        @logfile.write( "#{Time.new} -- Client of session id #{msg.ses_id} connected.\n" )
+    ##      end
+    ##    end
+    ##    SessionLogger.new.register( 'ses_logger' )
+    ##
     class PluginTemplate
       include PluginUtil
       def self.bundle_type; :Plugin; end
@@ -394,7 +399,7 @@ module ::RSence
       #
       # These definitions are accessible as the +@values+ attribute.
       def init_values
-        values_path = compose_plugin_path( 'values.yaml' )
+        values_path = bundle_path( 'values.yaml' )
         return yaml_read( values_path )
       end
   
@@ -418,7 +423,7 @@ module ::RSence
       # Returns the source code of the javascript file +name+ in the 'js'
       # subdirectory of the plugin bundle.
       def read_js( js_name )
-        file_read( compose_plugin_path( js_name, 'js', '.js' ) )
+        file_read( bundle_path( js_name, 'js', '.js' ) )
       end
   
       # Deprecated name of +#read_js+
@@ -435,7 +440,7 @@ module ::RSence
         if not ses.has_key?(:deps)
           ses[:deps] = []
         end
-        path = compose_plugin_path( js_name, 'js', '.js' )
+        path = bundle_path( js_name, 'js', '.js' )
         unless ses[:deps].include?( path )
           ses[:deps].push( path )
           return file_read( path )
@@ -493,7 +498,7 @@ module ::RSence
         else
           default_value = 0
         end
-        ses[value_name] = HValue.new( msg, default_value )
+        ses[value_name] = HValue.new( msg, default_value, { :name => "#{@name}.#{value_name}" } )
         if value_properties.has_key?(:responders)
           value_properties[:responders].each do |responder|
             if responder.has_key?(:plugin)

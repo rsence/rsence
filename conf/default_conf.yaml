@@ -59,9 +59,6 @@
   #
   # Rack handler to use, defaults to thin
   :rack_require: mongrel
-  #
-  # The rack handler; entered automatically.
-  :rack_handler: null
 #
 # When enabled, sets http cache headers
 # to cache content as long as possible.

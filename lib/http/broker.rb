@@ -21,14 +21,11 @@ require 'http/response'
 ## Minimally WEBrick -compatible request object
 require 'http/request'
 
-=begin
-
- Broker routes requests to the proper request processing instance
-
-=end
-
+# Broker routes requests to the proper request processing instance.
+# It's the top-level http handler.
 class Broker
   
+  # This method is called from Rack. The env is the Rack environment.
   def call(env)
     sleep @@ping_sim if @@ping_sim
     unless @@transporter.online?
@@ -45,14 +42,18 @@ class Broker
     response = Response.new
     request_method = request.request_method.downcase
     dispatcher = dispatcher_class.new( request, response )
-    dispatcher.send(request_method)
+    dispatcher.send( request_method )
     content_type = dispatcher.content_type
-    # puts "encoding: #{response.body.encoding.inspect}"
     response.header['Content-Length'] = response.body.length.to_s unless response.header.has_key?('Content-Length')
-    # puts [response.status, response.header, response.body].inspect
     return [response.status, response.header, response.body]
   end
   
+  # Returns a dynamically created "REST Dispatcher" kind of class that has
+  # request and response as instance variables and the rest of the Broker
+  # class as the superclass.
+  # It calls the method according to the http method.
+  # Called from #call
+  # Broker currently implements only get and post methods.
   def dispatcher_class
     @dispatcher ||= Class.new(self.class) do
       attr_accessor :content_type
@@ -63,13 +64,23 @@ class Broker
     end
   end
   
-  def self.start( transporter, handler, host, port)
+  # This method is used to create the Rack instance
+  # and set up itself accordingly.
+  # The transporter parameter is an instance of the Transporter class,
+  # which does all the actual delegation.
+  # The conf parameter contains a hash with at least the following:
+  #  :bind_address, :port, :rack_require
+  def self.start( transporter, conf )
+    
+    host = conf[:bind_address]
+    port = conf[:port]
+    
     @@transporter = transporter
-    conf = ::RSence.config[:http_server][:latency]
-    if conf == 0
+    latency = ::RSence.config[:http_server][:latency]
+    if latency == 0
       @@ping_sim = false
     else
-      @@ping_sim = conf/1000.0
+      @@ping_sim = latency/1000.0
     end
     Thread.new do
       Thread.pass
@@ -80,13 +91,34 @@ class Broker
       end
       @@transporter.online = true
     end
+    
+    require 'rack'
+    
+    # Loads the selected web-server (default is 'mongrel')
+    rack_require = conf[:rack_require]
+    puts conf.inspect
+    puts "rack require: #{rack_require.inspect}" if RSence.args[:debug]
+    require rack_require
+    
+    # Selects the handler for Rack
+    handler = {
+      'webrick'  => lambda { Rack::Handler::WEBrick  },
+      'ebb'      => lambda { Rack::Handler::Ebb      },
+      'thin'     => lambda { Rack::Handler::Thin     },
+      'mongrel'  => lambda { Rack::Handler::Mongrel  },
+      'unicorn'  => lambda { Rack::Handler::Unicorn  },
+      'rainbows' => lambda { Rack::Handler::Rainbows }
+    }[rack_require].call
+    
     handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
+    
   end
   
-  def self.included(receiver)
+  def self.included( receiver )
     receiver.extend( SingletonMethods )
   end
   
+  # Generic 404 handler
   def not_found
     puts "/404: #{@request.fullpath.inspect}" if RSence.args[:verbose]
     @response.status = 404
@@ -114,6 +146,7 @@ class Broker
     
   end
   
+  ### -- Add more http methods here when we have some apps to test with, caldav implementation maybe? ++
   
 end
 
