@@ -9,13 +9,6 @@ version: 2.0.0
 description: |
   This plugin serves the initial html page.
 
-# A flag (when false) prevents the plugin from automatically reload when changed.
-reloadable: true
-
-# A flag (when false) enables automatic construction
-# of the Plugin and Servlet classes contained.
-inits_self: false
-
 # System version requirement.
 sys_version: '>= 2.0.0'
 

@@ -1,5 +1,5 @@
 
-= RSence 2.0.0.6.pre                                                       2010-??-??
+= RSence 2.0.0.x.pre                                                       2010-??-??
 
 http://rsence.org/
 
@@ -23,7 +23,7 @@ is the directory of your project) is:
 
   [dir]   project_directory   :: The directory of your project.
     [dir]   conf              :: The directory of config files.
-      [file]  config.yaml     :: The config file to load by defult.
+      [file]  config.yaml     :: The config file to load by default.
     [dir]   var               :: Directory containing various runtime files.
       [dir]  run              :: Directory containing PID files.
       [dir]  log              :: Directory containing log files.
@@ -46,16 +46,16 @@ The plugins directory contains the plugins installed in the project.
 
 Each command-line tool command takes a number of options, the path defaults to the current working directory.
 
-=== Running in foregrond
+=== Starting RSence in foreground
   rsence run /path/of/project
 
-=== Running in background
+=== Starting the RSence daemon
   rsence start /path/of/project
 
-=== Stopiing from background
+=== Stopping the RSence daemon
   rsence stop /path/of/project
 
-=== Restarting in background
+=== Restarting the RSence daemon
   rsence restart /path/of/project
 
 === Checking if project is running
@@ -69,7 +69,7 @@ Each command-line tool command takes a number of options, the path defaults to t
 === Getting detailed instructions of a command
   rsence help <command>
 
-eg:
+Example:
 
   rsence help run
 
@@ -78,7 +78,7 @@ For more detailed installation and usage instructions, read the INSTALL.rdoc doc
 
 === Licensing:
 * Free: *GPL*
-* Alternative licensing queries available via http://riassence.com/ and sales@riassence.com
+* Alternative licensing queries for commercial interests are available via http://riassence.com/ and sales@riassence.com
 
 === Community support:
 * Web: http://rsence.org/

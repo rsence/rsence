@@ -40,7 +40,7 @@
     # If the plugins rescan fails, display this:
     :valuemanager_sync_client_error:
       :title:  'SyncClientError'
-      :descr:  'The value syncronization to the client failed with error:'
+      :descr:  'The value synchronization to the client failed with error:'
       :uri:    '/'
     #
     # If the plugins rescan fails, display this:
