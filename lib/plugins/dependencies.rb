@@ -28,6 +28,12 @@ module RSence
       # calculate @depends_on and push items with
       # resolved dependencies into @deps
       # ...
+      # first dependency on the list is n <- reflect from here the rest
+      #   n   n-1  n-1
+      #   c  {a,   b  }
+      #   n+1 n    n
+      #   d  {c,   e  }
+      # -> in the end of the cycle n can be calculated
       return @deps
     end
     alias deps load_order
