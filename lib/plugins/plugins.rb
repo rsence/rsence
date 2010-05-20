@@ -104,9 +104,9 @@ module ::RSence
               super
             end
           end
-          plugin_src = File.read( src_path )
+          plugin_src = params[:src]
           unless RUBY_VERSION.to_f >= 1.9
-            plugin_src = ["bundle_path = #{params[:bundle_path].inspect}", plugin_src].join("\n")
+            plugin_src = "bundle_path = #{params[:bundle_path].inspect}\n\n" + plugin_src
           end
           m.module_eval( plugin_src )
         end
