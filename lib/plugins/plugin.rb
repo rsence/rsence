@@ -205,7 +205,7 @@ module ::RSence
     ##        # Defaults to true
     ##        :uses_msg: true
     ##      
-    ##      # Restore the default, when the session is restored; defaults to false
+    ##      # Restore the default, when the session is restored; defaults to true
     ##      :restore_default: false
     ##      
     ##      # List of value responder methods to bind.
@@ -475,7 +475,7 @@ module ::RSence
       #       :uses_msg => true         # defaults to true; when false, doesn't pass the msg as the first parameter
       #     },
       #     
-      #     # Restore the default, when the session is restored; defaults to false
+      #     # Restore the default, when the session is restored; defaults to true
       #     :restore_default => false,
       #     
       #     # List of value responder methods to bind.

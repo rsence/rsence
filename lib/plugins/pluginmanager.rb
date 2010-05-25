@@ -67,21 +67,37 @@ module RSence
       end
     end
     
+    def callable?( plugin_name, method_name )
+      return false if @deps.category?( plugin_name )
+      return false unless @registry.has_key?( plugin_name )
+      plugin = @registry[plugin_name]
+      return false unless plugin.respond_to?( method_name )
+      return true
+    end
+    
     # Calls the method +method_name+ with args +args+ of the plugin +plugin_name+.
     # Returns false, if no such plugin or method exists.
     def call( plugin_name, method_name, *args )
       plugin_name = plugin_name.to_sym
-      if @registry.has_key?( plugin_name )
-        if @registry[ plugin_name ].respond_to?( method_name )
+      if callable?( plugin_name, method_name )
+        begin
           return @registry[ plugin_name ].send( method_name, *args )
-        else
-          puts "No method #{method_name.inspect} for plugin #{plugin_name.inspect}"
-          return false
+        rescue => e
+          plugin_error(
+            e,
+            "RSence::PluginManager.call error",
+            "plugin_name: #{plugin_name.inspect}, method_name: #{method_name.inspect}",
+            plugin_name
+          )
         end
-      else
-        puts "No such plugin: #{plugin_name.inspect}"
-        return false
+      elsif @deps.category?( plugin_name )
+        warn "Warning! Tried to call category: #{plugin_name.inpsect}"
+      elsif not @registry.has_key?( plugin_name )
+        warn "Warning! No such plugin: #{plugin_name.inspect}"
+      elsif not @registry[ plugin_name ].respond_to?( method_name )
+        warn "Warning! Plugin: #{plugin_name.inspect} does not respond to #{method_name.inspect}"
       end
+      return false
     end
     alias run_plugin call
     
@@ -173,27 +189,26 @@ module RSence
     # Delegates +method_name+ with +args+ to any loaded
     # plugin that responds to the method.
     def delegate( method_name, *args )
-      @registry.each do | plugin_name, plugin |
-        if plugin.respond_to?( method_name )
-          begin
-            plugin.send( method_name, *args  )
-          rescue => e
-            plugin_error(
-              e,
-              "RSence::PluginManager.delegate error",
-              "plugin_name: #{plugin_name.inspect}, method_name: #{method_name.inspect}",
-              plugin_name
-            )
-          end
-        end
+      @deps.list.each do |plugin_name|
+        call( plugin_name, method_name, *args ) if callable?( plugin_name, method_name )
+      end
+    end
+    
+    # Reverse delegate +method_name+ with +args+ to any loaded
+    # plugin that responds to the method.
+    def delegate_reverse( method_name, *args )
+      @deps.list.reverse.each do |plugin_name|
+        call( plugin_name, method_name, *args ) if callable?( plugin_name, method_name )
       end
     end
     
     # Delegates the +flush+ and +close+ methods to any
     # loaded plugins, in that order.
     def shutdown
-      delegate( :flush )
-      delegate( :close )
+      @transporter.online = false
+      @deps.list.reverse.each do |bundle_name|
+        unload_bundle( bundle_name )
+      end
     end
     
     # Finds the most recent file in the path
@@ -273,7 +288,7 @@ module RSence
       @deps.set_deps( bundle_name, info[:depends_on] )
       if info[:category]
         if info[:category].class == Symbol
-          @categories.push( info[:category] ) unless @categories.include?( info[:category] )
+          @deps.add_category( info[:category] ) unless @deps.category?( info[:category] )
           @deps.set_deps( info[:category], bundle_name )
         else
           warn "Invalid category: #{info[:category].inspect}"
@@ -312,11 +327,17 @@ module RSence
     
     # Loads a plugin bundle.
     def load_bundle( name )
+      
+      if @deps.unresolved?(name)
+        warn "Warning: Bundle #{name} has unmet dependencies."
+        return
+      end
+      
       if @registry.has_key?( name )
         warn "Warning: Bundle #{name} already loaded."
         return
       end
-      puts "loading bundle: #{name.inspect}" if RSence.args[:debug]
+      puts "Loading bundle: #{name.inspect}" if RSence.args[:debug]
       
       info = @info[ name ]
       
@@ -355,7 +376,7 @@ module RSence
     # loads all bundles found in order of dependency
     def load_bundles
       @deps.list.each do |name|
-        load_bundle( name ) unless @categories.include?( name )
+        load_bundle( name ) if @deps.loadable?( name )
       end
     end
     
@@ -415,7 +436,6 @@ module RSence
       @info     = {} # bundle_name => bundle_info mapping
       @aliases  = {} # bundle_alias => bundle_name mapping
       @servlets = [] # bundle_name list of Servlet class instances
-      @categories = [] # list of categories
       bundles_found = []
       @plugin_paths.each do |path|
         next unless File.directory? path
@@ -432,8 +452,13 @@ module RSence
     
     # Unloads the plugin bundle named +bundle_name+
     def unload_bundle( bundle_name )
-      puts "unloading bundle: #{bundle_name.inspect}" if RSence.args[:debug]
       if @registry.has_key?( bundle_name )
+        unload_order = @deps.del_order( bundle_name )
+        unload_order.each do |unload_dep|
+          unload_bundle( unload_dep ) unless unload_dep == bundle_name
+        end
+        puts "Unloading bundle: #{bundle_name.inspect}" if RSence.args[:debug]
+        @deps.del_item( bundle_name )
         online_status = @transporter.online?
         @transporter.online = false
         call( bundle_name, :flush )
@@ -476,43 +501,43 @@ module RSence
     
     # Checks for changed plugin bundles and unloads/loads/reloads them accordingly.
     def changed_plugins!
-      begin
-        bundles_found = []
-        @plugin_paths.each do |path|
-          bundles_found += scan_plugindir( path )
-        end
-        bundle_names_found = []
-        bundles_found.each do |bundle_path, bundle_name, src_file|
-          bundle_names_found.push( bundle_name )
-          is_loaded = is_loaded?( bundle_name )
-          if is_loaded and is_disabled?( bundle_path )
-            # bundle already loaded but disabled now, should be unloaded:
-            unload_bundle( bundle_name )
-            say( "Unloaded #{bundle_name}." )
-          elsif is_loaded and plugin_changed?( bundle_name )
-            # bundle changed, should be reloaded:
-            unload_bundle( bundle_name )
+      bundles_found = []
+      @plugin_paths.each do |path|
+        bundles_found += scan_plugindir( path )
+      end
+      bundle_names_found = []
+      bundles_found.each do |bundle_path, bundle_name, src_file|
+        bundle_names_found.push( bundle_name )
+        is_loaded = is_loaded?( bundle_name )
+        if is_loaded and is_disabled?( bundle_path )
+          # bundle already loaded but disabled now, should be unloaded:
+          unload_bundle( bundle_name )
+          say( "Unloaded #{bundle_name}." )
+        elsif is_loaded and plugin_changed?( bundle_name )
+          # bundle changed, should be reloaded:
+          unload_bundle( bundle_name )
+          unless @info.has_key?( bundle_name ) and not plugin_changed?( bundle_name )
             @info[bundle_name] = bundle_info( bundle_path, bundle_name, src_file )
+          end
+          if @deps.resolved?( bundle_name )
             load_bundle( bundle_name )
             say( "Reloaded #{bundle_name}." )
-          elsif not is_loaded
-            # bundle not loaded, should be loaded:
+          end
+        elsif not is_loaded
+          # bundle not loaded, should be loaded:
+          unless @info.has_key?( bundle_name ) and not plugin_changed?( bundle_name )
             @info[bundle_name] = bundle_info( bundle_path, bundle_name, src_file )
+          end
+          if @deps.resolved?( bundle_name )
             load_bundle( bundle_name )
             say( "Loaded #{bundle_name}." )
           end
         end
-        bundles_missing = @info.keys - bundle_names_found
-        bundles_missing.each do |bundle_name|
-          say( "#{bundle_name} deleted, unloading.." )
-          unload_bundle( bundle_name )
-        end
-      rescue => e
-        plugin_error(
-          e,
-          "RSence::PluginManager.changed_plugins! error",
-          "---"
-        )
+      end
+      bundles_missing = @info.keys - bundle_names_found
+      bundles_missing.each do |bundle_name|
+        say( "#{bundle_name} deleted, unloading.." )
+        unload_bundle( bundle_name )
       end
     end
     
@@ -520,14 +545,14 @@ module RSence
     # It's an array containing all plugin directories to scan.
     def initialize( plugin_paths, transporter=nil,
                     autoreload=false, name_prefix=false,
-                    resolved_deps=[] )
+                    resolved_deps=[], resolved_categories={} )
       if transporter
         @transporter = transporter
         @sessions    = transporter.sessions
       end
       @name_prefix = name_prefix
       @plugin_paths = plugin_paths
-      @deps = Dependencies.new( resolved_deps )
+      @deps = Dependencies.new( resolved_deps, resolved_categories )
       puts "Loading #{name_prefix+' ' if name_prefix}plugins..." if RSence.args[:verbose]
       scan_plugins
       puts %{Plugins #{"of #{name_prefix} " if name_prefix}loaded.} if RSence.args[:verbose]

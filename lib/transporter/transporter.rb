@@ -31,7 +31,17 @@ module RSence
       @accept_req = false
       @valuemanager = ValueManager.new
       @sessions = SessionManager.new( self )
-      @plugins = PluginManager.new( ::RSence.config[:plugin_paths], self, RSence.args[:autoupdate] )
+      core_pkgs = {
+        :core => [:transporter, :session_storage, :session_manager, :value_manager]
+      }
+      @plugins = PluginManager.new(
+        ::RSence.config[:plugin_paths],
+        self,
+        RSence.args[:autoupdate],
+        false,
+        core_pkgs[:core],
+        core_pkgs
+      )
       if RSence.launch_pid != Process.pid
         Process.kill( 'TERM', RSence.launch_pid )
       end
@@ -42,6 +52,7 @@ module RSence
     end
   
     def online=(state)
+      return if @accept_req == state
       if RSence.args[:verbose]
         if state
           puts "RSence is online now."

@@ -14,14 +14,11 @@ module ::RSence
     # to the sqlite database automatically created
     module PluginSqliteDB
       
-      # First calls superclass, then creates database directory and database.
+      # First calls superclass, then creates database if it doesn't exist.
       # Then calls init_db_tables.
       def init
         super
-        db_dir = File.join( @path, 'db' )
-        unless File.directory?( db_dir )
-          Dir.mkdir( db_dir )
-        end
+        db_dir = File.join( RSence.args[:env_path], 'db' )
         @db_path = File.join( db_dir, "#{@name}.db" )
         unless File.exist?( @db_path )
           @db = Sequel.sqlite( @db_path )
