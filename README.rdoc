@@ -5,7 +5,15 @@ http://rsence.org/
 
 == Introduction
 
-RSence is primarily a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies. RSence uses the server for backend tasks and the client to provide responsive user interfaces. The server is a highly optimized Ruby framework for writing applications as plugin bundles containing all resources needed per plugin. The client is a highly optimized Javascript framework with an API similar to many object-oriented desktop frameworks. RSence is not primarily targeted for creating html web sites, there are plenty of other tools for that purpose.
+RSence is a RIA framework designed for responsive GUI applications on the web.
+
+RSence is a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies.
+
+RSence includes a server for backend tasks and client suppert as well as a Javascript GUI framework to provide responsive user interfaces.
+
+The purpose of the server is to provide a highly optimized yet easy to use Ruby framework for writing applications containing all their assets needed as self-contained plugins bundles. The bundles enable easy distribution and maintenance of RSence projects.
+
+RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and some of them are easily integrated into RSence.
 
 
 == Installation (pre-release):
@@ -66,7 +74,7 @@ Each command-line tool command takes a number of options, the path defaults to t
 === Lists all available commands
   rsence help
 
-=== Getting detailed instructions of a command
+=== Getting detailed help of a command
   rsence help <command>
 
 Example:
@@ -82,6 +90,6 @@ For more detailed installation and usage instructions, read the INSTALL.rdoc doc
 
 === Community support:
 * Web: http://rsence.org/
-* IRC: #rsence on the IRCNet and FreeNode networks
+* IRC chat: #rsence on the IRCNet and FreeNode networks
 
 
