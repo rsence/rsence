@@ -84,11 +84,12 @@ class Broker
     end
     Thread.new do
       Thread.pass
-      puts "testing port.. #{host.inspect}"
+      puts "Testing if #{host}:#{port} responds.." if ::RSence.args[:debug]
       until RSence.argv.test_port( port, host )
-        puts "port tested"
-        sleep 0.1
+        puts "..#{host}:#{port} doesn't respond yet.." if ::RSence.args[:debug]
+        sleep 0.2
       end
+      puts "..#{host}:#{port} responds!" if ::RSence.args[:debug]
       @@transporter.online = true
     end
     
