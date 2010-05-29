@@ -64,7 +64,8 @@ module RSence
     # Don't use Dependencies for external projects yet. It's subject to change
     # without deprecation warnings.
     # +resolved+ and +categories+ are optional.
-    def initialize( resolved = [], categories = {} )
+    def initialize( resolved = [], categories = {}, quiet=true )
+      @quiet = quiet
       @pre_resolved = resolved.clone
       @depends_on = {
         # :name => [ :dep1, :dep2, :dep3, ... ]
@@ -256,9 +257,9 @@ module RSence
         end
         if len == resolved.length
           if same_len
-            warn "impossible dependencies:" if RSence.args[:debug]
+            warn "impossible dependencies:" unless @quiet
             (depends_on.keys - resolved).each do |unsatisfied|
-              warn "  #{unsatisfied.inspect} => #{depends_on[unsatisfied].inspect}" if RSence.args[:debug]
+              warn "  #{unsatisfied.inspect} => #{depends_on[unsatisfied].inspect}" unless @quiet
               unresolved.push( unsatisfied )
             end
             break
