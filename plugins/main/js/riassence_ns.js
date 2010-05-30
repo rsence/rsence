@@ -55,7 +55,7 @@ RSence = {
       _this.base( _priority, _label );
       
       // Options combined from vars above
-      _this.options = {
+      _this.options = HClass.extend(_options).extend({
         label: _label,
         descr: _descr,
         allowMulti: _allowMulti,
@@ -64,7 +64,7 @@ RSence = {
         icon: { url: _iconUrl, width: null, height: null },
         pid: this.appId,
         views: []
-      };
+      }).nu();
       
       _this.valueObj = _valueObj;
       _this.value = _valueObj.value;
