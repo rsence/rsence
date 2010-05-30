@@ -81,12 +81,12 @@ ReloadApp = HApplication.extend({
         _halfWidth = parseInt(_winWidth/2,10),
         _halfHeight = parseInt(_winHeight/2,10),
         _alertWidth  = 400,
-        _alertHeight = 300,
+        _alertHeight = 270,
         _alertX      = _halfWidth - 200,
         _alertY      = _halfHeight - 150;
     if(_alertX<10){_alertX = 10;}
     if(_alertY<10){_alertY = 10;}
-    HWindow.extend({
+    HSheet.extend({
       drawSubviews: function(){
         var _this = this,
             _elemId = _this.markupElemIds['subview'],
@@ -129,11 +129,12 @@ ReloadApp = HApplication.extend({
       HRect.nu( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight ),
       _this, {
         label: _title,
-        minSize: [_alertWidth,_alertHeight],
-        maxSize: [_alertWidth,_alertHeight],
-        enabled: true,
-        closeButton: true,
-        noResize: true
+        value: 0
+        // minSize: [_alertWidth,_alertHeight],
+        // maxSize: [_alertWidth,_alertHeight],
+        // enabled: true,
+        // closeButton: true,
+        // noResize: true
       }
     );
     
