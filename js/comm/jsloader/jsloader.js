@@ -14,6 +14,7 @@
   ** standard package url.
 ***/
 
+//var//RSence.Foundation
 COMM.JSLoader = HClass.extend({
   
 /** = Description
@@ -97,14 +98,11 @@ COMM.JSLoader = HClass.extend({
   }
 });
 
-/** -- Global reference ++ **/
-JSLoader = COMM.JSLoader;
-
 // Makes the standard jsLoader instance based on the client base url 
 // of the server when the page is loaded.
 LOAD(
   function(){
-    COMM.jsLoader = COMM.JSLoader.nu( HCLIENT_BASE + '/js/' );
+    COMM.jsLoader = COMM.JSLoader.nu( COMM.ClientPrefix + '/js/' );
     // backwards compatibility aliases:
     jsLoader = COMM.jsLoader;
   }

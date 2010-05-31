@@ -31,6 +31,7 @@
   **   HWindow.nu( [10,10,320,200], myApp, {label:'myWin'} );
   **
 ***/
+var//RSence.Foundation
 HApplication = HClass.extend({
   
   componentBehaviour: ['app'],

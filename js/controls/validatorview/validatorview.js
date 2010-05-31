@@ -6,6 +6,7 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+var//RSence.Controls
 HValidatorView = HControl.extend({
 
   controlDefaults: (HControlDefaults.extend({

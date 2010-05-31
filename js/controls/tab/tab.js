@@ -11,6 +11,7 @@
   **
   **
   ***/
+var//RSence.Controls
 HTabView = HView.extend({
 /** = Description
   * draw function
@@ -35,6 +36,7 @@ HTabView = HView.extend({
   * HTab
   *
   **/
+var//RSence.Controls
 HTab = HControl.extend({
   componentName: "tab",
   componentBehaviour: ['view','control','tab'],
@@ -267,6 +269,7 @@ HTab = HControl.extend({
   * a new HTabView instance returned by addTab
   *
   **/
+var//RSence.Controls
 HTabItem = {
   nu: function(_rect, _parent, _options){
     return _parent.addTab( _options.label, _options.select );

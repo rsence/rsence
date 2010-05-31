@@ -39,6 +39,7 @@
   ** +gainedActiveStatus+::  Called when the component gets activated.
   ** +lostActiveStatus+::    Called when the component gets deactivated.
 ***/
+var//RSence.Foundation
 HEventResponder = HClass.extend({
   
 /** Default event listeners.
@@ -428,9 +429,16 @@ HEventResponder = HClass.extend({
   **/
   gainedActiveStatus: function(_lastActiveControl) {
     
-    if ( (HSystem.windowFocusBehaviour === 1) && ( this.parents.length > 2 ) ) {
-      if ( this.parents[2].componentBehaviour.indexOf('window') !== -1 ) {
-        this.parents[2].gainedActiveStatus();
+    var
+    _parents = this.parents,
+    _parentIdx = _parents.length-1;
+    
+    if ( (HSystem.windowFocusBehaviour === 1) && ( _parentIdx > 1 ) ) {
+      for( ; _parentIdx > 0; _parentIdx-- ){
+        // Send gainedActiveStatus to HWindow parent(s)
+        if(_parents[_parentIdx]['windowFocus']!==undefined){
+          _parents[_parentIdx].gainedActiveStatus();
+        }
       }
     }
     

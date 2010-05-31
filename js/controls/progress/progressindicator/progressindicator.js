@@ -14,6 +14,7 @@
   ** progress is taking place, rather than using the size of the filled portion
   ** to show the total amount of progress.
   ***/
+var//RSence.Controls
 HProgressIndicator = HView.extend({
   _indicator: null,
   _animDirection: 0,

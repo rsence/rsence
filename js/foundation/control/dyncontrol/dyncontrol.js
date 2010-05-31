@@ -21,6 +21,7 @@
   **
   **
 ***/
+var//RSence.Foundation
 HDynControl = HControl.extend({
   
   componentBehaviour: ['view','control','window'],

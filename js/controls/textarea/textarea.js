@@ -14,6 +14,7 @@
   ** +type+::   '[HTextArea]'
   ** +value+::  The string that is currently held by this object.
   ***/
+var//RSence.Controls
 HTextArea = HTextControl.extend({
   
   componentName: "textarea"

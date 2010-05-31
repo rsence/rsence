@@ -11,6 +11,7 @@
   ** button as well.
   ***/
 
+var//RSence.Controls
 HConfirmSheet = HAlertSheet.extend({
 /** = Description
   * Creates a cancel button.

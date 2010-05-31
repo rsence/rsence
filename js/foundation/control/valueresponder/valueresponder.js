@@ -11,6 +11,7 @@
   ** Defines a minimal +HValue+ responder interface.
   ** It's implemented by default by +HControl+.
 ***/
+var//RSence.Foundation
 HValueResponder = HClass.extend({
   
 /** = Description

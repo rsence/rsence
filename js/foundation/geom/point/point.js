@@ -16,6 +16,7 @@
   ** +y+::     The Y coordinate of the point
   **
   ***/
+var//RSence.Foundation.Geom
 HPoint = HClass.extend({
 
 /** = Description

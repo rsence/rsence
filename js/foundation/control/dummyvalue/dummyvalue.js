@@ -13,6 +13,7 @@
   ** content when an actual HValue instance isn't bound.
   ** It's the default valueObj type for components not bound to real HValue instances.
 ***/
+var//RSence.Foundation
 HDummyValue = HClass.extend({
   
 /** = Description

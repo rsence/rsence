@@ -10,6 +10,7 @@
   ** Simple checkbox component, toggles the value of
   ** itself between true and false.
   ***/
+var//RSence.Controls
 HCheckbox = HButton.extend({
   componentName: 'checkbox',
   
@@ -44,4 +45,5 @@ HCheckbox = HButton.extend({
   }
 });
 //-- Alias for some users:++
+var//RSence.Controls
 HCheckBox = HCheckbox;

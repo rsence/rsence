@@ -29,7 +29,7 @@
   **  var mySubView2 = HView.nu( rect3, mySubView1 );
   **
 ***/
-
+var//RSence.Foundation
 HView = HClass.extend({
   
 /** Component specific theme path.

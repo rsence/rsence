@@ -21,6 +21,7 @@
   ** This class is still in development, so expect more
   ** features and documentation as it matures.
 ***/
+//var//RSence.Foundation
 COMM.JSONRenderer = HClass.extend({
   
   version: 0.6,
@@ -239,6 +240,7 @@ COMM.JSONRenderer = HClass.extend({
 });
 
 /** -- Global reference ++ **/
+var//RSence.Foundation
 JSONRenderer = COMM.JSONRenderer;
 
 

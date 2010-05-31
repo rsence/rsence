@@ -13,6 +13,7 @@
   ** It's limited to 24px height by the default theme, because
   ** it's much simpler to render that way.
   ***/
+var//RSence.Controls
 HButton = HControl.extend({
   componentName: 'button',
 /** = Description
@@ -36,6 +37,7 @@ HButton = HControl.extend({
   ** +1+::     Disabled, clicked
   ** +Other+:: Disabled, not clickable, not clicked
   ***/
+var//RSence.Controls
 HClickButton = HButton.extend({
   
   defaultEvents: {
@@ -60,4 +62,6 @@ HClickButton = HButton.extend({
   }
 });
 
+var//RSence.Controls
 HClickValueButton = HClickButton;
+

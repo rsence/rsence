@@ -23,12 +23,18 @@
   **
   ***/
 
+var//RSence.Foundation
 HDefaultThemePath = '/H/themes';
+var//RSence.Foundation
 HDefaultThemeName = 'default';
+var//RSence.Foundation
 HNoComponentCSS = [];
+var//RSence.Foundation
 HNoCommonCSS = [];
-HThemeHasIE6GifsInsteadOfPng = [];
+var//RSence.Foundation
+HThemeHasIE6GifsInsteadOfPng = ['default'];
 
+var//RSence.Foundation
 HThemeManager = HClass.extend({
   
   constructor: null,

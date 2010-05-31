@@ -27,6 +27,7 @@
   ** +width+::        The width of the rect.
   ** +height+::       The height of the rect.
   ***/  
+var//RSence.Foundation.Geom
 HRect = HClass.extend({
 /** = Description
   * Initializes a Rect as four sides, as two diametrically opposed corners,

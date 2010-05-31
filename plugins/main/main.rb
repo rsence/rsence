@@ -102,7 +102,7 @@ class Main < Plugin
   # Initializes the client-side COMM.urlResponder and sesWatcher
   def boot0( msg, ses )
     
-    msg.reply read_js( 'riassence_ns' )
+    msg.reply read_js( 'main' )
 
     msg.reply("ELEM.setStyle(0,'background-color','#{::RSence.config[:main_plugin][:bg_color]}');")
     

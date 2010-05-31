@@ -13,6 +13,7 @@
   *
   **/
 
+var//RSence.Controls
 HUploader = HControl.extend({
   componentName: 'uploader',
   uploadState: false,

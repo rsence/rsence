@@ -16,6 +16,7 @@
   ** +type+::   '[HTextControl]'
   ** +value+::  The string that is currently held by this object.
   ***/
+var//RSence.Controls
 HTextControl = HControl.extend({
   
   componentName: "textcontrol",
@@ -327,6 +328,7 @@ HTextControl = HControl.extend({
   * If you need decimal numbers (floating-point), pass the 
   * decimalNumber: true option to the constructor.
   **/
+var//RSence.Controls
 HNumericTextControl = HTextControl.extend({
   
   defaultEvents: {

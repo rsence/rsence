@@ -19,6 +19,7 @@
   ** +wrapAround+::       Boolean to control wrap-around behaviour
   ***/
 
+var//RSence.Controls
 HStepper = HControl.extend({
   
   componentName: "stepper",

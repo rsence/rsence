@@ -15,6 +15,7 @@
   ** a default blank image will be rendered.
   **
   ***/
+var//RSence.Controls
 HImageView = HControl.extend({
   
   controlDefaults: (HControlDefaults.extend({

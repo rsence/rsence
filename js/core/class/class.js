@@ -52,6 +52,7 @@
   *    equals2 = myEqualsClassInstance1.testFoo( myClassIntance2 );
   *
   **/
+var//RSence.Core
 HClass = function() {
   if ( arguments.length ) {
     if (this === window) {
@@ -277,7 +278,7 @@ HClass.implement = function(_interface) {
   this.prototype.extend(_interface);
 };
 
-var Base = HClass;
+//var Base = HClass;
 
 // Array fix
 if ([]['indexOf']===undefined) {

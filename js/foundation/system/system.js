@@ -16,6 +16,7 @@
   ** so there is no real need to access +HSystem+ directly from user-level code.
   **
 ***/
+var//RSence.Foundation
 HSystem = {
   
 /** When the focus behaviour is 1, clicking on any subview brings

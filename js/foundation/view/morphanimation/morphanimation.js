@@ -13,6 +13,7 @@
   ** Its methods define the functionality to zoom from the current geometry to a 
   ** target geometry with animated intervals.
 ***/
+var//RSence.Foundation
 HMorphAnimation = HClass.extend({
   
 /** = Description

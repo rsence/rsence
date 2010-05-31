@@ -13,6 +13,7 @@
  ** = Instance variables
  ** +markup+:: The markup from the component's HTML template.
 ***/
+var//RSence.Foundation
 HMarkupView = HClass.extend({
 
 /** = Description

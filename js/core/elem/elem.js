@@ -7,13 +7,9 @@
  */
 
 /** = Description
-  * The interval to flush the buffer specified in milliseconds.
-**/
-ELEMTickerInterval = 10;
-
-/** = Description
   * An object that contains the browser types detected as booleans.
 **/
+var//RSence.Core
 BROWSER_TYPE = {
   
 /* Any version of Microsoft Internet Explorer */
@@ -54,8 +50,15 @@ BROWSER_TYPE = {
   * The DOM Abstraction collection. Implements a managed buffer
   * for style properties.
 **/
+var//RSence.Core
 ELEM = {
-
+  
+/** = Description
+  * The interval to flush the buffer specified in milliseconds.
+  * Defaults to 60fps which is the most common refresh rate of displays.
+**/
+  ELEMTickerInterval: 16.667,
+  
   // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
   _constructor: function() {
     var _this = ELEM;
@@ -88,7 +91,7 @@ ELEM = {
     _this._idleDelay = 500;
 
     _this._timer = null;
-    _this._minDelay = ELEMTickerInterval;
+    _this._minDelay = _this.ELEMTickerInterval;
     _this._flushing = false;
     _this._needFlush = false;
     _this._slowness = 1;
@@ -604,8 +607,8 @@ ELEM = {
   setFPS: function(_fps) {
     var _this = ELEM;
     _this._minDelay = 1000 / _fps;
-    if (_this._minDelay < ELEMTickerInterval) {
-      _this._minDelay = ELEMTickerInterval;
+    if (_this._minDelay < _this.ELEMTickerInterval) {
+      _this._minDelay = _this.ELEMTickerInterval;
     }
   },
   
@@ -692,7 +695,7 @@ ELEM = {
         );
         return;
       }
-      _delay = parseInt(_this._slowness * (_this._flushTime / _this._flushCounter), ELEMTickerInterval);
+      _delay = parseInt(_this._slowness * (_this._flushTime / _this._flushCounter), _this.ELEMTickerInterval);
       if (_delay < _this._minDelay || !_delay) {
         _delay = _this._minDelay;
       }
@@ -1364,12 +1367,13 @@ ELEM = {
       // }
     }
     else {
-      _this._domLoadTimer = setTimeout('ELEM._domWaiter()', ELEMTickerInterval * 10);
+      _this._domLoadTimer = setTimeout('ELEM._domWaiter()', _this.ELEMTickerInterval * 10);
     }
   }
 };
 ELEM._constructor();
 
+var//RSence.Core
 LOAD = ELEM._domLoader;
 
 ELEM._warmup();

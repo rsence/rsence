@@ -14,6 +14,7 @@
   * for extension reference.
   *
   **/
+var//RSence.Foundation
 HControl = HView.extend({
   
 /** Component behaviour includes 'view' and 'control' as a default.

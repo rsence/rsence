@@ -191,15 +191,26 @@
   # List of packages to build
   :packages:
     
-    # The core package, loaded by default using index_html
+    # The core package, loaded by default using a script tag in index_html
     core:
+      
+      # RSence.*
+      - rsence_ns
+      
+      # RSence.Core
       - class             # HClass
       - elem              # ELEM
-      - event             # EVENT
-      - sha               # SHAClass
+      - event             # Event
+      
+      # RSence.Util
+      - sha               # SHA
+      
+      # RSence.Foundation
       - system            # HSystem
       - valueresponder    # HValueResponder
       - application       # HApplication
+      
+      # COMM
       - comm              # COMM
       - queue             # COMM.Queue
       - session           # COMM.Session
@@ -221,6 +232,7 @@
       - view              # HView
       - eventresponder    # HEventResponder
       - dummyvalue        # HDummyValue
+      - eventmanager      # EVENT
       - controldefaults   # HControlDefaults
       - control           # HControl
       - dyncontrol        # HDynControl

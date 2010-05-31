@@ -17,6 +17,7 @@
   ** +type+::   '[HStringView]'
   ** +value+::  The string that this string view displays when drawn.
   ***/
+var//RSence.Controls
 HStringView = HControl.extend({
 
   componentName: "stringview",
@@ -28,7 +29,7 @@ HStringView = HControl.extend({
   **/
   setStyle: function(_name, _value, _cacheOverride) {
     if (!this['markupElemIds']||!this.markupElemIds['value']) {
-      return;
+      return this;
     }
     ELEM.setStyle(this.markupElemIds.value, _name, _value, _cacheOverride);
     return this;

@@ -10,6 +10,7 @@
   ** HAlertSheet is a simple alert notification control.
   ***/
 
+var//RSence.Controls
 HAlertSheet = HSheet.extend({
 
 /** = Description

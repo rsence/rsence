@@ -30,6 +30,7 @@
   ** simply contains the radio buttons and does no drawing of its own.
   ***/
 
+var//RSence.Controls
 HRadioButton = HCheckbox.extend(
   HValueMatrixComponentExtension
 );
@@ -37,5 +38,6 @@ HRadioButton.prototype.componentName = 'radiobutton';
 
 
 // Backwards compatibility
+var//RSence.Controls
 HRadiobutton = HRadioButton;
 

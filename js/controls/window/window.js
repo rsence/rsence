@@ -14,6 +14,7 @@
   ** See #controlDefaults
   **
   ***/
+var//RSence.Controls
 HWindow = HDynControl.extend({
   
   componentName:      'window',

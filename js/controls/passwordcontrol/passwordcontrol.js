@@ -14,6 +14,7 @@
   ** +value+:: The string that is currently held by this object.
   **
   ***/
+var//RSence.Controls
 HPasswordControl = HTextControl.extend({
   
   componentName: 'passwordcontrol'

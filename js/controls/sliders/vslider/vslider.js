@@ -29,6 +29,7 @@
   **                    have horizonal sliders work logically
   **                    with sideways scrolling, where supported.
   ***/
+var//RSence.Controls
 HVSlider = HSlider.extend({
   
   componentName: "vslider",

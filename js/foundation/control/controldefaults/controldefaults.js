@@ -10,6 +10,7 @@
   ** Define default setting here. Will be used, when no or invalid constructor
   ** options are supplied.
   ***/
+var//RSence.Foundation
 HControlDefaults = HClass.extend({
   
 /** The default label. A label is the "visual value" of a component that
@@ -53,7 +54,3 @@ HControlDefaults = HClass.extend({
   maxValue:  2147483648
   
 });
-
-// Alias for backwards-compatibility.
-HComponentDefaults = HControlDefaults;
-

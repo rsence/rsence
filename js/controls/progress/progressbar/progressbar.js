@@ -15,6 +15,7 @@
   ** to define the point of progress.
   **
 ***/
+var//RSence.Controls
 HProgressBar = HControl.extend({
   componentName: "progressbar",
   

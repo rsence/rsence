@@ -16,6 +16,7 @@
   ** values. Also see HAlertSheet and HConfirmSheet components.
   **
   ***/
+var//RSence.Controls
 HSheet = HControl.extend({
   componentName: 'sheet',
 
