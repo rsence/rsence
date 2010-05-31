@@ -433,7 +433,7 @@ HEventResponder = HClass.extend({
     _parents = this.parents,
     _parentIdx = _parents.length-1;
     
-    if ( (HSystem.windowFocusBehaviour === 1) && ( _parentIdx > 1 ) ) {
+    if ( (HSystem.windowFocusMode === 1) && ( _parentIdx > 1 ) ) {
       for( ; _parentIdx > 0; _parentIdx-- ){
         // Send gainedActiveStatus to HWindow parent(s)
         if(_parents[_parentIdx]['windowFocus']!==undefined){

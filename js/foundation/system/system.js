@@ -25,7 +25,7 @@ HSystem = {
   * brings the window to front.
   *
   **/
-  windowFocusBehaviour: 1,
+  windowFocusMode: 1,
   
 /** Singleton class; has no constructor **/
   // constructor: null,

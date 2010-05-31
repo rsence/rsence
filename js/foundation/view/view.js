@@ -109,13 +109,6 @@ HView = HClass.extend({
   **/
   flexBottomOffset: 0,
   
-/** The componentBehaviour array tells other classes what to
-  * expect of the component's API and visual behaviour.
-  * The first index is 'view' by default for all classes
-  * inherited from HView.
-  **/
-  componentBehaviour: ['view'],
-  
 /** The drawn flag is false before the component is visually
   * drawn, it's true after it's drawn.
   **/

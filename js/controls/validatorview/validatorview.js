@@ -10,19 +10,21 @@ var//RSence.Controls
 HValidatorView = HControl.extend({
 
   controlDefaults: (HControlDefaults.extend({
-    value: false
+    value: false,
+    valueField: false
   })),
 
-  constructor: function(_rect, _parent, _options) {
+  setRect: function(_rect) {
+    var _options = this.options;
     if(_options){
-      if(_options.valueField && _options.valueField.componentBehaviour[1] === 'control'){
+      if(_options.valueField){
         _rect.offsetTo(
           _options.valueField.rect.right,
           _options.valueField.rect.top
         );
       }
     }
-    this.base(_rect, _parent, _options);
+    this.base(_rect);
   },
   
 /** = Description

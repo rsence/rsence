@@ -34,8 +34,6 @@
 var//RSence.Foundation
 HApplication = HClass.extend({
   
-  componentBehaviour: ['app'],
-  
   elemId: 0,
   
 /** = Description

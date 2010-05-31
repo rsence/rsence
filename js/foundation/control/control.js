@@ -17,10 +17,6 @@
 var//RSence.Foundation
 HControl = HView.extend({
   
-/** Component behaviour includes 'view' and 'control' as a default.
-  **/
-  componentBehaviour: ['view','control'],
-  
 /** A flag: when true, calls the +refreshValue+ method whenever
   * +self.value+ is changed.
   **/

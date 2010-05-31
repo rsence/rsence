@@ -21,7 +21,6 @@ var//RSence.Controls
 HStringView = HControl.extend({
 
   componentName: "stringview",
-  componentBehaviour: ['view','control','text'],
   
 /** = Description
   * setStyle function

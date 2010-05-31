@@ -15,8 +15,6 @@
 var//RSence.Foundation
 HValueMatrixInterface = {
   
-  componentBehaviour: ['view','control','matrix'],
-  
 /** = Description
   * Standard +HControl+ constructor model.
   * Passes parameters through to its base class's constructor,

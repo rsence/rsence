@@ -39,7 +39,6 @@ HTabView = HView.extend({
 var//RSence.Controls
 HTab = HControl.extend({
   componentName: "tab",
-  componentBehaviour: ['view','control','tab'],
   refreshOnValueChange: true,
   refreshOnLabelChange: false,
   

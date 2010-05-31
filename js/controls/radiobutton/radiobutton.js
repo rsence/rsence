@@ -32,7 +32,7 @@
 
 var//RSence.Controls
 HRadioButton = HCheckbox.extend(
-  HValueMatrixComponentExtension
+  HValueMatrixInterface
 );
 HRadioButton.prototype.componentName = 'radiobutton';
 
