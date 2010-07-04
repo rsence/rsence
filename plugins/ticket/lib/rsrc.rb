@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,10 +5,11 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
 
 
+# @private Inner workings of Ticket
 module TicketService
+# @private Inner workings of Ticket
 module Rsrc
   
   # Removes static data by ID.

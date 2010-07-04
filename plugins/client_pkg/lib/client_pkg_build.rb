@@ -7,12 +7,12 @@
  ##
 
 
+require 'jsmin_c'
+require 'jscompress'
+require 'html_min'
+
+
 class ClientPkgBuild
-  
-  require 'jsmin_c'
-  require 'jscompress'
-  require 'html_min'
-  require 'util/gzstring'
   
   def read_file( path )
     filehandle = open( path, 'rb' )

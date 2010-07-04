@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,16 +5,27 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
 
-class Main < Plugin
+
+# The MainPlugin is accessible as +@plugins.main+ from other plugins.
+#
+# = MainPlugin provides mainly client setup and the following services:
+# * The url of the client as a HValue, including the anchor.
+#   * Accessible via +msg.session[:main][:location_href]+
+# * The local time of the client's web browser as a HValue, as seconds since epoch.
+#   * Accessible via +msg.session[:main][:client_time]+
+# * Sequential loading. See {#delayed_call #delayed_call}
+# * Provides the +#init_ui+ event for plugins that respond to it.
+class MainPlugin < Plugin
   
+  # @private Internal structures, binds configuration data as instance variables
   def init
     super
     @conf  = ::RSence.config[:index_html]
     @bconf = ::RSence.config[:broker_urls]
   end
   
+  # @private Internal structures, matches the "hello/goodbye" session termination request
   def match( uri, request_type )
     if request_type == :post and
        uri == File.join(@bconf[:hello],'goodbye')
@@ -24,23 +34,24 @@ class Main < Plugin
     return false
   end
   
+  # @private Internal structures, score for the "hello/goodbye" session termination request
   def score; 100; end
   
+  # @private Internal structures, handler for the "hello/goodbye" session termination request
   def post( req, res, ses )
     msg = @plugins.sessions.init_msg( req, res, { :cookies => true } )
     msg.expire_session()
     msg.response_done
   end
   
-  # url_responder gets called whenever the
-  # page location.href changes, enabled virtual uris
-  # to enable back/forward/bookmarking in browsers,
-  # when software is coded to support it.
+  # @private url_responder gets called whenever the
+  #          page location.href changes, enabled virtual uris
+  #          to enable back/forward/bookmarking in browsers,
+  #          when software is coded to support it.
   #
   # Client-side support is included in js/url_responder.js
   #
-  # Also allows virtual-host -like behavior, if software
-  # is coded to support it.
+  # Also allows virtual-host -like behavior, if software is coded to support it.
   def url_responder(msg,location_href)
     
     ses = get_ses( msg )
@@ -75,15 +86,13 @@ class Main < Plugin
   end
   
   
-  # new session initialization,
-  # called just once per session.
+  # @private new session initialization, called just once per session.
   def init_ses(msg)
     super
     restore_ses( msg )
   end
   
-  # called once when a session is 
-  # restored using the cookie's ses_key
+  # @private called once when a session is restored using the cookie's ses_key
   def restore_ses(msg)
     super
     ## Resets session data to defaults
@@ -95,11 +104,30 @@ class Main < Plugin
   end
   
   # Interface for adding delayed calls
-  def delayed_call( msg, args )
-    get_ses( msg )[:delayed_calls].push( args )
+  #
+  # When adding a delayed call, use an Array to define a plugin/method with optional arguments that will be called on the next request. The client will call back immediately when a delayed call is pending. The first param of the method is a +msg+. Don't include the +msg+ of the current request in params, it will be inserted automatically for the delayed call.
+  #
+  # It can also be used for loading sequences to the client, when using a String as the +params+.
+  #
+  # == Format of +params+ for plugin callback:
+  # Array:: [ plugin_name, method_name, *args ]
+  #
+  # == Format of +params+ for javascript sequences:
+  # String:: Javascript to send
+  #
+  # Calls will be flushed per request with the following conditions:
+  # * At most four (4) delayed calls will be processed at a time
+  # * If the calls use more than 200ms combined, even less will be processed at a time
+  #
+  # @param [Message] msg The message instance.
+  # @param [Array, String] params The params of the delayed call.
+  #
+  # @return [nil]
+  def delayed_call( msg, params )
+    get_ses( msg )[:delayed_calls].push( params )
   end
   
-  # Initializes the client-side COMM.urlResponder and sesWatcher
+  # @private Initializes the client-side COMM.urlResponder and sesWatcher
   def boot0( msg, ses )
     
     msg.reply read_js( 'main' )
@@ -120,20 +148,20 @@ class Main < Plugin
     poll_interval = ::RSence.config[:main_plugin][:server_poll_interval]
     msg.reply "sesWatcher = COMM.SessionWatcher.nu(#{poll_interval},#{client_time_id});"
     
-    
   end
   
-  # Calls the init_ui method of each loaded plugin and removes the loading -message
+  # @private Calls the init_ui method of each loaded plugin and removes the loading -message
   def boot1( msg, ses )
     # Delegates the init_ui method to each plugin to signal bootstrap completion.
     msg.plugins.delegate( 'init_ui', msg ) unless ses[:dont_init_ui]
   end
   
+  # @private
   def dont_init_ui( msg )
     get_ses( msg )[:dont_init_ui] = true
   end
   
-  # Flushes commands in the :delayed_calls array
+  # @private Flushes commands in the :delayed_calls array
   def flush_delayed( msg, ses )
     ## Limits the amount of delayed calls to process to 4.
     ## Prevents the client from choking even when the server
@@ -187,10 +215,10 @@ class Main < Plugin
     end
   end
   
-  # When nothing is delayed and the second poll has been made (init_ui called),
-  # sets the client to non-polling-mode, having only HValue
-  # changes trigger new requests. SesWatcher makes this happen
-  # regularly.
+  # @private When nothing is delayed and the second poll has been made (init_ui called),
+  #          sets the client to non-polling-mode, having only HValue
+  #          changes trigger new requests. SesWatcher makes this happen
+  #          regularly.
   def end_polling( msg, ses )
     if ses[:poll_mode] == true
       msg.reply "COMM.Transporter.poll(0);"
@@ -198,7 +226,7 @@ class Main < Plugin
     end
   end
   
-  # Starts polling.
+  # @private Starts polling.
   def start_polling( msg, ses )
     if ses[:poll_mode] == false
       msg.reply( "COMM.Transporter.poll(#{::RSence.config[:transporter_conf][:client_poll_priority]});" )
@@ -206,8 +234,7 @@ class Main < Plugin
     end
   end
   
-  # called on every request of an
-  # active, valid session
+  # @private called on every request of an active, valid session
   def idle(msg)
     
     ses = get_ses( msg )

@@ -6,7 +6,9 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-# IndexHtmlPlugin is the servlet plugin that is responsible for initializing the "boot-strap page".
+
+
+# @private IndexHtmlPlugin is the servlet plugin that is responsible for initializing the "boot-strap page". It's not intended as a part of the public API at this time.
 class IndexHtmlPlugin < Servlet
   
   def match( uri, method )

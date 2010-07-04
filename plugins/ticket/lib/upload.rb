@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,9 +5,17 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
 
 
+
+require 'sequel'
+
+# @private Inner workings of Ticket
+module TicketService
+
+# @private Inner workings of Ticket
+module Upload
+  
 =begin
 
 Handles uploads by using tickets and other filters.
@@ -41,12 +48,6 @@ create table rsence_uploads (
   file_data mediumblob
 )
 =end
-
-require 'sequel'
-
-module TicketService
-module Upload
-  
   def upload(request,response)
     
     ticket_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:u]}(.*)$/)[1]

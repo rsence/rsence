@@ -6,6 +6,7 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+
 # the library path of this plugin
 lib_path = File.join( bundle_path, 'lib' )
 
@@ -19,8 +20,8 @@ require File.join( lib_path, 'client_pkg_serve' )
 require File.join( lib_path, 'client_pkg_build' )
 
 
-## The ClientPkg plugin builds and serves the client packages.
-class ClientPkg < Servlet
+# @private The ClientPkgPlugin builds and serves the client packages. It's not intended to be a part of the public API at this time.
+class ClientPkgPlugin < Servlet
   
   include ClientPkgServe
   
@@ -31,7 +32,7 @@ class ClientPkg < Servlet
       @log_file = nil
     end
     def log( str )
-      if ::RSence.args[:verbose]
+      if RSence.args[:verbose]
         puts str
         return
       else
@@ -140,10 +141,10 @@ class ClientPkg < Servlet
     
     @thr = false
     
-    @build_logger = BuildLogger.new( File.join(::RSence.args[:env_path],'log','build_log') )
+    @build_logger = BuildLogger.new( File.join(RSence.args[:env_path],'log','build_log') )
     @build_logger.open
     
-    @client_build = ClientPkgBuild.new( ::RSence.config[:client_pkg], @build_logger )
+    @client_build = ClientPkgBuild.new( RSence.config[:client_pkg], @build_logger )
     @client_cache = ClientPkgCache.new
     
     @build_busy = false
