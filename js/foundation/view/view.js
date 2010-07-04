@@ -1610,13 +1610,14 @@ HView = HClass.extend({
       _extraCss += 'white-space:nowrap;';
     }
     
-    var _stringElem = ELEM.make(_elemId);
-    ELEM.setCSS(_stringElem, "visibility:hidden;position:absolute;"+_extraCss);
+    var _stringElem = ELEM.make(_elemId,'span');
+    ELEM.setCSS(_stringElem, "visibility:hidden;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
-    ELEM.flushLoop();
+    // ELEM.flushLoop();
     var _visibleSize=ELEM.getVisibleSize(_stringElem);
+    // console.log('visibleSize',_visibleSize);
     ELEM.del(_stringElem);
-    return _visibleSize;
+    return [_visibleSize[0]+_visibleSize[0]%2,_visibleSize[1]+_visibleSize[1]%2];
   },
   
 /** Returns the string width
