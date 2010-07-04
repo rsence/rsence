@@ -6,16 +6,26 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module ::RSence
+
+module RSence
+  
+  
   module Plugins
-    # Include this module in your plugin class to automatically
-    # create and connect/disconnect an sqlite database.
-    # The plugin instance will have a @db Sequel object referring
-    # to the sqlite database automatically created
+    
+    
+    # Include this module in your plugin class to automatically create, update and connect/disconnect a sqlite database file.
+    #
+    # The Plugin instances including this module will have a +@db+ Sequel[http://sequel.rubyforge.org/] object referring to the sqlite database automatically created.
+    #
     module PluginSqliteDB
       
-      # First calls superclass, then creates database if it doesn't exist.
-      # Then calls init_db_tables.
+      # Extends {Plugin__#init Plugin#init} to specify +@db_path+ as the name of the bundle with a +.db+ suffix in the project environment +db+ path.
+      #
+      # Calls {#create_db_tables} (extend with your own method), if no database is found (typically on the first run in an environment)
+      #
+      # @example If your plugin bundle is named +my_app+, a +db/my_app.db+ database is created under your project environment.
+      #
+      # @return [nil]
       def init
         super
         db_dir = File.join( RSence.args[:env_path], 'db' )
@@ -27,43 +37,58 @@ module ::RSence
         end
       end
       
-      # Automatically opens the database connection, then calls update_db.
+      # Extends {PluginUtil#open PluginUtil#open} to open the sqlite database from +@db_path+ as a +@db+ instance variable.
+      #
+      # Calls {#update_db} (extend with your own method) after the database object is created.
+      #
+      # @return [nil]
       def open
         @db = Sequel.sqlite( @db_path )
         update_db
         super
       end
       
-      # Automatically closes (disconnects) the database. Calls flush_db before closing.
+      # Extends {PluginUtil#close PluginUtil#close} to close (disconnect) the database object.
+      #
+      # Calls {#flush_db} (extend with your own method) before closing the database object.
+      #
+      # @return [nil]
       def close
         flush_db
         @db.disconnect
         super
       end
       
-      # Extend this method to do something immediately after the @db object is assigned.
+      # Extend this method to do something immediately after the +@db+ object is created.
+      #
       # An usage scenario would be updating some tables or deleting some junk rows.
+      #
+      # @return [nil]
       def update_db
       end
       
-      # Extend this method to do something immediately before the @db object is disconnected.
+      # Extend this method to do something immediately before the +@db+ object is disconnected.
+      #
       # An usage scenario would be deleting some junk rows or writing some pending data in memory into the database.
+      #
+      # @return [nil]
       def flush_db
       end
       
       # Extend this method to define tables or initial data for the tables.
       # It's called once, when the database is created.
       #
-      # NOTE: In a future reversion, tables might be defined from a configuration file.
-      #
-      # = Usage:
-      #   @db.create_table :my_table do
-      #     primary_key :id
-      #     String :my_text_column
+      # @example Creates a table named +:my_table+ and inserts one row.
+      #   def create_db_tables
+      #     @db.create_table :my_table do
+      #       primary_key :id
+      #       String :my_text_column
+      #     end
+      #     my_table = @db[:my_table]
+      #     my_table.insert(:my_text_column => 'Some text')
       #   end
-      #   my_table = @db[:my_table]
-      #   my_table.insert(:my_text_column => 'Some text')
-      # 
+      #
+      # @return [nil]
       def create_db_tables
       end
       
