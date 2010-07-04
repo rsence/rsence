@@ -6,6 +6,14 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+
+module RSence
+  
+  # Namespace for plugin classes and modules
+  module Plugins
+  end
+end
+
 # Contains the PluginUtil module which has common methods for the bundle classes
 require 'plugins/plugin_util'
 
@@ -20,15 +28,22 @@ require 'plugins/plugin_sqlite_db'
 # Interface for plugins in a plugin bundle
 require 'plugins/plugin_plugins'
 
-module ::RSence
+
+# Templates for the main plugin classes.
+require 'plugins/plugin'
+require 'plugins/gui_plugin'
+require 'plugins/servlet'
+
+
+module RSence
+  
   module Plugins
     
-    require 'plugins/plugin'
-    
-    # The PluginMaker mimic class creates the Plugin class from PluginTemplate
-    def self.PluginMaker
+    # Creates the runtime Plugin class from Plugin__
+    # @return [Plugin__]
+    def self.Plugin
       lambda do |ns|
-        klass = Class.new( PluginTemplate ) do
+        klass = Class.new( Plugin__ ) do
           def self.ns=(ns)
             define_method( :bundle_info ) do
               ns.bundle_info
@@ -40,12 +55,12 @@ module ::RSence
       end
     end
     
-    require 'plugins/gui_plugin'
     
-    # The GUIPluginMaker mimic class creates the GUIPlugin class from GUIPluginTemplate
-    def self.GUIPluginMaker
+    # Creates the runtime GUIPlugin class from GUIPlugin__
+    # @return [GUIPlugin__]
+    def self.GUIPlugin
       lambda do |ns|
-        klass = Class.new( GUIPluginTemplate ) do
+        klass = Class.new( GUIPlugin__ ) do
           def self.ns=(ns)
             define_method( :bundle_info ) do
               ns.bundle_info
@@ -57,12 +72,12 @@ module ::RSence
       end
     end
     
-    require 'plugins/servlet'
     
-    # The ServletMaker mimic class creates the Servlet class from ServletTemplate
-    def self.ServletMaker
+    # Creates the runtime Servlet class from Servlet__
+    # @return [Servlet__]
+    def self.Servlet
       lambda do |ns|
-        klass = Class.new( ServletTemplate ) do
+        klass = Class.new( Servlet__ ) do
           def self.ns=(ns)
             define_method( :bundle_info ) do
               ns.bundle_info
@@ -74,31 +89,48 @@ module ::RSence
       end
     end
     
-    # Loads bundle according to the +params+ hash.
-    # Some essential params:
-    #  :src_path    => '/path/of/the_plugin/the_plugin.rb'
-    #  :bundle_path => '/path/of/the_plugin'
-    #  :bundle_name => :the_plugin
+    # Loads bundle in an anonymous module with special environment options.
+    # @param [Hash] params
+    # @option params [String] :src_path ('/path/of/the_plugin/the_plugin.rb') The ruby source file to read.
+    # @option params [String] :bundle_path ('/path/of/the_plugin') The plugin bundle directory path.
+    # @option params [String] :bundle_name (:the_plugin) The name of the plugin as it will be registered.
+    # @return [Module] Isolated, anonymous module containing the evaluated source code of +src_path+
     def self.bundle_loader( params )
-      src_path = params[:src_path]
       begin
         mod = Module.new do |m|
           if RUBY_VERSION.to_f >= 1.9
-            m.define_singleton_method( :bundle_path ) do
-              params[:bundle_path]
+            m.define_singleton_method( :_bundle_path ) do
+              params[ :bundle_path ]
             end
+          else
+            m.module_eval( <<-END
+            def self._bundle_path; #{params[:bundle_path].inspect}; end
+            END
+            )
+          end
+          
+          # Makes a full path using the plugin bundle as the 'local path'.
+          # The (optional) +prefix+ is a subdirectory in the bundle,
+          # the +suffix+ is the file extension.
+          def self.bundle_path( path=false, prefix=false, suffix=false )
+            return _bundle_path if not path
+            if suffix
+              path = "#{path}#{suffix}" unless path.end_with?(suffix)
+            end
+            if prefix
+              path = File.join( prefix, path )
+            end
+            path = File.expand_path( path, _bundle_path )
+            return path
           end
           def self.inspect; "#<module BundleWrapper of #{@@bundle_name}}>"; end
           def self.const_missing( name )
             if name == :Servlet
-              return Plugins.ServletMaker.call( self )
-            elsif name == :ServletPlugin
-              warn "'ServletPlugin' is deprecated, use 'Servlet' instead."
-              return Plugins.ServletMaker.call( self )
+              return Plugins.Servlet.call( self )
             elsif name == :Plugin
-              return Plugins.PluginMaker.call( self )
+              return Plugins.Plugin.call( self )
             elsif name == :GUIPlugin
-              return Plugins.GUIPluginMaker.call( self )
+              return Plugins.GUIPlugin.call( self )
             else
               warn "Known const missing: #{name.inspect}"
               super
@@ -106,12 +138,14 @@ module ::RSence
           end
           plugin_src = params[:src]
           unless RUBY_VERSION.to_f >= 1.9
-            plugin_src = "bundle_path = #{params[:bundle_path].inspect}\n\n" + plugin_src
+            plugin_src = "_bundle_path = #{params[:bundle_path].inspect};" + plugin_src
           end
           m.module_eval( plugin_src )
         end
         return mod
       rescue => e
+        src_path = params[:src_path]
+        src_path = "<undefined src_path>" if src_path == nil
         params[:plugin_manager].plugin_error(
           e,
           'BundleLoaderError',
