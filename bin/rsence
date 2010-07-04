@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-#--
 ##   RSence
  #   Copyright 2010 Riassence Inc.
  #   http://riassence.com/
@@ -7,19 +6,18 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
+
 
 require 'profile' if ARGV.include?('--profile')
 
-## Auto-construct paths using this file as the waypoint
+# @private  Auto-construct paths using this file as the waypoint
 SERVER_PATH = File.split( File.expand_path(File.dirname(__FILE__)) )[0]
 
-## Include server & lib in the search path
+# Include server & lib in the search path
 $LOAD_PATH << SERVER_PATH
 $LOAD_PATH << File.join( SERVER_PATH, 'lib' )
 
-# Requires the ARGVParser that functions as the command-line user interface.
-require 'conf/argv'
+require 'rsence'
 
 # Start RSence, if the command supplied was one of the ones
 # triggering a start and the environment is ok.
