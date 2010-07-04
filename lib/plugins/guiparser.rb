@@ -6,27 +6,31 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module ::RSence
+
+module RSence
+  
+  
   module Plugins
     
+    
     # This class automatically loads a YAML file from "gui" subdirectory of a plugin.
-    # Extend your plugin from the GUIPlugin class instead of the Plugin class to make
-    # this work automatically.
-    # = Usage:
-    # Initialize like this from inside a plugin method. This will load the "gui/my_gui.yaml" file.
-    #   @gui = GUIParser.new( self, 'my_gui' )
-    # To make the client render the contents of the yaml do this:
+    #
+    # Extend your plugin from the {GUIPlugin__ GUIPlugin} class instead of the Plugin class to make this work automatically.
+    #
+    # @example Initialize like this from inside a plugin method. This will load the "gui/my_gui.yaml" file.
+    #   gui = GUIParser.new( self, 'my_gui' )
+    #
+    # @example To make the client render the contents of the yaml do this:
     #   ses = get_ses( msg )
     #   params = { :values => @gui.values( ses ) }
-    #   @gui.init( msg, params )
+    #   gui.init( msg, params )
     class GUIParser
-  
-      include ::RSence
-  
+      
+      # include ::RSence
+      
       # Use this method to send the client all commands required to construct the GUI Tree using JSONRenderer.
-      # = Parameters
-      # +msg+::    The +Message+ instance +msg+ used all over the place.
-      # +params+:: An hash containing all parameters referred from the YAML file.
+      # @param [Message] msg The +Message+ instance +msg+ used all over the place.
+      # @param [Hash] params Containing all parameters referred from the YAML file, see: {GUIPlugin__#gui_params GUIPlugin#gui_params}
       def init( msg, params )
         gui_data = YAML.load( @yaml_src )
         parse_gui( gui_data, params )
@@ -44,24 +48,24 @@ module ::RSence
         json_data = JSON.dump( gui_data )
         msg.reply( "JSONRenderer.nu(#{json_data});", true )
       end
-  
+      
       # Use this method to extract all the value id's of the +ses+ hash.
       def values( ses )
         ids = {}
         ses.each do | key, value |
           if value.class == HValue
-            ids[ key ] = value.val_id
+            ids[ key ] = value.value_id
           end
         end
         return ids
       end
-  
+      
     private
-
+      
       def json_fun( value )
         JSON.parse( "[#{value}]" ).first
       end
-  
+      
       # Parses the gui data using params. Called from +init+.
       def parse_gui( gui_data, params )
         data_class = gui_data.class
@@ -86,7 +90,7 @@ module ::RSence
         end
         return gui_data
       end
-  
+      
       # Searches the params hash for parameters whenever encountered a Symbol in the YAML.
       def get_params( params_path, params )
         item = params_path.shift
@@ -104,7 +108,7 @@ module ::RSence
         end
         return ''
       end
-  
+      
       # Loads the YAML file.
       # = Parameters
       # +parent+::    The Plugin instance called from, use +self+ when constructing in a Plugin method.
@@ -113,7 +117,7 @@ module ::RSence
         @parent = parent
         @yaml_src = yaml_src
       end
-
+      
     end
   end
 end
