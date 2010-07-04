@@ -6,6 +6,7 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+
 # RSence 'Welcome' plugin
 class WelcomePlugin < GUIPlugin
   def disable_self
