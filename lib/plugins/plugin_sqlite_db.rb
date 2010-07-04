@@ -37,7 +37,7 @@ module RSence
         end
       end
       
-      # Extends {PluginUtil#open PluginUtil#open} to open the sqlite database from +@db_path+ as a +@db+ instance variable.
+      # Extends {PluginBase#open PluginBase#open} to open the sqlite database from +@db_path+ as a +@db+ instance variable.
       #
       # Calls {#update_db} (extend with your own method) after the database object is created.
       #
@@ -48,7 +48,7 @@ module RSence
         super
       end
       
-      # Extends {PluginUtil#close PluginUtil#close} to close (disconnect) the database object.
+      # Extends {PluginBase#close PluginBase#close} to close (disconnect) the database object.
       #
       # Calls {#flush_db} (extend with your own method) before closing the database object.
       #

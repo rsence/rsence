@@ -34,7 +34,7 @@ module RSence
     # * {#post  +#post+} -- Extend to handle a HTTP POST request and response.
     class Servlet__
       
-      include PluginUtil
+      include PluginBase
       
       # @private Class type identifier for the PluginManager.
       # @return [:Servlet]

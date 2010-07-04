@@ -67,13 +67,13 @@ module RSence
     # * {file:PluginBundles Plugin Bundles} -- General information about the plugin bundle system
     # * {file:Values Values} -- General information about the value exchange system
     # * {file:PluginBundleInfo Plugin Bundle +info.yaml+ files} -- General information about the meta-information files.
-    # * {PluginUtil PluginUtil} -- The PluginUtil module
+    # * {PluginBase PluginBase} -- The PluginBase module
     # * {Servlet__ Servlet} -- The Servlet base class
     # * {GUIPlugin__ GUIPlugin} -- The GUIPlugin base class
     class Plugin__
       
       
-      include PluginUtil
+      include PluginBase
       
       # @private Class type identifier for the PluginManager.
       # @return [:Plugin]
@@ -107,7 +107,7 @@ module RSence
       #
       # @return [nil]
       #
-      # @see PluginUtil#init
+      # @see PluginBase#init
       def init
         @values = init_values
       end

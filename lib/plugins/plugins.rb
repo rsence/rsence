@@ -14,8 +14,8 @@ module RSence
   end
 end
 
-# Contains the PluginUtil module which has common methods for the bundle classes
-require 'plugins/plugin_util'
+# Contains the PluginBase module which has common methods for the bundle classes
+require 'plugins/plugin_base'
 
 # guiparser.rb contains the Yaml serializer for gui trees.
 # It uses JSONRenderer on the client to build user interfaces.

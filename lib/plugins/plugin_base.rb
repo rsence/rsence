@@ -34,7 +34,7 @@ module RSence
     # * {Plugin__ Plugin} -- The Plugin base class
     # * {Servlet__ Servlet} -- The Servlet base class
     # * {GUIPlugin__ GUIPlugin} -- The GUIPlugin base class
-    module PluginUtil
+    module PluginBase
       
       # @private External accessor for @plugins
       # @return [PluginManager] The PluginManager the instance belongs to.
