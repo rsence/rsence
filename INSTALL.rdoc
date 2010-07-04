@@ -1,46 +1,41 @@
-= Installation
+= Install Guide
 
 If you already have a working ruby environment and know what to do, the easiest way is just:
 
- gem install rsence --pre
-
+ gem install rsence
 
 Otherwise, follow these instructions:
 
 
 == 1. System Dependencies
 
-This is a list of system level dependencies. You only need to do this step once.
+This is a list of system level dependencies. You only need to do this step once; follow the steps of for your target operating system.
 
 === 1.1. Mac OS X
 
-This applies to all version of Mac OS X
+==== 1.1.1 Mac OS X 10.6
 
-* Install a recent version of *XCode* from http://developer.apple.com/mac/ to install the essential development tools.
-* Install the most recent version of *MacPorts* from http://www.macports.org/
-* Proceed with step 1.1.1. *or* 1.1.2. according to your version of Mac OS X
+* Install *XCode*[http://developer.apple.com/mac/] to get the essential development tools, like compilers.
+* Proceed to section 3.0
 
-==== 1.1.1. Mac OS X 10.4 and 10.5
+==== 1.1.2. Mac OS X 10.4 and 10.5
 
-This step applies only to Mac OS X 10.4 Tiger and 10.5 Leopard. The bundled ruby build of these versions of Mac OS X is somewhat broken.
+This step applies only to Mac OS X 10.4 "Tiger" and 10.5 "Leopard". The default ruby build of these versions of Mac OS X is somewhat broken.
 
+* Install *XCode*[http://developer.apple.com/mac/] to get the essential development tools, like compilers.
+* Install *MacPorts*[http://www.macports.org/]
 * Install the ruby and rb-rubygems packages using Terminal like this:
-
-  sudo port install ruby
-  sudo port install rb-rubygems
-
-==== 1.1.2 Mac OS X 10.6
-
-RSence works out-of-the box in Mac OS X 10.6 Snow Leopard.
+    sudo port install ruby
+    sudo port install rb-rubygems
+* Proceed to section 3.0
 
 === 1.2. Debian and Ubuntu Linux
 
 This step applies only to Debian, Ubuntu and similar Linux distributions.
 
 * Install these packages:
-
-  sudo apt-get install build-essential ruby-full rubygems rake
-
+    sudo apt-get install build-essential ruby-full rubygems rake
+* Proceed to section 3.0
 
 === 1.3. Microsoft Windows
 
@@ -55,19 +50,17 @@ Windows compatibility has been officially tested on Windows XP SP3 and Windows 7
     * Associate .rb and .rbw files with this Ruby installation
 * Download and Install the Development Kit from http://rubyinstaller.org/download.html
   * Extract the included directories into the directory where you installed ruby.
-    * It's C:\ruby by default.
+    * It's +C:\ruby+ by default.
 
 ==== 1.3.2. Install RSence
 * In the command prompt, run:
     gem update --system
-    gem install rsence --pre
+    gem install rsence
     rsence help
 
 ==== 1.3.3. Create RSence environment
 
-This assumes you have \my_projects directory.
-Also, the 'my_project' project directory is just for illustration purposes.
-Use something else instead of those.
+Replace the +\my_projects+ path with the path to the directory where you want to run or develop your projects. Likewise, replace +my_project+ with something descriptive for your project.
 
 * In the command prompt, run:
     cd \my_projects
@@ -76,20 +69,21 @@ Use something else instead of those.
 * In the command prompt, run:
     rsence run my_project
 * Open your web browser in the address as configured.
-  * If the address is 0.0.0.0, ether 127.0.0.1 instead.
-  * Using just defaults, the following url should work: http://127.0.0.1:8001/
+  * If the address is +0.0.0.0+, enter +127.0.0.1+ instead.
+  * Using just defaults, the following URL should work: http://127.0.0.1:8001
 
 ==== 1.3.4. Windows limitations
 If you install the sqlite dll and the sqlite3-ruby gem, you'll gain persistent sessions and this warning message will disappear:
-  Warning: Session database is not available. Can't use persistent sessions
-It's not, however, depended on in the default install, because it's not strictly required and makes the first installation much easier. Also, you can use any other database supported by Sequel instead of Sqlite.
+`Warning: Session database is not available. Can't use persistent sessions`
 
-Backgrounding is not yet implemented, because POSIX signals are not fully implemented in windows and backgrounding requires some windows service hooks.
+It's not a dependency in the default install, because it's not strictly required and makes the first installation much easier. Also, you can use any other database supported by Sequel instead of Sqlite.
 
-However, if you run RSence under Cygwin, everything should work like on a unix machines.
+Backgrounding on Windows is not yet implemented, because POSIX signals are not fully implemented in windows and backgrounding requires some Windows-specific service hooks.
+
+However, if you run RSence under Cygwin, everything should work like on a UNIX machines.
 
 
-=== 1.99. Other UNIX / Linux systems:
+=== 1.4. Other UNIX / Linux systems:
 
 This step applies to systems not listed above.
 
@@ -97,72 +91,44 @@ You'll have to figure out how to install the dependencies on your own, but gener
 
 * Ruby
   * Version 1.8.7 or newer
-  * http://ruby-lang.org/
+  * http://ruby-lang.org
 * RubyGems
   * Ruby package manager
 * A standard set of compilers and build tools to build the gems with C extensions.
   * gcc, make etc.
 
 
-== 2. Ruby Dependencies
+== 2. Ruby Library Dependencies
 
-The 'rsence' gem depends on the dummy 'rsence-deps' gem, which depends on all essential dependencies of RSence.
-Optionally, you probably want at a database and a database adapter supported by Sequel: http://sequel.rubyforge.org/
+The `rsence` gem depends on the dummy `rsence-deps` gem, which depends on all essential dependencies of RSence.
+Optionally, you probably want at a database and a database adapter supported by Sequel[http://sequel.rubyforge.org]
 This not only enables SessionStorage (persistent sessions between RSence restarts), but some plugins written for RSence depend on at least Sqlite.
 
-=== 2.1 Detailed list of ruby dependencies
+=== 2.1 Detailed list of ruby libraries used
 
-* *rake*
+* *rake*[http://rake.rubyforge.org]
   * Ruby build tool
   * Not necessarily required via ruby gems, if installed via a system-level package
-  * http://rake.rubyforge.org/
-* *rack*
+* *rack*[http://rack.rubyforge.org]
   * Abstract ruby web server interface
-  * http://rack.rubyforge.org/
-  * Additionally, you need a rack handler, one of the following is suggested:
-    * *unicorn*
-      * Suggested for production deployment
-      * Use Apache, Nginx or similar front-ends for virtual hosts, SSL and such.
-      * http://unicorn.bogomips.org/
-    * *mongrel*
-      * Suggested for development use.
-      * Solid
-      * Pretty fast
-      * Reliable
-      * http://github.com/fauna/mongrel
-    * *thin*
-      * Quick
-      * Not as stable or reliable as mongrel (not at least yet)
-      * http://code.macournoyer.com/thin/
-    * *webrick*
-      * No installation needed, part of the standard library
-      * Very slow
-      * Use as last resort
-* *json*
-  * Library for JSON - Ruby - JSON object conversion.
-  * http://flori.github.com/json/
-  * http://json.org/
-* *yaml*
-  * Library for handling YAML files
-  * Part of the standard library of Ruby 1.9 and newer
-  * http://yaml4r.sourceforge.net/doc/
-  * http://www.yaml.org/
-* *jsmin_c*
-  * Javascript whitespace removal library
-* *jscompress*
-  * Javascript compression and obfuscation library
-* *html_min*
-  * HTML whitespace removal library
-* *cssmin*
-  * CSS whitespace removal library
-* *sequel*
-  * http://www.sequel.org/
-  * Additionally, you need a sequel driver for your database
-    * *sqlite3-ruby*
-      * Lightweight SQL library
-    * Other database adapters compatible with sequel are fine. Just configure your setup accordingly.
-* *highline*
-  * Used by the initenv command.
+  * A rack handler is also required. One of the following is suggested:
+    * *unicorn*[http://unicorn.bogomips.org] :: Suggested for production deployment. Use Apache, Nginx or similar front-ends for virtual hosts, SSL and such.
+    * *mongrel*[http://github.com/fauna/mongrel] :: Suggested for development use, also works for production when combined with a front-end proxy for virtual hosts etc.
+    * *thin*[http://code.macournoyer.com/thin] ::  Alternative for development use.
+    * *webrick*:: Bundled with ruby (no installation required). Very slow; use as last resort
+* *json*[http://flori.github.com/json]:: Library for bi-directional JSON[http://json.org] conversion.
+* *yaml*[http://yaml4r.sourceforge.net/doc]:: Library for handling YAML[http://www.yaml.org] files
+* *randgen*:: C-optimized random string generator developed for RSence specifically
+* *jsmin_c*:: C-optimized Javascript whitespace removal library; Ruby wrapper developed for RSence specifically; based on the original JSMin[http://www.crockford.com/javascript/jsmin.html]
+* *jscompress*:: C-optimized Javascript compression and obfuscation library developed for RSence specifically
+* *html_min*:: C-optimized HTML whitespace removal library developed for RSence specfically
+* *cssmin*:: CSS whitespace removal library
+* *sequel*[http://www.sequel.org]
+  * Generic SQL database ORM
+  * A Sequel driver for your preferred database is also needed:
+    * *sqlite3-ruby*:: SQLite[http://www.sqlite.org] is a light-weight SQL library. Recommended for development and small projects.
+    * Other database adapters compatible with Sequel are fine. Just configure RSence accordingly.
+* *highline*:: Console-based menu prompt system by the initenv command.
 * rmagick
   * Optional, but suggested, because RSence has RMagick -savvy features, like serving RMagick objects using tickets that are rendered only when requested.
   * Some plugins depend on it directly.
@@ -181,7 +147,7 @@ Even if RubyGems is up-to-date, ensure your installed gems are up-to-date, some 
 === 3.1. Install RSence
 
 This will install RSence via RubyGems, the preferred method. All dependencies are installed too, except for the ones you already might have installed.
-  gem install rsence --pre
+  gem install rsence
 
 Optionally, you might want to contribute to RSence development, just clone or fork the GIT repository on Github:
   * http://github.com/rsence/rsence
