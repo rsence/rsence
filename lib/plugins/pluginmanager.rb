@@ -5,18 +5,19 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
+
+ 
 require 'plugins/plugins'
 require 'plugins/dependencies'
 
 module RSence
   
-  ## = Abstract
   ## PluginManager is the service that loads and provides method delegation
   ## amongst its plugin bundles.
   ##
   ## = Usage
-  ## plugin_paths = [ 'plugins', '/home/me/rsence/plugins' ]
-  ## myPluginManager = RSence::PluginManager.new( plugin_paths )
+  ##  plugin_paths = [ 'plugins', '/home/me/rsence/plugins' ]
+  ##  myPluginManager = RSence::PluginManager.new( plugin_paths )
   ##
   class PluginManager
     
@@ -258,7 +259,7 @@ module RSence
         
         # Dependency, by default the system category (built-in plugins).
         # A nil ( "~" in yaml ) value means no dependencies.
-        :depends_on     => :system,
+        :depends_on     => [ :system ],
         
         # Optional, name of category. The built-in plugins are :system
         :category       => nil,
@@ -304,7 +305,7 @@ module RSence
         end
       end
       
-      # Extra information, not overrideable in info.yaml
+      # Extra information, not override-able in info.yaml
       
       # Path of bundle
       info[:path] = bundle_path
@@ -502,16 +503,19 @@ module RSence
         to_unload.push( name ) if not found_map.has_key?( name )
       end
       to_unload.each do |name|
+        next if @deps.category?( name )
         puts "Unloading #{name.inspect}"
         unload_bundle( name )
       end
       to_reload.each do |name|
+        next if @deps.category?( name )
         puts "Unloading #{name.inspect}"
         unload_order = unload_bundle( name )
         to_load += unload_order
       end
       info_map = {}
       to_load.each do |name|
+        next unless found_map.has_key? name
         info_map[name] = bundle_info( *found_map[name] )
       end
       no_deps = {}
@@ -524,6 +528,7 @@ module RSence
       end
       to_open = []
       @deps.list.each do |name|
+        next if @deps.category?( name )
         next unless to_load.include?( name )
         info = info_map[name]
         if to_reload.include?( name )
