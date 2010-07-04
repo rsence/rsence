@@ -29,10 +29,10 @@ module RSence
     # 
     # = Extension hooks for server events
     # These methods are provided as the basic server event hooks:
-    # * {#init +init+} -- Use instead of +initialize+
-    # * {#open +open+} -- Extend to open objects
-    # * {#flush +flush+} -- Extend to write the state and to flush buffers
-    # * {#close +close+} -- Extend to close objects
+    # * {#init +#init+} -- Use instead of +initialize+
+    # * {#open +#open+} -- Extend to open objects
+    # * {#flush +#flush+} -- Extend to write the state and to flush buffers
+    # * {#close +#close+} -- Extend to close objects
     #
     # = Extension hooks for session events
     # * {#idle +#idle+} -- Extend to implement logic for each client data synchronization and "idle poll" request.
@@ -49,19 +49,19 @@ module RSence
     #
     # = Utility methods
     # These are general utility methods not intended to be extended.
-    # * {#get_ses +get_ses+} Returns the bundle-specific session Hash.
-    # * {#file_read +file_read+} Use to read files
-    # * {#yaml_read +yaml_read+} Use to read yaml data
-    # * {#file_write +file_write+} Use to write files
-    # * {#bundle_path +bundle_path+} Use for plugin bundle -specific paths
-    # * {#httime +httime+} Use for HTTP date/time
+    # * {#get_ses +#get_ses+} Returns the bundle-specific session Hash.
+    # * {#file_read +#file_read+} Use to read files
+    # * {#yaml_read +#yaml_read+} Use to read yaml data
+    # * {#file_write +#file_write+} Use to write files
+    # * {#bundle_path +#bundle_path+} Use for plugin bundle -specific paths
+    # * {#httime +#httime+} Use for HTTP date/time
     #
     # = Client-support
     # These methods are intended for server-client interaction. Namely, commanding the client.
-    # * {#read_js +read_js+} Returns a javascript source file.
-    # * {#read_js_once +read_js_once+} Returns a javascript source file once per session.
-    # * {#values_js +values_js+} Returns a javascript source snippet containing references to values.
-    # * {#include_js +include_js+} Tells the client to load a library package.
+    # * {#read_js +#read_js+} Returns a javascript source file.
+    # * {#read_js_once +#read_js_once+} Returns a javascript source file once per session.
+    # * {#values_js +#values_js+} Returns a javascript source snippet containing references to values.
+    # * {#include_js +#include_js+} Tells the client to load a library package.
     #
     # = See also
     # * {file:PluginBundles Plugin Bundles} -- General information about the plugin bundle system
