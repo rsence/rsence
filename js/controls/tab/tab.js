@@ -143,11 +143,11 @@ HTab = HControl.extend({
   * +_doSelect+::
   *
   **/
-  addTab: function(_tabLabel,_doSelect){
+  addTab: function(_tabLabel,_doSelect,_viewClass){
     var _tabIdx=this.tabs.length,
-        _tabLabelHTML='',
-        _labelTextWidth=this.stringWidth(_tabLabel),
-        _labelWidth=_labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
+        _tabLabelHTML = '',
+        _labelTextWidth = this.stringWidth( _tabLabel, null, 0, this.fontStyle ),
+        _labelWidth = _labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
         _tab = HTabView.nu( [0,this.tabLabelHeight,null,null,0,0] ,this),
         _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
     _tabIdx = this.tabs.length;
