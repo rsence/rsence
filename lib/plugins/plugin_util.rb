@@ -16,18 +16,18 @@ module RSence
     #
     # = Extension hooks for server events
     # These methods are provided as the basic server event hooks:
-    # * {#init +init+} Use instead of +initialize+
-    # * {#open +open+} Use to open objects
-    # * {#flush +flush+} Use to write the state and to flush buffers
-    # * {#close +close+} Use to close objects
+    # * {#init +#init+} -- Use instead of +initialize+
+    # * {#open +#open+} -- Extend to open objects
+    # * {#flush +#flush+} -- Extend to write the state and to flush buffers
+    # * {#close +#close+} -- Extend to close objects
     #
     # = Utility methods
     # These are general utility methods not intended to be extended.
-    # * {#file_read +file_read+} Use to read files
-    # * {#yaml_read +yaml_read+} Use to read yaml data
-    # * {#file_write +file_write+} Use to write files
-    # * {#bundle_path +bundle_path+} Use for plugin bundle -specific paths
-    # * {#httime +httime+} Use for HTTP date/time
+    # * {#file_read +#file_read+} Use to read files
+    # * {#yaml_read +#yaml_read+} Use to read yaml data
+    # * {#file_write +#file_write+} Use to write files
+    # * {#bundle_path +#bundle_path+} Use for plugin bundle -specific paths
+    # * {#httime +#httime+} Use for HTTP date/time
     #
     # = See also
     # * {file:PluginBundles Plugin Bundles} -- General information about the plugin bundle system
@@ -35,6 +35,10 @@ module RSence
     # * {Servlet__ Servlet} -- The Servlet base class
     # * {GUIPlugin__ GUIPlugin} -- The GUIPlugin base class
     module PluginUtil
+      
+      # @private External accessor for @plugins
+      # @return [PluginManager] The PluginManager the instance belongs to.
+      attr_reader :plugins
       
       # Extend this method do any initial configuration instead of extending the +initialize+ constructor, which should *never* be done in plugins.
       #
