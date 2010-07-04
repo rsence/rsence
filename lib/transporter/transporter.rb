@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,28 +5,38 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
+
+
+# ValueManager synchronizes value objects
+require 'values/valuemanager'
+
+# SessionManager creates, validates, stores and expires sessions
+require 'session/sessionmanager'
+
+# PluginManager handles all the plugins
+require 'plugins/pluginmanager'
 
 
 module RSence
-
-  # Transporter handles incoming requests targeted at RSence
-  # and distributes calls and data accordingly.
+  
+  # Transporter handles incoming requests targeted at RSence and distributes calls and data accordingly. It's called via {Broker}.
+  # @see Broker
   class Transporter
-  
-    # ValueManager syncronizes value objects
-    require 'values/valuemanager'
-  
-    # SessionManager creates, validates, stores and expires sessions
-    require 'session/sessionmanager'
-
-    # PluginManager handles all the plugins
-    require 'plugins/pluginmanager'
-  
-    attr_accessor :valuemanager, :sessions, :plugins
-  
+    
+    # The single instance of the {ValueManager}
+    # @return [ValueManager]
+    attr_accessor :valuemanager
+    
+    # The single instance of the {SessionManager}
+    # @return [SessionManager]
+    attr_accessor :sessions
+    
+    # The main instance of the {PluginManager}
+    # @return [PluginManager]
+    attr_accessor :plugins
+    
     def initialize
-      @config = ::RSence.config[:transporter_conf]
+      @config = RSence.config[:transporter_conf]
       @accept_req = false
       @valuemanager = ValueManager.new
       @sessions = SessionManager.new( self )
@@ -35,7 +44,7 @@ module RSence
         :core => [:transporter, :session_storage, :session_manager, :value_manager]
       }
       @plugins = PluginManager.new(
-        ::RSence.config[:plugin_paths],
+        RSence.config[:plugin_paths],
         self,
         RSence.args[:autoupdate],
         false,
@@ -70,7 +79,7 @@ module RSence
     end
   
     def servlet( request_type, request, response )
-      broker_urls = ::RSence.config[:broker_urls]
+      broker_urls = RSence.config[:broker_urls]
       uri = request.fullpath
     
       if request_type == :post
@@ -116,7 +125,7 @@ module RSence
     ## handles incoming XMLHttpRequests from the browser
     def xhr(request, response, options = { :cookies => false, :servlet => false } )
     
-      session_conf = ::RSence.config[:session_conf]
+      session_conf = RSence.config[:session_conf]
     
       options[:cookies] = false unless options.has_key?(:cookies)
     
@@ -143,7 +152,7 @@ module RSence
         # If cookies are true, it means the url base needs to
         # be changed from /hello to /x to prevent further cookie juggling.
         if options[:cookies] and not options[:servlet]
-          msg.reply("COMM.Transporter.url=#{::RSence.config[:broker_urls][:x].to_json};")
+          msg.reply("COMM.Transporter.url=#{RSence.config[:broker_urls][:x].to_json};")
         end
       
         # Appends a 'new session.' message for new sessions in RSence.args[:verbose]:
