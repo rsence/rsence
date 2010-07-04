@@ -6,11 +6,12 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module ::RSence
+
+module RSence
   module Plugins
     
     ## Use the Servlet class to create responders for urls and methods.
-    class ServletTemplate
+    class Servlet__
       
       include PluginUtil
       
@@ -27,12 +28,12 @@ module ::RSence
 
       attr_reader :name, :path, :info, :inited
       
-      def register # :nodoc
+      def register
         @plugins.register_bundle( self, @name )
         @inited = true
       end
 
-      ## Extendables
+      ## Extendable
 
       # Return true to match, false to not match. Returns false as default if 
       # not extended.
@@ -40,7 +41,7 @@ module ::RSence
         return false
       end
 
-      # If match, return score (lower is better). Returns 100 by defalt if not 
+      # If match, return score (lower is better). Returns 100 by default if not 
       # extended
       def score
         return 100
