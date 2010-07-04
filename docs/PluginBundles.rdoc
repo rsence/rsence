@@ -63,7 +63,7 @@ These files are optional parts of a bundle, but are supported by the system. Mos
 === Supported by {RSence::Plugins::GUIPlugin__ GUIPlugin} bundles:
 - A {file:JavascriptBundles client_pkgs.yaml file}
   - Defines the packages of any extra javascript bundles and their themes, when contained in the bundle.
-    - The contents of the packages are loaded and built automatically by the built-in {ClientPkg} plugin.
+    - The contents of the packages are loaded and built automatically by the built-in {ClientPkgPlugin +client_pkg+} plugin.
 - A {file:GUITreeYaml gui/main.yaml file}
   - Instead of +main.yaml+, can optionally be named like +simple_plugin.yaml+ if the bundle name is +simple_plugin+
   - Defines structure of the default user interface.
