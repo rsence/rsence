@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-#--
 ##   RSence
  #   Copyright 2010 Riassence Inc.
  #   http://riassence.com/
@@ -7,7 +6,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
+
 
 if ARGV.include?('--help') or ARGV.include?('-h')
   puts %{
@@ -29,7 +28,7 @@ if ARGV.include?('--help') or ARGV.include?('-h')
     #{__FILE__} /web/sites/my_site/rsence/client -d
   
   Further information:
-     http://riassence.org/
+     http://rsence.org/
 
 }
   exit
@@ -52,12 +51,7 @@ config = YAML.load( File.read( File.join( SERVER_PATH, 'conf', 'default_conf.yam
 
 ## Create default local configuratation override file, if it does not exist:
 local_config_file_paths = [
-  File.join(SERVER_PATH,'conf','local_conf.yaml'),
-  File.join( File.split( SERVER_PATH )[0], 'conf', 'local_conf.yaml' ),
-  File.join( Dir.pwd, 'conf', 'local_conf.yaml' ),
-  File.join(SERVER_PATH,'conf','client-build-config.rb'),
-  File.join( File.split( SERVER_PATH )[0], 'conf', 'client-build-config.rb' ),
-  File.join( Dir.pwd, 'conf', 'client-build-config.rb' ),
+  File.join(SERVER_PATH,'conf','local_conf.yaml')
 ]
 if ARGV.include?('--config')
   argv_conf_file = ARGV[ARGV.index('--config')+1]
@@ -117,7 +111,18 @@ local_config_file_paths.each do |local_config_file_path|
 end
 
 
+require 'lib/util/gzstring'
 require 'plugins/client_pkg/lib/client_pkg_build'
+
+module RSence
+  def self.args
+    debug = ARGV.include?('-d')
+    return {
+      :debug => debug,
+      :verbose => debug
+    }
+  end
+end
 
 class JSBuilder < ClientPkgBuild
   def initialize( conf, logger )
@@ -211,6 +216,11 @@ class Logger
 end
 
 conf = config[:client_pkg]
+conf[:src_dirs].unshift( File.join( SERVER_PATH, 'js' ) )
+
+# require 'pp'
+# pp conf.inspect
+
 dst_dir = File.join( SERVER_PATH, 'client' )
 if ARGV.length > 0
   unless ['-d','-auto','--auto','-say','--config','--root-path'].include?( ARGV[0] )
@@ -238,12 +248,14 @@ conf[:compound_packages].each do | pkg_name, js_order |
 end
 
 js_builder = JSBuilder.new( conf, Logger.new )
+# js_builder.setup_dirs
 js_builder.run
 if ARGV.include? '-auto' or ARGV.include? '--auto'
   last_change = Time.now.to_i
   while true
     if js_builder.bundle_changes( last_change )
       last_change = Time.now.to_i
+      js_builder.setup_dirs
       js_builder.run
       # client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
       `say "Autobuild complete!"` if ARGV.include?('-say')
