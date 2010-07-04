@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2010 Riassence Inc.
  #   http://riassence.com/
@@ -6,44 +5,37 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
 
-# --
 # Includes the Signal Communication utility.
 # Used to respond via special PID files in the run directory of the environment
-# ++
 require 'daemon/sigcomm'
 
-# --
-# Creates the RSence module. RSence classes are defined within.
-# ++
+
 module RSence
   
-  # Returns true, if platform fully supports POSIX standard signals.
+  # @private  Returns true, if platform fully supports POSIX standard signals.
   def self.pid_support?
     # true for non-windows
     return (not ['i386-mingw32','x86-mingw32'].include?(RUBY_PLATFORM))
   end
   
-  # ARGVParser is the "user interface" as a command-line argument parser.
-  # Handles every action of the 'rsence' command-line tool.
+  # @private  ARGVParser is the "user interface" as a command-line argument parser.
+  #           It parses the command-line arguments and sets up things accordingly.
   class ARGVParser
     
     # The RSence version string, read from the VERSION file in
     # the root directory of RSence.
     @@version = File.read( File.join( SERVER_PATH, 'VERSION' ) ).strip
     
-    # --
     # Makes various commands available depending on the platform.
     # The status/start/stop/restart/save -commands depend on an operating
     # system that fully implements POSIX standard signals.
     # These are necessary to send signals to the background process.
-    # ++
-    if RSence.pid_support?
+    if not RSence.pid_support?
+      @@cmds = [ :run, :initenv, :version, :help ]
+    else
       @@cmds = [ :run, :status, :start, :stop, :restart, :save,
                  :initenv, :version, :help ]
-    else
-      @@cmds = [ :run, :initenv, :version, :help ]
     end
     
     help_avail_cmds = @@cmds.map{|cmd|cmd.to_s}.join("\n       ")
@@ -531,7 +523,7 @@ module RSence
       end
     end
     
-    # asks y/n and returns boleans,
+    # asks y/n and returns booleans,
     # the default tells if which one is for just enter
     def yesno(default=false)
       if default
@@ -798,27 +790,46 @@ module RSence
   
   end
   
-  # This accessor enables RSence.argv method, which returns the ARGVParser instance
+  # @private  This accessor enables RSence.argv method, which returns the ARGVParser instance
   def self.argv;    @@argv_parser;    end
   
-  # This accessor enables RSence.cmd method, which returns the command the process was started with.
+  # @private  This accessor enables RSence.cmd method, which returns the command the process was started with.
   def self.cmd;     @@argv_parser.cmd;     end
   
-  # This accessor enables RSence.args method, which returns the parsed command-line arguments.
+  # Command line options parsed
+  # @return [Hash] Parsed command-line options:
+  # *Key* (Symbol):: *Value*
+  # +:env_path+:: (String) The directory of the environment.
+  # +:conf_files+:: (Array of Strings) Additional configuration files given with the +--conf+ command-line option. Default is +[]+.
+  # +:debug+:: (true or false) True, if the +-d+ or +--debug+ command-line option was given. Default is false.
+  # +:verbose+:: (true or false) True, if the +-v+ or +--verbose+ command-line option was given. Default is false.
+  # +:log_fg+:: (true or false) True, if the +-f+ or +--log-fg+ command-line option was given. Default is false.
+  # +:trace_js+:: (true or false) True, if the +--trace-js+ command-line option was given. Default is false.
+  # +:trace_delegate+:: (true or false) True, if the +--trace-delegate+ command-line option was given. Default is false.
+  # +:port+:: (String or nil) The TCP port number given with the +--port+ command-line option. Default is nil.
+  # +:addr+:: (String or nil) The TCP bind address given with the +--addr+ command-line option. Default is nil.
+  # +:server+:: (String or nil) The Rack http server handler given with the +--server+ command-line option. Default is nil.
+  # +:reset_ses+:: (true or false) True, if the +-r+ or +--reset-sessions+ command-line option was given. Default is false.
+  # +:autoupdate+:: (true or false) True, if the +-a+ or +--auto-update+ command-line option was given. Default is false.
+  # +:latency+:: (Number) Amount of milliseconds to sleep in each request given with the +--latency+ command-line option. Default is 0.
+  # +:say+:: (true or false) True, if the +-S+ or +--say+ command-line option was given. Default is false.
   def self.args;    @@argv_parser.args;    end
   
-  # This accessor enables RSence.startable? method, which returns true if a start-type command was given.
+  # @private  This accessor enables RSence.startable? method, which returns true if a start-type command was given.
   def self.startable?; @@argv_parser.startable?; end
   
-  # This accessor enables RSence.version method, which returns the RSence version number.
+  # @return [String] The version of RSence
   def self.version; @@argv_parser.version; end
   
-  # This accessor enables RSence.startup method, which starts RSence.
+  # @private  This accessor enables RSence.startup method, which starts RSence.
   def self.startup
     puts "Loading configuration..." if self.args[:verbose]
     # Use the default configuration:
     require 'conf/default'
     @@config = Configuration.new(self.args).config
+    
+    # RSence runtime configuration data
+    # @return [Hash] the active configuration structure as defined by the {file:default_conf default configuration} and overridden by local configuration files.
     def self.config
       @@config
     end
@@ -829,6 +840,7 @@ module RSence
     daemon.daemonize!
   end
   
+  # @private  The ARGVParser instance and its startup
   @@argv_parser = ARGVParser.new
   @@argv_parser.parse( ARGV )
 
