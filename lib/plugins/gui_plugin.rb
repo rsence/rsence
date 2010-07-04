@@ -6,32 +6,31 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module ::RSence
+
+module RSence
   module Plugins
     
-    ## The GUIPlugin extends Plugin by automatically initializing an GUIParser
-    ## instance as @gui
-    ## It makes the include_js method public to enable automatic dependency
-    ## loading based on the dependencies item in the YAML gui declaration.
-    ## It also makes the @path public.
-    ## It inits the gui automatically.
-    ## Extend the gui_params method to define your own params for the gui data.
-    ##
-    ## HValues can be defined inside values.yaml at the root directory of
-    ## plugin. The HValues may be linked directly with methods on the values.yaml
-    ## as well.
-    ##
-    ## == Values.yaml
-    ## :valuename:    # name of the HValue
-    ##  :value: 2.56  # defined value
-    ##  :responders:  # methods responding to the value on ruby code upon change
-    ##    - :method: validate_convert_factor
-    ##
-    ##
-    ##
-    class GUIPluginTemplate < PluginTemplate
+    # The CUIPlugin__ is actually available as +GUIPlugin+ from plugin bundle code using the {RSence::Plugins::GUIPlugin} class mimic method.
+    #
+    # GUIPlugin extends {Plugin__ Plugin} by automatically initializing an {GUIParser} instance as +@gui+.
+    #
+    # Read {Plugin__ Plugin} for usage of the API, {file:ExampleGuiPlugin Example GUIPlugin} for an example of use and {file:PluginBundles Plugin Bundles} for overall information about plugin bundle usage.
+    #
+    # * It implements automatic dependency loading based on the dependencies item in the YAML gui declaration.
+    # * It inits the gui automatically.
+    #
+    # = User Interface -related hooks:
+    # * {#init_ui +#init_ui+} -- Extend to implement logic when the {MainPlugin} plugin has started the client. The {GUIPlugin__ +GUIPlugin+} class extends this method to automatically load and initialize the user interface from a +GUITree+ data structure defined in the +gui/main.yaml+ document in the bundle directory.
+    # * {#gui_params +#gui_params+} -- Extend to define your own params for the gui data.
+    #
+    class GUIPlugin__ < Plugin__
+      
+      # @private Class type identifier for the PluginManager.
+      # @return [:GUIPlugin]
       def self.bundle_type; :GUIPlugin; end
-  
+      
+      
+      # @private Placeholder for actual gui yaml file.
       @@default_yaml_src = <<-END
 type: GUITree
 version: 0.6
@@ -41,8 +40,10 @@ options:
   label: "Dummy Application"
 
       END
-  
-      # Automatically initializes an GUIParser instance as @gui
+      
+      # In addition to {Plugin__#init Plugin#init}, also automatically initializes a {GUIParser} instance as +@gui+
+      #
+      # @return [nil]
       def init
         super
         yaml_src = file_read( "gui/#{@name}.yaml" )
@@ -52,16 +53,36 @@ options:
         @client_pkgs = false
       end
   
-      # Extend this method to return custom params to GUIParser#init.
-      # Called from init_ui.
-      # By default assigns the session values as :values to use for 
-      # valueObjId: ":values.my_value_name" in the YAML GUI file.
+      # Extend this method to return custom params to {GUIParser#init}.
+      #
+      # Called from {#init_ui}.
+      #
+      # By default assigns the session values as :values to use for +bind: :values.my_value_name+ in the YAML GUI file for client-side value bindings.
+      #
+      # @param [Message] msg The message is supplied by the system.
+      # 
+      # @return [Hash] Parameters for {GUIParser#init @gui#init}
+      #
+      # @example To provide extra parameters, do this:
+      #   def gui_params( msg )
+      #     params = super
+      #     params[:extra] = {
+      #       :foo => "Foo",       # use in the GUITree as :extra.foo
+      #       :num => 124334,      # use in the GUITree as :extra.num
+      #       :bar => {
+      #         :barbar => "Bar"   # use in the GUITree as :extra.bar.barbar
+      #       }
+      #       :arr => [1,2,4,8]    # use in the GUITree as :extra.arr
+      #     }
+      #     params[:more] = "More" # use in the GUITree as :more
+      #     return params
+      #   end
+      #
       def gui_params( msg )
-        return {
-          :values => @gui.values( get_ses( msg ) )
-        }
+        { :values => @gui.values( get_ses( msg ) ) }
       end
-  
+      
+      # @private Method that implements +client_pkgs.yaml+ loading
       def install_client_pkgs
         if @client_pkgs
           warn "install_client_pkgs: called with @client_pkgs defined; returning"
@@ -82,7 +103,8 @@ options:
           @plugins.client_pkg.rebuild_client
         end
       end
-  
+      
+      # @private Method that implements +client_pkgs.yaml+ unloading
       def uninstall_client_pkgs
         if not @client_pkgs
           warn "uninstall_client_pkgs: called without @client_pkgs defined"
@@ -101,33 +123,38 @@ options:
         end
         @client_pkgs = false
       end
-  
+      
+      # @private calls install_client_pkgs, if a 'client_pkgs.yaml' file is found
       def open
         super
         install_client_pkgs if File.exist? bundle_path( 'client_pkgs.yaml' )
       end
-  
+      
+      # @private calls uninstall_client_pkgs, if a 'client_pkgs.yaml' file was loaded
       def close
         super
         uninstall_client_pkgs if @client_pkgs
       end
-  
-      # Sends gui specification to the main plugin
+      
+      # @private Sends gui specification to the main plugin
       def spec_ui( msg )
         # TODO
       end
-  
-      # Automatically inits the UI using GUIParser#init.
-      # Passes on the return value of gui_params.
-      def init_ui( msg ); @gui.init( msg, gui_params( msg ) ); end
-  
-      # Automatically kills the UI using GUIParser#kill
-      def kill_ui( msg ); @gui.kill( msg ); end
-  
-      # Makes include_js public to enable calls to it from GUIParser
-      public :include_js, :read_js_once
-  
-      attr_reader :plugins
+      
+      # Automatically inits the UI using {GUIParser#init}
+      #
+      # @param [Message] msg The message is supplied by the system.
+      #
+      # @return [nil]
+      def init_ui( msg )
+        @gui.init( msg, gui_params( msg ) )
+      end
+      
+      # @private Automatically kills the UI using {GUIParser#kill}
+      def kill_ui( msg )
+        @gui.kill( msg )
+      end
+      
     end
   end
 end
