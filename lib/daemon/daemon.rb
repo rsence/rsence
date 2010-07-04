@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,7 +5,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
+
 
 # Use rubygems to load rack
 require 'rubygems'
@@ -14,22 +13,23 @@ require 'rubygems'
 # Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
 require 'transporter/transporter'
 
-## Broker routes requests to the correct handler
+# Broker routes requests to the correct handler
 require 'http/broker'
 
 
-module ::RSence
+module RSence
   
+  # @private  The process id of the launch process (usually the PID of the 'rsence' command)
   @@launch_pid = Process.pid
   
-  # Returns the pid of the process when starting up.
-  # PID is different for the forked child process(es)
+  # @private  Returns the pid of the process when starting up.
+  #   PID is different for the forked child process or processes
   def self.launch_pid
     return @@launch_pid
   end
 
-  # The Controller module handles the damonizing
-  # operations of the process referred to as +daemon+
+  # @private  The Controller module handles the daemonizing
+  #   operations of the process referred to as +daemon+
   module Daemon
   
     # Writes the process id to disk, the pid_fn method of the daemon contains
@@ -254,7 +254,7 @@ module ::RSence
   
   end
 
-  # Simple process control, constructed here and called from Daemon::Controller
+  # @private  Simple process control, constructed here and called from Daemon::Controller
   class HTTPDaemon
   
     # RSence top-level run handler. Almost identical to start.

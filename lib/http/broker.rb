@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,11 +5,6 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
-
-
-
-module RSence
 
 require 'rubygems'
 require 'rack'
@@ -21,12 +15,17 @@ require 'http/response'
 ## Minimally WEBrick -compatible request object
 require 'http/request'
 
-# Broker routes requests to the proper request processing instance.
-# It's the top-level http handler.
+
+module RSence
+
+
+# Broker sets up Rack and routes requests to the proper request processing instance.
 class Broker
   
-  # This method is called from Rack. The env is the Rack environment.
-  def call(env)
+  # This method is called from Rack.
+  # @param [Hash] env is the Rack environment.
+  # @return [Array(Number, Hash, String)] Rack-style response status, header, body
+  def call( env )
     sleep @@ping_sim if @@ping_sim
     unless @@transporter.online?
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Server busy."
@@ -50,10 +49,9 @@ class Broker
   
   # Returns a dynamically created "REST Dispatcher" kind of class that has
   # request and response as instance variables and the rest of the Broker
-  # class as the superclass.
-  # It calls the method according to the http method.
-  # Called from #call
-  # Broker currently implements only get and post methods.
+  # class as the superclass. It calls the method according to the http method. Called from {#call}
+  # Broker currently implements only the {#get} and {#post} methods.
+  # @return [Broker] An instance of Broker with a {Request} instance as +@request+ and a {Response} instance as +@response+
   def dispatcher_class
     @dispatcher ||= Class.new(self.class) do
       attr_accessor :content_type
@@ -64,13 +62,14 @@ class Broker
     end
   end
   
-  # This method is used to create the Rack instance
-  # and set up itself accordingly.
-  # The transporter parameter is an instance of the Transporter class,
-  # which does all the actual delegation.
-  # The conf parameter contains a hash with at least the following:
-  #  :bind_address, :port, :rack_require
-  def self.start( transporter, conf )
+  # Creates the Rack instance and set up itself accordingly.
+  #
+  # @param [Transporter] transporter The single {Transporter} instance initialized by {HTTPDaemon}
+  # @param [Hash{Symbol => String}] conf Rack initialization settings
+  # @option conf [String] :bind_address ('127.0.0.1') The TCP/IP address or mask to bind to.
+  # @option conf [#to_i] :port ('8001') The TCP port to bind to.
+  # @option conf [String] :rack_require ('mongrel') The Rack handler to use.
+  def self.start( transporter, conf = {:bind_address => '127.0.0.1', :port => '8001', :rack_require => 'mongrel'} )
     
     host = conf[:bind_address]
     port = conf[:port]
@@ -115,21 +114,25 @@ class Broker
     
   end
   
+=begin
+  # Extends the receiver with SingletonMethods
   def self.included( receiver )
     receiver.extend( SingletonMethods )
   end
+=end
   
-  # Generic 404 handler
+  
+  # Generic 404 error handler. Just sets up response status, headers, body as a small "Page Not Found" html page
   def not_found
     puts "/404: #{@request.fullpath.inspect}" if RSence.args[:verbose]
     @response.status = 404
     err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
-    @response['content-type'] = 'text/html; charset=UTF-8'
-    @response['content-length'] = err404.length.to_s
+    @response['Content-Type'] = 'text/html; charset=UTF-8'
+    @response['Content-Length'] = err404.length.to_s
     @response.body = err404
   end
   
-  ## Post requests are always xhr requests
+  # Routes POST requests to {Transporter#servlet}
   def post
     
     puts "post: #{@request.fullpath}" if RSence.args[:verbose]
@@ -138,7 +141,7 @@ class Broker
     
   end
   
-  ## Get requests are different, depending on the uri requested
+  # Routes GET requests to {Transporter#servlet}
   def get
     
     puts "get: #{@request.fullpath}" if RSence.args[:verbose]
@@ -147,7 +150,7 @@ class Broker
     
   end
   
-  ### -- Add more http methods here when we have some apps to test with, caldav implementation maybe? ++
+  ### -- Add more http methods here when we have some apps to test with CalDAV implementation maybe? ++
   
 end
 

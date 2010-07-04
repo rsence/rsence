@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2010 Riassence Inc.
  #   http://riassence.com/
@@ -6,12 +5,13 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
 
-# RSence async signal communication handler, uses temporary files for communication.
-# Utilized by ARGVParser and Daemon.
+
 
 module RSence
+  
+  # @private RSence async signal communication handler, uses temporary files for communication.
+  #   Utilized by ARGVParser and Daemon.
   module SIGComm
     def self.delete_signal_response( pid_fn )
       sig_fn = pid_fn+'.response.'+signal

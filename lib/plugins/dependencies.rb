@@ -6,6 +6,7 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
+
 module RSence
   
   # = Description:
@@ -126,7 +127,7 @@ module RSence
     # List of categories
     attr_reader :categories
     
-    # Adds the gategory +name+.
+    # Adds the category +name+.
     def add_category( name )
       @categories.push( name ) unless @categories.include?( name )
     end

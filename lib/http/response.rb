@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,22 +5,23 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
+
 
 
 module RSence
   
-  # Simply adds the + method "operator" to an extended Array.
-  # Used for pushing http body data.
-  class ResponseBody < Array
-    def +(body_data)
-      self.push(body_data)
-    end
-  end
-
   # Classic WEBrick -compatible Response object for Rack.
   # Implements only the methods used by the framework.
   class Response
+    
+    # Adds the + method "operator" to an extended Array.
+    # Used for pushing http body data.
+    class ResponseBody < Array
+      def +(body_data)
+        self.push(body_data)
+      end
+    end
+
     def initialize
       @body = ResponseBody.new(1)
       @body[0] = ''

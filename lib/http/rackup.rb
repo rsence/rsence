@@ -1,4 +1,3 @@
-#--
 ##   RSence
  #   Copyright 2008 Riassence Inc.
  #   http://riassence.com/
@@ -6,7 +5,7 @@
  #   You should have received a copy of the GNU General Public License along
  #   with this software package. If not, contact licensing@riassence.com
  ##
- #++
+
 
 warn "Current RSence rackup Broker implementation does not work."
 warn "Please try again in a future revision."
@@ -47,7 +46,7 @@ module Broker
   @@transporter = Transporter.new
   
   def self.start
-    conf = ::RSence.config[:http_server][:latency]
+    conf = RSence.config[:http_server][:latency]
     if conf == 0
       @@ping_sim = false
     else
