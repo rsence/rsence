@@ -1,0 +1,163 @@
+= Overview
+The data exchange system exists to support bi-directional data synchronization between the browser and the plugin. The values are stored in the session as +HValue+ instances.
+
+Values support Hashes, Arrays, Strings, Numbers, Booleans and logically correct combinations of those. The data is automatically converted between ruby objects (server) and json objects (client). For dates and times, use Numbers as seconds since or before UTC epoch; (1970-01-01 00:00:00.0 equals 0.0) and convert accordingly for the representation intended.
+
+Each instance may be bound to plugin methods that are used as value change notification responders.
+
+When a method is bound to the value, the method is called as an event notification whenever the client has changed the value and synchronizes it to the server. The responders act as validators by default.
+
+Values may be bound in the client to instances of classes that implement the HValueResponder interface, like any derivate of HControl. See the client documentation for instructions about using them.
+
+To define a value responder method, it needs to respond to exactly two parameters: {RSence::Message +msg+} and {RSence::HValue +value+} (in that specific order). The method's return value must be either +true+ or +false+. When the method returns +false+, the change is discarded and the previously server-set value is sent back to the client.
+
+= Defining values
+The simplest and recommended way of defining the values is to define the value configuration file +values.yaml+ at the root level of your plugin bundle. The definition is then copied to each session automatically. Values created using +values.yaml+ files are accessible by their name in each user's session object.
+
+For instance, if a value has been defined as +:myvalue+, it's accessible in code like this:
+  ses = get_ses(msg) # gets the session object of the local plugin
+  my_value = ses[:myvalue] # reference to the value instance
+
+=== Syntax reference of the contents of a +values.yaml+ file:
+
+The name of the value, +:value_name+ in this case. It's a Hash key in the yaml syntax
+  !!!yaml
+   :value_name:
+
+Definitions of the value; all definitions are optional.
+
+The static value definition, a string "Foo" in this case. The default is +0+
+  !!!yaml
+     :value: Foo
+
+A plugin method to call to define the default value dynamically instead of the static value defined in +:value+
+  !!!yaml
+     :value_call:
+
+The name of the plugin where the responder method is found. It Defaults to the plugin where defined
+  !!!yaml
+       :plugin: plugin_name
+
+The name of the responder method. Mandatory item when defining a value call. In this case a method named +method_name+
+  !!!yaml
+       :method: method_name
+
+Optionally, list of parameters for the +:method+ in the order of defined. In this case, three parameters: 1, 'foo' and 3
+  !!!yaml
+       :args:
+         - 1
+         - foo
+         - 3
+
+If +:uses_msg+ is set to false, the {RSence::Message +msg+} won't be passed as the first parameter to the +:method+. It's +true+ by default.
+  !!!yaml
+       :uses_msg: false
+
+Restores the default, when the session is restored (page reload etc); defaults to +true+
+  !!!yaml
+     :restore_default: false
+
+List of value responder methods to bind.
+  !!!yaml
+     :responders:
+
+The name of the plugin and the method to bind. The plugin defaults to the plugin where defined. The responder methods always use the convention (+msg+, +value+) as their parameters.
+  !!!yaml
+       - :plugin: plugin_name
+         :method: method_name
+
+Another responder, this one using the same plugin where defined:
+  !!!yaml
+       - :method: another_method
+
+==== Example 1:
+A value defined using only the defaults by supplying an empty Hash: { value: 0, default restored, no responders or calls }
+  !!!yaml
+   :value_with_defaults: {}
+
+==== Example 2:
+This value defines a Number (123) and doesn't restore the default, when restoring the session.
+  !!!yaml
+   :one_two_three:
+     :value: 123
+     :restore_default: false
+
+==== Example 3:
+This value gets a random string and specifies a responder, that ensures it's unique, if changed in the client. (Such methods aren't predefined).
+  !!!yaml
+   :random_unique_string:
+     :value_call:
+       :method:   get_unique_random_string
+       :uses_msg: false
+     :responders:
+       - :method: ensure_unique_random_string
+
+
+= Using values in code
+
+=== Creating a HValue object in ruby and creates the client representation automatically.
+Sometimes dynamic value allocation is required. In these cases, use {RSence::HValue HValue} directly in the plugin's ruby code (or any library code that gets a +msg+).
+ a_test_value = HValue.new( msg, 'any_json_mappable_data' )
+
+=== A minimal value responder method is defined like this:
+  def my_value_responder( msg, my_value )
+    return true
+  end
+
+=== To access the content of the value, use the {RSence::HValue#data +value.data+} attribute.
+  def int_between_100_and_200( msg, value )
+    data = value.data.to_i
+    return ( data >= 100 and data <= 200 )
+  end
+
+=== To change the content of the value, use the {RSence::HValue#set +value.set+} method.
+  def int_between_100_and_200( msg, value )
+    data = value.data.to_i
+    value.set( msg, 100 ) if data < 100
+    value.set( msg, 200 ) if data > 200
+    return true
+  end
+
+=== Setting a HValue object in ruby.
+Doing the change in ruby sets the client-side accordingly too and causes all client-bound value responders to receive the same data. automatically. The data is synchronized server-client after all server responders have responded to all triggers by the last client-server synchronization, so only the lastly set data of a value is sent to the client.
+  a_test_value.set( msg, 'this_wont_be_on_the_client' )
+  a_test_value.set( msg, ['neither','will','this','be',[true]] )
+  a_test_value.set( msg, { 'and' => 'this', 'also' => 'stays', 'in' => 'the', 'server' => [1,2,3,4] )
+  a_test_value.set( msg, 'this is the last one, this gets through' )
+
+=== Binding a HValue responder in ruby. Causes the client-server synchronization to respond to all the bound methods.
+  class SomeTestPlugin < Plugin
+    def resp_one( msg, value )
+      puts "got data: #{value.data.inspect}"
+      return true
+    end
+    def resp_two( msg, value )
+      revert_to = "foo foo"
+      value.set( msg, revert_to )
+      puts "got the data too, but changed it to: #{value.data.inspect}"
+      return true
+    end
+    def define_responders( msg )
+      ...
+      # the @name is the name of the plugin bundle
+      a_test_value.bind( @name, :resp_one )
+      a_test_value.bind( @name, :resp_two )
+    end
+  end
+
+=== Referring to the value manually in the client, using the server
+This references the value by id in the client scope and binds it to a new instance of the +HTextArea+ component with its own dedicated app instance.
+  msg.reply( "COMM.Values.values[#{a_test_value.value_id.to_json}].bind( HTextArea.nu( [0,0,100,100], HApplication.nu() ) );" )
+
+=== Storing a reference to a variable in the session scope.
+Allows you to retrieve this session-specific object in any scope with access to the same session's +msg+, even in other requests (and server restarts, when a {RSence::SessionStorage SessionStorage} database connection is enabled).
+  get_ses(msg)[:the_test_name] = a_test_value
+
+=== Freeing a HValue responder, won't be used as a responder anymore
+  a_test_value.release( @name, :resp_two )
+
+=== Freeing all responders of a value
+  a_test_value.release_all
+
+=== Destructing a value, releases all bindings on both client and server and destructs the client representation too
+  a_test_value.die!( msg )

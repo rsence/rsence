@@ -1,0 +1,193 @@
+= Example: The "welcome" GUIPlugin bundle
+
+This bundle is installed by default for each new RSence project environment, when created by the +rsence initenv+ command. It displays a simple user interface that contains a congratulatory message of a successful setup. Feel free to experiment with the plugin in your project environment.
+
+=== File / directory structure
+This is just an example, the meaning of gui/
+  !!!plain
+  |-- info.yaml
+  |-- values.yaml
+  |-- text
+  |   `-- welcome.html
+  |-- gui
+  |   `-- welcome.yaml
+  `-- welcome.rb
+
+=== The +info.yaml+ file of the "welcome" bundle
+This file defines the meta-information used by RSence to decide the loading order, dependencies and such. This bundle doesn't have any dependencies, so it's just using the default +depends_on: :system+, which means its loaded and called in order after the built-in plugins of RSence.
+
+The human-readable product name of the bundle
+  !!!yaml
+  title: Welcome message
+
+The human-readable version of the bundle
+  !!!yaml
+  version: 1.0.0
+
+A brief description of the package
+  !!!yaml
+  description: |
+    This is a simple welcome message plugin. It's installed in new project
+    environments, when the rsence initenv in executed.
+    You may safely remove this plugin bundle.
+
+System version requirements. In this case "RSence 2.0.0 or newer"
+  !!!yaml
+  sys_version: '>= 2.0.0'
+
+=== The +values.yaml+ file of the "welcome" bundle
+Only two values are used by the "welcome" plugin bundle. One to signal the server the "Close" button is clicked and the other to signal that the "Don't show again" check box is checked.
+
+The checkbox uses Boolean values and it doesn't need a responder so none is bound. Its default value is false.
+  !!!yaml
+  :dont_show_again:
+    :value: false
+
+The button (and sheet) in the gui are bound to this value, which defaults to 0 and has the +close_button+ method defined as the responder, which called when the value is changed in the client by clicking the "Close" button.
+  !!!yaml
+  :close:
+    :value: 0
+    :responders:
+    - { :method: close_button }
+
+=== The +welcome.rb+ source code file of the "welcome" bundle.
+The code in this file not only define the type and features of the plugin bundle, but also defines a few methods that are triggered.
+
+The class definition itself, just subclass {RSence::Plugins::GUIPlugin__ GUIPlugin}.
+  class WelcomePlugin < GUIPlugin
+  
+The +gui_params+ method is called by the {RSence::Plugins::GUIParser GUIParser} just before processing the GUITree data. In this case, it's extended to provide not only the values (delivered by the superclass), but also a custom entry, the +:text+ hash with the +:welcome+ member, which is the contents of the +welcome.html+ file inside the +text+ directory of the bundle. The params is accessed using dot notation in Symbol form in the GUITree yaml file.
+    def gui_params( msg )
+      params = super
+      params[:text] = {
+        :welcome => file_read('text/welcome.html')
+      }
+      return params
+    end
+
+The +close_button+ method is defined as a responder for the +:close+ value defined in the +values.yaml+. It's called when the "Close" button is clicked in the client. If the other value; +:dont_show_again+, has the data value +true+ ("Don't show again" -checkbox is checked), also calls the +disable_self+ method. Finally returns +true+, because the data doesn't need further validation and is good as-is.
+    def close_button( msg, value )
+      dont_show_again = get_ses(msg)[:dont_show_again]
+      if (value.data == 1) and (dont_show_again.data == true)
+        disable_self
+      end
+      return true
+    end
+
+The +disable_self+ method just disables the "welcome" plugin and tells RSence to unload itself. The "disabled" file means the bundle won't be loaded as long as the file is in place.
+    def disable_self
+      file_write( 'disabled', '' )
+      @plugins.unload_bundle( @name )
+    end
+
+Ends the class block:
+  end
+
+
+
+=== The +gui/welcome.yaml+ file of the "welcome" bundle
+This file has the user interface description encoded in YAML[http://yaml.org/]. It's converted by a {RSence::Plugins::GUIParser GUIParser} instance automatically set up by the {RSence::Plugins::GUIPlugin__ GUIPlugin} class instance, when the RSence web page is loaded (and reloaded) by the user.
+
+By convention, place the type and version of the GUITree specification first. This is used by the system to interpret the contents accordingly.
+  !!!yaml
+  type: GUITree
+  version: 0.6
+
+By convention, place the dependencies next. These are the javascript packages to load by the client before rendering the GUITree.
+  !!!yaml
+  dependencies:
+    - default_theme
+    - controls
+
+Next, the root class of the user interface tree is defined. This is usually an instance of +HApplication+, in this case the +RSence.GUIApp+ is used, because it's a customized extension of +HApplication+ designed for GUITree usage and supports options like +title+ and +priority+ by default.
+  !!!yaml
+  class: RSence.GUIApp
+  options:
+    title: Welcome App
+    priority: 20
+
+To have the +RSence.GUIApp+ instance titled "Welcome App" contain any views, we define the +subviews+ for it:
+  !!!yaml
+  subviews:
+
+The first subview is an instance of the +HSheet+ component, which is a component that self-centers, dims the background and its visibility controlled by its value.
+  !!!yaml
+    - class: HSheet
+
+All components use a +rect+ item to define their geometry, this is usually in form of an Array with at exactly +4+ or +6+ coordinates. In this case, with the offset of +0+ units from the left edge of its parent and +0+ units from the top edge of its parent. It has a size of +600+ units wide and +500+ units tall. Each unit at the default (100%) zoom level is exactly 1 pixel.
+  !!!yaml
+      rect: [ 0, 0, 600, 500 ]
+
+There is also a {RSence::HValue +HValue+} named +close+ defined in the +values.yaml+. This binds the +HSheet+ instance to the value and vice versa.
+  !!!yaml
+      bind: :values.close
+
+We also extend the component to kill its application (the +RSence.GUIApp+ defined above), which in effect destructs all the views defined by this GUITree when the data of the value becomes 1.
+  !!!yaml
+      extend:
+        refreshValue: |
+
+Custom Javascript extensions can be written inline like this. Functions are identified as text blocks that begin with 'function('. Other types are mapped as-is and converted to JSON structures.
+  !!!js
+          function(){
+            this.base();
+            if ( this.value==1 ) {
+              this.app.die();
+            }
+          }
+
+Then, we define the first subview of the +HSheet+ instance as a +HScrollView+, which is a view that has scroll bars. Its +rect+ is defined with stretching content filling entirely the area of its parent (the +HSheet+) except for the +42+ units at the bottom of its parent (the +HSheet+). Its minimum size is defined as +550+ units wide and +300+ units tall. Its options define that it displays horizontal scroll bars if the content doesn't fit and a white background with a black border at the bottom.
+  !!!yaml
+        - class: HScrollView
+          rect: [ 0, 0, 550, 300, 0, 42 ]
+          options:
+            scrollX: false
+            scrollY: auto
+            style:
+              - [ 'background-color', 'white' ]
+              - [ 'border-bottom', '1px solid black' ]
+
+Then, a few few items are defined as its subviews. An HImageView displaying the RSence logo, a +HView+ displaying a link to rsence.org and a +HInlineView+ displaying the contents of the +text/welcome.html+ file.
+  !!!yaml
+            - class: HImageView
+              rect: [ 18, 10, 559, 110 ]
+              options:
+                value: http://rsence.org/rsence_org_logo.gif
+            - class: HView
+              rect: [ null, 95, 310, 25, 35, null ]
+              options:
+                html: |
+                  <i style="font-family:Helvetica,Arial,sans-serif;font-size:16px;">
+                    <a style="color:#28c;font-weight:bold" href="http://rsence.org/">http://www.rsence.org/</a>
+                  </i>
+                style:
+                  - - text-align
+                    - right
+            - class: HInlineView
+              rect: [ 0, 0, null, null, 0, 0 ]
+              options:
+                html: :text.welcome
+                style:
+                  - - font-family
+                    - 'Helvetica, Arial, sans-serif'
+                  - - font-size
+                    - 16px
+                  - - line-height
+                    - 20px
+
+Finally, we define a +HClickValueButton+ (a button with the click event triggering a change of its value to +1+), which is bound to the same value as the +HSheet+, causing the +HSheet+ and the application including all child views to be destructed. The value change is also synchronized to the server-side responder method +close_button+ in the +welcome.rb+ file.
+  !!!yaml
+        - class: HClickValueButton
+          rect: [ null, null, 60, 24, 8, 8 ]
+          bind: :values.close
+          options:
+            label: Close
+
+We also define a +HCheckbox+ with another value bound, the +:dont_show_again+. This causes the plugin to be disabled  when the close button is clicked.
+  !!!yaml
+        - class: HCheckbox
+          rect: [ null, null, 130, 24, 74, 8 ]
+          bind: :values.dont_show_again
+          options:
+            label: Don't show again
+

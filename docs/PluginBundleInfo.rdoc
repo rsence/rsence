@@ -1,0 +1,173 @@
+= Overview
+
+Each {file:PluginBundles plugin bundle} should contain an +info.yaml+ file.
+
+The main purpose of the +info.yaml+ file is to provide meta-information to the {RSence::PluginManager PluginManager} about the bundle.
+
+Using ruby notation, the defaults look like this:
+  @info = {
+    # The human-readable product name of the package
+    :title => bundle_name.to_s.capitalize,
+  
+    # The human-readable version of the package
+    :version => '0.0.0',
+  
+    # A brief description of the package (rdoc formatting supported)
+    :description => 'No Description',
+  
+    # A flag (when false) prevents the plugin from automatically reload when changed.
+    :reloadable => true,
+  
+    # Dependency, by default the system category (built-in plugins).
+    # A nil ( "~" in yaml ) value means no dependencies.
+    :depends_on     => :system,
+  
+    # Optional, name of category. The built-in plugins are :system
+    :category       => nil
+  }
+
+
+Using YAML notation, the same data would looks like this, if the name of the bundle in this example is "example_plugin":
+  !!!yaml
+  :title: Example_plugin
+  :version: 0.0.0
+  :description: 'No Description'
+  :reloadable: true
+  :depends_on: :system
+  :category: nil
+
+When defining your own, not all of the key-value pairs need to be entered, just the ones that are different from the defaults. In this example the +:version+, +:description+ and +:title+ are defined:
+  !!!yaml
+  :title: Example Plugin
+  :version: 1.0.0
+  :description: |
+    This plugin is an example showing how to define the info.yaml file.
+    Besides that, no functionality is defined.
+
+
+== Example 1: A set of plugins with dependency relationship
+
+In this example, we have an user interface bundle named 'myapp' that uses a an user database wrapper 'myapp_users' for a database connection provided by another plugin called 'myapp_db', which defines the category +:myapp_support+, which is a practical way of defining groups of dependencies. One could then add other supporting plugins to do specific tasks, when the requirements of the application grows.
+
+=== Files and directories of the example
+
+The "plugins" directory of a RSence environment containing only the three plugins of this example would look like:
+
+  !!!text
+  plugins/
+  |-- myapp
+  |   |-- gui
+  |   |   `-- main.yaml
+  |   |-- info.yaml
+  |   `-- main.rb
+  |-- myapp_db
+  |   |-- info.yaml
+  |   `-- main.rb
+  `-- myapp_users
+      |-- info.yaml
+      `-- main.rb
+
+=== A plugin bundle named 'myapp_db'
+
+The +info.yaml+ can also used to store settings. In this example, database connection parameters:
+  !!!yaml
+  :title: MyApp DB
+  :version: 0.1.3
+  :description:  This plugin provides connectivity to the FooBase database server.
+  :category: :myapp_support
+  :settings:
+    :host: '10.0.0.172'
+    :port: 12345
+    :database: example_database
+    :username: foobert
+    :password: n0ts0s3cr3t
+    :db_keys:
+      - abc123
+      - foobar
+      - 123456
+
+This information could then be read inside a plugin code like this:
+  
+  require 'foo_orm'
+  
+  # Provides connectivity to the FooBase user database using the FooBasePlugin
+  class FooBasePlugin < Plugin
+    
+    # Opens database connection after plugin is loaded
+    def open
+      @db = FooORM.new( database_connection_string )
+      super
+    end
+    
+    # Closes database connection before plugin is unloaded
+    def close
+      @db.disconnect
+      super
+    end
+    
+    # Returns database connection with very basic data access restriction
+    def db( db_key )
+      return nil unless @info[:settings][:db_keys].include?( db_key )
+      return @db
+    end
+    
+  private
+    
+    # Returns database connection string according to the settings.
+    # @return [String] FooBase connection string.
+    def database_connection_string
+      s = @info[:settings]
+      # Returns "foobase://foobert:n0ts0s3cr3t@10.0.0.172:12345/example_database" when using the default settings
+      "foobase://#{s[:username]}:#{s[:password]}@#{s[:host]}:#{s[:port]}/#{s[:database]}"
+    end
+    
+  end
+
+=== A plugin bundle named 'myapp_users'
+
+Here, the +info.yaml+ document depends on the +:myapp_db+ plugin defined above.
+  !!!yaml
+  :title: MyApp Users
+  :version: 0.0.1
+  :description:  This plugin provides an interface to access user information using FooBasePlugin
+  :depends_on: :myapp_db
+  :category: :myapp_support
+  :settings:
+    :db_key: foobar
+
+Code example:
+  
+  # Provides the user_name method to MyApp
+  class MyAppUsersPlugin < Plugin
+    
+    # Returns the user name that has the id provided by selecting it from the users table.
+    def user_name( user_id )
+      db_key = @info[:settings][:db_key]
+      db = @plugins.myapp_db.db( db_key )
+      unless db
+        warn "Invalid database key: #{db_key.inspect}"
+        return "[Database Error]"
+      end
+      user_info = db[:users].filter(:id => user_id).first
+      return "[Unknown User]" unless user_info
+      return user_info[:user_name]
+    end
+    
+  end
+
+=== A plugin bundle named 'myapp'
+Another plugin depending on the two plugins above may set it as a dependency if its +info.yaml+ is defined like this:
+  !!!yaml
+  :title: MyApp
+  :version: 0.2.0
+  :description: This application does fancy stuff using FooBasePlugin.
+  :depends_on: :myapp_support
+
+Defining the dependency like above ensures the 'foobase' plugin will be available when this code is run:
+  class MyAppPlugin < GUIPlugin
+    def gui_params( msg )
+      params = super
+      params[:greeting] = 'Welcome, ' + @plugins.myapp_users.user_name( msg.user_id )
+    end
+  end
+

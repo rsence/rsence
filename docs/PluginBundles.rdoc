@@ -1,0 +1,96 @@
+
+= Overview
+Plugin bundles are the "building blocks" of RSence applications.
+A bundle is a directory that groups together the software code
+and its related resources.
+
+Plugin bundles are constructed of at least a directory and a ruby
+source file either named "main.rb" or the same name as the
+directory plus + ".rb".
+
+The main ruby file has to contain at least one class extended from one
+of the three types of plugins:
+- {RSence::Plugins::Plugin__ Plugin}, which is the simplest main logic plugin model.
+- {RSence::Plugins::GUIPlugin__ GUIPlugin}, which is an extended model of plugin with built-in user interface support.
+- {RSence::Plugins::Servlet__ Servlet}, which is a "traditional" request/response handler for GET/POST url's.
+
+== Example 1: A very simple plugin bundle structure
+  !!!plain
+  simple_plugin/
+  `-- main.rb
+
+=== Simplest possible contents of the "main.rb" as above
+  class SimplePlugin < Plugin
+  end
+
+A plugin like this just gets registered as a plugin named :simple_plugin when RSence finds it in one of its "plugins" directories. By default, one "plugins" directory is distributed as a part of RSence and contains some core services common to most applications. The other is the "plugins" directory inside your RSence project environment directory.
+
+To make the plugin do something useful, extend its model. To know more about that, just read the documentation about the model classes: {RSence::Plugins::Plugin__ Plugin}, {RSence::Plugins::GUIPlugin__ GUIPlugin}, {RSence::Plugins::Servlet__ Servlet}.
+
+=== Extending the simple plugin to say "Hello" to your web browser's javascript console.
+  class SimplePlugin < Plugin
+    def init_ui( msg )
+      msg.console( "Hello" )
+    end
+  end
+
+== Example 2: {file:ExampleGuiPlugin The "welcome" GUIPlugin bundle}
+This example is rather lengthy, so read it {file:ExampleGuiPlugin here}.
+
+
+= Plugin meta-information files
+
+These files are optional parts of a bundle, but are supported by the system. Most bundles will contain several other files as well, as defined by each bundle's software code.
+
+=== Supported by all bundle types, including {RSence::Plugins::Servlet__ Servlet}:
+- An {file:PluginBundleInfo info.yaml file}
+  - Defines the meta-information about the bundle, like its name, description, version, system requirements, dependencies etc.
+  - Each bundle *should* include an +info.yaml+ file.
+  - Any extra information, like default settings of the plugin itself can be stored here
+
+=== Supported by {RSence::Plugins::Plugin__ Plugin} and {RSence::Plugins::GUIPlugin__ GUIPlugin} bundles:
+- A {file:Values values.yaml file}
+  - Defines the default client-server {RSence::HValue HValue} objects to create for each user session.
+    - Contains what the default data is for each value.
+    - Defines if the data should be reset when the page is reloaded.
+    - Defines if the data should be the return-value of a plugin method.
+  - Binds the values to responder methods.
+    - Defines which plugins to bind
+      - The plugin defaults to the plugin bundle which defined the method
+    - Defines which methods to bind
+      - When the data of the value is changed by the client, the system calls the bound plugin methods to respond to and validate the data.
+
+=== Supported by {RSence::Plugins::GUIPlugin__ GUIPlugin} bundles:
+- A {file:JavascriptBundles client_pkgs.yaml file}
+  - Defines the packages of any extra javascript bundles and their themes, when contained in the bundle.
+    - The contents of the packages are loaded and built automatically by the built-in {ClientPkg} plugin.
+- A {file:GUITreeYaml gui/main.yaml file}
+  - Instead of +main.yaml+, can optionally be named like +simple_plugin.yaml+ if the bundle name is +simple_plugin+
+  - Defines structure of the default user interface.
+  - Defines client-side {RSence::HValue value} bindings
+    - The values used must be defined, like using the {file:Values +values.yaml+} file
+  - May define other mappings, like localized strings and other static data.
+  - The system builds a user interface based on this file automatically when a RSence web page is loaded (and reloaded) by the user.
+
+= Values and data transfer
+The description is rather lengthy, so it's in its own document {file:Values HERE}.
+
+= Messages and sessions
+As a side effect of having the same instances of plugins serve the requests of all sessions, the request/response/session messaging is implemented as messaging objects. These objects contain or delegate all the necessary hooks required by the complete request/response cycle.
+
+The naming convention of the {RSence::Message Message} instance is +msg+ and it's given as the first parameter of methods using it directly.
+
+Use {RSence::Message#session_id +msg.session_id+} to identify the session's serial number and {RSence::Message#user_id +msg.user_id+} to identify the user's identity. Both are Numbers.
+
+Use the {RSence::Message#session +msg.session+} +Hash+ to store any persistent data associated with the user's session, preferably using the name of the plugin or its registered name as the primary key entry in the Hash. To do so automatically, just call the {RSence::Plugins::Plugin__#get_ses +get_ses+} method in your Plugin or GUIPlugin.
+
+The session data is persistent; it's stored in the session database by the main {RSence::SessionStorage SessionStorage} instance automatically, if a database connection string is properly configured.
+
+The +msg+  also provides access to the {RSence::Request +msg.request+} and {RSence::Response +msg.response+} objects directly, but don't mess around with them unless you know exactly what you are doing.
+
+Use the {RSence::PluginManager#method_missing +@plugins+} object to call other plugins, like this:
+  @plugins.plugin_name.method_name( param1, param2 )
+
+To append Javascript source code to be executed in the client, use the {RSence::Message#reply +msg.reply+} method. The {RSence::Message#console +msg.console+} method displays debugging messages in the browser's Javascript console.
+
+
