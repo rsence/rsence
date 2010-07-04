@@ -1,77 +1,76 @@
 
+  # Default string configuration file
 
-# Default string configuration file
+  # System message strings
+  :messages:
 
-# System message strings
-:messages:
-  
-  :transporter:
-    #
-    # If the client fails on javascript, display this:
-    :client_error:
-      :title: 'ClientError'
-      :descr: 'Javascript execution error:'
-      :uri:   '/'
-    #
-    # If the filecache fails, display this:
-    :filecache_error:
-      :title: 'FileCacheError'
-      :descr: 'FileCache failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugins_rescan_error:
-      :title: 'PluginsRescanError'
-      :descr: 'The initialization of a plugin failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :valuemanager_xhr_error:
-      :title: 'ValueSyncError'
-      :descr: 'Data value synchronization failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :valuemanager_validate_error:
-      :title: 'ValueValidationError'
-      :descr: 'The value validation failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :valuemanager_sync_client_error:
-      :title:  'SyncClientError'
-      :descr:  'The value synchronization to the client failed with error:'
-      :uri:    '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugin_delegate_restore_ses_error:
-      :title: 'RestoreSesError'
-      :descr: 'The plugin delegation process for restore_ses failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugin_delegate_init_ses_error:
-      :title: 'InitSesError'
-      :descr: 'The plugin delegation process for init_ses failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins delegation of the cloned_target event fails, display this:
-    :plugin_delegate_cloned_target_error:
-      :title: 'ClonedTargetError'
-      :descr: 'The plugin delegation process for cloned_target failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins delegation of the cloned_source event fails, display this:
-    :plugin_delegate_cloned_source_error:
-      :title: 'ClonedSourceError'
-      :descr: 'The plugin delegation process for cloned_source failed with error:'
-      :uri:   '/'
-    #
-    # If the plugins rescan fails, display this:
-    :plugin_idle_error:
-      :title: 'PluginIdleError'
-      :descr: 'The idle event failed for a plugin with error:'
-      :uri:   '/'
+    :transporter:
+      #
+      # If the client fails on javascript, display this:
+      :client_error:
+        :title: 'ClientError'
+        :descr: 'Javascript execution error:'
+        :uri:   '/'
+      #
+      # If the filecache fails, display this:
+      :filecache_error:
+        :title: 'FileCacheError'
+        :descr: 'FileCache failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins rescan fails, display this:
+      :plugins_rescan_error:
+        :title: 'PluginsRescanError'
+        :descr: 'The initialization of a plugin failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins rescan fails, display this:
+      :valuemanager_xhr_error:
+        :title: 'ValueSyncError'
+        :descr: 'Data value synchronization failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins rescan fails, display this:
+      :valuemanager_validate_error:
+        :title: 'ValueValidationError'
+        :descr: 'The value validation failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins rescan fails, display this:
+      :valuemanager_sync_client_error:
+        :title:  'SyncClientError'
+        :descr:  'The value synchronization to the client failed with error:'
+        :uri:    '/'
+      #
+      # If the plugins rescan fails, display this:
+      :plugin_delegate_restore_ses_error:
+        :title: 'RestoreSesError'
+        :descr: 'The plugin delegation process for restore_ses failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins rescan fails, display this:
+      :plugin_delegate_init_ses_error:
+        :title: 'InitSesError'
+        :descr: 'The plugin delegation process for init_ses failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins delegation of the cloned_target event fails, display this:
+      :plugin_delegate_cloned_target_error:
+        :title: 'ClonedTargetError'
+        :descr: 'The plugin delegation process for cloned_target failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins delegation of the cloned_source event fails, display this:
+      :plugin_delegate_cloned_source_error:
+        :title: 'ClonedSourceError'
+        :descr: 'The plugin delegation process for cloned_source failed with error:'
+        :uri:   '/'
+      #
+      # If the plugins rescan fails, display this:
+      :plugin_idle_error:
+        :title: 'PluginIdleError'
+        :descr: 'The idle event failed for a plugin with error:'
+        :uri:   '/'
 
 
 
