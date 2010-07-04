@@ -1,73 +1,76 @@
 
-= RSence 2.0.0.x.pre                                                       2010-??-??
-
-http://rsence.org/
+= RSence-2.0.0[http://rsence.org/]
 
 == Introduction
 
-RSence is a RIA framework designed for responsive GUI applications on the web.
+RSence is a RIA framework designed for responsive GUI applications on the web; it's implemented as a hybrid Ruby - Javascript system. The server is written in Ruby and C. Applications are installed as plugin bundles. The GUI framework is written in Javascript; it doesn't strictly require the server, but has extensive transport support with automatic data synchronization with the server. User interfaces are usually described in structured view trees represented by YAML data structures, which are automatically converted for rendering in the client. 
 
-RSence is a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies.
+Javascript knowledge is required only when creating custom client-driven functionality; basic understanding of the YAML GUITree structures is enough in most cases. Likewise, no Ruby knowledge is needed if you want to create stand-alone Javascript applitations. Javascript component themes are easily created with just basic web designer skills. Data API's are easy to link no matter what language is used to create them. Skills in your organization are easily combined for various parts of larger applications.
 
-RSence includes a server for backend tasks and client suppert as well as a Javascript GUI framework to provide responsive user interfaces.
-
-The purpose of the server is to provide a highly optimized yet easy to use Ruby framework for writing applications containing all their assets needed as self-contained plugins bundles. The bundles enable easy distribution and maintenance of RSence projects.
-
-RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and some of them are easily integrated into RSence.
+RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and RSence is easily integrated with them in various ways.
 
 
-== Installation (pre-release):
+== Installing
+Just run this command in the shell, if you have ruby installed. Otherwise, read the {file:INSTALL Install Guide} for full installation instructions.
+ gem install rsence
 
- gem install rsence --pre
 
-== Setting up a project
+== Initializing a new project
 
- rsence initenv /path/of/project
+The +initenv+ command will cretate a directory called `env_dir` in this example. It asks a few questions about the environment. Use a path and project name that matches your purposes.
+ rsence initenv /home/me/rsence_projects/env_dir
 
-== Project anatomy:
 
-The expected structure of a project environment (where 'project_directory'
-is the directory of your project) is:
+== Project environment structure
 
-  [dir]   project_directory   :: The directory of your project.
-    [dir]   conf              :: The directory of config files.
-      [file]  config.yaml     :: The config file to load by default.
-    [dir]   var               :: Directory containing various runtime files.
-      [dir]  run              :: Directory containing PID files.
-      [dir]  log              :: Directory containing log files.
-      [dir]  db               :: Directory containing database files.
-    [dir]   plugins           :: Directory containing installed plugins.
+==== The basic structure of a project environment (where `env_dir` is the directory of your project) is:
 
-The 'config.yaml' file contains patches specific to your project.
+*dir* :: +env_dir/+ :: The environment directory of your project.
+*file* :: +env_dir/conf/config.yaml+ :: The configuration file to load by default. It extends the {file:default_conf default configuration}.
+*dir* :: +env_dir/run/+ :: This default directory for runtime files, like the PID file of the running rsence instance.
+*dir* :: +env_dir/log/+ :: The default directory for log files. +rsence.stderr+ contains error output of the RSence server daemon and installed plugins, including warnings. +rsence.stdout+ contains the standard output of the RSence server daemon and installed plugins.
+*dir* :: +env_dir/db/+ :: The default directory for database files. +ses.db+ is the standard SQLite session database, if enabled.
+*dir* :: +env_dir/plugins/+ :: The default directory for installed plugin bundles. A newly initialized environment includes the +welcome+ plugin. Feel free to remove it.
+*file* :: +env_dir/VERSION+ :: The version of RSence used to initialize the environment. Reserved for future upgrade usage.
+*file* :: +env_dir/README+ :: A README file template. Describes what the `env_dir` is about. Edit it to match your project.
 
+=== Configuration file loading order
 The configuration files are loaded and applied in this order:
-  1:  [rsence_install_path]/conf/default_conf.yaml
-  2:  [rsence_install_path]/conf/local_conf.yaml
-  3:  /etc/rsence/config.yaml
-  4:  ~/.rsence/config.yaml
-  5:  [project_directory]/conf/config.yaml
-  6:  Any files given using --conf parameters, in order of occurrence.
- 
-The plugins directory contains the plugins installed in the project.
+1.  *rsence_gem_path*/conf/default_conf.yaml
+2.  *rsence_gem_path*/conf/local_conf.yaml
+3.  /etc/rsence/config.yaml
+4.  ~/.rsence/config.yaml
+5.  *env_dir*/conf/config.yaml
+6.  Any files given using +--conf+ arguments, in order of occurrence.
+
+Use the additional configuration files to match system- or user-specific configurations that are common for all projects.
 
 == Running a project
 
-Each command-line tool command takes a number of options, the path defaults to the current working directory.
+Each command-line tool command takes a number of options, the +env_dir+ argument defaults to the current working directory, otherwise specify the relative or full path to your project environment.
 
-=== Starting RSence in foreground
-  rsence run /path/of/project
+==== Some common options are:
++-a+:: Automatic updates. RSence reloads automatically changed plugin bundles and client libraries.
++-f+:: Doesn't redirect the standard output into a log file. Useful for development when combined with the +run+ command.
++-d+:: Debug mode. Like +-a+ but much more verbose and doesn't obfuscate client data.
+
+=== Running RSence in foreground
+  rsence run [options] [env_dir]
 
 === Starting the RSence daemon
-  rsence start /path/of/project
+  rsence start [options] [env_dir]
 
 === Stopping the RSence daemon
-  rsence stop /path/of/project
+  rsence stop [options] [env_dir]
 
 === Restarting the RSence daemon
-  rsence restart /path/of/project
+  rsence restart [options] [env_dir]
 
 === Checking if project is running
-  rsence status /path/of/project
+  rsence status [options] [env_dir]
+
+=== Example:
+  rsence run -af /home/me/projects/hello_world
 
 == RSence command-line tool help
 
@@ -77,19 +80,19 @@ Each command-line tool command takes a number of options, the path defaults to t
 === Getting detailed help of a command
   rsence help <command>
 
-Example:
+=== Example:
 
   rsence help run
 
 
-For more detailed installation and usage instructions, read the INSTALL.rdoc document.
+For more detailed installation and usage instructions, read the {file:INSTALL Install Guide} document.
 
-=== Licensing:
-* Free: *GPL*
-* Alternative licensing queries for commercial interests are available via http://riassence.com/ and sales@riassence.com
+=== Licensing and commercial support options
+* {file:LICENSE.txt *GPL*} version 3 by default.
+* Riassence[http://riassence.com/] Inc. provides commercial support, custom licensing arrangements and various other services.
 
-=== Community support:
-* Web: http://rsence.org/
-* IRC chat: #rsence on the IRCNet and FreeNode networks
+=== Community support
+* http://rsence.org
+* IRC channel +#rsence+ on the IRCNet and FreeNode networks
 
 
