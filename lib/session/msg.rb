@@ -6,96 +6,101 @@
  #   with this software package. If not, contact licensing@riassence.com
  ##
 
-module RSence
-  require 'util/gzstring'
 
-  ## Due to the single instance architecture of +Plugin+, instances of Message 
-  ## class are used for communication between sessions and +Plugin+ instance. 
-  ## The +Message+ instance contains session and request-response related 
-  ## mappings and utility methods. 
-  ##
-  ## The Message object is initialized as 'msg' in SessionManager.
-  ## It's passed around the system as the user/session -object namespace,
-  ## much like 'self' is passed around in python methods.
-  ## 
-  ## Using the msg object saves considerate amounts of CPU cycles and memory,
-  ## because it allows single instances of any classes that handle user data.
-  ## 
-  ## == HValue Initialization Example
-  ## +HValue+ is closely related to +Message+ as instances of +HValue+ are
-  ## used to send data between sessions and the server. This is a small
-  ## code snippet about how to initialize several HValues as the session
-  ## is initialized. 
-  ## 
-  ## def init_ses( msg )
-  ##   msg.session[:session_name] = {    
-  ##     :hvalue1     => HValue.new( msg, @firstvalue ),
-  ##     :hvalue2     => HValue.new( msg, @secondvalue ),
-  ##     :hvalue3     => HValue.new( msg, @thirdvalue )
-  ##   }
-  ## end
-  ## 
+require 'util/gzstring'
+
+
+module RSence
+
+  # A Message instance is used as a `messenger class` while processing client-server requests. It's initialized by the system and the convention guideline for its instance is +msg+, pass it on wherever msg might be needed.
+  # In most cases, the use of +msg+ is to just pass the same +msg+ onward from a method to another.
+  # 
+  # @example Logs a message in the client javascript console.
+  #  msg.console "#{Time.new.to_s} -- Testing.."
+  #
+  # @example Executes a custom Javascript command in the client.
+  #  msg.reply "alert('Hello!');"
+  #
+  # @example Invalidates the session.
+  #  msg.expire_session
+  #
+  # @example Creating a new {HValue}. Usage like this in any extended {Plugins::Plugin__ Plugin} or {Plugins::GUIPlugin__ GUIPlugin} class. It's recommended to use the +values.yaml+ file to create any initial values.
+  #  def create_example_value( msg )
+  #    ses = get_ses(msg)
+  #    default_data = "Some text"
+  #    if ses.has_key?( :example_value )
+  #      # Resets the default data, causes it to update in the client too on the next sync.
+  #      ses[:example_value].set( msg, default_data )
+  #    else
+  #      # Creates a new value with default data
+  #      ses[:example_value] = HValue.new( msg, default_data )
+  #    end
+  #  end
+  # 
   class Message
     
-    # Session data placeholder, assigned by SessionManager.
+    # @private Session data placeholder, assigned by SessionManager.
     attr_accessor :session 
     
-    # New session flag, check it in your code to decide
-    # what to do, when a new session is encountered.
-    # In plugins, this usually means that some Values
-    # need to be created and bound or possibly that a
-    # user_id mapping needs to be done.
+    # Flag for a new session's first request.
+    # Check it in your code to decide what to do, when a new session is encountered.
+    # In systems that require authentication, this may be used as a trigger to display a login/register dialog.
+    # @return [Boolean] This flag is true on the first request of a newly created session.
     attr_accessor :new_session
     
-    # Old session first xhr flag, check it in your code
-    # to decide what to do, when a restored session is
-    # encountered. The old Values are automatically present,
-    # so you should at least not re-create or re-bind them.
+    # Flag for a restored session's first request.
+    # Check it in your code to decide what to do, when a restored session is encountered.
+    # @return [Boolean] This flag is true on the first request of a newly restored session.
     attr_accessor :restored_session
     
-    # Contains the source ses on the first request after this
-    # session was cloned from another session.
+    # Contains the source ses on the first request after the active session was cloned from another session.
+    # @return [false, Hash]
     attr_accessor :cloned_source 
     
-    # Contains the target sessions packed in an array on
-    # the first request after another session was cloned
-    # from this session.
+    # Contains the target sessions packed in an Array on the first request after another session was cloned from the active session.
+    # @return [false, Array<Hash>]
     attr_accessor :cloned_targets
     
-    # The session is not valid by default, it's set
-    # by SessionManager, if everything seems ok.
+    # @private The session is not valid by default, it's set by SessionManager, if everything seems ok.
     attr_accessor :ses_valid 
     
-    # The http request object.
+    # The HTTP Request object of the active request.
+    # @return [Request]
     attr_accessor :request 
     
-    # The http response object.
+    # The HTTP Response object of the active request.
+    # @return [Response]
     attr_accessor :response
     
-    # Response output.
+    # @private Response output buffer, Array of Strings; sent to client using to_json
     attr_accessor :buffer
     
+    # @private Value response output buffer, Array value setters; sent to client using to_json before {:buffer} is sent
     attr_accessor :value_buffer
     
-    # The request success flag.
+    # @private The request success flag; Boolean.
     attr_accessor :response_success
     
-    # Reference to Transporter
+    # Reference to {Transporter}
+    # @return [Transporter]
     attr_accessor :transporter
     
-    # Reference to ValueManager
+    # Reference to {ValueManager}
+    # @return [ValueManager]
     attr_accessor :valuemanager
     
-    # Reference to SessionManager
+    # Reference to {SessionManager}
+    # @return [SessionManager]
     attr_accessor :sessions
     
-    # Reference to PluginManager
+    # Reference to the main {PluginManager}
+    # @return [PluginManager]
     attr_accessor :plugins
     
-    # Message is initialized with a valid +Request+ and +Response+ objects. 
+    # @private Message is initialized with a valid {Transporter}, {Request} and {Response} objects along with options. 
     def initialize( transporter, request, response, options )
     
-      @config = ::RSence.config
+      @config = RSence.config
     
       @request  = request
       @response_success = false
@@ -127,11 +132,11 @@ module RSence
         @do_gzip = false
       else
         @response.content_type = 'text/javascript; charset=utf-8'
-        @response['cache-control'] = 'no-cache'
+        @response['Cache-Control'] = 'no-cache'
       
         # gnu-zipped responses:
         if @request.header['accept-encoding'] and @request.header['accept-encoding'].include?('gzip') and not @config[:no_gzip]
-          @response['content-encoding'] = 'gzip'
+          @response['Content-Encoding'] = 'gzip'
           @do_gzip = true
         else
           @do_gzip = false
@@ -141,58 +146,69 @@ module RSence
       @response_sent = false
     end
   
-    # Returns true for Internet Explorer 6.0
+    # @private Returns true for Internet Explorer 6.0
+    # @return [Boolean]
     def ie6;
       (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
     end
   
-    # Expire the session.
+    # Invalidates the active session.
+    # @return [nil]
     def expire_session
       @sessions.expire_session( @ses_id )
     end
   
-    # Define the session key.
+    # @private Define the session key.
     def ses_key=(ses_key)
       @ses_key = ses_key
     end
-  
-    # Getter for session key.
+    
+    # @private Getter for session key.
+    # @return [String] The active session key.
     def ses_key
       @ses_key
     end
   
-    # Returns the user id
+    # Getter for the user id
+    # @return [Number, String] The current user id. Returns 0 by default.
     def user_id
       @session[:user_id]
     end
   
     # Setter for the user id
+    # @param [Number, String] user_id The user id to set. Use in login situations to store the user id.
+    # @return [nil]
     def user_id=(user_id)
       @session[:user_id] = user_id
     end
     
     # Returns the session id
+    # @return [Number]
     def ses_id
       @session[:ses_id]
     end
+    alias session_id ses_id
     
-    # Sets the session id
+    # @private Sets the session id
+    # @param [Number] ses_id The session id to set.
+    # @return [nil]
     def ses_id=(ses_id)
       @session[:ses_id] = ses_id
     end
     
-    # Sets the error message
+    # @private Sets the error message
+    # @param [String] error_js The error script to send instead of the regular buffers.
     def error_msg( error_js )
       @error_js = error_js
       # response_done
     end
     
-    # Converts the buffer to JSON
+    # @private Converts the buffer to JSON
     def buf_json(buffer)
       buffer.to_json
     end
   
-    # Called to flush buffer.
+    # @private Called to flush buffer.
     def response_done
       return if @response_sent
       if not @response_success
@@ -229,8 +245,9 @@ module RSence
       @response_sent = true
     end
   
-    # Sends data to the client, usually
-    # javascript, but is valid for any data.
+    # Sends data to the client, usually javascript, but is valid for any data that responds to #to_json
+    # @param [String<js>, #to_json] data Javascript source or object that responds to #to_json
+    # @param [Boolean] dont_squeeze When true, doesn't `squeeze` the contents (jsmin + jscompress)
     def reply(data,dont_squeeze=false)
       data.strip!
       data = @plugins[:client_pkg].squeeze( data ) unless dont_squeeze
@@ -238,54 +255,72 @@ module RSence
       @buffer.push( data )
     end
   
-    # For value manager; insert changed values BEFORE other js.
+    # @private For value manager; insert changed values BEFORE other js.
     def reply_value(data)
       puts data if @config[:trace]
       @value_buffer.push( data )
     end
   
-    # Sends data to the client's console.
+    # Sends data to the client's javascript console.
+    # @param [#to_json] data Any data that can be presented in the Javascript console.
     def console(data)
       reply( "console.log(#{data.to_json});" )
     end
-  
-    # Serves an image object +img_obj+ by returning its disposable URL. The 
-    # second optional parameter +img_format+ defaults to 'PNG' and defines 
-    # the format of served picture.
+    
+    # Serves an image object and returns its disposable URL.
+    # Calls the default `ticket` plugin.
+    # @param [#to_blob] img_obj RMagick image object.
+    # @param [String] img_format The format img_obj#to_blob is encoded as.
+    # @return [String] The URL where the image can be accessed from using a GET request.
+    # @deprecated
+    # Use {TicketPlugin#serve_img ticket.serve_img} directly instead.
     def serve_img( img_obj, img_format='PNG' )
-      call(:ticket,:serve_img, self, img_obj, img_format )
+      call( :ticket, :serve_img, self, img_obj, img_format )
     end
-  
-    # Sends any binary to be served, returns a disposable uri. First parameter
-    # defines the file data, second optional defines content type and defaults
-    # to 'text/plain' and third, also optional defines the filename which 
-    # defaults to 'untitled.txt'.
+    
+    # Binary data to be served once as a downloadable file attachment, returns a disposable URL.
+    # Calls the default `ticket` plugin.
+    # @param [String] file_data The binary data to serve
+    # @param [String] content_type The MIME type to serve the data as
+    # @param [String] filename The name of the downloadable file.
+    # @return [String] The URL where the downloadable file can be accessed from using a GET request.
+    # @deprecated
+    # Use {TicketPlugin#serve_file ticket.serve_file} directly instead.
     def serve_file( file_data, content_type='text/plain', filename='untitled.txt' )
-      call(:ticket,:serve_file, self, file_data, content_type, filename )
+      call( :ticket, :serve_file, self, file_data, content_type, filename )
     end
-  
-    # Sends any binary to be served, returns a static uri.
-    #
-    # IMPORTANT: PLEASE call +release_rsrc+ manually, when you
-    # don't need the resource anymore! Otherwise TicketServe will
-    # keep on chugging more memory every time you serve something.
-    #
-    # HINT: Usually, it's a better idea to use serve_img or
-    # serve_file instead.
+    
+    # Sends any binary to be served indefinitely, returns a unique, random, static URL.
+    # Calls the default `ticket` plugin.
+    # IMPORTANT: PLEASE call {#release_rsrc} manually, when the resource is no longer needed to free the memory occupied!
+    # HINT: In most cases, it's a better idea to use serve_img or serve_file to expire the resource automatically.
+    # @see {#release_rsrc}
+    # @param [String] rsrc_data The binary data of the resource to serve.
+    # @param [String] content_type The MIME type to serve the data as
+    # @return [String] The URL where the resource can be accessed from using a GET request.
+    # @deprecated
+    # Use {TicketPlugin#serve_rsrc ticket.serve_rsrc} directly instead.
     def serve_rsrc( rsrc_data, content_type='text/plain' )
       call(:ticket,:serve_rsrc,self, rsrc_data, content_type )
     end
   
-    # Removes the uri served, you HAVE TO call this manually when
-    # you are done serving something! Takes the uri as its only parameter.
+    # Removes the URL served, you *must* call this manually when after a served resource is no longer needed!
+    # Calls the default `ticket` plugin.
+    # @see {#serve_rsrc}
+    # @param [String] uri The URL to delete; the return value of {#serve_rsrc}
+    # @deprecated
+    # Use {TicketPlugin#serve_rsrc ticket.serve_rsrc} directly instead.
     def release_rsrc( uri )
-      run(:ticket,:del_rsrc, uri[3..-1] )
+      call(:ticket,:del_rsrc, uri[3..-1] )
     end
     alias unserve_rsrc release_rsrc
   
-    # Calls registered plugin +plugin+ method +plugin_method+ with any +args+
-    def call( plugin_name, plug_method, *args )
-      @plugins.call( plugin_name, plug_method, *args)
+    # Calls a method of a registered plugin with optional arguments.
+    # @param [Symbol] plugin_name The plugin to call
+    # @param [Symbol] plugin_method The method of the plugin to call
+    # @param *args Any arguments to pass to the `plugin_method`
+    def call( plugin_name, plugin_method, *args )
+      @plugins.call( plugin_name, plugin_method, *args)
     end
     alias run call
   end
