@@ -7,6 +7,7 @@
  ##
 
 
+
 module RSence
 
   require 'rubygems'
@@ -240,7 +241,7 @@ module RSence
     def stop_client_with_message( msg,
                                   title = 'Unknown Issue',
                                   descr = 'No issue description given.',
-                                  uri = ::RSence.config[:index_html][:respond_address] )
+                                  uri = RSence.config[:index_html][:respond_address] )
       msg.error_msg( [
         "jsLoader.load('default_theme');",
         "jsLoader.load('controls');",
@@ -261,7 +262,7 @@ module RSence
       # checks, if a cookie named 'ses_key' is found
       if cookie_raw.has_key?('ses_key')
       
-        # gets just the data itself (discards comment, domain, exipiry etc)
+        # gets just the data itself (discards comment, domain, expiration etc)
         cookie_key = cookie_raw['ses_key'].split(';')[0]
       
       end
@@ -383,11 +384,11 @@ module RSence
       ses_cookie_max_age = @config[:timeout_secs]
     
       ## Only match the handshaking address of rsence,
-      ## prevents unneccessary cookie-juggling in xhr's
+      ## prevents unnecessary cookie-juggling in xhr's
       if @config[:trust_cookies]
         ses_cookie_path    = '/'
       else
-        ses_cookie_path    = ::RSence.config[:broker_urls][:hello]
+        ses_cookie_path    = RSence.config[:broker_urls][:hello]
       end
     
       ## Formats the cookie to string
