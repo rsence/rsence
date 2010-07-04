@@ -7,6 +7,7 @@
  ##
 
 
+
 module RSence
 
   require 'rubygems'
@@ -19,7 +20,7 @@ module RSence
   # the superclass for SessionManager that does all the boring
   # housekeeping duties.
   # 
-  # Splitted of as a separate file to reduce the complexity
+  # Spliced of as a separate file to reduce the complexity
   # of SessionManager.
   class SessionStorage
     attr_accessor :db
@@ -44,9 +45,9 @@ module RSence
       }
     
       ## Disposable keys (new ses_key each request)
-      @config = ::RSence.config[:session_conf]
+      @config = RSence.config[:session_conf]
     
-      @db_uri = ::RSence.config[:database][:ses_db]
+      @db_uri = RSence.config[:database][:ses_db]
     
       if db_test
         @db_avail = true
