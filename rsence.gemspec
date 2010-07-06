@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   prerelease  = s.version.to_s.end_with?('.pre')
   normalized_version = s.version.to_s.to_f
   s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of the RSence framework."
-  s.has_rdoc  = true
+  s.has_rdoc  = 'yard'
   s.description = <<-END
 RSence is a RIA framework designed for responsive GUI applications on the web.
 
@@ -26,7 +26,7 @@ END
   s.files = FileList[
     'bin/rsence',
     'lib/**/*',
-    'setup/**/*',
+    'setup/welcome/*',
     'conf/default_conf.yaml',
     'conf/default_strings.yaml',
     'conf/rsence_command_strings.yaml',
@@ -37,10 +37,12 @@ END
     'js/**/*',
     'README.rdoc',
     'INSTALL.rdoc',
-    'LICENSE',
+    'LICENSE.txt',
+    'docs/*.rdoc',
     'VERSION'
   ].to_a
   s.files.reject! { |fn| fn.start_with? "." }
+  s.files.push '.yardopts'
   s.executables = [ 'rsence' ]
   s.default_executable = 'rsence'
   s.required_ruby_version = '>= 1.8.7'
