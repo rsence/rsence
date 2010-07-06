@@ -292,9 +292,7 @@
     :compound_packages:
       allinone:
         - core
-        - iefix
         - default_theme
-        - bright_theme
         - controls
         - lists
         - datetime
