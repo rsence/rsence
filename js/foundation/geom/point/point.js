@@ -196,8 +196,7 @@ HPoint = HClass.extend({
   equals: function(_point) {
     return ( this.x === _point.x && this.y === _point.y );
   }
-
-
+  
 });
 
 

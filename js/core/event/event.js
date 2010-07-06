@@ -6,6 +6,7 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+
 /*** = Description
   ** Abstracts the DOM Event differences between browsers.
 ***/
@@ -138,6 +139,7 @@ Event = {
   KEY_END: 35,
   KEY_PAGEUP: 33,
   KEY_PAGEDOWN: 34
+  
 };
 
 // Activates the garbage collector of Internet Explorer 
@@ -145,3 +147,4 @@ Event = {
 if (BROWSER_TYPE.ie) {
   Event.observe(window, "unload", Event.unloadCache, false);
 }
+

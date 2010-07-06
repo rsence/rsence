@@ -367,7 +367,7 @@ HNumericTextControl = HTextControl.extend({
     }
     return _value;
   }
-
+  
 });
 
 

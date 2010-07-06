@@ -106,7 +106,7 @@ HMarkupView = HClass.extend({
     }
     return this;
   }
-
+  
 },{
   _variable_match: new RegExp(/#\{([^\}]*)\}/),
   _assignment_match: new RegExp(/\$\{([^\}]*)\}/)

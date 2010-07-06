@@ -6,53 +6,53 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
+/** The default path where to look for themes.
+ **/
+var//RSence.Foundation
+HDefaultThemePath = '/H/themes';
+
+
+/** Name of the default theme.
+ **/
+var//RSence.Foundation
+HDefaultThemeName = 'default';
+
+/** List of themes without component-specific theme files.
+ **/
+var//RSence.Foundation
+HNoComponentCSS = [];
+
+/** List of themes without a common.css file to load.
+ **/
+var//RSence.Foundation
+HNoCommonCSS = [];
+
+/** List of IE6-savvy themes.
+ **/
+var//RSence.Foundation
+HThemeHasIE6GifsInsteadOfPng = ['default'];
+
 /*** = Description
   ** A single instance class.
   ** The theme manager knows the name of the currently loaded theme and handles
   ** the loading of theme specific markup snippets and style declarations.
   **
   ** = Instance variables
-  ** +themePath+::        Relative path to the components' top directory. 
+  ** +themePath+::        Default root path of the themes path, should contain
+  **                      at least the default theme.
   ** +currentTheme+::     The name of the theme currently in use. Initially the
   **                      default unnamed theme is used.
-  ** +usesComponentDir+:: True when the components are separated in their own
-  **                      directories, usually when using the 
-  **                      source/development version. False when the components
-  **                      are all in same directory. This is the case in the 
-  **                      release build.
   **
   ***/
-
-var//RSence.Foundation
-HDefaultThemePath = '/H/themes';
-var//RSence.Foundation
-HDefaultThemeName = 'default';
-var//RSence.Foundation
-HNoComponentCSS = [];
-var//RSence.Foundation
-HNoCommonCSS = [];
-var//RSence.Foundation
-HThemeHasIE6GifsInsteadOfPng = ['default'];
-
 var//RSence.Foundation
 HThemeManager = HClass.extend({
   
   constructor: null,
   
   init: function(){
-    
-    // Default root path of the themes path, should contain at least the default theme.
     this.themePath = HDefaultThemePath;
-    
-    // Hash map of loaded template markup (html templates), by theme.
-    // componentName is used as the secondary key.
     this._tmplCache = {};
-    
-    // Hash map of loaded css templates, by theme.
-    // componentName is used as the secondary key.
     this._cssCache = {};
-    
-    // The currently selected default theme name.
     this.currentTheme = HDefaultThemeName;
   },
   

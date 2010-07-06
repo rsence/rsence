@@ -15,7 +15,9 @@
   ***/
 var//RSence.Controls
 HButton = HControl.extend({
+  
   componentName: 'button',
+  
 /** = Description
   * setStyle function for button.
   *
@@ -24,7 +26,9 @@ HButton = HControl.extend({
     ELEM.setStyle(this.markupElemIds.label,_name,_value);
     return this;
   }
+  
 });
+
 
 /*** = Description
   ** Simple HButton extension, operates on its value so it's useful
@@ -60,6 +64,7 @@ HClickButton = HButton.extend({
       this.setValue(1);
     }
   }
+  
 });
 
 var//RSence.Controls

@@ -74,5 +74,6 @@ HValueResponder = HClass.extend({
     }
     return this;
   }
-
+  
 });
+

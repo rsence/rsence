@@ -1241,7 +1241,7 @@ ELEM = {
         if(_gotoOpera){
           location.href = 'http://www.opera.com/download/get.pl?sub=++++&id=32792&location=270&nothanks=yes';
         }
-        // Can't do anything wightout proper JS support.
+        // Can't do anything without proper JS support.
         return;
       }
     }
@@ -1251,9 +1251,6 @@ ELEM = {
       ELEM._flushDomLoadQueue();
     }
     _this._timer = setTimeout( function(){ if(!ELEM._flushDomLoadQueueBusy){ELEM.flushLoop(ELEM._minDelay); }}, ELEM._minDelay );
-    // _this._flushDomLoadQueueTimer = setInterval( function(){ELEM._flushDomLoadQueue();}, 10 );
-    
-    // alert(_this._minDelay);
   },
   
   _flushDomLoadQueue: function(){
@@ -1337,34 +1334,33 @@ ELEM = {
       // the event will trigger on ie, so we don't have to keep on polling:
       return;
     }
-
+    
     // Safari / KHTML readyness detection:
     else if (BROWSER_TYPE.safari && document.readyState === 'complete'){
     // (/loaded|complete/.test(document.readyState))) {
     // (/loaded|complete/.test(document.readyState))) {
       _this._domLoadStatus = true;
     }
-
+    
     // Works for Mozilla:
     else if (document.body) {
       _this._domLoadStatus = true;
     }
-
+    
     if (_this._domLoadStatus) {
       clearTimeout(_this._domLoadTimer);
       if(BROWSER_TYPE.symbian){
-        // document.body.innerHTML produces beyond-wtf "fastinnerhtml!", maybe they "fixed" an unit test?
-        // see: http://trac.webkit.org/browser/S60/trunk/WebCore/khtml/html/html_elementimpl.cpp#L750
-        //document.body.innerHTML += '';
+        /*
+          document.body.innerHTML produces beyond-wtf "fastinnerhtml!", maybe they "fixed" an unit test?
+            see: http://trac.webkit.org/browser/S60/trunk/WebCore/khtml/html/html_elementimpl.cpp#L750
+        */
         
-        // This check ensures we are use actually testing the beyond buggy S60 Web Browser.
-        // Better versions are handled like regular safari/webkit/chrome/khtml
+        /* This check ensures we are use actually testing the beyond buggy S60 Web Browser.
+           Better versions are handled like regular safari/webkit/chrome/khtml
+        */
         BROWSER_TYPE.symbian = document.body.innerHTML === "fastinnerhtml!";
-        // var _timer = setTimeout(_this._init, 5000);
       }
-      // else {
-        _this._init();
-      // }
+      _this._init();
     }
     else {
       _this._domLoadTimer = setTimeout('ELEM._domWaiter()', _this.ELEMTickerInterval * 10);

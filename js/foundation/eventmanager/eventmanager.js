@@ -871,7 +871,7 @@ EVENT = {
     _this.status[_this.ctrlKeyDown] = e.ctrlKey;
     _this.status[_this.shiftKeyDown] = e.shiftKey;
   }
-
+  
 };
 
 /** Starts the only instance

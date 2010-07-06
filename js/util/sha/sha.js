@@ -234,17 +234,16 @@ SHA = HClass.extend({
   test: function(){
     return this.hexSHA1("abc") === "a9993e364706816aba3e25717850c26c9cd0d89d";
   },
-
-  /*
-   * Calculate the SHA-1 of an array of big-endian words, and a bit length
-   */
+  
+/** Calculate the SHA-1 of an array of big-endian words, and a bit length
+  **/
   _coreSHA1: function(_x, _len){
-    var _this=this;
-    /* append padding */
+    
     _x[_len >> 5] |= 0x80 << (24 - _len % 32);
     _x[((_len + 64 >> 9) << 4) + 15] = _len;
-
-    var _w = new Array(80),
+    
+    var _this=this,
+        _w = new Array(80),
         _a =  1732584193,
         _b = -271733879,
         _c = -1732584194,
@@ -252,14 +251,14 @@ SHA = HClass.extend({
         _e = -1009589776,
         i, _olda, _oldb, _oldc, _oldd, _olde,
         j, _t;
-
+    
     for(i = 0; i < _x.length; i += 16){
       _olda = _a;
       _oldb = _b;
       _oldc = _c;
       _oldd = _d;
       _olde = _e;
-
+      
       for(j = 0; j < 80; j++){
         if(j < 16){
           _w[j] = _x[i + j];
@@ -275,21 +274,19 @@ SHA = HClass.extend({
         _b = _a;
         _a = _t;
       }
-
+      
       _a = _this._safeAdd(_a, _olda);
       _b = _this._safeAdd(_b, _oldb);
       _c = _this._safeAdd(_c, _oldc);
       _d = _this._safeAdd(_d, _oldd);
       _e = _this._safeAdd(_e, _olde);
     }
-    return [_a, _b, _c, _d, _e];
-
+    return [ _a, _b, _c, _d, _e ];
   },
-
-  /*
-   * Perform the appropriate triplet combination function for the current
-   * iteration
-   */
+  
+/** Perform the appropriate triplet combination function for the current
+  * iteration
+  **/
   _sha1FT: function(_t, _b, _c, _d) {
     if(_t < 20){
       return (_b & _c) | ((~_b) & _d);
@@ -302,15 +299,14 @@ SHA = HClass.extend({
     }
     return _b ^ _c ^ _d;
   },
-
-  /*
-   * Determine the appropriate additive constant for the current iteration
-   */
+  
+/** Determine the appropriate additive constant for the current iteration
+  **/
   _sha1KT: function(_t){
     return (_t < 20) ?  1518500249 : (_t < 40) ?  1859775393 :
            (_t < 60) ? -1894007588 : -899497514;
   },
-
+  
   /*
    * Calculate the HMAC-SHA1 of a key and some data
    */
@@ -331,7 +327,7 @@ SHA = HClass.extend({
     _hash = _this._coreSHA1(_ipad.concat(_this._str2binb(_data)), 512 + _data.length * _this._chrsz);
     return _this._coreSHA1(_opad.concat(_hash), 512 + 160);
   },
-
+  
   /*
    * Add integers, wrapping at 2^32. This uses 16-bit operations internally
    * to work around bugs in some JS interpreters.
@@ -341,7 +337,7 @@ SHA = HClass.extend({
         _msw = (_x >> 16) + (_y >> 16) + (_lsw >> 16);
     return (_msw << 16) | (_lsw & 0xFFFF);
   },
-
+  
   /*
    * Bitwise rotate a 32-bit number to the left.
    */
@@ -364,7 +360,7 @@ SHA = HClass.extend({
     }
     return _bin;
   },
-
+  
   /*
    * Convert an array of big-endian words to a string
    */
@@ -380,7 +376,7 @@ SHA = HClass.extend({
     }
     return _str;
   },
-
+  
   /*
    * Convert an array of big-endian words to a hex string.
    */
@@ -396,7 +392,7 @@ SHA = HClass.extend({
     }
     return _str;
   },
-
+  
   /*
    * Convert an array of big-endian words to a base-64 string
    */
