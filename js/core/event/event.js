@@ -48,7 +48,7 @@ Event = {
   **/
   isLeftClick: function(e) {
     // IE: left 1, middle 4, right 2
-    if (BROWSER_TYPE.ie || BROWSER_TYPE.safari) {
+    if (BROWSER_TYPE.ie) {
       return (e.button === 1);
     }
     else {
