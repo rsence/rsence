@@ -231,9 +231,21 @@ EVENT = {
         _this.textEnterCtrls.push(_ctrl.viewId);
       }
     }
+    else {
+      var _textEnterIndex = _this.textEnterCtrls.indexOf(_ctrl.viewId);
+      if (_textEnterIndex !== -1) {
+        _this.textEnterCtrls.splice(_textEnterIndex,1);
+      }
+    }
     if (_focusOptions.resize) {
       if (_this.resizeListeners.indexOf(_ctrl.viewId) === -1) {
         _this.resizeListeners.push(_ctrl.viewId);
+      }
+    }
+    else {
+      var _resizeIndex = _this.resizeListeners.indexOf(_ctrl.viewId);
+      if (_resizeIndex !== -1) {
+        _this.resizeListeners.splice(_resizeIndex,1);
       }
     }
     Event.observe(_elem, 'mouseover', _this._mouseOver);
