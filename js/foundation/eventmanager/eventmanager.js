@@ -62,8 +62,14 @@ EVENT = {
   * +EVENT.status[ EVENT.shiftKeyDown ]+::  The boolean status of the Shift
   *                                         modifier key being held down.
   *
+  * +EVENT.status[ EVENT.metaKeyDown ]+::    The boolean status of the Meta
+  *                                          modifier key being held down.
+  *
+  * +EVENT.status[ EVENT.cmdKeyDown ]+::     The boolean status of any of the system-specific
+  *                                          Command, Menu or Start modifier keys being held down.
+  *
   **/
-  status: [false, false, 0, 0, [], false, false, false],
+  status: [false, false, 0, 0, [], false, false, false, false, false],
   
 /** The index in the status array for the left mouse button.
   **/
@@ -88,18 +94,26 @@ EVENT = {
   **/
   keysDown: 4,
 
-/** The index in the status orray for the state of the Alt modifier key.
+/** The index in the status array for the state of the Alt modifier key.
   **/
   altKeyDown: 5,
 
-/** The index in the status orray for the state of the Ctrl modifier key.
+/** The index in the status array for the state of the Ctrl modifier key.
   **/
   ctrlKeyDown: 6,
 
-/** The index in the status orray for the state of the Shift modifier key.
+/** The index in the status array for the state of the Shift modifier key.
   **/
   shiftKeyDown: 7,
 
+/** The index in the status array for the state of the Meta modifier key.
+  **/
+  metaKeyDown: 8,
+
+/** The index in the status array for the state of the Command modifier key.
+  **/
+  cmdKeyDown: 9,
+  
 /** A flag to disable, if your applications don't need drop events.
   * Setting this to false when not needed improves overall performance,
   * because the drop events need constant calculation of the mouse cursor
@@ -793,6 +807,9 @@ EVENT = {
     var _this = EVENT,
         _theKeyCode = e.keyCode;
     _this._modifiers(e);
+    if(!_this.status[_this.cmdKeyDown] && _this._detectCmdKey(e.keyCode)){
+      _this.status[_this.cmdKeyDown] = true;
+    }
     if (_this.activeControl && _this.focusOptions[_this.activeControl.elemId].keyDown === true) {
       Event.stop(e);
       // Workaround for msie rapid fire keydown
@@ -833,6 +850,9 @@ EVENT = {
       if (_ctrl.textEnter) {
         _ctrl.textEnter();
       }
+    }
+    if(_this.status[_this.cmdKeyDown] && _this._detectCmdKey(e.keyCode)){
+      _this.status[_this.cmdKeyDown] = false;
     }
     // Remove the key from the realtime array, inserted in keyDown
     _keyCodeIndex = _this.status[_this.keysDown].indexOf(_theKeyCode);
@@ -879,7 +899,7 @@ EVENT = {
       }
     }
   },
-
+  
   /* Alternative right button detection, wrapper for the mouseDown method */
   contextMenu: function(e) {
     EVENT.mouseDown(e, false);
@@ -888,13 +908,28 @@ EVENT = {
       EVENT.status[EVENT.button2] = false;
     }
   },
-
+  
+  _cmdKeys: [
+    224, // Mozilla Left or Right Command Key
+    219, // Opera Left Windows Key
+    220, // Opera Right Windows Key
+    0,   // Opera Menu Key or Linux Gecko: any Windows Key
+    17,  // Opera
+    91,  // Others (Left Start Key or Left Command Key)
+    92,  // Others (Right Start Key)
+    93   // Others (Menu Key or Right Command Key)
+  ],
+  _detectCmdKey: function( _keyCode ) {
+    return (EVENT._cmdKeys.indexOf(_keyCode) !== -1);
+  },
+  
   /* Handle the event modifiers. */
   _modifiers: function(e) {
     var _this = EVENT;
     _this.status[_this.altKeyDown] = e.altKey;
     _this.status[_this.ctrlKeyDown] = e.ctrlKey;
     _this.status[_this.shiftKeyDown] = e.shiftKey;
+    _this.status[_this.metaKeyDown] = e.metaKey;
   }
   
 };
