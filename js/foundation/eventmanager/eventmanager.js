@@ -536,12 +536,12 @@ EVENT = {
   * +_ctrl+::   An object that uses the HControl API, becomes new drag target.
   *
   **/
-  startDragging: function(_ctrl) {
+  startDragging: function(_ctrl, _isLeftButton) {
     var _this = EVENT;
     _this.dragItems = [_ctrl.elemId];
     _this.focus(_ctrl);
     _this.changeActiveControl(_ctrl);
-    _ctrl.startDrag(_this.status[_this.crsrX], _this.status[_this.crsrY]);
+    _ctrl.startDrag( _this.status[_this.crsrX], _this.status[_this.crsrY], _isLeftButton );
   },
 
 /** Mid-level mouse button press manager.
@@ -600,7 +600,7 @@ EVENT = {
     // Call the mouseDown and startDrag events after the active control change has been handled.
     for (i = 0; i !== _startDragElementIds.length; i++) {
       _this.dragItems.push(_startDragElementIds[i]);
-      _this.focusOptions[_startDragElementIds[i]].ctrl.startDrag(x, y);
+      _this.focusOptions[_startDragElementIds[i]].ctrl.startDrag(x, y, _isLeftButton);
       _didStartDrag = true;
     }
 
@@ -740,7 +740,7 @@ EVENT = {
     for (; i !== _this.dragItems.length; i++) {
       _elemId = _this.dragItems[i];
       _ctrl = _this.focusOptions[_elemId].ctrl;
-      _ctrl.endDrag(x, y);
+      _ctrl.endDrag(x, y,_isLeftButton);
       _didEndDrag = true;
       // If the mouse slipped off the dragged item before the mouse button was released, blur the item manually
       if (_this.enableDroppableChecks) {
@@ -885,6 +885,10 @@ EVENT = {
   }
   
 };
+
+var//RSence.Foundation
+EventManager = EVENT;
+
 
 /** Starts the only instance
   */
