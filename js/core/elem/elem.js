@@ -1369,6 +1369,9 @@ ELEM = {
 };
 ELEM._constructor();
 
+var//RSence.Foundation
+ElementManager = ELEM;
+
 var//RSence.Core
 LOAD = ELEM._domLoader;
 
