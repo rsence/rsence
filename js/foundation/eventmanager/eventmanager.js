@@ -37,12 +37,12 @@ EVENT = {
   *
   * = Indexes
   * +EVENT.status[ EVENT.button1 ]+::  The state of the left mouse button.
-  *                                    0 when not pressed
-  *                                    1 when pressed.
+  *                                    false when not pressed
+  *                                    true when pressed.
   *
   * +EVENT.status[ EVENT.button2 ]+::  The state of the right mouse button.
-  *                                    0 when not pressed
-  *                                    1 when pressed.
+  *                                    false when not pressed
+  *                                    true when pressed.
   *
   * +EVENT.status[ EVENT.crsrX ]+::    The x-coordinate of the mouse cursor.
   *
@@ -684,6 +684,12 @@ EVENT = {
       }
     }
     //if(_this.hovered.length!==0){Event.stop(e);}
+    if(_isLeftButton){
+      _this.status[_this.button1] = false;
+    }
+    else {
+      _this.status[_this.button2] = false;
+    }
     return true;
   },
 
@@ -734,8 +740,6 @@ EVENT = {
         _ctrl,
         i = 0;
     _this._modifiers(e);
-    _this.status[_this.button1] = false;
-    _this.status[_this.button2] = false;
     // Send endDrag for the currently dragged items even when they don't have focus, and clear the drag item array.
     for (; i !== _this.dragItems.length; i++) {
       _elemId = _this.dragItems[i];
@@ -769,6 +773,12 @@ EVENT = {
           _this.focusOptions[i].ctrl.mouseUp(x, y, _isLeftButton);
         }
       }
+    }
+    if(_isLeftButton){
+      _this.status[_this.button1] = false;
+    }
+    else {
+      _this.status[_this.button2] = false;
     }
     return true;
   },
@@ -874,6 +884,9 @@ EVENT = {
   contextMenu: function(e) {
     EVENT.mouseDown(e, false);
     Event.stop(e);
+    if(Event.isLeftClick(e)){
+      EVENT.status[EVENT.button2] = false;
+    }
   },
 
   /* Handle the event modifiers. */
