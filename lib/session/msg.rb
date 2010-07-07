@@ -155,7 +155,7 @@ module RSence
     # Invalidates the active session.
     # @return [nil]
     def expire_session
-      @sessions.expire_session( @ses_id )
+      @sessions.expire_session( @session[:ses_id] ) if @session
     end
   
     # @private Define the session key.

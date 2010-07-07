@@ -23,12 +23,12 @@ class MainPlugin < Plugin
     super
     @conf  = ::RSence.config[:index_html]
     @bconf = ::RSence.config[:broker_urls]
+    @goodbye_uri = File.join(@bconf[:hello],'goodbye')
   end
   
   # @private Internal structures, matches the "hello/goodbye" session termination request
   def match( uri, request_type )
-    if request_type == :post and
-       uri == File.join(@bconf[:hello],'goodbye')
+    if request_type == :post and uri == @goodbye_uri
       return true
     end
     return false
@@ -39,9 +39,7 @@ class MainPlugin < Plugin
   
   # @private Internal structures, handler for the "hello/goodbye" session termination request
   def post( req, res, ses )
-    msg = @plugins.sessions.init_msg( req, res, { :cookies => true } )
-    msg.expire_session()
-    msg.response_done
+    @plugins.sessions.expire_ses_by_req( req, res )
   end
   
   # @private url_responder gets called whenever the
@@ -69,11 +67,11 @@ class MainPlugin < Plugin
       # server-side session and reloads the page
       if virtual_uri == '/sign_out'
         resp_addr = @conf[:respond_address]
+        msg.expire_session()
         msg.reply( [
           'COMM.Transporter.stop=true;',
           "location.href=#{resp_addr.to_json};"
         ].join('') )
-        msg.expire_session()
       end
       
     else

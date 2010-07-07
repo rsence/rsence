@@ -89,6 +89,7 @@ class Broker
         sleep 0.2
       end
       puts "..#{host}:#{port} responds!" if ::RSence.args[:debug]
+      puts "RSence is online on the address http://#{host}:#{port}#{::RSence.config[:base_url]}"
       @@transporter.online = true
     end
     
@@ -96,8 +97,8 @@ class Broker
     
     # Loads the selected web-server (default is 'mongrel')
     rack_require = conf[:rack_require]
-    puts conf.inspect
-    puts "rack require: #{rack_require.inspect}" if RSence.args[:debug]
+    puts conf.inspect if RSence.args[:debug]
+    
     require rack_require
     
     # Selects the handler for Rack
@@ -113,14 +114,6 @@ class Broker
     handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
     
   end
-  
-=begin
-  # Extends the receiver with SingletonMethods
-  def self.included( receiver )
-    receiver.extend( SingletonMethods )
-  end
-=end
-  
   
   # Generic 404 error handler. Just sets up response status, headers, body as a small "Page Not Found" html page
   def not_found

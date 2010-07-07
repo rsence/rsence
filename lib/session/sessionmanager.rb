@@ -405,21 +405,60 @@ module RSence
       ### Sets the set-cookie header
       msg.response['Set-Cookie'] = ses_cookie_arr.join('; ')
     end
-  
+    
+    def expire_ses_by_req( req, res )
+      
+      cookie_raw = req.cookies
+      
+      # checks, if a cookie named 'ses_key' is found
+      if cookie_raw.has_key?('ses_key')
+        
+        # gets just the data itself (discards comment, domain, expiration etc)
+        cookie_key = cookie_raw['ses_key'].split(';')[0]
+        
+      end
+      
+      # if a cookie key is found (non-false), checks if it's valid
+      if cookie_key
+        
+        # checks for validity by looking the key up in @session_cookie_keys
+        cookie_key_exist = @session_cookie_keys.has_key?( cookie_key )
+        
+        # sets the cookie key to false, if it doesn't exist
+        cookie_key = false unless cookie_key_exist
+        
+      end
+      
+      # at this point, the cookie key seems valid:
+      if cookie_key and cookie_key_exist
+        
+        # get the session identifier
+        ses_id = @session_cookie_keys[ cookie_key ]
+        
+        # Expire the session
+        expire_session( ses_id )
+        
+        return true
+        
+      end
+      
+      return false
+    end
+    
     ### Creates a message and checks the session
     def init_msg( request, response, options = { :cookies => false, :servlet => false } )
-    
+      
       cookies = options[:cookies]
-    
+      
       if options.has_key?(:query)
         query = options[:query]
       else
         query = request.query
       end
-    
+      
       ## Perform old-session cleanup on all xhr:s
       expire_sessions
-    
+      
       ## The 'ses_id' request query key is required.
       ## The client defaults to '0', which means the
       ## client needs to be initialized.
@@ -427,7 +466,7 @@ module RSence
       if not query.has_key?( 'ses_key' )
         return Message.new( @transporter, request, response, options )
       else
-      
+        
         ## get the ses_key from the request query:
         ses_key = query[ 'ses_key' ]
         # puts "ses key: #{ses_key}"
@@ -437,13 +476,13 @@ module RSence
         ## request/response/user/session -related
         ## data is needed.
         msg = Message.new( @transporter, request, response, options )
-      
+        
         ## The client tells that its ses_key is '0',
         ## until the server tells it otherwise.
         (req_num, ses_seed) = ses_key.split(':.o.:')
-      
-        if req_num == '0'
         
+        if req_num == '0'
+          
           # If Broker encounters a '/hello' request, it
           # sets cookies to true.
           #
@@ -457,24 +496,24 @@ module RSence
             init_ses( msg, ses_seed )
             ses_status = true
           end
-      
+          
         # for non-'0' ses_keys:
         else
-        
+          
           ## Validate the session key
           ses_status = check_ses( msg, ses_seed )[0]
-        
+          
           ## Renew the cookie even when the request is a "x" (not "hello")
           if @config[:session_cookies] and ses_status
             renew_cookie( msg, msg.session[:cookie_key] )
           end
         
         end # /ses_key
-      
+        
         ## msg.ses_valid is false by default, meaning
         ## it's not valid or hasn't been initialized.
         msg.ses_valid = ses_status
-      
+        
         return msg
       end # /ses_key
     end # /init_msg

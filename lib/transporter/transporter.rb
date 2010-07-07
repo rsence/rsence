@@ -82,7 +82,9 @@ module RSence
       broker_urls = RSence.config[:broker_urls]
       uri = request.fullpath
     
-      if request_type == :post
+      if @plugins.match_servlet( request_type, request, response, {} )
+        return true
+      elsif request_type == :post
         ## /x handles xhr without cookies
         if uri == broker_urls[:x] and @sessions.accept_requests
           xhr( request, response, { :cookies => true, :servlet => false } )
@@ -91,14 +93,9 @@ module RSence
         elsif uri == broker_urls[:hello] and @sessions.accept_requests
           xhr( request, response, { :cookies => true, :servlet => false } )
           return true
-        else
-          session = {}
-          return @plugins.match_servlet( request_type, request, response, session )
         end
-      else
-        session = {}
-        return @plugins.match_servlet( request_type, request, response, session )
       end
+      return false
     end
   
     # wrapper for the session manager stop client functionality
