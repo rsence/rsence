@@ -205,25 +205,21 @@ HWindow = HDynControl.extend({
   * been clicked
   **/
   windowCollapse: function(){
-    var _minRect = HRect.nu(
-      this.rect.leftTop,
-      this.rect.leftTop.subtract(
-        0-this.options.minSize[0],
-        0-this.options.minSize[1]
-      )
-    );
-    _minRect.setHeight(26);
-    if(this.rect.equals(_minRect)){
-      if(this.prevRect !== undefined && !this.prevRect.equals(_minRect)){
-        this.animateTo( HRect.nu( this.prevRect ) );
-      }
-      else {
-        this.windowZoom();
-      }
+    if(this.options.collapseUsing){
+      this.options.collapseUsing( this );
     }
     else {
-      this.prevRect = HRect.nu(_minRect);
-      this.animateTo( _minRect );
+      var _minRect = HRect.nu(
+        this.rect.leftTop,
+        this.rect.leftTop.subtract(
+          0-this.options.minSize[0],
+          0-this.options.minSize[1]
+        )
+      );
+      if(!this.rect.equals(_minRect)){
+        this.prevRect = HRect.nu(_minRect);
+        this.animateTo( _minRect );
+      }
     }
   },
   
@@ -246,8 +242,8 @@ HWindow = HDynControl.extend({
       _view = HSystem.views[_views[i]];
       _size = ELEM.getVisibleSize(_view.elemId);
       _pos  = ELEM.getVisiblePosition(_view.elemId);
-      _right = _size[0]+_pos[0];
-      _bottom = _size[1]+_pos[1];
+      _right = _size[0]+_pos[0]-this.pageX();
+      _bottom = _size[1]+_pos[1]-this.pageY();
       if(_right > _fitsRect.width){
         _fitsRect.setWidth(_right);
       }
@@ -267,7 +263,12 @@ HWindow = HDynControl.extend({
     else if(_fitsRect.height < this.options.minSize[1]){
       _fitsRect.setHeight( this.options.minSize[1] );
     }
-    if(this.rect.equals(_fitsRect)){
+    if (!_fitsRect.equals(_maxRect) && (EVENT.status[ EVENT.button2 ] || EVENT.status[ EVENT.altKeyDown ]) ){
+      this.animateTo( _maxRect );
+      this.prevRect = HRect.nu( this.rect );
+      this.animateTo( _maxRect );
+    }
+    else if(this.rect.equals(_fitsRect)){
       if(this.prevRect !== undefined && !this.prevRect.equals(_fitsRect)){
         this.animateTo( HRect.nu(this.prevRect) );
       }
