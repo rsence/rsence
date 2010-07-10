@@ -602,7 +602,7 @@ EVENT = {
         if ((_this.focusOptions[i].draggable === true) && _this.dragItems.indexOf(i) === -1) {
           _startDragElementIds.push(i);
         }
-        else if (_this.focusOptions[i].mouseDown === true) {
+        if (_this.focusOptions[i].mouseDown === true) {
           _mouseDownElementIds.push(i);
         }
       }
