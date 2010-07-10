@@ -87,7 +87,7 @@ ReloadApp = HApplication.extend({
         _alertY      = _halfHeight - 150;
     if(_alertX<10){_alertX = 10;}
     if(_alertY<10){_alertY = 10;}
-    HSheet.extend({
+    _this._alertSheet = HSheet.extend({
       drawSubviews: function(){
         var _this = this,
             _elemId = _this.markupElemIds['subview'],
@@ -145,8 +145,8 @@ ReloadApp = HApplication.extend({
 /** Re-focuses the window.
   **/
   onIdle: function(){
-    if(this['_alertWindow']){
-      HSystem.windowFocus(this._alertWindow);
+    if(this['_alertSheet']){
+      this._alertSheet.bringToFront();
     }
   }
 });
