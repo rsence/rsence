@@ -636,7 +636,7 @@ EVENT = {
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
     if (this.enableDroppableChecks) {
-      if ((_stopEvent === 0) && (_this.hovered.length !== 0) && (_newActiveControl && (_newActiveControl.textElemId === false))) {
+      if ((_stopEvent === 0) && (_this.hovered.length !== 0) && _newActiveControl) {
         Event.stop(e);
       }
     }
@@ -660,16 +660,21 @@ EVENT = {
         // these arrays and the events are sent after the active control status has
         // been changed.
         _clickElementIds = [];
-        _this._modifiers(e);
+    _this._modifiers(e);
     if (_isLeftButton === undefined) {
       _isLeftButton = Event.isLeftClick(e);
     }
-    if (_isLeftButton) {
-      _this.status[_this.button1] = true;
+    if (BROWSER_TYPE.ie) {
+      _isLeftButton = true; // IE only supports click on left button
     }
-    else {
-      _this.status[_this.button2] = true;
+    // Prevent right-click event from triggering click.
+    // Only firefox seems to fire the click-event with the
+    // right mouse button, so this prevents it from happening
+    // in the name of uniform behavior.
+    if(!_isLeftButton){
+      return true;
     }
+    _this.status[_this.button1] = true;
     for (; i !== _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         // Set the active control to the currently focused item.
@@ -693,17 +698,12 @@ EVENT = {
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
     if (_this.enableDroppableChecks) {
-      if ((_stopEvent === 0) && (_this.hovered.length !== 0) && (_newActiveControl && (_newActiveControl.textElemId === false))) {
+      if ((_stopEvent === 0) && (_this.hovered.length !== 0) && _newActiveControl) {
         Event.stop(e);
       }
     }
     //if(_this.hovered.length!==0){Event.stop(e);}
-    if(_isLeftButton){
-      _this.status[_this.button1] = false;
-    }
-    else {
-      _this.status[_this.button2] = false;
-    }
+    _this.status[_this.button1] = false;
     return true;
   },
 
@@ -902,11 +902,18 @@ EVENT = {
   
   /* Alternative right button detection, wrapper for the mouseDown method */
   contextMenu: function(e) {
-    EVENT.mouseDown(e, false);
+    // EVENT.mouseDown(e, false);
     Event.stop(e);
-    if(Event.isLeftClick(e)){
-      EVENT.status[EVENT.button2] = false;
-    }
+    
+    /***
+    
+    IMPLEMENT SEPARATE CONTEXT-MENU EVENT HANDLING HERE
+    
+    ***/
+    
+    // if(Event.isLeftClick(e)){
+    //   EVENT.status[EVENT.button2] = false;
+    // }
   },
   
   _cmdKeys: [
