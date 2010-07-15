@@ -492,7 +492,7 @@ class ClientPkgBuild
     @no_obfuscation = config[:no_obfuscation]
     @no_whitespace_removal = config[:no_whitespace_removal]
     @js_inc = config[:js_inc]
-    @debug = (not RSence.args[:debug])
+    @debug = RSence.args[:debug]
     @quiet = (not RSence.args[:verbose])
   end
   
