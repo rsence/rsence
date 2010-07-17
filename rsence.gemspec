@@ -26,7 +26,7 @@ END
   s.files = FileList[
     'bin/rsence',
     'lib/**/*',
-    'setup/welcome/*',
+    'setup/welcome/**/*',
     'conf/default_conf.yaml',
     'conf/default_strings.yaml',
     'conf/rsence_command_strings.yaml',
