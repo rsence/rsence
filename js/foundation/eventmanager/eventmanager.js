@@ -266,7 +266,7 @@ EVENT = {
     _this._updateHoverItems();
     var _hoverIndex = _this.hovered.indexOf(_ctrl.elemId);
     if(_hoverIndex!==-1){
-      _this.focus(_ctrl);
+      _this.changeActiveControl(_ctrl);
     }
   },
   
@@ -302,6 +302,7 @@ EVENT = {
     }
     if (_elem !== undefined) {
       Event.stopObserving(_elem, 'mouseover', _this._mouseOver);
+      Event.stopObserving(_elem, 'mouseout', _this._mouseOut);
     }
   },
 
