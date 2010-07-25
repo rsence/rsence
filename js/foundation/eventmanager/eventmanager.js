@@ -263,6 +263,11 @@ EVENT = {
       }
     }
     Event.observe(_elem, 'mouseover', _this._mouseOver);
+    _this._updateHoverItems();
+    var _hoverIndex = _this.hovered.indexOf(_ctrl.elemId);
+    if(_hoverIndex!==-1){
+      _this.focus(_ctrl);
+    }
   },
   
 /** Unregisters the  _ctrl object event listeners
