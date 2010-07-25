@@ -135,7 +135,7 @@ module RSence
     
       # loop through un-validated values and validate them
       check_ids = session_values[:check]
-      check_ids.each do |check_id|
+      check_ids.clone.each do |check_id|
         session_values[:by_id][check_id].tell( msg )
       end
     
