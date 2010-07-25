@@ -145,19 +145,26 @@ module RSence
     
       # If the session is valid, continue:
       if msg.ses_valid and response_success
-      
+        
         # If cookies are true, it means the url base needs to
         # be changed from /hello to /x to prevent further cookie juggling.
         if options[:cookies] and not options[:servlet]
-          msg.reply("COMM.Transporter.url=#{RSence.config[:broker_urls][:x].to_json};")
+          conf_sync_url = RSence.config[:broker_urls][:x]
+        else
+          conf_sync_url = RSence.config[:broker_urls][:hello]
         end
-      
+        if msg.request.path != conf_sync_url
+          msg.reply("COMM.Transporter.url=#{conf_sync_url.to_json};")
+        end
+        
         # Appends a 'new session.' message for new sessions in RSence.args[:verbose]:
-        puts "new session." if msg.new_session and RSence.args[:verbose]
-        puts "restored session." if msg.restored_session and RSence.args[:verbose]
-        puts "clone source." if msg.cloned_targets and RSence.args[:verbose]
-        puts "clone target." if msg.cloned_source and RSence.args[:verbose]
-      
+        if RSence.args[:verbose]
+          puts "new session." if msg.new_session
+          puts "restored session." if msg.restored_session
+          puts "clone source." if msg.cloned_targets
+          puts "clone target." if msg.cloned_source
+        end
+        
         ## Pass the client XML to the value manager
         if request.query.has_key?( 'values' )
           syncdata_str = request.query[ 'values' ]
@@ -172,7 +179,6 @@ module RSence
       
         ## Calls the restore_ses of plugins, when a session is restored (page reload with previously active session)
         if msg.restored_session
-        
           msg.session[:deps] = []
         
           if msg.cloned_source
@@ -210,7 +216,7 @@ module RSence
             xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @plugins.delegate 'cloned_source' failed." )
           end
         end
-      
+        
         ## Calls validators for changed values
         begin
           @valuemanager.validate( msg )
@@ -219,7 +225,7 @@ module RSence
           xhr_error_handler( msg, :valuemanager_validate_error, e.message )
           xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: @valuemanager.validate failed." )
         end
-      
+        
         ### Allows every plugin to respond to the idle call
         begin
           @plugins.delegate( :idle, msg )
@@ -228,7 +234,7 @@ module RSence
           xhr_error_handler( msg, :plugin_idle_error, e.message )
           xhr_traceback_handler( e, "Transporter::PluginIdleError: @plugins.idle failed." )
         end
-      
+        
         ### Processes outgoing values to client
         begin
           @valuemanager.sync_client( msg )
@@ -237,7 +243,7 @@ module RSence
           xhr_error_handler( msg, :valuemanager_sync_client_error, e.message )
           xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: @valuemanager.sync_client failed." )
         end
-      
+        
       else
       
         # session is not valid, the error was set in SessionManager
