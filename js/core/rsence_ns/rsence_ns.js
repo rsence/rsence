@@ -11,5 +11,11 @@
 //   var//RSence
 // ..into this namespace.
 // Additional logic for handling the namespaces will however be required.
-var RSence = {};
+var RSence = {
+  serverConf: function(_clientPrefix,_helloUrl){
+    COMM.ClientPrefix=_clientPrefix;
+    COMM.Transporter.HelloUrl=_helloUrl;
+    HThemeManager.themePath=_clientPrefix+'/themes';
+  }
+};
 
