@@ -239,6 +239,9 @@ COMM.Transporter = HApplication.extend({
     }
     // console.log('sync.');
     this.busy = true;
+    if(window['sesWatcher']){
+      sesWatcher.sesTimeoutValue.set( new Date().getTime() );
+    }
     var _this = this,
         _values = COMM.Values.sync(),
         _sesKey = 'ses_key='+COMM.Session.ses_key,
