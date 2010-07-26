@@ -166,10 +166,12 @@ HTab = HControl.extend({
     if(this.tabTriggerLink&&this.tabLabelElementTagName==='a'){
       ELEM.setAttr(_tabLabelElemId,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
-    else if (this.tabTriggerLink){
+    else if (this.tabTriggerLink && !(BROWSER_TYPE.ie7 || BROWSER_TYPE.ie6)){
       ELEM.setAttr(_tabLabelElemId,'onclick','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
     else {
+      this.tabTriggerLink = false;
+      this.setClick(true);
       this.tabLabelBounds.push([this.rightmostPx,this.rightmostPx+_labelWidth]);
     }
     this.rightmostPx+=_labelWidth;
