@@ -507,18 +507,19 @@ ELEM = {
   **/
   setOpacity: function(_id, _opacity) {
     var _this = ELEM;
-    if (_opacity === 1 && BROWSER_TYPE.ie6) {
+    if (_opacity === 1 && (BROWSER_TYPE.ie6 || BROWSER_TYPE.ie7)) {
       _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, ''));
     }
     else {
       if (_opacity < 0.01) {
         _opacity = 0;
       }
-      if (BROWSER_TYPE.ie6) {
-        _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, '') + 'alpha(opacity=' + _opacity * 100 + ')');
+      if (BROWSER_TYPE.ie6 || BROWSER_TYPE.ie7) {
+        var _prevAlpha = _this.getStyle(_id, 'filter', true);
+        _this._elements[_id].style.setAttribute('filter', _prevAlpha.replace(/alpha([^)]*)/gi, '') + 'alpha(opacity=' + _opacity * 100 + ')');
       }
       else if (BROWSER_TYPE.ie) {
-        (_this._elements[_id].style.setAttribute('opacity', _opacity));
+        _this._elements[_id].style.setAttribute('opacity', _opacity);
       }
       else {
         _this._elements[_id].style.setProperty('opacity', _opacity, '');
@@ -1097,6 +1098,9 @@ ELEM = {
       if ((_key === 'opacity') && _bypass) {
         _retval = _this.getOpacity(_id);
       }
+      else if (BROWSER_TYPE.ie7){
+        _retval = _this._elements[_id].style[_key];
+      }
       else {
         _retval = document.defaultView.getComputedStyle(_this._elements[_id], null).getPropertyValue(_key);
       }
@@ -1125,7 +1129,7 @@ ELEM = {
             return $3.toUpperCase() + $4;
           }
         );
-        _this._elements[_id].currentStyle[_camelName];
+        _retval = _this._elements[_id].currentStyle[_camelName];
       }
       _cached[_key] = _retval;
     }
