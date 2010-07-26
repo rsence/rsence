@@ -186,6 +186,9 @@ class ClientPkgBuild
   
   def minimize_data
     unless @quiet
+      @logger.log(  '' )
+      @logger.log(  "Client package build report.......................#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" )
+      @logger.log(  '' )
       @logger.log(  "JS Package....................:  Original |   Minimized |  Compressed" )
       @logger.log(  "                              :           |             |" )
     end
@@ -234,7 +237,7 @@ class ClientPkgBuild
   
   def build_themes
     unless @quiet
-      @logger.log( '' )
+      @logger.log(  '' )
       @logger.log(  "Theme name and part...........:  Original |   Minimized |  Compressed" )
       @logger.log(  "                              :           |             |" )
     end
@@ -277,11 +280,15 @@ class ClientPkgBuild
       unless @quiet
         print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.size )
         print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
+        @logger.log( '' )
       end
     end
   end
   
   def run
+    
+    time_start = Time.now.to_f*10000
+    
     # hash of bundles per bundle name per theme; @html_by_theme[theme_name][bundle_name] = bundle_data
     @html_by_theme = {}
     @css_by_theme  = {}
@@ -316,9 +323,13 @@ class ClientPkgBuild
       package_data = package_array.join('')
       @destination_files[ package_name ] = package_data
     end
+    
     build_indexes
     minimize_data
     build_themes
+    
+    ms_taken = ((Time.now.to_f*10000)-time_start).to_i/10.0
+    @logger.log( "Time taken:  #{ms_taken}ms\n\n" )
     
   end
   
