@@ -49,7 +49,7 @@ Event = {
   isLeftClick: function(e) {
     // IE: left 1, middle 4, right 2
     if (BROWSER_TYPE.ie) {
-      return (e.button === 1);
+      return (e.button === 1 || e.button === 3 || e.button === 5);
     }
     else {
       return (e.button === 0);
@@ -84,7 +84,10 @@ Event = {
     var i,
         l = Event.observers.length;
     for (i = 0; i < l; i++) {
-      Event.stopObserving.apply(this, Event.observers[0]);
+      try {
+        Event.stopObserving.apply(this, Event.observers[0]);
+      }
+      catch(e){}
     }
     Event.observers = false;
   },
