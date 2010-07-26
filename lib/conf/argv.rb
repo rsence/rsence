@@ -125,7 +125,9 @@ module RSence
             expect_option = false
           else
             if arg.start_with?('--')
-              if arg == '--debug'
+              if arg == '--profile'
+                true
+              elsif arg == '--debug'
                 set_debug
               elsif arg == '--verbose'
                 set_verbose
