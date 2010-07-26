@@ -27,7 +27,8 @@ EVENT = {
     keyUp: false,
     mouseWheel: false,
     resize: false,
-    textEnter: false
+    textEnter: false,
+    doubleClick: false
   },
   
 /** = Description
@@ -69,7 +70,7 @@ EVENT = {
   *                                          Command, Menu or Start modifier keys being held down.
   *
   **/
-  status: [false, false, 0, 0, [], false, false, false, false, false],
+  status: [false, false, -1, -1, [], false, false, false, false, false],
   
 /** The index in the status array for the left mouse button.
   **/
@@ -152,6 +153,7 @@ EVENT = {
     Event.observe( _globalEventTargetElement, 'contextmenu', _this.contextMenu );
     Event.observe( _globalEventTargetElement, 'resize', _this.resize );
     Event.observe( _globalEventTargetElement, 'mousewheel', _this.mouseWheel );
+    Event.observe( _globalEventTargetElement, 'dblclick', _this.doubleClick );
         // ],
         // i = 0;
     // for (; i !== _eventMap.length; i++) {
@@ -263,10 +265,9 @@ EVENT = {
       }
     }
     Event.observe(_elem, 'mouseover', _this._mouseOver);
-    _this._updateHoverItems();
-    var _hoverIndex = _this.hovered.indexOf(_ctrl.elemId);
-    if(_hoverIndex!==-1){
-      _this.changeActiveControl(_ctrl);
+    if(_ctrl.drawn){
+      _this._updateHoverItems();
+      (_this.hovered.length !== 0) && (_this.hovered.indexOf(_ctrl.elemId) === _this.hovered.length-1) && _this.focus(_ctrl);
     }
   },
   
@@ -280,6 +281,9 @@ EVENT = {
       _this.changeActiveControl(null);
     }
     _elemId = _ctrl.elemId;
+    if (_this.focused[_elemId]){
+      _this.blur(_ctrl);
+    }
     _elem = ELEM.get(_elemId);
     
     _this._coordCache[_elemId] = null;
@@ -523,28 +527,33 @@ EVENT = {
         _elem,
         _pos,
         _size,
-        _coords;
-    _this.hovered = [];
+        _coords,
+        _hovered = [];
     for (; i !== _this.listeners.length; i++) {
       if (!_this.listeners[i] || !_this.focusOptions[i].ctrl) {
         continue;
       }
       _ctrl = _this.focusOptions[i].ctrl;
-      _elem = ELEM.get(i);
-      if (!_this._coordCacheFlag || !_this._coordCache[i]) {
-        _pos = ELEM.getVisiblePosition(_ctrl.elemId);
-        // [x,y]
-        _size = ELEM.getVisibleSize(_ctrl.elemId);
-        // [w,h]
-        _this._coordCache[i] = [_pos[0], _pos[1], _size[0], _size[1]];
-      }
-      _coords = _this._coordCache[i];
+      if(_ctrl.drawn){
+        _elem = ELEM.get(i);
+        if (!_this._coordCacheFlag || !_this._coordCache[i]) {
+          _pos = ELEM.getVisiblePosition(_ctrl.elemId);
+          // [x,y]
+          _size = ELEM.getVisibleSize(_ctrl.elemId);
+          // [w,h]
+          _this._coordCache[i] = [_pos[0], _pos[1], _size[0], _size[1]];
+        }
+        _coords = _this._coordCache[i];
       
-      // Is the mouse pointer inside the element's rectangle?
-      if (x >= _coords[0] && x <= _coords[0] + _coords[2] && y >= _coords[1] && y <= _coords[1] + _coords[3]) {
-        _this.hovered.push(i);
+        // Is the mouse pointer inside the element's rectangle?
+        if (x >= _coords[0] && x <= _coords[0] + _coords[2] && y >= _coords[1] && y <= _coords[1] + _coords[3]) {
+          // console.log('coords:',_coords);
+          _hovered.push(i);
+        }
       }
     }
+    // console.log('update hover:',_hovered);
+    _this.hovered = _hovered;
   },
 
 /** = Description
@@ -680,7 +689,6 @@ EVENT = {
     if(!_isLeftButton){
       return true;
     }
-    _this.status[_this.button1] = true;
     for (; i !== _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         // Set the active control to the currently focused item.
@@ -709,7 +717,6 @@ EVENT = {
       }
     }
     //if(_this.hovered.length!==0){Event.stop(e);}
-    _this.status[_this.button1] = false;
     return true;
   },
 
@@ -729,12 +736,14 @@ EVENT = {
         _prevActiveCtrl.active = false;
         _prevActiveCtrl._lostActiveStatus(_ctrl);
       }
-      _this.activeControl = null;
       if (_ctrl) {
         // A new control gained the active status.
         _ctrl.active = true;
         _this.activeControl = _ctrl;
         _ctrl._gainedActiveStatus(_prevActiveCtrl);
+      }
+      else {
+        _this.activeControl = null;
       }
     }
   },
@@ -799,6 +808,33 @@ EVENT = {
     }
     else {
       _this.status[_this.button2] = false;
+    }
+    return true;
+  },
+
+/** Mid-level double-click manager.
+  * Gets called on the onDoubleClick event.
+  * Delegates the following call to the high-level event receivers of all
+  * enabled controls registered, depending on the events they registered:
+  * - doubleClick
+  *
+  **/
+  doubleClick: function(e) {
+    var _this = EVENT,
+        _didEndDrag = false,
+        x = _this.status[_this.crsrX],
+        y = _this.status[_this.crsrY],
+        _elemId,
+        _ctrl,
+        i = 0;
+    _this._modifiers(e);
+    // Check for mouseUp listeners.
+    for (i = 0; i !== _this.focused.length; i++) {
+      if (_this.focused[i] === true) {
+        if (_this.focusOptions[i].doubleClick === true) {
+          _this.focusOptions[i].ctrl.doubleClick(x, y, true);
+        }
+      }
     }
     return true;
   },

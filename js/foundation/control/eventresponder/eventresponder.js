@@ -140,33 +140,22 @@ HEventResponder = HClass.extend({
   setEvents: function(_events) {
     if(!this.events) {
       this.events = HClass.extend( {
-        mouseMove:  false,
-        mouseDown:  false,
-        mouseUp:    false,
-        draggable:  false,
-        droppable:  false,
-        keyDown:    false,
-        keyUp:      false,
-        mouseWheel: false,
-        textEnter:  false,
-        click:      false,
-        resize:     false
-      } ).extend( this.defaultEvents ).nu();
-    }
-    if(_events) {
-      this.events = this.events.extend( _events );
+        mouseMove:   false,
+        mouseDown:   false,
+        mouseUp:     false,
+        draggable:   false,
+        droppable:   false,
+        keyDown:     false,
+        keyUp:       false,
+        mouseWheel:  false,
+        textEnter:   false,
+        click:       false,
+        resize:      false,
+        doubleClick: false
+      } ).extend( this.defaultEvents ).extend( _events?_events:{} ).nu();
     }
     this.events.ctrl = this;
-    // EVENT.focusOptions[this.elemId] = this.events;
-    // var _mmoveStatus = this.events.mouseMove,
-    //     _mmoveIndex  = EVENT.coordListeners.indexOf(this.elemId);
-    // if (_mmoveStatus && (_mmoveIndex===-1)){
-    //   EVENT.coordListeners.push(this.elemId);
-    // }
-    // else if ((!_mmoveStatus) && (_mmoveIndex!==-1)){
-    //   EVENT.coordListeners.splice(_mmoveIndex,1);
-    // }
-    EVENT.reg( this, this.events);
+    EVENT.reg( this, this.events );
     return this;
   },
 
@@ -268,6 +257,24 @@ HEventResponder = HClass.extend({
   **/
   setMouseDown: function(_flag) {
     this.events.mouseDown = _flag;
+    this.setEvents();
+    return this;
+  },
+  
+/** = Description
+  * Registers or releases event listening for doubleClick events depending on 
+  * the value of the flag argument.
+  *
+  * = Parameters
+  * +_flag+:: Set the doubleClick event listening on/off (true/false) for
+  *           the component instance.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  setDoubleClickable: function(_flag) {
+    this.events.doubleClick = _flag;
     this.setEvents();
     return this;
   },
@@ -402,6 +409,12 @@ HEventResponder = HClass.extend({
     return this.setClickable(_flag);
   },
   
+/** Same as +setDoubleClickable+
+  **/
+  setDoubleClick: function(_flag) {
+    return this.setDoubleClickable(_flag);
+  },
+  
 /** = Description
   * Default focus event responder method. Does nothing by default.
   * Called when the component gets focus.
@@ -498,11 +511,25 @@ HEventResponder = HClass.extend({
   *                    mouse cursor position.
   * +y+::              The vertical coordinate units (px) of the 
   *                    mouse cursor position.
-  * +_isRightButton+:: Boolean flag; true if the right(context) mouse
+  * +_isLeftButton+::  Boolean flag; false if the right(context) mouse
   *                    button is pressed.
   *
   **/
-  click: function(x,y,_isRightButton){},
+  click: function(x,y,_isLeftButton){},
+  
+/** = Description
+  * Default click event responder method. Does nothing by default.
+  *
+  * = Parameters
+  * +x+::              The horizontal coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +y+::              The vertical coordinate units (px) of the 
+  *                    mouse cursor position.
+  * +_isLeftButton+::  Boolean flag; false if the right(context) mouse
+  *                    button is pressed.
+  *
+  **/
+  doubleClick: function(x,y,_isLeftButton){},
   
 /** = Description
   * Default mouseDown event responder method. Does nothing by default.
@@ -512,11 +539,11 @@ HEventResponder = HClass.extend({
   *                    mouse cursor position.
   * +y+::              The vertical coordinate units (px) of the 
   *                    mouse cursor position.
-  * +_isRightButton+:: Boolean flag; true if the right(context) mouse
+  * +_isLeftButton+::  Boolean flag; false if the right(context) mouse
   *                    button is pressed.
   *
   **/
-  mouseDown: function(x,y,_isRightButton) {},
+  mouseDown: function(x,y,_isLeftButton) {},
   
   
 /** = Description
@@ -527,11 +554,11 @@ HEventResponder = HClass.extend({
   *                    mouse cursor position.
   * +y+::              The vertical coordinate units (px) of the 
   *                    mouse cursor position.
-  * +_isRightButton+:: Boolean flag; true if the right(context) mouse
+  * +_isLeftButton+::  Boolean flag; false if the right(context) mouse
   *                    button is pressed.
   *
   **/
-  mouseUp: function(x,y,_isRightButton) {},
+  mouseUp: function(x,y,_isLeftButton) {},
   
 /** = Description
   * Default mouseWheel event responder method. Does nothing by default.
