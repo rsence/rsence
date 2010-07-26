@@ -507,14 +507,14 @@ ELEM = {
   **/
   setOpacity: function(_id, _opacity) {
     var _this = ELEM;
-    if (_opacity === 1 && (BROWSER_TYPE.ie6 || BROWSER_TYPE.ie7)) {
+    if (_opacity === 1 && (BROWSER_TYPE.ie6 || BROWSER_TYPE.ie7 || BROWSER_TYPE.ie8)) {
       _this._elements[_id].style.setAttribute('filter', _this.getStyle(_id, 'filter', true).replace(/alpha([^)]*)/gi, ''));
     }
     else {
       if (_opacity < 0.01) {
         _opacity = 0;
       }
-      if (BROWSER_TYPE.ie6 || BROWSER_TYPE.ie7) {
+      if (BROWSER_TYPE.ie6 || BROWSER_TYPE.ie7 || BROWSER_TYPE.ie8) {
         var _prevAlpha = _this.getStyle(_id, 'filter', true);
         _this._elements[_id].style.setAttribute('filter', _prevAlpha.replace(/alpha([^)]*)/gi, '') + 'alpha(opacity=' + _opacity * 100 + ')');
       }
@@ -1098,7 +1098,7 @@ ELEM = {
       if ((_key === 'opacity') && _bypass) {
         _retval = _this.getOpacity(_id);
       }
-      else if (BROWSER_TYPE.ie7){
+      else if (BROWSER_TYPE.ie7 || BROWSER_TYPE.ie8){
         _retval = _this._elements[_id].style[_key];
       }
       else {
@@ -1217,10 +1217,10 @@ ELEM = {
     
     var _this = ELEM;
     
-    if (BROWSER_TYPE.ie6) {
-      _this.getStyle = _this._getStyleIE;
-    }
     if (BROWSER_TYPE.ie) {
+      _this.getStyle = _this._getStyleIE;
+    // }
+    // if (BROWSER_TYPE.ie) {
       _this._flushStyleCache = _this._flushStyleCacheIE;
     }
     
