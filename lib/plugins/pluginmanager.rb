@@ -504,14 +504,20 @@ module RSence
       end
       to_unload.each do |name|
         next if @deps.category?( name )
-        puts "Unloading #{name.inspect}"
+        if RSence.args[:verbose]
+          print "Unloading #{name.inspect}..."; STDOUT.flush
+        end
         unload_bundle( name )
+        puts "done!" if RSence.args[:verbose]
       end
       to_reload.each do |name|
         next if @deps.category?( name )
-        puts "Unloading #{name.inspect}"
+        if RSence.args[:verbose]
+          print "Unloading #{name.inspect}..."; STDOUT.flush
+        end
         unload_order = unload_bundle( name )
         to_load += unload_order
+        puts "done!" if RSence.args[:verbose]
       end
       info_map = {}
       to_load.each do |name|
@@ -531,14 +537,18 @@ module RSence
         next if @deps.category?( name )
         next unless to_load.include?( name )
         info = info_map[name]
-        if to_reload.include?( name )
-          puts "Reloading #{name.inspect}"
-        else
-          puts "Loading #{name.inspect}"
+        if RSence.args[:verbose]
+          if to_reload.include?( name )
+            print "Reloading #{name.inspect}..."
+          else
+            print "Loading #{name.inspect}..."
+          end
+          STDOUT.flush
         end
         @info[name] = info
         load_bundle( name )
         to_open.push( name )
+        puts "done!" if RSence.args[:verbose]
       end
       unless no_deps.empty?
         warn "Warning! Unable to load the following bundles; missing dependencies:"
@@ -547,8 +557,18 @@ module RSence
         end
       end
       to_open.each do |name|
-        puts "Opening #{name.inspect}"
+        if RSence.args[:verbose]
+          print "Opening #{name.inspect}..."; STDOUT.flush
+        end
         call( name, :open )
+        puts "done!" if RSence.args[:verbose]
+      end
+      if not (to_load.empty? and to_unload.empty? and to_reload.empty?)
+        puts "Plugin bundles:"
+        puts "  loaded: #{to_load.join(', ')}" unless to_load.empty?
+        puts "  unloaded: #{to_unload.join(', ')}" unless to_unload.empty?
+        puts "  reloaded: #{to_reload.join(', ')}" unless to_reload.empty?
+        puts "  opened: #{to_open.join(', ')}" unless to_open.empty?
       end
     end
     
