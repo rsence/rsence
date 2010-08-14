@@ -395,16 +395,23 @@ HDynControl = HControl.extend({
     var i,
     _actionPoint = this._startPoint.subtract(this.rect.left,this.rect.top),
     _actionRects = this._actionRects;
-    if(this.options.noResize && _actionRects[8].contains(_actionPoint)){
-      this._actionFlag = 8;
-      this.setStyle('cursor',this._actionCrsr[8]);
-      return;
-    }
-    for(i=0;i!==9;i++){
-      if(_actionRects[i].contains(_actionPoint)){
-        this._actionFlag=i;
-        this.setStyle('cursor',this._actionCrsr[i]);
+    if(this.options.noResize){
+      if(_actionRects[8].contains(_actionPoint)){
+        this._actionFlag = 8;
+        this.setStyle('cursor',this._actionCrsr[8]);
         return;
+      }
+      else {
+        this._actionFlag = -1;
+      }
+    }
+    else{
+      for(i=0;i!==9;i++){
+        if(_actionRects[i].contains(_actionPoint)){
+          this._actionFlag=i;
+          this.setStyle('cursor',this._actionCrsr[i]);
+          return;
+        }
       }
     }
   },
