@@ -628,14 +628,7 @@ HView = HClass.extend({
       _styl( _elemId, 'bottom', _this.flexBottom?(_this.flexBottomOffset+'px'):'auto', true);
       _styl( _elemId, 'width', (_this.flexLeft&&_this.flexRight)?'auto':(_rect.width+'px'), true);
       _styl( _elemId, 'height', (_this.flexTop&&_this.flexBottom)?'auto':(_rect.height+'px'), true);
-    
-      if(_this.flexLeft&&_this.flexRight){
-        _styl( _elemId, 'min-width', _rect.width+'px', true);
-      }
-      if(_this.flexTop&&_this.flexBottom){
-        _styl( _elemId, 'min-height', _rect.height+'px', true);
-      }
-    
+      
       // Show the rectangle once it gets created, unless visibility was set to
       // hidden in the constructor.
       if(_this.isHidden === undefined || _this.isHidden === false) {
@@ -873,6 +866,28 @@ HView = HClass.extend({
     return [ 0, 0, _parentSize[0], _parentSize[1] ];
   },
   
+  parentSize: function(){
+    var _parentElemId = this.parent.elemId;
+    if ( _parentElemId === 0 ) {
+      return ELEM.windowSize();
+    }
+    else {
+      ELEM.flushLoop();
+      return ELEM.getSize( _parentElemId );
+    }
+  },
+  
+  minWidth: 0,
+  setMinWidth: function(_minWidth){
+    this.minWidth = _minWidth;
+    ELEM.setStyle( this.elemId, 'min-width', this.minWidth+'px', true);
+  },
+  minHeight: 0,
+  setMinHeight: function(_minHeight){
+    this.minHeight = _minHeight;
+    ELEM.setStyle( this.elemId, 'min-height', this.minHeight+'px', true);
+  },
+  
 /** = Description
   * Replaces the rect of the component with a new HRect instance and
   * then refreshes the display.
@@ -896,20 +911,28 @@ HView = HClass.extend({
       var _arrLen = _rect.length,
           _throwPrefix = 'HView.setRect: If the HRect instance is replaced by an array, ';
       if((_arrLen === 4) || (_arrLen === 6)){
-        var _leftOffset   = _rect[0],
-            _topOffset    = _rect[1],
-            _width        = _rect[2],
-            _height       = _rect[3],
-            _rightOffset  = ((_arrLen === 6)?_rect[4]:null),
-            _bottomOffset = ((_arrLen === 6)?_rect[5]:null),
-            _validLeftOffset    = (typeof _leftOffset    === 'number'),
-            _validTopOffset     = (typeof _topOffset     === 'number'),
-            _validRightOffset   = (typeof _rightOffset   === 'number'),
-            _validBottomOffset  = (typeof _bottomOffset  === 'number'),
-            _validWidth   = (typeof _width   === 'number'),
-            _validHeight  = (typeof _height  === 'number'),
-            _right,
-            _bottom;
+        var
+        _leftOffset   = _rect[0],
+        _topOffset    = _rect[1],
+        _width        = _rect[2],
+        _height       = _rect[3],
+        _rightOffset  = ((_arrLen === 6)?_rect[4]:null),
+        _bottomOffset = ((_arrLen === 6)?_rect[5]:null),
+        _validLeftOffset    = (typeof _leftOffset    === 'number'),
+        _validTopOffset     = (typeof _topOffset     === 'number'),
+        _validRightOffset   = (typeof _rightOffset   === 'number'),
+        _validBottomOffset  = (typeof _bottomOffset  === 'number'),
+        _validWidth   = (typeof _width   === 'number'),
+        _validHeight  = (typeof _height  === 'number'),
+        _right,
+        _bottom;
+        
+        if(_arrLen === 6){
+          var
+          _parentSize = this.parentSize(),
+          _parentWidth = _parentSize[0],
+          _parentHeight = _parentSize[1];
+        }
         
         if( (!_validLeftOffset && !_validRightOffset) ||
             (!_validTopOffset && !_validBottomOffset) ){
@@ -925,42 +948,30 @@ HView = HClass.extend({
         this.setFlexRight(_validRightOffset,_rightOffset);
         this.setFlexBottom(_validBottomOffset,_bottomOffset);
         
-        // default, makes a correct rect
         if(_validLeftOffset && _validWidth && !_validRightOffset){
           _right = _leftOffset + _width;
         }
-        // can't be entirely correct rect unless parent size is calculated
         else if(!_validLeftOffset && _validWidth && _validRightOffset){
-          _leftOffset = 0;
-          _right = _width;
+          _right = _parentWidth-_validRightOffset;
+          _leftOffset = _right-_width;
         }
-        // can't be entirely correct rect unless parent size is calculated
-        else if(_validLeftOffset && !_validWidth && _validRightOffset){
-          _right = _leftOffset + _rightOffset;
-        }
-        
-        // use minimum width based on the height information given
-        else if(_validLeftOffset && _validWidth && _validRightOffset){
-          _right = _leftOffset + _width;
+        else if(_validLeftOffset && _validRightOffset){
+          _right = _parentWidth - _rightOffset;
+          _validWidth && this.setMinWidth( _width );
+          _right = _parentWidth - _rightOffset;
         }
         
-        // default, makes a correct rect
         if(_validTopOffset && _validHeight && !_validBottomOffset){
           _bottom = _topOffset + _height;
         }
-        // can't be entirely correct rect unless parent size is calculated
         else if(!_validTopOffset && _validHeight && _validBottomOffset){
-          _topOffset = 0;
-          _bottom = _height;
+          _bottom = _parentHeight-_validBottomOffset;
+          _topOffset = _bottom-_height;
         }
-        // can't be entirely correct rect unless parent size is calculated
-        else if(_validTopOffset && !_validHeight && _validBottomOffset){
-          _bottom = _topOffset + _bottomOffset;
-        }
-        
-        // use minimum height based on the height information given
-        else if(_validTopOffset && _validHeight && _validBottomOffset){
-          _bottom = _topOffset + _height;
+        else if(_validTopOffset && _validBottomOffset){
+          _bottom = _parentHeight - _bottomOffset;
+          _validHeight && this.setMinHeight( _height );
+          _bottom = _parentHeight - _bottomOffset;
         }
         
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
