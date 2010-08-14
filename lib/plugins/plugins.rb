@@ -136,11 +136,22 @@ module RSence
               super
             end
           end
-          plugin_src = params[:src]
-          unless RUBY_VERSION.to_f >= 1.9
-            plugin_src = "_bundle_path = #{params[:bundle_path].inspect};" + plugin_src
+          begin
+            plugin_src = params[:src]
+            unless RUBY_VERSION.to_f >= 1.9
+              plugin_src = "_bundle_path = #{params[:bundle_path].inspect};" + plugin_src
+            end
+            m.module_eval( plugin_src )
+          rescue => e
+            src_path = params[:src_path]
+            src_path = "<undefined src_path>" if src_path == nil
+            params[:plugin_manager].plugin_error(
+              e,
+              'BundleLoaderEvalError',
+              "An error occurred while evaluating the plugin bundle #{params[:bundle_name]}.",
+              src_path
+            )
           end
-          m.module_eval( plugin_src )
         end
         return mod
       rescue => e
