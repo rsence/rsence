@@ -111,9 +111,21 @@ module RSence
         daemon.usr1
         write_signal_response( daemon, 'USR1' )
       end
-      Signal.trap('USR2') do 
+      Signal.trap( 'USR2' ) do 
         daemon.usr2
         write_signal_response( daemon, 'USR2' )
+      end
+      Signal.trap( 'PWR' ) do 
+        daemon.pwr
+        write_signal_response( daemon, 'PWR' )
+      end
+      Signal.trap( 'ALRM' ) do 
+        daemon.alrm
+        write_signal_response( daemon, 'ALRM' )
+      end
+      Signal.trap( 'INFO' ) do 
+        daemon.info
+        write_signal_response( daemon, 'INFO' )
       end
       ['INT', 'TERM', 'KILL'].each do | signal |
         Signal.trap( signal ) do
@@ -194,12 +206,12 @@ module RSence
       sleep 1 while true
     end
   
-    # Sends the USR1 signal to the process, which in turn
+    # Sends the PWR signal to the process, which in turn
     # calls the save method of the daemon.
     def self.save( daemon )
       status_ = status( daemon )
       if status_
-        if wait_signal_response( daemon, 'USR1', 10, 'saving.', 'saved', 0.3 )
+        if wait_signal_response( daemon, 'PWR', 10, 'saving.', 'saved', 0.3 )
           puts "Session data saved."
         else
           puts "Warning: saving timed out! Session data not saved."
@@ -256,7 +268,7 @@ module RSence
 
   # @private  Simple process control, constructed here and called from Daemon::Controller
   class HTTPDaemon
-  
+    
     # RSence top-level run handler. Almost identical to start.
     def run
     
@@ -278,27 +290,27 @@ module RSence
       )
     
     end
-  
+    
     # Returns the pid file path.
     def pid_fn
       RSence.config[:daemon][:pid_fn]
     end
-  
+    
     # Returns the log path.
     def log_fn
       RSence.config[:daemon][:log_fn]
     end
-  
+    
     # Returns the configured bind address
     def addr
       RSence.config[:http_server][:bind_address]
     end
-  
+    
     # Returns the configured port.
     def port
       RSence.config[:http_server][:port]
     end
-  
+    
     # Called by Controller#start, contains RSence-specific operations
     def start
     
@@ -321,17 +333,40 @@ module RSence
       yield @broker
     
     end
-  
+    
     # Called by Controller#stop, contains RSence-specific operations
     def stop
       @transporter.shutdown
     end
-  
-    # Called on USR1 signals (save data)
-    def usr1
+    
+    # Called on PWR signals (save data)
+    def pwr
       save
     end
-  
+    
+    # Called on INFO signals ("Alive?")
+    def info
+      puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- RSence version #{RSence.version} is running."
+    end
+    
+    # Called on ALRM signals (save data, reload all plugins manually)
+    def alrm
+      save
+      @transporter.plugins.shutdown
+      @transporter.plugins.init_bundles!
+    end
+    
+    # Called on usr1 signals (updates bundles manually, like the regular intervals of the -a switch and forces client to be rebuilt)
+    def usr1
+      @transporter.plugins.update_bundles!
+      # @transporter.plugins.client_pkg.rebuild_client
+    end
+    
+    # Called on USR2 signals
+    def usr2
+      
+    end
+    
     # Save state
     def save
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Saving state..."
@@ -342,12 +377,7 @@ module RSence
       @transporter.online = transporter_state
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- State saved."
     end
-  
-    # Called on USR2 signals ("Alive?")
-    def usr2
-      puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- RSence version #{RSence.version} is running."
-    end
-  
+    
     # Main entry point, daemonizes itself using Controller.
     def daemonize!
       Daemon.daemonize( self )

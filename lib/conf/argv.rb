@@ -327,7 +327,7 @@ module RSence
       end
     end
     
-    # Main argument parser for the status command, sends the USR2 POSIX signal to the process, if running.
+    # Main argument parser for the status command, sends the INFO POSIX signal to the process, if running.
     # Checks if the process responds on the port and address it's configured for.
     def parse_status_argv
       init_args
@@ -407,7 +407,7 @@ module RSence
         if File.exists?( pid_fn )
           pid = File.read( pid_fn ).to_i
           pid_status = RSence::SIGComm.wait_signal_response(
-            pid, pid_fn, 'USR2', 3
+            pid, pid_fn, 'INFO', 3
           )
         else
           warn @@strs[:messages][:no_pid_file] if @args[:verbose]
@@ -504,7 +504,7 @@ module RSence
           pid = File.read( pid_fn ).to_i
           saving_message = @@strs[:messages][:saving_message]
           pid_status = RSence::SIGComm.wait_signal_response(
-            pid, pid_fn, 'USR1', 30, saving_message, '.', 0.1, true
+            pid, pid_fn, 'PWR', 30, saving_message, '.', 0.1, true
           )
         else
           warn @@strs[:messages][:no_pid_file] if @args[:verbose]
