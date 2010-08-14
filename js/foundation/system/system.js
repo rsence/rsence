@@ -91,6 +91,17 @@ HSystem = {
     
   },
   
+  _updateFlexibleRects: function(){
+    var
+    _view,
+    i = 0;
+    for( ; i < this.views.length; i++ ){
+      _view = this.views[i];
+      if(_view.flexRight || _view.flexBottom){
+        _view.rect._updateFlexibleDimensions();
+      }
+    }
+  },
   
 /** Calls the scheduler and then calls itself after a timeout to keep
   * the loop going on.

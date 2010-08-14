@@ -329,6 +329,7 @@ EVENT = {
         _ctrl.onResize();
       }
     }
+    HSystem._updateFlexibleRects();
   },
 
   /* Element-specific mouse over/out event receiver. */
