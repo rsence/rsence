@@ -58,7 +58,7 @@ HRect = HClass.extend({
   *
   **/
   constructor: function() {
-    this.type = '[HRect]';
+    this.viewIds = [];
     var _args=arguments;
     
     if (_args.length === 0) {
@@ -106,6 +106,43 @@ HRect = HClass.extend({
     this.bottom = _rect.bottom;
     this.right = _rect.right;
   },
+  
+  _updateFlexibleDimensions: function(){
+    var
+    _this = this,
+    _viewIds = _this.viewIds,
+    _parentElemId,
+    _parentSize,
+    _parentWidth,
+    _parentHeight,
+    _viewId,
+    _view,
+    i = 0;
+    for(;i<_viewIds.length;i++){
+      _viewId = _viewIds[i];
+      _view = HSystem.views[_viewId];
+      if(_view.flexRight || _view.flexBottom){
+        ELEM.flushLoop();
+        _parentElemId = _view.parent.elemId;
+        _parentSize = _view.parentSize();
+        _parentWidth = _parentSize[0];
+        if(_view.flexRight){
+          _this.right = _parentWidth - _view.flexRightOffset;
+        }
+        if(!_view.flexLeft){
+          _this.left = _this.right - _this.width;
+        }
+        _parentHeight = _parentSize[1];
+        if(_view.flexBottom){
+          _this.bottom = _parentWidth - _view.flexBottomOffset - _this.top;
+        }
+        if(!_view.flexTop){
+          _this.top = _this.bottom - _this.height;
+        }
+        _this.updateSecondaryValues();
+      }
+    }
+  },
 
 /** = Description
   * You should call this on the instance to update secondary values, like
@@ -118,6 +155,9 @@ HRect = HClass.extend({
   *
   **/
   updateSecondaryValues: function() {
+    
+    // this._updateFlexibleDimensions();
+    
     /**
       * isValid is true if the Rect's right side is greater than or equal to its left
       * and its bottom is greater than or equal to its top, and false otherwise.
@@ -550,7 +590,6 @@ HRect = HClass.extend({
   
   // HValue and HView support
   valueObj: null,
-  viewIds: [],
   
 /** = Description
   * Bind function
@@ -560,9 +599,10 @@ HRect = HClass.extend({
   *
   **/
   bind: function(_view){
-    if(this.viewIds.indexOf(_view.viewId) !== -1){
+    if(this.viewIds.indexOf( _view.viewId ) === -1){
       this.viewIds.push( _view.viewId );
     }
+    this._updateFlexibleDimensions();
   },
   
 /** = Description
