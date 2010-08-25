@@ -205,10 +205,13 @@ module RSence
     
       ## Uses the lib paths as search paths
       lib_paths += config[:lib_paths] if config.has_key?(:lib_paths)
+      puts "lib paths: #{lib_paths.inspect}"
       lib_paths.each do |lib_path|
+        lib_path = File.expand_path( lib_path, args[:env_path] ) if lib_path.start_with? './'
+        puts "lib_path: #{lib_path.inspect}"
         $LOAD_PATH << lib_path
       end
-    
+      puts "LOAD_PATH: #{$LOAD_PATH.inspect}"
       @config = config
     end
   
