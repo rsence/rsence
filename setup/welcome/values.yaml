@@ -1,6 +1,9 @@
+# Value for the checkbox. When true combined with 1 of the close value, disables the plugin. See welcome.rb
 :dont_show_again:
   :value: false
+
+# Value for the close button.
 :close:
   :value: 0
-  :responders:
-  - { :method: close_button }
+  :responders: # See the 'close_button' method of welcome.rb to see what a responder is.
+  - :method: close_button
