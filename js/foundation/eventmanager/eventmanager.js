@@ -711,13 +711,6 @@ EVENT = {
         _stopEvent--;
       }
     }
-    // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
-    if (_this.enableDroppableChecks) {
-      if ((_stopEvent === 0) && (_this.hovered.length !== 0) && _newActiveControl) {
-        Event.stop(e);
-      }
-    }
-    //if(_this.hovered.length!==0){Event.stop(e);}
     return true;
   },
 
