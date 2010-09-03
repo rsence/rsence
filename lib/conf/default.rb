@@ -204,11 +204,11 @@ module RSence
       end
     
       ## Uses the lib paths as search paths
-      lib_paths.merge( config[:lib_paths] ) if config.has_key?(:lib_paths)
+      lib_paths += config[:lib_paths] if config.has_key?(:lib_paths)
       lib_paths.each do |lib_path|
+        lib_path = File.expand_path( lib_path, args[:env_path] ) if lib_path.start_with? './'
         $LOAD_PATH << lib_path
       end
-    
       @config = config
     end
   

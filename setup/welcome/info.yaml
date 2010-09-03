@@ -3,14 +3,11 @@
 title: Welcome message
 
 # The human-readable version of the package
-version: 1.0.0
+version: 1.0.1
 
 # A brief description of the package (rdoc formatting supported)
 description: |
   This is a simple welcome message plugin. It's installed in new project
   environments, when the rsence initenv in executed.
   You may safely remove this plugin bundle.
-
-# System version requirement.
-sys_version: '>= 2.0.0'
 

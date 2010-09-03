@@ -1125,7 +1125,10 @@ HView = HClass.extend({
       var _setStyl = ELEM.setStyle,
           _elemId  = this.elemId;
       _setStyl(_elemId,'visibility', 'hidden');
-      _setStyl(_elemId,'display', 'none');
+      // Required for the old, buggy Mozilla engines ( Firefox versions below 3.0 )
+      // At least text fields would show through from hidden parent elements.
+      // Disabled, because keeping the display as none causes hidden views to have no dimensions at all.
+      // _setStyl(_elemId,'display', 'none');
       this.isHidden = true;
     }
     return this;

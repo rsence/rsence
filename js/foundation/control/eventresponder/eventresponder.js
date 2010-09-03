@@ -179,11 +179,13 @@ HEventResponder = HClass.extend({
         _sysViews = HSystem.views,
         i = 0,
         _views = _this.views,
+        _view,
         _viewsLen = _views.length;
     
     // Enable/disable the children first.
     for (; i < _viewsLen; i++) {
-      _sysViews[_views[i]].setEnabled(_flag);
+      _view = _sysViews[_views[i]];
+      _view['setEnabled'] && _view.setEnabled(_flag);
     }
     
     if (_this.enabled === _flag) {

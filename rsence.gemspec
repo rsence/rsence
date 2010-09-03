@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.version   = File.read('VERSION')
   s.date      = Time.now
   s.homepage  = 'http://www.rsence.org/'
+  s.rubyforge_project = 'rsence-'
   prerelease  = s.version.to_s.end_with?('.pre')
   normalized_version = s.version.to_s.to_f
   s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of the RSence framework."

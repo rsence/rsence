@@ -66,6 +66,10 @@ HListItems = HValueResponder.extend({
           }
           _listItems.push( [_value, _label] );
         }
+        // Arrays as-is
+        else if ( _rowType == 'a' ){
+          _listItems.push( _row );
+        }
         // strings and integers
         else if ( ['s','n'].indexOf(_rowType) !== -1 ){
           _label = _row.toString();

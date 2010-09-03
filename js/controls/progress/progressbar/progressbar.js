@@ -27,6 +27,9 @@ HProgressBar = HControl.extend({
     if( this.drawn && this.markupElemIds.value ){
       var _visibleWidth = this.rect.width-this.themeWidthInset,
           _progressWidth = Math.round(_visibleWidth * this.value);
+      if(_progressWidth<0){
+        _progressWidth = 0;
+      }
       this.setStyleOfPart('value','width',_progressWidth+'px');
     }
   },

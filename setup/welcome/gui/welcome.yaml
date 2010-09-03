@@ -1,19 +1,34 @@
+# RSence user interfaces can be defined as YAML files.
+# The structure is converted to JSON for the client and "special" variables are processed by the server.
+# The server tries to find a match in its gui_params for all values that begin with a colon (they are parsed as symbols on ruby).
+
+# Read more about YAML on http://yaml.org/
+
+# GUITree is used as the type identifier for user interface definition structures.
 type: GUITree
+# The version defines what version of the structure is used. New features are added constantly, each incrementing the version by 0.1
 version: 0.6
 
+# List of javascript packages the user interface needs. These are automatically loaded once per session.
 dependencies:
-  - default_theme
-  - controls
+  - default_theme # The default_theme package contains all the theme resources needed when using the default theme.
+  - controls      # The controls package contains the basic set of widget components.
 
+# The root level class for user interfaces must be an instance of HApplication (RSence.GUIApp is extended from the HApplication class).
 class: RSence.GUIApp
+# Each class takes a number of options for its constructor.
 options:
   title: Welcome App
-  priority: 20
+# The subviews use the class defined above as their parent component.
 subviews:
+  # The sheet is used as the main visual container for the gui in this app.
+  # HSheet is an component that dims the background and shows a dialog sheet while its value is 0.
   - class: HSheet
-    rect: [ 0, 0, 600, 500 ]
-    bind: :values.close
-    extend:
+    rect: [ 0, 0, 600, 500 ] # For HSheet, the rect defines the inner dialog size (it's always centered).
+    bind: :values.close      # Values are bound to their component responders using the bind keyword.
+    extend:                  # The extend keyword takes a dictionary of properties to extend the class with.
+      # Extending refreshValue with a javascript function that terminates its application,
+      # including all the subviews. It's triggered when the value becomes 1, when the Close button is clicked.
       refreshValue: |
         function(){
           this.base();
@@ -21,20 +36,38 @@ subviews:
             this.app.die();
           }
         }
+    # Subviews of the HSheet, nested visual-logical structure.
     subviews:
-      - class: HScrollView
-        rect: [ 0, 0, 550, 300, 0, 42 ]
+      # A button in the lower right corner of the HSheet that triggers destruction of this GUITree (see the extension of HSheet above)
+      - class: HClickButton
+        rect: [ null, null, 60, 24, 8, 8 ]
+        bind: :values.close
         options:
-          scrollX: false
-          scrollY: auto
-          style:
+          label: Close
+      # A checkbox in the lower right corner of the HSheet that triggers an server action to disable the whole plugin when combined with the close button's value.
+      - class: HCheckbox
+        rect: [ null, null, 130, 24, 74, 8 ]
+        bind: :values.dont_show_again
+        options:
+          label: Don't show again
+      # The HScrollView contains a number of subviews that are inside its scrollbars (if the inner content area is bigger than the outer dimensions of HScrollView itself).
+      - class: HScrollView
+        rect: [ 0, 0, 550, 300, 0, 42 ] # This rectangle stretches the component to contain all of the parent's space except the bottom-most 42 pixels.
+        options:
+          scrollX: false # Disables horizontal scroll bars.
+          scrollY: auto  # Makes vertical scroll bars appear automatically when needed.
+          style: # Custom styling using style properties. There are several ways to display nested arrays. This is one:
             - [ 'background-color', 'white' ]
             - [ 'border-bottom', '1px solid black' ]
+        # Subviews of the HScrollView; items inside are displayed inside the scrollbars.
         subviews:
+          # The RSence logo image:
           - class: HImageView
             rect: [ 18, 10, 559, 110 ]
             options:
+              # Images use the value as the URL of the image.
               value: http://rsence.org/rsence_org_logo.gif
+          # A plain view containing a hyperlink, positioned in the right bottom corner of the logo image.
           - class: HView
             rect: [ null, 95, 310, 25, 35, null ]
             options:
@@ -42,13 +75,14 @@ subviews:
                 <i style="font-family:Helvetica,Arial,sans-serif;font-size:16px;">
                   <a style="color:#28c;font-weight:bold" href="http://rsence.org/">http://www.rsence.org/</a>
                 </i>
-              style:
+              style: # Another way to define nested arrays for the style:
                 - - text-align
                   - right
+          # The HInlineView is a simple HTML container, designed to contain "flowing layout" html.
           - class: HInlineView
             rect: [ 0, 0, null, null, 0, 0 ]
             options:
-              html: :text.welcome
+              html: :text.welcome # See the gui_params method of welcome.rb to understand how the contents of the text/welcome.html files is linked like this.
               style:
                 - - font-family
                   - 'Helvetica, Arial, sans-serif'
@@ -56,13 +90,3 @@ subviews:
                   - 16px
                 - - line-height
                   - 20px
-      - class: HClickValueButton
-        rect: [ null, null, 60, 24, 8, 8 ]
-        bind: :values.close
-        options:
-          label: Close
-      - class: HCheckbox
-        rect: [ null, null, 130, 24, 74, 8 ]
-        bind: :values.dont_show_again
-        options:
-          label: Don't show again
