@@ -504,7 +504,7 @@ module RSence
           pid = File.read( pid_fn ).to_i
           saving_message = @@strs[:messages][:saving_message]
           pid_status = RSence::SIGComm.wait_signal_response(
-            pid, pid_fn, 'PWR', 30, saving_message, '.', 0.1, true
+            pid, pid_fn, 'USR2', 30, saving_message, '.', 0.1, true
           )
         else
           warn @@strs[:messages][:no_pid_file] if @args[:verbose]

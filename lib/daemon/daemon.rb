@@ -47,7 +47,7 @@ module RSence
     end
   
     def self.responds?( daemon )
-      wait_signal_response( daemon, 'USR2' )
+      wait_signal_response( daemon, 'INFO' )
     end
   
     # Reads the pid file and calls the process.
@@ -115,10 +115,10 @@ module RSence
         daemon.usr2
         write_signal_response( daemon, 'USR2' )
       end
-      Signal.trap( 'PWR' ) do 
-        daemon.pwr
-        write_signal_response( daemon, 'PWR' )
-      end
+      # Signal.trap( 'PWR' ) do 
+      #   daemon.pwr
+      #   write_signal_response( daemon, 'PWR' )
+      # end
       Signal.trap( 'ALRM' ) do 
         daemon.alrm
         write_signal_response( daemon, 'ALRM' )
@@ -339,10 +339,10 @@ module RSence
       @transporter.shutdown
     end
     
-    # Called on PWR signals (save data)
-    def pwr
-      save
-    end
+    # # Called on PWR signals (save data)
+    # def pwr
+    #   save
+    # end
     
     # Called on INFO signals ("Alive?")
     def info
@@ -364,7 +364,7 @@ module RSence
     
     # Called on USR2 signals
     def usr2
-      
+      save
     end
     
     # Save state
