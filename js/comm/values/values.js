@@ -144,11 +144,15 @@ COMM.Values = HClass.extend({
   * - 'b': Boolean (true/false)
   * - 'n': Number (integers and floats)
   * - 's': String
+  * - '~': Null
+  * - '-': Undefined
   *
   **/
   type: function(_obj){
-    if(_obj === null || _obj === undefined){
-      console.log('null or undefined obj:',_obj);
+    if(_obj === null){
+      return '~';
+    }
+    else if (_obj === undefined){
       return '-';
     }
     var _type = (typeof _obj).slice(0,1);
@@ -366,9 +370,12 @@ COMM.Values = HClass.extend({
   *
   **/
   clone: function( _obj, _shallow ){
-    if(_obj === null || _obj === undefined){
-      console.log('null or undefined obj:',_obj);
-      return _obj;
+    if(_obj === null){
+      return null;
+    }
+    else if (_obj === undefined){
+      console.log('Undefined object, supplementing with null.');
+      return null;
     }
     var _item,
         _cloned;

@@ -192,7 +192,9 @@ HPropertyList = HControl.extend({
     a: 'Array',
     s: 'String',
     n: 'Number',
-    b: 'Boolean'
+    b: 'Boolean',
+    '~': 'Null',
+    '-': 'Undefined'
   },
   keyRowStyle: "position:absolute;z-index:1;right:0px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;",
   addKeyColumnControl: function( token, i ){
