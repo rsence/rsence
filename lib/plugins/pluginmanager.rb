@@ -87,6 +87,21 @@ module RSence
     # Calls the method +method_name+ with args +args+ of the plugin +plugin_name+.
     # Returns false, if no such plugin or method exists.
     def call( plugin_name, method_name, *args )
+      unless @name_prefix
+        plugin_name_s = plugin_name.to_s
+        if plugin_name_s.include?(':')
+          colon_index = plugin_name_s.index(':')
+          sub_manager_name = plugin_name_s[0..(colon_index-1)].to_sym
+          plugin_name = plugin_name_s[(colon_index+1)..-1].to_sym
+          if @registry.has_key?( sub_manager_name )
+            sub_manager = @registry[sub_manager_name]
+            if sub_manager.respond_to?( :plugin_plugins )
+              return sub_manager.plugin_plugins.call( plugin_name, method_name, *args )
+            end
+          end
+          return false
+        end
+      end
       plugin_name = plugin_name.to_sym
       if callable?( plugin_name, method_name )
         begin
@@ -102,7 +117,7 @@ module RSence
       elsif @deps.category?( plugin_name )
         warn "Warning! Tried to call category: #{plugin_name.inpsect}"
       elsif not @registry.has_key?( plugin_name )
-        warn "Warning! No such plugin: #{plugin_name.inspect}"
+        warn "Warning (#{@pluginmanager_id})! No such plugin: #{plugin_name.inspect} (tried to call #{method_name.inspect[0..100]} using args: #{args.inspect[0..100]}"
       elsif not @registry[ plugin_name ].respond_to?( method_name )
         warn "Warning! Plugin: #{plugin_name.inspect} does not respond to #{method_name.inspect}"
       end
@@ -214,7 +229,11 @@ module RSence
     # Delegates the +flush+ and +close+ methods to any
     # loaded plugins, in that order.
     def shutdown
-      @transporter.online = false
+      if @parent_manager
+        @closed = true
+      else
+        @transporter.online = false
+      end
       @deps.list.reverse.each do |bundle_name|
         unload_bundle( bundle_name )
       end
@@ -263,7 +282,7 @@ module RSence
         
         # System version requirement.
         # NOTE: Has no effect yet!
-        :sys_version => '>= 1.0.0',
+        :sys_version => '>= 2.0.0',
         
         # Dependency, by default the system category (built-in plugins).
         # A nil ( "~" in yaml ) value means no dependencies.
@@ -278,7 +297,10 @@ module RSence
         
         # Optional, reverse dependency. Loads before the prepended plugin(category).
         # NOTE: Doesn't support packages yet!
-        :prepends       => nil
+        :prepends       => nil,
+        
+        # Name of plugin manager, so the bundle internals know what its path is.
+        :manager        => @name_prefix
         
       }
       
@@ -433,6 +455,7 @@ module RSence
         if bundle_status
           (bundle_path, src_file) = bundle_status
           unless disabled?( bundle_path )
+            # bundle_name = "#{@name_prefix.to_s}.#{bundle_name}" if @name_prefix
             bundles_found.push( [bundle_path, bundle_name.to_sym, src_file] )
           end
         end
@@ -449,8 +472,10 @@ module RSence
         end
         puts "Unloading bundle: #{bundle_name.inspect}" if RSence.args[:debug]
         @deps.del_item( bundle_name )
-        online_status = @transporter.online?
-        @transporter.online = false
+        if @transporter
+          online_status = @transporter.online?
+          @transporter.online = false
+        end
         call( bundle_name, :flush )
         call( bundle_name, :close )
         @registry.delete( bundle_name )
@@ -465,7 +490,7 @@ module RSence
         if @info.include?( bundle_name )
           @info.delete( bundle_name )
         end
-        @transporter.online = online_status
+        @transporter.online = online_status if @transporter
         return unload_order
       end
     end
@@ -590,6 +615,15 @@ module RSence
       update_bundles!
     end
     
+    attr_reader :transporter
+    attr_reader :sessions
+    attr_reader :autoreload
+    attr_reader :name_prefix
+    attr_reader :plugin_paths
+    attr_reader :parent_manager
+    
+    
+    @@pluginmanager_id = 0
     # Initialize with a list of directories as plugin_paths.
     # It's an array containing all plugin directories to scan.
     def initialize( options )
@@ -603,21 +637,30 @@ module RSence
         :parent_manager => nil
       }.merge( options )
       
-      self.plugin_paths = options[:plugin_paths]
-      self.transporter = options[:transporter]
-      self.autoreload = options[:autoreload]
-      self.name_prefix = options[:name_prefix]
-      self.parent_manager = options[:parent_manager]
+      @pluginmanager_id = @@pluginmanager_id
+      @@pluginmanager_id += 1
+      
+      @closed = false
+      @plugin_paths = options[:plugin_paths]
+      
+      if options[:transporter]
+        @transporter = options[:transporter]
+        @sessions    = options[:transporter].sessions
+      end
+      
+      @autoreload = options[:autoreload]
+      @name_prefix = options[:name_prefix]
+      @parent_manager = options[:parent_manager]
       
       @deps = Dependencies.new( options[:resolved_deps], options[:resolved_categories] )
       
-      puts "Loading #{@name_prefix+' ' if @name_prefix}plugins..." if RSence.args[:verbose]
+      puts "Loading #{@name_prefix.to_s+' ' if @name_prefix}plugins..." if RSence.args[:verbose]
       init_bundles!
       puts %{Plugins #{"of #{@name_prefix} " if @name_prefix}loaded.} if RSence.args[:verbose]
       if @autoreload
         @thr = Thread.new do
           Thread.pass
-          while true
+          until @closed
             begin
               update_bundles!
             rescue => e
@@ -625,39 +668,10 @@ module RSence
             end
             sleep 3
           end
+          puts "No longer reloading plugins of #{@name_prefix}." if RSence.args[:verbose]
         end
       end
       
-    end
-    
-    attr_reader :transporter
-    attr_reader :sessions
-    def transporter=( transporter )
-      if transporter
-        @transporter = transporter
-        @sessions    = transporter.sessions
-      end
-    end
-    
-    attr_reader :autoreload
-    def autoreload=( autoreload )
-      @autoreload = autoreload
-    end
-    
-    attr_reader :name_prefix
-    def name_prefix=( name_prefix )
-      @name_prefix = name_prefix
-    end
-    
-    attr_reader :plugin_paths
-    def plugin_paths=( plugin_paths )
-      @plugin_paths = plugin_paths
-    end
-    
-    # Optionally set a parent plugin manager to fall back on
-    attr_reader :parent_manager
-    def parent_manager=( parent_manager )
-      @parent_manager = parent_manager
     end
     
   end

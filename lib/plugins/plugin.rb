@@ -178,7 +178,15 @@ module RSence
           @inited = true
         end
       end
-  
+      
+      def name_with_manager_s
+        if @info[:manager]
+          return "#{@info[:manager].to_s}:#{@name.to_s}"
+        else
+          return @name.to_s
+        end
+      end
+      
       # This method returns (or creates and returns) the entry in the session based on the name your plugin is registered as. It's advised to use this call instead of manually managing {Message#session msg#session} in most cases.
       #
       # Uses the first name registered for the plugin and converts it to a symbol.
@@ -187,7 +195,7 @@ module RSence
       #
       # @return [Hash] Plugin-specific session hash
       def get_ses( msg )
-        name_sym = name.to_sym
+        name_sym = name_with_manager_s.to_sym
         unless msg.session.has_key?( name_sym )
           msg.session[ name_sym ] = {}
         end
@@ -333,13 +341,14 @@ module RSence
         else
           default_value = 0
         end
-        ses[value_name] = HValue.new( msg, default_value, { :name => "#{@name}.#{value_name}" } )
+        name = name_with_manager_s
+        ses[value_name] = HValue.new( msg, default_value, { :name => "#{name}.#{value_name}" } )
         if value_properties.has_key?(:responders)
           value_properties[:responders].each do |responder|
             if responder.has_key?(:plugin)
               responder_plugin = responder[:plugin]
             else
-              responder_plugin = @name
+              responder_plugin = name
             end
             if responder.has_key?(:method)
               ses[value_name].bind( responder_plugin, responder[:method] )

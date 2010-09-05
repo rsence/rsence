@@ -22,12 +22,16 @@ module RSence
     # Install your sub-plugins into a directory named +plugins+ inside your plugin bundle.
     module PluginPlugins
       
+      # Makes @plugin_plugins accessible
+      attr :plugin_plugins
+      
       # Extended {#init}, delegates calls to the sub-plugins.
       def init
         super
         @plugin_plugins = RSence::PluginManager.new({
           :plugin_paths => [ bundle_path('plugins') ],
-          :autoreload => @plugins.autoreload,
+          :autoreload => false,
+          :name_prefix => name_with_manager_s.to_sym,
           :parent_manager => @plugins
         })
       end
@@ -42,6 +46,7 @@ module RSence
       def close
         super
         @plugin_plugins.delegate(:close)
+        @plugin_plugins.shutdown
       end
       
       # Extended {#flush}, delegates calls to the sub-plugins.
