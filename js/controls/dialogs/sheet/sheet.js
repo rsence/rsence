@@ -10,16 +10,21 @@
 /*** = Description
   ** HSheet is a container component that toggles its visibility
   ** based on its value. When the value is 0, it's visible, otherwise 
-  ** it's hidden. It expands to fill its parent view, the rect 
-  ** specifies the size of the sheet inside. The sheet is 
-  ** centered. It's practical when combined with button 
-  ** values. Also see HAlertSheet and HConfirmSheet components.
-  **
+  ** it's hidden. It expands to fill its parent view.
+  ** 
+  ** Its rect specifies the relative size and position of the centered inner
+  ** sheet, which acts as a subview.
+  ** 
+  ** It's practical when combined with button values.
+  ** 
+  ** Also see HAlertSheet and HConfirmSheet components.
+  ** 
   ***/
 var//RSence.Controls
 HSheet = HControl.extend({
+  
   componentName: 'sheet',
-
+  
 /** = Description
   * Shows of hides HSheet depending on the value.
   * If the value is 0 the HSheet#show() will be called. 
@@ -34,7 +39,7 @@ HSheet = HControl.extend({
       this.hide();
     }
   },
-
+  
 /** = Description
   * Draws the sheet rectangle once it has been created and 
   * if it has not been set as hidden by constructor.
@@ -45,13 +50,15 @@ HSheet = HControl.extend({
   **/
   drawRect: function() {
     if (this.parent && this.rect.isValid) {
-      var _this = this,
-          _elemId = _this.elemId,
-          _styl = ELEM.setStyle,
-          _rect = _this.rect,
-          _width = _rect.width,
-          _left = 0-Math.floor(_rect.width/2),
-          _height = _rect.height;
+      var
+      _this = this,
+      _elemId = _this.elemId,
+      _styl = ELEM.setStyle,
+      _rect = _this.rect,
+      _width = _rect.width,
+      _top = _rect.top,
+      _left = 0-Math.floor(_rect.width/2)+_rect.left,
+      _height = _rect.height;
       
       _styl( _elemId, 'left', '0px', true);
       _styl( _elemId, 'top', '0px', true);
@@ -65,7 +72,7 @@ HSheet = HControl.extend({
       if(_this['markupElemIds']){
         var _stateId = _this.markupElemIds['state'];
         _styl( _stateId, 'left', _left+'px', true );
-        _styl( _stateId, 'top', '0px', true );
+        _styl( _stateId, 'top', _top+'px', true );
         _styl( _stateId, 'width', _width+'px', true );
         _styl( _stateId, 'height', _height+'px', true );
       }
