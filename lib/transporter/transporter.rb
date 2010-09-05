@@ -46,7 +46,7 @@ module RSence
       @plugins = PluginManager.new( {
         :plugin_paths => RSence.config[:plugin_paths],
         :transporter => self,
-        :autoupdate => RSence.args[:autoupdate],
+        :autoreload => RSence.args[:autoupdate],
         :name_prefix => false,
         :resolved_deps => core_pkgs[:core],
         :resolved_categories => core_pkgs
