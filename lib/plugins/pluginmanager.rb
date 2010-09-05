@@ -87,20 +87,18 @@ module RSence
     # Calls the method +method_name+ with args +args+ of the plugin +plugin_name+.
     # Returns false, if no such plugin or method exists.
     def call( plugin_name, method_name, *args )
-      unless @name_prefix
-        plugin_name_s = plugin_name.to_s
-        if plugin_name_s.include?(':')
-          colon_index = plugin_name_s.index(':')
-          sub_manager_name = plugin_name_s[0..(colon_index-1)].to_sym
-          plugin_name = plugin_name_s[(colon_index+1)..-1].to_sym
-          if @registry.has_key?( sub_manager_name )
-            sub_manager = @registry[sub_manager_name]
-            if sub_manager.respond_to?( :plugin_plugins )
-              return sub_manager.plugin_plugins.call( plugin_name, method_name, *args )
-            end
+      plugin_name_s = plugin_name.to_s
+      if plugin_name_s.include?(':')
+        colon_index = plugin_name_s.index(':')
+        sub_manager_name = plugin_name_s[0..(colon_index-1)].to_sym
+        plugin_name = plugin_name_s[(colon_index+1)..-1].to_sym
+        if @registry.has_key?( sub_manager_name )
+          sub_manager = @registry[sub_manager_name]
+          if sub_manager.respond_to?( :plugin_plugins )
+            return sub_manager.plugin_plugins.call( plugin_name, method_name, *args )
           end
-          return false
         end
+        return false
       end
       plugin_name = plugin_name.to_sym
       if callable?( plugin_name, method_name )
