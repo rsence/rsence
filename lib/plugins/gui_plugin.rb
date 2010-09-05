@@ -29,18 +29,6 @@ module RSence
       # @return [:GUIPlugin]
       def self.bundle_type; :GUIPlugin; end
       
-      
-      # @private Placeholder for actual gui yaml file.
-      @@default_yaml_src = <<-END
-type: GUITree
-version: 0.6
-
-class: RSence.GUIApp
-options:
-  label: "Dummy Application"
-
-      END
-      
       # In addition to {Plugin__#init Plugin#init}, also automatically initializes a {GUIParser} instance as +@gui+
       #
       # @return [nil]
@@ -48,8 +36,11 @@ options:
         super
         yaml_src = file_read( "gui/#{@name}.yaml" )
         yaml_src = file_read( "gui/main.yaml" ) unless yaml_src
-        yaml_src = @@default_yaml_src unless yaml_src
-        @gui = GUIParser.new( self, yaml_src )
+        if yaml_src
+          @gui = GUIParser.new( self, yaml_src )
+        else
+          @gui = nil
+        end
         @client_pkgs = false
       end
   
@@ -79,6 +70,7 @@ options:
       #   end
       #
       def gui_params( msg )
+        return unless @gui
         { :values => @gui.values( get_ses( msg ) ) }
       end
       
@@ -147,11 +139,13 @@ options:
       #
       # @return [nil]
       def init_ui( msg )
+        return unless @gui
         @gui.init( msg, gui_params( msg ) )
       end
       
       # @private Automatically kills the UI using {GUIParser#kill}
       def kill_ui( msg )
+        return unless @gui
         @gui.kill( msg )
       end
       
