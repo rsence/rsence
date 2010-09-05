@@ -12,10 +12,17 @@
 // ..into this namespace.
 // Additional logic for handling the namespaces will however be required.
 var RSence = {
+  
+  // Configuration method for the html document of the server
   serverConf: function(_clientPrefix,_helloUrl){
     COMM.ClientPrefix=_clientPrefix;
     COMM.Transporter.HelloUrl=_helloUrl;
     HThemeManager.themePath=_clientPrefix+'/themes';
+  },
+  
+  // Structure reserved for JSONRenderer instances remotely populated by the server
+  guiTrees: {
+    
   }
 };
 

@@ -24,7 +24,7 @@
 //var//RSence.Foundation
 COMM.JSONRenderer = HClass.extend({
   
-  version: 0.6,
+  version: 0.7,
 
 /** = Description
   * Renders JSON structured data, see some of the demos for usage examples.
@@ -47,6 +47,9 @@ COMM.JSONRenderer = HClass.extend({
     this.scopes = [window];
     this.scopeDepth = 0;
     this.view = this.renderNode( this.data, this.parent );
+  },
+  die: function(){
+    this.view.die();
   },
   defineInScope: function( _definition ){
     var _isArr = (_definition instanceof Array),
