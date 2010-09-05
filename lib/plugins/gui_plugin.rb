@@ -35,9 +35,11 @@ module RSence
       def init
         super
         yaml_src = file_read( "gui/#{@name}.yaml" )
-        yaml_src = file_read( "gui/main.yaml" ) unless yaml_src
+        unless yaml_src
+          yaml_src = file_read( "gui/main.yaml" )
+        end
         if yaml_src
-          @gui = GUIParser.new( self, yaml_src )
+          @gui = GUIParser.new( self, yaml_src, @name )
         else
           @gui = nil
         end
@@ -128,9 +130,10 @@ module RSence
         uninstall_client_pkgs if @client_pkgs
       end
       
-      # @private Sends gui specification to the main plugin
-      def spec_ui( msg )
-        # TODO
+      # @private Returns structured, processed gui tree to the caller.
+      def struct_ui( msg )
+        return {} unless @gui
+        @gui.struct( msg, gui_params( msg ) )
       end
       
       # Automatically inits the UI using {GUIParser#init}
