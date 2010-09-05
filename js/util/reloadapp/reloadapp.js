@@ -127,7 +127,7 @@ ReloadApp = HApplication.extend({
         );
       }
     }).nu(
-      HRect.nu( _alertX, _alertY, _alertX+_alertWidth, _alertY+_alertHeight ),
+      HRect.nu( 0, 0, _alertWidth, _alertHeight ),
       _this, {
         label: _title,
         value: 0
