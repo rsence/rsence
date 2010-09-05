@@ -43,14 +43,14 @@ module RSence
       core_pkgs = {
         :core => [:transporter, :session_storage, :session_manager, :value_manager]
       }
-      @plugins = PluginManager.new(
-        RSence.config[:plugin_paths],
-        self,
-        RSence.args[:autoupdate],
-        false,
-        core_pkgs[:core],
-        core_pkgs
-      )
+      @plugins = PluginManager.new( {
+        :plugin_paths => RSence.config[:plugin_paths],
+        :transporter => self,
+        :autoupdate => RSence.args[:autoupdate],
+        :name_prefix => false,
+        :resolved_deps => core_pkgs[:core],
+        :resolved_categories => core_pkgs
+      })
       if RSence.launch_pid != Process.pid
         Process.kill( 'TERM', RSence.launch_pid )
       end

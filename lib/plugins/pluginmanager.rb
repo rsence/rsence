@@ -25,7 +25,13 @@ module RSence
     
     # Returns the registry data for plugin bundle +plugin_name+
     def registry( plugin_name )
-      return @registry[ plugin_name ]
+      if @registry.has_key?( plugin_name )
+        return @registry[ plugin_name ]
+      elsif @parent_manager
+        return @parent_manager.registry( plugin_name )
+      else
+        throw "Plugin not in registry: #{plugin_name.inspect}"
+      end
     end
     alias [] registry
     
@@ -37,6 +43,8 @@ module RSence
         elsif block == nil
           call( sym, *args )
         end
+      elsif @parent_manager
+        return @parent_manager.method_missing( sym, *args, &block )
       end
     end
     
@@ -584,20 +592,29 @@ module RSence
     
     # Initialize with a list of directories as plugin_paths.
     # It's an array containing all plugin directories to scan.
-    def initialize( plugin_paths, transporter=nil,
-                    autoreload=false, name_prefix=false,
-                    resolved_deps=[], resolved_categories={} )
-      if transporter
-        @transporter = transporter
-        @sessions    = transporter.sessions
-      end
-      @name_prefix = name_prefix
-      @plugin_paths = plugin_paths
-      @deps = Dependencies.new( resolved_deps, resolved_categories )
-      puts "Loading #{name_prefix+' ' if name_prefix}plugins..." if RSence.args[:verbose]
+    def initialize( options )
+      options = {
+        :plugin_paths => nil,
+        :transporter => nil,
+        :autoreload => false,
+        :name_prefix => false,
+        :resolved_deps => [],
+        :resolved_categories => {},
+        :parent_manager => nil
+      }.merge( options )
+      
+      self.plugin_paths = options[:plugin_paths]
+      self.transporter = options[:transporter]
+      self.autoreload = options[:autoreload]
+      self.name_prefix = options[:name_prefix]
+      self.parent_manager = options[:parent_manager]
+      
+      @deps = Dependencies.new( options[:resolved_deps], options[:resolved_categories] )
+      
+      puts "Loading #{@name_prefix+' ' if @name_prefix}plugins..." if RSence.args[:verbose]
       init_bundles!
-      puts %{Plugins #{"of #{name_prefix} " if name_prefix}loaded.} if RSence.args[:verbose]
-      if autoreload
+      puts %{Plugins #{"of #{@name_prefix} " if @name_prefix}loaded.} if RSence.args[:verbose]
+      if @autoreload
         @thr = Thread.new do
           Thread.pass
           while true
@@ -610,7 +627,39 @@ module RSence
           end
         end
       end
+      
     end
+    
+    attr_reader :transporter
+    attr_reader :sessions
+    def transporter=( transporter )
+      if transporter
+        @transporter = transporter
+        @sessions    = transporter.sessions
+      end
+    end
+    
+    attr_reader :autoreload
+    def autoreload=( autoreload )
+      @autoreload = autoreload
+    end
+    
+    attr_reader :name_prefix
+    def name_prefix=( name_prefix )
+      @name_prefix = name_prefix
+    end
+    
+    attr_reader :plugin_paths
+    def plugin_paths=( plugin_paths )
+      @plugin_paths = plugin_paths
+    end
+    
+    # Optionally set a parent plugin manager to fall back on
+    attr_reader :parent_manager
+    def parent_manager=( parent_manager )
+      @parent_manager = parent_manager
+    end
+    
   end
 end
 

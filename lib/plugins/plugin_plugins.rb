@@ -25,7 +25,11 @@ module RSence
       # Extended {#init}, delegates calls to the sub-plugins.
       def init
         super
-        @plugin_plugins = RSence::PluginManager.new( [ bundle_path('plugins') ] )
+        @plugin_plugins = RSence::PluginManager.new({
+          :plugin_paths => [ bundle_path('plugins') ],
+          :autoreload => @plugins.autoreload,
+          :parent_manager => @plugins
+        })
       end
       
       # Extended {#open}, delegates calls to the sub-plugins.
