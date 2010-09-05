@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.homepage  = 'http://www.rsence.org/'
   s.rubyforge_project = 'rsence-'
   prerelease  = s.version.to_s.end_with?('.pre')
+  s.name      = 'rsence-pre' if prerelease
   normalized_version = s.version.to_s.to_f
   s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of the RSence framework."
   s.has_rdoc  = 'yard'
@@ -44,8 +45,14 @@ END
   ].to_a
   s.files.reject! { |fn| fn.start_with? "." }
   s.files.push '.yardopts'
-  s.executables = [ 'rsence' ]
-  s.default_executable = 'rsence'
+  if prerelease
+    s.files.push 'bin/rsence-pre'
+    s.executables = [ 'rsence-pre' ]
+    s.default_executable = 'rsence-pre'
+  else
+    s.executables = [ 'rsence' ]
+    s.default_executable = 'rsence'
+  end
   s.required_ruby_version = '>= 1.8.7'
 end
 
