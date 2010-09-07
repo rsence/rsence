@@ -51,15 +51,19 @@ HRadioButtonList = HControl.extend({
       _listItem = _listItems[i];
       _value = _listItem[0];
       _label = _listItem[1];
-      _radioButton = HRadiobutton.nu(
-        [ 4, (i*23)+4, null, 23, 4, null ],
-        this, {
-          label: _label
-        }
-      );
-      this.listItemViews[i] = _radioButton;
+      _component = this.createComponent( i, _label );
+      this.listItemViews[i] = _component;
     }
     this.refreshValue();
+  },
+  
+  createComponent: function( i, _label ){
+    return HRadiobutton.nu(
+      [ 4, (i*23)+4, null, 23, 4, null ],
+      this, {
+        label: _label
+      }
+    );
   },
   
 /** = Description
@@ -91,6 +95,9 @@ HRadioButtonList = HControl.extend({
       }
     }
   }),
+  
+  
+  
   refreshValue: function(){
     var _value = this.value;
     if ( this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
