@@ -756,7 +756,7 @@ HView = HClass.extend({
   **/
   markupElemNames: ['bg', 'label', 'state', 'control', 'value', 'subview'],
   drawMarkup: function() {
-    ELEM.setStyle(this.elemId, 'display', 'none', true);
+    // ELEM.setStyle(this.elemId, 'display', 'none', true);
     
     // continue processing from here on:
     var _markupStatus = this._loadMarkup();
@@ -774,7 +774,7 @@ HView = HClass.extend({
       }
     }
     
-    ELEM.setStyle(this.elemId, 'display', this.displayMode );
+    // ELEM.setStyle(this.elemId, 'display', this.displayMode );
     return this;
   },
   
