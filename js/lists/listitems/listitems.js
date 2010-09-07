@@ -20,7 +20,7 @@
   ## be unique.
   ##
   ## == Important
-  ** The parent object of a HListItem needs to be a compatible hash, like HRadiobuttonList.
+  ** The parent object of a HListItem needs to be a compatible component, like HRadioButtonList.
   ##
   ***/
 var//RSence.Lists
