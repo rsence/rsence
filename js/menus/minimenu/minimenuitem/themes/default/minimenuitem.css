@@ -1,0 +1,45 @@
+
+.minimenuitem_control,
+.minimenuitem_label,
+.minimenuitem_state {
+  position: absolute;
+  top: 0px; height: 15px;
+}
+
+.minimenuitem_control {
+  left: 0px; right: 0px;
+  cursor: pointer;
+}
+.minimenuitem_control:hover {
+  background-color: #fff;
+}
+
+.minimenuitem_state {
+  left: 0px; top: 1px; height: 12px; width: 12px;
+  background-image: #{this.getCssFilePath('minimenuitem_checkmark.png')};
+}
+.checked .minimenuitem_state {
+  visibility: inherit;
+}
+.unchecked .minimenuitem_state {
+  visibility: hidden;
+}
+
+.minimenuitem_label {
+  left: 14px; right: 11px; top: 0px;
+  height: 15px; line-height: 15px;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space:nowrap;
+  vertical-align: middle;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: #333;
+}
+.minimenuitem_control:hover > .minimenuitem_label {
+  color: #000;
+}
+.disabled .minimenuitem_control {
+  opacity: 0.8;
+}
