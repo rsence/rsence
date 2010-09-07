@@ -288,6 +288,9 @@
         - checkboxlist        # HCheckboxList
         - radiobuttonlist     # HRadiobuttonList
         - propertylist        # HPropertyList
+        - propertylisteditor  # HPropertyEditor
+        - minimenu            # HMiniMenu
+        - minimenuitem        # HMiniMenuItem
 
     # Special packages that include other packages (not used currently)
     :compound_packages:
