@@ -841,21 +841,27 @@ EVENT = {
   **/
   keyDown: function(e) {
     var _this = EVENT,
-        _theKeyCode = e.keyCode;
+        _theKeyCode = e.keyCode,
+        _keyDownStateForActiveControl = _this.activeControl?_this.focusOptions[_this.activeControl.elemId].keyDown:false,
+        _repeat = (_keyDownStateForActiveControl === 'repeat'),
+        _stopEvent = false;
     _this._modifiers(e);
     if(!_this.status[_this.cmdKeyDown] && _this._detectCmdKey(e.keyCode)){
       _this.status[_this.cmdKeyDown] = true;
     }
-    if (_this.activeControl && _this.focusOptions[_this.activeControl.elemId].keyDown === true) {
-      Event.stop(e);
-      // Workaround for msie rapid fire keydown
-      if (_this._lastKeyDown !== _theKeyCode) {
-        _this.activeControl.keyDown(_theKeyCode);
+    if (_this.activeControl && _keyDownStateForActiveControl) {
+      if ((_this._lastKeyDown !== _theKeyCode) || _repeat) {
+        if(_this.activeControl.keyDown(_theKeyCode)){
+          _stopEvent = true;
+        }
       }
     }
     // Insert key to the realtime array, remove in keyUp
     if (_this.status[_this.keysDown].indexOf(_theKeyCode) === -1) {
       _this.status[_this.keysDown].push(_theKeyCode);
+    }
+    if (!_this.status[_this.cmdKeyDown] && _stopEvent){
+      Event.stop(e);
     }
     _this._lastKeyDown = _theKeyCode;
   },
@@ -873,19 +879,27 @@ EVENT = {
         _theKeyCode = e.keyCode,
         _keyCodeIndex,
         i = 0,
+        _stopEvent = false,
         _ctrlId,
         _ctrl;
     _this._modifiers(e);
     _this._lastKeyDown = null;
     if (_this.activeControl && _this.focusOptions[_this.activeControl.elemId].keyUp === true) {
-      _this.activeControl.keyUp(_theKeyCode);
+      if(_this.activeControl.keyUp(_theKeyCode)){
+        _stopEvent = true;
+      }
     }
     for (; i < _this.textEnterCtrls.length; i++) {
       _ctrlId = _this.textEnterCtrls[i];
       _ctrl = HSystem.views[_ctrlId];
       if (_ctrl.textEnter) {
-        _ctrl.textEnter();
+        if(_ctrl.textEnter()){
+          _stopEvent = true;
+        }
       }
+    }
+    if (!_this.status[_this.cmdKeyDown] && _stopEvent){
+      Event.stop(e);
     }
     if(_this.status[_this.cmdKeyDown] && _this._detectCmdKey(e.keyCode)){
       _this.status[_this.cmdKeyDown] = false;
@@ -897,12 +911,10 @@ EVENT = {
     }
   },
 
-  /* Prevents the onKeyPress event (key being hold down; we don't need that event) */
+  /* Using keyPress as an alias for the keyDown event */
   keyPress: function(e) {
     var _this = EVENT;
-    if (_this.activeControl && _this.focusOptions[_this.activeControl.elemId].keyDown === true) {
-      Event.stop(e);
-    }
+    _this.keyDown(e);
   },
 
 
