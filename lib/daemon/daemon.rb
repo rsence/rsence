@@ -269,9 +269,18 @@ module RSence
   # @private  Simple process control, constructed here and called from Daemon::Controller
   class HTTPDaemon
     
+    def ps_name
+      config = RSence.config
+      url = "http://#{config[:http_server][:bind_address]}:#{config[:http_server][:port]}#{config[:base_url]}"
+      env_path = RSence.args[:env_path]
+      "RSence-#{RSence.version} on #{url} in #{env_path}"
+    end
+    
     # RSence top-level run handler. Almost identical to start.
     def run
-    
+      
+      $0 = ps_name
+      
       puts "Starting as a foreground process." if RSence.args[:verbose]
       puts "Press CTRL-C to terminate."
     
@@ -313,7 +322,9 @@ module RSence
     
     # Called by Controller#start, contains RSence-specific operations
     def start
-    
+      
+      $0 = ps_name
+      
       @transporter = Transporter.new
     
       conf = RSence.config[:http_server]
