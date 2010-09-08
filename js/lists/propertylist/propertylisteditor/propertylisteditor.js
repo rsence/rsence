@@ -15,7 +15,7 @@ var//RSence.Lists
 HPropertyListEditor = HControl.extend({
   
   defaultEvents: {
-    keyDown: true
+    keyDown: 'repeat'
   },
   
   keyDown: function(chr){
