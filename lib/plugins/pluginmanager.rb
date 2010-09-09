@@ -24,7 +24,8 @@ module RSence
     attr_reader :transporter, :sessions
     
     # Returns the registry data for plugin bundle +plugin_name+
-    def registry( plugin_name )
+    def registry( plugin_name=false )
+      return @registry unless plugin_name
       if @registry.has_key?( plugin_name )
         return @registry[ plugin_name ]
       elsif @parent_manager
@@ -71,9 +72,25 @@ module RSence
         inst.init if inst.respond_to? :init and not inst.inited
         @registry[ bundle_name ] = inst
         if inst.respond_to?( :match ) and ( inst.respond_to?( :get ) or inst.respond_to?( :post ) )
-          @servlets.push( bundle_name )
+          add_servlet( bundle_name )
         end
       end
+    end
+    
+    def add_servlet( bundle_name )
+      if @parent_manager
+        sub_name = "#{@name_prefix.to_s}:#{bundle_name.to_s}"
+        @parent_manager.add_servlet( sub_name )
+      end
+      @servlets.push( bundle_name )
+    end
+    
+    def del_servlet( bundle_name )
+      if @parent_manager
+        sub_name = "#{@name_prefix.to_s}:#{bundle_name.to_s}"
+        @parent_manager.del_servlet( sub_name )
+      end
+      @servlets.delete( bundle_name )
     end
     
     def callable?( plugin_name, method_name )
@@ -87,6 +104,7 @@ module RSence
     # Calls the method +method_name+ with args +args+ of the plugin +plugin_name+.
     # Returns false, if no such plugin or method exists.
     def call( plugin_name, method_name, *args )
+      puts "#{plugin_name}.#{method_name}" if RSence.args[:trace_delegate]
       plugin_name_s = plugin_name.to_s
       if plugin_name_s.include?(':')
         colon_index = plugin_name_s.index(':')
@@ -147,21 +165,10 @@ module RSence
     def match_servlet_uri( uri, req_type=:get )
       match_score = {}
       @servlets.each do | servlet_name |
-        servlet = @registry[ servlet_name ]
-        next unless servlet.respond_to?( req_type )
-        begin
-          if servlet.match( uri, req_type )
-            score = servlet.score
-            match_score[ score ] = [] unless match_score.has_key? score
-            match_score[ score ].push( servlet_name )
-          end
-        rescue => e
-          plugin_error(
-            e,
-            "RSence::PluginManager.match_servlet_uri",
-            "servlet: #{servlet_name.inspect}, req_type: #{req_type.inspect}, uri: #{uri.inspect}",
-            servlet_name
-          )
+        if call( servlet_name, :match, uri, req_type )
+          score = call( servlet_name, :score )
+          match_score[ score ] = [] unless match_score.has_key? score
+          match_score[ score ].push( servlet_name )
         end
       end
       match_scores = match_score.keys.sort
@@ -193,7 +200,7 @@ module RSence
       return false unless matches_order
       matches_order.each do |servlet_name|
         begin
-          @registry[servlet_name].send( req_type, req, resp, session )
+          call( servlet_name, req_type, req, resp, session )
           return true
         rescue => e
           plugin_error(
@@ -483,7 +490,7 @@ module RSence
           end
         end
         if @servlets.include?( bundle_name )
-          @servlets.delete( bundle_name )
+          del_servlet( bundle_name )
         end
         if @info.include?( bundle_name )
           @info.delete( bundle_name )
@@ -620,11 +627,11 @@ module RSence
     attr_reader :plugin_paths
     attr_reader :parent_manager
     
-    
     @@pluginmanager_id = 0
     # Initialize with a list of directories as plugin_paths.
     # It's an array containing all plugin directories to scan.
     def initialize( options )
+      
       options = {
         :plugin_paths => nil,
         :transporter => nil,
