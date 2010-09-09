@@ -21,11 +21,13 @@ HPropertyListEditor = HControl.extend({
   keyDown: function(chr){
     if(chr===38){
       this.parent.parent.editPrevItem();
+      return true;
     }
     else if(chr===40){
       this.parent.parent.editNextItem();
+      return true;
     }
-    return true;
+    return false;
   },
   
   refreshValue: function(){
@@ -55,6 +57,13 @@ HPropertyListEditor = HControl.extend({
     this.resizeKeyColumn();
   },
   
+  lostActiveStatus: function(newActive){
+    this.base();
+    if(newActive && ((newActive === this) || (newActive.parents.indexOf(this) !== -1)) ){
+      return;
+    }
+    this.hide();
+  },
   
   resizeKeyColumn: function(){
     
@@ -105,6 +114,10 @@ HPropertyListEditor = HControl.extend({
     
     this.nameEditor = HTextControl.extend({
       boldTypes: ['a','h'],
+      lostActiveStatus: function(newActive){
+        this.parent.lostActiveStatus(newActive);
+        this.base();
+      },
       refreshValue: function(){
         if(this.drawn){
           if(this.boldTypes.indexOf(this.parent.value.type)!==-1){
@@ -130,7 +143,12 @@ HPropertyListEditor = HControl.extend({
     height = this.nameEditor.rect.height;
     
     if(!opts.hideTypeColumn){
-      this.typeEditor = HMiniMenu.nu(
+      this.typeEditor = HMiniMenu.extend({
+        lostActiveStatus: function(newActive){
+          this.parent.lostActiveStatus(newActive);
+          this.base();
+        }
+      }).nu(
         [0,1,1,height],
         this, {
           value: 'a',
@@ -152,6 +170,10 @@ HPropertyListEditor = HControl.extend({
     }
     
     this.stringEditor = HTextArea.extend({
+      lostActiveStatus: function(newActive){
+        this.parent.lostActiveStatus(newActive);
+        this.base();
+      }
     }).nu(
       [0,-1,null,height,4,null],
       this, {
@@ -164,6 +186,10 @@ HPropertyListEditor = HControl.extend({
     );
     
     this.numberEditor = HNumericTextControl.extend({
+      lostActiveStatus: function(newActive){
+        this.parent.lostActiveStatus(newActive);
+        this.base();
+      }
     }).nu(
       [0,-1,null,height,4,null],
       this, {
