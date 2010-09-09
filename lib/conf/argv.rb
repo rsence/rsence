@@ -19,6 +19,25 @@ module RSence
     return (not ['i386-mingw32','x86-mingw32'].include?(RUBY_PLATFORM))
   end
   
+  # @private  Returns true, if platform is linux
+  def self.linux?
+    return RUBY_PLATFORM.end_with?('-linux')
+  end
+  
+  # @private  Returns true, if platform is Mac OS X
+  def self.darwin?
+    return RUBY_PLATFORM.include?('-darwin')
+  end
+  
+  # @private  Returns signal name that resembles INFO or PWR (extra signal to poll for server status)
+  def self.info_signal_name
+    if self.linux?
+      return 'PWR'
+    else
+      return 'INFO'
+    end
+  end
+  
   # @private  ARGVParser is the "user interface" as a command-line argument parser.
   #           It parses the command-line arguments and sets up things accordingly.
   class ARGVParser
@@ -327,7 +346,8 @@ module RSence
       end
     end
     
-    # Main argument parser for the status command, sends the INFO POSIX signal to the process, if running.
+    # Main argument parser for the status command, sends the INFO (or PWR on linux) POSIX signal to
+    # the process, if running.
     # Checks if the process responds on the port and address it's configured for.
     def parse_status_argv
       init_args
@@ -406,8 +426,9 @@ module RSence
         pid_fn = config[:daemon][:pid_fn]
         if File.exists?( pid_fn )
           pid = File.read( pid_fn ).to_i
+          sig_name = RSence.info_signal_name
           pid_status = RSence::SIGComm.wait_signal_response(
-            pid, pid_fn, 'INFO', 3
+            pid, pid_fn, sig_name, 3
           )
         else
           warn @@strs[:messages][:no_pid_file] if @args[:verbose]

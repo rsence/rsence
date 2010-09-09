@@ -47,7 +47,7 @@ module RSence
     end
   
     def self.responds?( daemon )
-      wait_signal_response( daemon, 'INFO' )
+      wait_signal_response( daemon, RSence.info_signal_name )
     end
   
     # Reads the pid file and calls the process.
@@ -123,9 +123,9 @@ module RSence
         daemon.alrm
         write_signal_response( daemon, 'ALRM' )
       end
-      Signal.trap( 'INFO' ) do 
+      Signal.trap( RSence.info_signal_name ) do 
         daemon.info
-        write_signal_response( daemon, 'INFO' )
+        write_signal_response( daemon, RSence.info_signal_name )
       end
       ['INT', 'TERM', 'KILL'].each do | signal |
         Signal.trap( signal ) do
@@ -355,7 +355,7 @@ module RSence
     #   save
     # end
     
-    # Called on INFO signals ("Alive?")
+    # Called on INFO (PWR) signals ("Alive?")
     def info
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- RSence version #{RSence.version} is running."
     end
