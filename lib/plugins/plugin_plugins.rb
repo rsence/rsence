@@ -32,7 +32,8 @@ module RSence
           :plugin_paths => [ bundle_path('plugins') ],
           :autoreload => false,
           :name_prefix => name_with_manager_s.to_sym,
-          :parent_manager => @plugins
+          :parent_manager => @plugins,
+          :resolved_deps => [:system]
         })
       end
       
