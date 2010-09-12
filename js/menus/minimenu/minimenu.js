@@ -17,8 +17,7 @@ HMiniMenu = HRadioButtonList.extend({
   componentName: 'minimenu',
   
   defaultEvents: {
-    mouseDown: true,
-    mouseUp: true,
+    draggable: true,
     click: true
   },
   
@@ -52,7 +51,7 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   click: function(){
-    this.mouseDown();
+    this.menuShow();
   },
   
   refreshValue: function(){
@@ -60,22 +59,40 @@ HMiniMenu = HRadioButtonList.extend({
     for(var i=0;i<this.listItems.length;i++){
       if(this.listItems[i][0]===this.value){
         this.setLabel( this.listItems[i][1] );
-        break;
+        return;
       }
     }
   },
   
-  mouseDown: function(){
+  menuShow: function(){
     this.repositionMenuItems();
     this.menuItemView.bringToFront();
     this.menuItemView.show();
     return true;
   },
   
+  menuHide: function(){
+    this.menuItemView.sendToBack();
+    this.menuItemView.hide();
+  },
+  
+  startDrag: function(x,y){
+    this.dragStart = [x,y];
+    this.menuShow();
+  },
+  
   lostActiveStatus: function(newActive){
-    this.base(newActive);
-    if((newActive.parent !== this.menuItemView) && (newActive !== this.menuItemView)){
-      this.menuItemView.hide();
+    this.menuHide();
+  },
+  
+  endDrag: function(x,y){
+    if( (Math.round(this.dragStart[0]*0.2)===Math.round(x*0.2)) &&
+        (Math.round(this.dragStart[1]*0.2)===Math.round(y*0.2))
+    ){
+      this.menuShow();
+    }
+    else {
+      this.menuHide();
     }
   },
   
@@ -85,15 +102,21 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   drawSubviews: function(){
+    this.markupElemIds.subview = 0;
     this.menuItemView = HView.extend({
-      drawSubviews: function(){
-        this.setStyle( 'background-color','#f6f6f6' );
-        this.setStyle( 'border', '1px solid #999' );
+      bringToFront: function(){
+        this.setStyle('z-index',this.app.views.length);
       }
     }).nu(
       [ this.rect.left, this.rect.top, this.rect.width, 500 ],
-      this.app, {
-        visible: false
+      this, {
+        visible: false,
+        style: [
+          ['background-color','#f6f6f6'],
+          ['border', '1px solid #999'],
+          ['overflow-y', 'auto'],
+          ['opacity', 0.9]
+        ]
       }
     );
   },

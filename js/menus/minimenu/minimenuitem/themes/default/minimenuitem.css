@@ -37,7 +37,7 @@
   font-size: 11px;
   color: #333;
 }
-.minimenuitem_control:hover > .minimenuitem_label {
+.minimenuitem_label:hover {
   color: #000;
 }
 .disabled .minimenuitem_control {

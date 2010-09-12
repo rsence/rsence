@@ -22,7 +22,7 @@ HMiniMenuItem = HRadioButton.extend({
   
   click: function(){
     this.base();
-    this.parent.hide();
+    EVENT.changeActiveControl(this.parent.parent);
   },
   
   mouseUp: function(){

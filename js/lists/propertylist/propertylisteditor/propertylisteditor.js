@@ -59,7 +59,9 @@ HPropertyListEditor = HControl.extend({
   
   lostActiveStatus: function(newActive){
     this.base();
-    if(newActive && ((newActive === this) || (newActive.parents.indexOf(this) !== -1)) ){
+    if( newActive &&
+      ( (newActive === this) || (newActive.parents.indexOf(this) !== -1) )
+    ){
       return;
     }
     this.hide();
@@ -111,12 +113,11 @@ HPropertyListEditor = HControl.extend({
     var
     parent = this.parent.parent,
     opts = parent.options;
-    
     this.nameEditor = HTextControl.extend({
       boldTypes: ['a','h'],
       lostActiveStatus: function(newActive){
-        this.parent.lostActiveStatus(newActive);
         this.base();
+        this.parent.lostActiveStatus(newActive);
       },
       refreshValue: function(){
         if(this.drawn){
@@ -141,7 +142,6 @@ HPropertyListEditor = HControl.extend({
     
     var
     height = this.nameEditor.rect.height;
-    
     if(!opts.hideTypeColumn){
       this.typeEditor = HMiniMenu.extend({
         lostActiveStatus: function(newActive){

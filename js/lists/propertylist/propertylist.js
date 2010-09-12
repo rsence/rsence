@@ -21,13 +21,13 @@ HPropertyList = HControl.extend({
     click: true
   },
   
-  controlDefaults: (HControlDefaults.extend({
+  controlDefaults: HControlDefaults.extend({
     keyColumnWidth: 100,
     hideTypeColumn: false,
     useEditor: false,
     rowHeight: 15,
     keyIndent: 8
-  })),
+  }),
   
   click: function(x,y){
     if(this.options.useEditor){
@@ -91,10 +91,17 @@ HPropertyList = HControl.extend({
     this.separatortParentElemId = separatorParentElemId;
 
     this.propertyItems = [];
-    
     // Editor initialization
     if(this.options.useEditor){
-      this.editorValue = HValue.nu( false, [ 'test', 's', 'Test String' ] );
+      this.editorValue = HValue.nu(
+        false, {
+          top: 0,
+          left: 0,
+          type: 'h',
+          name: '--',
+          value: {}
+        }
+      );
       this.editor = HPropertyListEditor.nu(
         [0,0,null,this.options.rowHeight+2,0,null],
         this.contentView, {
@@ -495,7 +502,7 @@ HPropertyList = HControl.extend({
     }
     
     this.selectedItem = itemNum;
-    this.editorValue.set(this.valueTokens[itemNum]);
+    this.editorValue.set( COMM.Values.clone(this.valueTokens[itemNum]) );
     this.editor.show();
     EVENT.changeActiveControl(this.editor);
     this.editor.offsetTo( 0, targetY );
