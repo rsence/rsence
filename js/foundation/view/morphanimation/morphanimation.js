@@ -63,7 +63,7 @@ HMorphAnimation = HClass.extend({
       this._animateTo(_obj, _duration);
     }
     else {
-      throw "Wrong argument type.";
+      this._animateTo(_obj, _duration);
     }
     return this;
   },
@@ -77,7 +77,7 @@ HMorphAnimation = HClass.extend({
   * is still in action.
   *  
   */
-  stopAnimation: function() {
+  stopAnimation: function(_target) {
     if (this._animateInterval) {
       // Stop the animation interval only if it has been set.
       window.clearInterval(this._animateInterval);
@@ -102,10 +102,45 @@ HMorphAnimation = HClass.extend({
     return this;
   },
   
+  _animFunction: function(_that,_target,_startTime,_duration){
+    return function(){
+      if(!_that){
+        return;
+      }
+      var _rect = _target;
+      _that._animateStep({
+        startTime: _startTime,
+        duration: _duration,
+        // Linear transition effect.
+        transition: function(t, b, c, d) { return c * t / d + b; },
+        props: [{
+          prop: 'left',
+          from: _that.rect.left,
+          to: _rect.left,
+          unit: 'px'
+        },{
+          prop: 'top',
+          from: _that.rect.top,
+          to: _rect.top,
+          unit: 'px'
+        },{
+          prop: 'width',
+          from: _that.rect.width,
+          to: _rect.width,
+          unit: 'px'
+        },{
+          prop: 'height',
+          from: _that.rect.height,
+          to: _rect.height,
+          unit: 'px'
+        }]
+      });
+    };
+  },
   
   // --Private method.++
   // --Starts the animation with the target _rect.++
-  _animateTo: function(_rect, _duration, _fps) {
+  _animateTo: function(_target, _duration, _fps) {
     
     if (null === _duration || undefined === _duration) {
       _duration = 500; // default duration is half second
@@ -120,41 +155,9 @@ HMorphAnimation = HClass.extend({
       this.onAnimationStart();
       
       var _startTime = new Date().getTime();
-      
-      var _that = this;
       this._animateInterval = window.setInterval(
-        function() {
-          if(!_that){
-            return;
-          }
-          _that._animateStep({
-            startTime: _startTime,
-            duration: _duration,
-            // Linear transition effect.
-            transition: function(t, b, c, d) { return c * t / d + b; },
-            props: [{
-              prop: 'left',
-              from: _that.rect.left,
-              to: _rect.left,
-              unit: 'px'
-            },{
-              prop: 'top',
-              from: _that.rect.top,
-              to: _rect.top,
-              unit: 'px'
-            },{
-              prop: 'width',
-              from: _that.rect.width,
-              to: _rect.width,
-              unit: 'px'
-            },{
-              prop: 'height',
-              from: _that.rect.height,
-              to: _rect.height,
-              unit: 'px'
-            }]
-          });
-        }, Math.round(1000 / _fps)
+        this._animFunction(this, _target, _startTime, _duration),
+        Math.round(1000 / _fps)
       );
     }
     return this;
@@ -165,21 +168,28 @@ HMorphAnimation = HClass.extend({
   // --Moves the view for one step. This gets called repeatedly when the animation++
   // --is happening.++
   _animateStep: function(_obj) {
-    
     var _time = new Date().getTime(), i;
     if (_time < _obj.startTime + _obj.duration) {
       var _cTime = _time - _obj.startTime;
       
       // Handle all the defined properties.
       for (i = 0; i < _obj.props.length; i++) {
-        var _from = _obj.props[i].from;
-        var _to = _obj.props[i].to;
+        var
+        _from = _obj.props[i].from,
+        _to = _obj.props[i].to;
         
         if (_from !== _to) {
           // The value of the property at this time.
-          var _propNow = _obj.transition(_cTime, _from, (_to - _from),
-            _obj.duration);
-          ELEM.setStyle(this.elemId,_obj.props[i].prop, _propNow + _obj.props[i].unit);
+          var
+          _key = _obj.props[i].prop,
+          _propNow = _obj.transition(
+            _cTime, _from, (_to - _from), _obj.duration
+          ),
+          _unit = _obj.props[i].unit;
+          if(_unit){
+            _propNow += _unit;
+          }
+          ELEM.setStyle(this.elemId,_key, _propNow);
         }
       }
       
