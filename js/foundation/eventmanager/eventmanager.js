@@ -131,7 +131,7 @@ EVENT = {
     var _this = EVENT;
     _this.hovered = [];
     // items currently under the mouse cursor
-    _this.hoverInterval = 50;
+    _this.hoverInterval = 200;
     // 50 means send hover events at most with 50ms intervals
     _this.hoverTimer = new Date().getTime();
     // Time since last hover event triggered
@@ -479,12 +479,14 @@ EVENT = {
             _hoverIndex = _this.hovered[j];
             if (_hoverIndex !== _elemId && _this.focusOptions[_hoverIndex].ctrl) {
               _dropCtrl = _this.focusOptions[_hoverIndex].ctrl;
-              if (!_this.topmostDroppable ||
-              // First time
-              _dropCtrl.zIndex() > _this.topmostDroppable.zIndex() ||
-              // Z beaten
-              _dropCtrl.supr === _this.topmostDroppable) {
+              if (
+                // First time
+                !_this.topmostDroppable ||
+                // Z beaten
+                _dropCtrl.zIndex() > _this.topmostDroppable.zIndex() ||
                 // subview
+                _dropCtrl.parent === _this.topmostDroppable
+              ) {
                 if (_this.focusOptions[_dropCtrl.elemId].droppable) {
                   _this.topmostDroppable = _dropCtrl;
                   // Finally, the item must accept drop events.
@@ -526,6 +528,7 @@ EVENT = {
         i = 0,
         _ctrl,
         _elem,
+        _rect,
         _pos,
         _size,
         _coords,
@@ -538,10 +541,13 @@ EVENT = {
       if(_ctrl.drawn){
         _elem = ELEM.get(i);
         if (!_this._coordCacheFlag || !_this._coordCache[i]) {
-          _pos = ELEM.getVisiblePosition(_ctrl.elemId);
-          // [x,y]
-          _size = ELEM.getVisibleSize(_ctrl.elemId);
-          // [w,h]
+          _rect = _ctrl.rect;
+          _pos = [_rect.left,_rect.top];
+          _size = [_rect.width,_rect.height];
+          // _pos = ELEM.getVisiblePosition(_ctrl.elemId);
+          // // [x,y]
+          // _size = ELEM.getVisibleSize(_ctrl.elemId);
+          // // [w,h]
           _this._coordCache[i] = [_pos[0], _pos[1], _size[0], _size[1]];
         }
         _coords = _this._coordCache[i];
@@ -713,28 +719,40 @@ EVENT = {
     }
     return true;
   },
-
+  
+  focusTrace: false,
+  prevActiveCtrl: null,
+  
 /** Changes active ctrl.
   * The previous active ctrl gets the _lostActiveStatus pseudo-event,
   * The new active ctrl gets the _gainedActiveStatus pseudo-event
   **/
   changeActiveControl: function(_ctrl) {
-    //console.log('EVENT.changeActiveControl: ',_ctrl);
-    var _this = EVENT,
-        // Store the currently active control so we can inform it, if it no longer is the active control.
-        _prevActiveCtrl = _this.activeControl;
+    var
+    _this = EVENT,
+    // Store the currently active control so we can inform it,
+    // if it's no longer the active control.
+    _prevActiveCtrl = _this.activeControl;
     // Did the active control change?
-    if (_ctrl !== _prevActiveCtrl) {
-      if (_prevActiveCtrl) {
+    if ((_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || _prevActiveCtrl._lostActiveStatus)) {
+      if (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus) {
         // Previously active control just lost the active status.
         _prevActiveCtrl.active = false;
         _prevActiveCtrl._lostActiveStatus(_ctrl);
+        if(_this.focusTrace){
+          _prevActiveCtrl.setStyle('border','2px solid green');
+          _this.prevActiveCtrl && _this.prevActiveCtrl.setStyle('border','2px solid blue');
+        }
+        _this.prevActiveCtrl = _prevActiveCtrl;
       }
-      if (_ctrl) {
+      if (_ctrl && _ctrl._gainedActiveStatus) {
         // A new control gained the active status.
         _ctrl.active = true;
         _this.activeControl = _ctrl;
         _ctrl._gainedActiveStatus(_prevActiveCtrl);
+        if(_this.focusTrace){
+          _ctrl.setStyle('border','2px solid red');
+        }
       }
       else {
         _this.activeControl = null;
