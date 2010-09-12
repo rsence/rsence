@@ -129,16 +129,35 @@ COMM = {
         _username = _options.username?_options.username:null,
         _password = _options.username?_options.password:null;
     if(!_options.onFailure){
-      _this.onFailure = function(resp){console.log('No failure handler specified, response: ',resp);};
+      _this.onFailure = function(resp){
+        console.log(
+          'No failure handler specified, response: ',
+          resp
+        );
+      };
     }
     if(!_options.onSuccess){
-      _this.onSuccess = function(resp){console.log('No success handler specified, response: ',resp);};
+      _this.onSuccess = function(resp){
+        console.log('No success handler specified, response: ',resp);
+      };
     }
     if(!_options.on302){
       /** Redirection handler **/
       _this.on503 = function(_this){
-        var _retryAfter = parseInt(_this.X.getResponseHeader('Retry-After'),10)*1000,
-            _timeout = setTimeout(function(){COMM.request(_this.url,_this.options);},_retryAfter);
+        var
+        _retryAfter = parseInt(
+          _this.X.getResponseHeader('Retry-After'),
+          10
+        )*1000,
+        _timeout = setTimeout(
+          function(){
+            COMM.request(
+              _this.url,
+              _this.options
+            );
+          },
+          _retryAfter
+        );
       };
     }
     _this.url = _url;
@@ -148,7 +167,10 @@ COMM = {
       _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);
     }
     if(!_async){
-      console.log("WARNING: Synchronous "+_method+" request to "+_url+", these will fail on the Symbian web browser.");
+      console.log(
+        "WARNING: Synchronous "+_method+" request to "+_url+
+        ", these will fail on the Symbian web browser."
+      );
     }
     _this.X.open(
       _method,

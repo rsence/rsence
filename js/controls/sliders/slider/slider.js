@@ -36,7 +36,7 @@ HSlider = HControl.extend({
   
   defaultEvents: {
     draggable: true,
-    keyDown: true,
+    keyDown: 'repeat',
     keyUp: true,
     mouseWheel: true
   },
@@ -44,8 +44,6 @@ HSlider = HControl.extend({
   controlDefaults: (HControlDefaults.extend({
     minValue: 0,
     maxValue: 1,
-    repeatDelay: 300,
-    repeatInterval: 50,
     inverseAxis: false
   })),
   
@@ -154,12 +152,10 @@ HSlider = HControl.extend({
     // Arrow keys move the thumb 5% at a time.
     if ( (_keycode === Event.KEY_LEFT && !this._isVertical) ||
       (_keycode === Event.KEY_DOWN && this._isVertical) ) {
-      this._moving = true;
       this._moveThumb(-0.05);
     }
     else if ( (_keycode === Event.KEY_RIGHT && !this._isVertical) ||
       (_keycode === Event.KEY_UP && this._isVertical) ) {
-      this._moving = true;
       this._moveThumb(0.05);
     }
     // Home key moves the thumb to the beginning and end key to the end.
@@ -171,15 +167,12 @@ HSlider = HControl.extend({
     }
     // Page up and page down keys move the thumb 25% at a time.
     else if (_keycode === Event.KEY_PAGEDOWN) {
-      this._moving = true;
       this._moveThumb(-0.25);
     }
     else if (_keycode === Event.KEY_PAGEUP) {
-      this._moving = true;
       this._moveThumb(0.25);
     }
-    
-    
+    return true;
   },
   
   
@@ -191,7 +184,7 @@ HSlider = HControl.extend({
   *
   **/
   keyUp: function(_keycode) {
-    this._moving = false;
+    return true;
   },
   
   
@@ -223,29 +216,9 @@ HSlider = HControl.extend({
   
   // --private method++
   _moveThumb: function(_valueChange, _rate) {
-    
-    if (!_rate) {
-      // --If the key is held down, wait for a while before starting repeat.++
-      _rate = this.options.repeatDelay;
-    }
-    else if (_rate === this.options.repeatDelay) {
-      _rate = this.options.repeatInterval;
-    }
-    
-    if (this._moving && this.active) {
-      
+    if (this.active) {
       var _value = (this.maxValue - this.minValue) * _valueChange;
-      
       this.setValue( this.value + _value);
-    
-      var _that = this;
-      if (this._thumbMoveTimeout) {
-        window.clearTimeout(this._thumbMoveTimeout);
-        this._thumbMoveTimeout = null;
-      }
-      this._thumbMoveTimeout = window.setTimeout(function(){
-        _that._moveThumb(_valueChange, _rate);
-      }, _rate);
     }
 
   },

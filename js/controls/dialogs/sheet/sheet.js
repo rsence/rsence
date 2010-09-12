@@ -60,28 +60,28 @@ HSheet = HControl.extend({
       _left = 0-Math.floor(_rect.width/2)+_rect.left,
       _height = _rect.height;
       
-      _styl( _elemId, 'left', '0px', true);
-      _styl( _elemId, 'top', '0px', true);
-      _styl( _elemId, 'right', '0px', true);
-      _styl( _elemId, 'bottom', '0px', true);
-      _styl( _elemId, 'width', 'auto', true);
-      _styl( _elemId, 'height', 'auto', true);
-      _styl( _elemId, 'min-width', _width+'px', true);
-      _styl( _elemId, 'min-height', _height+'px', true);
+      _styl( _elemId, 'left', '0px');
+      _styl( _elemId, 'top', '0px');
+      _styl( _elemId, 'right', '0px');
+      _styl( _elemId, 'bottom', '0px');
+      _styl( _elemId, 'width', 'auto');
+      _styl( _elemId, 'height', 'auto');
+      _styl( _elemId, 'min-width', _width+'px');
+      _styl( _elemId, 'min-height', _height+'px');
       
       if(_this['markupElemIds']){
         var _stateId = _this.markupElemIds['state'];
-        _styl( _stateId, 'left', _left+'px', true );
-        _styl( _stateId, 'top', _top+'px', true );
-        _styl( _stateId, 'width', _width+'px', true );
-        _styl( _stateId, 'height', _height+'px', true );
+        _styl( _stateId, 'left', _left+'px' );
+        _styl( _stateId, 'top', _top+'px' );
+        _styl( _stateId, 'width', _width+'px' );
+        _styl( _stateId, 'height', _height+'px' );
       }
       //-- Show the rectangle once it gets created, unless visibility was set to++
       //-- hidden in the constructor.++
       if(undefined === _this.isHidden || _this.isHidden === false) {
-        _styl( _elemId, 'visibility', 'inherit', true);
+        _styl( _elemId, 'visibility', 'inherit');
       }
-      _styl( _elemId, 'display', 'block', true);
+      _styl( _elemId, 'display', 'block');
       _this._updateZIndex();
       _this.drawn = true;
     }
