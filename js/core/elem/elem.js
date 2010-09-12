@@ -24,6 +24,9 @@ BROWSER_TYPE = {
 /* Microsoft Internet Explorer version 8 */
   ie8: false,
   
+/* Microsoft Internet Explorer version 9 */
+  ie9: false,
+  
 /* Any version of Opera */
   opera: false,
   
@@ -57,7 +60,8 @@ ELEM = {
   * The interval to flush the buffer specified in milliseconds.
   * Defaults to 60fps which is the most common refresh rate of displays.
 **/
-  ELEMTickerInterval: 16.667,
+  // ELEMTickerInterval: 16.667,
+  ELEMTickerInterval: 33,
   
   // stuff moved inside this function, because (surprise, surprise!) ie6 had some issues with it.
   _constructor: function() {
@@ -225,14 +229,16 @@ ELEM = {
   **/
   setHTML: function(_id, _html) {
     try {
-      var _this = ELEM;
-      if (!_this._elements[_id]) {
+      var _this = ELEM, _elem = _this._elements[_id];
+      if (!_elem) {
         return;
       }
       if (! ((typeof _html === 'string') || (typeof _html === 'number'))) {
         return;
       }
-      _this._elements[_id].innerHTML = _html;
+      if (_elem.innerHTML !== _html ){
+        _elem.innerHTML = _html;
+      }
     } catch(e) {}
     //_this._initCache(_id);
   },
@@ -376,14 +382,7 @@ ELEM = {
         h = _elem.offsetHeight,
         _parent = _elem.parentNode;
     while (_parent && _parent.nodeName.toLowerCase() !== 'body') {
-      if (!BROWSER_TYPE.ie) {
-        _parentOverflow = document.defaultView.getComputedStyle(
-        _parent, null
-        ).getPropertyValue('overflow');
-      }
-      else {
-        _parentOverflow = _parent.currentStyle.getAttribute('overflow');
-      }
+      _this._getComputedStyle( _parent, 'overflow' );
       _parentOverflow = _parentOverflow !== 'visible';
       if (w > _parent.clientWidth && _parentOverflow) {
         w = _parent.clientWidth - _elem.offsetLeft;
@@ -433,6 +432,38 @@ ELEM = {
     return [w, h];
   },
   
+  _getVisibleLeftPosition: function(_id){
+    var
+    _this = ELEM,
+    x = 0,
+    _elem = _this._elements[_id];
+    while (_elem !== document) {
+      x += _elem.offsetLeft;
+      x -= _elem.scrollLeft;
+      _elem = _elem.parentNode;
+      if (!_elem) {
+        break;
+      }
+    }
+    return x;
+  },
+  
+  _getVisibleTopPosition: function(_id){
+    var
+    _this = ELEM,
+    y = 0,
+    _elem = _this._elements[_id];
+    while (_elem !== document) {
+      y += _elem.offsetTop;
+      y -= _elem.scrollTop;
+      _elem = _elem.parentNode;
+      if (!_elem) {
+        break;
+      }
+    }
+    return y;
+  },
+  
 /** = Description
   * Returns the real position of the element, subtracting whatever
   * scroll bars do to the position..
@@ -445,21 +476,11 @@ ELEM = {
   *
   **/
   getVisiblePosition: function(_id) {
-    var _this = ELEM,
-        x = 0,
-        y = 0,
-        _elem = _this._elements[_id];
-    while (_elem !== document) {
-      x += _elem.offsetLeft;
-      y += _elem.offsetTop;
-      x -= _elem.scrollLeft;
-      y -= _elem.scrollTop;
-      _elem = _elem.parentNode;
-      if (!_elem) {
-        break;
-      }
-    }
-    return [x, y];
+    var _this = ELEM;
+    return [
+      _this._getVisibleLeftPosition(_id),
+      _this._getVisibleTopPosition(_id)
+    ];
   },
 
 /** = Description
@@ -473,28 +494,20 @@ ELEM = {
   *
   **/
   getOpacity: function(_id) {
-    var _opacity,
-        _try_opacity,
-        _this = ELEM,
-        _getStyle = _this.getStyle;
-    // old safari (1.x):
-    if (_opacity === _getStyle(_id, '-khtml-opacity')) {
-      return parseFloat(_opacity);
-    }
-    // old mozilla (ff 1.0 and below):
-    if (_opacity === _getStyle(_id, '-moz-opacity')) {
-      return parseFloat(_opacity);
-    }
-    _try_opacity = _getStyle(_id, 'opacity', true);
-    if (_opacity === _try_opacity || (_try_opacity === 0)) {
-      return parseFloat(_opacity);
-    }
-    if (_opacity === (_this._elements[_id].currentStyle['filter'] || '').match(/alpha(opacity=(.*))/)) {
-      if (_opacity[1]) {
-        return parseFloat(_opacity[1]) / 100;
-      }
-    }
-    return 1.0;
+    throw "ELEM.getOpacity: known error.";
+    // var
+    // _this = ELEM,
+    // _elem = _this.get(_id),
+    // _opacity = _this._getComputedStyle( _elem, 'opacity' );
+    // if (ELEM.ie && (_elem.currentStyle['filter'] || '').match(/alpha(opacity=(.*))/)) {
+    //   if (_opacity[1]) {
+    //     return parseFloat(_opacity[1]) / 100;
+    //   }
+    // }
+    // else ( === 0)) {
+    //   return parseFloat(_opacity);
+    // }
+    // return 1.0;
   },
   
 /** = Description
@@ -518,9 +531,6 @@ ELEM = {
         var _prevAlpha = _this.getStyle(_id, 'filter', true);
         _this._elements[_id].style.setAttribute('filter', _prevAlpha.replace(/alpha([^)]*)/gi, '') + 'alpha(opacity=' + _opacity * 100 + ')');
       }
-      else if (BROWSER_TYPE.ie) {
-        _this._elements[_id].style.setAttribute('opacity', _opacity);
-      }
       else {
         _this._elements[_id].style.setProperty('opacity', _opacity, '');
       }
@@ -539,8 +549,7 @@ ELEM = {
   *
   **/
   getIntStyle: function(_id, _key) {
-    var _value = ELEM.getStyle(_id, _key);
-    return parseInt(_value, 10);
+    return parseInt(ELEM.getStyle(_id, _key), 10);
   },
   
 /** = Description
@@ -559,6 +568,16 @@ ELEM = {
     ELEM.setStyle(_id, 'height', _coords[3] + 'px');
   },
   
+  _getExtraLeftWidth: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id, 'padding-left') + _int(_id, 'border-left-width');
+  },
+  
+  _getExtraRightWidth: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id, 'padding-right') + _int(_id, 'border-right-width');
+  },
+  
 /** = Description
   * Returns the amount of width of the element taken by 'extra' space: border
   * and padding size.
@@ -571,8 +590,18 @@ ELEM = {
   *
   **/
   getExtraWidth: function(_id) {
+    var _this = ELEM;
+    return _this._getExtraLeftWidth(_id) + _this._getExtraRightWidth(_id);
+  },
+  
+  _getExtraTopWidth: function(_id){
     var _int = ELEM.getIntStyle;
-    return _int(_id, 'padding-left') + _int(_id, 'padding-right') + _int(_id, 'border-left-width') + _int(_id, 'border-right-width');
+    return _int(_id, 'padding-top') + _int(_id, 'border-top-width');
+  },
+  
+  _getExtraBottomWidth: function(_id){
+    var _int = ELEM.getIntStyle;
+    return _int(_id, 'padding-bottom') + _int(_id, 'border-bottom-width');
   },
   
 /** = Description
@@ -587,8 +616,8 @@ ELEM = {
   *
   **/
   getExtraHeight: function(_id) {
-    var _int = ELEM.getIntStyle;
-    return _int(_id, 'padding-top') + _int(_id, 'padding-bottom') + _int(_id, 'border-top-width') + _int(_id, 'border-bottom-width');
+    var _this = ELEM;
+    return _this._getExtraTopWidth(_id) + _this._getExtraBottomWidth(_id);
   },
   
 /** = Description
@@ -930,6 +959,26 @@ ELEM = {
     }
   },
   
+  _setElementStyle: function(_elem,_key,_value){
+    _elem.style.setProperty(_key, _value, '');
+  },
+  _setElementStyleIE: function(_elem,_key,_value){
+    var
+    _this = ELEM,
+    _camelKey = _key.replace(
+      /((-)([a-z])(\w))/g,
+      function($0, $1, $2, $3, $4) {
+        return $3.toUpperCase() + $4;
+      }
+    );
+    _elem.style[_camelKey] = _value;
+    if (BROWSER_TYPE.ie6) {
+      if (iefix._traverseStyleProperties.indexOf(_key) !== -1) {
+        _this._ieFixesNeeded = true;
+      }
+    }
+  },
+  
 /** = Description
   * Sets the named element style attribute value.
   *
@@ -948,8 +997,7 @@ ELEM = {
     var _this = ELEM,
         _cached = _this._styleCache[_id],
         _elems = _this._elements,
-        _differs,
-        _styleTodo;
+        _differs;
     _this._setStyleCount++;
     if (_cached === undefined) {
       _this._initCache(_id);
@@ -964,27 +1012,12 @@ ELEM = {
           _this.setOpacity(_id, _value);
         }
         else {
-          if( BROWSER_TYPE.ie ) {
-            var _camelKey = _key.replace(
-              /((-)([a-z])(\w))/g,
-              function($0, $1, $2, $3, $4) {
-                return $3.toUpperCase() + $4;
-              }
-            );
-            _elems[_id].style[_camelKey] = _cached[_key];
-          }
-          else {
-            _elems[_id].style.setProperty(_key, _cached[_key], '');
-          }
-        }
-        if (BROWSER_TYPE.ie6) {
-          if (iefix._traverseStyleProperties.indexOf(_key) !== -1) {
-            _this._ieFixesNeeded = true;
-          }
+          _this._setElementStyle( _elems[_id], _key, _cached[_key] );
         }
       }
       else {
-        _elemTodoH = _this._elemTodoH;
+        var
+        _elemTodoH = _this._elemTodoH,
         _styleTodo = _this._styleTodo[_id];
         if (_styleTodo.indexOf(_key) === -1) {
           _styleTodo.push(_key);
@@ -1071,6 +1104,19 @@ ELEM = {
    ];
   },
   
+  _getComputedStyle: function(_elem,_key){
+    return document.defaultView.getComputedStyle(_elem,null).getPropertyValue(_key);
+  },
+  _getComputedStyleIE: function(_elem,_key){
+    var _camelName = _key.replace(
+      /((-)([a-z])(\w))/g,
+      function($0, $1, $2, $3, $4) {
+        return $3.toUpperCase() + $4;
+      }
+    );
+    return _elem.currentStyle[_camelName];
+  },
+  
 /** = Description
   * Gets the named element style attribute value.
   *
@@ -1098,38 +1144,8 @@ ELEM = {
       if ((_key === 'opacity') && _bypass) {
         _retval = _this.getOpacity(_id);
       }
-      else if (BROWSER_TYPE.ie7 || BROWSER_TYPE.ie8){
-        _retval = _this._elements[_id].style[_key];
-      }
       else {
-        _retval = document.defaultView.getComputedStyle(_this._elements[_id], null).getPropertyValue(_key);
-      }
-      _cached[_key] = _retval;
-    }
-    return _cached[_key];
-  },
-  
-  /* The Internet Explorer version of getStyle */
-  _getStyleIE: function( _id, _key, _bypass){
-    var _this=ELEM,
-        _cached=_this._styleCache[_id],
-        _retval;
-        _this._getStyleCount++;
-    if ((_cached[_key] === undefined) || _bypass) {
-      if (!_bypass) {
-        _this._getStyleMissCount++;
-      }
-      if ((_key === 'opacity') && _bypass) {
-        _retval = _this.getOpacity(_id);
-      }
-      else {
-        _camelName = _key.replace(
-          /((-)([a-z])(\w))/g,
-          function($0, $1, $2, $3, $4) {
-            return $3.toUpperCase() + $4;
-          }
-        );
-        _retval = _this._elements[_id].currentStyle[_camelName];
+        _retval = _this._getComputedStyle(_this._elements[_id],_key);
       }
       _cached[_key] = _retval;
     }
@@ -1151,63 +1167,16 @@ ELEM = {
     if (!_elem) {
       return;
     }
-    _elemS = _elem.style;
     _loopMaxP = _styleTodo.length;
     _currTodo = _styleTodo.splice(0, _loopMaxP);
     for (_cid = 0; _cid !== _loopMaxP; _cid++) {
       _key = _currTodo.pop();
       _this._flushStylCount++;
       if (_key === 'opacity') {
-        _retval = _this.setOpacity(_id, _cached[_key]);
-      }
-      else {
-        _elemS.setProperty(_key, _cached[_key], '');
-      }
-    }
-  },
-  
-  /* Internet Explorer version of _flushStyleCache */
-  _flushStyleCacheIE: function(_id) {
-    var _this = ELEM,
-        _styleTodo = _this._styleTodo[_id],
-        _cached = _this._styleCache[_id],
-        _elem = _this._elements[_id];
-    if (!_elem) {
-      return;
-    }
-    var _elemS = _elem.style,
-        _loopMaxP = _styleTodo.length,
-        i = 0,
-        _key,
-        _currTodo = _styleTodo.splice(0, _loopMaxP);
-    for (; i !== _loopMaxP; i++) {
-      _key = _currTodo.pop();
-      _this._flushStylCount++;
-      if (_key === 'opacity') {
         _this.setOpacity(_id, _cached[_key]);
       }
       else {
-        if (BROWSER_TYPE.ie6) {
-          if (iefix._traverseStyleProperties.indexOf(_key) !== -1) {
-            _this._ieFixesNeeded = true;
-          }
-        }
-        try {
-          var _camelKey = _key.replace(
-            /((-)([a-z])(\w))/g,
-            function($0, $1, $2, $3, $4) {
-              return $3.toUpperCase() + $4;
-            }
-          );
-          // _elemS[_camelKey] = _cached[_key];
-          _elemS.setAttribute(
-            _camelKey,
-            _cached[_key]
-          );
-        }
-        catch(e) {
-          console.log(e);
-        }
+        _this._setElementStyle( _elem, _key, _cached[_key] );
       }
     }
   },
@@ -1218,10 +1187,8 @@ ELEM = {
     var _this = ELEM;
     
     if (BROWSER_TYPE.ie) {
-      _this.getStyle = _this._getStyleIE;
-    // }
-    // if (BROWSER_TYPE.ie) {
-      _this._flushStyleCache = _this._flushStyleCacheIE;
+      _this._getComputedStyle = _this._getComputedStyleIE;
+      _this._setElementStyle = _this._setElementStyleIE;
     }
     
     if(!_this['_timer']){
@@ -1293,6 +1260,13 @@ ELEM = {
     _browserType.ie6      = _isIE && (_ua.indexOf("MSIE 6") !== -1);
     _browserType.ie7      = _isIE && (_ua.indexOf("MSIE 7") !== -1);
     _browserType.ie8      = _isIE && (_ua.indexOf("MSIE 8") !== -1);
+    _browserType.ie9      = _isIE && (_ua.indexOf("MSIE 9") !== -1);
+    
+    // Experimental; don't treat IE9 as an IE at all.
+    if(_browserType.ie9){
+      _browserType.ie = false;
+    }
+    
     _browserType.firefox  = _ua.indexOf("Firefox") !== -1;
     _browserType.firefox2 = _ua.indexOf("Firefox/2.") !== -1;
     _browserType.firefox3 = _ua.indexOf("Firefox/3.") !== -1;
