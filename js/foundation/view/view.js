@@ -552,7 +552,7 @@ HView = HClass.extend({
   * ++
   **/
   _setCSS: function(_additional){
-    var _cssStyle = 'display:none;overflow:hidden;visibility:hidden;';
+    var _cssStyle = 'overflow:hidden;visibility:hidden;';
     if(this.isAbsolute){
       _cssStyle += 'position:absolute;';
     } else {
@@ -568,20 +568,18 @@ HView = HClass.extend({
   * ++
   **/
   _getParentElemId: function(){
-    var _parentElemId;
-    // if the parent does not have an element:
-    if(this.parent.elemId === undefined) {
-      _parentElemId = 0;
+    var _parent = this.parent;
+    return ((_parent.elemId === undefined)?0:((_parent._getSubviewId===undefined)?0:_parent._getSubviewId()));
+  },
+  
+  _getSubviewId: function(){
+    if(this.markupElemIds&&this.markupElemIds.subview!==undefined){
+      return this.markupElemIds.subview;
     }
-    // if a subview element is defined in the template, use it:
-    else if(this.parent.markupElemIds&&this.parent.markupElemIds['subview']){
-      _parentElemId = this.parent.markupElemIds['subview'];
+    else if(this.elemId !== undefined) {
+      return this.elemId;
     }
-    // otherwise, use main elemId
-    else {
-      _parentElemId = this.parent.elemId;
-    }
-    return _parentElemId;
+    return 0;
   },
   
 /** --
@@ -616,30 +614,52 @@ HView = HClass.extend({
   *
   **/
   drawRect: function() {
+    if(!this.rect.isValid){
+      console.log('invalid rect:',ELEM.get(this.elemId));
+    }
+    if(!this.parent){
+      console.log('no parent:',ELEM.get(this.elemId));
+    }
     if (this.parent && this.rect.isValid) {
-      var _this = this,
-          _elemId = _this.elemId,
-          _styl = ELEM.setStyle,
-          _rect = _this.rect;
-    
-      _styl( _elemId, 'left', _this.flexLeft?(_rect.left+'px'):'auto', true);
-      _styl( _elemId, 'top', _this.flexTop?(_rect.top+'px'):'auto', true);
-      _styl( _elemId, 'right', _this.flexRight?(_this.flexRightOffset+'px'):'auto', true);
-      _styl( _elemId, 'bottom', _this.flexBottom?(_this.flexBottomOffset+'px'):'auto', true);
-      _styl( _elemId, 'width', (_this.flexLeft&&_this.flexRight)?'auto':(_rect.width+'px'), true);
-      _styl( _elemId, 'height', (_this.flexTop&&_this.flexBottom)?'auto':(_rect.height+'px'), true);
-      
+      var
+      i = 0,
+      _this = this,
+      _elemId = _this.elemId,
+      _styl = ELEM.setStyle,
+      _rect = _this.rect,
+      _auto = 'auto',
+      _left = _this.flexLeft?_rect.left:_auto,
+      _top  = _this.flexTop?_rect.top:_auto,
+      _right = _this.flexRight?_this.flexRightOffset:_auto,
+      _bottom = _this.flexBottom?_this.flexBottomOffset:_auto,
+      _width = (_this.flexLeft&&_this.flexRight)?_auto:_rect.width,
+      _height = (_this.flexTop&&_this.flexBottom)?_auto:_rect.height,
+      _styles = [
+        [ 'left',   _left   ],
+        [ 'top',    _top    ],
+        [ 'right',  _right  ],
+        [ 'bottom', _bottom ],
+        [ 'width',  _width  ],
+        [ 'height', _height ],
+        [ 'display', _this.displayMode ]
+      ],
+      _key, _value;
       // Show the rectangle once it gets created, unless visibility was set to
       // hidden in the constructor.
-      if(_this.isHidden === undefined || _this.isHidden === false) {
-        _styl( _elemId, 'visibility', 'inherit', true);
+      if(!_this.isHidden) {
+        _styles.push( [ 'visibility', 'inherit' ] );
       }
-    
-      _styl( _elemId, 'display', _this.displayMode, true);
-    
+      for(;i<_styles.length;i++){
+        _key = _styles[i][0];
+        _value = _styles[i][1];
+        if( i < 6 && _value !== _auto ){
+          _value += 'px';
+        }
+        _styl(_elemId,_key,_value,true);
+      }
       _this._updateZIndex();
-    
-      if (_this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
+      
+      if ( _this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
         _this.invalidatePositionCache();
         _this._cachedLeft = _rect.left;
         _this._cachedTop = _rect.top;
@@ -688,15 +708,7 @@ HView = HClass.extend({
       }
       this.drawSubviews();
       if(this.options.style){
-        var
-        _style = this.options.style,
-        _styleItem, _styleKey, _styleValue, i = 0;
-        for(;i<_style.length;i++){
-          _styleItem  = _style[i];
-          _styleKey   = _styleItem[0];
-          _styleValue = _styleItem[1];
-          this.setStyle(_styleKey,_styleValue);
-        }
+        this.setStyles( this.options.style );
       }
       if(this.options.html){
         this.setHTML(this.options.html);
@@ -866,17 +878,6 @@ HView = HClass.extend({
     return [ 0, 0, _parentSize[0], _parentSize[1] ];
   },
   
-  parentSize: function(){
-    var _parentElemId = this.parent.elemId;
-    if ( _parentElemId === 0 ) {
-      return ELEM.windowSize();
-    }
-    else {
-      ELEM.flushLoop();
-      return ELEM.getSize( _parentElemId );
-    }
-  },
-  
   minWidth: 0,
   setMinWidth: function(_minWidth){
     this.minWidth = _minWidth;
@@ -1007,7 +1008,19 @@ HView = HClass.extend({
     }
     return this;
   },
-
+  
+  setStyles: function(_styles){
+    var
+    _styleItem, _styleKey, _styleValue, i = 0;
+    for(;i<_styles.length;i++){
+      _styleItem  = _styles[i];
+      _styleKey   = _styleItem[0];
+      _styleValue = _styleItem[1];
+      this.setStyle(_styleKey,_styleValue);
+    }
+    return this;
+  },
+  
 /** = Description
   * Returns a style of the main DOM element of the component.
   * Utilizes +ELEM+ cache to perform the action.
@@ -1043,7 +1056,7 @@ HView = HClass.extend({
     if (!this['markupElemIds']){
       console.log('Warning, setStyleOfPart: no markupElemIds');
     }
-    else if (!this.markupElemIds[_partName]) {
+    else if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
@@ -1065,7 +1078,7 @@ HView = HClass.extend({
   *
   **/
   styleOfPart: function(_partName, _name) {
-    if (!this.markupElemIds[_partName]) {
+    if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
@@ -1085,7 +1098,7 @@ HView = HClass.extend({
   *
   **/
   setMarkupOfPart: function( _partName, _value ) {
-    if (!this.markupElemIds[_partName]) {
+    if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
@@ -1106,7 +1119,7 @@ HView = HClass.extend({
   *
   **/
   markupOfPart: function(_partName) {
-    if (!this.markupElemIds[_partName]) {
+    if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
@@ -1628,7 +1641,7 @@ HView = HClass.extend({
     ELEM.setCSS(_stringElem, "visibility:hidden;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
     // ELEM.flushLoop();
-    var _visibleSize=ELEM.getVisibleSize(_stringElem);
+    var _visibleSize=ELEM.getSize(_stringElem);
     // console.log('visibleSize',_visibleSize);
     ELEM.del(_stringElem);
     return [_visibleSize[0]+_visibleSize[0]%2,_visibleSize[1]+_visibleSize[1]%2];
@@ -1649,20 +1662,13 @@ HView = HClass.extend({
 /** Returns the X coordinate that has the scrolled position calculated.
   **/
   pageX: function() {
-    var _x = 0,
-        _elem = this;
-    while(_elem) {
-      if(_elem.elemId && _elem.rect) {
-        _x += ELEM.get(_elem.elemId).offsetLeft;
-        _x -= ELEM.get(_elem.elemId).scrollLeft;
-      }
-      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
-        _x += ELEM.get(_elem.markupElemIds.subview).offsetLeft;
-        _x -= ELEM.get(_elem.markupElemIds.subview).scrollLeft;
-      }
-      _elem = _elem.parent;
-    }
-    return _x;
+    return ELEM._getVisibleLeftPosition( this.elemId );
+  },
+  
+/** Returns the Y coordinate that has the scrolled position calculated.
+  **/
+  pageY: function() {
+    return ELEM._getVisibleTopPosition( this.elemId );
   },
   
 /** = Description
@@ -1710,25 +1716,6 @@ HView = HClass.extend({
       }
     }
     return this;
-  },
-  
-/** Returns the Y coordinate that has the scrolled position calculated.
-  **/
-  pageY: function() {
-    var _y = 0,
-        _elem = this;
-    while(_elem) {
-      if(_elem.elemId && _elem.rect) {
-        _y += ELEM.get(_elem.elemId).offsetTop;
-        _y -= ELEM.get(_elem.elemId).scrollTop;
-      }
-      if(_elem.markupElemIds&&_elem.markupElemIds.subview){
-        _y += ELEM.get(_elem.markupElemIds.subview).offsetTop;
-        _y -= ELEM.get(_elem.markupElemIds.subview).scrollTop;
-      }
-      _elem = _elem.parent;
-    }
-    return _y;
   },
   
 /** Returns the HPoint that has the scrolled position calculated.
