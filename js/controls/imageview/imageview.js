@@ -18,28 +18,28 @@
 var//RSence.Controls
 HImageView = HControl.extend({
   
+  getImgSrc: function(){
+    var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
+    if (!_value){
+      _value = this.getThemeGfxPath() + "/blank.gif";
+    }
+    return _value;
+  },
+  
   controlDefaults: (HControlDefaults.extend({
     scaleToFit: true,
-    value: null,
-    constructor: function(_ctrl){
-      if(this.value===null){
-        // default to a blank image
-        this.value = _ctrl.getThemeGfxPath() + "/blank.gif";
-      }
-    }
+    value: null
   })),
   
   _makeScaleToFit: function(_parentId){
-    var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
     this.elemId = ELEM.make(_parentId,'img');
-    ELEM.setAttr(this.elemId,'src',_value);
+    ELEM.setAttr(this.elemId,'src',this.getImgSrc());
     ELEM.setAttr(this.elemId,'alt',this.label);
     ELEM.setAttr(this.elemId,'title',this.label);
   },
   _makeScaleToOriginal: function(_parentId){
-    var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
     this.elemId = ELEM.make(_parentId,'div');
-    ELEM.setStyle(this.elemId,'background-image','url('+_value+')');
+    ELEM.setStyle(this.elemId,'background-image','url('+this.getImgSrc()+')');
     ELEM.setStyle(this.elemId,'background-position','0px 0px');
     ELEM.setStyle(this.elemId,'background-repeat','no-repeat');
     ELEM.setAttr(this.elemId,'title',this.label);
@@ -59,10 +59,10 @@ HImageView = HControl.extend({
   **/
   refreshValue: function(){
     if(this.options.scaleToFit){
-      ELEM.setAttr(this.elemId,'src',this.value);
+      ELEM.setAttr(this.elemId,'src',this.getImgSrc());
     }
     else{
-      ELEM.setStyle(this.elemId,'background-image','url('+this.value+')');
+      ELEM.setStyle(this.elemId,'background-image','url('+this.getImgSrc()+')');
     }
   },
   
