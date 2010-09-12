@@ -253,9 +253,10 @@ module RSence
       end
       if is_dir
         Dir.entries( bundle_path ).each do |entry_name|
-          next if entry_name[0].chr == '.'
+          next if entry_name[0].chr == '.' # skip hidden, '.' and '..' 
           full_path = File.join( bundle_path, entry_name )
           unless File.directory?( full_path )
+            next if entry_name == 'plugins' # skip sub-plugins
             has_dot = entry_name.include?('.')
             next unless has_dot
             is_src_file = ['yaml','rb'].include?( entry_name.split('.')[-1] )
