@@ -105,7 +105,7 @@ HMiniMenu = HRadioButtonList.extend({
     this.markupElemIds.subview = 0;
     this.menuItemView = HView.extend({
       bringToFront: function(){
-        this.setStyle('z-index',this.app.views.length);
+        this.setStyle('z-index',10000);//this.app.views.length);
       }
     }).nu(
       [ this.rect.left, this.rect.top, this.rect.width, 500 ],
@@ -124,6 +124,7 @@ HMiniMenu = HRadioButtonList.extend({
   setListItems: function(listItems){
     this.base(listItems);
     this.valueMatrix = this.menuItemView.valueMatrix;
+    this.refreshValue();
   },
   
   createComponent: function( i, _label ){
