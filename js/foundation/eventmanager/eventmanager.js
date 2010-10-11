@@ -210,21 +210,23 @@ EVENT = {
 /** Registers the _ctrl object by event listener flags in _focusOptions.
   **/
   reg: function(_ctrl, _focusOptions) {
-    var _elemId,
-        _elem,
-        _this = EVENT,
-        _propIn;
+    var
     // Binds the class to the element (so it can be called on the event)
-    _elemId = _ctrl.elemId;
-    _elem = ELEM.get(_elemId);
+    _elemId = _ctrl.elemId,
+    _elem = ELEM.get(_elemId),
+    _this = EVENT,
+    _propIn,
+    _init = ( _this.listeners[_elemId] === undefined );
     if (BROWSER_TYPE.ie) {
       _elem.setAttribute('ctrl', _ctrl);
     }
     else {
       _elem.ctrl = _ctrl;
     }
-    _this.listeners[_elemId] = true;
-    _this.focused[_elemId] = false;
+    if(_init){
+      _this.listeners[_elemId] = true;
+      _this.focused[_elemId] = false;
+    }
     for (_propIn in _this._defaultFocusOptions) {
       if (_focusOptions[_propIn] === undefined) {
         _focusOptions[_propIn] = _defaultFocusOptions[_propIn];
@@ -264,7 +266,9 @@ EVENT = {
         _this.resizeListeners.splice(_resizeIndex,1);
       }
     }
-    Event.observe(_elem, 'mouseover', _this._mouseOver);
+    if(_init){
+      Event.observe(_elem, 'mouseover', _this._mouseOver);
+    }
     if(_ctrl.drawn){
       _this._updateHoverItems();
       (_this.hovered.length !== 0) && (_this.hovered.indexOf(_ctrl.elemId) === _this.hovered.length-1) && _this.focus(_ctrl);
@@ -785,7 +789,7 @@ EVENT = {
     for (; i !== _this.dragItems.length; i++) {
       _elemId = _this.dragItems[i];
       _ctrl = _this.focusOptions[_elemId].ctrl;
-      _ctrl.endDrag(x, y,_isLeftButton);
+      _ctrl.endDrag(x, y, _isLeftButton);
       _didEndDrag = true;
       // If the mouse slipped off the dragged item before the mouse button was released, blur the item manually
       if (_this.enableDroppableChecks) {
@@ -808,10 +812,11 @@ EVENT = {
       document.onselectstart = _this._storedOnSelectStart;
     }
     // Check for mouseUp listeners.
-    for (i = 0; i !== _this.focused.length; i++) {
+    for (i = 0; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
+        _ctrl = _this.focusOptions[i].ctrl;
         if (_this.focusOptions[i].mouseUp === true) {
-          _this.focusOptions[i].ctrl.mouseUp(x, y, _isLeftButton);
+          _ctrl.mouseUp(x, y, _isLeftButton);
         }
       }
     }
