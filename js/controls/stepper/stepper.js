@@ -26,6 +26,7 @@ HStepper = HControl.extend({
   
   defaultEvents: {
     mouseDown: true,
+    click: true,
     keyDown: true,
     mouseWheel: true
   },
@@ -101,17 +102,6 @@ HStepper = HControl.extend({
     );
   },
   
-  // -- Returns an action string for the setInterval in _setRepeatInterval ++
-  _repeatIntervalStr: function( _up ){
-    return [
-      'HSystem.views[',
-      this.viewId,
-      '].step',
-      (_up?'Up':'Down'),
-      '();'
-    ].join('');
-  },
-  
   // -- Background-offset of the state images up/down,
   // overrideable in the html template ++
   bgStateUp: '0px -23px',
@@ -131,15 +121,13 @@ HStepper = HControl.extend({
   _setRepeatInterval: function( _up ){
     var _this    = this,
         _options = _this.options;
+    _this._repeatInterval && clearInterval( _this._repeatInterval );
     _this._bgStateOn( _up );
-    if (_up) {
-      _this.stepUp();
-      _this._repeatInterval = setInterval( _this._repeatIntervalStr(1), _options.repeatInterval );
-    }
-    else {
-      _this.stepDown();
-      _this._repeatInterval = setInterval( _this._repeatIntervalStr(0), _options.repeatInterval );
-    }
+    _up?_this.stepUp():_this.stepDown();
+    _this._repeatInterval = setInterval(
+      _up?function(){_this.stepUp();}:function(){_this.stepDown();},
+      _options.repeatInterval
+    );
   },
   
   // Stops the repeating stepping up or down enabled in _setRepeatInterval
@@ -153,12 +141,17 @@ HStepper = HControl.extend({
   mouseDown: function( x, y ){
     this.setMouseUp(true);
     this._setRepeatInterval(  ( y - ELEM.getVisiblePosition( this.elemId )[1] ) <= 11  );
+    
   },
   
   /** Stops the repeating stepping, when the mouse button goes up
     **/
   mouseUp: function(){
     this._clearRepeatInterval();
+  },
+  
+  click: function(){
+    this.mouseUp();
   },
   
   /** Stops the repeating stepping, when the control becomes inactive
