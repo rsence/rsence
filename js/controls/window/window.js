@@ -241,7 +241,7 @@ HWindow = HDynControl.extend({
     for( ; i < _views.length; i++ ){
       _view = HSystem.views[_views[i]];
       _size = ELEM.getSize(_view.elemId);
-      _pos  = ELEM.getPosition(_view.elemId);
+      _pos  = ELEM.getVisiblePosition(_view.elemId);
       _right = _size[0]+_pos[0]-this.pageX();
       _bottom = _size[1]+_pos[1]-this.pageY();
       if(_right > _fitsRect.width){
