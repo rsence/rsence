@@ -734,7 +734,7 @@ EVENT = {
     // if it's no longer the active control.
     _prevActiveCtrl = _this.activeControl;
     // Did the active control change?
-    if ((_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || _prevActiveCtrl._lostActiveStatus)) {
+    if (_ctrl && (_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || _prevActiveCtrl._lostActiveStatus)) {
       if (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus) {
         // Previously active control just lost the active status.
         _prevActiveCtrl.active = false;
