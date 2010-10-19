@@ -174,13 +174,14 @@ HEventResponder = HClass.extend({
   **/
   setEnabled: function(_flag) {
     
-    var _this = this,
-        _elemId = this.elemId,
-        _sysViews = HSystem.views,
-        i = 0,
-        _views = _this.views,
-        _view,
-        _viewsLen = _views.length;
+    var
+    _this = this,
+    _elemId = this.elemId,
+    _sysViews = HSystem.views,
+    i = 0,
+    _views = _this.views,
+    _view,
+    _viewsLen = _views.length;
     
     // Enable/disable the children first.
     for (; i < _viewsLen; i++) {
