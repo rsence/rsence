@@ -216,7 +216,7 @@ EVENT = {
     _elem = ELEM.get(_elemId),
     _this = EVENT,
     _propIn,
-    _init = ( _this.listeners[_elemId] === undefined );
+    _init = ( _this.listeners[_elemId] === undefined ||  _this.listeners[_elemId] === false );
     if (BROWSER_TYPE.ie) {
       _elem.setAttribute('ctrl', _ctrl);
     }
@@ -278,9 +278,10 @@ EVENT = {
 /** Unregisters the  _ctrl object event listeners
   **/
   unreg: function(_ctrl) {
-    var _this = EVENT,
-        _elemId,
-        _elem;
+    var
+    _this = EVENT,
+    _elemId,
+    _elem;
     if (_ctrl === this.activeControl) {
       _this.changeActiveControl(null);
     }
@@ -865,7 +866,7 @@ EVENT = {
   keyDown: function(e) {
     var _this = EVENT,
         _theKeyCode = e.keyCode,
-        _keyDownStateForActiveControl = _this.activeControl?_this.focusOptions[_this.activeControl.elemId].keyDown:false,
+        _keyDownStateForActiveControl = _this.activeControl?(_this.focusOptions[_this.activeControl.elemId]?_this.focusOptions[_this.activeControl.elemId].keyDown:false):false,
         _repeat = (_keyDownStateForActiveControl === 'repeat'),
         _stopEvent = false;
     _this._modifiers(e);
@@ -907,7 +908,7 @@ EVENT = {
         _ctrl;
     _this._modifiers(e);
     _this._lastKeyDown = null;
-    if (_this.activeControl && _this.focusOptions[_this.activeControl.elemId].keyUp === true) {
+    if (_this.activeControl && _this.activeControl.elemId && _this.focusOptions[_this.activeControl.elemId].keyUp === true) {
       if(_this.activeControl.keyUp(_theKeyCode)){
         _stopEvent = true;
       }
