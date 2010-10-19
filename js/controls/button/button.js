@@ -53,7 +53,12 @@ HClickButton = HButton.extend({
   *
   **/
   refreshValue: function(){
-    this.setEnabled( this.value === 0 );
+    if( this.options.inverseValue ){
+      this.setEnabled( this.value === 1 );
+    }
+    else {
+      this.setEnabled( this.value === 0 );
+    }
   },
 /** = Description
   * Click method, sets the value to disabled if the button is enabled.
@@ -61,7 +66,12 @@ HClickButton = HButton.extend({
   **/
   click: function(){
     if(this.enabled){
-      this.setValue(1);
+      if( this.options.inverseValue ){
+        this.setValue(0);
+      }
+      else {
+        this.setValue(1);
+      }
     }
   }
   
