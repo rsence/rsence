@@ -142,6 +142,15 @@ module RSence
               plugin_src = "_bundle_path = #{params[:bundle_path].inspect};" + plugin_src
             end
             m.module_eval( plugin_src )
+          rescue SyntaxError => e
+            src_path = params[:src_path]
+            src_path = "<undefined src_path>" if src_path == nil
+            params[:plugin_manager].plugin_error(
+              e,
+              'BundleLoaderSyntaxError',
+              "The syntax of #{params[:bundle_name]} is invalid.",
+              src_path
+            )
           rescue => e
             src_path = params[:src_path]
             src_path = "<undefined src_path>" if src_path == nil
