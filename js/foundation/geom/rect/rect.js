@@ -134,7 +134,7 @@ HRect = HClass.extend({
         }
         _parentHeight = _parentSize[1];
         if(_view.flexBottom){
-          _this.bottom = _parentWidth - _view.flexBottomOffset - _this.top;
+          _this.bottom = _parentHeight - _view.flexBottomOffset - _this.top;
         }
         if(!_view.flexTop){
           _this.top = _this.bottom - _this.height;
