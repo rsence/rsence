@@ -97,7 +97,7 @@ HSystem = {
     i = 0;
     for( ; i < this.views.length; i++ ){
       _view = this.views[i];
-      if(_view.flexRight || _view.flexBottom){
+      if(_view && (_view.flexRight || _view.flexBottom)){
         _view.rect._updateFlexibleDimensions();
       }
     }
