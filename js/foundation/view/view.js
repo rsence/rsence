@@ -615,7 +615,7 @@ HView = HClass.extend({
   **/
   drawRect: function() {
     if(!this.rect.isValid){
-      console.log('invalid rect:',ELEM.get(this.elemId));
+      console.log('invalid rect:',this.rect);//,ELEM.get(this.elemId));
     }
     if(!this.parent){
       console.log('no parent:',ELEM.get(this.elemId));
@@ -830,8 +830,22 @@ HView = HClass.extend({
   * A string with the html escaped.
   **/
   escapeHTML: function( _html ) {
-    return _html.replace(/&/gmi, '&amp;').replace(/>/gmi, '&gt;').replace(/</gmi, '&lt;');
+    if( typeof _html !== 'string' ) {
+      return _html.toString();
+    }
+    for( var i=0, _reFrom, _reTo, _reArr = this._escapeHTMLArr; i < _reArr.length; i++ ){
+      _reFrom = _reArr[i][0];
+      _reTo = _reArr[i][1];
+      _html = _html.replace( _reFrom, _reTo );
+    } 
+    return _html;
   },
+  _escapeHTMLArr: [
+    [ new RegExp( /&/gmi ), '&amp;' ],
+    [ new RegExp( />/gmi ), '&gt;' ],
+    [ new RegExp( /</gmi ), '&lt;' ],
+    [ new RegExp( /\n/gmi ), '<br>' ]
+  ],
   
 /** = Description
   *
@@ -927,7 +941,6 @@ HView = HClass.extend({
         _validHeight  = (typeof _height  === 'number'),
         _right,
         _bottom;
-        
         if(_arrLen === 6){
           var
           _parentSize = this.parentSize(),
@@ -976,6 +989,7 @@ HView = HClass.extend({
         }
         
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
+        
       }
       else {
         console.log(_throwPrefix + 'the length has to be either 4 or 6.');
