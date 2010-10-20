@@ -83,6 +83,16 @@ class MainPlugin < Plugin
     
   end
   
+  # Returns base url of browser (before the '#' sign)
+  def url( msg )
+    get_ses( msg )[:url][0]
+  end
+  
+  # Returns pound url of browser (after the '#' sign)
+  def pound( msg )
+    get_ses( msg )[:url][1]
+  end
+  
   
   # @private new session initialization, called just once per session.
   def init_ses(msg)
