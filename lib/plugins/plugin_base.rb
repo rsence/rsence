@@ -124,6 +124,15 @@ module RSence
       end
       alias file_save file_write
       
+      # Yaml writer utility.
+      #
+      # Wrapper for #file_write
+      # Converts +data+ to yaml and then calls file_write with the result.
+      def yaml_write( path, data )
+        file_write( path, data.to_yaml )
+      end
+      
+      
       # Path utility
       #
       # Makes a full, absolute path using the plugin bundle as the default path when a relative path is given. Returns just the bundle's local path, if no parameters given.
