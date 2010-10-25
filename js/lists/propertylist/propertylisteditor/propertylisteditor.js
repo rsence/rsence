@@ -54,6 +54,14 @@ HPropertyListEditor = HControl.extend({
       this.numberEditor.hide();
     }
     
+    if(this.value.type === 'b'){
+      this.boolEditor.show();
+      this.boolEditor.setValue(this.value.value);
+    }
+    else{
+      this.boolEditor.hide();
+    }
+    
     this.resizeKeyColumn();
   },
   
@@ -78,11 +86,13 @@ HPropertyListEditor = HControl.extend({
     nameEditor.refresh();
     
     var
-    stringEditor = this.stringEditor;
-    numberEditor = this.numberEditor;
+    stringEditor = this.stringEditor,
+    numberEditor = this.numberEditor,
+    boolEditor   = this.boolEditor;
     
     stringEditor.rect.setLeft( parent.valueColumnLeft()+5 );
     numberEditor.rect.setLeft( parent.valueColumnLeft()+4 );
+    boolEditor.rect.setLeft( parent.valueColumnLeft()+4 );
     
     if(this['typeEditor']){
       var
@@ -95,6 +105,7 @@ HPropertyListEditor = HControl.extend({
     
     stringEditor.drawRect();
     numberEditor.drawRect();
+    boolEditor.drawRect();
   },
   nameEditor: null,
   typeEditor: null,
@@ -197,6 +208,22 @@ HPropertyListEditor = HControl.extend({
           [ 'font-size', '11px' ],
           [ 'text-indent', '1px' ]
         ]
+      }
+    );
+    
+    this.boolEditor = HCheckbox.extend({
+      lostActiveStatus: function(newActive){
+        this.parent.lostActiveStatus(newActive);
+        this.base();
+      }
+    }).nu(
+      [0,-3,null,24,4,null],
+      this, {
+        style: [
+          [ 'font-size', '11px' ],
+          [ 'text-indent', '1px' ]
+        ],
+        label: "Enabled"
       }
     );
     
