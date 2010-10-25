@@ -36,6 +36,11 @@ module RSence
     # * {GUIPlugin__ GUIPlugin} -- The GUIPlugin base class
     module PluginBase
       
+      # When a method is missing, tries a call via pluginmanager. (Eliminates plugins.plugin_name.method_name calls -> plugin_name.method_name)
+      def method_missing( sym, *args, &block )
+        @plugins.method_missing( sym, *args, &block )
+      end
+      
       # @private External accessor for @plugins
       # @return [PluginManager] The PluginManager the instance belongs to.
       attr_reader :plugins
