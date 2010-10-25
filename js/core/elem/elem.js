@@ -1184,6 +1184,10 @@ ELEM = {
   /* The ELEM "post-constructor" */
   _init: function() {
     
+    if(RSenceInit !== undefined){
+      RSenceInit();
+    }
+    
     var _this = ELEM;
     
     if (BROWSER_TYPE.ie) {
