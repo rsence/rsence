@@ -366,6 +366,34 @@ module RSence
       
       # @private  Initialize several responders for a value
       def init_responders( msg, value, responders )
+        members = value.members
+        release_list = []
+        members.each_key do |pre_plugin|
+          members[pre_plugin].each do |pre_method|
+            found = false
+            responders.each do |responder|
+              name = name_with_manager_s
+              if responder.has_key?(:plugin)
+                responder_plugin = responder[:plugin]
+              else
+                responder_plugin = name
+              end
+              if responder.has_key?(:method)
+                responder_method = responder[:method]
+                if responder_plugin == pre_plugin and responder_method == pre_method
+                  found = true
+                  break
+                end
+              end
+            end
+            unless found
+              release_list.push( [ pre_plugin, pre_method ] )
+            end
+          end
+        end
+        release_list.each do | rel_plugin, rel_method |
+          value.release( rel_plugin, rel_method )
+        end
         responders.each do |responder|
           init_responder( msg, value, responder )
         end

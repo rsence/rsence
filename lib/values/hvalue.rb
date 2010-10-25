@@ -143,6 +143,9 @@ module RSence
         @members.delete( plugin_name )
       else 
         @members[plugin_name].slice!(@members[plugin_name].index( method_name )) if @members[plugin_name].include?(method_name)
+        if @members[plugin_name].empty?
+          @members.delete( plugin_name )
+        end
       end
       return true
     end
