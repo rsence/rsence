@@ -344,15 +344,39 @@ module RSence
         name = name_with_manager_s
         ses[value_name] = HValue.new( msg, default_value, { :name => "#{name}.#{value_name}" } )
         if value_properties.has_key?(:responders)
-          value_properties[:responders].each do |responder|
-            if responder.has_key?(:plugin)
-              responder_plugin = responder[:plugin]
-            else
-              responder_plugin = name
-            end
-            if responder.has_key?(:method)
-              ses[value_name].bind( responder_plugin, responder[:method] )
-            end
+          init_responders( msg, ses[value_name], value_properties[:responders] )
+        end
+      end
+      
+      # @private  Initialize a responder for a value.
+      def init_responder( msg, value, responder )
+        name = name_with_manager_s
+        if responder.has_key?(:plugin)
+          responder_plugin = responder[:plugin]
+        else
+          responder_plugin = name
+        end
+        if responder.has_key?(:method)
+          responder_method = responder[:method]
+          if not value.bound?( responder_plugin, responder_method )
+            value.bind( responder_plugin, responder[:method] )
+          end
+        end
+      end
+      
+      # @private  Initialize several responders for a value
+      def init_responders( msg, value, responders )
+        responders.each do |responder|
+          init_responder( msg, value, responder )
+        end
+      end
+      
+      # @private  Releases all responders of a value
+      def release_responders( msg, value )
+        members = value.members
+        members.each_key do |responder_plugin|
+          members.each do |responder_method|
+            value.release( responder_plugin, responder_method )
           end
         end
       end
@@ -426,6 +450,11 @@ module RSence
         ses = get_ses( msg )
         @values.each do | value_name, value_properties |
           if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
+            if value_properties.has_key?(:responders)
+              init_responders( msg, ses[value_name], value_properties[:responders] )
+            else
+              release_responders( msg, ses[value_name] )
+            end
             unless value_properties[:restore_default] == false
               if value_properties.has_key?(:value_call)
                 default_value = init_value_call( msg, value_properties[:value_call] )

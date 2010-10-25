@@ -122,6 +122,14 @@ module RSence
       return true
     end
     
+    # Checks, if the plugin_name and method_name pairing is already bound with the bind method. Returns true or false.
+    def bound?( plugin_name, method_name )
+      plugin_name = plugin_name.to_sym unless plugin_name.class == Symbol
+      method_name = method_name.to_sym unless method_name.class == Symbol
+      return false unless @members.has_key?(plugin_name)
+      return @members[plugin_name].include?(method_name)
+    end
+    
     # Releases the responder of the value, both params as in bind, but optional +method_name+ can be omitted, matching all methods bound to the +plugin_name+.
     # @param [Symbol] plugin_name The name of the plugin acting as a responder to the value.
     # @param [Symbol] method_name The name of the method of the plugin acting as a responder to the value.
