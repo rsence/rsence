@@ -305,6 +305,7 @@
     # with a underscore that should not be obfuscated
     :reserved_names:
       - _ID
+      - _id
       - _WIDTH
       - _width
       - _HEIGHT
