@@ -180,7 +180,7 @@ module RSence
         ## Calls the restore_ses of plugins, when a session is restored (page reload with previously active session)
         if msg.restored_session
           msg.session[:deps] = []
-        
+          
           if msg.cloned_source
             begin
               @plugins.delegate( :cloned_target, msg, msg.cloned_source )
@@ -190,24 +190,29 @@ module RSence
               xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: @plugins.delegate 'cloned_target' failed." )
             end
           end
-        
+          
           begin
             @plugins.delegate( :restore_ses, msg )
+            msg.session[:plugin_incr] == @plugins.incr
           rescue => e
             response_success = false
             xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
             xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: @plugins.delegate 'restore_ses' failed." )
           end
-        
+          
         elsif msg.new_session
+          
           begin
             @plugins.delegate( :init_ses, msg )
+            msg.session[:plugin_incr] == @plugins.incr
           rescue => e
             response_success = false
             xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
             xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: @plugins.delegate 'init_ses' failed." )
           end
+          
         elsif msg.cloned_targets
+          
           begin
             @plugins.delegate( :cloned_source, msg, msg.cloned_targets )
           rescue => e
@@ -215,6 +220,10 @@ module RSence
             xhr_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
             xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @plugins.delegate 'cloned_source' failed." )
           end
+          
+        elsif msg.refresh_page?( @plugins.incr )
+          # Forces the client to reload, if plugins are incremented
+          msg.reply("window.location.reload( true );")
         end
         
         ## Calls validators for changed values

@@ -23,6 +23,11 @@ module RSence
     
     attr_reader :transporter, :sessions
     
+    @@incr = 0
+    def incr
+      return @@incr
+    end
+    
     # Returns the registry data for plugin bundle +plugin_name+
     def registry( plugin_name=false )
       return @registry unless plugin_name
@@ -142,6 +147,7 @@ module RSence
     alias run_plugin call
     
     # Prettier error handling.
+    @@prev_errors = []
     def plugin_error( e, err_location, err_location_descr, eval_repl=false )
       err_msg = [
         "*"*40,
@@ -152,6 +158,12 @@ module RSence
         "\t"+e.backtrace.join("\n\t"),
         "*"*40
       ].join("\n")+"\n"
+      error_say = "Error! #{err_location_descr.capitalize}. #{e.class.to_s}, #{e.message}?"
+      unless @@prev_errors.include?( error_say )
+        @@prev_errors.push( error_say )
+        say error_say
+      end
+      @@prev_errors.shift if @@prev_errors.length > 10
       if eval_repl
         puts
         puts "plugin: #{eval_repl}"
@@ -516,7 +528,7 @@ module RSence
       if RSence.args[:say]
         Thread.new do
           Thread.pass
-          system(%{say "#{message.gsub('"','')}"})
+          system(%{say "#{message.gsub('"',"'").gsub('`',"'")}"})
         end
       end
     end
@@ -603,6 +615,8 @@ module RSence
         puts "done!" if RSence.args[:verbose]
       end
       if not (to_load.empty? and to_unload.empty? and to_reload.empty?)
+        @@incr += 1
+        puts "@@incr: #{@@incr}"
         puts "Plugin bundles:"
         puts "  loaded: #{to_load.join(', ')}" unless to_load.empty?
         puts "  unloaded: #{to_unload.join(', ')}" unless to_unload.empty?

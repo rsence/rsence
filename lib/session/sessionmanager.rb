@@ -74,7 +74,9 @@ module RSence
       
         # the time, when the session will time out
         :timeout    =>  timeout,
-      
+        
+        :plugin_incr => 0,
+        
         # session id, used internally
         :ses_id     =>  ses_id,
       

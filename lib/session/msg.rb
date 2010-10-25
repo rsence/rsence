@@ -174,7 +174,17 @@ module RSence
     def user_id
       @session[:user_id]
     end
-  
+    
+    # @private used for automatic reload of page, when the plugins have been changed.
+    def refresh_page?( plugin_incr )
+      if plugin_incr != @session[:plugin_incr]
+        puts "@session[:plugin_incr] = #{@session[:plugin_incr].inspect}  vs  plugin_incr = #{plugin_incr.inspect}"
+        @session[:plugin_incr] = plugin_incr
+        return true
+      end
+      return false
+    end
+    
     # Setter for the user id
     # @param [Number, String] user_id The user id to set. Use in login situations to store the user id.
     # @return [nil]
