@@ -879,9 +879,18 @@ HView = HClass.extend({
       var _winSize = ELEM.windowSize();
       return [ _winSize[0], _winSize[1] ];
     }
-    else{
-      var _rect = this.parent.rect;
-      return [ _rect.width, _rect.height ];
+    else {
+      var
+      _rect = this.parent.rect,
+      _width = _rect.width,
+      _height = _rect.height;
+      if (this.parent.flexLeft && this.parent.flexRight){
+        _width = parseInt( ELEM.getStyle(this.parent.elemId,'width',true), 10 );
+      }
+      if (this.parent.flexBottom && this.parent.flexTop){
+        _height = parseInt( ELEM.getStyle(this.parent.elemId,'height',true), 10 );
+      }
+      return [ _width, _height ];
     }
   },
   
@@ -987,7 +996,6 @@ HView = HClass.extend({
           _validHeight && this.setMinHeight( _height );
           _bottom = _parentHeight - _bottomOffset;
         }
-        
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
         
       }
