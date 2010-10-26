@@ -292,6 +292,9 @@ HSystem = {
     if(this._updateZIndexOfChildrenBuffer.indexOf(_viewId)===-1){
       this._updateZIndexOfChildrenBuffer.push(_viewId);
     }
+    if((_viewId !== undefined && _viewId !== null) && (this.views[_viewId].app === this.views[_viewId].parent)){
+      (this._updateZIndexOfChildrenBuffer.indexOf(null)===-1) && this._updateZIndexOfChildrenBuffer.push(null);
+    }
   },
   
 /** Flushes the z-indexes. This is a fairly expensive operation,
@@ -305,7 +308,7 @@ HSystem = {
         _this = HSystem,
         
         // reference to the buffer
-        _buffer = this._updateZIndexOfChildrenBuffer,
+        _buffer = _this._updateZIndexOfChildrenBuffer,
         
         // the length of the buffer
         _bufLen = _buffer.length;
@@ -315,41 +318,44 @@ HSystem = {
       
       
       // get and remove view the view id from the z-index flush status buffer:
-      var _viewId = _buffer.shift(),
-          
-          // reference to the view's z-index array or the system root-level views if _viewId is 0
-          _views = ((_viewId === null)?(_this.viewsZOrder):(_this.views[ _viewId ].viewsZOrder)),
-          
-          // the length of the view's z-index array
-          _viewLen = _views.length,
-          
-          // reference to the setStyle method of the element manager
-          _setStyl = ELEM.setStyle,
-          
-          // reference to HSystem.views (collection of all views, by index)
-          _sysViews = _this.views,
-          
-          
+      var
+      _viewId = _buffer.shift(),
+      
+      // reference to the view's z-index array or the system root-level views if _viewId is null
+      _views = ((_viewId === null)?(_this.viewsZOrder):(_this.views[ _viewId ].viewsZOrder)),
+      
+      // the length of the view's z-index array
+      _viewLen = _views.length,
+      
+      // reference to the setStyle method of the element manager
+      _setStyl = ELEM.setStyle,
+      
+      // reference to HSystem.views (collection of all views, by index)
+      _sysViews = _this.views,
+      
       // assign variables for use inside the inner loop:
           
-          // the viewId of the view to be updated
-          _subViewId,
-          
-          // the view itself with the viewId above
-          _view,
-          
-          // the elemId property, used as a [] -lookup in the loop
-          _elemIdStr = 'elemId',
-          
-          // the css property name
-          _zIdxStr = 'z-index',
-          
-          // the loop index
-          i=0,
-          
-          // the element id of the view
-          _elemId;
+      // the viewId of the view to be updated
+      _subViewId,
       
+      // the view itself with the viewId above
+      _view,
+      
+      // the elemId property, used as a [] -lookup in the loop
+      _elemIdStr = 'elemId',
+      
+      // the css property name
+      _zIdxStr = 'z-index',
+      
+      // the loop index
+      i=0,
+      
+      // the element id of the view
+      _elemId;
+      
+      if(_viewId === null){
+        console.log('null: ', _view);
+      }
       // end of var declarations
       
       // loop through all subviews and update the indexes:
