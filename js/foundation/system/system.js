@@ -353,9 +353,6 @@ HSystem = {
       // the element id of the view
       _elemId;
       
-      if(_viewId === null){
-        console.log('null: ', _view);
-      }
       // end of var declarations
       
       // loop through all subviews and update the indexes:
