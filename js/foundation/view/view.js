@@ -657,7 +657,7 @@ HView = HClass.extend({
         }
         _styl(_elemId,_key,_value,true);
       }
-      _this._updateZIndex();
+      (this.drown === false) && _this._updateZIndex();
       
       if ( _this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
         _this.invalidatePositionCache();
