@@ -221,7 +221,7 @@ module RSence
             xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @plugins.delegate 'cloned_source' failed." )
           end
           
-        elsif msg.refresh_page?( @plugins.incr )
+        elsif msg.refresh_page?( @plugins.incr ) and @config[:client_autoreload]
           # Forces the client to reload, if plugins are incremented
           msg.reply("window.location.reload( true );")
         end

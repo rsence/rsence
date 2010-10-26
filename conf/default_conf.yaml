@@ -81,6 +81,9 @@
     #
     # The HApplication priority of the client, when actively polling.
     :client_poll_priority: 60
+    #
+    # Reload the client after any plugins are reloaded:
+    :client_autoreload: false
   #
   #
   # Session-related settings
