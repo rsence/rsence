@@ -413,8 +413,16 @@ module RSence
       #           file is defined in the bundle directory and loaded in +#init_values+.
       def init_ses_values( msg )
         return unless @values
-        @values.each do | value_name, value_properties |
-          init_ses_value( msg, value_name, value_properties )
+        if @values.class == Array
+          @values.each do | value_item |
+            value_item.each do | value_name, value_properties |
+              init_ses_value( msg, value_name, value_properties )
+            end
+          end
+        elsif @values.class == Hash
+          @values.each do | value_name, value_properties |
+            init_ses_value( msg, value_name, value_properties )
+          end
         end
       end
       
@@ -470,31 +478,44 @@ module RSence
         end
       end
       
+      def restore_ses_value( msg, value_name, value_properties )
+        ses = get_ses( msg )
+        if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
+          if value_properties.has_key?(:responders)
+            init_responders( msg, ses[value_name], value_properties[:responders] )
+          else
+            release_responders( msg, ses[value_name] )
+          end
+          unless value_properties[:restore_default] == false
+            if value_properties.has_key?(:value_call)
+              default_value = init_value_call( msg, value_properties[:value_call] )
+            elsif value_properties.has_key?(:value)
+              default_value = value_properties[:value]
+            else
+              default_value = 0
+            end
+            ses[value_name].set( msg, default_value )
+          end
+        else
+          init_ses_value( msg, value_name, value_properties )
+        end
+      end
+      
       # @private  Restores session values to default, unless specified otherwise.
       #
       # Called from +#restore_ses+
       def restore_ses_values( msg )
         return unless @values
         ses = get_ses( msg )
-        @values.each do | value_name, value_properties |
-          if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
-            if value_properties.has_key?(:responders)
-              init_responders( msg, ses[value_name], value_properties[:responders] )
-            else
-              release_responders( msg, ses[value_name] )
+        if @values.class == Array
+          @values.each do | value_item |
+            value_item.each do | value_name, value_properties |
+              restore_ses_value( msg, value_name, value_properties )
             end
-            unless value_properties[:restore_default] == false
-              if value_properties.has_key?(:value_call)
-                default_value = init_value_call( msg, value_properties[:value_call] )
-              elsif value_properties.has_key?(:value)
-                default_value = value_properties[:value]
-              else
-                default_value = 0
-              end
-              ses[value_name].set( msg, default_value )
-            end
-          else
-            init_ses_value( msg, value_name, value_properties )
+          end
+        elsif @values.class == Hash
+          @values.each do | value_name, value_properties |
+            restore_ses_value( msg, value_name, value_properties )
           end
         end
       end
