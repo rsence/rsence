@@ -222,6 +222,25 @@ module RSence
       end
     end
     
+    # Sets the key of the hash data of the value, the change will be synced with the client.
+    # @param [Message] msg The {Message} instance.
+    # @param [String] key The key of data to change
+    # @param [#to_json] data Any data that can be mapped to JSON and handled by the client.
+    # @param [Boolean] dont_tell_client Doesn't notify the client about the change, if true.
+    def set_key( msg, key, data, dont_tell_client=false )
+      
+      @data[key] = data
+      
+      # won't tell the client about the change, usually not needed
+      unless dont_tell_client
+        ## update the flags
+        @sync  = false
+        @is_valid = true
+        
+        add_to_sync( msg )
+      end
+    end
+    
     # @private Tell the client that the value changed.
     def to_client( msg )
       if @is_new_to_client
