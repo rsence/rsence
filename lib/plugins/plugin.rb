@@ -194,12 +194,14 @@ module RSence
       # @param [Message] msg The message is supplied by the system.
       #
       # @return [Hash] Plugin-specific session hash
-      def get_ses( msg )
+      def get_ses( msg, key=false )
         name_sym = name_with_manager_s.to_sym
         unless msg.session.has_key?( name_sym )
           msg.session[ name_sym ] = {}
         end
-        return msg.session[ name_sym ]
+        ses = msg.session[ name_sym ]
+        return ses[key] if key
+        return ses
       end
   
       # Returns the source code of the javascript file +js_name+ in the 'js' subdirectory of the plugin bundle. Use it to send raw javascript command code to the client. Use {#read_js_once} for libraries.
