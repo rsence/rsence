@@ -192,6 +192,7 @@ module RSence
       # Uses the first name registered for the plugin and converts it to a symbol.
       #
       # @param [Message] msg The message is supplied by the system.
+      # @param [Symbol] key (optional) returns a ses key, if defined.
       #
       # @return [Hash] Plugin-specific session hash
       def get_ses( msg, key=false )
