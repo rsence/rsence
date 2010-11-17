@@ -317,6 +317,7 @@ module RSence
       if @db_avail
         db_open
         # Deletes the session's row from the database
+        @db[:rsence_uploads].filter(:ses_id => ses_id).delete
         @db[:rsence_session].filter(:id => ses_id).delete
         db_close
       end

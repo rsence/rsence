@@ -10,10 +10,62 @@
 
 require 'sequel'
 
-# @private Inner workings of Ticket
+# Inner workings of Ticket
 module TicketService
+  
+  
+=begin
 
-# @private Inner workings of Ticket
+# Here is an example how to implement "simple" upload value management.
+#
+# Define the component in yaml like this:
+#
+# - class: HUploader
+#   rect: [ 10, 10, 200, 24 ]
+#   bind: :values.upload
+#   options:
+#     label: Upload
+#     events:
+#       click: true
+#
+#       
+# Expects a value named :upload, it is defined like this in values.yaml:
+#
+# :upload:
+#   :responders:
+#     - :method: upload
+#
+#
+class UploadPlugin < GUIPlugin
+  def init_ses_values( msg )
+    super
+    upload_id( msg )
+  end
+  def restore_ses_values( msg )
+    super
+    upload_id( msg )
+  end  
+  def upload_id( msg )
+    upload_ticket = ticket.upload_key( msg, get_ses( msg, :upload ).value_id )
+    get_ses( msg, :upload ).set( msg, upload_ticket )
+  end
+  def upload( msg, value )
+    if value.data.start_with?('2:::') # upload is completed
+      ticket_id = value.data.split(':::')[1]
+      ticket_data = ticket.get_uploads( ticket_id, true )
+      ticket_data.each do |ticket_item|
+        file_write( bundle_path( ticket_item[:name], 'uploaded' ), ticket_item[:data] )
+      end
+      ticket.del_uploads( msg, ticket_id )
+      value.set( msg, '3:::' + ticket_id ) # upload is processed
+    elsif value.data.start_with?('4:::')   # client wants a new id
+      upload_id( msg )
+    end
+    return true
+  end
+end
+=end
+
 module Upload
   
 =begin
@@ -50,7 +102,7 @@ create table rsence_uploads (
 =end
   def upload(request,response)
     
-    ticket_id = req.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:u]}(.*)$/)[1]
+    ticket_id = request.unparsed_uri.match(/^#{::RSence.config[:broker_urls][:u]+'/'}(.*)$/)[1]
     value_id  = request.query['value_id']
     
     if not @upload_slots[:by_id].has_key?(ticket_id)
@@ -144,7 +196,7 @@ create table rsence_uploads (
           else
             row_datas = @upload_slots[:rsence_uploads][row_id]
           end
-          if row_datas.size == 1
+          if row_datas.count == 1
             row_data = row_datas.first
             row_hash = {
               :date => Time.at(row_data[:upload_date]),
@@ -167,7 +219,7 @@ create table rsence_uploads (
           else
             row_datas = @upload_slots[:rsence_uploads][row_id]
           end
-          if row_datas.size == 1
+          if row_datas.count == 1
             row_data = row_datas.first
             row_hash = {
               :date => Time.at(row_data[:upload_date]),
