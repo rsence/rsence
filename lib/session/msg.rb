@@ -175,6 +175,13 @@ module RSence
       @session[:user_id]
     end
     
+    # Getter for the user info hash
+    # @return [Hash] The current user info hash. Returns {} by default.
+    def user_info
+      @session[:user_info] = {} unless @session.has_key?(:user_info)
+      @session[:user_info]
+    end    
+    
     # @private used for automatic reload of page, when the plugins have been changed.
     def refresh_page?( plugin_incr )
       if plugin_incr != @session[:plugin_incr]
@@ -190,6 +197,13 @@ module RSence
     # @return [nil]
     def user_id=(user_id)
       @session[:user_id] = user_id
+    end
+
+    # Setter for the user info
+    # @param [Hash] user_info The user info hash to set. Use in login situations to store the user information.
+    # @return [nil]
+    def user_info=(user_info)
+      @session[:user_info] = user_info
     end
     
     # Returns the session id

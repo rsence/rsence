@@ -88,6 +88,9 @@ module RSence
       
         # user id, map to your own user management code
         :user_id    =>  0,
+        
+        # user info, map to your own user management code
+        :user_info  => {},
       
         # valuemanager data
         :values     => {
