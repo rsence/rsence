@@ -46,7 +46,7 @@
     Invalid environment: <%%= env_path.inspect %>
     
     Type 'rsence help <%%= @cmd.to_s %>' for usage."
-    Type 'rsence help initenv' for environment initialization usage."
+    Type 'rsence help init' for environment initialization usage."
   :invalid_option_chr: |
     Invalid option character for option character block <%%= arg.inspect %>:
       <%%= chr.inspect %>
@@ -79,7 +79,7 @@
     No process running.
   :session_data_saved: |
     Session data saved.
-# Strings for the initenv command
+# Strings for the init command
 :initenv:
   :env_already_initialized: |
     Environment already initialized.
@@ -171,6 +171,7 @@
     
   :confirm_config: "Is the configuration correct, "
   :creating_dirs: "Creating directories..."
+  :install_welcome: "Do you want to install the 'welcome' plugin as a starting point, "
   :installing_welcome_plugin: |+
       Installing the welcome plugin. To remove it, just delete this folder:
         <%%= welcome_plugin_dst %>
@@ -278,9 +279,19 @@
                               'say' command installed.
   
   :initenv: |+
-    usage: 'rsence initenv [options] [PATH]'
+    Alias name of the 'init' command.
+    
+    See: rsence help init
   
-    The 'initenv' command creates a new RSence environment. 
+  :initialize: |+
+    Alias name of the 'init' command.
+    
+    See: rsence help init
+  
+  :init: |+
+    usage: 'rsence init [options] [PATH]'
+  
+    The 'init' command creates a new RSence environment. 
   
     The expected structure of a project environment (where 'project_directory'
     is the directory of your project) is:

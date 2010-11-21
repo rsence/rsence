@@ -51,10 +51,10 @@ module RSence
     # system that fully implements POSIX standard signals.
     # These are necessary to send signals to the background process.
     if not RSence.pid_support?
-      @@cmds = [ :run, :initenv, :version, :help ]
+      @@cmds = [ :run, :init, :initenv, :version, :help ]
     else
       @@cmds = [ :run, :status, :start, :stop, :restart, :save,
-                 :initenv, :version, :help ]
+                 :init, :initenv, :version, :help ]
     end
     
     help_avail_cmds = @@cmds.map{|cmd|cmd.to_s}.join("\n       ")
@@ -724,10 +724,13 @@ module RSence
       run_dir = File.expand_path( 'run', env_dir )
       Dir.mkdir( run_dir )
       unless create_blank
-        welcome_plugin_dir = File.join( SERVER_PATH, 'setup', 'welcome' )
-        welcome_plugin_dst = File.join( plugins_dir, 'welcome' )
-        puts ERB.new( @@strs[:initenv][:installing_welcome_plugin] ).result( binding )
-        FileUtils.cp_r( welcome_plugin_dir, welcome_plugin_dst )
+        print @@strs[:initenv][:install_welcome]
+        if yesno(true)
+          welcome_plugin_dir = File.join( SERVER_PATH, 'setup', 'welcome' )
+          welcome_plugin_dst = File.join( plugins_dir, 'welcome' )
+          puts ERB.new( @@strs[:initenv][:installing_welcome_plugin] ).result( binding )
+          FileUtils.cp_r( welcome_plugin_dir, welcome_plugin_dst )
+        end
       end
       puts @@strs[:initenv][:creating_files]
       conf_file = File.join( conf_dir, 'config.yaml' )
@@ -789,7 +792,7 @@ module RSence
           parse_status_argv
         elsif cmd == :save
           parse_save_argv
-        elsif cmd == :initenv
+        elsif cmd == :initenv or cmd == :init
           parse_initenv_argv
         end
       else
