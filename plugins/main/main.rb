@@ -18,38 +18,165 @@
 # * Provides the +#init_ui+ event for plugins that respond to it.
 class MainPlugin < Plugin
   
-  # @private Internal structures, binds configuration data as instance variables
+  # # Session-specific index page renderer (unused)
+  # def session_index_html( request, response )
+  #   
+  #   ses_key = @randgen.gen
+  #   sha_key = ''
+  #   
+  #   buffer = [
+  #     "var qP=function(cmd){COMM.Queue.push(cmd);};"
+  #   ]
+  #   
+  #   req_num = 0
+  #   
+  #   3.times do |req_num|
+  #     sha_key = Digest::SHA1.hexdigest( ses_key + sha_key )
+  #     msg = @plugins.transporter.xhr(
+  #       request, response, {
+  #         :servlet => true,
+  #         :cookie  => (req_num==0),
+  #         :query   => {
+  #           'ses_key' => "#{req_num}:.o.:#{sha_key}"
+  #         }
+  #       }
+  #     )
+  #     buffer += msg.value_buffer
+  #     msg.buffer.each do |buffer_item|
+  #       buffer.push( "qP(function(){#{buffer_item};});")
+  #     end
+  #     ses_key = msg.ses_key
+  #   end
+  #   
+  #   buffer.unshift( "COMM.Session.newKey(#{ses_key.to_json});" )
+  #   buffer.unshift( "COMM.Session.sha_key=#{sha_key.to_json};" )
+  #   buffer.unshift( "COMM.Session.req_num=#{req_num};" )
+  #   
+  #   index_html = render_index_html
+  #   
+  #   return index_html.gsub('__STARTUP_SEQUENCE__', buffer.join("\n") )
+  # end
+  
+  
+  # Index page renderer
+  def render_index_html
+    
+    index_html = @index_html_src.clone
+    
+    client_rev = client_pkg.client_cache.client_rev
+    deps_src = ''
+    @conf[:deps].each do |dep|
+      deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
+    end
+    client_base = File.join(@bconf[:h],client_rev)
+    
+    index_html.gsub!( '__CLIENT_BASE__',   client_base       )
+    index_html.gsub!( '__DEFAULT_TITLE__', @conf[:title]     )
+    index_html.gsub!( '__CLIENT_REV__',    client_rev        )
+    index_html.gsub!( '__CLIENT_HELLO__',  @bconf[:hello]    )
+    index_html.gsub!( '__NOSCRIPT__',      @conf[:noscript]  )
+    index_html.gsub!( '__SCRIPT_DEPS__',   deps_src          )
+    
+    return index_html
+  end
+  
+  
+  
+  ### Top-level plugin events:
+  
+  
+  # Binds configuration data as instance variables
   def init
     super
+    @plugins.register_alias( :main, :index_html )
+    @randgen = RandGen.new( 40 )
+    ::RSence.config[:index_html][:instance] = self
     @conf  = ::RSence.config[:index_html]
     @bconf = ::RSence.config[:broker_urls]
     @goodbye_uri = File.join(@bconf[:hello],'goodbye')
   end
   
-  # @private Internal structures, matches the "hello/goodbye" session termination request
-  def match( uri, request_type )
-    if request_type == :post and uri == @goodbye_uri
-      return true
-    end
-    return false
+  # Opens and renders the index page template
+  def open
+    super
+    @index_html_src = file_read( ::RSence.config[:index_html][:index_tmpl] )
+    render_index_html
   end
   
-  # @private Internal structures, score for the "hello/goodbye" session termination request
-  def score; 100; end
+  # Frees the ticket resource id of the "loading" gif image.
+  def close
+    super
+    @plugins[:ticket].del_rsrc( @loading_gif_id )
+  end
   
-  # @private Internal structures, handler for the "hello/goodbye" session termination request
+  
+  
+  ### Servlet features; responds to GET / as well as POST /hello/goodbye
+  
+  
+  # @private Internal structures, matches the "hello/goodbye" session termination POST request and the "/" index html page GET request
+  def match( uri, method )
+    if uri == ::RSence.config[:index_html][:respond_address] and method == :get
+      return true
+    elsif req_type == :post and uri == @goodbye_uri
+      return true
+    else
+      return false
+    end
+  end
+  
+  # @private Internal structures, score for the "hello/goodbye" session termination request and the default index html page
+  def score
+    return 1000 # allows overriding with anything with a score below 1000
+  end
+  
+  # Inspects the http request header to decide if the browser supports gzip compressed responses.
+  def support_gzip( header )
+    return false if not ::RSence.config[:no_gzip]
+    return false if not header.has_key?('accept-encoding')
+    return header['accept-encoding'].include?('gzip')
+  end
+  
+  # Outputs the startup web page.
+  def get( req, response, ses )
+    index_html = render_index_html
+    
+    response.status = 200
+    
+    response['Content-Type'] = 'text/html; charset=UTF-8'
+    response['Date'] = httime( Time.now )
+    response['Server'] = 'RSence'
+    response['Cache-Control'] = 'no-cache'
+    
+    if support_gzip( req.header )
+      index_gzip = GZString.new('')
+      gzwriter = Zlib::GzipWriter.new( index_gzip, 9 )
+      gzwriter.write( index_html )
+      gzwriter.close
+      response['Content-Length'] = index_gzip.length
+      response['Content-Encoding'] = 'gzip'
+      response.body = index_gzip
+    else
+      response['Content-Length'] = index_html.length
+      response.body = index_html
+    end
+  end
+  
+  # Returns the "hello/goodbye" session termination request
   def post( req, res, ses )
     @plugins.sessions.expire_ses_by_req( req, res )
   end
   
-  # @private url_responder gets called whenever the
-  #          page location.href changes, enabled virtual uris
-  #          to enable back/forward/bookmarking in browsers,
-  #          when software is coded to support it.
+  
+  
+  ### Features accessible from other plugins:
+  
+  # The +#url_responder+ gets called whenever the anchor (pound) of location.href changes.
+  # It enables virtual url events for back/forward buttons and bookmarking in browsers whenever utilized.
   #
   # Client-side support is included in js/url_responder.js
   #
-  # Also allows virtual-host -like behavior, if software is coded to support it.
+  # Also allows virtual-host -like behavior if utilized.
   def url_responder(msg,location_href)
     
     ses = get_ses( msg )
@@ -83,10 +210,12 @@ class MainPlugin < Plugin
     
   end
   
+  
   # Returns base url of browser (before the '#' sign)
   def url( msg )
     get_ses( msg )[:url][0]
   end
+  
   
   # Returns pound url of browser (after the '#' sign)
   def pound( msg )
@@ -94,13 +223,18 @@ class MainPlugin < Plugin
   end
   
   
-  # @private new session initialization, called just once per session.
+  
+  ### Session events:
+  
+  
+  # New session initialization, called just once per session.
   def init_ses(msg)
     super
     restore_ses( msg )
   end
   
-  # @private called once when a session is restored using the cookie's ses_key
+  
+  # Called once when a session is restored or cloned using the cookie's ses_key
   def restore_ses(msg)
     super
     ## Resets session data to defaults
@@ -110,6 +244,7 @@ class MainPlugin < Plugin
     ses[:delayed_calls] = []
     ses[:poll_mode] = true
   end
+  
   
   # Interface for adding delayed calls
   #
@@ -135,6 +270,7 @@ class MainPlugin < Plugin
     get_ses( msg )[:delayed_calls].push( params )
   end
   
+  
   # @private Initializes the client-side COMM.urlResponder and sesWatcher
   def boot0( msg, ses )
     
@@ -158,18 +294,27 @@ class MainPlugin < Plugin
     
   end
   
+  
   # @private Calls the init_ui method of each loaded plugin and removes the loading -message
   def boot1( msg, ses )
     # Delegates the init_ui method to each plugin to signal bootstrap completion.
     msg.plugins.delegate( 'init_ui', msg ) unless ses[:dont_init_ui]
   end
   
-  # @private
+  
+  # Disables the init_ui event.
   def dont_init_ui( msg )
     get_ses( msg )[:dont_init_ui] = true
   end
   
-  # @private Flushes commands in the :delayed_calls array
+  
+  # Enables the init_ui event.
+  def do_init_ui( msg )
+    get_ses( msg )[:dont_init_ui] = false
+  end
+  
+  
+  # Flushes commands in the :delayed_calls array
   def flush_delayed( msg, ses )
     ## Limits the amount of delayed calls to process to 4.
     ## Prevents the client from choking even when the server
@@ -223,10 +368,10 @@ class MainPlugin < Plugin
     end
   end
   
-  # @private When nothing is delayed and the second poll has been made (init_ui called),
-  #          sets the client to non-polling-mode, having only HValue
-  #          changes trigger new requests. SesWatcher makes this happen
-  #          regularly.
+  # When nothing is delayed and the second poll has been made (init_ui called),
+  # sets the client to non-polling-mode, having only value synchronization trigger
+  # new requests. On the client, SesWatcher forces the change by sending the
+  # client time periodically.
   def end_polling( msg, ses )
     if ses[:poll_mode] == true
       msg.reply "COMM.Transporter.poll(0);"
@@ -234,7 +379,7 @@ class MainPlugin < Plugin
     end
   end
   
-  # @private Starts polling.
+  # Starts polling mode.
   def start_polling( msg, ses )
     if ses[:poll_mode] == false
       msg.reply( "COMM.Transporter.poll(#{::RSence.config[:transporter_conf][:client_poll_priority]});" )
@@ -242,7 +387,7 @@ class MainPlugin < Plugin
     end
   end
   
-  # @private called on every request of an active, valid session
+  # Called on every request of an active, valid session
   def idle(msg)
     
     ses = get_ses( msg )

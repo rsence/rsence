@@ -3,16 +3,17 @@
 title: Main Plugin
 
 # The human-readable version of the package
-version: 2.0.0
+version: 2.1.0
 
 # A brief description of the package (rdoc formatting supported)
 description: |
-  The main plugin manages the flow of communication between client and server.
+  The main plugin manages the flow of communication between client and server
+  as well as initializes a startup web page, if no other plugin does so.
 
 # System version requirement.
-sys_version: '>= 2.0.0'
+sys_version: '>= 2.1.0'
 
 category: :system
 
-depends_on: :index_html
+depends_on: :client_pkg
 
