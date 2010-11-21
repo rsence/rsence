@@ -289,13 +289,140 @@ module RSence
         end
       end
       
+      # @private  Returns a hash with valid symbol keys for +#value_call+.
+      def sanitize_value_call_hash( hash_dirty )
+        hash_clean = {}
+        hash_dirty.each do | key, value |
+          if key.to_sym == :method
+            hash_clean[:method] = value.to_sym
+          elsif key.to_sym == :plugin
+            hash_clean[:plugin] = value.to_sym
+          elsif key.to_sym == :args
+            if value.class == Array
+              hash_clean[:args] = value
+            else
+              warn "Invalid arguments (#{value.inspect}). Expected Array."
+            end
+          elsif key.to_sym == :uses_msg
+            value == false if value == nil
+            if value.class == TrueClass or value.class == FalseClass
+              hash_clean[:uses_msg] = value
+            else
+              warn "Invalid argument for :uses_msg (#{value.inspect}), expected boolean."
+            end
+          else
+            warn "Undefined value_call key: #{key.inspect}"
+          end
+        end
+        return hash_clean
+      end
+      
+      # @private  Returns a sanitized copy of a single responder specification.
+      def sanitize_value_responders( responders_dirty )
+        if responders_dirty.class != Array
+          warn "Unsupported responders type: #{responders_dirty.inspect} (expected Array or Hash). Trying work-around.." unless responders_dirty.class == Hash
+          responders_dirty = [ responders_dirty ]
+        end
+        responders_clean = []
+        responders_dirty.each do |responder_dirty|
+          if responder_dirty.class != Hash
+            if responder_dirty.class == Symbol
+              responder_dirty = { :method => responder_dirty }
+            elsif responder_dirty.class == String
+              if responder_dirty.include?('.')
+                last_dot_index = responder_dirty.rindex('.')
+                responder_plugin = responder_dirty[0..(last_dot_index-1)].to_sym
+                responder_method = responder_dirty[(last_dot_index+1)..-1].to_sym
+                responder_dirty = { :method => responder_method, :plugin => responder_plugin }
+              else
+                responder_dirty = { :method => responders_dirty.to_sym }
+              end
+            else
+              warn "Unsupported responder type: #{responder_dirty.inspect}. Skipping.."
+              next
+            end
+          end
+          responder_clean = {}
+          responder_dirty.each do |key, value|
+            if key.to_sym == :method
+              responder_clean[ :method ] = value.to_sym
+            elsif key.to_sym == :plugin
+              responder_clean[ :plugin ] = value.to_sym
+            else
+              warn "Unsupported responder key: #{key.inspect} => #{value.inspect}. Ignoring.."
+            end
+          end
+          if responder_clean.has_key?( :method )
+            responders_clean.push( responder_clean )
+          else
+            warn "Responder (#{responder_clean.inspect}) is missing a :method specification. Skipping.."
+          end
+        end
+        return responders_clean
+      end
+      
+      # @private  Returns a sanitized copy of a single value item.
+      def sanitize_value_item( value_item_dirty )
+        value_item_clean = {}
+        value_item_dirty.each do | key, value |
+          if key.to_sym == :value or key.to_sym == :data
+            if [Array, Hash, String, TrueClass, FalseClass, Fixnum, Bignum, Float, NilClass].include? value.class
+              value_item_clean[:value] = value
+            else
+              warn "Unsupported value class (#{value.class.inspect}) for value: #{value.inspect}. Using 0 instead."
+              value_item_clean[:value] = 0
+            end
+          elsif key.to_sym == :value_call or key.to_sym == :call
+            value_item_clean[:value_call] = sanitize_value_call_hash( value )
+          elsif key.to_sym == :restore_default or key.to_sym == :restore
+            if [TrueClass, FalseClass].include? value.class
+              value_item_clean[:restore_default] = value
+            else
+              warn "Unsupported type of restore (expected true or false): #{value.inspect}. Using true instead."
+              value_item_clean[:restore_default] = true
+            end
+          elsif key.to_sym == :responders or key.to_sym == :responder
+            sanitized_responders = sanitize_value_responders( value )
+            value_item_clean[:responders] = sanitized_responders unless sanitized_responders.empty?
+          else
+            warn "Unsupported value specification key: #{key.inspect}."
+          end
+        end
+        return value_item_clean
+      end
+      
+      # @private  Returns sanitized hash of the structure specified in values.yaml
+      def sanitize_values_yaml( values_path )
+        values_dirty = yaml_read( values_path )
+        return false if values_dirty == false
+        if values_dirty.class == Hash
+          values_clean = {}
+          values_dirty.each do |key, value|
+            values_clean[ key.to_sym ] = sanitize_value_item( value )
+          end
+          return values_clean unless values_clean.empty?
+        elsif values_dirty.class == Array
+          values_clean = []
+          values_dirty.each do |values_dirty_segment|
+            values_clean_segment = {}
+            values_dirty_segment.each do |key, value|
+              values_clean_segment[ key.to_sym ] = sanitize_value_item( value )
+            end
+            values_clean.push( values_clean_segment )
+          end
+          return values_clean unless values_clean.empty?
+        else
+          warn "Unsupported format of values.yaml, got: #{values_dirty.inspect}, expected Hash or Array."
+        end
+        return false
+      end
       
       # @private  This method looks looks for a file called "values.yaml" in the plugin's bundle directory.
       #           If this file is found, it loads it for initial value definitions.
       #           These definitions are accessible as the +@values+ attribute.
       def init_values
         values_path = bundle_path( 'values.yaml' )
-        return yaml_read( values_path )
+        return sanitize_values_yaml( values_path )
       end
       
       # @private  Creates a new instance of HValue, assigns it as +value_name+ into the
