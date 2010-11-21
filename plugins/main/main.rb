@@ -7,9 +7,10 @@
  ##
 
 
-# The MainPlugin is accessible as +@plugins.main+ from other plugins.
+# The MainPlugin is accessible as +@plugins.main+ and just +main+ from other plugins.
 #
 # = MainPlugin provides mainly client setup and the following services:
+# * The root html page, which includes the scripts and sets up client startup variables.
 # * The url of the client as a HValue, including the anchor.
 #   * Accessible via +msg.session[:main][:location_href]+
 # * The local time of the client's web browser as a HValue, as seconds since epoch.
