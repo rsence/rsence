@@ -544,27 +544,24 @@ EVENT = {
       }
       _ctrl = _this.focusOptions[i].ctrl;
       if(_ctrl.drawn){
+        if(ELEM.getStyle(i,'visibility',true) === 'hidden'){
+          continue;
+        }
         _elem = ELEM.get(i);
         if (!_this._coordCacheFlag || !_this._coordCache[i]) {
           _rect = _ctrl.rect;
-          _pos = [_rect.left,_rect.top];
+          _pos = [_ctrl.pageX(),_ctrl.pageY()];
           _size = [_rect.width,_rect.height];
-          // _pos = ELEM.getVisiblePosition(_ctrl.elemId);
-          // // [x,y]
-          // _size = ELEM.getVisibleSize(_ctrl.elemId);
-          // // [w,h]
           _this._coordCache[i] = [_pos[0], _pos[1], _size[0], _size[1]];
         }
         _coords = _this._coordCache[i];
       
         // Is the mouse pointer inside the element's rectangle?
         if (x >= _coords[0] && x <= _coords[0] + _coords[2] && y >= _coords[1] && y <= _coords[1] + _coords[3]) {
-          // console.log('coords:',_coords);
           _hovered.push(i);
         }
       }
     }
-    // console.log('update hover:',_hovered);
     _this.hovered = _hovered;
   },
 
