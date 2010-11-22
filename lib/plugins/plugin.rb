@@ -291,6 +291,18 @@ module RSence
       
       # @private  Returns a hash with valid symbol keys for +#value_call+.
       def sanitize_value_call_hash( hash_dirty )
+        if hash_dirty.class == Symbol
+          return { :method => hash_dirty }
+        elsif hash_dirty.class == String
+          if hash_dirty.include?('.')
+            last_dot_index = hash_dirty.rindex('.')
+            call_plugin = hash_dirty[0..(last_dot_index-1)].to_sym
+            call_method = hash_dirty[(last_dot_index+1)..-1].to_sym
+            return { :method => call_method, :plugin => call_plugin }
+          else
+            return { :method => hash_dirty.to_sym }
+          end
+        end
         hash_clean = {}
         hash_dirty.each do | key, value |
           if key.to_sym == :method
@@ -320,7 +332,7 @@ module RSence
       # @private  Returns a sanitized copy of a single responder specification.
       def sanitize_value_responders( responders_dirty )
         if responders_dirty.class != Array
-          warn "Unsupported responders type: #{responders_dirty.inspect} (expected Array or Hash). Trying work-around.." unless responders_dirty.class == Hash
+          warn "Unsupported responders type: #{responders_dirty.inspect} (expected Array or Hash). Trying work-around.." unless responders_dirty.class == Hash and RSence.args[:verbose]
           responders_dirty = [ responders_dirty ]
         end
         responders_clean = []
@@ -335,7 +347,7 @@ module RSence
                 responder_method = responder_dirty[(last_dot_index+1)..-1].to_sym
                 responder_dirty = { :method => responder_method, :plugin => responder_plugin }
               else
-                responder_dirty = { :method => responders_dirty.to_sym }
+                responder_dirty = { :method => responder_dirty.to_sym }
               end
             else
               warn "Unsupported responder type: #{responder_dirty.inspect}. Skipping.."
@@ -374,6 +386,9 @@ module RSence
             end
           elsif key.to_sym == :value_call or key.to_sym == :call
             value_item_clean[:value_call] = sanitize_value_call_hash( value )
+          elsif key.to_sym == :msg_call
+            value_item_clean[:value_call] = sanitize_value_call_hash( value )
+            value_item_clean[:value_call][:uses_msg] = true unless value_item_clean[:value_call].has_key?(:uses_msg)
           elsif key.to_sym == :restore_default or key.to_sym == :restore
             if [TrueClass, FalseClass].include? value.class
               value_item_clean[:restore_default] = value
