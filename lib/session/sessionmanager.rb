@@ -173,7 +173,7 @@ module RSence
     end
   
     def clone_ses( msg, old_data, old_id, old_key, ses_seed )
-      ses_data = Marshal.restore( Marshal.dump( old_data ) )
+      ses_data = Marshal.load( Marshal.dump( old_data ) )
       old_data[:timeout] = Time.now.to_i + @config[:cloned_session_expires_in]
       timeout = Time.now.to_i + @config[:timeout_secs]
       cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')

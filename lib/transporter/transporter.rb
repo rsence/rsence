@@ -51,6 +51,13 @@ module RSence
         :resolved_deps => core_pkgs[:core],
         :resolved_categories => core_pkgs
       })
+      if RSence.config[:session_conf][:reset_sessions]
+        puts "Resetting all sessions..."
+        @sessions.reset_sessions()
+      else
+        @sessions.restore_sessions()
+      end
+
       if RSence.launch_pid != Process.pid
         Process.kill( 'TERM', RSence.launch_pid )
       end

@@ -181,13 +181,6 @@ module RSence
       ## Used for future upgrades:
       # version = table_version
     
-      if @config[:reset_sessions]
-        puts "Resetting all sessions..."
-        reset_sessions()
-      else
-        restore_sessions()
-      end
-    
       return true
     end
   
@@ -219,7 +212,7 @@ module RSence
           @db[:rsence_session].filter(:id => ses_id).delete
           @db[:rsence_uploads].filter(:ses_id => ses_id).delete
         else
-          ses_data = Marshal.restore( ses_data_dump )
+          ses_data = Marshal.load( ses_data_dump )
           ses_key = ses_data[:ses_key]
           @sessions[ses_id] = ses_data
           @session_keys[ ses_key ] = ses_id
