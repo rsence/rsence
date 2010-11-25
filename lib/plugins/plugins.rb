@@ -123,7 +123,7 @@ module RSence
             path = File.expand_path( path, _bundle_path )
             return path
           end
-          def self.inspect; "#<module BundleWrapper of #{@@bundle_name}}>"; end
+          def self.inspect; "#<module BundleWrapper of #{self._bundle_path}}>"; end
           def self.const_missing( name )
             if name == :Servlet
               return Plugins.Servlet.call( self )

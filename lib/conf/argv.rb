@@ -334,7 +334,12 @@ module RSence
         if RUBY_VERSION.to_f >= 1.9
           sock = TCPSocket.open( addr, port )
         else
-          sock = TCPsocket.open( addr, port )
+          begin
+            sock = TCPsocket.open( addr, port )
+          rescue NameError => e
+            warn "TCPsocket not available, trying TCPSocket.."
+            sock = TCPSocket.open( addr, port )
+          end
         end
         sock.close
         return true
