@@ -179,9 +179,14 @@ class TicketPlugin < Plugin
     @ticketserve.serve( msg, content, format, type )
   end
   
-  # @private Removes data used by the session
+  # @private Removes data used by the session, takes session id
+  def expire_ses_id( ses_id )
+    @ticketserve.expire_ses( ses_id )
+  end
+  
+  # @private Removes data used by the session, takes msg
   def expire_ses( msg )
-    @ticketserve.expire_ses( msg.ses_id )
+    expire_ses_id( msg.ses_id )
   end
   
   # Sets a custom favicon for RSence

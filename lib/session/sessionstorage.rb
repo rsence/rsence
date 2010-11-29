@@ -207,16 +207,22 @@ module RSence
       @db[:rsence_session].all do |ses_row|
         ses_id = ses_row[:id]
         ses_data_dump = ses_row[:ses_data]
-      
+        
         if ses_data_dump == nil
           @db[:rsence_session].filter(:id => ses_id).delete
           @db[:rsence_uploads].filter(:ses_id => ses_id).delete
         else
-          ses_data = Marshal.load( ses_data_dump )
-          ses_key = ses_data[:ses_key]
-          @sessions[ses_id] = ses_data
-          @session_keys[ ses_key ] = ses_id
-          @session_cookie_keys[ ses_data[:cookie_key] ] = ses_id
+          begin
+            ses_data = Marshal.load( ses_data_dump )
+            ses_key = ses_data[:ses_key]
+            @sessions[ses_id] = ses_data
+            @session_keys[ ses_key ] = ses_id
+            @session_cookie_keys[ ses_data[:cookie_key] ] = ses_id
+          rescue => e
+            warn "Unable to restore session id: #{ses_id}, error: #{e.inspect}"
+            @db[:rsence_session].filter(:id => ses_id).delete
+            @db[:rsence_uploads].filter(:ses_id => ses_id).delete
+          end
         end
       end
       db_close
@@ -290,7 +296,7 @@ module RSence
       @sessions.delete( ses_id )
     
       # Removes all ticket-based storage bound to the session
-      @plugins[:ticketservices].expire_ses( ses_id ) if @plugins
+      @plugins[:ticket].expire_ses_id( ses_id ) if @plugins
     
       # target -> source cleanup
       if @clone_sources.has_key?( ses_id )

@@ -38,8 +38,6 @@ module RSence
     def initialize
       @config = RSence.config[:transporter_conf]
       @accept_req = false
-      @valuemanager = ValueManager.new
-      @sessions = SessionManager.new( self )
       core_pkgs = {
         :core => [:transporter, :session_storage, :session_manager, :value_manager]
       }
@@ -51,6 +49,8 @@ module RSence
         :resolved_deps => core_pkgs[:core],
         :resolved_categories => core_pkgs
       })
+      @valuemanager = ValueManager.new
+      @sessions = SessionManager.new( self )
       if RSence.config[:session_conf][:reset_sessions]
         puts "Resetting all sessions..."
         @sessions.reset_sessions()

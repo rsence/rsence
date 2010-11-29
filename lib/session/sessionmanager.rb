@@ -75,7 +75,7 @@ module RSence
         # the time, when the session will time out
         :timeout    =>  timeout,
         
-        :plugin_incr => 0,
+        :plugin_incr => @plugins.incr,
         
         # session id, used internally
         :ses_id     =>  ses_id,
@@ -182,6 +182,7 @@ module RSence
       ses_data[:timeout] = timeout
       ses_data[:ses_key] = ses_key
       ses_data[:cookie_key] = cookie_key
+      ses_data[:plugin_incr] = @plugins.incr
       ses_id = new_ses_id( cookie_key, ses_key, timeout )
       ses_data[:ses_id] = ses_id
       @sessions[ ses_id ] = ses_data
@@ -312,6 +313,9 @@ module RSence
         
           # binds the new cookie key to the old session data
           @sessions[ses_id][:cookie_key] = cookie_key
+          
+          
+          msg.session[:plugin_incr] = @plugins.incr
         
           # Sets the restored_session flag of msg to true
           # It signals plugins to re-set data
