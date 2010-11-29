@@ -1156,16 +1156,12 @@ HView = HClass.extend({
   *
   **/
   hide: function() {
-    if(!this.isHidden) {
-      var _setStyl = ELEM.setStyle,
-          _elemId  = this.elemId;
-      _setStyl(_elemId,'visibility', 'hidden');
-      // Required for the old, buggy Mozilla engines ( Firefox versions below 3.0 )
-      // At least text fields would show through from hidden parent elements.
-      // Disabled, because keeping the display as none causes hidden views to have no dimensions at all.
-      // _setStyl(_elemId,'display', 'none');
-      this.isHidden = true;
-    }
+    ELEM.setStyle(this.elemId,'visibility', 'hidden', true);
+    // Required for the old, buggy Mozilla engines ( Firefox versions below 3.0 )
+    // At least text fields would show through from hidden parent elements.
+    // Disabled, because keeping the display as none causes hidden views to have no dimensions at all.
+    // ELEM.setStyle(this.elemId,'display', 'none');
+    this.isHidden = true;
     return this;
   },
   
@@ -1177,13 +1173,9 @@ HView = HClass.extend({
   *
   **/
   show: function() {
-    if(this.isHidden) {
-      var _setStyl = ELEM.setStyle,
-          _elemId  = this.elemId;
-      _setStyl(_elemId,'visibility', 'inherit');
-      _setStyl(_elemId,'display', this.displayMode);
-      this.isHidden = false;
-    }
+    ELEM.setStyle(this.elemId,'display', this.displayMode, true);
+    ELEM.setStyle(this.elemId,'visibility', 'inherit', true);
+    this.isHidden = false;
     return this;
   },
   
