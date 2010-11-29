@@ -79,7 +79,7 @@ module RSence
       # @private Method that implements +client_pkgs.yaml+ loading
       def install_client_pkgs
         if @client_pkgs
-          warn "install_client_pkgs: called with @client_pkgs defined (#{@client_pkgs.inspect}); returning"
+          warn "install_client_pkgs: called with @client_pkgs defined (#{@client_pkgs.inspect}); returning" if RSence.args[:debug]
           return
         end
         @client_pkgs = yaml_read( 'client_pkgs.yaml' )

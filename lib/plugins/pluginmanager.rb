@@ -329,7 +329,7 @@ module RSence
         info_yaml.each do |info_key,info_value|
           info[ info_key.to_sym ] = info_value
         end
-      else
+      elsif RSence.args[:debug]
         warn "Expected info.yaml, using defaults:"
         warn "  #{info_path}"
       end
@@ -616,7 +616,7 @@ module RSence
       end
       if not (to_load.empty? and to_unload.empty? and to_reload.empty?)
         @@incr += 1
-        puts "@@incr: #{@@incr}"
+        puts "@@incr: #{@@incr}" if RSence.args[:debug]
         puts "Plugin bundles:"
         puts "  loaded: #{to_load.join(', ')}" unless to_load.empty?
         puts "  unloaded: #{to_unload.join(', ')}" unless to_unload.empty?

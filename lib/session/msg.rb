@@ -185,7 +185,7 @@ module RSence
     # @private used for automatic reload of page, when the plugins have been changed.
     def refresh_page?( plugin_incr )
       if plugin_incr != @session[:plugin_incr]
-        puts "@session[:plugin_incr] = #{@session[:plugin_incr].inspect}  vs  plugin_incr = #{plugin_incr.inspect}"
+        puts "@session[:plugin_incr] = #{@session[:plugin_incr].inspect}  vs  plugin_incr = #{plugin_incr.inspect}" if RSence.args[:debug]
         @session[:plugin_incr] = plugin_incr
         return true
       end
