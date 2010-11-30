@@ -18,7 +18,7 @@ HConfirmSheet = HAlertSheet.extend({
   *
   **/
   alertButtons: function(){
-    this.cancelButton = HClickValueButton.extend({
+    this.cancelButton = HClickButton.extend({
       click: function(){
         this.setValue( -1 );
       }
@@ -33,5 +33,16 @@ HConfirmSheet = HAlertSheet.extend({
       }
     );
     this.base();
-  }
+  },
+  
+/** = Description
+  * Binds the same value to cancelButton.
+  *
+  **/  
+  setValueObj: function( valueObj ){
+    this.base( valueObj );
+    if ( this['cancelButton'] ) {
+      valueObj.bind( this.cancelButton ); 
+    }
+  }  
 });

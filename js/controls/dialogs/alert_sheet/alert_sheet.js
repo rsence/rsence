@@ -49,7 +49,7 @@ HAlertSheet = HSheet.extend({
   *
   **/
   alertButtons: function(){
-    this.okButton = HClickValueButton.nu(
+    this.okButton = HClickButton.nu(
       [ null, null, 60, 23, 8, 8 ],
       this, {
         label: 'OK',
@@ -59,5 +59,17 @@ HAlertSheet = HSheet.extend({
         }
       }
     );
+  },
+
+/** = Description
+  * Binds the same value to okButton.
+  *
+  **/  
+  setValueObj: function( valueObj ){
+    this.base( valueObj );
+    if ( this['okButton'] ) {
+      valueObj.bind( this.okButton ); 
+    }
   }
+  
 });
