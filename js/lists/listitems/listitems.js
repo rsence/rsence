@@ -9,19 +9,19 @@
 
 /*** = Description
   ** HListItems is uses an array-packed list of hash objects as its value.
-  ##
-  ## == Value as Array of Hashes:
+  **
+  ** == Value as Array of Hashes:
   ** Each item in the array should have a 'label' and a 'value' key.
   ** The 'label' key of each item is used as the label for the HRadiobutton in the list.
   ** The 'value' key of each item is the value used for the output.
-  ##
-  ## == Value as Array of strings or numerals
-  ## Each Item like with hash, except the item is both label and value. Each item should
-  ## be unique.
-  ##
-  ## == Important
+  **
+  ** == Value as Array of strings or numerals
+  ** Each Item like with hash, except the item is both label and value. Each item should
+  ** be unique.
+  **
+  ** == Important
   ** The parent object of a HListItem needs to be a compatible component, like HRadioButtonList.
-  ##
+  **
   ***/
 var//RSence.Lists
 HListItems = HValueResponder.extend({
