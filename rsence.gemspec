@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.name      = 'rsence-pre' if prerelease
   normalized_version = s.version.to_s.to_f
   # there is no actual 2.1 version yet, so lets make the "gem install rsence-pre --pre" -> "gem install rsence-pre"
-  if normalized_version == 2.1
+  if normalized_version >= 2.1 and prerelease
     s.version = s.version.to_s[0..-5]
   end
   s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of the RSence framework."
