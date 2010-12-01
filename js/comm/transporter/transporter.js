@@ -239,7 +239,7 @@ COMM.Transporter = HApplication.extend({
     }
     // console.log('sync.');
     this.busy = true;
-    if(window['sesWatcher']){
+    if(window['sesWatcher'] && window.sesWatcher['sesTimeoutValue']){
       sesWatcher.sesTimeoutValue.set( new Date().getTime() );
     }
     var _this = this,
