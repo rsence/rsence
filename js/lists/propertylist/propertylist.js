@@ -13,6 +13,11 @@
   ** - Type
   ** - Value
   **
+  ** Its current purpose is to view JSON data in a structured way. I'll be
+  ** extended later as a full, generic JSON data editor.
+  **
+  ** NOTE: HPropertyList does not work in any version of Internet Explorer yet.
+  **
   ***/
 var//RSence.Lists
 HPropertyList = HControl.extend({
