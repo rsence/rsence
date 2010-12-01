@@ -1,6 +1,6 @@
 = Example: The "welcome" GUIPlugin bundle
 
-This bundle is installed by default for each new RSence project environment, when created by the +rsence initenv+ command. It displays a simple user interface that contains a congratulatory message of a successful setup. Feel free to experiment with the plugin in your project environment.
+This bundle is installed by default for each new RSence project environment, when created by the +rsence init+ command. It displays a simple user interface that contains a congratulatory message of a successful setup. Feel free to experiment with the plugin in your project environment.
 
 === File / directory structure
 This is just an example, the meaning of gui/
@@ -28,7 +28,7 @@ A brief description of the package
   !!!yaml
   description: |
     This is a simple welcome message plugin. It's installed in new project
-    environments, when the rsence initenv in executed.
+    environments, when the rsence init in executed.
     You may safely remove this plugin bundle.
 
 System version requirements. In this case "RSence 2.0.0 or newer"

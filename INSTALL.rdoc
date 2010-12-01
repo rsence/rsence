@@ -64,7 +64,7 @@ Replace the +\my_projects+ path with the path to the directory where you want to
 
 * In the command prompt, run:
     cd \my_projects
-    rsence initenv my_project
+    rsence init my_project
 * Answer the questions
 * In the command prompt, run:
     rsence run my_project
@@ -128,7 +128,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
   * A Sequel driver for your preferred database is also needed:
     * *sqlite3-ruby*:: SQLite[http://www.sqlite.org] is a light-weight SQL library. Recommended for development and small projects.
     * Other database adapters compatible with Sequel are fine. Just configure RSence accordingly.
-* *highline*:: Console-based menu prompt system by the initenv command.
+* *highline*:: Console-based menu prompt system by the init command.
 * rmagick
   * Optional, but suggested, because RSence has RMagick -savvy features, like serving RMagick objects using tickets that are rendered only when requested.
   * Some plugins depend on it directly.
@@ -157,20 +157,20 @@ When installed, ensure it works by exploring the help of the 'rsence' command, l
   rsence help
   rsence help version
   rsence help run
-  rsence help initenv
+  rsence help init
 etc..
 
 === 3.2. Setting up
 
 ==== 3.2.1. Creating a RSence project environment
 
-To set up an environment for your RSence project, use the initenv command. In this example '/home/me/projects' is assumed as your project directory. Replace that with a path that matches your own environment. The RSence project directory must either be empty or will be created automatically.
-  rsence initenv /home/me/projects/my_first_rsence_project
+To set up an environment for your RSence project, use the init command. In this example '/home/me/projects' is assumed as your project directory. Replace that with a path that matches your own environment. The RSence project directory must either be empty or will be created automatically.
+  rsence init /home/me/projects/my_first_rsence_project
 
-To see the options of the initenv command, use
-  rsence help initenv
+To see the options of the init command, use
+  rsence help init
 
-By default, initenv asks a few simple questions to write your configuration file. Just press enter, if you want to keep the suggested default options.
+By default, init asks a few simple questions to write your configuration file. Just press enter, if you want to keep the suggested default options.
 
 The questions are:
 * Project Title
