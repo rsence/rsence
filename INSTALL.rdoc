@@ -4,21 +4,33 @@ If you already have a working ruby environment and know what to do, the easiest 
 
  gem install rsence
 
-Otherwise, follow these instructions:
+If you have an older version of rsence installed, it's be automatically
+updated along other gems when you run:
+
+ gem update
+
+For system-wide installs, run the gem command as a superuser. A common way
+for doing so is prefixing the command with sudo.
+
+RSence 2.1 is verified to be compatible with Rubinius. To use RSence with
+Rubinius, just use "rbx gem" instead of just "gem" for installation.
+
+The following instructions contain detailed steps for installing Ruby, RSence
+and its dependencies on each supported platform:
 
 
-== 1. System Dependencies
+== System Dependencies
 
 This is a list of system level dependencies. You only need to do this step once; follow the steps of for your target operating system.
 
-=== 1.1. Mac OS X
+=== Mac OS X
 
-==== 1.1.1 Mac OS X 10.6
+==== Mac OS X 10.6
 
 * Install *XCode*[http://developer.apple.com/mac/] to get the essential development tools, like compilers.
 * Proceed to section 3.0
 
-==== 1.1.2. Mac OS X 10.4 and 10.5
+==== Mac OS X 10.4 and 10.5
 
 This step applies only to Mac OS X 10.4 "Tiger" and 10.5 "Leopard". The default ruby build of these versions of Mac OS X is somewhat broken.
 
@@ -29,7 +41,7 @@ This step applies only to Mac OS X 10.4 "Tiger" and 10.5 "Leopard". The default 
     sudo port install rb-rubygems
 * Proceed to section 3.0
 
-=== 1.2. Debian and Ubuntu Linux
+=== Debian and Ubuntu Linux
 
 This step applies only to Debian, Ubuntu and similar Linux distributions.
 
@@ -37,12 +49,12 @@ This step applies only to Debian, Ubuntu and similar Linux distributions.
     sudo apt-get install build-essential ruby-full rubygems rake
 * Proceed to section 3.0
 
-=== 1.3. Microsoft Windows
+=== Microsoft Windows
 
 RSence works just fine on Windows too, with a few limitations.
 Windows compatibility has been officially tested on Windows XP SP3 and Windows 7 (64 bit).
 
-==== 1.3.1. Install ruby 1.8.7:
+==== Install ruby 1.8.7:
 * Download Ruby 1.8.7-p249 (RC2) from http://rubyinstaller.org/downloads
 * Run the downloaded exe to install ruby
   * In the installation and destination prompt, check these options:
@@ -52,13 +64,13 @@ Windows compatibility has been officially tested on Windows XP SP3 and Windows 7
   * Extract the included directories into the directory where you installed ruby.
     * It's +C:\ruby+ by default.
 
-==== 1.3.2. Install RSence
+==== Install RSence
 * In the command prompt, run:
     gem update --system
     gem install rsence
     rsence help
 
-==== 1.3.3. Create RSence environment
+==== Create RSence environment
 
 Replace the +\my_projects+ path with the path to the directory where you want to run or develop your projects. Likewise, replace +my_project+ with something descriptive for your project.
 
@@ -72,7 +84,7 @@ Replace the +\my_projects+ path with the path to the directory where you want to
   * If the address is +0.0.0.0+, enter +127.0.0.1+ instead.
   * Using just defaults, the following URL should work: http://127.0.0.1:8001
 
-==== 1.3.4. Windows limitations
+==== Windows limitations
 If you install the sqlite dll and the sqlite3-ruby gem, you'll gain persistent sessions and this warning message will disappear:
 `Warning: Session database is not available. Can't use persistent sessions`
 
@@ -83,7 +95,7 @@ Backgrounding on Windows is not yet implemented, because POSIX signals are not f
 However, if you run RSence under Cygwin, everything should work like on a UNIX machines.
 
 
-=== 1.4. Other UNIX / Linux systems:
+=== Other UNIX / Linux systems:
 
 This step applies to systems not listed above.
 
@@ -98,13 +110,13 @@ You'll have to figure out how to install the dependencies on your own, but gener
   * gcc, make etc.
 
 
-== 2. Ruby Library Dependencies
+== Ruby Library Dependencies
 
 The `rsence` gem depends on the dummy `rsence-deps` gem, which depends on all essential dependencies of RSence.
 Optionally, you probably want at a database and a database adapter supported by Sequel[http://sequel.rubyforge.org]
 This not only enables SessionStorage (persistent sessions between RSence restarts), but some plugins written for RSence depend on at least Sqlite.
 
-=== 2.1 Detailed list of ruby libraries used
+=== Detailed list of ruby libraries used
 
 * *rake*[http://rake.rubyforge.org]
   * Ruby build tool
@@ -134,7 +146,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
   * Some plugins depend on it directly.
 
 
-== 3. Setting up RSence
+== Setting up RSence
 
 The primary installation method of RSence is via RubyGems.
 
@@ -144,7 +156,7 @@ To ensure your RubyGems is up-to-date, run:
 Even if RubyGems is up-to-date, ensure your installed gems are up-to-date, some of these are updated frequently. This will also update RSence release versions to the most recent version, if installed.
   sudo gem update
 
-=== 3.1. Install RSence
+=== Install RSence
 
 This will install RSence via RubyGems, the preferred method. All dependencies are installed too, except for the ones you already might have installed.
   gem install rsence
@@ -160,9 +172,9 @@ When installed, ensure it works by exploring the help of the 'rsence' command, l
   rsence help init
 etc..
 
-=== 3.2. Setting up
+=== Setting up
 
-==== 3.2.1. Creating a RSence project environment
+==== Creating a RSence project environment
 
 To set up an environment for your RSence project, use the init command. In this example '/home/me/projects' is assumed as your project directory. Replace that with a path that matches your own environment. The RSence project directory must either be empty or will be created automatically.
   rsence init /home/me/projects/my_first_rsence_project
@@ -200,29 +212,29 @@ You may edit the conf/config.yaml at a later time to change these settings. The 
 
 Any differences in your local configuration replace the default. If the configuration option type is an Array, the defaults are not replaced, the defaults are appended to. If your configuration only has partial items of a Hash defined, only those are applied to the default.
 
-==== 3.2.2. Start RSence in the development mode with logs printed to the standard output:
+==== Start RSence in the development mode with logs printed to the standard output:
 
 The debug/development mode has the most verbose output and is the intended mode of RSence for development. Changes in your code are automatically (re)loaded and the javascript is not obfuscated or minimized in any way. Values also have human-readable id's.
   cd /home/me/projects/my_first_rsence_project
   rsence run -df
 
-==== 3.3.3. Open a web browser
+==== Open a web browser
 * By default, the RSence listens on port 8001
 * To test it, open the address http://127.0.0.1:8001/
 * If everything works:
   * A welcome message is displayed
   * Check the "Don't show again" checkbox and click the "Close" button to make the 'welcome' plugin uninstall itself.
 
-==== 3.3.4. Stop RSence
+==== Stop RSence
 Just press CTRL-C in the terminal, if RSence was started using the 'run' command.
 
 
-== 4. Modes of operation
+== Modes of operation
 
 RSence supports two main modes of operation: in the foreground and in the background. Each have various options. Use the 'rsence help run' and 'rsence help start' commands to read more about them.
 
 
-=== 4.1. Starting RSence as a foreground process.
+=== Starting RSence as a foreground process.
 
 The 'run' mode is well suited for development. Especially when combined with the -d and -f options.
 
@@ -238,26 +250,26 @@ Starting in foreground mode with debug and logging in foreground:
 Stopping in foreground mode: Press CTRL-C
 
 
-=== 4.2. Starting RSence as a daemon (background mode).
+=== Starting RSence as a daemon (background mode).
 
 In the background mode, standard output and standard errors are logged in the 'log' directory of your project and the PID file is written in the 'run' directory. This mode of operation is best suited for production deployment and it's not available on Microsoft Windows, because full POSIX compliance is not available on Windows.
   rsence start
 
-=== 4.2.1 Stopping RSence in background mode
+=== Stopping RSence in background mode
   rsence stop
 
-=== 4.2.2 Checking RSence status in background mode
+=== Checking RSence status in background mode
   rsence status
 
-=== 4.2.3 To store the RSence sessions into the session database while in background mode
+=== To store the RSence sessions into the session database while in background mode
   rsence save
 
 The sessions are also stored when stopping and restarting RSence. Use the 'save' command regularly from a cron script or equivalent in a production environment.
 
-=== 4.3. Restarting RSence in background mode
+=== Restarting RSence in background mode
   rsence restart
 
-=== 4.2.5. Re-setting the sessions
+=== Re-setting the sessions
 This is needed only, if the session storage becomes corrupt in a development environment (changing value definitions and such). This invalidates all ongoing sessions.
 Just apply the --reset-sessions option after the run, start or restart command in the command prompt.
   rsence restart --reset-sessions
@@ -267,11 +279,11 @@ The '-r' switch is equivalent to '--reset-sessions'
 *NOTE: All the sessions currently connected clients are invalidated and need to reload the page*
 
 
-=== 4.4. Running in development mode
+=== Running in development mode
 Just apply the -d option after the *run*, *start* or *restart* command in the command prompt.
   rsence restart -d
 
-==== 4.4.1. What does development mode do?
+==== What does development mode do?
 * Plugins are (re)loaded automatically in the background, if they are changed, disabled, added or removed.
   * This is also enabled with the -a switch (--auto-update)
 * Javascript packages are automatically re-built, if they are changed.
@@ -279,22 +291,22 @@ Just apply the -d option after the *run*, *start* or *restart* command in the co
 * Much more verbose logging
 * Code obfuscation / minimizing options are turned off.
 
-=== 4.5. Other command-line options
+=== Other command-line options
 Just run this command to see the available options:
   rsence help <command>
 example:
   rsence help run
 
-=== 4.6. Running RSence using rackup
+=== Running RSence using rackup
   rackup conf/config.ru
 
-=== 4.7. Running RSence using unicorn
+=== Running RSence using unicorn
   unicorn conf/config.ru -c conf/unicorn.conf
 
 
-== 5. Plugin Deployment
+== Plugin installation
 
-If you followed the previous steps, you are ready to deploy some software.
+If you followed the previous steps, you are ready to install some plugins.
 * In development mode (see 4.4.), plugins are (re/un)loaded when:
   * Adding a new plugin into the plugins directory
   * Removing a plugin from the plugins directory
@@ -302,25 +314,25 @@ If you followed the previous steps, you are ready to deploy some software.
   * Enabling a plugin by removing a file or folder named "disabled" in the plugin's bundle directory
   * The plugin's ruby or yaml files are changed.
 
-* In production mode, a RSence restart is required (see 4.4.), unless running with the '-a' ('--auto-update') option enabled. Enabling it is a good idea for production environments where the code is updated frequently. It enables nearly zero downtime, if code updates are thoroughly tested before being deployed.
+* In production mode, a RSence restart is required (see 4.4.), unless running with the '-a' ('--auto-update') option enabled. Enabling it is a good idea for production environments where the code is updated frequently. It enables nearly zero downtime, if code updates are thoroughly tested before being upgraded.
 
 * By default, the "plugins" directory in the "rsence" directory is the only plugin directory.
   * Edit the configuration file to enable other directories.
 * Sample plugins are available at http://rsence.org/
 
 
-=== 5.1. Deploying plugins
+=== Installing plugins
 Copy or move a plugin bundle directory into the "plugins" directory.
 
-=== 5.2. Un-deploying plugins
+=== Un-Installing plugins
 Move a plugin bundle out of the the "plugins" directory.
 
-=== 5.3. Temporarily disabling a plugin
+=== Temporarily disabling a plugin
 Create an empty file named "disabled" in the plugin bundle to disable it.
   touch plugins/legacy/disabled
 
 
-== 6. Getting more information
+== Getting more information
 
 * Explore http://rsence.org/
 * Join our chat room on IRC (IRCNet and FreeNode):

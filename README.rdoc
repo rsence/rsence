@@ -5,7 +5,7 @@
 
 RSence is a RIA framework designed for responsive GUI applications on the web; it's implemented as a hybrid Ruby - Javascript system. The server is written in Ruby and C. Applications are installed as plugin bundles. The GUI framework is written in Javascript; it doesn't strictly require the server, but has extensive transport support with automatic data synchronization with the server. User interfaces are usually described in structured view trees represented by YAML data structures, which are automatically converted for rendering in the client. 
 
-Javascript knowledge is required only when creating custom client-driven functionality; basic understanding of the YAML GUITree structures is enough in most cases. Likewise, no Ruby knowledge is needed if you want to create stand-alone Javascript applitations. Javascript component themes are easily created with just basic web designer skills. Data API's are easy to link no matter what language is used to create them. Skills in your organization are easily combined for various parts of larger applications.
+Javascript knowledge is required only when creating custom client-driven functionality; basic understanding of the YAML GUITree structures is enough in most cases. Likewise, no prior Ruby knowledge is needed if you want to create stand-alone Javascript applitations. Javascript component themes are easily created with just basic web designer skills. Data API's are easy to link no matter what language is used to create them. Skills in your organization are easily combined for various parts of larger applications.
 
 RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and RSence is easily integrated with them in various ways.
 
@@ -86,6 +86,22 @@ Each command-line tool command takes a number of options, the +env_dir+ argument
 
 
 For more detailed installation and usage instructions, read the {file:INSTALL Install Guide} document.
+
+=== The bleeding edge (for developers)
+RSence comes in two varieties:
+1. rsence : The stable (no major new featuers, just bugfixes) release.
+2. rsence-pre : The active development snaphot released periodically.
+
+Both varieties can be installed simultaneously and it's suggested to use
+the stable "rsence" package for production installations and to use the
+"rsence-pre" package for development purposes, because the RSence crew
+can't possibly test each and every application available. It's your 
+responsibility as a developer to report any RSence issues effecting your
+software. The sooner reported, the better; it ensures better release 
+versions.
+
+To use "rsence-pre", install the "rsence-pre" gem and use the "rsence-pre" 
+command instead of the "rsence" command.
 
 === Licensing and commercial support options
 * {file:LICENSE.txt *GPL*} version 3 by default.

@@ -421,35 +421,35 @@
   
   :version: |+
     usage: 'rsence version'
-  
+    
     The 'version' command simply outputs the version number of RSence.
-  
-    RSence follows the standard four-numbered sequence-based version identification
-    scheme. The scheme is defined like: major.minor[.maintenance[.package]][.pre]
-  
+    
+    RSence follows the common three-numbered sequence-based version identification
+    scheme. The scheme is defined like: major.minor[.maintenance]
+    
     The major number designates major changes in functionality, sometimes limiting
     backwards compatibility with software written for previous versions.
-  
+    
     The minor number designates minor changes in functionality, like minor or
     moderate changes in functionality that usually don't impact backwards
     compatibilty of software written for a previous release with the same major
     version.
-  
+    
     The maintenance number designates bug fixes and other minimal changes to
     the release. In a maintenance number change, no new features are introduced.
-  
+    
     The package number is a sequence used for the package release. Rubygems
     requires an unique version for each gem released, so pre-releases usually
     occupy the first package numbers of any release.
-  
-    The '.pre' suffix signifies a pre-release, like "Alpha" or "Beta". To
-    install a prerelease version, gem requires the '--pre' command line argument.
-    Release versions never have the '.pre' suffix. There are usually several
-    package number increments of a new release.
-  
+    
+    RSence also comes in a '-pre' variety. Consider RSence prereleases as
+    anything between 'Alpha', 'Beta' and 'Release Candidate'. The prereleases
+    are have a fourth number in their version number string. That number
+    is the 'package' or 'build' number.
+    
     Version number conventions in written text should include both major and
     minor version numbers prefixed with 'RSence'. The maintennance number
     is usally not mentioned unless an issue is fix or such is discussed.
-  
-    For instance: "RSence 2.0 has undergone some major refactoring since 1.2.1"
+    
+    Example: "RSence 2.0 has undergone some major refactoring since 1.2.1"
   
