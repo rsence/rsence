@@ -1108,6 +1108,12 @@ ELEM = {
     return document.defaultView.getComputedStyle(_elem,null).getPropertyValue(_key);
   },
   _getComputedStyleIE: function(_elem,_key){
+    if(_key === 'width'){
+      return _elem.clientWidth+'px';
+    }
+    if(_key === 'height'){
+      return _elem.clientHeight+'px';
+    }
     var _camelName = _key.replace(
       /((-)([a-z])(\w))/g,
       function($0, $1, $2, $3, $4) {
@@ -1267,6 +1273,8 @@ ELEM = {
     _browserType.ie9      = _isIE && (_ua.indexOf("MSIE 9") !== -1);
     
     // Experimental; don't treat IE9 as an IE at all.
+    // NOTE: IE9 Beta does still not behave like a standard web browser.
+    //       It will probably require as much tuning as earlier IE versions.
     if(_browserType.ie9){
       _browserType.ie = false;
     }
