@@ -273,9 +273,11 @@ HControl = HView.extend({
   setValueRange: function(_value, _minValue, _maxValue) {
     this.minValue = _minValue;
     this.maxValue = _maxValue;
-    _value = (_value < _minValue) ? _minValue : _value;
-    _value = (_value > _maxValue) ? _maxValue : _value;
-    this.setValue(_value);
+    if( typeof _value === 'number' ) {
+      _value = (_value < _minValue) ? _minValue : _value;
+      _value = (_value > _maxValue) ? _maxValue : _value;
+      this.setValue(_value);
+    }
     return this;
   },
   
