@@ -55,14 +55,13 @@ RSence works just fine on Windows too, with a few limitations.
 Windows compatibility has been officially tested on Windows XP SP3 and Windows 7 (64 bit).
 
 ==== Install ruby 1.8.7:
-* Download Ruby 1.8.7-p249 (RC2) from http://rubyinstaller.org/downloads
+* Download Ruby 1.8.7-p302 from http://rubyinstaller.org/downloads
 * Run the downloaded exe to install ruby
   * In the installation and destination prompt, check these options:
     * Add Ruby executables to your PATH
     * Associate .rb and .rbw files with this Ruby installation
-* Download and Install the Development Kit from http://rubyinstaller.org/downloads
-  * Extract the included directories into the directory where you installed ruby.
-    * It's +C:\ruby+ by default.
+* Download and Install the Development Kit (DevKit-tdm-...-sfx.exe) from http://rubyinstaller.org/downloads
+  * Extract the included directories into the directory where you installed ruby, which is +C:\ruby+ by default.
 
 ==== Install RSence
 * In the command prompt, run:
