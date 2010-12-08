@@ -207,19 +207,18 @@ HTimeSheetItem = HControl.extend({
         _value;
     if(this.dragMode === 'create'){
       this.parent.listItemViews.push( this );
-      _value = {
-        'timeBegin': this.rect.top/_pxPerHour,
-        'timeEnd': this.rect.bottom/_pxPerHour,
-        'label': this.label
-      };
+      _value = {};
+      this._setValueTop( _value );
+      this._setValueBottom( _value );
+      this._setValueLabel( _value );
       if(this.parent['editor']){
         this.parent.editor.createItem( _value );
       }
     }
     else {
       _value = COMM.Values.clone( this.value );
-      _value['timeBegin'] = this.rect.top/_pxPerHour;
-      _value['timeEnd'] = this.rect.bottom/_pxPerHour;
+      this._setValueTop( _value );
+      this._setValueBottom( _value );
       if(this.parent['editor']){
         this.parent.editor.modifyItem( _value );
       }
@@ -229,17 +228,39 @@ HTimeSheetItem = HControl.extend({
     return true;
   },
   
+  _setValueTop: function( _value ) {
+    _value['timeBegin'] = this.rect.top/this.parent.pxPerHour;
+  },
+  
+  _setValueBottom: function( _value ) {
+    _value['timeEnd'] = this.rect.bottom/this.parent.pxPerHour;
+  },
+  
+  _setValueLabel: function( _value ) {
+    _value['label'] = this.label;
+  },
+  
+  _getValueLabel: function( _value ){
+    return _value.label;
+  },
+  
+  _getValueTop: function( _value ){
+    return _value.timeBegin * this.parent.pxPerHour;
+  },
+  
+  _getValueBottom: function( _value ){
+    return _value.timeEnd * this.parent.pxPerHour;
+  },
+  
 /** = Description
   * Refreshes the object's label and place on the HTimeSheet.
   *
   **/
   refreshValue: function(){
-    var _value = this.value,
-        _pxPerHour = this.parent.pxPerHour;
-    if((_value instanceof Object) && !(_value instanceof Array)){
-      this.setLabel( _value['label'] );
-      this.rect.setTop( _value['timeBegin'] * _pxPerHour );
-      this.rect.setBottom( _value['timeEnd'] * _pxPerHour );
+    if ( HVM.type(this.value) === 'h' ){
+      this.setLabel( this._getValueLabel( this.value ) );
+      this.rect.setTop( this._getValueTop( this.value ) );
+      this.rect.setBottom( this._getValueBottom( this.value ) );
       this.drawRect();
     }
   }

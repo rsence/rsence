@@ -144,6 +144,23 @@ HTimeSheet = HControl.extend({
     this.base();
   },
   
+  createTimeSheetItem: function( _value ) {
+    var
+    _label = _value['label'],
+    _item = HTimeSheetItem.nu(
+      this.createItemRect( 0, 12 ),
+      this, {
+        label: _label,
+        value: _value,
+        events: {
+          draggable: true
+        }
+      }
+    );
+    _item.dragMode = 'normal';    
+    return _item;
+  },
+  
 /** = Description
   * Redraws and refreshes the values on timesheet.
   *
@@ -160,21 +177,10 @@ HTimeSheet = HControl.extend({
       this.listItemViews = [];
     }
     if(_data instanceof Array){
-      var _value, _label, _item;
+      var _value, _item;
       for( i=0; i<_data.length; i++){
         _value = _data[i];
-        _label = _value['label'];
-        _item = HTimeSheetItem.nu(
-          this.createItemRect( 0, 12 ),
-          this, {
-            label: _label,
-            value: _value,
-            events: {
-              draggable: true
-            }
-          }
-        );
-        _item.dragMode = 'normal';
+        _item = this.createTimeSheetItem( _value );
         this.listItemViews.push( _item );
       }
     }
