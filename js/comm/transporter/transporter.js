@@ -240,6 +240,7 @@ COMM.Transporter = HApplication.extend({
     // console.log('sync.');
     this.busy = true;
     if(window['sesWatcher'] && window.sesWatcher['sesTimeoutValue']){
+      // Sets the value of the session watcher to the current time. It could cause an unnecessary re-sync poll immediately after this sync otherwise.
       sesWatcher.sesTimeoutValue.set( new Date().getTime() );
     }
     var _this = this,
