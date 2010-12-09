@@ -282,16 +282,15 @@ class MainPlugin < Plugin
     ## url_responder is bound in the client-space
     ## to tell the server its status by updating its value
     location_href_id = ses[:location_href].val_id.to_json
-    msg.reply "COMM.Values.values[#{location_href_id}].bind(COMM.urlResponder);"
+    msg.reply "try{COMM.Values.values[#{location_href_id}].bind(COMM.urlResponder);}catch(e){console.log('urlResponder failed, reason:',e);}"
     
-    ## This enables SesWatcher that changes :client_time every 60 seconds.
-    ## It makes the client to poll the server on regular intervals, when polling mode
-    ## is disabled.
+    ## This enables SesWatcher that changes :client_time every n seconds, which depends on the server_poll_interval configuration setting.
+    ## It makes the client to poll the server on regular intervals, when polling mode is disabled.
     # 5000ms = 5secs
     
     client_time_id = ses[:client_time].val_id.to_json
     poll_interval = ::RSence.config[:main_plugin][:server_poll_interval]
-    msg.reply "sesWatcher = COMM.SessionWatcher.nu(#{poll_interval},#{client_time_id});"
+    msg.reply "try{window.sesWatcher=COMM.SessionWatcher.nu(#{poll_interval},#{client_time_id});}catch(e){console.log('sesWatcher failed, reason:',e);}"
     
   end
   
