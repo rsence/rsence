@@ -32,10 +32,13 @@ HImageView = HControl.extend({
   })),
   
   _makeScaleToFit: function(_parentId){
-    this.elemId = ELEM.make(_parentId,'img');
-    ELEM.setAttr(this.elemId,'src',this.getImgSrc());
-    ELEM.setAttr(this.elemId,'alt',this.label);
-    ELEM.setAttr(this.elemId,'title',this.label);
+    this.elemId = ELEM.make( _parentId, 'img', {
+      attrs: [
+        [ 'src',   this.getImgSrc() ],
+        [ 'alt',   this.label ],
+        [ 'title', this.label ]
+      ]
+    } );
   },
   _makeScaleToOriginal: function(_parentId){
     this.elemId = ELEM.make(_parentId,'div');
@@ -58,11 +61,17 @@ HImageView = HControl.extend({
   * 
   **/
   refreshValue: function(){
+    var _src = this.getImgSrc();
     if(this.options.scaleToFit){
-      ELEM.setAttr(this.elemId,'src',this.getImgSrc());
+      if(ELEM.getAttr(this.elemId,'src')!==_src){
+        ELEM.setAttr(this.elemId,'src',_src);
+      }
     }
     else{
-      ELEM.setStyle(this.elemId,'background-image','url('+this.getImgSrc()+')');
+      var _url = 'url('+this.getImgSrc()+')';
+      if(ELEM.getStyle(this.elemId,'background-image') != _url){
+        ELEM.setStyle(this.elemId,'background-image',_url);
+      }
     }
   },
   
