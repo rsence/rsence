@@ -431,7 +431,13 @@ HDynControl = HControl.extend({
   **/
   startDrag: function(x,y,_isRightButton){
     var _parent = this.parent;
-    if(_parent.elemId){
+    // parent outer position
+    // parent inner position, if it has subviews with different offset.
+    if ( _parent.markupElemIds && _parent.markupElemIds.subview ) {
+      x -= ELEM._getVisibleLeftPosition( _parent.markupElemIds.subview );
+      y -= ELEM._getVisibleTopPosition( _parent.markupElemIds.subview );
+    }
+    else if(_parent.elemId){
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
@@ -459,7 +465,11 @@ HDynControl = HControl.extend({
   **/
   drag: function(x,y){
     var _parent = this.parent;
-    if(_parent.elemId){
+    if ( _parent.markupElemIds && _parent.markupElemIds.subview ) {
+      x -= ELEM._getVisibleLeftPosition( _parent.markupElemIds.subview );
+      y -= ELEM._getVisibleTopPosition( _parent.markupElemIds.subview );
+    }
+    else if(_parent.elemId){
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
@@ -485,7 +495,11 @@ HDynControl = HControl.extend({
   endDrag: function(x,y,_isRightButton){
     this.base();
     var _parent = this.parent;
-    if(_parent.elemId){
+    if ( _parent.markupElemIds && _parent.markupElemIds.subview ) {
+      x -= ELEM._getVisibleLeftPosition( _parent.markupElemIds.subview );
+      y -= ELEM._getVisibleTopPosition( _parent.markupElemIds.subview );
+    }
+    else if(_parent.elemId){
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
