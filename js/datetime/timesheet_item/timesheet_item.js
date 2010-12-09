@@ -11,10 +11,24 @@
   ***/
 var//RSence.DateTime
 HTimeSheetItem = HControl.extend({
+  
   componentName: 'timesheet_item',
+  
+  /* Which mode the component is in. When created by dragging, acts in 'create' mode, otherwise is 'normal'. Can be overridden in options. */
   dragMode: 'create',
+  
+  /* The previous coordinate. Used to detect double-drag as double-click. */
   prevXY: [0,0],
+  
+  /* The time at the previous coordinate. Used to detect double-drag as double-click. */
   prevXYTime: 0,
+  
+  controlDefaults: HControlDefaults.extend({
+    dragMode: 'create',
+    constructor: function(_ctrl){
+      _ctrl.dragMode = this.dragMode;
+    }
+  }),
   
 /** = Description
   * Dragging is used to change coordinates.
@@ -31,7 +45,7 @@ HTimeSheetItem = HControl.extend({
           _xEquals = (Math.round(this.prevXY[0]/4) === Math.round(x/4)),
           _yEquals = (Math.round(this.prevXY[1]/4) === Math.round(y/4)),
           _noTimeout = ((_timeNow - this.prevXYTime) < 500);
-      if( _xEquals && _yEquals && _noTimeout ) {
+      if( _xEquals && _yEquals && _noTimeout ) { // doubleClick
         if( this.parent['editor'] ){
           var _editor = this.parent.editor;
           _editor.setTimeSheetItem(this);

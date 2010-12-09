@@ -11,10 +11,36 @@
   ***/
 var//RSence.DateTime
 HTimeSheet = HControl.extend({
+  
   componentName: 'timesheet',
+  
+  /* Default amount of pixels per hour. Override with options when necessary. */
   pxPerHour: 24,
+  
+  /* Default amount of pixels from left. Override with options when necessary. */
   itemOffsetLeft: 36,
+  
+  /* Default amount of pixels from right. Override with options when necessary. */
   itemOffsetRight: 0,
+  
+  controlDefaults: HControlDefaults.extend({
+    pxPerHour: null,
+    itemOffsetLeft: null,
+    itemOffsetRight: null,
+    newItemLabel: 'New Item',
+    constructor: function(_ctrl){
+      if(this.pxPerHour !== null){
+        _ctrl.pxPerHour = this.pxPerHour;
+      }
+      if(this.itemOffsetLeft !== null){
+        _ctrl.itemOffsetLeft = this.itemOffsetLeft;
+      }
+      if(this.itemOffsetRight !== null){
+        _ctrl.itemOffsetRight = this.itemOffsetRight;
+      }
+    }
+  }),
+  
 /** = Description
   * Redraws the timesheet.
   *
@@ -82,16 +108,7 @@ HTimeSheet = HControl.extend({
     if(origY>maxY){
       origY = maxY;
     }
-    var item = HTimeSheetItem.nu(
-      this.createItemRect(origY,lineHeight),
-      this, {
-        label: 'New Item',
-        events: {
-          draggable: true
-        }
-      }
-    );
-    this.dragItem = item;
+    this.dragItem = this.createTimeSheetItem( { label: this.options.newItemLabel }, origY, lineHeight, 'create' );
   },
   
 /** = Description
@@ -144,11 +161,32 @@ HTimeSheet = HControl.extend({
     this.base();
   },
   
-  createTimeSheetItem: function( _value ) {
+/** = Description
+  * Returns a new time sheet item control. By default returns an instance
+  * of HTimeSheetItem. Extend to use custom time sheet controls customized
+  * for application specific purposes.
+  *
+  * = Parameters
+  * *_value*::      A value object for the item.
+  * *_top*::        Top position, 0 by default.
+  * *_height*::     Height, same as half of +#pxPerHour+ by default.
+  * *_drogMode*::   Dragging mode. 'normal' or 'create'. Is 'normal' by default.
+  *
+  **/
+  createTimeSheetItem: function( _value, _top, _height, _dragMode ) {
+    if(_dragMode===undefined){
+      _dragMode = 'normal';
+    }
+    if(_top===undefined){
+      _top = 0;
+    }
+    if(_height===undefined){
+      _height = Math.round(this.pxPerHour/2);
+    }
     var
     _label = _value['label'],
     _item = HTimeSheetItem.nu(
-      this.createItemRect( 0, 12 ),
+      this.createItemRect( _top, _height ),
       this, {
         label: _label,
         value: _value,
@@ -157,7 +195,7 @@ HTimeSheet = HControl.extend({
         }
       }
     );
-    _item.dragMode = 'normal';    
+    _item.dragMode = _dragMode;    
     return _item;
   },
   
