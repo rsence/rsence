@@ -774,7 +774,6 @@ ELEM = {
       _key = _currTodo.pop();
       _val = _attrCache[_key];
       _elem.setAttribute(_key, _val);
-      //_elem[_key]=_val;
     }
   },
   
@@ -827,7 +826,7 @@ ELEM = {
         _attrTodo = _this._attrTodo[_id],
         _attrCache = _this._attrCache[_id],
         _differs = _value !== _this.getAttr(_id, _key);
-    if (_differs) {
+    if (_differs || _bypass) {
       _attrCache[_key] = _value;
       if (_bypass) {
         _this._elements[_id].setAttribute(_key, _value);
@@ -1043,11 +1042,15 @@ ELEM = {
   * +_tagName+::  The tag name of the element.
   *               (Optional, default: 'DIV')
   *
+  * +_options+::  Options to set before appending child to parent.
+  *               Supported option attrs: [[key,value],[key,value]]
+  *               (Optional, rarely necessary except when creating IMG tags)
+  *
   * = Returns
   * The new ELEM ID.
   *
   **/
-  make: function(_targetId, _tagName) {
+  make: function(_targetId, _tagName, _options) {
     if (_targetId === undefined) {
       _targetId = 0;
     }
@@ -1084,9 +1087,22 @@ ELEM = {
       }
     }
     _elem = document.createElement(_tagName);
-    _this._elements[_targetId].appendChild(_elem);
     _id = _this._add(_elem);
     _this._initCache(_id);
+    if(_options!==undefined){
+      if(_options.attrs){
+        var
+        i = 0,
+        _key, _value;
+        for( ; i<_options.attrs.length; i++ ){
+          _key = _options.attrs[i][0];
+          _value = _options.attrs[i][1];
+          _elem[_key] = _value;
+          _this.setAttr( _id, _key, _value );
+        }
+      }
+    }
+    _this._elements[_targetId].appendChild(_elem);
     return _id;
   },
   
