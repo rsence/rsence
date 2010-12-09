@@ -882,14 +882,15 @@ HView = HClass.extend({
     else {
       var
       _rect = this.parent.rect,
-      _width = _rect.width,
-      _height = _rect.height;
-      if (this.parent.flexLeft && this.parent.flexRight){
-        _width = parseInt( ELEM.getStyle(this.parent.elemId,'width',true), 10 );
-      }
-      if (this.parent.flexBottom && this.parent.flexTop){
-        _height = parseInt( ELEM.getStyle(this.parent.elemId,'height',true), 10 );
-      }
+      _width, // = _rect.width,
+      _height, // = _rect.height;
+      _parentElemId = ( this.parent.markupElemIds && this.parent.markupElemIds.subview ) ? this.parent.markupElemIds.subview : this.parent.elemId;
+//      if (this.parent.flexLeft && this.parent.flexRight){
+        _width = parseInt( ELEM.getStyle( _parentElemId, 'width', true ), 10 );
+      // }
+      // if (this.parent.flexBottom && this.parent.flexTop){
+        _height = parseInt( ELEM.getStyle( _parentElemId, 'height', true ), 10 );
+      // }
       return [ _width, _height ];
     }
   },
