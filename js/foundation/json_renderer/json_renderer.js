@@ -24,7 +24,7 @@
 //var//RSence.Foundation
 COMM.JSONRenderer = HClass.extend({
   
-  version: 0.7,
+  version: 0.8,
 
 /** = Description
   * Renders JSON structured data, see some of the demos for usage examples.
@@ -77,7 +77,10 @@ COMM.JSONRenderer = HClass.extend({
     for( _key in _definition ){
       if( _reserved.indexOf( _key ) === -1 ){
         _value = _definition[_key];
-        _extension[_key] = this.extEval( _value );
+        if( typeof _value === 'string' ){
+          _value = this.extEval( _value );
+        }
+        _extension[_key] = _value;
       }
     }
     _scope[ _className ] = _extend.extend( _extension );
