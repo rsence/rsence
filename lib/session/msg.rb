@@ -111,7 +111,11 @@ module RSence
       @options = options
     
       # Value response output.
-      @value_buffer = []
+      @value_buffer = {
+        :new => [],
+        :set => [],
+        :del => []
+      }
     
       # The session key placeholder.
       @ses_key = false
@@ -238,21 +242,22 @@ module RSence
       if not @response_success
         @response.status = 200
         #@response.status = 503
-      
+        
         buffer = [
-          "" # empty session key will stop the syncing
+          "", # empty session key will stop the syncing
+          {}, # no session values
         ] + @error_js
       else
         ## The response status should always be 200 (OK)
         @response.status = 200
-      
-        buffer = @value_buffer + @buffer
-        if @ses_key
-          buffer.unshift( @ses_key )
-        end
-      
+        
+        buffer = [
+          @ses_key,
+          @value_buffer,
+        ] + @buffer
+        
       end
-    
+      
       # flush the output
       if @do_gzip
         outp = GZString.new('')
@@ -262,13 +267,13 @@ module RSence
       else
         outp = buf_json(buffer)
       end
-    
+      
       @response['content-length'] = outp.size
       @response.body = outp
-    
+      
       @response_sent = true
     end
-  
+    
     # Sends data to the client, usually javascript, but is valid for any data that responds to #to_json
     # @param [String<js>, #to_json] data Javascript source or object that responds to #to_json
     # @param [Boolean] dont_squeeze When true, doesn't `squeeze` the contents (jsmin + jscompress)
@@ -280,9 +285,16 @@ module RSence
     end
   
     # @private For value manager; insert changed values BEFORE other js.
-    def reply_value(data)
-      puts data if @config[:trace]
-      @value_buffer.push( data )
+    def reply_value( operation_type, value_id, data=nil )
+      if operation_type == :set
+        @value_buffer[:set].push( [ value_id, data ] )
+      elsif operation_type == :new
+        @value_buffer[:new].push( [ value_id, data ] )
+      elsif operation_type == :del
+        @value_buffer[:del].push( value_id )
+      else
+        throw "Invalid reply_value operation: operation_type: #{operation_type.inspect}, value_id: #{value_id.inspect}, data: #{data.inspect}"
+      end
     end
   
     # Sends data to the client's javascript console.

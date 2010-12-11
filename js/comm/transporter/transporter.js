@@ -82,7 +82,41 @@ COMM.Transporter = HApplication.extend({
   },
   
   _nativeParseResponseArray: function( _responseText ){
-    return JSON.parse( _responseText );
+    var _arr = JSON.parse( _responseText );
+    return _arr;
+  },
+  
+  setValues: function( _values ){
+    if(!_values instanceof Object){
+      console.log("Invalid values block: ", _values );
+      return;
+    }
+    var
+    i = 0,
+    _valueManager = COMM.Values,
+    _itemtype,
+    _valueId,
+    _valueData;
+    if(_values['new'] instanceof Array){
+      for(i=0;i<_values['new'].length;i++){
+        _valueId = _values['new'][i][0];
+        _valueData = _values['new'][i][1];
+        _valueManager.create( _valueId, _valueData );
+      }
+    }
+    if(_values['set'] instanceof Array){
+      for(i=0;i<_values['set'].length;i++){
+        _valueId = _values['set'][i][0];
+        _valueData = _values['set'][i][1];
+        _valueManager.s( _valueId, _valueData );
+      }
+    }
+    if(_values['del'] instanceof Array){
+      for(i=0;i<_values['del'].length;i++){
+        _valueId = _values['del'][i];
+        _valueManager.del( _valueId );
+      }
+    }    
   },
   
 /** = Description
@@ -105,9 +139,10 @@ COMM.Transporter = HApplication.extend({
       return;
     }
     var _responseArray = _this.parseResponseArray(resp.X.responseText),
-        i = 1,
+        i = 2,
         _responseArrayLen = _responseArray.length,
         _sesKey = _responseArray[0],
+        _values = _responseArray[1],
         _session = COMM.Session,
         _queue = COMM.Queue;
     if(_sesKey === ''){
@@ -116,6 +151,7 @@ COMM.Transporter = HApplication.extend({
     else {
       _session.newKey(_sesKey);
     }
+    _this.setValues( _values );
     for(;i<_responseArrayLen;i++){
       try {
         _queue.pushEval( _responseArray[i] );

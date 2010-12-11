@@ -248,12 +248,11 @@ module RSence
     def to_client( msg )
       if @is_new_to_client
         ## Initialize a new client value
-        init_str = "COMM.Values.create(#{@value_id.to_json},#{@data.to_json});"
-        msg.reply_value( init_str )
+        msg.reply_value( :new, @value_id, @data )
         @is_new_to_client = false
       else
         ## Sets the client value
-        msg.reply_value "HVM.s(#{@value_id.to_json},#{@data.to_json});" 
+        msg.reply_value( :set, @value_id, @data )
       end
     end
     
@@ -270,7 +269,7 @@ module RSence
       session_values.delete( @value_id )
       
       if msg and not @is_new_to_client
-        msg.reply_value("HVM.del(#{@value_id.to_json});")
+        msg.reply_value( :del, @value_id )
       end
     end
     alias die die!
