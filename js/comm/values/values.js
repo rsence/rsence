@@ -322,6 +322,11 @@ COMM.Values = HClass.extend({
     return _str;
   },
   
+  _nativeEncode: function(_obj){
+    return JSON.stringify( _obj );
+  },
+  
+  
 /** = Description
   * Decodes a JSON object. Decodes url-encoded strings contained.
   *
@@ -346,6 +351,29 @@ COMM.Values = HClass.extend({
         case 'd': _obj = _ibj; break;
         case 'a': _obj = _this._decodeArr(_ibj); break;
         case 'h': _obj = _this._decodeHash(_ibj); break;
+        default: _obj = null; break;
+      }
+    }
+    else {
+      return null;
+    }
+    return _obj;
+  },
+  
+  _nativeDecode: function(_ibj){
+    var _obj, _type, _this = this;
+    if(_ibj !== null && _ibj !== undefined){
+      _type = _this.type(_ibj);
+      if(!_type){
+        return null;
+      }
+      switch(_type){
+        case 'b': _obj = _ibj; break;
+        case 'n': _obj = _ibj; break;
+        case 's': _obj = _this._decodeString(_ibj); break;
+        case 'd': _obj = _ibj; break;
+        case 'a': _obj = JSON.parse(_ibj); break;
+        case 'h': _obj = JSON.parse(_ibj); break;
         default: _obj = null; break;
       }
     }
@@ -408,6 +436,24 @@ COMM.Values = HClass.extend({
     }
   },
   
+  _nativeClone: function( _obj ){
+    if(_obj === null){
+      return null;
+    }
+    else if (_obj === undefined){
+      console.log('Undefined object, supplementing with null.');
+      return null;
+    }
+    if( (_obj instanceof Array) || (_obj instanceof Object) ){
+      // conversion via encoding/decoding via JSON string.
+      return JSON.parse( JSON.stringify( _obj ) );
+    }
+    else {
+      // no conversion needed (numbers, strings, booleans etc..)
+      return _obj;
+    }
+  },
+  
 /** = Description
   * Returns an URI-encoded string representation of all the changed values to
   * synchronize to the server.
@@ -431,8 +477,24 @@ COMM.Values = HClass.extend({
       _syncValues[_id] = _value;
     }
     return encodeURIComponent(_this.encode(_syncValues));
+  },
+  
+  _detectNativeJSONSupport: function(){
+    if(window['JSON']){
+      var
+      _JSON = window.JSON,
+      _fun = 'function';
+      if((typeof _JSON['parse'] === _fun) && (typeof _JSON['stringify'] === _fun)){
+        // console.log('Has native JSON support. Re-routing encode, decode and clone methods of COMM.Values...');
+        this.clone = this._nativeClone;
+        this.encode = this._nativeEncode;
+        // this.decode = this._nativeDecode;
+      }
+    }
   }
 });
+
+COMM.Values._detectNativeJSONSupport();
 
 // Backwards compatibility assignment for code that still
 // uses HVM as a reference of the Value Manager:

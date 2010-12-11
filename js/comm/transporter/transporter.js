@@ -27,7 +27,8 @@ COMM.Transporter = HApplication.extend({
   **/
   constructor: function(){
     var _this = this;
-    this.serverLostMessage = 'Server Connection Lost: Reconnecting...';
+    _this._detectNativeJSONSupport();
+    _this.serverLostMessage = 'Server Connection Lost: Reconnecting...';
     _this.label = 'Transporter';
     _this.url = false;
     _this.busy = false;
@@ -36,6 +37,17 @@ COMM.Transporter = HApplication.extend({
     _this._clientEvalError = false;
     _this._busyFlushTimeout = false;
     _this.base(1);
+  },
+
+  _detectNativeJSONSupport: function(){
+    if(window['JSON']){
+      var
+      _JSON = window.JSON,
+      _fun = 'function';
+      if((typeof _JSON['parse'] === _fun) && (typeof _JSON['stringify'] === _fun)){
+        this.parseResponseArray = this._nativeParseResponseArray;
+      }
+    }
   },
   
 /** Tries to (re)connect to the server as often as possible,
@@ -64,6 +76,15 @@ COMM.Transporter = HApplication.extend({
            COMM.Values._encodeString(_this._clientEvalError):'';
   },
   
+  parseResponseArray: function( _responseText ){
+    var _arr = eval( _responseText );
+    return _arr;
+  },
+  
+  _nativeParseResponseArray: function( _responseText ){
+    return JSON.parse( _responseText );
+  },
+  
 /** = Description
   * Handles synchronization responses.
   *
@@ -83,7 +104,7 @@ COMM.Transporter = HApplication.extend({
       _this.failure(resp);
       return;
     }
-    var _responseArray = eval(resp.X.responseText),
+    var _responseArray = _this.parseResponseArray(resp.X.responseText),
         i = 1,
         _responseArrayLen = _responseArray.length,
         _sesKey = _responseArray[0],
@@ -123,7 +144,7 @@ COMM.Transporter = HApplication.extend({
   failMessage: function(_title,_message){
     var _this = COMM.Transporter,
         _queue = COMM.Queue;
-    console.log('failMessage?');
+    console.log('failMessage title:',_title,', message:',_message);
     _this.stop = true;
     _queue.push(function(){jsLoader.load('default_theme');});
     _queue.push(function(){jsLoader.load('controls');});
