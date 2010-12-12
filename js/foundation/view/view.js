@@ -885,12 +885,18 @@ HView = HClass.extend({
       _width, // = _rect.width,
       _height, // = _rect.height;
       _parentElemId = ( this.parent.markupElemIds && this.parent.markupElemIds.subview ) ? this.parent.markupElemIds.subview : this.parent.elemId;
-//      if (this.parent.flexLeft && this.parent.flexRight){
+     if (this.parent.flexLeft && this.parent.flexRight){
         _width = parseInt( ELEM.getStyle( _parentElemId, 'width', true ), 10 );
-      // }
-      // if (this.parent.flexBottom && this.parent.flexTop){
+      }
+      else {
+        _width = _rect.width;
+      }
+      if (this.parent.flexBottom && this.parent.flexTop){
         _height = parseInt( ELEM.getStyle( _parentElemId, 'height', true ), 10 );
-      // }
+      }
+      else {
+        _height = _rect.height;
+      }
       return [ _width, _height ];
     }
   },
@@ -998,6 +1004,14 @@ HView = HClass.extend({
           _bottom = _parentHeight - _bottomOffset;
         }
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
+        
+        if(!this.rect.isValid){
+          console.log('---------------------------------------------');
+          console.log('invalid rect:', this.rect.left, ',', this.rect.top, ',', this.rect.width, ',', this.rect.height, ',', this.rect.right, ',', this.rect.bottom );
+          console.log(' parent size:', this.parentSize() );
+          console.log('  rect array:', _rect );
+          console.log('---------------------------------------------');
+        }
         
       }
       else {
