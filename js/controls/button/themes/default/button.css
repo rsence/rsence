@@ -25,7 +25,7 @@
 }
 
 .button_edge_left {
-  left: 0px; width: 24px;
+  left: 0px; width: 6px;
   background-position: 0px 0px;
 }
 .disabled > .button_control > .button_edge_left {
@@ -39,21 +39,21 @@
 }
 
 .button_edge_right {
-  right: 0px; width: 24px;
-  background-position: -24px 0px;
+  right: 0px; width: 6px;
+  background-position: -42px 0px;
 }
 .disabled > .button_control > .button_edge_right {
-  background-position: -24px -144px;
+  background-position: -42px -144px;
 }
 .enabled > .button_control:hover > .button_edge_right {
-  background-position: -24px -48px;
+  background-position: -42px -48px;
 }
 .enabled > .button_control:active > .button_edge_right {
-  background-position: -24px -96px;
+  background-position: -42px -96px;
 }
 
 .button_center {
-  left: 24px; right: 24px;
+  left: 6px; right: 6px;
   background-position: 0px -24px;
 }
 .disabled > .button_control > .button_center {
