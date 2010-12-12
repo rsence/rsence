@@ -25,14 +25,15 @@
 COMM.SessionWatcher = HApplication.extend({
   constructor: function( _timeoutSecs, _sesTimeoutValueId ){
     
-    // onIdle is called when HSystem's ticker count % 100 == 0
-    // this means it's 5 seconds with HSystemTickerInterval 50
-    this.base(10, 'SesWatcher'); 
-    
     // gets the HValue represented by
     // sesTimeoutValueId (:client_time in server)
     this.sesTimeoutValue = COMM.Values.values[_sesTimeoutValueId];
     this.timeoutSecs = _timeoutSecs;
+    
+    // onIdle is called when HSystem's ticker count % 100 == 0
+    // this means it's 5 seconds with HSystemTickerInterval 50
+    this.base(10, 'SesWatcher'); 
+    
   },
   
   // Tells the server the client's current time
