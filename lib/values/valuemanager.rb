@@ -57,7 +57,7 @@ module RSence
           # make a new id
           unless RSence.args[:debug] and val_obj.meta[:name]
             new_id = @randgen.gen
-            new_id = @randgen.gen while id_exists?( msg, new_id )
+            new_id = @randgen.gen while new_id[0] == 95 or id_exists?( msg, new_id )
             
             # replace the old id in the hvalue itself
             val_obj.val_id = new_id
