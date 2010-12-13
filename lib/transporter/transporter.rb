@@ -229,6 +229,10 @@ module RSence
           end
           
         elsif msg.refresh_page?( @plugins.incr ) and @config[:client_autoreload]
+          while msg.refresh_page?( @plugins.incr )
+            msg.session[:plugin_incr] == @plugins.incr
+            sleep 0.5
+          end
           # Forces the client to reload, if plugins are incremented
           msg.reply("window.location.reload( true );")
         end
