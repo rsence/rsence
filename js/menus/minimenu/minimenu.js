@@ -102,14 +102,9 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   drawSubviews: function(){
-    this.markupElemIds.subview = 0;
-    this.menuItemView = HView.extend({
-      bringToFront: function(){
-        this.setStyle('z-index',10000);//this.app.views.length);
-      }
-    }).nu(
-      [ this.rect.left, this.rect.top, this.rect.width, 500 ],
-      this, {
+    this.menuItemView = HView.nu(
+      [ this.rect.left, this.rect.top, this.rect.width, 10 ],
+      this.app, {
         visible: false,
         style: [
           ['background-color','#f6f6f6'],
