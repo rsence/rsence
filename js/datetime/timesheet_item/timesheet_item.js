@@ -17,11 +17,17 @@ HTimeSheetItem = HControl.extend({
   /* Which mode the component is in. When created by dragging, acts in 'create' mode, otherwise is 'normal'. Can be overridden in options. */
   dragMode: 'create',
   
-  /* The previous coordinate. Used to detect double-drag as double-click. */
+  /* The previous coordinate. Used to detect double-drag as double-click */
   prevXY: [0,0],
   
   /* The time at the previous coordinate. Used to detect double-drag as double-click. */
   prevXYTime: 0,
+  
+  defaultEvents: {
+    draggable: true,
+    click: true,
+    doubleClick: true
+  },
   
   controlDefaults: HControlDefaults.extend({
     dragMode: 'create',
@@ -46,12 +52,7 @@ HTimeSheetItem = HControl.extend({
           _yEquals = (Math.round(this.prevXY[1]/4) === Math.round(y/4)),
           _noTimeout = ((_timeNow - this.prevXYTime) < 500);
       if( _xEquals && _yEquals && _noTimeout ) { // doubleClick
-        if( this.parent['editor'] ){
-          var _editor = this.parent.editor;
-          _editor.setTimeSheetItem(this);
-          _editor.bringToFront();
-          _editor.show();
-        }
+        return true;
       }
       else {
         var _diffTop = this.rect.top - this.origY,
@@ -72,6 +73,17 @@ HTimeSheetItem = HControl.extend({
     this.prevXY = [x,y];
     this.prevXYTime = _timeNow;
     return true;
+  },
+  
+  doubleClick: function(x,y){
+    if( this.parent['editor'] ){
+      var _editor = this.parent.editor;
+      _editor.setTimeSheetItem(this);
+      _editor.bringToFront();
+      _editor.show();
+      return true;
+    }
+    return false;
   },
   
 /** = Description
@@ -217,8 +229,13 @@ HTimeSheetItem = HControl.extend({
   *
   **/
   endDrag: function(x,y){
-    var _pxPerHour = Math.floor(this.parent.pxPerHour),
-        _value;
+    var
+    _pxPerHour = Math.floor(this.parent.pxPerHour),
+    _value,
+    _yEquals = (Math.round(this.prevXY[1]/4) === Math.round(y/4));
+    if(_yEquals){ // nothing moved, just return.
+      return true;
+    }
     if(this.dragMode === 'create'){
       this.parent.listItemViews.push( this );
       _value = {};
@@ -259,11 +276,11 @@ HTimeSheetItem = HControl.extend({
   },
   
   _getValueTop: function( _value ){
-    return _value.timeBegin * this.parent.pxPerHour;
+    return (_value.timeBegin * this.parent.pxPerHour)+1;
   },
   
   _getValueBottom: function( _value ){
-    return _value.timeEnd * this.parent.pxPerHour;
+    return (_value.timeEnd * this.parent.pxPerHour)-2;
   },
   
 /** = Description

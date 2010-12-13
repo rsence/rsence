@@ -23,6 +23,10 @@ HTimeSheet = HControl.extend({
   /* Default amount of pixels from right. Override with options when necessary. */
   itemOffsetRight: 0,
   
+  defaultEvents: {
+    draggable: true
+  },
+  
   controlDefaults: HControlDefaults.extend({
     pxPerHour: null,
     itemOffsetLeft: null,
@@ -120,9 +124,29 @@ HTimeSheet = HControl.extend({
   *
   **/
   startDrag: function(x,y){
-    this.createItem(y-this.pageY());
-    EVENT.startDragging( this.dragItem );
+    this._startDragTime = new Date().getTime();
+    this._startDragCoords = [x,y];
+    return true;
   },
+  
+  drag: function(x,y){
+    if(((new Date().getTime()) - this._startDragTime) < 200){
+      // only create when 200 ms has elapsed to enable clicking
+      return true;
+    }
+    if(this._startDragCoords[0]!==x && this._startDragCoords[1]!==y){
+      this.createItem(this._startDragCoords[1]-this.pageY());
+      EVENT.startDragging( this.dragItem );
+      return true;
+    }
+  },
+  
+  click: function(x,y){
+    // deactivate all items
+    EVENT.changeActiveControl(this);
+    return true;
+  },
+  
   listItemViews: false,
   
 /** = Description
@@ -145,10 +169,10 @@ HTimeSheet = HControl.extend({
   *
   **/
   createItemRect: function(_origY, _lineHeight){
-    var _left = this.itemOffsetLeft,
-        _top = _origY,
-        _right = this.rect.width - this.itemOffsetRight,
-        _bottom = _origY + _lineHeight;
+    var _left = this.itemOffsetLeft+1,
+        _top = _origY+1,
+        _right = this.rect.width - this.itemOffsetRight - 1,
+        _bottom = _origY + _lineHeight - 2;
     return HRect.nu( _left, _top, _right, _bottom );
   },
 
@@ -204,23 +228,60 @@ HTimeSheet = HControl.extend({
   *
   **/
   refreshValue: function(){
-    var _data = this.value, i;
+    var
+    _data = this.value,
+    i;
     if(this.listItemViews === false){
       this.listItemViews = [];
     }
-    if(this.listItemViews.length !== 0){
+    else if(this.listItemViews.length > 0){
       for( i=0; i<this.listItemViews.length; i++){
         this.listItemViews[i].die();
       }
       this.listItemViews = [];
     }
-    if(_data instanceof Array){
-      var _value, _item;
+    if(_data instanceof Array && _data.length > 0){
+      var
+      _value,
+      _item;
       for( i=0; i<_data.length; i++){
         _value = _data[i];
         _item = this.createTimeSheetItem( _value );
         this.listItemViews.push( _item );
       }
+    }
+    var
+    _overlaps = [],
+    j;
+    for(i=0;i<this.listItemViews.length;i++){
+      for(j=0;j<this.listItemViews.length;j++){
+        if((i !== j) && (_overlaps.indexOf(i)===-1) && (_overlaps.indexOf(j)===-1)){
+          if(this.listItemViews[i].rect.intersects(this.listItemViews[j].rect)){
+            _overlaps.push(i);
+          }
+        }
+      }
+    }
+    var
+    _overlapCount = _overlaps.length+1,
+    _overlapLefts = {},
+    _itemWidth = ( this.rect.width - this.itemOffsetRight - this.itemOffsetLeft ),
+    _width = Math.floor( _itemWidth / _overlapCount),
+    _left = this.itemOffsetLeft;
+    for(j=0;j<_overlapCount;j++){
+      _overlapLefts[_overlaps[j]] = _left + (j*_width) + _width;
+    }
+    for(i=0;i<this.listItemViews.length;i++){
+      if(_overlaps.indexOf(i)===-1){
+        this.listItemViews[i].rect.setLeft(_left);
+      }
+      else {
+        this.listItemViews[i].rect.setLeft(_overlapLefts[i]);
+      }
+      this.listItemViews[i].rect.setWidth(_width);
+    }
+    for(i=0;i<this.listItemViews.length;i++){
+      this.listItemViews[i].drawRect();
     }
   }
 });
