@@ -320,10 +320,12 @@ EVENT = {
   * controls registered for the event.
   **/
   resize: function(e) {
-    var i = 0,
-        _this = EVENT,
-        _ctrlID,
-        _ctrl;
+    var
+    i = 0,
+    _this = EVENT,
+    _ctrlID,
+    _ctrl;
+    HSystem._updateFlexibleRects();
     for (; i < _this.resizeListeners.length; i++) {
       _ctrlID = _this.resizeListeners[i];
       _ctrl = HSystem.views[_ctrlID];
