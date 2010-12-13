@@ -302,17 +302,19 @@ HSystem = {
   **/
   _flushUpdateZIndexOfChilden: function() {
     
-    var j=0, // buffer index
-        
-        // reference to the HSystem namespace
-        _this = HSystem,
-        
-        // reference to the buffer
-        _buffer = _this._updateZIndexOfChildrenBuffer,
-        
-        // the length of the buffer
-        _bufLen = _buffer.length;
-        
+    var
+    
+    j = 0, // buffer index
+    
+    // reference to the HSystem namespace
+    _this = HSystem,
+    
+    // reference to the buffer
+    _buffer = _this._updateZIndexOfChildrenBuffer,
+    
+    // the length of the buffer
+    _bufLen = _buffer.length;
+    
     // loop buffer length times to get the items
     for ( ; j < _bufLen; j++ ) {
       

@@ -187,10 +187,16 @@ HApplication = HClass.extend({
   * resistant. Do not extend.
   **/
   _startIdle: function(){
-    HSystem.busyApps[ this.appId ] = true;
-    this.onIdle();
-    this._pollViews();
-    HSystem.busyApps[ this.appId ] = false;
+    var _this = this;
+    HSystem.busyApps[ _this.appId ] = true;
+    this._busyTimer = setTimeout(
+      function(){
+        _this.onIdle();
+        _this._pollViews();
+        HSystem.busyApps[ _this.appId ] = false;
+      },
+      10
+    );
   },
   
 /** = Description
