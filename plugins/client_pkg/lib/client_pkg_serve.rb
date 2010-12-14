@@ -24,6 +24,11 @@ module ClientPkgServe
   ## Responds to get-requests
   def get( request, response, session )
     
+    while @build_busy
+      puts "-- build not finished, waiting.. --"
+      sleep 0.1
+    end
+    
     # Sets the response date header to the current time:
     response['Date'] = httime( Time.now )
     
@@ -204,6 +209,10 @@ module ClientPkgServe
         
           response['Last-Modified'] = @client_cache.last_modified
           body = @client_cache.theme_cache[theme_name][theme_part][ req_file ]
+          if body.nil?
+            warn "ClientPkgServe#get: empty body for #{request.path}"
+            body = ''
+          end
           response['Content-Length'] = body.length.to_s
           response.body = body
           
