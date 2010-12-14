@@ -1274,10 +1274,11 @@ ELEM = {
   
   /* Checks browser versions and starts the document load check */
   _warmup: function() {
-    var _this = ELEM,
-        _ua = navigator.userAgent,
-        _isIE = (document.all && (_ua.indexOf("Opera") === -1)),
-        _browserType = BROWSER_TYPE;
+    var
+    _this = ELEM,
+    _ua = navigator.userAgent,
+    _isIE = (document.all && (_ua.indexOf("Opera") === -1)),
+    _browserType = BROWSER_TYPE;
     _browserType.opera    = _ua.indexOf("Opera") !== -1;
     _browserType.safari   = _ua.indexOf("KHTML") !== -1;
     _browserType.symbian  = _ua.indexOf("SymbianOS") !== -1;
@@ -1332,9 +1333,9 @@ ELEM = {
       var _ie_script = document.getElementById("__ie_onload");
       _ie_script.onreadystatechange = function() {
         if ((this.readyState === "complete") && true) {
-          clearTimeout(ELEM._domLoadTimer);
-          ELEM._domLoadStatus = true;
-          ELEM._init();
+          clearTimeout(_this._domLoadTimer);
+          _this._domLoadStatus = true;
+          _this._init();
         }
       };
       // the event will trigger on ie, so we don't have to keep on polling:
@@ -1369,7 +1370,7 @@ ELEM = {
       _this._init();
     }
     else {
-      _this._domLoadTimer = setTimeout('ELEM._domWaiter()', _this.ELEMTickerInterval * 10);
+      _this._domLoadTimer = setTimeout(_this._domWaiter, 10 ); // (_this.ELEMTickerInterval * 10));
     }
   }
 };
