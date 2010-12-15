@@ -118,6 +118,8 @@ HEventResponder = HClass.extend({
   *                 method for it is +keyDown+ and it receives the ascii key
   *                 code whenever a keyboard key is pressed. Can also be
   *                 toggled separately by using the +setKeyDown+ method.
+  *                 Also supports special mode 'repeat', when listening to
+  *                 key repetitions is needed.
   * +keyUp+::       The local +keyUp+ event state. The component receives
   *                 this event only if it's focused. The event responder
   *                 method for it is +keyUp+ and it receives the ascii key
@@ -361,7 +363,8 @@ HEventResponder = HClass.extend({
   *
   * = Parameters
   * +_flag+:: Set the keyDown event listening on/off (true/false) for
-  *           the component instance.
+  *           the component instance. Also supports special mode 'repeat',
+  *           when listening to key repetitions is needed.
   *
   * = Returns
   * +self+
