@@ -12,6 +12,12 @@
 var//RSence.Core
 BROWSER_TYPE = {
   
+/* Any browser on Mac OS X */
+  mac: false,
+  
+/* Any browser on Windows */
+  win: false,
+  
 /* Any version of Microsoft Internet Explorer */
   ie: false,
   
@@ -1288,6 +1294,9 @@ ELEM = {
     _browserType.ie7      = _isIE && (_ua.indexOf("MSIE 7") !== -1);
     _browserType.ie8      = _isIE && (_ua.indexOf("MSIE 8") !== -1);
     _browserType.ie9      = _isIE && (_ua.indexOf("MSIE 9") !== -1);
+    
+    _browserType.mac      = (_ua.indexOf("Macintosh") !== -1);
+    _browserType.win      = (_ua.indexOf("Windows") !== -1);
     
     // Experimental; don't treat IE9 as an IE at all.
     // NOTE: IE9 Beta does still not behave like a standard web browser.
