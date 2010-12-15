@@ -149,7 +149,10 @@ EVENT = {
     Event.observe( _globalEventTargetElement, 'click', _this.click );
     Event.observe( _globalEventTargetElement, 'keyup', _this.keyUp );
     Event.observe( _globalEventTargetElement, 'keydown', _this.keyDown );
-    Event.observe( _globalEventTargetElement, 'keypress', _this.keyPress );
+    // IE and WebKit browsers don't need keyPress for repeat
+    if( !BROWSER_TYPE.safari && !BROWSER_TYPE.ie){
+      Event.observe( _globalEventTargetElement, 'keypress', _this.keyPress );
+    }
     Event.observe( _globalEventTargetElement, 'contextmenu', _this.contextMenu );
     Event.observe( _globalEventTargetElement, 'resize', _this.resize );
     Event.observe( _globalEventTargetElement, 'mousewheel', _this.mouseWheel );
@@ -857,90 +860,6 @@ EVENT = {
   },
 
 
-/** Mid-level key press manager.
-  * Gets called on the onKeyDown event.
-  * Delegates keyDown calls to the high-level event receivers of all
-  * controls registered for that event.
-  **/
-  keyDown: function(e) {
-    var _this = EVENT,
-        _theKeyCode = e.keyCode,
-        _keyDownStateForActiveControl = _this.activeControl?(_this.focusOptions[_this.activeControl.elemId]?_this.focusOptions[_this.activeControl.elemId].keyDown:false):false,
-        _repeat = (_keyDownStateForActiveControl === 'repeat'),
-        _stopEvent = false;
-    _this._modifiers(e);
-    if(!_this.status[_this.cmdKeyDown] && _this._detectCmdKey(e.keyCode)){
-      _this.status[_this.cmdKeyDown] = true;
-    }
-    if (_this.activeControl && _keyDownStateForActiveControl) {
-      if ((_this._lastKeyDown !== _theKeyCode) || _repeat) {
-        if(_this.activeControl.keyDown(_theKeyCode)){
-          _stopEvent = true;
-        }
-      }
-    }
-    // Insert key to the realtime array, remove in keyUp
-    if (_this.status[_this.keysDown].indexOf(_theKeyCode) === -1) {
-      _this.status[_this.keysDown].push(_theKeyCode);
-    }
-    if (!_this.status[_this.cmdKeyDown] && _stopEvent){
-      Event.stop(e);
-    }
-    _this._lastKeyDown = _theKeyCode;
-  },
-
-
-/** Mid-level key release manager.
-  * Gets called on the onKeyUp event.
-  * Delegates keyUp calls to the high-level event receivers of all
-  * controls registered for that event.
-  * Also delegates the textEnter calls to all controls
-  * registered for that event.
-  **/
-  keyUp: function(e) {
-    var _this = EVENT,
-        _theKeyCode = e.keyCode,
-        _keyCodeIndex,
-        i = 0,
-        _stopEvent = false,
-        _ctrlId,
-        _ctrl;
-    _this._modifiers(e);
-    _this._lastKeyDown = null;
-    if (_this.activeControl && _this.activeControl.elemId && _this.focusOptions[_this.activeControl.elemId].keyUp === true) {
-      if(_this.activeControl.keyUp(_theKeyCode)){
-        _stopEvent = true;
-      }
-    }
-    for (; i < _this.textEnterCtrls.length; i++) {
-      _ctrlId = _this.textEnterCtrls[i];
-      _ctrl = HSystem.views[_ctrlId];
-      if (_ctrl.textEnter) {
-        if(_ctrl.textEnter()){
-          _stopEvent = true;
-        }
-      }
-    }
-    if (!_this.status[_this.cmdKeyDown] && _stopEvent){
-      Event.stop(e);
-    }
-    if(_this.status[_this.cmdKeyDown] && _this._detectCmdKey(e.keyCode)){
-      _this.status[_this.cmdKeyDown] = false;
-    }
-    // Remove the key from the realtime array, inserted in keyDown
-    _keyCodeIndex = _this.status[_this.keysDown].indexOf(_theKeyCode);
-    if (_keyCodeIndex !== -1) {
-      _this.status[_this.keysDown].splice(_keyCodeIndex, 1);
-    }
-  },
-
-  /* Using keyPress as an alias for the keyDown event */
-  keyPress: function(e) {
-    var _this = EVENT;
-    _this.keyDown(e);
-  },
-
-
 /** Mid-level mouse scroll wheel event manager.
   * Delegates mouseWheel calls to the high-level event receivers of all
   * controls registered for that event.
@@ -986,19 +905,208 @@ EVENT = {
     //   EVENT.status[EVENT.button2] = false;
     // }
   },
+
+
+/** Mid-level key press manager.
+  * Gets called on the onKeyDown event.
+  * Delegates keyDown calls to the high-level event receivers of all
+  * controls registered for that event.
+  **/
+  keyDown: function(e) {
+    var
+    _this = EVENT,
+    _keyCode = _this.translateKeyCodes(e.keyCode),
+    _keyDownStateForActiveControl = _this.activeControl?(_this.focusOptions[_this.activeControl.elemId]?_this.focusOptions[_this.activeControl.elemId].keyDown:false):false,
+    _repeat = (_keyDownStateForActiveControl === 'repeat'),
+    _stopEvent = false;
+    _this._modifiers(e);
+    _this._lastKeyPressTime = new Date().getTime();
+    if(!_this.status[_this.cmdKeyDown] && _this._detectCmdKey(_keyCode)){
+      _this.status[_this.cmdKeyDown] = true;
+    }
+    if (_this.activeControl && _keyDownStateForActiveControl) {
+      if ((_this._lastKeyDown !== _keyCode) || _repeat) {
+        if(_this.activeControl.keyDown(_keyCode)){
+          _stopEvent = true;
+        }
+      }
+    }
+    // Insert key to the realtime array, remove in keyUp
+    if (_this.status[_this.keysDown].indexOf(_keyCode) === -1) {
+      _this.status[_this.keysDown].push(_keyCode);
+    }
+    if (!_this.status[_this.cmdKeyDown] && _stopEvent){
+      Event.stop(e);
+    }
+    _this._lastKeyDown = _keyCode;
+  },
+
+
+/** Mid-level key release manager.
+  * Gets called on the onKeyUp event.
+  * Delegates keyUp calls to the high-level event receivers of all
+  * controls registered for that event.
+  * Also delegates the textEnter calls to all controls
+  * registered for that event.
+  **/
+  keyUp: function(e) {
+    var
+    _this = EVENT,
+    _keyCode = _this.translateKeyCodes(e.keyCode),
+    _keyCodeIndex,
+    i = 0,
+    _stopEvent = false,
+    _ctrlId,
+    _ctrl;
+    _this._modifiers(e);
+    _this._lastKeyDown = null;
+    if (_this.activeControl && _this.activeControl.elemId && _this.focusOptions[_this.activeControl.elemId].keyUp === true) {
+      if(_this.activeControl.keyUp(_keyCode)){
+        _stopEvent = true;
+      }
+    }
+    for (; i < _this.textEnterCtrls.length; i++) {
+      _ctrlId = _this.textEnterCtrls[i];
+      _ctrl = HSystem.views[_ctrlId];
+      if (_ctrl.textEnter) {
+        if(_ctrl.textEnter()){
+          _stopEvent = true;
+        }
+      }
+    }
+    if (!_this.status[_this.cmdKeyDown] && _stopEvent){
+      Event.stop(e);
+    }
+    if(_this.status[_this.cmdKeyDown] && _this._detectCmdKey(_keyCode)){
+      _this.status[_this.cmdKeyDown] = false;
+    }
+    // Remove the key from the realtime array, inserted in keyDown
+    _keyCodeIndex = _this.status[_this.keysDown].indexOf(_keyCode);
+    if (_keyCodeIndex !== -1) {
+      _this.status[_this.keysDown].splice(_keyCodeIndex, 1);
+    }
+  },
+
+  /* The keyPress itself is ignored per se and used only as a repetition event for the last keyDown. */
+  keyPress: function(e) {
+    var
+    _this = EVENT,
+    _timeNow = new Date().getTime();
+    _this._modifiers(e);
+    // Prevent non-repeat behaviour by waiting at least 100ms before repeating
+    if(_this._lastKeyPressTime > (_timeNow-100)){
+      return;
+    }
+    if(_this._lastKeyDown !== null){
+      var
+      _keyCode = _this.translateKeyCodes(_this._lastKeyDown),
+      _keyDownStateForActiveControl = _this.activeControl?(_this.focusOptions[_this.activeControl.elemId]?_this.focusOptions[_this.activeControl.elemId].keyDown:false):false,
+      _repeat = (_keyDownStateForActiveControl === 'repeat'),
+      _stopEvent = false;
+      if (_this.activeControl && _keyDownStateForActiveControl && _repeat) {
+        if(_this.activeControl.keyDown(_keyCode)){
+          _stopEvent = true;
+        }
+      }
+      if(_stopEvent){
+        Event.stop(e);
+      }
+    }
+  },
+  
+  
+  // Normalization map of keyCodes for Opera specifically
+  _operaKeyCodeTranslations: {
+    
+    // Symbol keys:
+    59: 186, // [;:]
+    61: 187, // [=+]
+    44: 188, // [,<]
+    45: 189, // [-_]
+    46: 190, // [.>]
+    47: 191, // [/?]
+    96: 192, // [`~]
+    91: 219, // [[{]
+    92: 220, // [\|]
+    93: 221, // []}]
+    39: 222, // ['"]
+    
+    // Numeric keypad keys can't be mapped on Opera, because Opera 
+    // doesn't differentiate between the keys on the numeric keypad
+    // versus the functionally same keys elsewhere on the keyboard.
+    
+    // Branded keys:
+    // Apple Command keys are same as ctrl, but ctrl is 0; Can't be re-mapped reliably.
+    // The Windows Menu key also return 0, so it can't be re-mapped either.
+    219: 91, // Left Windows key (Start)
+    220: 92  // Right Windows key (Start)
+  },
+  
+  // Normalization map of keyCodes for Gecko (Mozilla) browsers specifically
+  _mozillaKeyCodeTranslations: {
+    
+    // Symbol keys:
+    59: 186, // [;:]
+    61: 187, // [=+]
+    109: 189, // [-_]
+    
+    // Branded keys:
+    224: 91 // Apple Command key to left windows key mapping
+    
+  },
+  
+/** Translates keyCodes to the normalized pseudo-ascii used by IE and WebKit browsers.
+  * Opera and Mozilla browsers use different codes, so they'll need translations.
+  **/
+  translateKeyCodes: function(_keyCode){
+    var
+    _this = EVENT,
+    _transCode;
+    
+    // We use the WebKit and IE browsers as the normalization base, because
+    // there is no variance between in these. Returns the keyCode as-is for
+    // browsers in this category.
+    if(BROWSER_TYPE.safari || BROWSER_TYPE.ie){
+      return _keyCode;
+    }
+    // Opera has its own keyCodes, which are different from all others.
+    else if(BROWSER_TYPE.opera){
+      _transCode = _this._operaKeyCodeTranslations[_keyCode];
+    }
+    // The assumption is that the other browsers do what mozille does.
+    else {
+      _transCode = _this._mozillaKeyCodeTranslations[_keyCode];
+    }
+    if(_transCode === undefined || _transCode === null){
+      return _keyCode;
+    }
+    // else {
+    //   console.log('key map from:',_keyCode,' to:',_transCode);
+    // }
+    return _transCode;
+  },
   
   _cmdKeys: [
-    224, // Mozilla Left or Right Command Key
-    219, // Opera Left Windows Key
-    220, // Opera Right Windows Key
-    0,   // Opera Menu Key or Linux Gecko: any Windows Key
-    17,  // Opera
+    17,  // Ctrl
     91,  // Others (Left Start Key or Left Command Key)
     92,  // Others (Right Start Key)
     93   // Others (Menu Key or Right Command Key)
   ],
   _detectCmdKey: function( _keyCode ) {
-    return (EVENT._cmdKeys.indexOf(_keyCode) !== -1);
+    
+    // On Opera, return true on any of the keycodes
+    if(BROWSER_TYPE.opera){
+      return (EVENT._cmdKeys.indexOf(_keyCode) !== -1);
+    }
+    // Any mac browser (except opera, above) uses left or right windows key
+    // equivalent as the Command key.
+    else if(BROWSER_TYPE.mac){
+      return ((_keyCode === 91) || (_keyCode === 93));
+    }
+    // Other platforms use CTRL as the command key.
+    else {
+      return (_keyCode === 17);
+    }
   },
   
   /* Handle the event modifiers. */
