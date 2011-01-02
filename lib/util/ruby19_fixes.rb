@@ -11,8 +11,6 @@ Encoding.default_internal = Encoding::BINARY
 # Ruby 1.9 doesn't have String#each anymore.
 # This is a backwards-compatible work-around.
 class String
-  def each 
-    self.split($/).each { |e| yield e } 
-  end 
+  alias each each_line
 end
 

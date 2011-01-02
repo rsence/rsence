@@ -43,8 +43,9 @@ class Broker
     dispatcher = dispatcher_class.new( request, response )
     dispatcher.send( request_method )
     content_type = dispatcher.content_type
-    response.header['Content-Length'] = response.body.length.to_s unless response.header.has_key?('Content-Length')
-    return [response.status, response.header, response.body]
+    response_body = response.body
+    response.header['Content-Length'] = response_body.bytesize.to_s unless response.header.has_key?('Content-Length')
+    return [response.status, response.header, response_body]
   end
   
   # Returns a dynamically created "REST Dispatcher" kind of class that has
@@ -121,7 +122,7 @@ class Broker
     @response.status = 404
     err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
     @response['Content-Type'] = 'text/html; charset=UTF-8'
-    @response['Content-Length'] = err404.length.to_s
+    @response['Content-Length'] = err404.bytesize.to_s
     @response.body = err404
   end
   

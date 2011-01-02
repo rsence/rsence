@@ -74,7 +74,7 @@ module Broker
     else
       puts "unsupported method: #{request_method.inspect}"
     end
-    response.header['Content-Length'] = response.body.length.to_s unless response.header.has_key?('Content-Length')
+    response.header['Content-Length'] = response.body.bytesize.to_s unless response.header.has_key?('Content-Length')
     return [response.status, response.header, response.body]
   end
   
@@ -82,8 +82,8 @@ module Broker
     puts "/404: #{request.fullpath.inspect}" if $DEBUG_MODE
     response.status = 404
     err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
-    response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-length'] = err404.length.to_s
+    response['Content-Type'] = 'text/html; charset=UTF-8'
+    response['Content-Length'] = err404.bytesize.to_s
     response.body = err404
   end
   

@@ -154,11 +154,11 @@ class MainPlugin < Plugin
       gzwriter = Zlib::GzipWriter.new( index_gzip, 9 )
       gzwriter.write( index_html )
       gzwriter.close
-      response['Content-Length'] = index_gzip.length
+      response['Content-Length'] = index_gzip.bytesize.to_s
       response['Content-Encoding'] = 'gzip'
       response.body = index_gzip
     else
-      response['Content-Length'] = index_html.length
+      response['Content-Length'] = index_html.bytesize.to_s
       response.body = index_html
     end
   end

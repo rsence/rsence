@@ -121,14 +121,14 @@ module ClientPkgServe
           #response['Transfer-Encoding'] = 'chunked,gzip'
           response['Last-Modified'] = @client_cache.last_modified
           body = @client_cache.gz_cache[ req_file ]+"\r\n\r\n"
-          response['Content-Length'] = body.length.to_s
+          response['Content-Length'] = body.bytesize.to_s
           response['Content-Encoding'] = 'gzip'
           response.body   = body
         else
           
           response['Last-Modified'] = @client_cache.last_modified
           body = @client_cache.js_cache[ req_file ]
-          response['Content-Length'] = body.length.to_s
+          response['Content-Length'] = body.bytesize.to_s
           response.body = body
           
         end
@@ -195,7 +195,7 @@ module ClientPkgServe
         if support_gzip
           response['Last-Modified'] = @client_cache.last_modified
           body = @client_cache.theme_cache[theme_name][theme_part][ req_file+'.gz' ]
-          response['Content-Length'] = body.length.to_s
+          response['Content-Length'] = body.bytesize.to_s
           response['Content-Encoding'] = 'gzip'
           response.body   = body
         else
@@ -213,7 +213,7 @@ module ClientPkgServe
             warn "ClientPkgServe#get: empty body for #{request.path}"
             body = ''
           end
-          response['Content-Length'] = body.length.to_s
+          response['Content-Length'] = body.bytesize.to_s
           response.body = body
           
         end
