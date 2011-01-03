@@ -31,6 +31,7 @@ HTimeSheet = HControl.extend({
     pxPerHour: null,
     itemOffsetLeft: null,
     itemOffsetRight: null,
+    itemMinHeight: 24,
     newItemLabel: 'New Item',
     constructor: function(_ctrl){
       if(this.pxPerHour !== null){
@@ -173,6 +174,9 @@ HTimeSheet = HControl.extend({
         _top = _origY+1,
         _right = this.rect.width - this.itemOffsetRight - 1,
         _bottom = _origY + _lineHeight - 2;
+    if( (_top - _bottom) < this.options.itemMinHeight ){
+      _bottom = _top + this.options.itemMinHeight;
+    }
     return HRect.nu( _left, _top, _right, _bottom );
   },
 

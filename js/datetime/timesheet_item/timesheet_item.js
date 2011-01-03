@@ -289,9 +289,17 @@ HTimeSheetItem = HControl.extend({
   **/
   refreshValue: function(){
     if ( HVM.type(this.value) === 'h' ){
-      this.setLabel( this._getValueLabel( this.value ) );
-      this.rect.setTop( this._getValueTop( this.value ) );
-      this.rect.setBottom( this._getValueBottom( this.value ) );
+      var
+      _label  = this._getValueLabel( this.value ),
+      _top    = this._getValueTop( this.value ),
+      _bottom = this._getValueBottom( this.value ),
+      _minHeight = this.parent.options.itemMinHeight;
+      this.setLabel( _label );
+      if( (_bottom - _top) < _minHeight ){
+        _bottom = _top + _minHeight;
+      }
+      this.rect.setTop( _top );
+      this.rect.setBottom( _bottom );
       this.drawRect();
     }
   }
