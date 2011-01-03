@@ -135,7 +135,7 @@ module RSence
       if options[:servlet]
         @do_gzip = false
       else
-        @response.content_type = 'text/javascript; charset=utf-8'
+        @response['Content-Type'] = 'text/javascript; charset=utf-8'
         @response['Cache-Control'] = 'no-cache'
       
         # gnu-zipped responses:
@@ -268,7 +268,7 @@ module RSence
         outp = buf_json(buffer)
       end
       
-      @response['content-length'] = outp.size
+      @response['Content-Length'] = outp.bytesize.to_s
       @response.body = outp
       
       @response_sent = true

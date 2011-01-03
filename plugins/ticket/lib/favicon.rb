@@ -30,7 +30,7 @@ module Favicon
   # Sets favicon. First parameter is favicon data and the second one is content type which defaults to false.
   def set_favicon( ico_data, content_type=false )
     @raw_uris['favicon.ico'][0] = content_type if content_type
-    @raw_uris['favicon.ico'][1] = ico_data.size.to_s
+    @raw_uris['favicon.ico'][1] = ico_data.bytesize.to_s
     @raw_uris['favicon.ico'][2] = ico_data
     
   end

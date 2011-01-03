@@ -23,7 +23,7 @@ module Rsrc
     rsrc_id = @randgen.gen
     #puts "rsrc_id: #{rsrc_id.inspect}"
     
-    content_size = content.size.to_s
+    content_size = content.bytesize.to_s
     
     @raw_uris[rsrc_id] = [content_type,content_size,content]
     

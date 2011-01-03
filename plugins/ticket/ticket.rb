@@ -110,8 +110,8 @@ class TicketPlugin < Plugin
       puts "/U/iframe_html: #{uri.inspect}" if RSence.args[:verbose]
       res.status = 200
       http_body = '<html><head><title>Empty Iframe for Uploading</title></head><body></body></html>'
-      res['content-type'] = 'text/html; charset=UTF-8'
-      res['content-length'] = http_body.size.to_s
+      res['Content-Type'] = 'text/html; charset=UTF-8'
+      res['Content-Length'] = http_body.bytesize.to_s
       res.body = http_body
     end
   end
@@ -158,7 +158,7 @@ class TicketPlugin < Plugin
     
     # @return [Number] The size (in bytes) of the data
     def size
-      return @data.size
+      return @data.bytesize
     end
     
     # Implement, if you need to do cleanup before destructing

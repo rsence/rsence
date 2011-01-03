@@ -13,9 +13,6 @@ require 'yaml'
 
 
 
-require 'util/ruby19_fixes' if RUBY_VERSION.to_f >= 1.9
-
-
 module RSence
   
   

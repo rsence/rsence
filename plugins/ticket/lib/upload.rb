@@ -176,8 +176,8 @@ create table rsence_uploads (
     }
     
     response.status = 200
-    response['content-type'] = 'text/html; charset=UTF-8'
-    response['content-length'] = response_body.size.to_s
+    response['Content-Type'] = 'text/html; charset=UTF-8'
+    response['Content-Length'] = response_body.bytesize.to_s
     response.body = response_body
   end
   

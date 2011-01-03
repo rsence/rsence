@@ -112,7 +112,7 @@ module ClientPkgServe
       else
         
         response.status = 200
-        response.content_type = 'text/javascript; charset=utf-8'
+        response['Content-Type'] = 'text/javascript; charset=utf-8'
         
         # these browsers have issues with gzipped js content
         support_gzip = false if (is_safari or is_msie or is_symbian)
@@ -160,7 +160,7 @@ module ClientPkgServe
       
       if not has_theme_file and req_file == 'common.css'
         response.status = 200
-        response.content_type = 'text/css'
+        response['Content-Type'] = 'text/css'
         response.body = ''
       end
       
@@ -180,7 +180,7 @@ module ClientPkgServe
         response.status = 200
         
         file_ext = req_file.split('.')[-1]
-        response.content_type = {
+        response['Content-Type'] = {
           'html' => 'text/html; charset=utf-8',
           'css'  => 'text/css; charset=utf-8',
           'png'  => 'image/png',

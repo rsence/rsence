@@ -156,7 +156,7 @@ module Common
       (content_type, filename) = format
       
       # content size for the header
-      content_size = content.size.to_s
+      content_size = content.bytesize.to_s
       
       storage_hash = @files
       storage_arr = [content_type,content_size,content,msg.ses_id,filename]
@@ -270,7 +270,7 @@ module Common
         }
       
         # content size for the header
-        content_size = content.size.to_s
+        content_size = content.bytesize.to_s
       
         # content type for the header
         content_type = @content_types[format]
@@ -335,12 +335,12 @@ module Common
       end
       if @raw_uris.include?(blobobj_id)
         content_type = @raw_uris[blobobj_id].mime
-        content_size = @raw_uris[blobobj_id].size
+        content_size = @raw_uris[blobobj_id].bytesize
         content      = @raw_uris[blobobj_id].data
       elsif @blob_objs[:by_id].include?(blobobj_id)
         (ses_id, blobobj) = @blob_objs[:by_id][blobobj_id]
         content_type = blobobj.mime
-        content_size = blobobj.size
+        content_size = blobobj.bytesize
         content      = blobobj.data
         if req.header.has_key?('keep-alive') and req.header['keep-alive'].size > 0
           keep_alive = req.header['keep-alive'][0].to_i

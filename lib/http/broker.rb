@@ -24,7 +24,7 @@ class Broker
   
   # This method is called from Rack.
   # @param [Hash] env is the Rack environment.
-  # @return [Array(Number, Hash, String)] Rack-style response status, header, body
+  # @return [Array(Number, Hash, Array)] Rack-style response status, header, body
   def call( env )
     sleep @@ping_sim if @@ping_sim
     unless @@transporter.online?
@@ -35,7 +35,7 @@ class Broker
         'Refresh' => "2; #{env['REQUEST_URI']}",
         'Content-Length' => '4'
       }
-      return [ 503, headers, 'BUSY' ]
+      return [ 503, headers, ['BUSY'] ]
     end
     request  = Request.new(env)
     response = Response.new
@@ -44,7 +44,7 @@ class Broker
     dispatcher.send( request_method )
     content_type = dispatcher.content_type
     response_body = response.body
-    response.header['Content-Length'] = response_body.bytesize.to_s unless response.header.has_key?('Content-Length')
+    response.header['Content-Length'] = response.body_bytes unless response.header.has_key?('Content-Length')
     return [response.status, response.header, response_body]
   end
   

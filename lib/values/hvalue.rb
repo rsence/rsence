@@ -84,10 +84,7 @@ module RSence
       if RSence.args[:debug] and meta[:name] and not msg.valuemanager.id_exists?( msg, meta[:name] )
         @value_id   = meta[:name]
       else
-        @value_id = '_'
-        while @value_id[0] == 95 # ascii for '_'
-          @value_id   = msg.valuemanager.randgen.gen
-        end
+        @value_id = msg.valuemanager.ses_unique_id( msg )
       end
       
       @meta = meta

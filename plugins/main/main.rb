@@ -229,14 +229,14 @@ class MainPlugin < Plugin
   
   
   # New session initialization, called just once per session.
-  def init_ses(msg)
+  def init_ses( msg )
     super
     restore_ses( msg )
   end
   
   
   # Called once when a session is restored or cloned using the cookie's ses_key
-  def restore_ses(msg)
+  def restore_ses( msg )
     super
     ## Resets session data to defaults
     ses = get_ses( msg )
@@ -391,7 +391,6 @@ class MainPlugin < Plugin
   def idle(msg)
     
     ses = get_ses( msg )
-    
     if ses[:boot] == 0
       boot0( msg, ses )
     elsif ses[:boot] == 1

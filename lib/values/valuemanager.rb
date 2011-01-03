@@ -35,6 +35,40 @@ module RSence
       
     end
     
+    
+    # @private Returns a session-unique random string
+    def ses_unique_id( msg )
+      new_id = randgen.gen while id_exists?( msg, new_id )
+      return new_id
+    end
+    
+    
+    # @private Regenerate a value id
+    def reshuffle_id( msg, ses_values, val_obj, old_id )
+      
+      new_id = ses_unique_id( msg )
+      
+      # replace the old id in the hvalue itself
+      val_obj.val_id = new_id
+      
+      # re-associate the value with the new id
+      ses_values[:by_id][new_id] = val_obj
+      ses_values[:by_id].delete(old_id)
+      
+      # replace the id in the unvalidated values (:check) array
+      if ses_values[:check].include?(old_id)
+        old_idx = ses_values[:check].index(old_id)
+        ses_values[:check][old_idx] = new_id
+      end
+      
+      # replace the id in the unsynchronized values (:sync) array
+      if ses_values[:sync].include?(old_id)
+        old_idx = ses_values[:sync].index(old_id)
+        ses_values[:sync][old_idx] = new_id
+      end
+    end
+    
+    
     # @private Re-constructs all stored values and sends them to the client.
     #          Used for restoring and cloning session values.
     def resend_session_values( msg )
@@ -56,28 +90,7 @@ module RSence
           
           # make a new id
           unless RSence.args[:debug] and val_obj.meta[:name]
-            new_id = @randgen.gen
-            new_id = @randgen.gen while new_id[0] == 95 or id_exists?( msg, new_id )
-            
-            # replace the old id in the hvalue itself
-            val_obj.val_id = new_id
-            
-            # re-associate the value with the new id
-            ses_values[:by_id][new_id] = val_obj
-            ses_values[:by_id].delete(old_id)
-            
-            # replace the id in the unvalidated values (:check) array
-            if ses_values[:check].include?(old_id)
-              old_idx = ses_values[:check].index(old_id)
-              ses_values[:check][old_idx] = new_id
-            end
-            
-            # replace the id in the unsynchronized values (:sync) array
-            if ses_values[:sync].include?(old_id)
-              old_idx = ses_values[:sync].index(old_id)
-              ses_values[:sync][old_idx] = new_id
-            end
-            
+            reshuffle_id( msg, ses_values, val_obj, old_id )
           end
           
           # tell the hvalue to send its client-side initialization
@@ -96,6 +109,7 @@ module RSence
     
     # @private Verifies new_id is unique.
     def id_exists?( msg, new_id )
+      return true unless new_id.class == String
       return msg.session[:values][:by_id].has_key?(new_id)
     end
   
