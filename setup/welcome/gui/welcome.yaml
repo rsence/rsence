@@ -18,7 +18,7 @@ dependencies:
 class: RSence.GUIApp
 # Each class takes a number of options for its constructor.
 options:
-  title: Welcome App
+  label: Welcome App
 # The subviews use the class defined above as their parent component.
 subviews:
   # The sheet is used as the main visual container for the gui in this app.
