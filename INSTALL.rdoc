@@ -151,6 +151,7 @@ The primary installation method of RSence is via RubyGems.
 
 To ensure your RubyGems is up-to-date, run:
   sudo gem update --system
+* gem update --system is disabled in Debian based systems, such as Ubuntu. It's okay to skip on these systems.
 
 Even if RubyGems is up-to-date, ensure your installed gems are up-to-date, some of these are updated frequently. This will also update RSence release versions to the most recent version, if installed.
   sudo gem update
@@ -160,8 +161,11 @@ Even if RubyGems is up-to-date, ensure your installed gems are up-to-date, some 
 This will install RSence via RubyGems, the preferred method. All dependencies are installed too, except for the ones you already might have installed.
   gem install rsence
 
+Debian/Ubuntu users need to include /var/lib/gems/1.8/bin into PATH either by adding it directly there or by making a symbolic link:
+  sudo ln -s /var/lib/gems/1.8/bin/rsence /usr/local/bin/rsence
+
 Optionally, you might want to contribute to RSence development, just clone or fork the GIT repository on Github:
-  * http://github.com/rsence/rsence
+  http://github.com/rsence/rsence
 
 When installed, ensure it works by exploring the help of the 'rsence' command, like:
   rsence
