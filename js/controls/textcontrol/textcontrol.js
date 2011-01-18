@@ -22,13 +22,21 @@ HTextControl = HControl.extend({
   componentName: "textcontrol",
   
   defaultEvents: {
-    textEnter: true
+    textEnter: true,
+    contextMenu: true
   },
   
   controlDefaults: (HControlDefaults.extend({
     refreshOnBlur: true,
     refreshOnInput: true
   })),
+  
+/** = Description
+  * The contextMenu event for text input components is not prevented by default.
+  **/
+  contextMenu: function(){
+    return true;
+  },
   
 /** = Description
   * The refreshLabel method sets the title property of the text
@@ -60,7 +68,49 @@ HTextControl = HControl.extend({
 /** This flag is true, when the text input field has focus.
   **/
   hasTextFocus: false,
-
+  
+  _getChangeEventFn: function(){
+    var _this = this;
+    return function(e){
+      _this.setValue(
+        _this.validateText(
+          _this.getTextFieldValue()
+        )
+      );
+      if(e.type === 'paste'){
+        console.log('event: paste, e:', e);
+        if(_this._clipboardPasteTimer){
+          clearTimeout( this._clipboardPasteTimer );
+        }
+        this._clipboardPasteTimer = setTimeout( function(){_this.clipboardPaste();}, 200 );
+      }
+      return true;
+    };
+  },
+  
+  _clipboardPasteTimer: null,
+  clipboardPaste: function(){
+    clearTimeout( this._clipboardPasteTimer ); this._clipboardPasteTimer = null;
+    console.log('paste event, value now:',this.value);
+  },
+  
+  _changeEventFn: null,
+  _clearChangeEventFn: function(){
+    if( this._changeEventFn ){
+      Event.stopObserving( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
+      Event.stopObserving( ELEM.get(this.markupElemIds.value), 'paste', this._changeEventFn );
+      this._changeEventFn = null;
+    }
+  },
+  _setChangeEventFn: function(){
+    if( this._changeEventFn ){
+      this._clearChangeEventFn();
+    }
+    this._changeEventFn = this._getChangeEventFn();
+    Event.observe( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
+    Event.observe( ELEM.get(this.markupElemIds.value), 'paste', this._changeEventFn );
+  },
+  
 /** = Description
   * Special event for text entry components.
   * Called when the input field gains focus.
@@ -68,6 +118,7 @@ HTextControl = HControl.extend({
   **/
   textFocus: function(){
     this.hasTextFocus = true;
+    this._setChangeEventFn();
     return true;
   },
 
@@ -78,6 +129,7 @@ HTextControl = HControl.extend({
   **/
   textBlur: function(){
     this.hasTextFocus = false;
+    this._clearChangeEventFn();
     if(this.options.refreshOnBlur){
       this.refreshValue();
     }
@@ -283,7 +335,8 @@ HNumericTextControl = HTextControl.extend({
   
   defaultEvents: {
     mouseWheel: true,
-    textEnter: true
+    textEnter: true,
+    contextMenu: true
   },
   
 /** Uses the mouseWheel event to step up/down the value.

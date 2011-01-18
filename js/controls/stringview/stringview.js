@@ -22,8 +22,21 @@ HStringView = HControl.extend({
 
   componentName: "stringview",
   
+  defaultEvents: {
+    contextMenu: true
+  },
+  
 /** = Description
-  * setStyle function
+  * HStringView allows the default contextMenu action.
+  *
+  **/
+  contextMenu: function(){
+    return true;
+  },
+  
+/** = Description
+  * The setStyle method of HStringView applies only to the value 
+  * element (not the whole component).
   *
   **/
   setStyle: function(_name, _value, _cacheOverride) {
@@ -35,7 +48,8 @@ HStringView = HControl.extend({
   },
   
 /** = Description
-  * refreshLable function
+  * The refreshLabel of HStringView sets a tool tip.
+  * Applied by the setLabel method and the label attribute of options.
   *
   **/
   refreshLabel: function() {
