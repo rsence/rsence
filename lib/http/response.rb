@@ -17,13 +17,15 @@ module RSence
     # Adds the + method "operator" to an extended Array.
     # Used for pushing http body data.
     class ResponseBody < Array
+      
       def push( body_data )
         super( sanitize_body_data( body_data ) )
       end
       def sanitize_body_data( body_data )
-        if body_data.class == String
+        if body_data.class == String or body_data.class == GZString
           return body_data
         elsif body_data.respond_to?(:to_s)
+          warn "WARNING: RSence::Response::ResponseBody -> body_data is not a string. It's a #{body_data.class}, with the following contents: #{body_data.inspect}" if RSence.args[:verbose]
           return body_data.to_s
         else
           warn "Invalid response data: #{body_data.inspect[0..100]}"
