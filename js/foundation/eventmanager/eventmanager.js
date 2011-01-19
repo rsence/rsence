@@ -28,7 +28,8 @@ EVENT = {
     mouseWheel: false,
     resize: false,
     textEnter: false,
-    doubleClick: false
+    doubleClick: false,
+    contextMenu: false
   },
   
 /** = Description
@@ -841,14 +842,13 @@ EVENT = {
   **/
   doubleClick: function(e) {
     var _this = EVENT,
-        _didEndDrag = false,
         x = _this.status[_this.crsrX],
         y = _this.status[_this.crsrY],
         _elemId,
         _ctrl,
         i = 0;
     _this._modifiers(e);
-    // Check for mouseUp listeners.
+    // Check for doubleClick listeners.
     for (i = 0; i !== _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         if (_this.focusOptions[i].doubleClick === true) {
@@ -890,20 +890,38 @@ EVENT = {
     }
   },
   
-  /* Alternative right button detection, wrapper for the mouseDown method */
+/** Mid-level context menu manager.
+  * Gets called on the onContextMenu event.
+  * Delegates the following call to the high-level event receivers of all
+  * enabled controls registered, depending on the events they registered:
+  * - contextMenu
+  *
+  * Just make a component return true to allow the browser's default action.
+  *
+  **/
   contextMenu: function(e) {
-    // EVENT.mouseDown(e, false);
-    Event.stop(e);
-    
-    /***
-    
-    IMPLEMENT SEPARATE CONTEXT-MENU EVENT HANDLING HERE
-    
-    ***/
-    
-    // if(Event.isLeftClick(e)){
-    //   EVENT.status[EVENT.button2] = false;
-    // }
+    var _this = EVENT,
+        x = _this.status[_this.crsrX],
+        y = _this.status[_this.crsrY],
+        _preventDefault = true,
+        _elemId,
+        _ctrl,
+        i = 0;
+    _this._modifiers(e);
+    // Check for contextMenu listeners.
+    for (i = 0; i !== _this.focused.length; i++) {
+      if (_this.focused[i] === true) {
+        if (_this.focusOptions[i].contextMenu === true) {
+          if( _this.focusOptions[i].ctrl.contextMenu() ){
+            _preventDefault = false;
+          }
+        }
+      }
+    }
+    if( _preventDefault ){
+      Event.stop( e );
+    }
+    return true;
   },
 
 

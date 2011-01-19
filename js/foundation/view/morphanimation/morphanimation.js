@@ -168,7 +168,9 @@ HMorphAnimation = HClass.extend({
   // --Moves the view for one step. This gets called repeatedly when the animation++
   // --is happening.++
   _animateStep: function(_obj) {
-    var _time = new Date().getTime(), i;
+    var
+    _time = new Date().getTime(),
+    i;
     if (_time < _obj.startTime + _obj.duration) {
       var _cTime = _time - _obj.startTime;
       
@@ -189,14 +191,16 @@ HMorphAnimation = HClass.extend({
           if(_unit){
             _propNow += _unit;
           }
-          ELEM.setStyle(this.elemId,_key, _propNow);
+          ELEM.setStyle( this.elemId, _key, _propNow );
         }
       }
-      
-    } else {
+    }
+    else {
       // Animation is done, clear the interval and finalize the animation.
       for (i = 0; i < _obj.props.length; i++) {
-        ELEM.setStyle(this.elemId,_obj.props[i].prop,
+        ELEM.setStyle(
+          this.elemId,
+          _obj.props[i].prop,
           _obj.props[i].to + _obj.props[i].unit);
       }
       this._animationDone = true;

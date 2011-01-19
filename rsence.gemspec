@@ -48,6 +48,7 @@ END
     'VERSION'
   ].to_a
   s.files.reject! { |fn| fn.start_with? "." }
+  s.files.reject! { |fn| fn.end_with? ".rbc" }
   s.files.push '.yardopts'
   if prerelease
     s.files.push 'bin/rsence-pre'

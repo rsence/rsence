@@ -153,7 +153,8 @@ HEventResponder = HClass.extend({
         textEnter:   false,
         click:       false,
         resize:      false,
-        doubleClick: false
+        doubleClick: false,
+        contextMenu: false
       } ).extend( this.defaultEvents ).extend( _events?_events:{} ).nu();
     }
     this.events.ctrl = this;
@@ -280,6 +281,24 @@ HEventResponder = HClass.extend({
   **/
   setDoubleClickable: function(_flag) {
     this.events.doubleClick = _flag;
+    this.setEvents();
+    return this;
+  },
+  
+/** = Description
+  * Registers or releases event listening for contextMenu events depending on 
+  * the value of the flag argument.
+  *
+  * = Parameters
+  * +_flag+:: Set the contextMenu event listening on/off (true/false) for
+  *           the component instance.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  setContextMenu: function(_flag) {
+    this.events.contextMenu = _flag;
     this.setEvents();
     return this;
   },
@@ -536,6 +555,13 @@ HEventResponder = HClass.extend({
   *
   **/
   doubleClick: function(x,y,_isLeftButton){},
+  
+/** = Description
+  * Default contextMenu event responder method. Does nothing by default.
+  * Extend to return true to allow the default action of the browser.
+  *
+  **/
+  contextMenu: function(x,y,_isLeftButton){},
   
 /** = Description
   * Default mouseDown event responder method. Does nothing by default.

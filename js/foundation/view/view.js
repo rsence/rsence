@@ -1365,10 +1365,7 @@ HView = HClass.extend({
     // Could be cached.
     var _bounds = new HRect(this.rect);
     
-    _bounds.right -= _bounds.left;
-    _bounds.left = 0;
-    _bounds.bottom -= _bounds.top;
-    _bounds.top = 0;
+    _bounds.offsetTo(0,0);
     
     return _bounds;
   },
