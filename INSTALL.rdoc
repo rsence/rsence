@@ -134,7 +134,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *jscompress*:: C-optimized Javascript compression and obfuscation library developed for RSence specifically
 * *html_min*:: C-optimized HTML whitespace removal library developed for RSence specfically
 * *cssmin*:: CSS whitespace removal library
-* *sequel*[http://www.sequel.org]
+* *sequel*[http://sequel.rubyforge.org/]
   * Generic SQL database ORM
   * A Sequel driver for your preferred database is also needed:
     * *sqlite3-ruby*:: SQLite[http://www.sqlite.org] is a light-weight SQL library. Recommended for development and small projects.
