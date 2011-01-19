@@ -17,8 +17,13 @@ module RSence
   # than the Rack::Request it's extending.
   class Request < Rack::Request
     attr_reader :header, :path, :query
+    class RequestHeader < Hash
+      def [](key)
+        super(key.downcase)
+      end
+    end
     def initialize(env)
-      @header = {}
+      @header = RequestHeader.new
       super
       env2header()
       @path = path_info()
