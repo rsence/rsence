@@ -84,7 +84,7 @@ Replace the +\my_projects+ path with the path to the directory where you want to
   * Using just defaults, the following URL should work: http://127.0.0.1:8001
 
 ==== Windows limitations
-If you install the sqlite dll and the sqlite3-ruby gem, you'll gain persistent sessions and this warning message will disappear:
+If you install the sqlite dll and the sqlite3 gem, you'll gain persistent sessions and this warning message will disappear:
 `Warning: Session database is not available. Can't use persistent sessions`
 
 It's not a dependency in the default install, because it's not strictly required and makes the first installation much easier. Also, you can use any other database supported by Sequel instead of Sqlite.
@@ -137,7 +137,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *sequel*[http://sequel.rubyforge.org/]
   * Generic SQL database ORM
   * A Sequel driver for your preferred database is also needed:
-    * *sqlite3-ruby*:: SQLite[http://www.sqlite.org] is a light-weight SQL library. Recommended for development and small projects.
+    * *sqlite3*:: SQLite[http://www.sqlite.org] is a light-weight SQL library. Recommended for development and small projects.
     * Other database adapters compatible with Sequel are fine. Just configure RSence accordingly.
 * *highline*:: Console-based menu prompt system by the init command.
 * rmagick
