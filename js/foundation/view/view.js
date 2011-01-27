@@ -1047,12 +1047,36 @@ HView = HClass.extend({
   },
   
   setStyles: function(_styles){
+    var _stylesObjType = COMM.Values.type(_styles);
+    if(_stylesObjType==='a'){
+      this.setStylesArray(_styles);
+    }
+    else if(_stylesObjType==='h'){
+      this.setStylesHash(_styles);
+    }
+    else {
+      console.log('HView#setStyles: Invalid data, expected array or hash; type: '+h+', data:',_styles);
+    }
+    return this;
+  },
+  
+  setStylesArray: function(_styles){
     var
     _styleItem, _styleKey, _styleValue, i = 0;
     for(;i<_styles.length;i++){
       _styleItem  = _styles[i];
       _styleKey   = _styleItem[0];
       _styleValue = _styleItem[1];
+      this.setStyle(_styleKey,_styleValue);
+    }
+    return this;
+  },
+  
+  setStylesHash: function(_styles){
+    var
+    _styleKey, _styleValue;
+    for(_styleKey in _styles){
+      _styleValue  = _styles[_styleKey];
       this.setStyle(_styleKey,_styleValue);
     }
     return this;
@@ -1252,6 +1276,9 @@ HView = HClass.extend({
     this.stopAnimation();
     // Delete the children first.
     var _childViewId, i;
+    if(!this.views){
+      console.log('HView#die: no subviews for component name: ',this.componentName,', self:',this);
+    }
     while (this.views.length !== 0) {
       _childViewId = this.views[0];
       this.destroyView(_childViewId);
