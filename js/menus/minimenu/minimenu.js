@@ -56,10 +56,12 @@ HMiniMenu = HRadioButtonList.extend({
   
   refreshValue: function(){
     this.base();
-    for(var i=0;i<this.listItems.length;i++){
-      if(this.listItems[i][0]===this.value){
-        this.setLabel( this.listItems[i][1] );
-        return;
+    if(this.listItems && this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
+      for(var i=0;i<this.listItems.length;i++){
+        if(this.listItems[i][0]===this.value){
+          this.setLabel( this.listItems[i][1] );
+          return;
+        }
       }
     }
   },
@@ -97,8 +99,10 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   die: function(){
-    this.menuItemView.die();
+    this.valueMatrix = null;
+    var _menuItemView = this.menuItemView;
     this.base();
+    _menuItemView.die();
   },
   
   drawSubviews: function(){

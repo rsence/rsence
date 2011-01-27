@@ -129,12 +129,21 @@ HCheckboxList = HControl.extend({
     this.refreshValue();
   },
   
+  _listItemResponder: null,
+  setListItemResponder: function(_listItemResponder){
+    this._listItemResponder = _listItemResponder;
+  },
+  
 /** = Description
   * Sets listItems and ListItemViews to null and calls 
   * the inherited destructor.
   *
   **/
   die: function(){
+    if(this._listItemResponder){
+      this._listItemResponder.die();
+      this._listItemResponder = null;
+    }
     this.listItems = null;
     this.listItemViews = null;
     this.base();

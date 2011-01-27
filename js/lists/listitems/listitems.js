@@ -28,6 +28,12 @@ HListItems = HValueResponder.extend({
   
   constructor: function( _rect, _parent, _options ){
     this.parent = _parent;
+    if ( this.parent.setListItemResponder ){
+      this.parent.setListItemResponder( this );
+    }
+    else {
+      console.log('Warning; parent does not respond to setListItemResponder');
+    }
     if (_options instanceof Object) {
       if (_options['valueObj'] !== undefined) {
         _options.valueObj.bind( this );
@@ -38,6 +44,16 @@ HListItems = HValueResponder.extend({
       }
     }
   },
+  
+  die: function() {
+    var _this = this;
+    if(_this.valueObj){
+      _this.valueObj.unbind(_this);
+      _this.valueObj = null;
+    }
+    _this.value = null;
+  },
+  
   _warningMessage: function(_messageText){
     console.log("Warning; HListItems: "+_messageText);
   },

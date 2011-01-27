@@ -66,13 +66,26 @@ HRadioButtonList = HControl.extend({
     );
   },
   
+  _listItemResponder: null,
+  setListItemResponder: function(_listItemResponder){
+    this._listItemResponder = _listItemResponder;
+  },
+  
 /** = Description
   * Destructor. Sets listItems and listItemViews to null and initiates
   * destructor for radioButtonIndexValue.
   * 
   **/
   die: function(){
+    if(this._listItemResponder){
+      this._listItemResponder.die();
+      this._listItemResponder = null;
+    }
+    this.radioButtonIndexValue && this.radioButtonIndexValue.die();
     this.listItems = null;
+    for(var i=0;i<this.listItemViews.length;i++){
+      this.listItemViews[i].die();
+    }
     this.listItemViews = null;
     this.radioButtonIndexValue && this.radioButtonIndexValue.die();
     this.base();
@@ -90,6 +103,9 @@ HRadioButtonList = HControl.extend({
     },
     refresh: function(){
       var _listItems = this.parent.listItems;
+      if(_listItems === undefined || _listItems === null){
+        return;
+      }
       if(_listItems[ this.value ] !== undefined){
         this.parent.setValue( _listItems[ this.value ][0] );
       }
@@ -100,7 +116,7 @@ HRadioButtonList = HControl.extend({
   
   refreshValue: function(){
     var _value = this.value;
-    if ( this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
+    if ( this.listItems && this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
       if ( this.radioButtonResponder === false ){
         this.radioButtonIndexValue = HValue.nu( false, 0 );
         this.radioButtonIndexValue.bind( this.valueMatrix );
