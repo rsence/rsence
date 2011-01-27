@@ -72,17 +72,11 @@ HTextControl = HControl.extend({
   _getChangeEventFn: function(){
     var _this = this;
     return function(e){
-      _this.setValue(
-        _this.validateText(
-          _this.getTextFieldValue()
-        )
-      );
       if(e.type === 'paste'){
-        console.log('event: paste, e:', e);
         if(_this._clipboardPasteTimer){
           clearTimeout( this._clipboardPasteTimer );
         }
-        this._clipboardPasteTimer = setTimeout( function(){_this.clipboardPaste();}, 200 );
+        _this._clipboardPasteTimer = setTimeout( function(){_this.clipboardPaste();}, 200 );
       }
       return true;
     };
@@ -90,14 +84,19 @@ HTextControl = HControl.extend({
   
   _clipboardPasteTimer: null,
   clipboardPaste: function(){
-    clearTimeout( this._clipboardPasteTimer ); this._clipboardPasteTimer = null;
-    console.log('paste event, value now:',this.value);
+    this.setValue(
+      this.validateText(
+        this.getTextFieldValue()
+      )
+    );
+    clearTimeout( this._clipboardPasteTimer );
+    this._clipboardPasteTimer = null;
   },
   
   _changeEventFn: null,
   _clearChangeEventFn: function(){
     if( this._changeEventFn ){
-      Event.stopObserving( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
+      // Event.stopObserving( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
       Event.stopObserving( ELEM.get(this.markupElemIds.value), 'paste', this._changeEventFn );
       this._changeEventFn = null;
     }
@@ -107,7 +106,7 @@ HTextControl = HControl.extend({
       this._clearChangeEventFn();
     }
     this._changeEventFn = this._getChangeEventFn();
-    Event.observe( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
+    // Event.observe( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
     Event.observe( ELEM.get(this.markupElemIds.value), 'paste', this._changeEventFn );
   },
   
