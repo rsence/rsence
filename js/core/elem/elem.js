@@ -1016,6 +1016,9 @@ ELEM = {
         if (_key === 'opacity') {
           _this.setOpacity(_id, _value);
         }
+        else if ( !_elems[_id] ){
+          console.log('ELEM#setStyle: Not a element! id:',_id,', key:',_key,', value:', _value);
+        }
         else {
           _this._setElementStyle( _elems[_id], _key, _cached[_key] );
         }
@@ -1202,6 +1205,9 @@ ELEM = {
       _this._flushStylCount++;
       if (_key === 'opacity') {
         _this.setOpacity(_id, _cached[_key]);
+      }
+      else if ( !_elem ){
+        console.log('ELEM#_flushStyleCache: Not a element! id:',_id,', key:',_key,', value:', _value);
       }
       else {
         _this._setElementStyle( _elem, _key, _cached[_key] );
