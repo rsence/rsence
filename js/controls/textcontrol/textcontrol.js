@@ -72,32 +72,34 @@ HTextControl = HControl.extend({
   _getChangeEventFn: function(){
     var _this = this;
     return function(e){
-      if(e.type === 'paste'){
-        if(_this._clipboardPasteTimer){
-          clearTimeout( this._clipboardPasteTimer );
-        }
-        _this._clipboardPasteTimer = setTimeout( function(){_this.clipboardPaste();}, 200 );
+      if(_this._clipboardEventTimer){
+        clearTimeout( this._clipboardEventTimer );
       }
+      _this._clipboardEventTimer = setTimeout( function(){_this.clipboardEvent();}, 200 );
       return true;
     };
   },
   
-  _clipboardPasteTimer: null,
-  clipboardPaste: function(){
+  _updateValueFromField: function(){
     this.setValue(
       this.validateText(
         this.getTextFieldValue()
       )
     );
-    clearTimeout( this._clipboardPasteTimer );
-    this._clipboardPasteTimer = null;
+  },
+  
+  _clipboardEventTimer: null,
+  clipboardEvent: function(){
+    this._updateValueFromField();
+    clearTimeout( this._clipboardEventTimer );
+    this._clipboardEventTimer = null;
   },
   
   _changeEventFn: null,
   _clearChangeEventFn: function(){
     if( this._changeEventFn ){
-      // Event.stopObserving( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
       Event.stopObserving( ELEM.get(this.markupElemIds.value), 'paste', this._changeEventFn );
+      Event.stopObserving( ELEM.get(this.markupElemIds.value), 'cut', this._changeEventFn );
       this._changeEventFn = null;
     }
   },
@@ -106,8 +108,8 @@ HTextControl = HControl.extend({
       this._clearChangeEventFn();
     }
     this._changeEventFn = this._getChangeEventFn();
-    // Event.observe( ELEM.get(this.markupElemIds.value), 'change', this._changeEventFn );
     Event.observe( ELEM.get(this.markupElemIds.value), 'paste', this._changeEventFn );
+    Event.observe( ELEM.get(this.markupElemIds.value), 'cut', this._changeEventFn );
   },
   
 /** = Description
@@ -129,12 +131,18 @@ HTextControl = HControl.extend({
   textBlur: function(){
     this.hasTextFocus = false;
     this._clearChangeEventFn();
+    this._updateValueFromField();
     if(this.options.refreshOnBlur){
       this.refreshValue();
     }
     return true;
   },
-
+  
+  onIdle: function(){
+    this.hasTextFocus && this._updateValueFromField();
+    this.base();
+  },
+  
 /** = Description
   * refreshValue function
   *
@@ -197,6 +205,11 @@ HTextControl = HControl.extend({
   // returns a random number prefixed and suffixed with '---'
   _randomMarker: function(){
     return '---'+Math.round((1+Math.random())*10000)+'---';
+  },
+  
+  die: function(){
+    this._clearChangeEventFn();
+    this.base();
   },
   
 /** = Description
