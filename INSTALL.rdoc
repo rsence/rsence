@@ -132,7 +132,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *randgen*:: C-optimized random string generator developed for RSence specifically
 * *jsmin_c*:: C-optimized Javascript whitespace removal library; Ruby wrapper developed for RSence specifically; based on the original JSMin[http://www.crockford.com/javascript/jsmin.html]
 * *jscompress*:: C-optimized Javascript compression and obfuscation library developed for RSence specifically
-* *html_min*:: C-optimized HTML whitespace removal library developed for RSence specfically
+* *html_min*:: C-optimized HTML whitespace removal library developed for RSence specifically
 * *cssmin*:: CSS whitespace removal library
 * *sequel*[http://sequel.rubyforge.org/]
   * Generic SQL database ORM
