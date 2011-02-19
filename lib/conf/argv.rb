@@ -139,6 +139,7 @@ module RSence
                 @args[:conf_files].push( arg )
               end
             else
+              arg = arg.to_i if option_name == :latency
               @args[option_name] = arg
             end
             expect_option = false
