@@ -38,8 +38,9 @@ COMM.SessionWatcher = HApplication.extend({
   
   // Tells the server the client's current time
   onIdle: function(){
-    if((new Date().getTime() - this.sesTimeoutValue.value) > this.timeoutSecs ){
-      this.sesTimeoutValue.set( new Date().getTime() );
+    var now = new Date().getTime();
+    if((now - this.sesTimeoutValue.value) > this.timeoutSecs ){
+      this.sesTimeoutValue.set( now );
     }
   }
 });
