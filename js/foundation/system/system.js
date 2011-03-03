@@ -131,9 +131,10 @@ HSystem = {
   addApp: function(_app, _priority){
     var _appId;
     if(this.freeAppIds.length !== 0){
-      _appId = this.freeAppIds.unshift();
+      _appId = this.freeAppIds.shift();
       this.apps[_appId] = _app;
-    } else {
+    }
+    else {
       this.apps.push(_app);
       _appId = this.apps.length-1;
     }
