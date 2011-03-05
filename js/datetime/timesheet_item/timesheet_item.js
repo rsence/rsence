@@ -13,296 +13,193 @@ var//RSence.DateTime
 HTimeSheetItem = HControl.extend({
   
   componentName: 'timesheet_item',
+  markupElemNames: ['bg', 'label', 'state', 'icons', 'value', 'subview'],
   
-  /* Which mode the component is in. When created by dragging, acts in 'create' mode, otherwise is 'normal'. Can be overridden in options. */
-  dragMode: 'create',
-  
-  /* The previous coordinate. Used to detect double-drag as double-click */
-  prevXY: [0,0],
-  
-  /* The time at the previous coordinate. Used to detect double-drag as double-click. */
-  prevXYTime: 0,
-  
-  defaultEvents: {
-    draggable: true,
-    click: true,
-    doubleClick: true
+  drawIcon: function( _iconOrder, _iconId ){
+    var
+    _iconElemId = ELEM.make( this.markupElemIds.icons, 'div' );
+    ELEM.addClassName( _iconElemId, 'timesheet_item_icon' );
+    ELEM.setStyle( _iconElemId, 'right', ((_iconOrder*16)+_iconOrder)+'px' );
+    ELEM.setStyle( _iconElemId, 'background-position', '0px '+(_iconId*-16)+'px' );
+    return _iconElemId;
   },
   
-  controlDefaults: HControlDefaults.extend({
-    dragMode: 'create',
-    constructor: function(_ctrl){
-      _ctrl.dragMode = this.dragMode;
-    }
-  }),
-  
-/** = Description
-  * Dragging is used to change coordinates.
-  *
-  * = Parameters
-  * +x+:: X coordinate at the start of drag.
-  * +y+:: Y coordinate at the start of drag.
-  *
-  **/
-  startDrag: function(x,y){
-    this.origY = y-this.parent.pageY();
-    if(this.dragMode === 'normal'){
-      var _timeNow = new Date().getTime(),
-          _xEquals = (Math.round(this.prevXY[0]/4) === Math.round(x/4)),
-          _yEquals = (Math.round(this.prevXY[1]/4) === Math.round(y/4)),
-          _noTimeout = ((_timeNow - this.prevXYTime) < 500);
-      if( _xEquals && _yEquals && _noTimeout ) { // doubleClick
-        return true;
-      }
-      else {
-        var _diffTop = this.rect.top - this.origY,
-            _diffBottom = this.rect.bottom - this.origY;
-        if(0 >= _diffTop && _diffTop >= -3){
-          this.dragMode = 'resize-top';
-        }
-        else if(0 <= _diffBottom && _diffBottom <= 4){
-          this.dragMode = 'resize-bottom';
-        }
-        else {
-          this.dragMode = 'move';
-          this.moveDiff = this.origY - this.rect.top;
-        }
-        this.bringToFront();
+  clearAllIcons: function(){
+    if(this.icons instanceof Array){
+      for( var i=0; i < this.icons.length; i++ ){
+        ELEM.del( this.icons[i] );
       }
     }
-    this.prevXY = [x,y];
-    this.prevXYTime = _timeNow;
-    return true;
+    this.icons = [];
   },
   
-  doubleClick: function(x,y){
-    if( this.parent['editor'] ){
-      var _editor = this.parent.editor;
-      _editor.setTimeSheetItem(this);
-      _editor.bringToFront();
-      _editor.show();
-      return true;
-    }
-    return false;
+  die: function(){
+    this.clearAllIcons();
+    this.icons = null;
+    this.base();
   },
   
-/** = Description
-  * Label setter function.
-  *
-  * = Parameters
-  * +_label+:: New label
-  *
-  **/
-  setTimeSheetItemLabel: function(_label){
-    this.label = _label;
-    this.refreshLabel();
+  refreshState: function( _start, _duration ){
+    var
+    _startTime = _start || this.value.start,
+    _endTime   = _startTime + ( _duration || this.value.duration ),
+    _locale    = HLocale.dateTime,
+    _stateText = _locale.formatTime( _startTime ) + _locale.strings.rangeDelimitter + _locale.formatTime( _endTime );
+    ELEM.setHTML( this.markupElemIds.state, _stateText );
   },
   
-/** = Description
-  * Function used to calculate the right size for a new 
-  * item created by dragging.
-  *
-  * = Parameters
-  * +_y+:: Y coordinate at the start of drag.
-  *
-  **/
-  dragCreate: function(_y){
-    var _negative = (_y < this.origY),
-        _lineHeight = Math.floor(this.parent.pxPerHour/2),
-        _top, _bottom, _diff;
-    if(_negative){
-      var _floorY = Math.floor(_y/_lineHeight)*_lineHeight,
-          _ceilYo = Math.ceil(this.origY/_lineHeight)*_lineHeight;
-      if(_floorY<0){_floorY=0;}
-      _diff = _floorY-_ceilYo;
-      if( _diff <= 0-_lineHeight ){
-        _top = _floorY;
-        _bottom = _ceilYo;
-      }
-      else if( _diff === 0 ){
-        _top = _floorY-_lineHeight;
-        _bottom = _ceilYo;
-      }
-    }
-    else {
-      var _ceilY  = Math.ceil(_y/_lineHeight)*_lineHeight,
-          _floorYo = Math.floor(this.origY/_lineHeight)*_lineHeight;
-      if(_ceilY>(_lineHeight*48)){_ceilY=_lineHeight*48;}
-      _diff = _ceilY-_floorYo;
-      if( _diff >= _lineHeight ){
-        _top = _floorYo;
-        _bottom = _ceilY;
-      }
-      else if( _diff === 0 ){
-        _top = _floorYo;
-        _bottom = _ceilY+_lineHeight;
-      }
-    }
-    this.rect.setTop(_top);
-    this.rect.setBottom(_bottom);
-  },
-  
-/** = Description
-  * Resize top by dragging auxiliary function.
-  *
-  * = Parameters
-  * +_y+:: Y coordinate at the start of drag.
-  **/
-  dragResizeTop: function(_y){
-    var _lineHeight = Math.floor(this.parent.pxPerHour/2),
-        _top = Math.floor( _y/_lineHeight )*_lineHeight;
-    if(_top < 0){ _top = 0; }
-    if(_top+_lineHeight > this.rect.bottom){
-      _top = this.rect.bottom - _lineHeight;
-    }
-    this.rect.setTop( _top );
-  },
-  
-/** = Description
-  * Resize function for resizing the bottom of item.
-  *
-  * = Parameters
-  * +_y+:: Y coordinate at the start of drag.
-  *
-  **/
-  dragResizeBottom: function(_y){
-    var _lineHeight = Math.floor(this.parent.pxPerHour/2),
-        _bottom = Math.floor( _y/_lineHeight )*_lineHeight;
-    if(_bottom > _lineHeight*48){ _bottom = _lineHeight*48; }
-    if(_bottom-_lineHeight < this.rect.top){
-      _bottom = this.rect.top + _lineHeight;
-    }
-    this.rect.setBottom( _bottom );
-  },
-  
-/** = Description
-  * Move function for item by dragging and dropping.
-  *
-  * = Parameters
-  * +_y+:: Y coordinate at the start of drag.
-  *
-  **/
-  dragMove: function(_y){
-    var _lineHeight = Math.floor(this.parent.pxPerHour/2),
-        _top = Math.floor( (0-this.moveDiff+_y)/_lineHeight )*_lineHeight;
-    if(_top<0){_top = 0;}
-    if(_top+this.rect.height>_lineHeight*48){
-      _top = _lineHeight*48 - this.rect.height;
-    }
-    this.rect.offsetTo( this.rect.left, _top );
-  },
-  
-/** = Description
-  * Drag function for item. Decides whether the user wants to create a new
-  * item, resize top, resize bottom or move an existing item.
-  *
-  * = Parameters
-  * +x+:: X coordinate at the start of drag.
-  * +y+:: Y coordinate at the start of drag.
-  *
-  **/
-  drag: function(x,y){
-    var _pageY  = this.parent.pageY(),
-        _y = y - _pageY;
-    if(this.dragMode === 'create'){
-      this.dragCreate(_y);
-    }
-    else if(this.dragMode === 'resize-top'){
-      this.dragResizeTop(_y);
-    }
-    else if(this.dragMode === 'resize-bottom'){
-      this.dragResizeBottom(_y);
-    }
-    else if(this.dragMode === 'move'){
-      this.dragMove(_y);
+  refreshValue: function(){
+    if ( !(this.value instanceof Object) ){
+      return;
     }
     this.drawRect();
-    return true;
-  },
-  
-/** = Description
-  * Modifies the existing item's coordinates or creates a new one.
-  *
-  * = Parameters
-  * +x+:: X coordinate at the end of drag.
-  * +y+:: Y coordinate at the end of drag.
-  *
-  **/
-  endDrag: function(x,y){
-    var
-    _pxPerHour = Math.floor(this.parent.pxPerHour),
-    _value,
-    _yEquals = (Math.round(this.prevXY[1]/4) === Math.round(y/4));
-    if(_yEquals){ // nothing moved, just return.
-      return true;
-    }
-    if(this.dragMode === 'create'){
-      this.parent.listItemViews.push( this );
-      _value = {};
-      this._setValueTop( _value );
-      this._setValueBottom( _value );
-      this._setValueLabel( _value );
-      if(this.parent['editor']){
-        this.parent.editor.createItem( _value );
-      }
+    if ( this.value.color ) {
+      this.setStyleOfPart( 'bg', 'background-color', this.value.color );
     }
     else {
-      _value = COMM.Values.clone( this.value );
-      this._setValueTop( _value );
-      this._setValueBottom( _value );
-      if(this.parent['editor']){
-        this.parent.editor.modifyItem( _value );
+      this.setStyleOfPart( 'bg', 'background-color', '#999' );
+    }
+    if ( this.value.label ) {
+      this.setLabel( this.value.label );
+    }
+    if ( this.value.locked ) {
+      ELEM.addClassName( this.elemId, 'locked' );
+    }
+    else {
+      ELEM.removeClassName( this.elemId, 'locked' );
+    }
+    this.refreshState();
+    this.clearAllIcons();
+    if( this.value.icons instanceof Array ){
+      for( var i = 0; i < this.value.icons.length; i++ ){
+        this.icons.push( this.drawIcon( i, this.value.icons[i] ) );
       }
     }
-    this.setValue( _value );
-    this.dragMode = 'normal';
-    return true;
   },
   
-  _setValueTop: function( _value ) {
-    _value['timeBegin'] = this.rect.top/this.parent.pxPerHour;
+  click: function(){
+    this.bringToFront();
   },
   
-  _setValueBottom: function( _value ) {
-    _value['timeEnd'] = this.rect.bottom/this.parent.pxPerHour;
+  doubleClick: function( x, y ){
+    this.bringToFront();
+    var _time = this.parent.pxToTime( y-this.parent.pageY() );
+    this.parent.activateEditor( this );
+    // if( this.parent.activateEditor( this ) ){
+    //   // console.log('editor start');
+    // }
   },
   
-  _setValueLabel: function( _value ) {
-    _value['label'] = this.label;
-  },
-  
-  _getValueLabel: function( _value ){
-    return _value.label;
-  },
-  
-  _getValueTop: function( _value ){
-    return (_value.timeBegin * this.parent.pxPerHour)+1;
-  },
-  
-  _getValueBottom: function( _value ){
-    return (_value.timeEnd * this.parent.pxPerHour)-2;
-  },
-  
-/** = Description
-  * Refreshes the object's label and place on the HTimeSheet.
-  *
-  **/
-  refreshValue: function(){
-    if ( HVM.type(this.value) === 'h' ){
+  dragMode: 0, // none
+  startDrag: function( x, y ){
+    this.bringToFront();
+    if( !this.value.locked ){
       var
-      _label  = this._getValueLabel( this.value ),
-      _top    = this._getValueTop( this.value ),
-      _bottom = this._getValueBottom( this.value ),
-      _minHeight = this.parent.options.itemMinHeight;
-      this.setLabel( _label );
-      if( (_bottom - _top) < _minHeight ){
-        _bottom = _top + _minHeight;
+      _topY = y-this.pageY(),
+      _bottomY = this.rect.height - _topY,
+      _resizeTop = ( _topY >= 0 && _topY <= 6 ),
+      _resizeBottom = ( _bottomY >= 0 && _bottomY <= 6 ),
+      _move = ( _topY > 6 && _bottomY > 6 );
+      if( _resizeTop ){
+        this.dragMode = 2; // resize-top
       }
-      this.rect.setTop( _top );
-      this.rect.setBottom( _bottom );
-      this.drawRect();
+      else if ( _resizeBottom ){
+        this.dragMode = 3; // resize-bottom
+      }
+      else if ( _move ){
+        this.dragMode = 1; // move
+      }
+      else {
+        this.dragMode = 0; // none
+      }
+      if( this.dragMode === 0 ){
+        this.originY = false;
+      }
+      else {
+        var
+        _originY   = y-this.parent.pageY(),
+        _parentY   = this.parent.pageY(),
+        _originTimeStart = this.value.start,
+        _originTimeEnd   = _originTimeStart + this.value.duration;
+        this.originY = _originY;
+        this.originTopPx = this.rect.top;
+        this.originBottomPx = this.rect.bottom;
+        this.originTimeStart = _originTimeStart;
+        this.originTimeEnd   = _originTimeEnd;
+        this.originDuration  = _originTimeEnd - _originTimeStart;
+        this.dragTimeStart = _originTimeStart;
+        this.dragDuration  = this.originDuration;
+      }
+    }
+  },
+  
+  drag: function( x, y ){
+    if( !this.value.locked && this.dragMode !== 0 ){
+      y -= this.parent.pageY();
+      var
+      _movePx    = y - this.originY,
+      _topPx     = this.parent.snapPx( this.originTopPx + _movePx ),
+      _parentY   = this.parent.pageY(),
+      _bottomPx, _minBottomPx, _maxBottomPx, _maxTopPx, _timeStart, _timeEnd, _duration;
+      if( this.dragMode === 1 ){ // move
+        _maxTopPx  = this.parent.timeToPx( this.parent.options.timeEnd ) - this.rect.height;
+        if( _topPx > _maxTopPx ){
+          _topPx = _maxTopPx;
+        }
+        _timeStart = this.parent.pxToTime(_topPx);
+        _duration  = this.originDuration;
+        this.rect.offsetTo( this.rect.left, _topPx );
+        this.drawRect();
+        this.dragTimeStart = _timeStart;
+        this.dragDuration  = _duration;
+      }
+      else if( this.dragMode === 2 ){ // resize-top
+        _maxTopPx  = this.parent.timeToPx( this.originTimeEnd - this.parent.minDuration );
+        if( _topPx > _maxTopPx ){
+          _topPx = _maxTopPx;
+        }
+        _timeStart = this.parent.pxToTime(_topPx);
+        _timeEnd   = this.originTimeEnd;
+        if( (this.rect.bottom - _topPx) < this.parent.options.itemMinHeight ){
+          _topPx = this.rect.bottom - this.parent.options.itemMinHeight;
+        }
+        this.rect.setTop( _topPx );
+        this.drawRect();
+        this.dragTimeStart = _timeStart;
+        this.dragDuration  = _timeEnd - _timeStart;
+      }
+      else if( this.dragMode === 3 ){ // resize-top
+        _minBottomPx  = this.parent.timeToPx( this.originTimeStart + this.parent.minDuration  );
+        _bottomPx     = this.parent.snapPx( this.originBottomPx + _movePx );
+        if( _bottomPx < _minBottomPx ){
+          _bottomPx = _minBottomPx;
+        }
+        _timeStart = this.originTimeStart;
+        _timeEnd   = this.parent.pxToTime(_bottomPx);
+        if( _bottomPx - this.rect.top < this.parent.options.itemMinHeight ){
+          _bottomPx = this.rect.top + this.parent.options.itemMinHeight;
+        }
+        this.rect.setBottom( _bottomPx );
+        this.drawRect();
+        this.dragTimeStart = _timeStart;
+        this.dragDuration  = _timeEnd - _timeStart;
+      }
+      this.refreshState( this.dragTimeStart, this.dragDuration );
+    }
+  },
+  
+  endDrag: function( x, y ){
+    if( !this.value.locked && this.dragMode !== 0 ){
+      var
+      _startChanged = ( this.dragTimeStart !== this.originTimeStart ) && ( this.dragTimeStart !== this.value.start ),
+      _durationChanged = ( this.dragDuration !== this.originDuration ) && ( this.dragDuration !== this.value.duration );
+      if( _startChanged || _durationChanged ){
+        if( this.parent['editor'] ){
+          var _modValue = { id: this.value.id, start: this.dragTimeStart, duration: this.dragDuration, label: this.value.label };
+          this.parent.editor.modifyItem( _modValue );
+        }
+      }
     }
   }
+  
 });
-
-

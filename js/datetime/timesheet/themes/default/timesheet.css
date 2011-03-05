@@ -1,30 +1,58 @@
-.timesheet_hours_col {
+.timesheet_label,
+.timesheet_items,
+.timesheet_timeline,
+.timesheet_timeline_hour,
+.timesheet_timeline_line,
+.timesheet_timeline_notch {
   position: absolute;
-  top: 0px; left: 0px; width: 32px;
-  font-family: Arial, sans-serif;
+}
+
+.timesheet_label,
+.timesheet_items,
+.timesheet_timeline {
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 11px;
-  color: #666;
+  color: #000;
   vertical-align: middle;
-  text-align: right;
+  text-align: left;
 }
-.timesheet_hours_row {
-  position: absolute;
-  left: 0px; width: 32px;
+
+.timesheet_label {
+  left: 33px; top: 0px; right: 0px; height: 16px;
+  font-size: 15px;
 }
-.timesheet_lines_col {
-  position: absolute;
-  top: 0px; left: 36px; right: 0px;
-  border-left: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
-  border-right: 1px solid #aaa;
+
+.timesheet_timeline {
+  left: 0px; top: 0px; right: 0px; bottom: 0px;
 }
-.timesheet_lines_row0,
-.timesheet_lines_row1 {
-  position: absolute;
-  left: 0px; right: 0px; height: 1px;
-  line-height: 1px; font-size: 0px;
-  background-color: #ccc;
+
+.timesheet_timeline_hour {
+  left: 0px; width: 26px; text-align: right; height: 14px;
 }
-.timesheet_lines_row0 {
-  background-color: #aaa;
+
+.timesheet_timeline_line {
+  left: 31px; right: 3px; height: 1px; background-color: #bbb;
+}
+.timesheet_timeline_notch {
+  left: 31px; right: 3px; height: 1px; background-color: #ddd;
+}
+
+.timesheet_items {
+  left: 29px; top: 19px; right: 1px; bottom: 11px;
+  border: 1px outset #ccc;
+  border-radius: 3px;
+}
+
+.nohours .timesheet_timeline_notch,
+.nohours .timesheet_timeline_line {
+  left: 2px;
+}
+.nohours .timesheet_timeline_hour {
+  display: none;
+}
+.nohours .timesheet_label {
+  left: 4px;
+}
+.nohours .timesheet_items {
+  left: 0px;
 }

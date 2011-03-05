@@ -3,40 +3,71 @@
 .timesheet_item_label,
 .timesheet_item_resize_top,
 .timesheet_item_move,
+.timesheet_item_time,
+.timesheet_item_icons,
 .timesheet_item_resize_bottom {
   position: absolute;
   left: 0px; right: 0px;
 }
 .timesheet_item {
   top: 0px; bottom: 0px;
-  border: 1px solid #c00;
-  background-color: #c66;
+  border: 1px solid #ccc;
+  border-radius: 7px;
   opacity: 0.75;
 }
-.active .timesheet_item {
-  opacity: 1.0;
+.timesheet_item_time,
+.timesheet_item_label {
+  font-size: 12px;
+  color: #333;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.timesheet_item_time {
+  top: 0px; height: 12px; line-height: 12px;
+  text-indent: 4px; padding-top: 2px;
+  font-weight: bold;
+}
+.active > .timesheet_item .timesheet_item_time {
+  border-radius: 7px 7px 0 0;
+  border-bottom: 1px solid #000;
+/*  opacity: 0.2;*/
+}
+.active > .timesheet_item {
+  border-color: #000;
+  opacity: 1;
 }
 .timesheet_item_middle {
   top: 50%; height: 0px;
   overflow: visible;
 }
 .timesheet_item_label {
-  top: -6px; height: 12px;
-  font-size: 12px;
   text-align: center;
-  color: #333;
   opacity: 1;
-  font-family: Arial, sans-serif;
+  top: -6px; height: 12px;
 }
 .timesheet_item_resize_top {
-  top: 0px; height: 3px;
+  top: 0px; height: 6px;
   cursor: n-resize;
 }
 .timesheet_item_move {
-  top: 3px; bottom: 3px;
+  top: 6px; bottom: 6px;
   cursor: move;
 }
 .timesheet_item_resize_bottom {
-  bottom: 0px; height: 3px;
+  bottom: 0px; height: 6px;
   cursor: s-resize;
+}
+.timesheet_item_icons {
+  top: 0px; height: 16px;
+}
+.timesheet_item_icon {
+  position: absolute;
+  top: 0px; width: 16px; height: 16px;
+  background-position: 0px 0px;
+  background-image: url(#{this.getThemeGfxFile('/timesheet_item_icons.png')});
+}
+
+.locked .timesheet_item_move,
+.locked .timesheet_item_resize_bottom,
+.locked .timesheet_item_resize_top {
+  cursor: pointer;
 }
