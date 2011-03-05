@@ -28,8 +28,19 @@ HTextControl = HControl.extend({
   
   controlDefaults: (HControlDefaults.extend({
     refreshOnBlur: true,
-    refreshOnInput: true
+    refreshOnInput: true,
+    focusOnCreate: false
   })),
+  
+  drawSubviews: function(){
+    this.base();
+    if(this.options.focusOnCreate){
+      this.getInputElement().focus();
+      if( typeof this.value === 'string' ){
+        this.setSelectionRange( this.value.length, this.value.length );
+      }
+    }
+  },
   
 /** = Description
   * The contextMenu event for text input components is not prevented by default.
@@ -208,6 +219,9 @@ HTextControl = HControl.extend({
   },
   
   die: function(){
+    if( this.hasTextFocus ){
+      this.getInputElement().blur();
+    }
     this._clearChangeEventFn();
     this.base();
   },
