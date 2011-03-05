@@ -198,7 +198,9 @@
   
         # RSence.*
         - rsence_ns
-  
+        
+        - locale_settings    # HLocaleSettings
+        
         # RSence.Core
         - class             # HClass
         - elem              # ELEM
@@ -237,6 +239,7 @@
         - eventmanager      # EVENT
         - controldefaults   # HControlDefaults
         - control           # HControl
+        - valueaction       # HValueAction
         - dyncontrol        # HDynControl
         - centerview        # HCenterView
         - scrollview        # HScrollView
