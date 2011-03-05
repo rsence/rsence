@@ -302,6 +302,7 @@ module RSence
     def console(data)
       reply( "console.log(#{data.to_json});" )
     end
+    alias puts console
     
     # Serves an image object and returns its disposable URL.
     # Calls the default `ticket` plugin.
