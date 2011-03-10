@@ -282,6 +282,7 @@
       datetime:
         - datetimevalue       # HDateTime
         - calendar            # HCalendar
+        - datetimepicker      # HDateTimePicker
         - timesheet           # HTimeSheet
         - timesheet_item      # HTimeSheetItem
         - timesheet_item_edit # HTimeSheetItemEditor
