@@ -85,15 +85,15 @@ HTimeSheetItem = HControl.extend({
     this.bringToFront();
     var _time = this.parent.pxToTime( y-this.parent.pageY() );
     this.parent.activateEditor( this );
-    // if( this.parent.activateEditor( this ) ){
-    //   // console.log('editor start');
-    // }
   },
   
   dragMode: 0, // none
+  _isValueValidForDrag: function(){
+    return (this.value instanceof Object) && (!this.value.locked);
+  },
   startDrag: function( x, y ){
     this.bringToFront();
-    if( !this.value.locked ){
+    if( this._isValueValidForDrag() ){
       var
       _topY = y-this.pageY(),
       _bottomY = this.rect.height - _topY,
@@ -134,7 +134,7 @@ HTimeSheetItem = HControl.extend({
   },
   
   drag: function( x, y ){
-    if( !this.value.locked && this.dragMode !== 0 ){
+    if( this._isValueValidForDrag() && (this.dragMode !== 0) ){
       y -= this.parent.pageY();
       var
       _movePx    = y - this.originY,
@@ -189,7 +189,7 @@ HTimeSheetItem = HControl.extend({
   },
   
   endDrag: function( x, y ){
-    if( !this.value.locked && this.dragMode !== 0 ){
+    if( this._isValueValidForDrag() && (this.dragMode !== 0) ){
       var
       _startChanged = ( this.dragTimeStart !== this.originTimeStart ) && ( this.dragTimeStart !== this.value.start ),
       _durationChanged = ( this.dragDuration !== this.originDuration ) && ( this.dragDuration !== this.value.duration );
