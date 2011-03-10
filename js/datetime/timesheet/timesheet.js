@@ -236,7 +236,6 @@ HTimeSheet = HControl.extend({
   },
   
   click: function( x, y, b ){
-    // console.log('click');
     if( !this.startDragTime ){
       this.clickCreate( x,y );
       this.clickCreated = true;
@@ -245,26 +244,22 @@ HTimeSheet = HControl.extend({
   },
   
   clickCreate: function(x,y){
-    // console.log('clickCreate');
-    y -= this.pageY();
     var
-    _startTime = this.pxToTime( y ),
+    _startTime = this.pxToTime( y-this.pageY() ),
     _endTime = _startTime + this.minDuration;
+    console.log('start:',(new Date(_startTime*1000)).toUTCString(),', end:',(new Date(_endTime*1000)).toUTCString());
     this.refreshDragPreview( _startTime, _endTime );
     this.dragPreview.bringToFront();
     this.dragPreview.show();
     if( this.activateEditor( this.dragPreview ) ){
-      // console.log('create!');
       this.editor.createItem( HVM.clone( this.dragPreview.value ) );
     }
     else {
-      // console.log('no create');
       this.dragPreview.hide();
     }
   },
   
   doubleClick: function(x,y){
-    // console.log('doubleClick');
     if( !this.clickCreated ){
       this.click(x,y);
     }
@@ -284,8 +279,8 @@ HTimeSheet = HControl.extend({
   },
   
   startDrag: function( x, y, b ){
-    y -= this.pageY();
-    this.startDragTime = this.pxToTime( y );
+    this.startDragTime = this.pxToTime( y-this.pageY() );
+    // y -= this.pageY();
     this.refreshDragPreview( this.startDragTime, this.startDragTime + this.minDuration );
     this.dragPreview.bringToFront();
     this.dragPreview.show();
@@ -293,9 +288,8 @@ HTimeSheet = HControl.extend({
   },
   
   drag: function( x, y, b ){
-    y -= this.pageY();
     var
-    _dragTime = this.pxToTime( y ),
+    _dragTime = this.pxToTime( y-this.pageY() ),
     _startTime,
     _endTime;
     if( _dragTime < this.startDragTime ){
@@ -311,8 +305,8 @@ HTimeSheet = HControl.extend({
   },
   
   endDrag: function( x, y, b ){
-    y -= this.pageY();
-    var _dragTime = this.pxToTime( y );
+    var
+    _dragTime = this.pxToTime( y-this.pageY() );
     if( _dragTime !== this.startDragTime ){
       if( this.activateEditor( this.dragPreview ) ){
         this.editor.createItem( HVM.clone( this.dragPreview.value ) );
@@ -322,6 +316,7 @@ HTimeSheet = HControl.extend({
     this.clickCreated = false;
     this.dragPreview.hide();
     this.startDragTime = false;
+    this.click( x, y, b );
     return false;
   },
   
