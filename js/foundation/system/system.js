@@ -281,7 +281,6 @@ HSystem = {
       }
     }
     this.activeWindowId=_viewId;
-    console.log('windowFocus, zindex:', ELEM.getStyle( _view.elemId, 'z-index', true ) );
     _view.bringToFront();
     _view.windowFocus();
   },
