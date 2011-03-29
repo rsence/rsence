@@ -73,8 +73,6 @@ ELEM = {
   _constructor: function() {
     var _this = ELEM;
 
-    _this._enableRecycler = false;
-
     // pre-init queue
     _this._domLoadQueue = [];
     _this._domLoadTimer = null;
@@ -83,18 +81,6 @@ ELEM = {
     _this._domLoadStatus = false;
 
     // initial tasks
-    _this._initDone = false;
-
-    _this._makeCount = 0;
-
-    _this._setStyleCount = 0;
-    _this._setStyleDiffCount = 0;
-    _this._getStyleCount = 0;
-    _this._getStyleMissCount = 0;
-
-    _this._flushLoopCount = 0;
-    _this._flushLoopFlushedCount = 0;
-    _this._flushStylCount = 0;
 
     _this._flushTime = 0;
     _this._flushCounter = 0;
@@ -107,13 +93,7 @@ ELEM = {
     _this._slowness = 1;
 
     _this._elements = [];
-    if (_this._enableRecycler) {
-      _this._recycler = {
-        _tagNames: []
-      };
-    } else {
-      _this._freeElemIds = [];
-    }
+    _this._freeElemIds = [];
     _this._styleCache = {};
     _this._styleTodo = {};
     _this._attrTodo = {};
@@ -122,32 +102,15 @@ ELEM = {
     _this._elemTodoH = {};
     _this._blockElems = ",ADDRESS,BLOCKQUOTE,CENTER,DIR,DIV,DL,FIELDSET,FORM,H1,H2,H3,H4,H5,H6,HR,ISINDEX,MENU,NOFRAMES,NOSCRIPT,OL,P,PRE,TABLE,UL,";
   },
-
-
-  _fillTrash: function(_count, _tagName) {
-    if (!ELEM._enableRecycler) {
-      return;
-    }
-    var _this = ELEM,
-        i = 0,
-        _toDel = [],
-        _recycler = _this._initRecycler(_tagName),
-        _trashId = _recycler._trashId;
-    for (; i !== _count; i++) {
-      _toDel.push(_this.make(_trashId, _tagName));
-    }
-    for (i = 0; i !== _count; i++) {
-      _this.del(_toDel[i]);
-    }
-  },
-
+  
   // adds an element reference
   // returns its id
   _add: function(_elem) {
-    var _id,
-        _this = ELEM,
-        _elements = _this._elements,
-        _hasFreeElemIds = (_this._freeElemIds.length !== 0);
+    var
+    _id,
+    _this = ELEM,
+    _elements = _this._elements,
+    _hasFreeElemIds = (_this._freeElemIds.length !== 0);
     if (_hasFreeElemIds) {
       _id = _this._freeElemIds.pop();
       _elements[_id] = _elem;
@@ -182,9 +145,10 @@ ELEM = {
   *
   **/
   bindId: function(_domId) {
-    var _this = ELEM,
-        _elem = document.getElementById(_domId),
-        _elemId = _this._add(_elem);
+    var
+    _this = ELEM,
+    _elem = document.getElementById(_domId),
+    _elemId = _this._add(_elem);
     _this._initCache(_elemId);
     return _elemId;
   },
@@ -200,8 +164,9 @@ ELEM = {
   *
   **/
   bind: function(_elem) {
-    var _this = ELEM,
-        _id = _this._add(_elem);
+    var
+    _this = ELEM,
+    _id = _this._add(_elem);
     _this._initCache(_id);
     return _id;
   },
@@ -270,22 +235,6 @@ ELEM = {
     return '';
   },
 
-  _initRecycler: function(_tagName) {
-    if (!ELEM._enableRecycler) {
-      return null;
-    }
-    var _this = ELEM,
-        _recycler = _this._recycler;
-    if (!_recycler[_tagName]) {
-      _recycler._tagNames.push(_tagName);
-      _recycler[_tagName] = [];
-      _recycler[_tagName]._countIn = 1;
-      _recycler[_tagName]._countOut = 0;
-      _recycler[_tagName]._trashId = _this.make(_this._trashId, 'div');
-    }
-    return _recycler[_tagName]._trashId;
-  },
-
 /** = Description
   * Deletes an element and its associated buffers by ELEM ID.
   *
@@ -294,37 +243,27 @@ ELEM = {
   *
   **/
   del: function(_id) {
-    var _this = ELEM,
-        _elem = _this._elements[_id];
-    if (_this._flushing) {
-      _this.del(_id);
-    }
-    _this._flushing = true;
-    if (_this._enableRecycler) {
-      var _tagName = _elem.tagName,
-          _trashId = _this._initRecycler(_tagName),
-          _recycler = _this._recycler[_tagName];
-      _this.append(_id, _trashId);
-    }
-
+    var
+    _this = ELEM,
+    _elem = _this._elements[_id];
+    // if (_this._flushing) {
+    //   console.log('warn: already flushin.. retrying delete');
+    //   setTimeout( function(){_this.del(_id)}, 10 );
+    // }
+    // _this._flushing = true;
     var _elemTodoIdx = _this._elemTodo.indexOf(_id);
     if (_elemTodoIdx !== -1) {
       _this._elemTodo.splice(_elemTodoIdx, 1);
     }
     _this._initCache(_id);
-    if (_this._enableRecycler) {
-      _recycler._countIn++;
-      _recycler.push(_id);
-    } else {
-      _this._freeElemIds.push(_id);
-      var _parentNode = _elem.parentNode;
-      if (_parentNode !== null) {
-        _parentNode.removeChild(_elem);
-      }
-      _elem = null;
-      _this._elements[_id] = null;
+    _this._freeElemIds.push(_id);
+    var _parentNode = _elem.parentNode;
+    if (_parentNode !== null) {
+      _parentNode.removeChild(_elem);
     }
-    _this._flushing = false;
+    _elem = null;
+    _this._elements[_id] = null;
+    // _this._flushing = false;
   },
 
 /** = Description
@@ -336,9 +275,10 @@ ELEM = {
   *
   **/
   append: function(_sourceId, _targetId) {
-    var _this = ELEM,
-        _source = _this._elements[_sourceId],
-        _target = _this._elements[_targetId];
+    var
+    _this = ELEM,
+    _source = _this._elements[_sourceId],
+    _target = _this._elements[_targetId];
     _target.appendChild(_source);
   },
 
@@ -381,12 +321,13 @@ ELEM = {
   *
   **/
   getVisibleSize: function(_id) {
-    var _parentOverflow,
-        _this = ELEM,
-        _elem = _this._elements[_id],
-        w = _elem.offsetWidth,
-        h = _elem.offsetHeight,
-        _parent = _elem.parentNode;
+    var
+    _parentOverflow,
+    _this = ELEM,
+    _elem = _this._elements[_id],
+    w = _elem.offsetWidth,
+    h = _elem.offsetHeight,
+    _parent = _elem.parentNode;
     while (_parent && _parent.nodeName.toLowerCase() !== 'body') {
       _this._getComputedStyle( _parent, 'overflow' );
       _parentOverflow = _parentOverflow !== 'visible';
@@ -413,10 +354,11 @@ ELEM = {
   *
   **/
   getSize: function(_id) {
-    var _this = ELEM,
-        _elem = _this._elements[_id],
-        w = _elem.offsetWidth,
-        h = _elem.offsetHeight;
+    var
+    _this = ELEM,
+    _elem = _this._elements[_id],
+    w = _elem.offsetWidth,
+    h = _elem.offsetHeight;
     return [w, h];
   },
 
@@ -431,10 +373,11 @@ ELEM = {
   *
   **/
   getScrollSize: function(_id) {
-    var _this = ELEM,
-        _elem = _this._elements[_id],
-        w = _elem.scrollWidth,
-        h = _elem.scrollHeight;
+    var
+    _this = ELEM,
+    _elem = _this._elements[_id],
+    w = _elem.scrollWidth,
+    h = _elem.scrollHeight;
     return [w, h];
   },
   
@@ -500,20 +443,20 @@ ELEM = {
   *
   **/
   getOpacity: function(_id) {
-    throw "ELEM.getOpacity: known error.";
-    // var
-    // _this = ELEM,
-    // _elem = _this.get(_id),
-    // _opacity = _this._getComputedStyle( _elem, 'opacity' );
-    // if (ELEM.ie && (_elem.currentStyle['filter'] || '').match(/alpha(opacity=(.*))/)) {
-    //   if (_opacity[1]) {
-    //     return parseFloat(_opacity[1]) / 100;
-    //   }
-    // }
-    // else ( === 0)) {
-    //   return parseFloat(_opacity);
-    // }
-    // return 1.0;
+    var
+    _this = ELEM,
+    _elem = _this.get(_id),
+    _opacity = _this._getComputedStyle( _elem, 'opacity' );
+    if (ELEM.ie && (_elem.currentStyle['filter'] || '').match(/alpha(opacity=(.*))/)) {
+      if (_opacity[1]) {
+        return parseFloat(_opacity[1]) / 100;
+      }
+      return 1;
+    }
+    else {
+      return parseFloat(_opacity);
+    }
+    return 1.0;
   },
   
 /** = Description
@@ -700,10 +643,9 @@ ELEM = {
   *
   **/
   flushLoop: function(_delay) {
-    var _this = ELEM;
-    _this._flushLoopCount++;
-    if (BROWSER_TYPE.ie6 && /* (_this._flushLoopCount % 5 === 0) && */ _this._ieFixesNeeded) {
-      //window.status = 'traversetree0:'+_this._flushLoopCount;
+    var
+    _this = ELEM;
+    if (BROWSER_TYPE.ie6 && _this._ieFixesNeeded) {
       iefix._traverseTree();
       _this._ieFixesNeeded = false;
     }
@@ -716,11 +658,11 @@ ELEM = {
         }, _delay
       );
       return;
-    } else {
+    }
+    else {
       if (!_this._needFlush) {
         // goto sleep mode
         if (BROWSER_TYPE.ie6 && _this._ieFixesNeeded) {
-          //window.status = 'traversetree1:'+_this._flushLoopCount;
           iefix._traverseTree();
           _this._ieFixesNeeded = false;
         }
@@ -731,7 +673,7 @@ ELEM = {
         );
         return;
       }
-      _delay = parseInt(_this._slowness * (_this._flushTime / _this._flushCounter), _this.ELEMTickerInterval);
+      _delay = Math.round(_this._slowness * (_this._flushTime / _this._flushCounter), _this.ELEMTickerInterval);
       if (_delay < _this._minDelay || !_delay) {
         _delay = _this._minDelay;
       }
@@ -743,13 +685,14 @@ ELEM = {
       );
     }
     _this._flushTime -= new Date().getTime();
-    var i,
-        _id,
-        _elemTodo = _this._elemTodo,
-        _loopMaxL = _elemTodo.length,
-        _currTodo = _elemTodo.splice(0, _loopMaxL),
-        _flushStartTime = new Date().getTime();
-    for (i = 0; i < _loopMaxL; i++) {
+    var
+    i = 0,
+    _id,
+    _elemTodo = _this._elemTodo,
+    _loopMaxL = _elemTodo.length,
+    _currTodo = _elemTodo.splice(0, _loopMaxL),
+    _flushStartTime = new Date().getTime();
+    for (; i < _loopMaxL; i++) {
       _this._flushLoopFlushed++;
       _id = _currTodo.pop();
       _this._elemTodoH[_id] = false;
@@ -766,16 +709,17 @@ ELEM = {
   
   /* Method for flushing the attribute cache */
   _flushAttrCache: function(_id) {
-    var _this = ELEM,
-        _attrTodo = _this._attrTodo[_id],
-        _attrCache = _this._attrCache[_id],
-        _elem = _this._elements[_id],
-        //_elemP=_elem.setAttribute,
-        _key,
-        _val,
-        i,
-        _iMax = _attrTodo.length,
-        _currTodo = _attrTodo.splice(0, _iMax);
+    var
+    _this = ELEM,
+    _attrTodo = _this._attrTodo[_id],
+    _attrCache = _this._attrCache[_id],
+    _elem = _this._elements[_id],
+    //_elemP=_elem.setAttribute,
+    _key,
+    _val,
+    i,
+    _iMax = _attrTodo.length,
+    _currTodo = _attrTodo.splice(0, _iMax);
     for (i = 0; i !== _iMax; i++) {
       _key = _currTodo.pop();
       _val = _attrCache[_key];
@@ -799,13 +743,15 @@ ELEM = {
   *
   **/
   getAttr: function(_id, _key, _bypass) {
-    var _this = ELEM,
-        _attrVal = _this._attrCache[_id][_key],
-        _val;
+    var
+    _this = ELEM,
+    _attrVal = _this._attrCache[_id][_key],
+    _val;
     if (_attrVal !== undefined && !_bypass) {
       return _attrVal;
     }
-    var _elem = _this._elements[_id];
+    var
+    _elem = _this._elements[_id];
     if (_elem.getAttribute(_key) === null) {
       _elem[_key] = '';
     }
@@ -828,10 +774,11 @@ ELEM = {
   *
   **/
   setAttr: function(_id, _key, _value, _bypass) {
-    var _this = ELEM,
-        _attrTodo = _this._attrTodo[_id],
-        _attrCache = _this._attrCache[_id],
-        _differs = _value !== _this.getAttr(_id, _key);
+    var
+    _this = ELEM,
+    _attrTodo = _this._attrTodo[_id],
+    _attrCache = _this._attrCache[_id],
+    _differs = _value !== _this.getAttr(_id, _key);
     if (_differs || _bypass) {
       _attrCache[_key] = _value;
       if (_bypass) {
@@ -859,10 +806,11 @@ ELEM = {
   *
   **/
   delAttr: function(_id, _key) {
-    var _differs,
-        _this = ELEM,
-        _attrTodo = _this._attrTodo[_id],
-        _attrCache = _this._attrCache[_id];
+    var
+    _differs,
+    _this = ELEM,
+    _attrTodo = _this._attrTodo[_id],
+    _attrCache = _this._attrCache[_id];
     delete _attrCache[_key];
     _this._elements[_id].removeAttribute(_key);
     if (_attrTodo.indexOf(_key) !== -1) {
@@ -889,11 +837,13 @@ ELEM = {
   *
   **/
   hasClassName: function(_elemId, _className) {
-    var _element = ELEM.get(_elemId);
-    if (!_element) {
+    var
+    _elem = ELEM.get(_elemId);
+    if (!_elem) {
       return null;
     }
-    var _classNames = _element.className.split(' ');
+    var
+    _classNames = _elem.className.split(' ');
     return (_classNames.indexOf(_className) !== -1);
   },
   
@@ -999,18 +949,18 @@ ELEM = {
   *
   **/
   setStyle: function(_id, _key, _value, _bypass) {
-    var _this = ELEM,
-        _cached = _this._styleCache[_id],
-        _elems = _this._elements,
-        _differs;
-    _this._setStyleCount++;
+    if( BROWSER_TYPE.ie9 ){ _bypass = true; }
+    var
+    _this = ELEM,
+    _cached = _this._styleCache[_id],
+    _elems = _this._elements,
+    _differs;
     if (_cached === undefined) {
       _this._initCache(_id);
       _cached = _this._styleCache[_id];
     }
     _differs = _value !== _cached[_key];
     if (_differs) {
-      _this._setStyleDiffCount++;
       _cached[_key] = _value;
       if (_bypass) {
         if (_key === 'opacity') {
@@ -1065,36 +1015,13 @@ ELEM = {
     }
     if (_tagName === undefined) {
       _tagName = 'DIV';
-    } else {
+    }
+    else {
       _tagName = _tagName.toUpperCase();
     }
     var _this = ELEM,
         _elem,
         _id;
-    _this._makeCount++;
-    if (_this._enableRecycler) {
-      if (_this._recycler[_tagName]) {
-        if (_this._recycler[_tagName].length !== 0) {
-          // Recycle the id of a previously deleted element
-          _id = _this._recycler[_tagName].pop();
-          _this._recycler[_tagName]._countOut++;
-          _elem = _this._elements[_id];
-          //_elem.innerHTML='';
-          /*
-      if(_elem.tagName!==_tagName){
-      _elem.outerHTML='<'+_tagName+'></'+_tagName+'>';
-      }
-      */
-          if (_this._blockElems.indexOf(',' + _tagName + ',') !== -1) {
-            _this.setCSS(_id, 'display:block;');
-          } else {
-            _this.setCSS(_id, 'display:inline;');
-          }
-          _this.append(_id, _targetId);
-          return _id;
-        }
-      }
-    }
     _elem = document.createElement(_tagName);
     _id = _this._add(_elem);
     _this._initCache(_id);
@@ -1164,37 +1091,43 @@ ELEM = {
   *
   **/
   getStyle: function(_id, _key, _bypass){
-    var _this=ELEM,
-        _cached=_this._styleCache[_id],
-        _retval;
-        _this._getStyleCount++;
+    var
+    _this=ELEM,
+    _cached=_this._styleCache[_id],
+    _retval;
     if ((_cached[_key] === undefined) || _bypass) {
-      if (!_bypass) {
-        _this._getStyleMissCount++;
-      }
       if ((_key === 'opacity') && _bypass) {
         _retval = _this.getOpacity(_id);
       }
       else {
         _retval = _this._getComputedStyle(_this._elements[_id],_key);
+        if(_key === 'z-index' && _retval === 'auto'){
+          _retval = -1;
+        }
       }
       _cached[_key] = _retval;
+    }
+    else {
+      if(_key === 'z-index'){
+        console.log('cached:',_cached[_key]);
+      }
     }
     return _cached[_key];
   },
   
   /* Style buffer flushing algorithm */
   _flushStyleCache: function(_id) {
-    var _this = ELEM,
-        _styleTodo = _this._styleTodo[_id],
-        _cached = _this._styleCache[_id],
-        _elem = _this._elements[_id],
-        _elemS,
-        _loopMaxP,
-        _cid,
-        _key,
-        _currTodo,
-        _retval;
+    var
+    _this = ELEM,
+    _styleTodo = _this._styleTodo[_id],
+    _cached = _this._styleCache[_id],
+    _elem = _this._elements[_id],
+    _elemS,
+    _loopMaxP,
+    _cid,
+    _key,
+    _currTodo,
+    _retval;
     if (!_elem) {
       return;
     }
@@ -1202,7 +1135,6 @@ ELEM = {
     _currTodo = _styleTodo.splice(0, _loopMaxP);
     for (_cid = 0; _cid !== _loopMaxP; _cid++) {
       _key = _currTodo.pop();
-      _this._flushStylCount++;
       if (_key === 'opacity') {
         _this.setOpacity(_id, _cached[_key]);
       }
@@ -1217,7 +1149,6 @@ ELEM = {
   
   /* The ELEM "post-constructor" */
   _init: function() {
-    
     if(RSenceInit !== undefined){
       RSenceInit();
     }
@@ -1231,12 +1162,6 @@ ELEM = {
     
     if(!_this['_timer']){
       _this.bind(document.body);
-    }
-    
-    if (_this._enableRecycler) {
-      _this._trashId = _this.make(0, 'div');
-      _this.setCSS(_this._trashId, "display:none;visibility:hidden;");
-      _this.setAttr(_this._trashId, 'id', 'trashcan_' + _this._trashId);
     }
     
     if(BROWSER_TYPE.symbian){
@@ -1254,7 +1179,6 @@ ELEM = {
         return;
       }
     }
-    
     _this._flushDomLoadQueueBusy = false;
     while(!ELEM._initDone){
       ELEM._flushDomLoadQueue();
@@ -1308,7 +1232,8 @@ ELEM = {
     // NOTE: IE9 Beta does still not behave like a standard web browser.
     //       It will probably require as much tuning as earlier IE versions.
     if(_browserType.ie9){
-      _browserType.ie = false;
+      // _browserType.ie = false;
+      // _browserType.safari = true;
     }
     
     _browserType.firefox  = _ua.indexOf("Firefox") !== -1;
@@ -1339,7 +1264,7 @@ ELEM = {
         _this = ELEM;
     // A hack for ie (ripped from DomLoaded.js)
     // http://www.cherny.com/demos/onload/domloaded.js
-    if (BROWSER_TYPE.ie) {
+    if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
       var _ie_proto = "javascript:void(0)";
       if (location.protocol === "https:") {
         _ie_proto = "src=//0";
@@ -1398,4 +1323,3 @@ var//RSence.Core
 LOAD = ELEM._domLoader;
 
 ELEM._warmup();
-
