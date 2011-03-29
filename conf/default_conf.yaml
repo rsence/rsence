@@ -298,7 +298,14 @@
         - propertylisteditor  # HPropertyEditor
         - minimenu            # HMiniMenu
         - minimenuitem        # HMiniMenuItem
-
+      
+      # Graphics related control widgets (components)
+      # These are not complete and there will probably never be any
+      # serious efforts to support legacy browsers, like old IE versions,
+      # unless someone is interested in sponsoring such efforts.
+      graphics:
+        - svgcontrol
+    
     # Special packages that include other packages (not used currently)
     :compound_packages:
       allinone:
