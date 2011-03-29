@@ -1286,11 +1286,12 @@ HView = HClass.extend({
     // Remove this object's bindings, except the DOM element.
     this.remove();
     // Remove the DOM element bindings.
-    for ( i = 0; i < this._domElementBindings.length; i++) {
-      ELEM.del(this._domElementBindings[i]);
+    if( this._domElementBindings ){
+      for ( i = 0; i < this._domElementBindings.length; i++) {
+        ELEM.del(this._domElementBindings.pop());
+      }
+      // this._domElementBindings = [];
     }
-    this._domElementBindings = [];
-    
     
     // Remove the DOM object itself
     ELEM.del(this.elemId);
