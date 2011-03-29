@@ -300,7 +300,6 @@ if ([]['indexOf']===undefined) {
   };
 }
 
-
 // ff version 3.0.3 fails on this, when firebug installed: try/catch block
 try {
 
@@ -314,5 +313,4 @@ if(window['console']===undefined){
 
 
 } catch(e) {}
-
 

@@ -48,7 +48,7 @@ Event = {
   **/
   isLeftClick: function(e) {
     // IE: left 1, middle 4, right 2
-    if (BROWSER_TYPE.ie) {
+    if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
       return (e.button === 1 || e.button === 3 || e.button === 5);
     }
     else {
@@ -147,7 +147,7 @@ Event = {
 
 // Activates the garbage collector of Internet Explorer 
 // when the document is unloaded:
-if (BROWSER_TYPE.ie) {
+if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
   Event.observe(window, "unload", Event.unloadCache, false);
 }
 

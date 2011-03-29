@@ -141,7 +141,7 @@ EVENT = {
 /** Starts event listening.
   **/
   start: function() {
-    var _globalEventTargetElement = BROWSER_TYPE.ie?document:window,
+    var _globalEventTargetElement = (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9)?document:window,
         _this = EVENT;
         // _eventMap = [
     Event.observe( _globalEventTargetElement, 'mousemove', _this.mouseMove );
@@ -221,7 +221,7 @@ EVENT = {
     _this = EVENT,
     _propIn,
     _init = ( _this.listeners[_elemId] === undefined ||  _this.listeners[_elemId] === false );
-    if (BROWSER_TYPE.ie) {
+    if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
       _elem.setAttribute('ctrl', _ctrl);
     }
     else {
@@ -694,7 +694,7 @@ EVENT = {
     if (_isLeftButton === undefined) {
       _isLeftButton = Event.isLeftClick(e);
     }
-    if (BROWSER_TYPE.ie) {
+    if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
       _isLeftButton = true; // IE only supports click on left button
     }
     // Prevent right-click event from triggering click.
