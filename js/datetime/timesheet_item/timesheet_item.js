@@ -15,6 +15,10 @@ HTimeSheetItem = HControl.extend({
   componentName: 'timesheet_item',
   markupElemNames: ['bg', 'label', 'state', 'icons', 'value', 'subview'],
   
+  controlDefaults: HControlDefaults.extend({
+    displayTime: true
+  }),
+  
   drawIcon: function( _iconOrder, _iconId ){
     var
     _iconElemId = ELEM.make( this.markupElemIds.icons, 'div' );
@@ -40,6 +44,9 @@ HTimeSheetItem = HControl.extend({
   },
   
   refreshState: function( _start, _duration ){
+    if(!this.options.displayTime){
+      return;
+    }
     var
     _startTime = _start || this.value.start,
     _endTime   = _startTime + ( _duration || this.value.duration ),

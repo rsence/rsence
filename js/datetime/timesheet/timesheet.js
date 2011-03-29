@@ -45,6 +45,7 @@ HTimeSheet = HControl.extend({
     itemOffsetRight: 0,   // Theme settings; don't enter in options
     itemOffsetTop: 20,    // Theme settings; don't enter in options
     itemOffsetBottom: 0,  // Theme settings; don't enter in options
+    itemDisplayTime: true,
     hourOffsetTop: -4,    // Theme settings; don't enter in options
     constructor: function( _ctrl ){
       if( this.defaultLabel === undefined ){
@@ -229,7 +230,8 @@ HTimeSheet = HControl.extend({
       this.dragPreviewRect,
       this, {
         value: _dummyValue,
-        visible: false
+        visible: false,
+        displayTime: this.options.itemDisplayTime
       }
     );
     this.dragPreview.setStyleOfPart('state','color','#fff');
@@ -247,7 +249,7 @@ HTimeSheet = HControl.extend({
     var
     _startTime = this.pxToTime( y-this.pageY() ),
     _endTime = _startTime + this.minDuration;
-    console.log('start:',(new Date(_startTime*1000)).toUTCString(),', end:',(new Date(_endTime*1000)).toUTCString());
+    // console.log('start:',(new Date(_startTime*1000)).toUTCString(),', end:',(new Date(_endTime*1000)).toUTCString());
     this.refreshDragPreview( _startTime, _endTime );
     this.dragPreview.bringToFront();
     this.dragPreview.show();
@@ -478,6 +480,7 @@ HTimeSheet = HControl.extend({
       _rect,
       this, {
         value: _value,
+        displayTime: this.options.itemDisplayTime,
         events: {
           draggable: true,
           // click: true,
