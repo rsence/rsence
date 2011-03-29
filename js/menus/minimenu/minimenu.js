@@ -102,7 +102,7 @@ HMiniMenu = HRadioButtonList.extend({
     this.valueMatrix = null;
     var _menuItemView = this.menuItemView;
     this.base();
-    _menuItemView.die();
+    _menuItemView && _menuItemView.die();
   },
   
   drawSubviews: function(){
