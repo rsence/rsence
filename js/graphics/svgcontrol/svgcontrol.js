@@ -379,8 +379,10 @@ SVGLine = SVGItemBase.factory('Line'),
 HPictLine = SVGLine; // Compatibility for legacy code.
 
 var//RSence.Graphics
-SVGPolyline = SVGItemBase.factory('Polyline'),
-HPictPolyline = SVGPolyLine; // Compatibility for legacy code.
+SVGPolyLine = SVGItemBase.factory('Polyline'),
+HPictPolyLine = SVGPolyLine, // Compatibility for legacy code.
+SVGPolyline = SVGPolyLine,   // Aliases
+HPictPolyline = SVGPolyLine; // Aliases
 
 var//RSence.Graphics
 SVGPolygon = SVGItemBase.factory('Polygon'),
