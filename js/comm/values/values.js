@@ -323,7 +323,13 @@ COMM.Values = HClass.extend({
   },
   
   _nativeEncode: function(_obj){
-    return JSON.stringify( _obj );
+    try{
+      return JSON.stringify( _obj );
+    }
+    catch(e){
+      console.log('invalid json:',_obj);
+      return "{}"
+    }
   },
   
   
