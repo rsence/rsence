@@ -32,19 +32,21 @@ SVGControl = HControl.extend({
     var
     _this = this,
     _nodeId = ( _this._freePictElemIds.length === 0 )?_this._pictElemIds.length:_this._freePictElemIds.shift();
-    //console.log( 'nodeId:', _nodeId );
+    // console.log( 'nodeId:', _nodeId );
     return _nodeId;
   },
   
   _makePictElem: function( _parentId, _type ){
     _parentId = _parentId?_parentId:0;
-    //console.log(_parentId,_type);
     var
     _this = this,
     _nodeId = _this._nextPictElemId(),
     _objectNode = document.createElementNS( _this._svgNS, _type ),
-    // _parentNode = _this._pictElemIds[_parentId];
-    _parentNode = _this._pictElemIds[0];
+    _parentNode = _this._pictElemIds[_parentId];
+    if(_parentNode === undefined || _parentNode === null){
+      // console.log('invalid parent',_parentNode,', parentId:',_parentId,', type:',_type,', nodeId:',_nodeId,', pictElemIds:',_this._pictElemIds);
+      _parentNode = _this._pictElemIds[0];
+    }
     _this._pictElemIds[_nodeId] = _objectNode;
     // if ( !_parentNode ) {
     //   console.log('no parent', _parentNode);
