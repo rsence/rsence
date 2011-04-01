@@ -110,7 +110,7 @@ module RSence
         :autoupdate     => false, # -a --auto-update
         :latency        => 0,     # --latency
         :say            => false, # -S --say
-        :http_delayed_start => 0, # --http-delayed-start
+        :http_delayed_start => nil, # --http-delayed-start
       
         # client_pkg (not supported yet)
         :client_pkg_no_gzip               => false, # --build-no-gzip

@@ -143,7 +143,7 @@ module RSence
       config[:http_server][:bind_address] = args[:addr] if args[:addr]
       config[:http_server][:rack_require] = args[:server] if args[:server]
       config[:session_conf][:reset_sessions] = true if args[:reset_ses]
-      config[:daemon][:http_delayed_start] = args[:http_delayed_start] if args[:http_delayed_start]
+      config[:daemon][:http_delayed_start] = args[:http_delayed_start] if args[:http_delayed_start] != nil
     
       config[:client_pkg][:no_obfuscation] = true if args[:client_pkg_no_obfuscation]
       config[:client_pkg][:no_whitespace_removal] = true if args[:client_pkg_no_whitespace_removal]
