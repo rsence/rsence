@@ -36,6 +36,19 @@
     # how many milliseconds to wait before doing an idle poll
     :server_poll_interval: 2000 # 2 seconds
   #
+  # The settings for the daemon
+  :daemon:
+    #
+    # How long to wait before binding the broker to the
+    # HTTP address and port after starting the Transporter.
+    # A value of -1 disables the broker completely.
+    # Before waiting, the daemon starts all subsystems except the
+    # http handling front-end (Broker).
+    # Useful in situations where RSence itself configures the
+    # network interfaces or the interfaces become available after
+    # RSence is started.
+    :http_delayed_start: 0
+  #
   # Switches on debug-mode:
   #  - Generates more output
   #  - Each time /hello is post-requested:

@@ -278,6 +278,16 @@
                               Only available on Mac OS X and other systems with a
                               'say' command installed.
   
+      --http-delayed-start <number>  Waits for <number> of seconds before starting
+                                     the HTTP Broker after starting the Transporter.
+                              A value of -1 disables the broker completely.
+                              Before waiting, the daemon starts all subsystems except the
+                              http handling front-end (Broker).
+                              Useful in situations where RSence itself configures the
+                              network interfaces or the interfaces become available after
+                              RSence is started.
+
+  
   :initenv: |+
     Alias name of the 'init' command.
     

@@ -110,6 +110,7 @@ module RSence
         :autoupdate     => false, # -a --auto-update
         :latency        => 0,     # --latency
         :say            => false, # -S --say
+        :http_delayed_start => 0, # --http-delayed-start
       
         # client_pkg (not supported yet)
         :client_pkg_no_gzip               => false, # --build-no-gzip
@@ -128,7 +129,7 @@ module RSence
       if @argv.length >= 2
         @argv[1..-1].each_with_index do |arg,i|
           if expect_option
-            if [:port,:latency].include?(option_name) and arg.to_i.to_s != arg
+            if [ :port, :latency, :http_delayed_start ].include?(option_name) and arg.to_i.to_s != arg
               puts ERB.new( @@strs[:messages][:invalid_option_expected_number] ).result( binding )
               exit
             elsif option_name == :conf_files
@@ -138,6 +139,8 @@ module RSence
               else
                 @args[:conf_files].push( arg )
               end
+            elsif option_name == :http_delayed_start
+              @args[:http_delayed_start] = arg.to_i
             else
               arg = arg.to_i if option_name == :latency
               @args[option_name] = arg
@@ -163,6 +166,9 @@ module RSence
               elsif arg == '--addr'
                 expect_option = true
                 option_name = :addr
+              elsif arg == '--http-delayed-start'
+                expect_option = true
+                option_name = :http_delayed_start
               elsif arg == '--server'
                 expect_option = true
                 option_name = :server

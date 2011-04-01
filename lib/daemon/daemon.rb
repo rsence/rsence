@@ -276,9 +276,44 @@ module RSence
       "RSence-#{RSence.version} on #{url} in #{env_path}"
     end
     
+    def start_broker( conf )
+      http_delayed_seconds = RSence.config[:daemon][:http_delayed_start].to_i
+      if http_delayed_seconds == -1
+        puts "The HTTP Broker is disabled. RSence won't bind a http listener to any address."
+      else
+        if http_delayed_seconds > 0
+          puts "Delaying the start of the HTTP Broker by #{http_delayed_seconds} seconds."
+          if http_delayed_seconds > 10
+            # report when starting in 10 second intervals
+            sleep_remainder = http_delayed_seconds % 10
+            sleep_count = http_delayed_seconds / 10
+            sleep_time_left = http_delayed_seconds
+            sleep_count.times do |sleep_count_num|
+              puts "Waiting #{sleep_time_left} seconds..."
+              sleep 10
+              sleep_time_left -= 10
+            end
+            if sleep_remainder != 0
+              puts "Waiting #{sleep_remainder} seconds..."
+              sleep sleep_remainder
+            end
+          else
+            sleep http_delayed_seconds
+          end
+          puts "Starting the HTTP Broker now."
+        end
+        # This is the main http handler instance:
+        @broker = Broker.start(
+          @transporter,
+          conf
+        )
+      end
+    end
+    
     # RSence top-level run handler. Almost identical to start.
     def run
       
+      # Sets the process name
       $0 = ps_name
       
       puts "Starting as a foreground process." if RSence.args[:verbose]
@@ -291,13 +326,9 @@ module RSence
       unless RSence.args[:log_fg]
         Daemon.start_logging( self )
       end
-    
-      # This is the main http handler instance:
-      @broker = Broker.start(
-        @transporter,
-        conf
-      )
-    
+      
+      start_broker( conf )
+      
     end
     
     # Returns the pid file path.
@@ -323,24 +354,22 @@ module RSence
     # Called by Controller#start, contains RSence-specific operations
     def start
       
+      # Sets the process name
       $0 = ps_name
       
       @transporter = Transporter.new
-    
+      
       conf = RSence.config[:http_server]
-    
+      
       unless RSence.args[:log_fg]
         Daemon.start_logging( self )
         STDIN.reopen( "/dev/null" )
       end
-    
+      
       Process.setsid
-    
-      # This is the main http handler instance:
-      @broker = Broker.start(
-        @transporter,
-        conf
-      )
+      
+      start_broker( conf )
+      
       yield @broker
     
     end
