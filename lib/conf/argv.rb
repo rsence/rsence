@@ -793,12 +793,16 @@ module RSence
           puts version
           exit
         elsif [:run,:start,:stop,:restart].include? cmd
+          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_startup_argv
         elsif cmd == :status
+          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_status_argv
         elsif cmd == :save
+          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_save_argv
         elsif cmd == :initenv or cmd == :init
+          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_initenv_argv
         end
       else
