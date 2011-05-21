@@ -34,9 +34,12 @@ module RSence
       # @return [nil]
       def init
         super
-        yaml_src = file_read( "gui/#{@name}.yaml" )
-        unless yaml_src
-          yaml_src = file_read( "gui/main.yaml" )
+        yaml_src = false
+        [ "#{@name}.yaml", 'gui.yaml',
+          "gui/#{@name}.yaml", "gui/main.yaml"
+        ].each do |yaml_name|
+          yaml_src = file_read( yaml_name )
+          break if yaml_src
         end
         if yaml_src
           @gui = GUIParser.new( self, yaml_src, @name )
