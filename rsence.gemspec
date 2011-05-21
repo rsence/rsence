@@ -15,7 +15,8 @@ Gem::Specification.new do |s|
     s.version = s.version.to_s[0..-5]
   end
   s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of the RSence framework."
-  s.has_rdoc  = 'yard'
+  # deprecated in rubygems 1.8:
+  # s.has_rdoc  = 'yard'
   s.description = <<-END
 RSence is a RIA ("HTML5" or "Ajax" if you like those terms better) framework designed for responsive GUI applications on the web.
 
@@ -53,10 +54,12 @@ END
   if prerelease
     s.files.push 'bin/rsence-pre'
     s.executables = [ 'rsence-pre' ]
-    s.default_executable = 'rsence-pre'
+    # deprecated in rubygems 1.8:
+    # s.default_executable = 'rsence-pre'
   else
     s.executables = [ 'rsence' ]
-    s.default_executable = 'rsence'
+    # deprecated in rubygems 1.8:
+    # s.default_executable = 'rsence'
   end
   s.required_ruby_version = '>= 1.8.7'
 end
