@@ -13,27 +13,32 @@
   *
   **/
 
+HLocale.components.HUploader = {
+  strings: {
+    stateLabels: {
+    
+      // -- Upload success states: ++
+       '0': "Select file...",
+       '1': "Uploading...",
+       '2': "Processing data...",
+       '3': "Upload Complete",
+       '4': "Preparing upload",
+    
+      // -- Upload failure states: ++
+       '-1': "Error: Invalid request",
+       '-2': "Error: Invalid upload key",
+       '-3': "Error: Invalid data format",
+       '-4': "Error: File too big",
+       '-6': "Error: Post-processing failed"
+    }
+  }
+};
+
 var//RSence.Controls
 HUploader = HControl.extend({
   componentName: 'uploader',
   uploadState: false,
   uploadKey: false,
-  uploadStateLabels: {
-    
-    // -- Upload success states: ++
-     '0': "Select file...",
-     '1': "Uploading...",
-     '2': "Processing data...",
-     '3': "Upload Complete",
-     '4': "Preparing upload",
-    
-    // -- Upload failure states: ++
-     '-1': "Error: Invalid request",
-     '-2': "Error: Invalid upload key",
-     '-3': "Error: Invalid data format",
-     '-4': "Error: File too big",
-     '-6': "Error: Post-processing failed"
-  },
   markupElemNames: [
     'form',
     'file',
@@ -58,11 +63,14 @@ HUploader = HControl.extend({
   setUploadState: function(_state,_uploadKey){
     if(_state!==this.uploadState){
       this.uploadState = _state;
-      var _stateKey = _state.toString();
+      var
+      _stateKey = _state.toString(),
+      _stateLabels = HLocale.components.HUploader.strings.stateLabels,
+      _label;
       //console.log('stateKey:',_stateKey);
-      if(this.uploadStateLabels[_stateKey]!==undefined){
+      if(_stateLabels[_stateKey]!==undefined){
         ELEM.get(this.markupElemIds.value).value=this.valueObj.id;
-        var _label = this.uploadStateLabels[_stateKey];
+        _label = _stateLabels[_stateKey];
         //console.log('stateLabel:',_label);
         if(_state===0){
           ELEM.setStyle(this.markupElemIds.upload_progress,'visibility','hidden');
