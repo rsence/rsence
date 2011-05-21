@@ -875,6 +875,55 @@ module RSence
     def self.config
       @@config
     end
+    
+    def self.transporter
+      @@transporter
+    end
+    def self.transporter=(transporter)
+      if class_variable_defined?(:'@@transporter')
+        warn "WARN: Transporter already set."
+        return
+      else
+        @@transporter = transporter
+      end
+    end
+    
+    def self.plugin_manager
+      @@plugin_manager
+    end
+    def self.plugin_manager=(plugin_manager)
+      if class_variable_defined?(:'@@plugin_manager')
+        warn "WARN: @@plugin_manager already set."
+        return
+      else
+        @@plugin_manager = plugin_manager
+      end
+    end
+    
+    def self.value_manager
+      @@value_manager
+    end
+    def self.value_manager=(value_manager)
+      if class_variable_defined?(:'@@value_manager')
+        warn "WARN: @@value_manager already set."
+        return
+      else
+        @@value_manager = value_manager
+      end
+    end
+    
+    def self.session_manager
+      @@session_manager
+    end
+    def self.session_manager=(session_manager)
+      if class_variable_defined?(:'@@session_manager')
+        warn "WARN: @@session_manager already set."
+        return
+      else
+        @@session_manager = session_manager
+      end
+    end
+    
     ## Riassence Daemon controls
     require 'daemon/daemon'
     puts "Starting RSence..." if self.args[:verbose]
