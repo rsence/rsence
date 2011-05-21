@@ -191,13 +191,7 @@
 
     # Source directories to scan
     :src_dirs: []
-
-      # RSence Client Framework
-      #- js
-
-      # How to include your own custom js package directory:
-      # - /home/me/code/extra_components
-
+    
     # List of theme names to include and pack
     :theme_names:
       - default  # Makes default_theme.js containing css and html templates
@@ -348,9 +342,6 @@
       - .swf
       - .svg
       - .pdf
-
-    # The name of the include file
-    :js_inc: js.inc
 
     # If disabled, makes packages out of single source bundles automatically
     :dont_pack_undefined: true
