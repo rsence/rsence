@@ -36,6 +36,7 @@ module RSence
     attr_accessor :plugins
     
     def initialize
+      RSence.transporter = self
       @config = RSence.config[:transporter_conf]
       @accept_req = false
       core_pkgs = {
@@ -50,7 +51,9 @@ module RSence
         :resolved_categories => core_pkgs
       })
       @valuemanager = ValueManager.new
+      RSence.value_manager = @valuemanager
       @sessions = SessionManager.new( self )
+      RSence.session_manager = @sessions
       if RSence.config[:session_conf][:reset_sessions]
         puts "Resetting all sessions..."
         @sessions.reset_sessions()
@@ -200,7 +203,7 @@ module RSence
           
           begin
             @plugins.delegate( :restore_ses, msg )
-            msg.session[:plugin_incr] == @plugins.incr
+            msg.session[:plugin_incr] = @plugins.incr
           rescue => e
             response_success = false
             xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
@@ -211,7 +214,7 @@ module RSence
           
           begin
             @plugins.delegate( :init_ses, msg )
-            msg.session[:plugin_incr] == @plugins.incr
+            msg.session[:plugin_incr] = @plugins.incr
           rescue => e
             response_success = false
             xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
@@ -230,7 +233,7 @@ module RSence
           
         elsif msg.refresh_page?( @plugins.incr ) and @config[:client_autoreload]
           while msg.refresh_page?( @plugins.incr )
-            msg.session[:plugin_incr] == @plugins.incr
+            msg.session[:plugin_incr] = @plugins.incr
             sleep 0.5
           end
           # Forces the client to reload, if plugins are incremented
