@@ -1843,6 +1843,71 @@ HView = HClass.extend({
       ELEM.del(_elementId);
       this._domElementBindings.splice(_indexOfElementId, 1);
     }
+  },
+  
+  
+/** = Description
+  * Finds a string from the locale of the component.
+  * The attrPath is a string or array to find an object.
+  * For instance, if a component has a structure like this defined:
+  *   HLocale.components.FooComponent = {
+  *     strings: {
+  *       defaultLabel: 'Default Label',
+  *       otherLabel: 'Other Label',
+  *     }
+  *   };
+  * 
+  * To get the defaultLabel, call getLocaleString like this:
+  *   this.getLocaleString( 'FooComponent', 'strings.defaultLabel' );
+  * ..or:
+  *   this.getLocaleString( 'FooComponent', ['strings','defaultLabel'] );
+  * ..or:
+  *   this.getLocaleString( 'FooComponent.strings.defaultLabel' );
+  *
+  * = Parameters
+  * +_componentClassName+:: The name of the item in HLocale.components
+  * +_attrPath+::     The object path to the string. String or Array.
+  * +_default+::      The default object to return if nothing matched.
+  * 
+  **/
+  getLocaleString: function( _componentClassName, _attrPath, _default ){
+    if( _default === undefined ){
+      _default = '';
+    }
+    var
+    _searchTarget = HLocale.components[_componentClassName],
+    _key;
+    if( _searchTarget === undefined && (typeof _componentClassName === 'string') ){
+      _searchTarget = HLocale.components;
+      _attrPath = _componentClassName;
+      _default = _attrPath;
+    }
+    if( typeof _attrPath === 'string' ){
+      if( _attrPath.indexOf( '.' ) > 0 ){
+        _attrPath = _attrPath.split('.');
+      }
+      else {
+        _attrPath = [ _attrPath ];
+      }
+    }
+    if( _searchTarget[ _attrPath[0] ] === undefined ){
+      _searchTarget = HLocale;
+    }
+    if( _searchTarget[ _attrPath[0] ] === undefined ){
+      return _default;
+    }
+    for( _key in _attrPath ){
+      if( typeof _searchTarget[_key] === 'object' ){
+        _searchTarget = _searchTarget[_key];
+      }
+      else if( typeof _searchTarget[_key] === 'string' ){
+        return _searchTarget[_key];
+      }
+      else {
+        return _default;
+      }
+    }
+    return _default;
   }
   
   
