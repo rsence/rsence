@@ -157,7 +157,7 @@ class ClientPkgBuild
       # the name of src_dir (src_dir itself is a full path)
       dir_name    = File.split( src_dir )[1]
       # bundles are defined as directories with a js file of the same name plus the 'js.inc' tagfile
-      is_bundle   = dir_entries.include?( @js_inc ) and dir_entries.include?( dir_name+'.js' )
+      is_bundle   = ( not dir_entries.include?( 'disabled' ) ) and ( dir_entries.include?( dir_name+'.js' ) or dir_entries.include?( 'main.js' ) )
       # if src_dir is detected as a bundle, handle it in add_bundle
       if is_bundle
         add_bundle( dir_name, src_dir, dir_entries )
@@ -502,7 +502,6 @@ class ClientPkgBuild
     @no_gzip = config[:no_gzip]
     @no_obfuscation = config[:no_obfuscation]
     @no_whitespace_removal = config[:no_whitespace_removal]
-    @js_inc = config[:js_inc]
     @debug = RSence.args[:debug]
     @quiet = (not RSence.args[:verbose])
   end
