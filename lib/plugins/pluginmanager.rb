@@ -27,6 +27,9 @@ module RSence
     def incr
       return @@incr
     end
+    def incr!
+      @@incr += 1
+    end
     
     # Returns the registry data for plugin bundle +plugin_name+
     def registry( plugin_name=false )
@@ -615,7 +618,7 @@ module RSence
         puts "done!" if RSence.args[:verbose]
       end
       if not (to_load.empty? and to_unload.empty? and to_reload.empty?)
-        @@incr += 1
+        incr!
         puts "@@incr: #{@@incr}" if RSence.args[:debug]
         puts "Plugin bundles:"
         puts "  loaded: #{to_load.join(', ')}" unless to_load.empty?
@@ -671,6 +674,10 @@ module RSence
       @autoreload = options[:autoreload]
       @name_prefix = options[:name_prefix]
       @parent_manager = options[:parent_manager]
+      
+      if @parent_manager == nil
+        RSence.plugin_manager = self
+      end
       
       @deps = Dependencies.new( options[:resolved_deps], options[:resolved_categories] )
       
