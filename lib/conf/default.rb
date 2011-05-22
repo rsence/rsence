@@ -45,7 +45,7 @@ module RSence
     # @param [Hash] source Has its items merged to `target` unless a key with an identical value already exists in `target`. If an item class is Array, then uses {#array_merge} to combine them.
     def hash_merge( target, source )
       source.each do |key,item|
-        if not target.has_key?key or target[key] != item
+        if not target.has_key?( key ) or target[key] != item
           if item.class == Array
             target[key] = [] unless target.has_key?(key)
             array_merge( target[key], item )
@@ -149,9 +149,17 @@ module RSence
       config[:client_pkg][:no_whitespace_removal] = true if args[:client_pkg_no_whitespace_removal]
     
       # Sets the default pid and log paths used by the HTTPDaemon
-      config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid") unless config[:daemon].has_key?(:pid_fn)
-      config[:daemon][:log_fn] = File.join(logpath, "rsence") unless config[:daemon].has_key?(:log_fn)
-    
+      if config[:daemon].has_key?(:pid_fn)
+        config[:daemon][:pid_fn] = File.join(pidpath, config[:daemon][:pid_fn] )
+      else
+        config[:daemon][:pid_fn] = File.join(pidpath, "rsence.pid")
+      end
+      if config[:daemon].has_key?(:log_fn)
+        config[:daemon][:log_fn] = File.join(logpath, config[:daemon][:log_fn] )
+      else
+        config[:daemon][:log_fn] = File.join(logpath, "rsence")
+      end
+
       # Check database path for sqlite databases.
       if config[:database][:ses_db].start_with?('sqlite://') and not dont_expand_path
         db_url = File.expand_path( config[:database][:ses_db].split('sqlite://')[1], args[:env_path] )
