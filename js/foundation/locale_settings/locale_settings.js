@@ -15,6 +15,8 @@ HLocale = {
     strings: {
       weekDaysLong:  [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ],
       weekDaysShort: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
+      weekLong: 'Week',
+      weekShort: 'WK',
       dateDelimitter: '.',
       timeDelimitter: ':',
       timeMsDelimitter: '.',

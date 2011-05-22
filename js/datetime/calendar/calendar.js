@@ -14,9 +14,17 @@
 var//RSence.DateTime
 HCalendar = HControl.extend({
   componentName: 'calendar',
-  weekdays_localized: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  weekdaysLocalized: function(){
+    var
+    _localeStrings = HLocale.dateTime.strings,
+    _outputArray = COMM.Values.clone( _localeStrings.weekDaysShort );
+    _outputArray.push( _outputArray.shift() );
+    _outputArray.unshift( _localeStrings.weekShort );
+    return _outputArray;
+  },//['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
   defaultEvents: {
-    mouseWheel: true
+    mouseWheel: true,
+    click: true
   },
 /** = Description
   * Calls HCalendar#nextMonth or HCalendar#prevMonth based on delta 
@@ -33,6 +41,12 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
+  * Simple clickthrouct
+  click: function(){
+    return false;
+  },
+
+/** = Description
   * Refreshes weekdays.
   *
   **/
@@ -40,7 +54,7 @@ HCalendar = HControl.extend({
     if(!this['markupElemIds']){
       return;
     }
-    var _weekdays_localized = this.weekdays_localized,
+    var _weekdays_localized = this.weekdaysLocalized(),
         _weekdays_width = Math.floor(this.rect.width/_weekdays_localized.length),
         _weekdays_html = [],
         i = 0,
@@ -132,7 +146,7 @@ HCalendar = HControl.extend({
         _monthLast = this.lastDateOfMonth(_date),
         _firstDate = _calendarDateRange[0],
         _lastDate = _calendarDateRange[1],
-        _column_count = this.weekdays_localized.length,
+        _column_count = this.weekdaysLocalized().length,
         _column_width = Math.floor((this.rect.width-1)/_column_count),
         _row_height = Math.floor((this.rect.height-1-35)/6),
         _week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(this.rect.width-3)+'px;height:'+_row_height+'px;top:','px">'],
