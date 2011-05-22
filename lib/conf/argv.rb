@@ -412,7 +412,7 @@ module RSence
               end
             elsif valid_env?(arg)
               @args[:env_path] = File.expand_path(arg)
-              @args[:conf_files].push( File.expand_path( File.join( arg, 'conf', 'config.yaml' ) ) )
+              @args[:conf_files].unshift( File.expand_path( File.join( arg, 'conf', 'config.yaml' ) ) )
             else
               invalid_env( arg )
             end
@@ -425,7 +425,7 @@ module RSence
       end
       if valid_env?(@args[:env_path])
         conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
-        @args[:conf_files].push( conf_file ) unless @args[:conf_files].include?( conf_file )
+        @args[:conf_files].unshift( conf_file ) unless @args[:conf_files].include?( conf_file )
       else
         invalid_env
       end
@@ -512,7 +512,7 @@ module RSence
               end
             elsif valid_env?(arg)
               @args[:env_path] = File.expand_path(arg)
-              @args[:conf_files].push( File.expand_path( File.join( arg, 'conf', 'config.yaml' ) ) )
+              @args[:conf_files].unshift( File.expand_path( File.join( arg, 'conf', 'config.yaml' ) ) )
             else
               invalid_env( arg )
             end
@@ -525,7 +525,7 @@ module RSence
       end
       if valid_env?(@args[:env_path])
         conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
-        @args[:conf_files].push( conf_file ) unless @args[:conf_files].include?( conf_file )
+        @args[:conf_files].unshift( conf_file ) unless @args[:conf_files].include?( conf_file )
       else
         invalid_env
       end
