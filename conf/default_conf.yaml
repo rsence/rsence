@@ -202,7 +202,7 @@
 
       # The core package, loaded by default using a script tag in index_html
       core:
-  
+        
         # RSence.*
         - rsence_ns
         
@@ -212,15 +212,15 @@
         - class             # HClass
         - elem              # ELEM
         - event             # Event
-  
+        
         # RSence.Util
         - sha               # SHA
-  
+        
         # RSence.Foundation
         - system            # HSystem
         - valueresponder    # HValueResponder
         - application       # HApplication
-  
+        
         # COMM
         - comm              # COMM
         - queue             # COMM.Queue
@@ -305,6 +305,8 @@
         - propertylisteditor  # HPropertyEditor
         - minimenu            # HMiniMenu
         - minimenuitem        # HMiniMenuItem
+        - popupmenu           # HPopupMenu
+        - menuitem            # HMenuItem
       
       # Graphics related control widgets (components)
       # These are not complete and there will probably never be any
