@@ -20,13 +20,15 @@ HMiniMenu = HRadioButtonList.extend({
     draggable: true,
     click: true
   },
+
+  subCompenentHeight: 15,
   
   repositionMenuItems: function(){
     var
     x = this.pageX(),
     y = this.pageY(),
     w = this.rect.width,
-    h = this.listItems.length*15,
+    h = this.listItems.length*this.subComponentHeight,
     i = 0,
     listItem = null;
     for(;i<this.listItems.length && listItem === null;i++){
@@ -34,9 +36,9 @@ HMiniMenu = HRadioButtonList.extend({
         listItem = this.listItems[i];
       }
     }
-    y -= (i-1)*15;
+    y -= (i-1)*this.subComponentHeight;
     if(y < 0){
-      y = y%15;
+      y = y%this.subComponentHeight;
     }
     if(this.options['menuItemGeom']){
       if(this.options.menuItemGeom.width){
@@ -128,7 +130,7 @@ HMiniMenu = HRadioButtonList.extend({
   
   createComponent: function( i, _label ){
     return HMiniMenuItem.nu(
-      [ 0, (i*15), null, 15, 0, null ],
+      [ 0, (i*this.subComponentHeight), null, this.subComponentHeight, 0, null ],
       this.menuItemView, {
         label: _label
       }
