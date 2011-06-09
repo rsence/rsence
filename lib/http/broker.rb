@@ -104,6 +104,7 @@ class Broker
     
     # Selects the handler for Rack
     handler = {
+      'mongrel2' => lambda { Rack::Handler::Mongrel2 },
       'webrick'  => lambda { Rack::Handler::WEBrick  },
       'ebb'      => lambda { Rack::Handler::Ebb      },
       'thin'     => lambda { Rack::Handler::Thin     },
