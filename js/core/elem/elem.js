@@ -52,7 +52,10 @@ BROWSER_TYPE = {
   firefox2: false,
 
 /* Mozilla Firefox version 3 */
-  firefox3: false
+  firefox3: false,
+
+/* Mozilla Firefox version 4 */
+  firefox4: false
 };
 
 /** = Description
@@ -1239,6 +1242,7 @@ ELEM = {
     _browserType.firefox  = _ua.indexOf("Firefox") !== -1;
     _browserType.firefox2 = _ua.indexOf("Firefox/2.") !== -1;
     _browserType.firefox3 = _ua.indexOf("Firefox/3.") !== -1;
+    _browserType.firefox4 = _ua.indexOf("Firefox/4.") !== -1;
     _this._domWaiter();
   },
   

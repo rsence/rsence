@@ -12,7 +12,6 @@
   position: absolute;
   top: 2px; width: 16px; height: 16px;
   font-size: 0; line-height: 0;
-  line-height: 20px;
   cursor: pointer;
   background-image: #{this.getCssFilePath('calendar_arrows.png')};
 }
@@ -55,7 +54,7 @@
   color: #000;
   font-family: Arial, sans-serif;
   font-size: 11px;
-  line-height: 15px;
+  line-height: 16px;
   vertical-align: middle;
   text-align: center;
 }
