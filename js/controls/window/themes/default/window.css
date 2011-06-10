@@ -191,7 +191,7 @@
 }
 
 .window_controls_close {
-  left: 8px;
+  #{BROWSER_TYPE.mac?'left':'right'}: 8px;
   background-position: 0px 0px;
 }
 
@@ -205,7 +205,7 @@
 
 
 .window_controls_collapse {
-  left: 27px;
+  #{BROWSER_TYPE.mac?'left: 27px':'right: 46px'};
   background-position: -30px 0px;
 }
 
@@ -219,7 +219,7 @@
 
 
 .window_controls_zoom {
-  left: 46px;
+  #{BROWSER_TYPE.mac?'left: 46px':'right: 27px'};
   background-position: -15px 0px;
 }
 
