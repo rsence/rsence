@@ -13,7 +13,7 @@
 }
 
 .default .disabled .textcontrol_input {
-  color: #999;
+  color: #ccc;
 }
 
 .default .textcontrol_input_parent {
@@ -28,6 +28,9 @@
   #{BROWSER_TYPE.ie6?'font-size:0;line-height:0;':''}
 }
 
+.default .disabled .textcontrol_bg {
+  background-color: #eee;
+}
 
 
 .default .textcontrol_ne,
