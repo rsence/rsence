@@ -108,16 +108,20 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   drawSubviews: function(){
+    var itemStyle = {
+      'background-color': '#f6f6f6',
+      'border': '1px solid #999',
+      'overflow': 'auto',
+      'overflow-x': 'hidden'
+    };
+    if(!BROWSER_TYPE.ie){
+      itemStyle.opacity = 0.9;
+    }
     this.menuItemView = HView.nu(
       [ this.rect.left, this.rect.top, this.rect.width, 10 ],
       this.app, {
         visible: false,
-        style: [
-          ['background-color','#f6f6f6'],
-          ['border', '1px solid #999'],
-          ['overflow-y', 'auto'],
-          ['opacity', 0.9]
-        ]
+        style: itemStyle
       }
     );
   },

@@ -17,17 +17,31 @@ HMiniMenuItem = HRadioButton.extend({
   
   defaultEvents: {
     click: true,
-    mouseUp: true
+    mouseUp: true,
+    mouseDown: true
   },
   
+  _activateParentParent: function(){
+    var _parentParent = this.parent.parent;
+    EVENT.changeActiveControl(_parentParent);
+  },
+
   click: function(){
     this.base();
-    EVENT.changeActiveControl(this.parent.parent);
+    this._activateParentParent();
+    return true;
+  },
+  
+  mouseDown: function(){
+    this.base();
+    this.click();
+    return true;
   },
   
   mouseUp: function(){
     this.base();
     this.click();
+    return true;
   }
   
 });

@@ -43,7 +43,7 @@
 
 .popupmenu_label {
   left: 13px; right: 11px; top: 0px;
-  height: 22px; line-height: 22px;
+  height: 22px; line-height: #{(BROWSER_TYPE.ie7||BROWSER_TYPE.ie6)?'20':'22'}px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
