@@ -876,7 +876,12 @@ HView = HClass.extend({
   **/
   parentSize: function(){
     if(this.parent.elemId === 0){
-      var _winSize = ELEM.windowSize();
+      var
+      _winSize = ELEM.windowSize(),
+      _docSize = ELEM.getScrollSize(0);
+      if( _docSize[0] > _winSize[0] || _docSize[1] > _winSize[1] ){
+        _docSize = _winSize;
+      }
       return [ _winSize[0], _winSize[1] ];
     }
     else {
@@ -1002,6 +1007,12 @@ HView = HClass.extend({
           _bottom = _parentHeight - _bottomOffset;
           _validHeight && this.setMinHeight( _height );
           _bottom = _parentHeight - _bottomOffset;
+        }
+        if( _leftOffset > _right ){
+          _right = _leftOffset;
+        }
+        if( _topOffset > _bottom ){
+          _bottom = _topOffset;
         }
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
         

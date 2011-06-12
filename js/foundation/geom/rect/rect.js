@@ -139,6 +139,13 @@ HRect = HClass.extend({
         if(!_view.flexTop){
           _this.top = _this.bottom - _this.height;
         }
+        if( _this.bottom-_this.top < 0 ){
+          _this.bottom = _this.top;
+        }
+        if( _this.right-_this.left < 0 ){
+          _this.right = _this.left;
+        }
+        // console.log(_this.left,this.top,this.right-this.left,this.bottom-this.top);
         _this.updateSecondaryValues();
       }
     }
