@@ -16,10 +16,6 @@ HDateTime = HClass.extend({
   msDay: 86400000,
   msHour: 3600000,
   msMinute: 60000,
-  months_localized: [
-    'January', 'February', 'March', 'April', 'May', 'June', 'July',
-    'August', 'September', 'October', 'November', 'December'
-  ],
   
 /** = Description
   * Returns month name of the given date.
@@ -33,7 +29,7 @@ HDateTime = HClass.extend({
   **/
   monthName: function(_date){
     _date = (_date instanceof Date)?_date:this.date();
-    return this.months_localized[_date.getUTCMonth()];
+    return HLocale.dateTime.strings.monthsLong[_date.getUTCMonth()];
   },
   
 /** = Description
@@ -77,6 +73,13 @@ HDateTime = HClass.extend({
     return _date.getUTCDate();
   },
 
+  setMday: function( _mday ){
+    var
+    _date = this.date();
+    _date.setUTCDate( _mday );
+    return Math.round( _date.getTime()/1000 );
+  },
+
 /** = Description
   * Returns month number for the date given as input.
   * Note that months are numbered from 0 to 11.
@@ -93,6 +96,13 @@ HDateTime = HClass.extend({
     return _date.getUTCMonth();
   },
 
+  setMonth: function( _month ){
+    var
+    _date = this.date();
+    _date.setUTCMonth( _month );
+    return Math.round( _date.getTime()/1000 );
+  },
+
 /** = Description
   * Returns year for given date.
   *
@@ -106,6 +116,13 @@ HDateTime = HClass.extend({
   year: function(_date){
     _date = (_date instanceof Date)?_date:this.date();
     return _date.getUTCFullYear();
+  },
+
+  setYear: function( _year ){
+    var
+    _date = this.date();
+    _date.setUTCFullYear( _year );
+    return Math.round( _date.getTime()/1000 );
   },
 
 /** = Description
