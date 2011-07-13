@@ -83,8 +83,10 @@ HRadioButtonList = HControl.extend({
     }
     this.radioButtonIndexValue && this.radioButtonIndexValue.die();
     this.listItems = null;
-    for(var i=0;i<this.listItemViews.length;i++){
-      this.listItemViews[i].die();
+    if( this.listItemViews ){
+      for(var i=0;i<this.listItemViews.length;i++){
+        this.listItemViews[i].die();
+      }
     }
     this.listItemViews = null;
     this.radioButtonIndexValue && this.radioButtonIndexValue.die();
