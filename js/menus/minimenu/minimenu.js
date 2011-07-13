@@ -21,7 +21,7 @@ HMiniMenu = HRadioButtonList.extend({
     click: true
   },
 
-  subCompenentHeight: 15,
+  subComponentHeight: 15,
   
   repositionMenuItems: function(){
     var
@@ -108,7 +108,8 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   drawSubviews: function(){
-    var itemStyle = {
+    var
+    itemStyle = {
       'background-color': '#f6f6f6',
       'border': '1px solid #999',
       'overflow': 'auto',
@@ -130,6 +131,10 @@ HMiniMenu = HRadioButtonList.extend({
     this.base(listItems);
     this.valueMatrix = this.menuItemView.valueMatrix;
     this.refreshValue();
+    if( this.options.initialVisibility ){
+      EVENT.changeActiveControl(this);
+      this.menuShow();
+    }
   },
   
   createComponent: function( i, _label ){
