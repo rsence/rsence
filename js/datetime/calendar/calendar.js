@@ -41,7 +41,8 @@ HCalendar = HControl.extend({
   },
 
 /** = Description
-  * Simple clickthrouct
+  * Simple clickthrough
+  **/
   click: function(){
     return false;
   },
@@ -55,14 +56,16 @@ HCalendar = HControl.extend({
       return;
     }
     var _weekdays_localized = this.weekdaysLocalized(),
-        _weekdays_width = Math.floor(this.rect.width/_weekdays_localized.length),
+        _availWidth = this.rect.width-2,
+        _weekdays_width = Math.floor(_availWidth/8),
+        _leftPlus = (_availWidth % 8)-1,
         _weekdays_html = [],
         i = 0,
         _weekdays_html_pre = ['<div style="width:'+_weekdays_width+'px;left:','px">'],
         _weekdays_html_suf = '</div>';
     for(;i<_weekdays_localized.length;i++){
       _weekdays_html.push([
-        _weekdays_html_pre.join(i*_weekdays_width),
+        _weekdays_html_pre.join(i*_weekdays_width+_leftPlus),
         _weekdays_localized[i],
         _weekdays_html_suf
       ].join('') );
@@ -132,6 +135,86 @@ HCalendar = HControl.extend({
   },
   viewMonth: [1970,0],
 
+  monthMenu: function(){
+    if(!HPopupMenu){
+      console.log('HPopupMenu not included; cannot continue');
+      return;
+    }
+    var
+    _calendar = this,
+    _menu = HMiniMenu.extend({
+      refreshValue: function(){
+        this.base();
+        if( this._killAfterRefresh ){
+          this._killAfterRefresh = false;
+          var _menu = this;
+          _calendar.setValue( _calendar.setMonth( this.value ) );
+          if( _calendar.month() !== this.value ){
+            _calendar.setValue( _calendar.setMday( 30 ) );
+            _calendar.setValue( _calendar.setMonth( this.value ) );
+          }
+          if( _calendar.month() !== this.value ){
+            _calendar.setValue( _calendar.setMday( 29 ) );
+            _calendar.setValue( _calendar.setMonth( this.value ) );
+          }
+          if( _calendar.month() !== this.value ){
+            _calendar.setValue( _calendar.setMday( 28 ) );
+            _calendar.setValue( _calendar.setMonth( this.value ) );
+          }
+          COMM.Queue.push( function(){_menu.die();} );
+        }
+      },
+      _killAfterRefresh: false,
+      menuHide: function(){
+        this.base();
+        var _menu = this;
+        _menu._killAfterRefresh = true;
+        COMM.Queue.push( function(){_menu._killAfterRefresh && _menu.refreshValue();} );
+        return true;
+      }
+    }).nu( [24, 0, Math.round(this.rect.width*0.66)-24, 20 ], this, {
+      value: this.month(),
+      initialVisibility: true
+    } ),
+    _monthValues = [],
+    i = 0,
+    _monthNames = HLocale.dateTime.strings.monthsLong;
+    for(;i<_monthNames.length;i++){
+      _monthValues.push( [ i, _monthNames[i] ] );
+    }
+    _menu.setListItems( _monthValues );
+  },
+
+  yearMenu: function(){
+    var
+    _calendar = this,
+    _year = HNumericTextControl.extend({
+      refreshValue: function(){
+        this.base();
+        _calendar.setValue( _calendar.setYear( this.value ) );
+      },
+      textBlur: function(){
+        this.base();
+        COMM.Queue.push( function(){_year.die();} );
+      },
+      textEnter: function(){
+        this.base();
+        if( ( EVENT.status[ EVENT.keysDown ].indexOf( 13 ) !== -1 ) || ( EVENT.status[ EVENT.keysDown ].length === 0 ) ){
+          ELEM.get( this.markupElemIds.value ).blur();
+        }
+      }
+    }).nu(
+      HRect.nu(this.rect.width/2,0,this.rect.width-32,20),
+      this, {
+        value: this.year(),
+        minValue: -38399,
+        maxValue: 38400,
+        focusOnCreate: true,
+        refreshOnInput: false
+      }
+    );
+  },
+
 /** = Description
   * Draws the calendar with the date open given as input.
   *
@@ -146,10 +229,13 @@ HCalendar = HControl.extend({
         _monthLast = this.lastDateOfMonth(_date),
         _firstDate = _calendarDateRange[0],
         _lastDate = _calendarDateRange[1],
-        _column_count = this.weekdaysLocalized().length,
-        _column_width = Math.floor((this.rect.width-1)/_column_count),
-        _row_height = Math.floor((this.rect.height-1-35)/6),
-        _week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(this.rect.width-3)+'px;height:'+_row_height+'px;top:','px">'],
+        _availWidth = this.rect.width-2,
+        _availHeight = this.rect.height-36,
+        _leftPlus = (_availWidth%8)-2,
+        _topPlus = _availHeight%6,
+        _column_width = Math.floor(_availWidth/8),
+        _row_height = Math.floor(_availHeight/6),
+        _week_html_pre = ['<div class="calendar_weeks_week_row" style="width:'+(_availWidth)+'px;height:'+_row_height+'px;top:','px">'],
         _week_html_suf = '</div>',
         _col_html_pre = ['<a href="javascript:void(HSystem.views['+this.viewId+'].setValue(','));" class="calendar_weeks_week_col','" style="width:'+_column_width+'px;height:'+_row_height+'px;line-height:'+_row_height+'px;left:','px">'],
         _col_html_suf = '</a>',
@@ -163,6 +249,7 @@ HCalendar = HControl.extend({
         _colMs,
         _colSecs,
         _colDate,
+        _monthYearHTML,
         _extraCssClass;
     for(; _row<6; _row++){
       _week_html = [];
@@ -190,7 +277,7 @@ HCalendar = HControl.extend({
             _col_html_pre[1],
             _extraCssClass,
             _col_html_pre[2],
-            (_col*_column_width),
+            (_col*_column_width+_leftPlus),
             _col_html_pre[3],
             this.mday(_colDate),
             _col_html_suf
@@ -199,13 +286,24 @@ HCalendar = HControl.extend({
         _week_html.push(_col_html);
       }
       _month_html.push([
-        _week_html_pre.join(_row*_row_height),
+        _week_html_pre.join(_row*_row_height+_topPlus),
         _week_html.join(''),
         _week_html_suf
       ].join('') );
     }
-    ELEM.setHTML(this.markupElemIds.value, _month_html.join(''));
-    ELEM.setHTML(this.markupElemIds.state, this.monthName(_date)+'&nbsp;'+this.year(_date));
+    ELEM.setHTML( this.markupElemIds.value, _month_html.join('') );
+    _monthYearHTML = [
+      '<a href="javascript:void(HSystem.views[',
+      this.viewId,
+      '].monthMenu());">',
+      this.monthName(_date),
+      '</a>&nbsp;<a href="javascript:void(HSystem.views[',
+      this.viewId,
+      '].yearMenu());">',
+      this.year(_date),
+      '</a>'
+    ].join('');
+    ELEM.setHTML( this.markupElemIds.state, _monthYearHTML );
     this.viewMonth = [_monthFirst.getUTCFullYear(),_monthFirst.getUTCMonth()];
   }
 });
