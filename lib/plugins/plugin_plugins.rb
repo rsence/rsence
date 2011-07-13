@@ -30,7 +30,7 @@ module RSence
         super
         @plugin_plugins = RSence::PluginManager.new({
           :plugin_paths => [ bundle_path('plugins') ],
-          :autoreload => false,
+          :autoreload => true,
           :name_prefix => name_with_manager_s.to_sym,
           :parent_manager => @plugins,
           :resolved_deps => [:system]

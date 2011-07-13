@@ -55,9 +55,9 @@ class ClientPkgPlugin < Servlet
   end
   
   def rebuild_client
-    until not @build_busy
-      puts "build busy, sleeping.."
-      sleep 0.5
+    while @build_busy
+      puts "-- build busy, sleeping.. --"
+      sleep 0.1
     end
     @build_busy = true
     @last_change = Time.now.to_i
@@ -68,6 +68,10 @@ class ClientPkgPlugin < Servlet
     @build_busy = false
   end
   
+  def ready?
+    return (not @build_busy)
+  end
+
   def open
     if not @thr and RSence.args[:autoupdate]
       @thr = Thread.new do
