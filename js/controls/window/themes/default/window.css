@@ -23,6 +23,15 @@
   cursor: inherit;
   background-repeat: no-repeat;
 }
+.window_bg, .window_body {
+  opacity: 0.95;
+}
+.window_titlebar {
+  opacity: 0.97;
+}
+.inactive .window_titlebar {
+  opacity: 0.95;
+}
 
 .window_shadow {
   left: 4px; right: 4px; top: 4px; bottom: 4px;
