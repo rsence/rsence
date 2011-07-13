@@ -198,11 +198,11 @@ module RSence
         end
       end
     
-      if RUBY_VERSION.to_f >= 1.9
-        # The encodings mess up compression when using ruby1.9
-        warn "Disabling gzip support for ruby 1.9" if args[:debug]
-        config[:no_gzip] = true
-      end
+      # if RUBY_VERSION.to_f >= 1.9
+      #   # The encodings mess up compression when using ruby1.9
+      #   warn "Disabling gzip support for ruby 1.9" if args[:debug]
+      #   config[:no_gzip] = true
+      # end
     
       # The default address of the index_html plugin
       unless config[:index_html].has_key?(:respond_address)
