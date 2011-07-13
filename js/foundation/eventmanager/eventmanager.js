@@ -750,14 +750,16 @@ EVENT = {
     // if it's no longer the active control.
     _prevActiveCtrl = _this.activeControl;
     // Did the active control change?
-    if (_ctrl && (_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || _prevActiveCtrl._lostActiveStatus)) {
+    if (_ctrl && (_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus))) {
       if (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus) {
         // Previously active control just lost the active status.
-        _prevActiveCtrl.active = false;
-        _prevActiveCtrl._lostActiveStatus(_ctrl);
-        if(_this.focusTrace){
-          _prevActiveCtrl.setStyle('border','2px solid green');
-          _this.prevActiveCtrl && _this.prevActiveCtrl.setStyle('border','2px solid blue');
+        if( _prevActiveCtrl ){
+          _prevActiveCtrl.active = false;
+          _prevActiveCtrl._lostActiveStatus(_ctrl);
+          if(_this.focusTrace){
+            _prevActiveCtrl.setStyle('border','2px solid green');
+            _this.prevActiveCtrl && _this.prevActiveCtrl.setStyle('border','2px solid blue');
+          }
         }
         _this.prevActiveCtrl = _prevActiveCtrl;
       }
