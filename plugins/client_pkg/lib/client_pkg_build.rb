@@ -307,7 +307,8 @@ class ClientPkgBuild
     end
     @bundles_found = {} # populated by add_bundle
     @conversion_stats = {} # populated by add_hints
-    @src_dirs.each do | src_dir |
+    src_dirs = @src_dirs.clone
+    src_dirs.each do | src_dir |
       find_bundles( src_dir )
     end
     @destination_files = {} # rename to package_products
