@@ -160,6 +160,7 @@ HTimeSheet = HControl.extend({
     
   },
   
+  // extra hook for refreshing; updates label and hours before doing common things
   refresh: function(){
     if( this.drawn ){
       if( this.options.autoLabel ){
@@ -170,21 +171,25 @@ HTimeSheet = HControl.extend({
     this.base();
   },
   
+  // set the timezone offset (in seconds)
   setTzOffset: function( _tzOffset ){
     this.options.tzOffset = _tzOffset;
     this.refresh();
   },
   
+  // set the start timestamp of the timesheet
   setTimeStart: function( _timeStart ){
     this.options.timeStart = _timeStart;
     this.refresh();
   },
   
+  // set the end timestamp of the timesheet
   setTimeEnd: function( _timeEnd ){
     this.options.timeEnd = _timeEnd;
     this.refresh();
   },
   
+  // sets the range of timestams of the timesheet
   setTimeRange: function( _timeRange ){
     if( (_timeRange instanceof Array) && (_timeRange.length === 2) ){
       this.setTimeStart( _timeRange[0] );
@@ -200,6 +205,7 @@ HTimeSheet = HControl.extend({
     }
   },
   
+  // sets the timestamp of the timesheet
   setDate: function( _date ){
     var
     _range = (this.options.timeEnd - this.options.timeStart),
@@ -211,6 +217,7 @@ HTimeSheet = HControl.extend({
     this.refresh();
   },
   
+  // draw decorations
   drawSubviews: function(){
     this.drawHours();
     var
@@ -237,6 +244,7 @@ HTimeSheet = HControl.extend({
     this.dragPreview.setStyleOfPart('state','color','#fff');
   },
   
+  // event listener for clicks, cancels event if a drag event mistakenly triggered it
   click: function( x, y, b ){
     if( !this.startDragTime ){
       this.clickCreate( x,y );
@@ -245,11 +253,11 @@ HTimeSheet = HControl.extend({
     this.clickCreated = false;
   },
   
+  // creates an item on click
   clickCreate: function(x,y){
     var
     _startTime = this.pxToTime( y-this.pageY() ),
     _endTime = _startTime + this.minDuration;
-    // console.log('start:',(new Date(_startTime*1000)).toUTCString(),', end:',(new Date(_endTime*1000)).toUTCString());
     this.refreshDragPreview( _startTime, _endTime );
     this.dragPreview.bringToFront();
     this.dragPreview.show();
@@ -261,6 +269,7 @@ HTimeSheet = HControl.extend({
     }
   },
   
+  // event listener for double clicks, simulates two sequential clicks
   doubleClick: function(x,y){
     if( !this.clickCreated ){
       this.click(x,y);
@@ -268,6 +277,7 @@ HTimeSheet = HControl.extend({
     this.clickCreated = false;
   },
   
+  // update the preview area
   refreshDragPreview: function( _startTime, _endTime ){
     this.dragPreviewRect.setTop( this.timeToPx( _startTime, true ) );
     this.dragPreviewRect.setBottom( this.timeToPx( _endTime, true ) );
@@ -280,9 +290,9 @@ HTimeSheet = HControl.extend({
     this.dragPreview.refreshValue();
   },
   
+  // drag & drop event listeners, used for dragging new timesheet items
   startDrag: function( x, y, b ){
     this.startDragTime = this.pxToTime( y-this.pageY() );
-    // y -= this.pageY();
     this.refreshDragPreview( this.startDragTime, this.startDragTime + this.minDuration );
     this.dragPreview.bringToFront();
     this.dragPreview.show();
@@ -322,15 +332,13 @@ HTimeSheet = HControl.extend({
     return false;
   },
   
+  // a resize triggers refresh, of which the important part is refreshValue, which triggers redraw of the time sheet items
   resize: function(){
     this.base();
     this.refresh();
   },
-  debugPos: function( _px, color ){
-    var _debugPosId = ELEM.make(this.elemId,'div');
-    ELEM.setCSS(_debugPosId,'position:absolute;left:0px;top:'+_px+'px;right:0px;background-color:'+color+';height:1px;');
-    setTimeout( function(){ ELEM.del( _debugPosId ); }, 1000 );
-  },
+
+  // snaps the time to grid
   snapTime: function( _timeSecs ){
     var
     _options = this.options,
@@ -347,12 +355,16 @@ HTimeSheet = HControl.extend({
     }
     return _timeSecs;
   },
+
+  // snaps the pixel to grid
   snapPx: function( _px ){
     var
     _timeSecs = this.pxToTime( _px );
     _timeSecs = this.snapTime( _timeSecs );
     return this.timeToPx( _timeSecs );
   },
+
+  // activates the editor; _item is the timesheet item to edit
   activateEditor: function( _item ){
     if( this['editor'] ){
       var _editor = this.editor;
@@ -375,6 +387,7 @@ HTimeSheet = HControl.extend({
   setEditor: function( _editor ){
     this.editor = _editor;
   },
+
 /** = Description
   * Destructor; destroys the editor first and commences inherited die.
   *
@@ -385,6 +398,7 @@ HTimeSheet = HControl.extend({
     this.base();
   },
   
+  // converts pixels to time
   pxToTime: function( _px, _noSnap ){
     var
     _options = this.options,
@@ -409,6 +423,8 @@ HTimeSheet = HControl.extend({
     }
     return Math.round( _timeSecs );
   },
+
+  // converts time to pixels
   timeToPx: function( _time, _snap ){
     
     if( _snap ){
@@ -422,13 +438,9 @@ HTimeSheet = HControl.extend({
     
     if( _time < _timeStart ){
       _time = _timeStart;
-      // this.debug && console.log('time:',_time,' is less than timeStart:',_timeStart);
-      // return 'underflow';
     }
     if( _time > _timeEnd ){
       _time = _timeEnd;
-      // this.debug && console.log('time:',_time,' is more than timeEnd:',_timeEnd);
-      // return 'overflow';
     }
     
     var
@@ -441,6 +453,8 @@ HTimeSheet = HControl.extend({
     _px        = _top + ( _timeSecs * _pxPerSec );
     return Math.round( _px );
   },
+
+  // converts time to pixels for the rect
   rectFromValue: function( _value ){
     var
     _topPx = this.timeToPx( _value.start ),
@@ -452,11 +466,9 @@ HTimeSheet = HControl.extend({
       _topPx = _itemOptions.offsetTop;
     }
     else if( _topPx === 'overflow' ){
-      this.debug && console.log('item out of range:',_value);
       return false;
     }
     if( _bottomPx === 'underflow' ){
-      this.debug && console.log('item out of range:',_value);
       return false;
     }
     else if( _bottomPx === 'overflow' ){
@@ -468,12 +480,13 @@ HTimeSheet = HControl.extend({
     }
     return _rect;
   },
+
+  // creates a single time sheet item component
   createTimeSheetItem: function( _value ){
     var
     _rect = this.rectFromValue( _value ),
     _item;
     if( _rect === false ){
-      this.debug && console.log('invalid item:',_value);
       return false;
     }
     _item = HTimeSheetItem.nu(
@@ -490,6 +503,274 @@ HTimeSheet = HControl.extend({
     );
     return _item;
   },
+
+  // calls createTimeSheetItem with each value of the timesheet value array
+  drawTimeSheetItems: function(){
+    
+    var
+    _data = this.value,
+    i = 0,
+    _value,
+    _item,
+    _items = this.timeSheetItems;
+
+    if((_data instanceof Array) && (_data.length > 0)){
+      for( ; i < _data.length; i++){
+        _value = _data[i];
+        _item = this.createTimeSheetItem( _value );
+        if(_item){
+          _items.push( _item );
+        }
+      }
+    }
+  },
+
+
+/** =Description
+  * Create a new timeSheetItems if it hasn't been done already,
+  * otherwise destroy the items of the old one before proceeding.
+  **/
+  _initTimeSheetItems: function(){
+    if(this.timeSheetItems === undefined){
+      this.timeSheetItems = [];
+    }
+    else if(this.timeSheetItems.length > 0){
+      for( var i=0; i<this.timeSheetItems.length; i++){
+        this.timeSheetItems[i].die();
+      }
+      this.timeSheetItems = [];
+    }
+  },
+
+  // checks if i overlaps j
+  // todo: refactor, it's a bit messy
+  _doesOverlap: function( i, j, _overlaps, _rectSelf, _items ){
+    if( _rectSelf === undefined ) {
+      _rectSelf = this.timeSheetItems[i].rect;
+    }
+    if( _items === undefined ){
+      _items = this.timeSheetItems;
+    }
+    var
+    _isntSame = (i !== j),
+    _isntListedSelf = (_overlaps.indexOf(i)===-1),
+    _isntListedOther = (_overlaps.indexOf(j)===-1),
+    _rectOther = _items[j].rect;
+    if( !_isntSame ){ return false; }
+    if( !_isntListedSelf ){ return false; }
+    if( _isntListedOther ){
+      if( _rectOther.intersects( _rectSelf, 1, 1 ) || _rectSelf.intersects( _rectOther, 1, 1 ) ){
+        return true;
+      }
+    }
+    return false;
+  },
+
+
+  // finds the index in the array which contains most sequential items
+  _findLargestSequence: function( _arr ){
+    var
+    i = 1,
+    _index = 0,
+    _length = 1,
+    _maxLength = 1,
+    _bestIndex = 0;
+    for( ; i < _arr.length; i++ ){
+      // grow:
+      if( ( _arr[i] - _arr[i-1] === 1 ) && ( _index === i-_length ) ){
+        _length += 1;
+      }
+      // reset:
+      else {
+        _index = i;
+        _length = 1;
+      }
+      if( _length > _maxLength ){
+        _bestIndex = _index;
+        _maxLength = _length;
+      }
+    }
+    return [ _bestIndex, _maxLength ];
+  },
+
+  // find the amount of overlapping time sheet items
+  _findOverlapCount: function(){
+    var
+    _overlapCount,
+    _items = this._sortedTimeSheetItems(),
+    _overlaps = [],
+    _maxOverlapCount = 0,
+    i = 0,
+    j;
+    for( ; i < _items.length; i++ ){
+      _overlapCount = 0;
+      for( j = 0; j < _items.length; j++ ){
+        if( this._doesOverlap( i, j, _overlaps, _items[i].rect, _items ) ){
+          _overlapCount++;
+          _overlaps.push( j );
+        }
+      }
+      if( _overlapCount !== 0 ){
+        _overlaps.push( i );
+        if( _overlapCount > _maxOverlapCount ){
+          _maxOverlapCount = _overlapCount;
+        }
+      }
+    }
+    return _maxOverlapCount;
+  },
+
+  // returns a sorted copy of the timeSheetItems array
+  _sortedTimeSheetItems: function( _sortFn ){
+    if( _sortFn === undefined ){
+      _sortFn = function(a,b){
+        return ( b.rect.height - a.rect.height);
+      };
+    }
+    var
+    i = 0,
+    _arr = [],
+    _items = this.timeSheetItems;
+    for( ; i < _items.length; i++ ){
+      _arr.push( _items[i] );
+    }
+    _arr = _arr.sort(_sortFn);
+    return _arr;
+  },
+
+
+  // Optimizes the left and right position of each timesheet item to fit
+  _updateTimelineRects: function(){
+    var
+    // loop indexes:
+    i, j, k, l,
+    // amount of items ovelapping (max, actual number might be smaller after optimization)
+    _options = this.options,
+    _rect = this.rect,
+    _overlapCount = this._findOverlapCount(),
+    _availWidth = ( _rect.width - _options.itemOffsetRight - _options.itemOffsetLeft ),
+    _left = _options.itemOffsetLeft,
+    _width = Math.floor( _availWidth / (_overlapCount+1) ),
+    // get a list of timesheet items sorted by height (larger to smaller order)
+    _items = this._sortedTimeSheetItems(),
+    _itemCount = _items.length,
+    _itemRect,
+    _testRect,
+    _leftPos,
+    _rightPos,
+    _maxCol = 0,
+    _origCol,
+    _origColById = [],
+    _overlapCols,
+    _vacantCols,
+    _optimalColAndLength,
+    _col,
+    _colWidth,
+    _overlaps;
+    
+    // No overlapping; nothing to do
+    if(_overlapCount === 0 ){
+      return false;
+    }
+
+    // move all items initially to one column right of the max overlaps
+    _leftPos = _left+(_width*(_overlapCount+1));
+    for( i = 0; i < _itemCount; i++ ){
+      _itemRect = _items[i].rect;
+      _itemRect.setLeft( _leftPos );
+      _itemRect.setRight( _leftPos+_width );
+    }
+
+    // optimize gaps by traversing each combination
+    // and finding the first column with no gaps
+    // the top-level loops three times in the following modes:
+    // 0: place items into the first vacant column and find the actual max columns
+    // 1: stretch columns to final column width
+    // 2: stretch columns to fit multiple columns, if space is vacant
+    for( l = 0; l < 3; l++ ){
+      for( i = 0; i < _itemCount; i++){
+        _itemRect = _items[i].rect;
+        // in mode 1, just the column widths are changed
+        if( l === 1 ){
+          _leftPos = _left + (_origColById[i]*_width);
+          _itemRect.setLeft( _leftPos );
+          _itemRect.setRight( _leftPos + _width );
+          continue;
+        }
+        _testRect = HRect.nu( _itemRect );
+        
+        _overlapCols = [];
+        _vacantCols = [];
+
+        // test each column position (modes 0 and 2)
+        for( k = 0; k < _overlapCount+1; k++ ){
+          _leftPos = _left + (k*_width);
+          _testRect.setLeft( _leftPos );
+          _testRect.setRight( _leftPos + _width );
+          _overlaps = [];
+          for( j = 0; j < _itemCount; j++){
+            if( this._doesOverlap( i, j, _overlaps, _testRect, _items ) ){
+              if( _overlapCols.indexOf( k ) === -1 ){
+                _overlapCols.push( k );
+              }
+            }
+          }
+          if( _vacantCols.indexOf( k ) === -1 && _overlapCols.indexOf( k ) === -1 ){
+            _vacantCols.push( k );
+          }
+        }
+
+        // on the first run (mode 0) place items into the first column:
+        if( l === 0 ){
+          _origCol = _vacantCols[0];
+          _origColById.push( _origCol );
+          _leftPos = _left+(_origCol*_width);
+          _rightPos = _leftPos + _width;
+          if( _maxCol < _origCol ){
+            _maxCol = _origCol;
+          }
+        }
+        else {
+          // on mode 2: stretch to fill multiple column widths,
+          // because no item moving is done anymore at this stage, so we know what's free and what's not
+          if( _vacantCols.length > 0 ){
+            _optimalColAndLength = this._findLargestSequence( _vacantCols );
+            _col = _vacantCols[ _optimalColAndLength[0] ];
+            _colWidth = _optimalColAndLength[1];
+          }
+          else {
+            _origCol = _origColById[i];
+            _col = _origCol;
+            _colWidth = 1;
+          }
+          _leftPos = _left+(_col*_width);
+          _rightPos = _leftPos+(_colWidth*_width);
+        }
+        _itemRect.setLeft( _leftPos );
+        _itemRect.setRight( _rightPos );
+      }
+      // afther the first run (mode 0) we know the actual amount of columns, so adjust column width accordingly
+      if( l === 0 ){
+        _overlapCount = _maxCol;
+        _width = Math.floor( _availWidth / (_maxCol+1) );
+      }
+    }
+    return true;
+  },
+
+  // draws the timeline (sub-routine of refreshValue)
+  drawTimeline: function(){
+    this._initTimeSheetItems();
+    this.drawTimeSheetItems();
+    this._updateTimelineRects();
+    // use the dimensions of the views
+    for( var i = 0; i < this.timeSheetItems.length; i++){
+      this.timeSheetItems[i].drawRect();
+    }
+  },
+
+  _sha: SHA.nu(8),
+
 /*
 
 Each item looks like this, any extra attributes are allowed,
@@ -512,66 +793,22 @@ but not used and not guaranteed to be preserved:
   *
   **/
   refreshValue: function(){
+    
     if(!this.itemOptions){
       return;
     }
-    this.dragPreview.hide();
+
+    // optimization that ensures the rect and previous value are different before redrawing
     var
-    _data = this.value,
-    i;
-    if(this.listItemViews === undefined){
-      this.listItemViews = [];
-    }
-    else if(this.listItemViews.length > 0){
-      for( i=0; i<this.listItemViews.length; i++){
-        this.listItemViews[i].die();
-      }
-      this.listItemViews = [];
-    }
-    if((_data instanceof Array) && (_data.length > 0)){
-      var
-      _value,
-      _item;
-      for( i=0; i<_data.length; i++){
-        _value = _data[i];
-        _item = this.createTimeSheetItem( _value );
-        if(_item){
-          this.listItemViews.push( _item );
-        }
-      }
-    }
-    var
-    _overlaps = [],
-    j;
-    for(i=0;i<this.listItemViews.length;i++){
-      for(j=0;j<this.listItemViews.length;j++){
-        if((i !== j) && (_overlaps.indexOf(i)===-1) && (_overlaps.indexOf(j)===-1)){
-          if(this.listItemViews[i].rect.intersects(this.listItemViews[j].rect)){
-            _overlaps.push(i);
-          }
-        }
-      }
-    }
-    var
-    _overlapCount = _overlaps.length+1,
-    _overlapLefts = {},
-    _itemWidth = ( this.rect.width - this.options.itemOffsetRight - this.options.itemOffsetLeft ),
-    _width = Math.floor( _itemWidth / _overlapCount),
-    _left = this.options.itemOffsetLeft;
-    for(j=0;j<_overlapCount;j++){
-      _overlapLefts[_overlaps[j]] = _left + (j*_width) + _width;
-    }
-    for(i=0;i<this.listItemViews.length;i++){
-      if(_overlaps.indexOf(i)===-1){
-        this.listItemViews[i].rect.setLeft(_left);
-      }
-      else {
-        this.listItemViews[i].rect.setLeft(_overlapLefts[i]);
-      }
-      this.listItemViews[i].rect.setWidth(_width);
-    }
-    for(i=0;i<this.listItemViews.length;i++){
-      this.listItemViews[i].drawRect();
+    _valueStr = COMM.Values.encode( this.value ),
+    _rectStr = this.rect.toString(),
+    _timeRangeStr = this.options.timeStart+':'+this.options.timeEnd,
+    _shaSum = this._sha.strSHA1( _valueStr+_rectStr+_timeRangeStr );
+    if( this._prevSum !== _shaSum ){
+      // the preview timesheet item is hidden when new data arrives (including what it created)
+      this.dragPreview.hide();
+      this._prevSum = _shaSum;
+      this.drawTimeline();
     }
   }
   
