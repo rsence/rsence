@@ -1810,7 +1810,7 @@ HView = HClass.extend({
   **/
   invalidatePositionCache: function() {
     for(var i=0; i<this.views.length; i++) {
-      HSystem.views[this.views[i]].invalidatePositionCache();
+      HSystem.views[this.views[i]]['invalidatePositionCache'] && HSystem.views[this.views[i]].invalidatePositionCache();
     }
     return this;
   },
