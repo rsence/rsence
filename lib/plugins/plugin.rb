@@ -332,7 +332,6 @@ module RSence
       # @private  Returns a sanitized copy of a single responder specification.
       def sanitize_value_responders( responders_dirty )
         if responders_dirty.class != Array
-          warn "Unsupported responders type: #{responders_dirty.inspect} (expected Array or Hash). Trying work-around.." if responders_dirty.class != Hash and RSence.args[:debug]
           responders_dirty = [ responders_dirty ]
         end
         responders_clean = []
