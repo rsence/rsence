@@ -390,18 +390,34 @@ HRect = HClass.extend({
   * of a side in common with rect, and false if it doesn't.
   *
   * = Parameters
-  * +_rect+::   A HRect instance to intersect this rect with
+  * +_rect+::      A HRect instance to intersect this rect with
+  * +_insetByX+::  Insets +_rect+ by +_insetBy+ pixels, optional
+  * +_insetByY+::  Insets +_rect+ by +_insetBy+ pixels, optional. If omitted, but +_insetByX+ is defined, then +_insetByY+ equals +_insetByX+.
   *
   * = Returns
   * A Boolean (true/false) depending on the result.
   *
   **/
-  intersects: function(_rect) {
+  intersects: function( _rect, _insetByX, _insetByY ) {
+    if( _insetByX !== undefined ){
+      _rect = HRect.nu( _rect );
+      if( _insetByY === undefined ){
+        _insetByY = _insetByX;
+      }
+      _rect.insetBy( _insetByX, _insetByY );
+    }
     return (
-      ((_rect.left >= this.left && _rect.left <= this.right) ||
-        (_rect.right >= this.left && _rect.right <= this.right)) && 
-      ((_rect.top >= this.top && _rect.top <= this.bottom) ||
-        (_rect.bottom >= this.top && _rect.bottom <= this.bottom)));
+      ( ( _rect.left >= this.left && _rect.left <= this.right ) ||
+        ( _rect.right >= this.left && _rect.right <= this.right )
+      ) && 
+      ( ( _rect.top >= this.top && _rect.top <= this.bottom) ||
+        ( _rect.bottom >= this.top && _rect.bottom <= this.bottom)
+      )
+    );
+  },
+
+  overlaps: function( _rect, _insetbyX, _insetByY ){
+    return this.intersects( _rect, _insetbyX, _insetByY );
   },
   
 /** = Description
@@ -651,6 +667,10 @@ HRect = HClass.extend({
       _viewId = this.viewIds[i];
       HSystem.views[_viewId].drawRect();
     }
+  },
+
+  toString: function(){
+    return ('[object Rect left='+this.left+' top='+this.top+' width='+this.width+' height='+this.height+' right='+this.right+' bottom='+this.bottom+']');
   }
   
 });
