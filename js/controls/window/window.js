@@ -173,7 +173,9 @@ HWindow = HDynControl.extend({
     }
     return _rect;
   },
-  
+
+  hasWindowFocus: false,
+
 /** Reports to HSystem that this window has the focus and the 
   * previously active window needs to blur 
   **/
@@ -184,6 +186,7 @@ HWindow = HDynControl.extend({
 /** HSystem calls this method, whenever this window is allowed to be focused
   **/
   windowFocus: function(){
+    this.hasWindowFocus = true;
     this.toggleCSSClass(this.elemId, 'inactive', false);
   },
   
@@ -191,6 +194,7 @@ HWindow = HDynControl.extend({
   * focus (another window focused) 
   **/
   windowBlur: function(){
+    this.hasWindowFocus = false;
     this.toggleCSSClass(this.elemId, 'inactive', true);
     this.setStyle('cursor','default');
   },
