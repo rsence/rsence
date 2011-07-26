@@ -120,6 +120,8 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *rake*[http://rake.rubyforge.org]
   * Ruby build tool
   * Not necessarily required via ruby gems, if installed via a system-level package
+* *coffee-script*[https://github.com/josh/ruby-coffee-script]
+  * Ruby library for .coffee -> .js compliation
 * *rack*[http://rack.rubyforge.org]
   * Abstract ruby web server interface
   * A rack handler is also required. One of the following is suggested:

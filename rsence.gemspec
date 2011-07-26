@@ -1,12 +1,13 @@
 
 Gem::Specification.new do |s|
   s.name      = 'rsence'
-  s.author    = 'Riassence Inc.'
+  s.authors   = [ 'Riassence Inc.', 'Juha-Jarmo Heinonen' ]
   s.email     = 'info@rsence.org'
   s.version   = File.read('VERSION')
   s.date      = Time.now
   s.homepage  = 'http://www.rsence.org/'
   s.rubyforge_project = 'rsence-'
+  s.license   = 'GPL-3'
   prerelease  = s.version.to_s.end_with?('.pre')
   s.name      = 'rsence-pre' if prerelease
   normalized_version = s.version.to_s.to_f
@@ -14,7 +15,7 @@ Gem::Specification.new do |s|
   if normalized_version >= 2.1 and prerelease
     s.version = s.version.to_s[0..-5]
   end
-  s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of the RSence framework."
+  s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of RSence."
   # deprecated in rubygems 1.8:
   # s.has_rdoc  = 'yard'
   s.description = <<-END
@@ -28,10 +29,9 @@ The purpose of the server is to provide a highly optimized yet easy to use Ruby 
 
 RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and some of them are easily integrated into RSence.
 END
-  s.add_dependency( "rsence-deps", "963" )
+  s.add_dependency( "rsence-deps", "964" )
   require 'rake'
   s.files = FileList[
-    'bin/rsence',
     'lib/**/*',
     'setup/welcome/**/*',
     'conf/default_conf.yaml',

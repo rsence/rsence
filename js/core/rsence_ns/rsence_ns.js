@@ -6,12 +6,10 @@
  *   with this software package. If not, contact licensing@riassence.com
  */
 
-// RSence namespace, nothing here yet.
-// However, a future version of client_pkg will pack var's assigned like..
-//   var//RSence
-// ..into this namespace.
-// Additional logic for handling the namespaces will however be required.
-var RSence = {
+// RSence client-side namespace initialization.
+// Current contents are a store for guiTrees and the serverConf method for setting up variables before starting.
+var
+RSence = {
   
   // Configuration method for the html document of the server
   serverConf: function(_clientPrefix,_helloUrl){

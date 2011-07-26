@@ -286,6 +286,12 @@ module RSence
       puts data if @config[:trace]
       @buffer.push( data )
     end
+
+    # Same as #reply, but with CoffeeScript instead of JS
+    def coffee(data)
+      puts data if @config[:trace]
+      @buffer.push( @plugins[:client_pkg].coffee( data ) )
+    end
   
     # @private For value manager; insert changed values BEFORE other js.
     def reply_value( operation_type, value_id, data=nil )

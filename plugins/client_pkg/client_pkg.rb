@@ -141,6 +141,10 @@ class ClientPkgPlugin < Servlet
   def squeeze( js )
     return @client_build.squeeze( js )
   end
+
+  def coffee( src )
+    return @client_build.coffee( src )
+  end
   
   def init
     

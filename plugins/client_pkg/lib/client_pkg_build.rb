@@ -12,8 +12,10 @@ require 'jscompress'
 require 'html_min'
 begin
   require 'coffee-script'
+  RSence.config[:client_pkg][:coffee_supported] = true
 rescue LoadError
   warn "CoffeeScript not installed. Install the 'coffee-script' gem to enable."
+  RSence.config[:client_pkg][:coffee_supported] = false
 end
 
 
@@ -124,12 +126,11 @@ class ClientPkgBuild
       end
       tgt_hash_gfx = tgt_hash_theme[:gfx]
       gfx_size = read_gfx( src_path_theme, tgt_hash_gfx )
-      puts "gfx size of #{bundle_name}: #{gfx_size.inspect}"
       @theme_sizes[   theme_name ][:gfx] += gfx_size
     end
   end
   
-  def add_bundle( bundle_name, bundle_path, entries, has_coffee=false )
+  def add_bundle( bundle_name, bundle_path, entries, has_js=false, has_coffee=false )
     has_themes = entries.include?( 'themes' ) and File.directory?( File.join( bundle_path, 'themes' ) )
     if @bundles_found.has_key?( bundle_name )
       @logger.log( "JSBuilder ERROR: duplicate bundles with the name #{bundle_name.inspect} found." )
@@ -142,8 +143,21 @@ class ClientPkgBuild
       warn "JSBuilder WARNING: bundle name #{bundle_name.inspect} does not belong to any package, skipping.." if ARGV.include?('-d')
       return true
     end
-    if has_coffee
-      js_data = CoffeeScript.compile( read_file( File.join( bundle_path, bundle_name+'.js' ) ) )
+    if has_coffee and @coffee_supported
+      begin
+        coffee_path = File.join( bundle_path, bundle_name+'.coffee' )
+        coffee_src = read_file( coffee_path )
+        js_data = CoffeeScript.compile( coffee_src, :bare => true )
+      rescue CoffeeScript::CompilationError
+        if has_js
+          js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}, using the js variant instead." );}
+          js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
+        else
+          js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}" );}
+        end
+      end
+    elsif not has_js
+      js_data = %{console.log( "ERROR: CoffeeScript not suuported and no JS source available for #{bundle_path}" );}
     else
       js_data = read_file( File.join( bundle_path, bundle_name+'.js' ) )
     end
@@ -168,12 +182,12 @@ class ClientPkgBuild
       dir_name    = File.split( src_dir )[1]
       # bundles are defined as directories with a js file of the same name plus the 'js.inc' tagfile
       not_disabled = ( not dir_entries.include?( 'disabled' ) )
-      has_js = dir_entries.include?( dir_name+'.js' ) #or dir_entries.include?( 'main.js' )
-      has_coffee = dir_entries.include?( dir_name+'.coffee' ) #or dir_entries.include?( 'main.coffee' )
+      has_js = dir_entries.include?( dir_name+'.js' )
+      has_coffee = dir_entries.include?( dir_name+'.coffee' )
       is_bundle   = not_disabled and ( has_js or has_coffee )
       # if src_dir is detected as a bundle, handle it in add_bundle
       if is_bundle
-        add_bundle( dir_name, src_dir, dir_entries, has_coffee )
+        add_bundle( dir_name, src_dir, dir_entries, has_js, has_coffee )
       end
       # descend into the sub-directory:
       dir_entries.each do | dir_entry |
@@ -225,7 +239,7 @@ class ClientPkgBuild
     end
   end
   
-  def squeeze( js )
+  def squeeze( js, is_coffee=false )
     unless @no_whitespace_removal
       begin
         js = @jsmin.minimize( js )#.strip
@@ -238,6 +252,16 @@ class ClientPkgBuild
       js = @jscompress.compress( js )
     end
     return js.strip
+  end
+
+  def coffee( src )
+    begin
+      js = CoffeeScript.compile( src, :bare => true )
+    rescue CoffeeScript::CompilationError
+      warn "Invalid CoffeeScript supplied:\n----\n#{src}----\n"
+      js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
+    end
+    return squeeze( js )
   end
 
   def process_js( src_in )
@@ -494,6 +518,8 @@ class ClientPkgBuild
   
   def initialize( config, logger )
     
+    @coffee_supported = config[:coffee_supported]
+
     @logger = logger
     
     # src_dirs is supposed to be an array of js source directories

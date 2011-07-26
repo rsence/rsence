@@ -112,6 +112,8 @@ module RSence
           return get_params( sym_arr, params )
         elsif data_class == String and gui_data.strip.start_with?('function(')
           return @parent.plugins[:client_pkg].squeeze( "a="+json_fun( gui_data.to_json ) )[2..-1]
+        elsif data_class == String and gui_data.strip.start_with?('coffee:')
+          return @parent.plugins[:client_pkg].coffee( gui_data.strip[7..-1], true )
         end
         return gui_data
       end
