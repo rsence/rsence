@@ -69,14 +69,18 @@ class MainPlugin < Plugin
     @conf[:deps].each do |dep|
       deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
     end
+    deps_src += %{<script src="__CLIENT_BASE__/js/#{@conf[:boot_lib]}.js"></script>}
+    @conf[:default_libs].each do |dep|
+      deps_src += %{<script src="__CLIENT_BASE__/js/#{dep}.js"></script>}
+    end
     client_base = File.join(@bconf[:h],client_rev)
     
+    index_html.gsub!( '__SCRIPT_DEPS__',   deps_src          )
     index_html.gsub!( '__CLIENT_BASE__',   client_base       )
     index_html.gsub!( '__DEFAULT_TITLE__', @conf[:title]     )
     index_html.gsub!( '__CLIENT_REV__',    client_rev        )
     index_html.gsub!( '__CLIENT_HELLO__',  @bconf[:hello]    )
     index_html.gsub!( '__NOSCRIPT__',      @conf[:noscript]  )
-    index_html.gsub!( '__SCRIPT_DEPS__',   deps_src          )
     
     return index_html
   end
@@ -234,10 +238,46 @@ class MainPlugin < Plugin
     restore_ses( msg )
   end
   
+  def index_deps_setup( msg )
+    ses = msg.session
+    if not ses.has_key?( :deps )
+      # make an array of dependencies for this session, if not already done
+      ses[:deps] = []
+    end
+    compound_pkgs = RSence.config[:client_pkg][:compound_packages]
+    boot_dep = @conf[:boot_lib]
+    unless ses[:deps].include?( boot_dep )
+      if compound_pkgs.include?( boot_dep )
+        compound_pkgs[ boot_dep ].each do |pkg_name|
+          ses[:deps].push( pkg_name )
+          msg.reply(%{jsLoader.loaded("#{pkg_name}");})
+        end
+      end
+      ses[:deps].push( boot_dep )
+      msg.reply(%{jsLoader.loaded("#{boot_dep}");})
+      if boot_dep == 'rsence'
+        ses[:deps].push( 'std_widgets' )
+        msg.reply(%{jsLoader.loaded("std_widgets");})
+      end
+    end
+    @conf[:default_libs].each do |dep_lib|
+      unless ses[:deps].include?( dep_lib )
+        if compound_pkgs.include?( dep_lib )
+          compound_pkgs[ dep_lib ].each do |pkg_name|
+            ses[:deps].push( pkg_name )
+            msg.reply(%{jsLoader.loaded("#{pkg_name}");})
+          end
+        end
+        ses[:deps].push( dep_lib )
+        msg.reply(%{jsLoader.loaded("#{dep_lib}");})
+      end
+    end
+  end
   
   # Called once when a session is restored or cloned using the cookie's ses_key
   def restore_ses( msg )
     super
+    index_deps_setup( msg )
     ## Resets session data to defaults
     ses = get_ses( msg )
     ses[:boot] = 0

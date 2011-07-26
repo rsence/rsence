@@ -26,6 +26,12 @@
     #
     # A list of javascript dependencies to include in the html
     :deps: [ ]
+    #
+    # Boot library:
+    :boot_lib: core
+    #
+    # Default additional libraries to use:
+    :default_libs: []
   #
   # The settings for the main plugin
   :main_plugin:
@@ -315,14 +321,23 @@
       graphics:
         - svgcontrol
     
-    # Special packages that include other packages (not used currently)
+    # Special packages that include other packages
     :compound_packages:
-      allinone:
+      rsence:
         - core
         - default_theme
         - controls
         - lists
         - datetime
+        - graphics
+        - servermessage
+      std_widgets:
+        - default_theme
+        - controls
+        - lists
+        - datetime
+        - graphics
+        - servermessage
 
     # List of variables and other names beginning
     # with a underscore that should not be obfuscated

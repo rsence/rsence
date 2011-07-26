@@ -18,6 +18,8 @@ var RSence = {
     COMM.ClientPrefix=_clientPrefix;
     COMM.Transporter.HelloUrl=_helloUrl;
     HThemeManager.themePath=_clientPrefix+'/themes';
+    HThemeManager._start();
+    COMM.AutoSyncStarter.start();
   },
   
   // Structure reserved for JSONRenderer instances remotely populated by the server

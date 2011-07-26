@@ -388,6 +388,27 @@ HThemeManager = HClass.extend({
       _cssTmpl = _cssTmpl.replace(  this._variable_match, eval( RegExp.$1 )  );
     }
     return _cssTmpl;
+  },
+
+  _initFns: [],
+  _pushStarted: false,
+  _pushStart: function( _fn ){
+    if(this._pushStarted){
+      _fn();
+    }
+    else{
+      this._initFns.push( _fn );
+    }
+  },
+  _start: function(){
+    var
+    _this = this,
+    i = 0;
+    _this._pushStarted = true;
+    for( ; i<_this._initFns.length; i++){
+      _this._initFns[i]();
+    }
+    _this._initFns = [];
   }
   
 });

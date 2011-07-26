@@ -283,6 +283,12 @@ module RSence
         # Check the required dependencies until everything is loaded.
         dependencies.each do |dependency|
           unless ses[:deps].include?( dependency )
+            if RSence.config[:client_pkg][:compound_packages].include?( dependency )
+              RSence.config[:client_pkg][:compound_packages][dependency].each do |pkg_name|
+                ses[:deps].push( pkg_name )
+                msg.reply(%{jsLoader.loaded("#{pkg_name}");})
+              end
+            end
             ses[:deps].push( dependency )
             msg.reply(%{jsLoader.load("#{dependency}");})
           end

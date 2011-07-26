@@ -251,6 +251,9 @@ module RSence
         ## The response status should always be 200 (OK)
         @response.status = 200
         
+        @value_buffer.delete( :new ) if @value_buffer[:new].empty?
+        @value_buffer.delete( :set ) if @value_buffer[:set].empty?
+        @value_buffer.delete( :del ) if @value_buffer[:del].empty?
         buffer = [
           @ses_key,
           @value_buffer,
