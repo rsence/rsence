@@ -18,17 +18,7 @@ Gem::Specification.new do |s|
   s.summary   = "#{'Pre-' if prerelease}Release #{normalized_version} version of RSence."
   # deprecated in rubygems 1.8:
   # s.has_rdoc  = 'yard'
-  s.description = <<-END
-RSence is a RIA ("HTML5" or "Ajax" if you like those terms better) framework designed for responsive GUI applications on the web.
-
-RSence is a flexible and high-performance RIA framework aimed on building responsive, scalable and over-all as high-performance GUI Applications as possible with the chosen technologies.
-
-RSence includes a server for backend tasks and client suppert as well as a Javascript GUI framework to provide responsive user interfaces.
-
-The purpose of the server is to provide a highly optimized yet easy to use Ruby framework for writing applications containing all their assets needed as self-contained plugins bundles. The bundles enable easy distribution and maintenance of RSence projects.
-
-RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and some of them are easily integrated into RSence.
-END
+  s.description = File.read('README.md').split('== Introduction')[1].split('== Installing RSence')[0].strip
   s.add_dependency( "rsence-deps", "964" )
   require 'rake'
   s.files = FileList[
