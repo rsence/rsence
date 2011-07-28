@@ -331,7 +331,6 @@ HSystem = {
       _viewLen = _views.length,
       
       // reference to the setStyle method of the element manager
-      _setStyl = ELEM.setStyle,
       
       // reference to HSystem.views (collection of all views, by index)
       _sysViews = _this.views,
@@ -371,7 +370,7 @@ HSystem = {
         _elemId = _view[ _elemIdStr ];
         
         // do the element manager call itself to update the dom property
-        _setStyl( _elemId, _zIdxStr, i );
+        ELEM.setStyle( _elemId, _zIdxStr, i );
       }
     }
   }

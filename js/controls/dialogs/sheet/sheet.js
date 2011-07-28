@@ -53,28 +53,37 @@ HSheet = HControl.extend({
       var
       _this = this,
       _elemId = _this.elemId,
-      _styl = ELEM.setStyle,
       _rect = _this.rect,
       _width = _rect.width,
       _top = _rect.top,
       _left = 0-Math.floor(_rect.width/2)+_rect.left,
-      _height = _rect.height;
-      
-      _styl( _elemId, 'left', '0px');
-      _styl( _elemId, 'top', '0px');
-      _styl( _elemId, 'right', '0px');
-      _styl( _elemId, 'bottom', '0px');
-      _styl( _elemId, 'width', 'auto');
-      _styl( _elemId, 'height', 'auto');
-      _styl( _elemId, 'min-width', _width+'px');
-      _styl( _elemId, 'min-height', _height+'px');
-      
+      _height = _rect.height,
+      _styles = [
+        'left', '0px',
+        'top', '0px',
+        'right', '0px',
+        'bottom', '0px',
+        'width', 'auto',
+        'height', 'auto',
+        'min-width', _width+'px',
+        'min-height', _height+'px'
+      ],
+      i = 0, _len;;
+      for( _len = _styles.length*2; i < _len; i+=2 ){
+        ELEM.setStyle( _elemId, _styles[i][0], _styles[i+1][1] );
+      }
       if(_this['markupElemIds']){
         var _stateId = _this.markupElemIds['state'];
-        _styl( _stateId, 'left', _left+'px' );
-        _styl( _stateId, 'top', _top+'px' );
-        _styl( _stateId, 'width', _width+'px' );
-        _styl( _stateId, 'height', _height+'px' );
+        _styles = [
+          'left', _left+'px',
+          'top', _top+'px',
+          'width', _width+'px',
+          'height', _height+'px'
+        ];
+        i = 0;
+        for( _len = _styles.length*2; i < _len; i+=2 ){
+          ELEM.setStyle( _stateId, _styles[i][0], _styles[i+1][1] );
+        }
       }
       //-- Show the rectangle once it gets created, unless visibility was set to++
       //-- hidden in the constructor.++

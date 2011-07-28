@@ -625,7 +625,6 @@ HView = HClass.extend({
       i = 0,
       _this = this,
       _elemId = _this.elemId,
-      _styl = ELEM.setStyle,
       _rect = _this.rect,
       _auto = 'auto',
       _left = _this.flexLeft?_rect.left:_auto,
@@ -655,7 +654,7 @@ HView = HClass.extend({
         if( i < 6 && _value !== _auto ){
           _value += 'px';
         }
-        _styl(_elemId,_key,_value,true);
+        ELEM.setStyle(_elemId,_key,_value,true);
       }
       (this.drawn === false) && _this._updateZIndex();
       
