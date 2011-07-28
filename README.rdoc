@@ -1,5 +1,5 @@
 
-= RSence-2.1.0[http://rsence.org/]
+= RSence-2.2.0[http://rsence.org/]
 
 == Introduction
 
