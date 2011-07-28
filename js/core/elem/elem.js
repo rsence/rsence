@@ -820,7 +820,7 @@ ELEM = {
       _attrTodo.splice(_attrTodo.indexOf(_key, 1));
     }
     if (_this._elemTodoH[_id]) {
-      _this._elemTodo.splice(_this._elemTodo.indexOf(_id, 1));
+      _this._elemTodo.splice(_this._elemTodo.indexOf(_id),1);
       _this._elemTodoH[_id] = false;
       _this._checkNeedFlush();
     }
@@ -1230,14 +1230,6 @@ ELEM = {
     
     _browserType.mac      = (_ua.indexOf("Macintosh") !== -1);
     _browserType.win      = (_ua.indexOf("Windows") !== -1);
-    
-    // Experimental; don't treat IE9 as an IE at all.
-    // NOTE: IE9 Beta does still not behave like a standard web browser.
-    //       It will probably require as much tuning as earlier IE versions.
-    if(_browserType.ie9){
-      // _browserType.ie = false;
-      // _browserType.safari = true;
-    }
     
     _browserType.firefox  = _ua.indexOf("Firefox") !== -1;
     _browserType.firefox2 = _ua.indexOf("Firefox/2.") !== -1;
