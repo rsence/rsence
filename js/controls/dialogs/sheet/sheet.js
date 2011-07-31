@@ -69,8 +69,8 @@ HSheet = HControl.extend({
         'min-height', _height+'px'
       ],
       i = 0, _len;;
-      for( _len = _styles.length*2; i < _len; i+=2 ){
-        ELEM.setStyle( _elemId, _styles[i][0], _styles[i+1][1] );
+      for( _len = _styles.length; i < _len; i+=2 ){
+        ELEM.setStyle( _elemId, _styles[i], _styles[i+1] );
       }
       if(_this['markupElemIds']){
         var _stateId = _this.markupElemIds['state'];
@@ -81,16 +81,16 @@ HSheet = HControl.extend({
           'height', _height+'px'
         ];
         i = 0;
-        for( _len = _styles.length*2; i < _len; i+=2 ){
-          ELEM.setStyle( _stateId, _styles[i][0], _styles[i+1][1] );
+        for( _len = _styles.length; i < _len; i+=2 ){
+          ELEM.setStyle( _stateId, _styles[i], _styles[i+1] );
         }
       }
       //-- Show the rectangle once it gets created, unless visibility was set to++
       //-- hidden in the constructor.++
       if(undefined === _this.isHidden || _this.isHidden === false) {
-        _styl( _elemId, 'visibility', 'inherit');
+        ELEM.setStyle( _elemId, 'visibility', 'inherit');
       }
-      _styl( _elemId, 'display', 'block');
+      ELEM.setStyle( _elemId, 'display', 'block');
       _this._updateZIndex();
       _this.drawn = true;
     }
