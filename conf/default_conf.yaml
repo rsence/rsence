@@ -73,7 +73,7 @@
     :port:  8001
     #
     # Bind this ip address ('0.0.0.0' means all)
-    :bind_address:  '0.0.0.0'
+    :bind_address:  '127.0.0.1'
     #
     # Rack handler to use, defaults to thin
     :rack_require: mongrel
@@ -314,6 +314,9 @@
         - popupmenu           # HPopupMenu
         - menuitem            # HMenuItem
       
+      tables:
+        - table               # HTable
+
       # Graphics related control widgets (components)
       # These are not complete and there will probably never be any
       # serious efforts to support legacy browsers, like old IE versions,
@@ -329,6 +332,7 @@
         - controls
         - lists
         - datetime
+        - tables
         - graphics
         - servermessage
       std_widgets:
@@ -336,6 +340,7 @@
         - controls
         - lists
         - datetime
+        - tables
         - graphics
         - servermessage
 
