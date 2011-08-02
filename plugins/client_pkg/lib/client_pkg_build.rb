@@ -261,7 +261,9 @@ class ClientPkgBuild
       warn "Invalid CoffeeScript supplied:\n----\n#{src}----\n"
       js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
     end
-    return squeeze( js )
+    js = squeeze( js )
+    return js[1..-3] if js.start_with?('(') and js.end_with?(');')
+    return js
   end
 
   def process_js( src_in )
