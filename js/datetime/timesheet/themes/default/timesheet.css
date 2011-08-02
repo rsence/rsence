@@ -40,7 +40,7 @@
 
 .timesheet_items {
   left: 29px; top: 19px; right: 1px; bottom: 11px;
-  border: 1px outset #ccc;
+  border: 1px solid #ccc;
   border-radius: 3px;
 }
 
