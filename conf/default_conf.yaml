@@ -267,6 +267,7 @@
         - textcontrol       # HTextControl
         - passwordcontrol   # HPasswordControl
         - textarea          # HTextArea
+        - searchfield       # HSearchField
         - uploader          # HUploader
         - slider            # HSlider
         - vslider           # HVSlider
