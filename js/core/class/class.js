@@ -70,7 +70,7 @@ HClass.prototype = {
  /* The property copying method. */
   extend: function(_source, _value) {
     var _extend = HClass.prototype.extend,
-        _ancestor, _method, _previous, _returnValue, i, _name, _prototype, _protected;
+        _ancestor, _method, _returnValue, i, _name, _prototype, _protected;
     if (arguments.length === 2) {
       _ancestor = this[_source];
       // only methods are inherited
@@ -79,7 +79,7 @@ HClass.prototype = {
         _method = _value;
         _value = function() {
           // saves the this.base that is the this.base method of this child
-          _previous = this.base;
+          var _previous = this.base;
           // copies previous this.base from the direction from HClass
           this.base = _ancestor;
           // current class's method is called
@@ -129,6 +129,7 @@ HClass.prototype = {
         } )
       )( arguments );
     };
+    this['new'] = this.nu;
     return this;
   },
   /** = Description
