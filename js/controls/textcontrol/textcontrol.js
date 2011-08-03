@@ -33,6 +33,7 @@ HTextControl = HControl.extend({
   })),
   
   drawSubviews: function(){
+    ELEM.setStyle(this.elemId,'overflow','visible');
     this.base();
     if(this.options.focusOnCreate){
       this.getInputElement().focus();
@@ -60,6 +61,11 @@ HTextControl = HControl.extend({
         ELEM.setAttr(this.markupElemIds.label,'title',this.label);
       }
     }
+  },
+
+  lostActiveStatus: function(){
+    ELEM.get( this.markupElemIds.value ).blur();
+    this.textBlur();
   },
   
   setStyle: function(_name, _value, _cacheOverride) {
@@ -129,6 +135,7 @@ HTextControl = HControl.extend({
   *
   **/
   textFocus: function(){
+    EVENT.changeActiveControl( this );
     this.hasTextFocus = true;
     this._setChangeEventFn();
     return true;
@@ -151,7 +158,14 @@ HTextControl = HControl.extend({
   
   onIdle: function(){
     this.hasTextFocus && this._updateValueFromField();
-    this.base();
+    try{
+      this.base();
+    }
+    catch(e){
+      console.error('HTextControl::onIdle error -> ',e);
+      debugger;
+      this.base();
+    }
   },
   
 /** = Description

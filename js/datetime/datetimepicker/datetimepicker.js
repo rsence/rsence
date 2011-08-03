@@ -105,6 +105,7 @@ HDateTimePicker = HControl.extend({
     this.base();
   },
   drawSubviews: function(){
+    ELEM.setStyle( this.elemId, 'overflow', 'visible' );
     var
     _NumStepperField = HView.extend({
       setEnabled: function(_state){
@@ -118,6 +119,7 @@ HDateTimePicker = HControl.extend({
         }
       },
       drawSubviews: function(){
+        ELEM.setStyle( this.elemId, 'overflow', 'visible' );
         this.numField = HNumericTextControl.extend({
           refreshValue: function(){
             this.base();
