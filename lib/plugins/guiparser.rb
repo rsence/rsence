@@ -53,7 +53,7 @@ module RSence
         if gui_data.class == Array
           gui_data = {
             'type' => 'GUITree',
-            'version' => 0.7,
+            'version' => 0.9,
             'class' => 'RSence.GUIApp',
             'options' => {
               'priority' => 0,

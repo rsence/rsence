@@ -24,7 +24,7 @@
 //var//RSence.Foundation
 COMM.JSONRenderer = HClass.extend({
   
-  version: 0.8,
+  version: 0.9,
 
 /** = Description
   * Renders JSON structured data, see some of the demos for usage examples.
@@ -52,21 +52,23 @@ COMM.JSONRenderer = HClass.extend({
     this.view.die();
   },
   defineInScope: function( _definition ){
-    var _isArr = (_definition instanceof Array),
-        _isObj = (_definition instanceof Object);
+    var
+    _isArr = (_definition instanceof Array),
+    _isObj = (_definition instanceof Object);
     if( _isArr || !_isObj ){
       console.log("JSONRenderer; definition must be an Object, got: '"+(typeof _definition)+"'. Definition: ",_definition);
       return;
     }
-    var _extension = {},
-        _reserved = ['class','extend','implement'],
-        _className = _definition[_reserved[0]],
-        _extendName = _definition[_reserved[1]],
-        _implementName = _definition[_reserved[2]],
-        _extend = _extendName?this.findInScope(_extendName):false,
-        _implement = _implementName?this.findInScope(_implementName):false,
-        _scope = this.scopes[ this.scopeDepth ],
-        _key, _value;
+    var
+    _extension = {},
+    _reserved = ['class','extend','implement'],
+    _className = _definition[_reserved[0]],
+    _extendName = _definition[_reserved[1]],
+    _implementName = _definition[_reserved[2]],
+    _extend = _extendName?this.findInScope(_extendName):false,
+    _implement = _implementName?this.findInScope(_implementName):false,
+    _scope = this.scopes[ this.scopeDepth ],
+    _key, _value;
     if( _className === undefined ) {
       console.log("JSONRenderer; class name missing in definition scope.");
       return;
@@ -96,10 +98,11 @@ COMM.JSONRenderer = HClass.extend({
       return false;
     }
     if(_className.indexOf('.') !== -1){
-      var _splitClass = _className.split('.'),
-          j = 1,
-          _classPart = _splitClass[0],
-          _classFull = this.findInScope( _classPart );
+      var
+      _splitClass = _className.split('.'),
+      j = 1,
+      _classPart = _splitClass[0],
+      _classFull = this.findInScope( _classPart );
       if( !_classFull ){
         return false;
       }
@@ -130,42 +133,102 @@ COMM.JSONRenderer = HClass.extend({
     }
     return _block;
   },
+  initStraight: function( _class, _args ){
+    if( _args instanceof Array ){
+      return HClass.extend().nu.apply( _class, _args );
+    }
+    else {
+      return (new _class(_args));
+    }
+  },
   renderNode: function( _dataNode, _parent ){
-    var // Currently only window-level classes are supported
-        _className = _dataNode['class'],
-        _class = this.findInScope( _className ),
-        
-        // Currently only HView -derived classes are supported, so 
-        // the rect is mandatory.
-        _rect = _dataNode['rect'],
-        _hasRect = (_rect !== undefined) && (_rect instanceof Array || typeof _rect === 'string'),
-        
-        // Checks, if any sub-views are defined.
-        _hasSubviews = _dataNode['subviews'] !== undefined,
-        _subViews    = _hasSubviews?_dataNode['subviews']:null,
-        
-        // Checks, if any options are defined.
-        _hasOptions  = _dataNode['options'] !== undefined,
-        _options     = _hasOptions?_dataNode['options']:null,
-        
-        // JS Extension block
-        _hasExtension = _dataNode['extend'] !== undefined,
-        _extension    = _hasExtension?_dataNode['extend']:null,
-        
-        // JS Extension block
-        _hasBind = _dataNode['bind'] !== undefined,
-        _bind    = _hasBind?_dataNode['bind']:null,
-        
-        // JS Definition block
-        _hasDefinition = _dataNode['define'] !== undefined,
-        _definitions   = _hasDefinition?_dataNode['define']:null,
-        
-        // The HView-derived class instance, instance is by default the parent
-        _instance = _parent,
-        
-        i,
-        
-        _subView;
+    var
+    _reserved = [ 'type', 'args', 'version', 'class', 'rect', 'bind', 'extend', 'options', 'subviews', 'define' ],
+    _className, _class, _origNode, _straightParams = false, _rect, _hasRect, _hasSubviews, _subViews,
+    _hasOptions, _options, _hasExtension, _extension, _hasBind, _bind,
+    _hasDefinition, _definition, _instance, i, _subView = null;
+
+    // The name of the class:
+    if( !_dataNode['class'] ){
+
+      for( i in _dataNode ){
+        if( _reserved.indexOf( i ) === -1 ){
+          _className = i;
+          _origNode = _dataNode;
+          _dataNode = _dataNode[i];
+          break;
+        }
+      }
+      _straightParams = ( !(_dataNode instanceof Object) || (_dataNode instanceof Array) );
+    }
+    else {
+      _className = _dataNode['class'];
+    }
+
+    _class = this.findInScope( _className );
+
+    if( _straightParams ){
+      return this.initStraight( _class, _dataNode );
+    }
+    else if( _dataNode['args'] !== undefined ){
+      return this.initStraight( _class, _dataNode['args'] );
+    }
+    else if( _origNode && _origNode['args'] !== undefined ){
+      return this.initStraight( _class, _origNode['args'] );
+    }
+    
+    // Currently only HView -derived classes are supported, so 
+    // the rect is mandatory.
+    _rect = _dataNode['rect'];
+    _hasRect = (_rect !== undefined) && (_rect instanceof Array || typeof _rect === 'string');
+    if( !_hasRect && _origNode){
+      _hasRect = _origNode['rect'] !== undefined;
+      _rect    = _hasRect?_origNode['rect']:null;
+    }
+    
+    // Checks, if any sub-views are defined.
+    _hasSubviews = _dataNode['subviews'] !== undefined;
+    _subViews    = _hasSubviews?_dataNode['subviews']:null;
+    if( !_hasSubviews && _origNode){
+      _hasSubviews = _origNode['subviews'] !== undefined;
+      _subViews    = _hasSubviews?_origNode['subviews']:null;
+    }
+    
+    // Checks, if any options are defined.
+    _hasOptions  = _dataNode['options'] !== undefined;
+    _options     = _hasOptions?_dataNode['options']:null;
+    if( !_hasOptions && _origNode){
+      _hasOptions = _origNode['options'] !== undefined;
+      _options    = _hasOptions?_origNode['options']:null;
+    }
+    
+    // JS Extension block
+    _hasExtension = _dataNode['extend'] !== undefined;
+    _extension    = _hasExtension?_dataNode['extend']:null;
+    if( !_hasExtension && _origNode){
+      _hasExtension = _origNode['extend'] !== undefined;
+      _extension    = _hasExtension?_origNode['extend']:null;
+    }
+    
+    // JS Extension block
+    _hasBind = _dataNode['bind'] !== undefined;
+    _bind    = _hasBind?_dataNode['bind']:null;
+    if( !_hasBind && _origNode){
+      _hasBind = _origNode['bind'] !== undefined;
+      _bind    = _hasBind?_origNode['bind']:null;
+    }
+    
+    // JS Definition block
+    _hasDefinition = _dataNode['define'] !== undefined;
+    _definitions   = _hasDefinition?_dataNode['define']:null;
+    if( !_hasDefinition && _origNode){
+      _hasDefinition  = _origNode['define'] !== undefined;
+      _definitions    = _hasDefinition?_origNode['define']:null;
+    }
+    
+    // The HView-derived class instance, instance is by default the parent
+    _instance = _parent;
+    
     this.scopeDepth ++;
     this.scopes.push({});
     try{
@@ -200,12 +263,19 @@ COMM.JSONRenderer = HClass.extend({
         }
         if(_hasOptions){
           if(_hasBind){
-            _options.valueObj = COMM.Values.values[_bind];
+            if( _bind instanceof HValue ){
+              _options.valueObj = _bind;
+            }
+            else if( COMM.Values.values[_bind] !== undefined ){
+              _options.valueObj = COMM.Values.values[_bind];
+            }
+            else {
+              console.log('renderNode warning; No such valueId:'+_bind);
+            }
           }
           else{
             if(_options['valueObjId'] !== undefined){
-              var _valueObjId = _options['valueObjId'];
-              _options['valueObj'] = COMM.Values.values[_options['valueObjId']];
+              _options.valueObj = COMM.Values.values[_options['valueObjId']];
             }
           }
         }
@@ -219,7 +289,15 @@ COMM.JSONRenderer = HClass.extend({
         }
         if(!_hasOptions){
           if(_hasBind){
-            COMM.Values.values[_bind].bind(_instance);
+            if( _bind instanceof HValue ){
+              _bind.bind( _instance );
+            }
+            else if( COMM.Values.values[_bind] !== undefined ){
+              COMM.Values.values[_bind].bind(_instance);
+            }
+            else {
+              console.log('renderNode warning; No such valueId:'+_bind);
+            }
           }
         }
       }
