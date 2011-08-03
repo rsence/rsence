@@ -38,7 +38,7 @@ HMiniMenu = HRadioButtonList.extend({
     }
     y -= (i-1)*this.subComponentHeight;
     if(y < 0){
-      y = y%this.subComponentHeight;
+      y = this.subComponentHeight%y;
     }
     if(this.options['menuItemGeom']){
       if(this.options.menuItemGeom.width){
