@@ -270,12 +270,11 @@ module RSence
         Dir.entries( bundle_path ).each do |entry_name|
           next if entry_name[0].chr == '.' # skip hidden, '.' and '..' 
           full_path = File.join( bundle_path, entry_name )
-          unless File.directory?( full_path )
+          if File.directory?( full_path )
             next if entry_name == 'plugins' # skip sub-plugins
-            has_dot = entry_name.include?('.')
-            next unless has_dot
-            is_src_file = ['yaml','rb'].include?( entry_name.split('.')[-1] )
-            next unless is_src_file
+          else
+            next unless entry_name.include?('.')
+            next unless ['yaml','rb'].include?( entry_name.split('.')[-1] )
           end
           newest_date = most_recent( full_path, newest_date )
         end

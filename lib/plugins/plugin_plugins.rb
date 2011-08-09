@@ -33,7 +33,7 @@ module RSence
           :autoreload => true,
           :name_prefix => name_with_manager_s.to_sym,
           :parent_manager => @plugins,
-          :resolved_deps => [:system]
+          :resolved_deps => [ :system, @name, name_with_manager_s.to_sym ]
         })
       end
       
