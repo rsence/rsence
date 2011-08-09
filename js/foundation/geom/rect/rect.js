@@ -123,6 +123,10 @@ HRect = HClass.extend({
       _view = HSystem.views[_viewId];
       if(_view.flexRight || _view.flexBottom){
         ELEM.flushLoop();
+        if( !_view.parent ){
+          _this.updateSecondaryValues();
+          return;
+        }
         _parentElemId = _view.parent.elemId;
         _parentSize = _view.parentSize();
         _parentWidth = _parentSize[0];
