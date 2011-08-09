@@ -64,8 +64,10 @@ HTextControl = HControl.extend({
   },
 
   lostActiveStatus: function(){
-    ELEM.get( this.markupElemIds.value ).blur();
-    this.textBlur();
+    if(this['markupElemIds']!==undefined){
+      ELEM.get( this.markupElemIds.value ).blur();
+      this.textBlur();
+    }
   },
   
   setStyle: function(_name, _value, _cacheOverride) {
