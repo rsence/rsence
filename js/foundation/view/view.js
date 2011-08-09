@@ -874,6 +874,9 @@ HView = HClass.extend({
 /** Gets the size of the parent. If the parent is the document body, uses the browser window size.
   **/
   parentSize: function(){
+    if(!this.parent){
+      return [ 0, 0 ];
+    }
     if(this.parent.elemId === 0){
       var
       _winSize = ELEM.windowSize(),
@@ -1371,7 +1374,7 @@ HView = HClass.extend({
   *
   **/
   removeView: function(_viewId) {
-    HSystem.views[_viewId].remove();
+    this.app.removeView( _viewId ); // no reason to duplicate this functionality here
     return this;
   },
   
