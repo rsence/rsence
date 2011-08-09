@@ -17,3 +17,10 @@ RSence =
   # JSONRenderer instances by plugin name.
   guiTrees: {}
 
+  killGuiTree: (_guiName)->
+    _guiTrees = RSence.guiTrees
+    _guiTree = _guiTrees[_guiName]
+    if _guiTree?
+      _guiTree.die()
+      _guiTrees[_guiName] = null
+      delete _guiTrees[_guiName]

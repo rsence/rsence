@@ -67,11 +67,8 @@ module RSence
       end
       
       def kill( msg )
-        gui_name = @parent.name
-        gui_ns = "RSence.guiTrees[#{@gui_name.to_json}]"
-        msg.reply( "#{gui_ns}.die();", true )
-        msg.reply( "#{gui_ns}=null;", true )
-        msg.reply( "delete #{gui_ns};", true )
+        # gui_name = @parent.name
+        msg.reply( "RSence.killGuiTree(#{@gui_name.to_json});" )
       end
       
       # Use this method to extract all the value id's of the +ses+ hash.
