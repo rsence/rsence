@@ -64,15 +64,21 @@ HSystem = {
 /** Calls applications, uses the prority as a prioritizer.
   **/
   scheduler: function(){
-    
+    var
+    _appId=0,
+    _priority;
     // Loop through all applications:
-    for( var _appId=0; _appId<this.apps.length; _appId++ ){
+    for( ; _appId<this.apps.length; _appId++ ){
       // Check, if the application exists:
       if( this.apps[ _appId ] ){
         // Check, if the application is busy:
         if( !this.busyApps[ _appId ] ){
+          _priority = this.appPriorities[ _appId ];
+          if( _priority < 0 ){
+            continue;
+          }
           // Check, if the tick count matches the priority of the app:
-          if( (this.ticks % this.appPriorities[ _appId ]) === 0 ){
+          if( this.ticks % _priority === 0 ){
             // Set the app busy, the app itself should "unbusy" itself, when the idle call is done.
             // That happens in <HApplication._startIdle>
             
