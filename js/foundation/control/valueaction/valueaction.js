@@ -33,14 +33,13 @@ HValueAction = HClass.extend({
       if(_sysUpdateZIndexOfChildrenBufferIndex !== -1){
         HSystem._updateZIndexOfChildrenBuffer.splice( _sysUpdateZIndexOfChildrenBufferIndex, 1 );
       }
-      this._updateZIndexAllSiblings();
       this.parent  = null;
       this.parents = [];
     }
     return this;
   },
   die: function(){
-    this.parent.removeView( this );
+    this.parent.removeView( this.viewId );
     if( this.valueObj ){
       this.valueObj.release( this );
     }
