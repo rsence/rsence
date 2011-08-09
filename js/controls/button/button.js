@@ -48,16 +48,21 @@ HClickButton = HButton.extend({
     click: true
   },
   
+  controlDefaults: HControlDefaults.extend({
+    clickOnValue: 1,
+    clickOffValue: 0
+  }),
+
 /** = Description
   * Sets the button enabled if this.value is 0.
   *
   **/
   refreshValue: function(){
     if( this.options.inverseValue ){
-      this.setEnabled( this.value === 1 );
+      this.setEnabled( this.value === this.options.clickOnValue );
     }
     else {
-      this.setEnabled( this.value === 0 );
+      this.setEnabled( this.value === this.options.clickOffValue );
     }
   },
 /** = Description
@@ -67,10 +72,10 @@ HClickButton = HButton.extend({
   click: function(){
     if(this.enabled){
       if( this.options.inverseValue ){
-        this.setValue(0);
+        this.setValue( this.options.clickOffValue );
       }
       else {
-        this.setValue(1);
+        this.setValue( this.options.clickOnValue );
       }
     }
   }
