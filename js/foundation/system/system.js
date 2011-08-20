@@ -375,6 +375,10 @@ HSystem = {
         // the element id of the view
         _elemId = _view[ _elemIdStr ];
         
+        if( _elemId === undefined ){
+          continue;
+        }
+
         // do the element manager call itself to update the dom property
         ELEM.setStyle( _elemId, _zIdxStr, i );
       }
