@@ -145,9 +145,11 @@ class ClientPkgBuild
     end
     if has_coffee and @coffee_supported
       begin
+        coffee_start = Time.new.to_f
         coffee_path = File.join( bundle_path, bundle_name+'.coffee' )
         coffee_src = read_file( coffee_path )
         js_data = CoffeeScript.compile( coffee_src, :bare => true )
+        @coffee_time += ( Time.new.to_f - coffee_start )
       rescue CoffeeScript::CompilationError
         if has_js
           js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}, using the js variant instead." );}
@@ -357,6 +359,7 @@ class ClientPkgBuild
   def run
     
     time_start = Time.now.to_f*10000
+    @coffee_time = 0
     
     # hash of bundles per bundle name per theme; @html_by_theme[theme_name][bundle_name] = bundle_data
     @html_by_theme = {}
@@ -399,8 +402,10 @@ class ClientPkgBuild
     minimize_data
     build_compound_packages
     
-    ms_taken = ((Time.now.to_f*10000)-time_start).to_i/10.0
-    @logger.log( "Time taken:  #{ms_taken}ms\n\n" )
+    ms_taken = ((Time.now.to_f*10000)-time_start).round/10.0
+    coffee_taken = (@coffee_time*10000).round/10.0
+    without_coffee = ((ms_taken - coffee_taken)*10).round/10.0
+    @logger.log( "Time taken:\n .coffee: #{coffee_taken}ms\n  other:  #{without_coffee}ms\n  total:  #{ms_taken}ms\n\n" )
     
   end
   
