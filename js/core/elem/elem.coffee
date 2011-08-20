@@ -390,14 +390,17 @@ ELEM = HClass.extend({
     _flushStartTime = new Date().getTime()
     @_flushTime -= _flushStartTime
     _loopMaxL = @_elemTodo.length
-    #if _loopMaxL > 0
-    _currTodo = @_elemTodo.splice( 0, _loopMaxL )
-    for i in [ 1.._loopMaxL ]
-      @_flushLoopFlushed++
-      _id = _currTodo.shift()
-      @_elemTodoH[_id] = false
-      @_flushStyleCache( _id )
-      @_flushAttrCache( _id )
+    if _loopMaxL > 0
+      _currTodo = @_elemTodo.splice( 0, _loopMaxL )
+      for i in [ 1.._loopMaxL ]
+        @_flushLoopFlushed++
+        _id = _currTodo.shift()
+        if _id == null
+          console.log('no id:',_id)
+          continue
+        @_elemTodoH[_id] = false
+        @_flushStyleCache( _id )
+        @_flushAttrCache( _id )
     @_flushCounter++
     @_flushTime += new Date().getTime()
     @_needFlush = @_elemTodo.length != 0 # unless @_needFlush
@@ -541,6 +544,8 @@ ELEM = HClass.extend({
   Sets and buffers the named style attribute value or selectively direct
   ###
   setStyle: (_id, _key, _value, _noCache)->
+    if _id == undefined
+      console.log('ERROR; undefined id in ELEM#setStyle(',_id, _key, _value, _noCache,')')
     _noCache = true if BROWSER_TYPE.ie9
     try
       _cached = @_styleCache[_id]
@@ -634,12 +639,14 @@ ELEM = HClass.extend({
     _styleTodo = @_styleTodo[_id]
     _cached = @_styleCache[_id]
     _loopMaxP = _styleTodo.length
+    return null if _loopMaxP == 0
     _currTodo = _styleTodo.splice( 0, _loopMaxP )
     for i in [ 1.._loopMaxP ]
       _key = _currTodo.shift()
       if _key == 'opacity'
         @setOpacity( _id, _cached[_key] )
       else
+        console.log( 'invalid style key:',_elem, _key, _cached) unless _key
         @_setElementStyle( _elem, _key, _cached[_key] )
     null
   
