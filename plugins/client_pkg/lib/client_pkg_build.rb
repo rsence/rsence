@@ -147,8 +147,19 @@ class ClientPkgBuild
       begin
         coffee_start = Time.new.to_f
         coffee_path = File.join( bundle_path, bundle_name+'.coffee' )
-        coffee_src = read_file( coffee_path )
-        js_data = CoffeeScript.compile( coffee_src, :bare => true )
+        coffee_timestamp = File.stat( coffee_path ).mtime.to_i
+        has_cache_compiled = @coffee_cache[:path_compiled].has_key?( coffee_path )
+        has_cache_timestamp = @coffee_cache[:path_timestamp].has_key?( coffee_path )
+        has_cache_entry = has_cache_compiled and has_cache_timestamp
+        has_cached = ( has_cache_entry and ( @coffee_cache[:path_timestamp][coffee_path] == coffee_timestamp ) )
+        if has_cached
+          js_data = @coffee_cache[:path_compiled][coffee_path]
+        else
+          coffee_src = read_file( coffee_path )
+          js_data = CoffeeScript.compile( coffee_src, :bare => true )
+          @coffee_cache[:path_timestamp][coffee_path] = coffee_timestamp
+          @coffee_cache[:path_compiled][coffee_path] = js_data
+        end
         @coffee_time += ( Time.new.to_f - coffee_start )
       rescue CoffeeScript::CompilationError
         if has_js
@@ -526,6 +537,10 @@ class ClientPkgBuild
   def initialize( config, logger )
     
     @coffee_supported = config[:coffee_supported]
+    @coffee_cache = {
+      :path_timestamp => {},
+      :path_compiled => {}
+    }
 
     @logger = logger
     
