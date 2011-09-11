@@ -46,6 +46,8 @@ HTimeSheet = HControl.extend({
     itemOffsetTop: 20,    // Theme settings; don't enter in options
     itemOffsetBottom: 0,  // Theme settings; don't enter in options
     itemDisplayTime: true,
+    allowClickCreate: false,
+    minDragSize: 5,       // minimum amount of pixels dragged required for accepting a drag
     hourOffsetTop: -4,    // Theme settings; don't enter in options
     constructor: function( _ctrl ){
       if( this.defaultLabel === undefined ){
@@ -292,6 +294,7 @@ HTimeSheet = HControl.extend({
   
   // drag & drop event listeners, used for dragging new timesheet items
   startDrag: function( x, y, b ){
+    this._startDragY = y;
     this.startDragTime = this.pxToTime( y-this.pageY() );
     this.refreshDragPreview( this.startDragTime, this.startDragTime + this.minDuration );
     this.dragPreview.bringToFront();
@@ -318,17 +321,21 @@ HTimeSheet = HControl.extend({
   
   endDrag: function( x, y, b ){
     var
-    _dragTime = this.pxToTime( y-this.pageY() );
-    if( _dragTime !== this.startDragTime ){
+    _dragTime = this.pxToTime( y-this.pageY() ),
+    _minDistanceSatisfied = Math.abs( this._startDragY - y ) >= this.options.minDragSize;
+    if( this.options.allowClickCreate ){
+      _minDistanceSatisfied = true;
+    }
+    this.dragPreview.hide();
+    if( _dragTime !== this.startDragTime && _minDistanceSatisfied ){
       if( this.activateEditor( this.dragPreview ) ){
         this.editor.createItem( HVM.clone( this.dragPreview.value ) );
         return true;
       }
+      this.clickCreated = false;
+      this.startDragTime = false;
+      this.click( x, y, b );
     }
-    this.clickCreated = false;
-    this.dragPreview.hide();
-    this.startDragTime = false;
-    this.click( x, y, b );
     return false;
   },
   
