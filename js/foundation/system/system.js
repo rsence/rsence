@@ -204,15 +204,33 @@ HSystem = {
   *
   **/
   killApp: function(_appId, _forced){
-    if( !_forced ){
-      var _startedWaiting = new Date().getTime();
-      while( this.busyApps[ _appId ] === true ) {
-        /* Waiting for the app to finish its idle loop... */
-        if (new Date().getTime() > _startedWaiting + this.maxAppRunTime) {
-          break;
-        }
-      }
+    this.reniceApp( _appId, -1 ); // prevent new idle calls to the app
+    if( _forced || ( this.busyApps[ _appId ] === false ) ){
+      this._forceKillApp( _appId );
     }
+    else {
+      /* Waiting for the app to finish its idle loop before killing it */
+      var
+      _startedWaiting = new Date().getTime(),
+      _this = this,
+      _timeout = setInterval(
+        function(){
+          if( _this.busyApps[ _appId ] === true ) {
+            if (new Date().getTime() > _startedWaiting + _this.maxAppRunTime) {
+              clearTimeout(_timeout);
+              _this._forceKillApp( _appId );
+            }
+            else {
+              clearTimeout(_timeout);
+              _this._forceKillApp( _appId );
+            }
+          }
+        }, 10
+      );
+    }
+  },
+
+  _forceKillApp: function( _appId ){
     this.busyApps[_appId] = true;
     
     this.apps[ _appId ].destroyAllViews();
