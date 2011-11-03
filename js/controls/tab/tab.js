@@ -143,13 +143,20 @@ HTab = HControl.extend({
   * +_doSelect+::
   *
   **/
-  addTab: function(_tabLabel,_doSelect,_viewClass){
-    var _tabIdx=this.tabs.length,
-        _tabLabelHTML = '',
-        _labelTextWidth = this.stringWidth( _tabLabel, null, 0, this.fontStyle ),
-        _labelWidth = _labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
-        _tab = HTabView.nu( [0,this.tabLabelHeight,null,null,0,0] ,this),
-        _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName);
+  addTab: function(_tabLabel,_doSelect,_viewClass,_viewClassOptions){
+    var
+    _tabIdx=this.tabs.length,
+    _tabLabelHTML = '',
+    _labelTextWidth = this.stringWidth( _tabLabel, null, 0, this.fontStyle ),
+    _labelWidth = _labelTextWidth+this.tabLabelLeftEdge+this.tabLabelRightEdge,
+    _tabLabelElemId = ELEM.make(this.markupElemIds[this.tabLabelParentElem],this.tabLabelElementTagName),
+    _tab;
+    if( _viewClass === undefined ){
+      _tab = HTabView.nu( [0,this.tabLabelHeight,null,null,0,0], this);
+    }
+    else {
+      _tab = _viewClass.nu( [0,this.tabLabelHeight,null,null,0,0], this, _viewClassOptions );
+    }
     _tabIdx = this.tabs.length;
     if(this.tabLabelNoHTMLPrefix){
       _tabLabelHTML = _tabLabel;
@@ -277,4 +284,79 @@ HTabItem = {
   }
 };
 
+var//RSence.Controls
+GUITreeTabView = HControl.extend({
+  controlDefaults: HControlDefaults.extend({
+    visible: false,
+    autoCreate: false,
+    autoDestroy: true
+  }),
+  jsonRenderer: false,
+  createJSONRenderer: function(){
+    var
+    _this = this,
+    _value = _this.value,
+    _progressView = HView.nu( [4,0, 150, 34, 0, null], _this ),
+    // _indicatorPhases = ['/','-','\\','|','/','-','\\','|'], // ascii
+    // _indicatorPhases = ['&#9716;','&#9719;','&#9718;','&#9717;'], // unicode sector ball
+    // _indicatorPhases = ['&#9681;','&#9682;','&#9680;','&#9683;'], // unicode half ball
+    // _indicator = HStringView.nu( [ 2, 2, 32, 32 ], _progressView, { value: _indicatorPhases[0], style: { 'font-size': '24px' } } ),
+    // _indicatorTimeout = setInterval( function(){
+    //   _indicatorPhase = _indicatorPhases.shift();
+    //   _indicatorPhases.push( _indicatorPhase );
+    //   _indicator.setValue( _indicatorPhase );
+    // }, 100 ),
+    _indicatorStr = HStringView.nu( [ 34, 12, 100, 20, 4, null ], _progressView, { value: 'Rendering' } );
+    _this.destroyJSONRenderer();
+    if( _value.type === undefined || _value.version === undefined ){
+      _value = {
+        'type': 'GUITree',
+        'version': 0.9,
+        'class': 'HView',
+        'rect': [0,0, null,null, 0,0],
+        'options': { 'style': { 'overflow': 'auto' } },
+        'subviews': _value
+      };
+    }
+    setTimeout( function(){
+      _this.jsonRenderer = JSONRenderer.nu( _value, _this );
+      // clearTimeout( _indicatorTimeout );
+      _progressView.die();
+    }, 10 );
+  },
+  destroyJSONRenderer: function(){
+    if( this.jsonRenderer ){
+      this.jsonRenderer.die();
+      this.jsonRenderer = false;
+    }
+  },
+  drawSubviews: function(){
+    if( this.options.autoCreate ){
+      this.createJSONRenderer();
+    }
+  },
+  show: function(){
+    this.base();
+    if(!this.jsonRenderer){
+      this.createJSONRenderer();
+    }
+  },
+  hide: function(){
+    this.base();
+    if( this.options.autoDestroy ){
+      this.destroyJSONRenderer();
+    }
+  },
+  die: function(){
+    this.destroyJSONRenderer();
+    this.base();
+  }
+});
+
+var//RSence.Controls
+GUITreeTabItem = {
+  nu: function( _rect, _parent, _options ){
+    return _parent.addTab( _options.label, _options.select, GUITreeTabView, _options );
+  }
+};
 
