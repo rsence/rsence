@@ -61,7 +61,8 @@ HRadioButtonList = HControl.extend({
     return HRadiobutton.nu(
       [ 4, (i*23)+4, null, 23, 4, null ],
       this, {
-        label: _label
+        label: _label,
+        enabled: this.enabled
       }
     );
   },
@@ -94,6 +95,13 @@ HRadioButtonList = HControl.extend({
   },
   radioButtonIndexValue: false,
   radioButtonResponder: false,
+  setEnabled: function(_state){
+    this.base(_state);
+    if(!this['listItemViews']){ return; }
+    for(var i=0;i<this.listItems.length;i++){
+      this.listItemViews[i].setEnabled(_state)
+    }
+  },
   
 /** = Description
   * 
@@ -104,12 +112,15 @@ HRadioButtonList = HControl.extend({
       this.parent = _parent;
     },
     refresh: function(){
-      var _listItems = this.parent.listItems;
+      var
+      _listItems = this.parent.listItems,
+      _value;
       if(_listItems === undefined || _listItems === null){
         return;
       }
       if(_listItems[ this.value ] !== undefined){
-        this.parent.setValue( _listItems[ this.value ][0] );
+        _value = _listItems[ this.value ];
+        this.parent.setValue( _value[0] );
       }
     }
   }),
@@ -119,6 +130,7 @@ HRadioButtonList = HControl.extend({
   refreshValue: function(){
     var _value = this.value;
     if ( this.listItems && this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
+      // debugger;
       if ( this.radioButtonResponder === false ){
         this.radioButtonIndexValue = HValue.nu( false, 0 );
         this.radioButtonIndexValue.bind( this.valueMatrix );
