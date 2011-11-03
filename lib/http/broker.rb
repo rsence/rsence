@@ -15,7 +15,6 @@ require 'http/response'
 ## Minimally WEBrick -compatible request object
 require 'http/request'
 
-
 module RSence
 
 
@@ -41,8 +40,15 @@ class Broker
     response = Response.new
     request_method = request.request_method.downcase
     dispatcher = dispatcher_class.new( request, response )
-    dispatcher.send( request_method )
-    content_type = dispatcher.content_type
+    if dispatcher.respond_to?( request_method )
+      begin
+        dispatcher.send( request_method )
+      rescue => e
+        dispatcher.server_error( e )
+      end
+    else
+      dispatcher.not_implemented( request.request_method )
+    end
     response_body = response.body
     response.header['Content-Length'] = response.body_bytes unless response.header.has_key?('Content-Length')
     return [response.status, response.header, response_body]
@@ -55,7 +61,6 @@ class Broker
   # @return [Broker] An instance of Broker with a {Request} instance as +@request+ and a {Response} instance as +@response+
   def dispatcher_class
     @dispatcher ||= Class.new(self.class) do
-      attr_accessor :content_type
       def initialize(request,response)
         @request  = request
         @response = response
@@ -99,7 +104,7 @@ class Broker
     # Loads the selected web-server (default is 'mongrel')
     rack_require = conf[:rack_require]
     puts conf.inspect if RSence.args[:debug]
-    
+
     require rack_require
     
     # Selects the handler for Rack
@@ -112,41 +117,113 @@ class Broker
       'unicorn'  => lambda { Rack::Handler::Unicorn  },
       'rainbows' => lambda { Rack::Handler::Rainbows }
     }[rack_require].call
-    
     handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
-    
   end
   
   # Generic 404 error handler. Just sets up response status, headers, body as a small "Page Not Found" html page
   def not_found
     puts "/404: #{@request.fullpath.inspect}" if RSence.args[:verbose]
     @response.status = 404
-    err404 = '<html><head><title>404 - Page Not Found</title></head><body>404 - Page Not Found</body></html>'
+    err404 = "<html><head><title>404 - Page Not Found</title></head><body>404 - Page &quot;#{@request.fullpath}&quot; Not Found</body></html>"
     @response['Content-Type'] = 'text/html; charset=UTF-8'
-    @response['Content-Length'] = err404.bytesize.to_s
     @response.body = err404
   end
   
   # Routes POST requests to {Transporter#servlet}
   def post
-    
     puts "post: #{@request.fullpath}" if RSence.args[:verbose]
-    
     not_found unless @@transporter.servlet( :post, @request, @response )
-    
   end
   
   # Routes GET requests to {Transporter#servlet}
   def get
-    
     puts "get: #{@request.fullpath}" if RSence.args[:verbose]
-    
     not_found unless @@transporter.servlet( :get, @request, @response )
-    
   end
   
-  ### -- Add more http methods here when we have some apps to test with CalDAV implementation maybe? ++
+  # Routes HEAD requests to {Transporter#servlet}
+  # Uses GET and removes the response body, if nothing matches HEAD directly.
+  def head
+    puts "head: #{@request.fullpath}" if RSence.args[:verbose]
+    return if @@transporter.servlet( :head, @request, @response )
+    if @@transporter.servlet( :get, @request, @response )
+      @response.body = ''
+    else
+      not_found
+    end
+  end
+
+  # Generic 405 (method not allowed) handler.
+  def not_allowed( method_name )
+    @response.status = 405
+    body_txt = "Error 405: The method #{method_name} is not allowed on #{@request.fullpath}.\r\n"
+    @response['Content-Type'] = 'text/plain; charset=UTF-8'
+    @response.body = body_txt
+  end
   
+  # Generic 501 (method not implemented) handler.
+  def not_implemented( method_name )
+    @response.status = 501
+    body_txt = "Error 501: The method #{method_name} is not implemented on #{@request.fullpath}.\r\n"
+    @response['Content-Type'] = 'text/plain; charset=UTF-8'
+    @response.body = body_txt
+  end
+  
+  # Generic 500 (server error) handler.
+  def server_error( e, custom_name='Broker Exception' )
+    @response.status = 500
+    exception_detail = [
+      custom_name,
+      "Time: #{Time.now.to_s}",
+      "#{'-='*39}-",
+      "#{e.class}: #{e.to_s}",
+      "\t#{e.backtrace.join("\r\n\t")}",
+      "#{'-='*39}-",
+      "Request method: #{@request.request_method}",
+      "Request path: #{@request.fullpath}",
+      "Request headers: #{@request.header.inspect}",
+      "#{'-='*39}-\r\n\r\n"
+    ].join("\r\n")
+    $stderr.puts exception_detail
+    if RSence.args[:debug]
+      body_txt = "Error 500: "+ exception_detail
+    else
+      body_txt = "Error 500: General server error.\r\n"
+    end
+    @response['Content-Type'] = 'text/plain; charset=UTF-8'
+    @response.body = body_txt
+  end
+  
+  # Routes OPTIONS requests to {Transporter#servlet}
+  def options
+    puts "options: #{@request.fullpath}" if RSence.args[:verbose]
+    not_allowed('OPTIONS') unless @@transporter.servlet( :options, @request, @response )
+  end
+
+  # Routes PUT requests to {Transporter#servlet}
+  def put
+    puts "put: #{@request.fullpath}" if RSence.args[:verbose]
+    not_allowed('PUT') unless @@transporter.servlet( :put, @request, @response )
+  end
+
+  # Routes DELETE requests to {Transporter#servlet}
+  def delete
+    puts "delete: #{@request.fullpath}" if RSence.args[:verbose]
+    not_allowed('DELETE') unless @@transporter.servlet( :delete, @request, @response )
+  end
+
+  # Routes TRACE requests to {Transporter#servlet}
+  def trace
+    puts "trace: #{@request.fullpath}" if RSence.args[:verbose]
+    not_allowed('TRACE') unless @@transporter.servlet( :trace, @request, @response )
+  end
+
+  # Routes CONNECT requests to {Transporter#servlet}
+  def connect
+    puts "connect: #{@request.fullpath}" if RSence.args[:verbose]
+    not_allowed('CONNECT') unless @@transporter.servlet( :connect, @request, @response )
+  end
+
 end
 
 end
