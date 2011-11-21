@@ -369,5 +369,10 @@ module RSence
       @plugins.call( plugin_name, plugin_method, *args)
     end
     alias run call
+
+    def inspect
+      "#<Message ses_id:#{ses_id.inspect}, ses_key: #{ses_key.inspect} ...>"
+    end
+
   end
 end

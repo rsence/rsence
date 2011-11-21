@@ -176,10 +176,11 @@ module RSence
     
     # @private Handle updates from the client.
     def from_client( msg, data )
-      
       # only process changes, if different from the one already stored.
       if @data != data
         
+        # puts "data sync from client: #{@data.inspect} -> #{data.inspect} (#{@meta[:name]})"
+
         ## set takes care of the setting..
         @data = data
         
@@ -270,6 +271,10 @@ module RSence
       end
     end
     alias die die!
+
+    def inspect
+      "#<RSence::HValue value_id:#{@value_id.inspect}, valid: #{@is_valid.inspect}, sync: #{@sync.inspect}, is_new_to_client: #{@is_new_to_client.inspect}, meta: #{@meta.inspect[0..100]}, data: #{@data.inspect[0..100]} ...>"
+    end
     
   end
 
