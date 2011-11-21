@@ -104,7 +104,17 @@ module RSence
         if not file_data
           return false
         else
-          return YAML.load( file_data )
+          begin
+            return YAML.load( file_data )
+          rescue Psych::SyntaxError => e
+            warn "Syntax Error in YAML file: #{path} (#{e.message})"
+            return false
+          rescue => e
+            warn "An exception occurred while parsing YAML file: #{path}"
+            warn e.message
+            warn "  #{e.backtrace.join("\n  ")}"
+            return false
+          end
         end
       end
       
