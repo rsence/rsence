@@ -18,10 +18,15 @@ HMiniMenu = HRadioButtonList.extend({
   
   defaultEvents: {
     draggable: true,
-    click: true
+    click: true,
+    resize: true
   },
 
   subComponentHeight: 15,
+
+  resize: function(){
+    this.repositionMenuItems();
+  },
   
   repositionMenuItems: function(){
     var
