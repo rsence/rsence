@@ -171,7 +171,11 @@ module RSence
         puts
         puts "plugin: #{eval_repl}"
         puts
-        err_msg = err_msg.gsub(/^\t\(eval\)\:/s,"\t#{eval_repl}:")
+        begin
+          err_msg = err_msg.gsub(/^\t\(eval\)\:/s,"\t#{eval_repl}:")
+        rescue Encoding::CompatibilityError => e
+          $stderr.write( "Encoding::CompatibilityError in plugin error eval!" )
+        end
       end
       $stderr.write( err_msg )
     end
