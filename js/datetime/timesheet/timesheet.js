@@ -40,13 +40,14 @@ HTimeSheet = HControl.extend({
     autoLabel: false,  // automatically set the label to the date
     autoLabelFn: 'formatDate',
     autoLabelFnOptions: { longWeekDay: true },
-    notchesPerHour: 4, // by default 1/4 of an hour precision (15 minutes)
+    notchesPerHour: 4,    // by default 1/4 of an hour precision (15 minutes)
     itemOffsetLeft: 64,   // Theme settings; don't enter in options
     itemOffsetRight: 0,   // Theme settings; don't enter in options
     itemOffsetTop: 20,    // Theme settings; don't enter in options
     itemOffsetBottom: 0,  // Theme settings; don't enter in options
     itemDisplayTime: true,
     allowClickCreate: false,
+    allowDoubleClickCreate: true,
     minDragSize: 5,       // minimum amount of pixels dragged required for accepting a drag
     hourOffsetTop: -4,    // Theme settings; don't enter in options
     constructor: function( _ctrl ){
@@ -231,7 +232,7 @@ HTimeSheet = HControl.extend({
       start: 0,
       duration: _minDuration,
       // locked: false,
-      color: '#c00'
+      color: '#cc0000'
     };
     this.dragPreviewRect = this.rectFromValue({start:_options.timeStart,duration:_minDuration});
     this.minDuration = _minDuration;
@@ -246,13 +247,46 @@ HTimeSheet = HControl.extend({
     this.dragPreview.setStyleOfPart('state','color','#fff');
   },
   
-  // event listener for clicks, cancels event if a drag event mistakenly triggered it
+  // event listener for clicks, simulates double clicks in case of not double click aware browser
   click: function( x, y, b ){
-    if( !this.startDragTime ){
+    var
+    prevClickTime = false,
+    notCreated = !this.clickCreated && !this.doubleClickCreated && !this.dragCreated;
+    // this.doubleClickSimCreated = false;
+    if( !this.startDragTime && this.prevClickTime ){
+      prevClickTime = this.prevClickTime;
+    }
+    else if (this.startDragTime){
+      prevClickTime = this.startDragTime;
+    }
+    if( notCreated && this.options.allowClickCreate ){
+      // console.log('click create');
       this.clickCreate( x,y );
       this.clickCreated = true;
+      this.doubleClickCreated = false;
+      this.prevClickTime = false;
     }
-    this.clickCreated = false;
+    else if( notCreated && this.options.allowDoubleClickCreate ){
+      var
+      currTime = new Date().getTime(),
+      timeDiff = prevClickTime?(currTime - prevClickTime):-1;
+      if( timeDiff > 150 && timeDiff < 500 && !this.doubleClickCreated ){
+        // console.log('click double create');
+        this.clickCreate( x, y );
+        this.clickCreated = false;
+        this.doubleClickCreated = true;
+        this.doubleClickSimCreated = true;
+      }
+      else {
+        this.doubleClickCreated = false;
+      }
+      this.prevClickTime = currTime;
+    }
+    else {
+      this.clickCreated = false;
+      this.doubleClickCreated = false;
+      this.prevClickTime = false;
+    }
   },
   
   // creates an item on click
@@ -271,12 +305,25 @@ HTimeSheet = HControl.extend({
     }
   },
   
-  // event listener for double clicks, simulates two sequential clicks
+  // event listener for double clicks
   doubleClick: function(x,y){
-    if( !this.clickCreated ){
+    this.prevClickTime = false;
+    this.doubleClickCreated = false;
+    var notCreated = !this.clickCreated && !this.doubleClickCreated && !this.doubleClickSimCreated && !this.dragCreated;
+    if( !this.options.allowDoubleClickCreate && this.options.allowClickCreate && notCreated ){
       this.click(x,y);
     }
-    this.clickCreated = false;
+    else if ( this.options.allowDoubleClickCreate && !this.options.allowClickCreate && notCreated ){
+      // console.log('double click create');
+      this.clickCreate( x, y );
+      this.clickCreated = false;
+      this.doubleClickCreated = true;
+    }
+    else {
+      // console.log('no double click create');
+      this.clickCreated = false;
+    }
+    this.doubleClickSimCreated = false;
   },
   
   // update the preview area
@@ -294,6 +341,7 @@ HTimeSheet = HControl.extend({
   
   // drag & drop event listeners, used for dragging new timesheet items
   startDrag: function( x, y, b ){
+    // console.log('st');
     this._startDragY = y;
     this.startDragTime = this.pxToTime( y-this.pageY() );
     this.refreshDragPreview( this.startDragTime, this.startDragTime + this.minDuration );
@@ -303,6 +351,7 @@ HTimeSheet = HControl.extend({
   },
   
   drag: function( x, y, b ){
+    // console.log('dr');
     var
     _dragTime = this.pxToTime( y-this.pageY() ),
     _startTime,
@@ -320,21 +369,31 @@ HTimeSheet = HControl.extend({
   },
   
   endDrag: function( x, y, b ){
+    // console.log('ed');
     var
     _dragTime = this.pxToTime( y-this.pageY() ),
     _minDistanceSatisfied = Math.abs( this._startDragY - y ) >= this.options.minDragSize;
-    if( this.options.allowClickCreate ){
-      _minDistanceSatisfied = true;
-    }
+    // if( this.options.allowClickCreate ){
+    //   _minDistanceSatisfied = true;
+    // }
     this.dragPreview.hide();
-    if( _dragTime !== this.startDragTime && _minDistanceSatisfied ){
-      if( this.activateEditor( this.dragPreview ) ){
-        this.editor.createItem( HVM.clone( this.dragPreview.value ) );
-        return true;
+    if( _dragTime !== this.startDragTime ){
+      if( _minDistanceSatisfied ){
+        if( this.activateEditor( this.dragPreview ) ){
+          // console.log('drag create');
+          this.dragCreated = true;
+          this.editor.createItem( HVM.clone( this.dragPreview.value ) );
+          return true;
+        }
       }
+      this.dragCreated = false;
+    }
+    else {
+      this.dragCreated = false;
       this.clickCreated = false;
       this.startDragTime = false;
       this.click( x, y, b );
+      return true;
     }
     return false;
   },
