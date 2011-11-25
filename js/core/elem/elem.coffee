@@ -175,7 +175,9 @@ ELEM = HClass.extend({
         [ _parentClientWidth, _parentClientHeight ] = [ _parent.clientWidth, _parent.clientHeight ]
         w = _parentClientWidth - _elem.offsetLeft if w > _parentClientWidth
         h = _parentClientWidth - _elem.offsetTop  if h > _parentClientHeight
-        [ _elem, _parent ] = [ _elem.parentNode, _elem.parentNode ]
+      _elem = _elem.parentNode
+      break unless _parent.parentNode
+      _parent = _parent.parentNode
     [ w, h ]
   
   ###
