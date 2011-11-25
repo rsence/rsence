@@ -270,6 +270,9 @@ class ClientPkgBuild
   def coffee( src )
     begin
       js = CoffeeScript.compile( src, :bare => true )
+    rescue ExecJS::RuntimeError => e
+      warn "ExecJS RuntimeError, invalid CoffeScript supplied:\n----\n#{src}----\n"
+      js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
     rescue CoffeeScript::CompilationError
       warn "Invalid CoffeeScript supplied:\n----\n#{src}----\n"
       js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
