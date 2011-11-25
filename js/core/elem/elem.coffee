@@ -530,8 +530,15 @@ ELEM = HClass.extend({
     _str.replace( /((-)([a-z])(\w))/g, ($0, $1, $2, $3, $4)->
       $3.toUpperCase()+$4
     )
-
-
+  
+  ###
+  Decamelizes string (used for js property to css property conversion)
+  ###
+  _deCamelize: (_str)->
+    _str.replace( /(([A-Z])(\w))/g, ($0, $1, $2, $3)->
+      '-'+$2.toLowerCase()+$3
+    )
+  
   ###
   IE version of _setElementStyle
   ###
@@ -557,6 +564,7 @@ ELEM = HClass.extend({
     if _cached == undefined
       @_initCache( _id )
       _cached = @_styleCache[_id]
+    _key = @_deCamelize( _key )
     unless _value == _cached[_key]
       _cached[_key] = _value
       if _noCache
@@ -621,6 +629,7 @@ ELEM = HClass.extend({
   ###
   getStyle: (_id, _key, _noCache)->
     _cached = @_styleCache[_id]
+    _key = @_deCamelize(_key)
     if _cached[_key] == undefined or _noCache
       if _key == 'opacity'
         _value = @getOpacity(_id)
