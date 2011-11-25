@@ -83,14 +83,28 @@ module RSence
         :http_delayed_start => nil, # --http-delayed-start
       
         # client_pkg (not supported yet)
-        :client_pkg_no_gzip               => false, # --build-no-gzip
-        :client_pkg_no_obfuscation        => false, # --build-no-obfuscation
-        :client_pkg_no_whitespace_removal => false, # --build-keep-whitespace
-        :client_pkg_quiet                 => true,  # --build-verbose
+        :client_pkg_no_gzip               => false, # --client-no-gzip
+        :client_pkg_no_obfuscation        => false, # --client-no-obfuscation
+        :client_pkg_no_whitespace_removal => false, # --client-keep-whitespace
+        :client_pkg_quiet                 => true,  # --client-verbose
       
       }
     end
     
+    def set_client_pkg_arg( arg_name )
+      if arg_name == '--client-no-gzip'
+        @args[:client_pkg_no_gzip] = true
+      elsif arg_name == '--client-no-obfuscation'
+        @args[:client_pkg_no_obfuscation] = true
+      elsif arg_name == '--client-keep-whitespace'
+        @args[:client_pkg_no_whitespace_removel] = true
+      elsif arg_name == '--client-verbose'
+        @args[:client_pkg_quiet] = false
+      else
+        invalid_option( arg_name )
+      end
+    end
+
     # Main argument parser for all 'start' -type commands.
     def parse_startup_argv
       init_args
@@ -128,6 +142,8 @@ module RSence
                 set_log_fg
               elsif arg == '--trace-js'
                 @args[:trace_js]   = true
+              elsif arg.start_with?( '--client-' )
+                set_client_pkg_arg( arg )
               elsif arg == '--trace-delegate'
                 @args[:trace_delegate] = true
               elsif arg == '--port'
@@ -763,22 +779,21 @@ module RSence
       end
       if @@cmds.include?(cmd)
         @cmd = cmd
+        unless [:help, :version].include?( cmd )
+          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
+        end
         if cmd == :help
           parse_help_argv
         elsif cmd == :version
           puts version
           exit
         elsif [:run,:start,:stop,:restart].include? cmd
-          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_startup_argv
         elsif cmd == :status
-          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_status_argv
         elsif cmd == :save
-          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_save_argv
         elsif cmd == :initenv or cmd == :init
-          puts "RSence #{@@version} -- Ruby #{RUBY_VERSION}"
           parse_initenv_argv
         end
       else
