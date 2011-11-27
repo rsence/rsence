@@ -81,10 +81,15 @@
     Session data saved.
 # Strings for the init command
 :initenv:
+  :continue_question: "Do you want to continue, "
   :env_already_initialized: |
     Environment already initialized.
+  :env_not_clear: |
+    Environment directory <%%= @args[:env_path] %> is not empty,
+    and appears to be an RSence environment.
   :env_not_empty: |
-    Environment directory <%%= @args[:env_path] %> is not empty.
+    Environment directory <%%= @args[:env_path] %> is not empty,
+    but does not appear to be an RSence environment.
   :creating_env: |+
     
     Creating a new RSence environment at <%%= @args[:env_path] %>

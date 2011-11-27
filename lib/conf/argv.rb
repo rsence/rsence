@@ -633,9 +633,26 @@ module RSence
       end
       conf_file = File.expand_path( File.join( @args[:env_path], 'conf', 'config.yaml' ) )
       if File.exists?(@args[:env_path])
-        if Dir.entries(@args[:env_path]).length > 2 # [ '.', '..' ]
+        env_empty = true # true while entries start with a dot
+        env_clear = true # true while entries don't contain RSence project files
+        env_entries = ['conf', 'db', 'log', 'plugins', 'run', 'README', 'VERSION']
+        Dir.entries(@args[:env_path]).each do |entry|
+          next if entry.start_with?('.')
+          env_empty = false
+          if env_entries.include? entry
+            env_clear = false
+            break
+          end
+        end
+        unless env_clear
+          puts ERB.new( @@strs[:initenv][:env_not_clear] ).result( binding )
+          print @@strs[:initenv][:continue_question]
+          exit unless yesno
+        end
+        unless env_empty
           puts ERB.new( @@strs[:initenv][:env_not_empty] ).result( binding )
-          exit
+          print @@strs[:initenv][:continue_question]
+          exit unless yesno
         end
       end
     
@@ -723,7 +740,7 @@ module RSence
       Dir.mkdir( run_dir )
       unless create_blank
         print @@strs[:initenv][:install_welcome]
-        if yesno(true)
+        if yesno
           welcome_plugin_dir = File.join( SERVER_PATH, 'setup', 'welcome' )
           welcome_plugin_dst = File.join( plugins_dir, 'welcome' )
           puts ERB.new( @@strs[:initenv][:installing_welcome_plugin] ).result( binding )
