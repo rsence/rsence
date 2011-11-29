@@ -121,9 +121,9 @@ class MainPlugin < Plugin
   
   # @private Internal structures, matches the "hello/goodbye" session termination POST request and the "/" index html page GET request
   def match( uri, method )
-    if uri == ::RSence.config[:index_html][:respond_address] and method == :get
+    if uri == ::RSence.config[:index_html][:respond_address] and ( method == :get or method == :head )
       return true
-    elsif req_type == :post and uri == @goodbye_uri
+    elsif method == :post and uri == @goodbye_uri
       return true
     else
       return false
