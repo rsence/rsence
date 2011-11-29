@@ -665,7 +665,7 @@ ELEM = HClass.extend({
   Final phase of startup, when document is loaded
   ###
   _init: ->
-    RSenceInit() unless RSenceInit == undefined
+    RSenceInit() if RSenceInit?
     if BROWSER_TYPE.ie
       @_getComputedStyle = @_getComputedStyleIE
       @_setElementStyle = @_setElementStyleIE
