@@ -68,7 +68,7 @@ class TicketPlugin < Plugin
     if request_type == :post
       upload_match = uri.start_with?( broker_urls[:u] + '/')   
       return true if upload_match
-    elsif request_type == :get
+    elsif request_type == :get or request_type == :head
       if uri.match( /^#{broker_urls[:i]}/ )
         return true
       elsif uri.match( /^#{broker_urls[:d]}/ )
@@ -219,7 +219,7 @@ class TicketPlugin < Plugin
   # @param [String] filename The filename of the download (not the url)
   #
   # @return [String] Disposable URL. Destroyed after being requested.
-  def serve_file( msg, content='', content_type='text/plain', filename='' )
+  def serve_file( msg, content='', content_type='text/plain', filename=nil )
     @ticketserve.serve_file( msg, content, content_type, filename )
   end
   
