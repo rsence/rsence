@@ -599,7 +599,7 @@ class ClientPkgBuild
     @no_obfuscation = config[:no_obfuscation]
     @no_whitespace_removal = config[:no_whitespace_removal]
     @debug = RSence.args[:debug]
-    @quiet = (not RSence.args[:verbose])
+    @quiet = (not RSence.args[:verbose] and RSence.args[:suppress_build_messages])
     @compound_config = config[:compound_packages]
   end
   

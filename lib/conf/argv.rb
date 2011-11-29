@@ -83,23 +83,23 @@ module RSence
         :http_delayed_start => nil, # --http-delayed-start
       
         # client_pkg (not supported yet)
-        :client_pkg_no_gzip               => false, # --client-no-gzip
-        :client_pkg_no_obfuscation        => false, # --client-no-obfuscation
-        :client_pkg_no_whitespace_removal => false, # --client-keep-whitespace
-        :client_pkg_quiet                 => true,  # --client-verbose
+        :client_pkg_no_gzip               => false, # --disable-gzip
+        :client_pkg_no_obfuscation        => false, # --disable-obfuscation
+        :client_pkg_no_whitespace_removal => false, # --disable-jsmin
+        :suppress_build_messages          => true,  # --build-report
       
       }
     end
     
     def set_client_pkg_arg( arg_name )
-      if arg_name == '--client-no-gzip'
+      if arg_name == '--disable-gzip'
         @args[:client_pkg_no_gzip] = true
-      elsif arg_name == '--client-no-obfuscation'
+      elsif arg_name == '--disable-obfuscation'
         @args[:client_pkg_no_obfuscation] = true
-      elsif arg_name == '--client-keep-whitespace'
+      elsif arg_name == '--disable-jsmin'
         @args[:client_pkg_no_whitespace_removel] = true
-      elsif arg_name == '--client-verbose'
-        @args[:client_pkg_quiet] = false
+      elsif arg_name == '--build-report'
+        @args[:suppress_build_messages] = false
       else
         invalid_option( arg_name )
       end
@@ -152,7 +152,7 @@ module RSence
               elsif arg == '--addr'
                 expect_option = true
                 option_name = :addr
-              elsif arg == '--http-delayed-start'
+              elsif arg == '--http-delayed-start' or arg == '--delayed-start'
                 expect_option = true
                 option_name = :http_delayed_start
               elsif arg == '--server'
@@ -220,7 +220,7 @@ module RSence
       @args[:autoupdate] = true
       @args[:client_pkg_no_obfuscation] = true
       @args[:client_pkg_no_whitespace_removal] = true
-      @args[:client_pkg_quiet] = false
+      @args[:suppress_build_messages] = false
     end
     
     # Set the verbose argument on

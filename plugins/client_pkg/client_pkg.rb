@@ -32,7 +32,7 @@ class ClientPkgPlugin < Servlet
       @log_file = nil
     end
     def log( str )
-      if RSence.args[:verbose]
+      if RSence.args[:verbose] or not RSence.args[:suppress_build_messages]
         puts str
         return
       else
