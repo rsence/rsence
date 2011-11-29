@@ -28,7 +28,7 @@
     :deps: [ ]
     #
     # Boot library:
-    :boot_lib: core
+    :boot_lib: rsence
     #
     # Default additional libraries to use:
     :default_libs: []
