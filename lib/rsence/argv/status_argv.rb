@@ -72,10 +72,21 @@ module ArgvUtil
       invalid_env
     end
     require 'rsence/default_config'
+    require 'socket'
     config = Configuration.new(@args).config
     port = config[:http_server][:port]
     addr = config[:http_server][:bind_address]
-    port_status = test_port( port, addr )
+    port_status = []
+    if addr == '0.0.0.0' and Socket.respond_to?(:ip_address_list)
+      Socket.ip_address_list.each do |if_addr|
+        if test_port( port, if_addr.ip_address )
+          port_status.push( if_addr.ip_address )
+        end
+      end
+    else
+      port_status.push( addr )
+    end
+    addr_descr = port_status.join(":#{port}, ")+":#{port}"
     if RSence.pid_support?
       pid_fn = config[:daemon][:pid_fn]
       if File.exists?( pid_fn )
@@ -92,21 +103,28 @@ module ArgvUtil
       warn @strs[:messages][:no_pid_support] if @args[:verbose]
       pid_status = nil
     end
-    if RSence.pid_support?
-      if pid_status == nil
+    addr_descr = port_status.join(":#{port} and ")+":#{port}" unless port_status.empty?
+    if not RSence.pid_support? or pid_status == nil
+      if RSence.pid_support?
         puts @strs[:messages][:no_pid]
-      elsif pid_status == false
-        if port_status
-          puts ERB.new( @strs[:messages][:no_process_running_but_something_responds] ).result( binding )
-        else
-          puts ERB.new( @strs[:messages][:no_process_running_and_nothing_responds] ).result( binding )
-        end
       else
-        if port_status
-          puts ERB.new( @strs[:messages][:process_running_and_responds] ).result( binding )
-        else
-          puts ERB.new( @strs[:messages][:process_running_but_nothing_responds] ).result( binding )
-        end
+        puts @strs[:messages][:no_pid_support]
+      end
+      unless port_status.empty?
+        puts ERB.new( @strs[:messages][:something_responds] ).result( binding )
+      end
+    elsif pid_status == false
+      if port_status.empty?
+        puts ERB.new( @strs[:messages][:no_process_running_and_nothing_responds] ).result( binding )
+      else
+        puts ERB.new( @strs[:messages][:no_process_running_but_something_responds] ).result( binding )
+      end
+    else
+      if port_status.empty?
+        puts ERB.new( @strs[:messages][:process_running_but_nothing_responds] ).result( binding )
+      else
+        addr_descr = port_status.join(":#{port} and ")+":#{port}"
+        puts ERB.new( @strs[:messages][:process_running_and_responds] ).result( binding )
       end
     end
   end

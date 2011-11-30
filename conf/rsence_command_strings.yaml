@@ -63,14 +63,16 @@
     No PID file, unable to check process status.
   :no_pid_support: |
     No PID support, unable to check process status.
+  :something_responds:
+    Something responds on <%%= addr_descr %>
   :no_process_running_but_something_responds: |
-    No process running, but something responds on <%%= addr %>:<%%= port %>.
+    No process running, but something responds on <%%= addr_descr %>.
   :no_process_running_and_nothing_responds: |
-    No process running, and nothing responds on <%%= addr %>:<%%= port %>.
+    No process running, and nothing responds on <%%= addr_descr %>.
   :process_running_and_responds: |
-    Process ID <%%= pid %> is running and responds on <%%= addr %>:<%%= port %>.
+    Process ID <%%= pid %> is running and responds on <%%= addr_descr %>.
   :process_running_but_nothing_responds: |
-    Process ID <%%= pid %> is running, but does not respond on <%%= addr %>:<%%= port %>.
+    Process ID <%%= pid %> is running, but does not respond on <%%= addr_descr %>.
   :saving_message: <
     Saving session data...
   :no_pid_unable_to_save: |

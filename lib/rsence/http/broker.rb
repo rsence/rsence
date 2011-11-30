@@ -95,7 +95,16 @@ class Broker
         sleep 0.2
       end
       puts "..#{host}:#{port} responds!" if ::RSence.args[:debug]
-      puts "RSence is online on the address http://#{host}:#{port}#{::RSence.config[:base_url]}"
+      if host == '0.0.0.0' and Socket.respond_to?(:ip_address_list)
+        puts "RSence is online and responds on the addresses:"
+        Socket.ip_address_list.each do |if_addr|
+          if RSence.argv.test_port( port, if_addr.ip_address )
+            puts "  http://#{if_addr.ip_address}:#{port}#{::RSence.config[:base_url]}"
+          end
+        end
+      else
+        puts "RSence is online on the address http://#{host}:#{port}#{::RSence.config[:base_url]}"
+      end
       @@transporter.online = true
     end
     

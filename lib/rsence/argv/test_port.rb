@@ -1,6 +1,7 @@
+
 module RSence
 module ArgvUtil
-    
+
   # Tests, if the port on addr responds or refuses the connection.
   # Automatically replaces '0.0.0.0' with '127.0.0.1'
   def test_port( port, addr='127.0.0.1' )
