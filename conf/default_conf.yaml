@@ -54,6 +54,14 @@
     # network interfaces or the interfaces become available after
     # RSence is started.
     :http_delayed_start: 0
+    #
+    # Save plugin and session state every n seconds.
+    # Set to 0 or negative to disable.
+    :autosave_interval: 180 # once every 3 minutes
+    #
+    # Daemon helper files, leave empty for defaults.
+    #:pid_fn: /var/run/rsence.pid
+    #:log_fn: /var/log/rsence.log
   #
   # Switches on debug-mode:
   #  - Generates more output
@@ -179,12 +187,6 @@
     #
     # Disposable keys, when enabled, changes the value id on each session restoration
     :disposable_keys:   true
-  #
-  # Daemon helper files, leave empty for defaults.
-  :daemon: {
-    #:pid_fn: /var/run/rsence.pid
-    #:log_fn: /var/log/rsence.log
-  }
   #
   # Entered by code, empty container
   :broker_urls: { }

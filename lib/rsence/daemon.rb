@@ -327,6 +327,7 @@ module RSence
         Daemon.start_logging( self )
       end
       
+      autosave_loop if RSence.config[:daemon][:autosave_interval] > 0
       start_broker( conf )
       
     end
@@ -350,6 +351,20 @@ module RSence
     def port
       RSence.config[:http_server][:port]
     end
+
+    # Saves plugin and session state periodically
+    def autosave_loop
+      Thread.new do
+        Thread.pass
+        sleep RSence.config[:daemon][:autosave_interval]
+        while true
+          if @transporter.online?
+            save
+          end
+          sleep RSence.config[:daemon][:autosave_interval]
+        end
+      end
+    end
     
     # Called by Controller#start, contains RSence-specific operations
     def start
@@ -368,8 +383,8 @@ module RSence
       
       Process.setsid
       
+      autosave_loop if RSence.config[:daemon][:autosave_interval] > 0
       start_broker( conf )
-      
       yield @broker
     
     end
@@ -410,11 +425,11 @@ module RSence
     # Save state
     def save
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Saving state..."
-      transporter_state = @transporter.online?
-      @transporter.online = false
+      # transporter_state = @transporter.online?
+      # @transporter.online = false
       @transporter.plugins.delegate(:flush)
       @transporter.sessions.store_sessions
-      @transporter.online = transporter_state
+      # @transporter.online = transporter_state
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- State saved."
     end
     
