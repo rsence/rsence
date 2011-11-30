@@ -214,7 +214,7 @@
 # Help for the ”rsence” command line tool.
 :help:
   :head: |+
-    RSence command-line tool, version <%= @@version %>
+    RSence command-line tool, version <%= @version %>
   
   :tail: |+
     RSence is a self-contained web app framework.
@@ -258,7 +258,7 @@
   
       --port <number>         The port number the http server listens to.
   
-      --addr <ip address>     The IP address or net mask the http server listens to.
+      --bind <ip address>     The IP address or net mask the http server listens to.
                               ”0.0.0.0” matches all interfaces.
                               ”127.0.0.1” matches the local loopback interface.
   
