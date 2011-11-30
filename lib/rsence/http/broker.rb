@@ -10,10 +10,10 @@ require 'rubygems'
 require 'rack'
 
 ## Minimally WEBrick -compatible response object
-require 'http/response'
+require 'rsence/http/response'
 
 ## Minimally WEBrick -compatible request object
-require 'http/request'
+require 'rsence/http/request'
 
 module RSence
 

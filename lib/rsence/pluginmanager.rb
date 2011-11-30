@@ -7,8 +7,8 @@
  ##
 
  
-require 'plugins/plugins'
-require 'plugins/dependencies'
+require 'rsence/plugins'
+require 'rsence/dependencies'
 
 module RSence
   

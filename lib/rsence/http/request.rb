@@ -7,10 +7,6 @@
  ##
 
 
-
-require 'rubygems'
-require 'rack'
-
 module RSence
   
   # Simple Request class, slightly more involved

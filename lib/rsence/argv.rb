@@ -111,13 +111,13 @@ module RSence
       exit
     end
     
-    require 'conf/argv/startup_argv'
-    require 'conf/argv/status_argv'
-    require 'conf/argv/save_argv'
-    require 'conf/argv/initenv_argv'
-    require 'conf/argv/help_argv'
-    require 'conf/argv/env_check'
-    require 'conf/argv/test_port'
+    require 'rsence/argv/startup_argv'
+    require 'rsence/argv/status_argv'
+    require 'rsence/argv/save_argv'
+    require 'rsence/argv/initenv_argv'
+    require 'rsence/argv/help_argv'
+    require 'rsence/argv/env_check'
+    require 'rsence/argv/test_port'
     include ArgvUtil
     
     # Returns the version of RSence
@@ -164,14 +164,8 @@ module RSence
       end
     end
     
-    # Entry point for ARGV parsing
-    def parse( argv )
-      warn "RSence::ArgvParser::parse is deprecated and does nothing."
-    end
-    
     # The constructor sets the @startable flag as false. Use the #parse method with ARGV as the argument to start parsing the ARGV.
-    def initialize( argv )
-      @argv = argv
+    def initialize
       @startable = false
 
       # The RSence version string, read from the VERSION file in
@@ -206,14 +200,19 @@ module RSence
       @strs[:help][:restart] += @strs[:help][:path]+@strs[:help][:options]
       @strs[:help][:status] += @strs[:help][:path]
       @strs[:help][:save] += @strs[:help][:path]
-      
+    end
+
+    # Entry point for ARGV parsing
+    def parse( argv )
+      @argv = argv
       parse_argv
     end
   
   end
   
   # @private  The ARGVParser instance and its startup
-  @@argv_parser = ARGVParser.new( ARGV )
+  @@argv_parser = ARGVParser.new
+  @@argv_parser.parse( ARGV )
 
 end
 

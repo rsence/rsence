@@ -9,7 +9,7 @@
 
 
 # Require needed value types (hvalue supports bool/float/int/string)
-require 'values/hvalue'
+require 'rsence/value'
 
 # RandomGenerator produces unique, random values
 require 'randgen'

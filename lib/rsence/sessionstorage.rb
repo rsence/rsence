@@ -14,7 +14,7 @@ module RSence
   require 'sequel'
   
   ## HValue class for session restoration
-  require 'values/hvalue'
+  require 'rsence/value'
   
   # SessionStorage doesn't do anything by itself, it's simply
   # the superclass for SessionManager that does all the boring

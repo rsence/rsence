@@ -71,7 +71,7 @@ module ArgvUtil
     else
       invalid_env
     end
-    require 'conf/default'
+    require 'rsence/default_config'
     config = Configuration.new(@args).config
     port = config[:http_server][:port]
     addr = config[:http_server][:bind_address]

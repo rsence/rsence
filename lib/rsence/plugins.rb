@@ -15,24 +15,24 @@ module RSence
 end
 
 # Contains the PluginBase module which has common methods for the bundle classes
-require 'plugins/plugin_base'
+require 'rsence/plugins/plugin_base'
 
 # guiparser.rb contains the Yaml serializer for gui trees.
 # It uses JSONRenderer on the client to build user interfaces.
-require 'plugins/guiparser'
+require 'rsence/plugins/guiparser'
 
 # plugin_sqlite_db.rb contains automatic local sqlite database
 # creation for a plugin that includes it.
-require 'plugins/plugin_sqlite_db'
+require 'rsence/plugins/plugin_sqlite_db'
 
 # Interface for plugins in a plugin bundle
-require 'plugins/plugin_plugins'
+require 'rsence/plugins/plugin_plugins'
 
 
 # Templates for the main plugin classes.
-require 'plugins/plugin'
-require 'plugins/gui_plugin'
-require 'plugins/servlet'
+require 'rsence/plugins/plugin'
+require 'rsence/plugins/gui_plugin'
+require 'rsence/plugins/servlet'
 
 
 module RSence

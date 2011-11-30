@@ -7,7 +7,7 @@
  ##
 
 
-require 'util/gzstring'
+require 'rsence/gzstring'
 
 
 module RSence

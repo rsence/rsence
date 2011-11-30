@@ -7,7 +7,6 @@
  ##
 
 
-
 module RSence
   
   # Classic WEBrick -compatible Response object for Rack.

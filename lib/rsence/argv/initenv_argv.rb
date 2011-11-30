@@ -113,7 +113,7 @@ module ArgvUtil
       end
     end
   
-    require 'conf/default'
+    require 'rsence/default_config'
     default_config = Configuration.new(@args,true).config
   
     config = {

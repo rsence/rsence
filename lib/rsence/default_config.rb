@@ -12,7 +12,6 @@ require 'rack'
 require 'yaml'
 
 
-
 module RSence
   
   

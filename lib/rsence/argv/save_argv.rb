@@ -60,7 +60,7 @@ module ArgvUtil
     else
       invalid_env
     end
-    require 'conf/default'
+    require 'rsence/default_config'
     config = Configuration.new(@args).config
     if RSence.pid_support?
       pid_fn = config[:daemon][:pid_fn]

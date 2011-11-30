@@ -11,10 +11,10 @@
 require 'rubygems'
 
 # Transporter is the top-level handler for calls coming from the javascript COMM.Transporter.
-require 'transporter/transporter'
+require 'rsence/transporter'
 
 # Broker routes requests to the correct handler
-require 'http/broker'
+require 'rsence/http'
 
 
 module RSence

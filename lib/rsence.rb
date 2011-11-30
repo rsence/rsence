@@ -86,7 +86,7 @@ module RSence
   def self.startup
     puts "Loading configuration..." if self.args[:verbose]
     # Use the default configuration:
-    require 'conf/default'
+    require 'rsence/default_config'
     @@config = Configuration.new(self.args).config
     
     # RSence runtime configuration data
@@ -144,7 +144,7 @@ module RSence
     end
     
     ## Riassence Daemon controls
-    require 'daemon/daemon'
+    require 'rsence/daemon'
     puts "Starting RSence..." if self.args[:verbose]
     daemon = HTTPDaemon.new
     daemon.daemonize!
@@ -153,11 +153,11 @@ module RSence
   
   # Includes the Signal Communication utility.
   # Used to respond via special PID files in the run directory of the environment
-  require 'daemon/sigcomm'
+  require 'rsence/sigcomm'
 
 
   # Requires the ARGVParser that functions as the command-line user interface.
-  require 'conf/argv'
+  require 'rsence/argv'
   
 end
 

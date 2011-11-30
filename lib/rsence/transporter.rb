@@ -8,13 +8,13 @@
 
 
 # ValueManager synchronizes value objects
-require 'values/valuemanager'
+require 'rsence/valuemanager'
 
 # SessionManager creates, validates, stores and expires sessions
-require 'session/sessionmanager'
+require 'rsence/sessionmanager'
 
 # PluginManager handles all the plugins
-require 'plugins/pluginmanager'
+require 'rsence/pluginmanager'
 
 
 module RSence

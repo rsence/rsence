@@ -14,13 +14,13 @@ module RSence
   require 'json'
 
   ## Shared messaging-object:
-  require 'session/msg'
+  require 'rsence/msg'
 
   ## Unique random number generator:
   require 'randgen'
 
   ## SessionStorage is the superclass of SessionManager
-  require 'session/sessionstorage'
+  require 'rsence/sessionstorage'
 
   require 'digest/sha1'
 
