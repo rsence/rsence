@@ -53,6 +53,7 @@ module RSence
       @valuemanager = ValueManager.new
       RSence.value_manager = @valuemanager
       @sessions = SessionManager.new( self )
+      @plugins.sessions = @sessions
       RSence.session_manager = @sessions
       if RSence.config[:session_conf][:reset_sessions]
         puts "Resetting all sessions..."
