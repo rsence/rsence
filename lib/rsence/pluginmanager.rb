@@ -642,12 +642,19 @@ module RSence
     end
     
     attr_reader :transporter
-    attr_reader :sessions
     attr_reader :autoreload
     attr_reader :name_prefix
     attr_reader :plugin_paths
     attr_reader :parent_manager
     
+    def sessions
+      warn "no sessions" unless @sessions
+      @sessions
+    end
+    def sessions=(ses_manager)
+      @sessions = ses_manager
+    end
+
     @@pluginmanager_id = 0
     # Initialize with a list of directories as plugin_paths.
     # It's an array containing all plugin directories to scan.
@@ -671,7 +678,7 @@ module RSence
       
       if options[:transporter]
         @transporter = options[:transporter]
-        @sessions    = options[:transporter].sessions
+        #@sessions    = options[:transporter].sessions
       end
       
       @autoreload = options[:autoreload]
