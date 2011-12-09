@@ -188,6 +188,20 @@ ELEM = HClass.extend({
     [ _elem.offsetWidth, _elem.offsetHeight ]
   
   ###
+  Returns the position of the element as a [ x, y ] tuple
+  ###
+  getPosition: (_id)->
+    _elem = @_elements[_id]
+    [ _elem.offsetLeft, _elem.offsetTop ]
+
+  ###
+  Returns the scroll position of the element as a [ x, y ] tuple
+  ###
+  getScrollPosition: (_id)->
+    _elem = @_elements[_id]
+    [ _elem.scrollLeft, _elem.scrollTop ]
+
+  ###
   Returns the scroll size of the element as a [ width, height ] tuple
   ###
   getScrollSize: (_id)->
@@ -265,6 +279,14 @@ ELEM = HClass.extend({
     @setStyle( _id, 'width', w+'px' )
     @setStyle( _id, 'height', h+'px' )
     null
+  
+  ###
+  Gets box coordinates [ x, y, width, height )
+  ###
+  getBoxCoords: (_id)->
+    [ x, y ] = @getPosition( _id )
+    [ w, h ] = @getSize( _id )
+    [ x, y, w, h ]
   
   ###
   Computes extra size (padding and border size) of element
