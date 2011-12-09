@@ -276,6 +276,8 @@ class ClientPkgBuild
     rescue CoffeeScript::CompilationError
       warn "Invalid CoffeeScript supplied:\n----\n#{src}----\n"
       js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
+    rescue
+      js = "function(){console.log('ERROR; CoffeeScript compilation failed: #{src.to_json}');}"
     end
     js = squeeze( js )
     return js[1..-3] if js.start_with?('(') and js.end_with?(');')
