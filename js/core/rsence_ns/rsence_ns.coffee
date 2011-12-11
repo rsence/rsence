@@ -2,14 +2,19 @@
 # The RSence namespace
 RSence =
   
+  # Call this method from the index page for
+  # client-only features
+  clientConf: (_clientPrefix)->
+    HThemeManager.themePath = _clientPrefix+'/themes'
+    HThemeManager._start()
+
   # Call this method from the index page to
   # setup the environment variables and to
   # start synchronizing immediately afterwards.
   serverConf: (_clientPrefix, _helloUrl) ->
     COMM.ClientPrefix = _clientPrefix
     COMM.Transporter.HelloUrl = _helloUrl
-    HThemeManager.themePath = _clientPrefix+'/themes'
-    HThemeManager._start()
+    RSence.clientConf( _clientPrefix )
     COMM.AutoSyncStarter.start()
     null
   
