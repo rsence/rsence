@@ -17,7 +17,7 @@ HValueAction = HClass.extend({
     if( _options.valueObj ){
       _options.valueObj.bind( this );
     }
-    if( this.parent['addView'] instanceof Function ){
+    if( this.parent.addView instanceof Function ){
       this.viewId = this.parent.addView( this );
     }
     this.refresh();
@@ -47,9 +47,9 @@ HValueAction = HClass.extend({
     this.viewId = null;
   },
   refresh: function(){
-    if( this.options[ 'refreshAction' ] ){
+    if( this.options.refreshAction || this.options.action ){
       var
-      _refreshAction = this.options.refreshAction;
+      _refreshAction = this.options.refreshAction ? this.options.refreshAction : this.options.action;
       if( this.parent ){
         if( this.parent[_refreshAction] ){
           if( (this.parent[_refreshAction] instanceof Function) ){
