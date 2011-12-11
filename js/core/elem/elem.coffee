@@ -11,6 +11,7 @@ BROWSER_TYPE =
   ie7: false
   ie8: false
   ie9: false
+  ie10: false
   opera: false
   safari: false
   symbian: false
@@ -23,7 +24,7 @@ BROWSER_TYPE =
 ###
 The DOM Element abstraction engine
 ###
-ELEM = HClass.extend({
+ELEM = HClass.extend
   
   constructor: null
 
@@ -743,6 +744,8 @@ ELEM = HClass.extend({
       _browserType.ie7 = _ua.indexOf('MSIE 7') != -1
       _browserType.ie8 = _ua.indexOf('MSIE 8') != -1
       _browserType.ie9 = _ua.indexOf('MSIE 9') != -1
+      _browserType.ie10 = _ua.indexOf('MSIE 10') != -1
+      _browserType.ie9 = _browserType.ie10 # IE 10 is treated like IE 9
     _browserType.mac = _ua.indexOf('Macintosh') != -1
     _browserType.win = _ua.indexOf('Windows') != -1
     _browserType.firefox = _ua.indexOf('Firefox') != -1
@@ -792,8 +795,6 @@ ELEM = HClass.extend({
         ELEM._domWaiter()
       , 10 )
     null
-
-})
 ELEM.reset()
 
 ElementManager = ELEM
