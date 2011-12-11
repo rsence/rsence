@@ -47,7 +47,7 @@ require 'rubygems'
 require 'yaml'
 require 'json'
 
-config = YAML.load( File.read( File.join( SERVER_PATH, 'conf', 'default_conf.yaml' ) ) )
+$rsence_config = YAML.load( File.read( File.join( SERVER_PATH, 'conf', 'default_conf.yaml' ) ) )
 
 ## Create default local configuratation override file, if it does not exist:
 local_config_file_paths = [
@@ -102,7 +102,7 @@ local_config_file_paths.each do |local_config_file_path|
   if File.exists? local_config_file_path and File.file? local_config_file_path
     if local_config_file_path.end_with? '.yaml'
       local_conf = YAML.load( File.read( local_config_file_path ) )
-      hash_merge( config, local_conf )
+      hash_merge( $rsence_config, local_conf )
       local_config_file_path_found = true
     else
       warn "Only Yaml configuration files are allowed at this time."
@@ -110,11 +110,10 @@ local_config_file_paths.each do |local_config_file_path|
   end
 end
 
-
-require 'lib/util/gzstring'
-require 'plugins/client_pkg/lib/client_pkg_build'
-
 module RSence
+  def self.config
+    $rsence_config
+  end
   def self.args
     debug = ARGV.include?('-d')
     return {
@@ -123,6 +122,9 @@ module RSence
     }
   end
 end
+
+require 'lib/rsence/gzstring'
+require 'plugins/client_pkg/lib/client_pkg_build'
 
 class JSBuilder < ClientPkgBuild
   def initialize( conf, logger )
@@ -215,7 +217,7 @@ class Logger
   end
 end
 
-conf = config[:client_pkg]
+conf = $rsence_config[:client_pkg]
 conf[:src_dirs].unshift( File.join( SERVER_PATH, 'js' ) )
 
 # require 'pp'
