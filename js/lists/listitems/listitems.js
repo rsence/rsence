@@ -35,10 +35,10 @@ HListItems = HValueResponder.extend({
       console.log('Warning; parent does not respond to setListItemResponder');
     }
     if (_options instanceof Object) {
-      if (_options['valueObj'] !== undefined) {
+      if (_options.valueObj !== undefined) {
         _options.valueObj.bind( this );
       }
-      else if(_options['value'] !== undefined) {
+      else if(_options.value !== undefined) {
         this.value = _options.value;
         this.refresh();
       }
@@ -75,8 +75,8 @@ HListItems = HValueResponder.extend({
         // console.log('row:',_row,' rowType:',_rowType);
         // hashes
         if ( _rowType === 'h' ) {
-          _label = _row['label'];
-          _value = _row['value'];
+          _label = _row.label;
+          _value = _row.value;
           if ( _label === undefined || _value === undefined ){
             this._warningMessage( "The value or label of row "+_row+" is undefined (ignored)" );
           }
