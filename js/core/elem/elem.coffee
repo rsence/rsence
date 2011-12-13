@@ -390,6 +390,7 @@ ELEM = HClass.extend
   Flushes buffered styles and properties into the DOM
   ###
   flushLoop: (_delay)->
+    _delay = @_defaultDelay() unless _delay?
     @_ieFixes() if BROWSER_TYPE.ie6 and @_ieFixesNeeded
     clearTimeout(@_timer)
     if @_flushing
@@ -407,6 +408,10 @@ ELEM = HClass.extend
     @_performFlush()
     @_flushing = false
     null
+  
+  # Alias for flushLoop
+  flush: ->
+    @flushLoop()
   
   ###
   Performs the flush of flushLoop
