@@ -276,7 +276,7 @@ HCalendar = HControl.extend(
             ELEM.addClassName( _colElem, 'calendar_weeks_week_col_no' )
           else
             ELEM.addClassName( _colElem, 'calendar_weeks_week_col_yes' )
-          ELEM.setAttr( _colElem, 'href', "javascript:HSystem.views[#{@viewId}].setValue(#{_colMs})" )
+          ELEM.setAttr( _colElem, 'href', "javascript:HSystem.views[#{@viewId}].setValue(#{_colSecs})" )
           _left = (_col*_colWidth+_leftPlus)
           ELEM.setStyle( _colElem, 'left', _left+'px' )
           ELEM.setStyle( _colElem, 'width', (_colWidth-1)+'px' )
