@@ -1126,7 +1126,7 @@ HView = HClass.extend({
   * +self+
   *
   **/
-  setStyleOfPart: function(_partName, _name, _value, _cacheOverride) {
+  setStyleOfPart: function(_partName, _name, _value, _force) {
     if (!this['markupElemIds']){
       console.log('Warning, setStyleOfPart: no markupElemIds');
     }
@@ -1134,7 +1134,7 @@ HView = HClass.extend({
       console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
-      ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+      ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _force);
     }
     return this;
   },
@@ -1151,12 +1151,12 @@ HView = HClass.extend({
   * The style of a specified markup element.
   *
   **/
-  styleOfPart: function(_partName, _name) {
+  styleOfPart: function(_partName, _name, _force) {
     if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
-    return ELEM.getStyle(this.markupElemIds[_partName], _name);
+    return ELEM.getStyle(this.markupElemIds[_partName], _name, _force);
   },
   
 /** = Description
@@ -1189,7 +1189,7 @@ HView = HClass.extend({
   * +_partName+::  The identifier of the markup element.
   *
   * = Returns
-  * The style of a specified markup element.
+  * The markup of a specified markup element.
   *
   **/
   markupOfPart: function(_partName) {
@@ -1198,6 +1198,66 @@ HView = HClass.extend({
       return '';
     }
     return ELEM.getHTML(this.markupElemIds[_partName]);
+  },
+  
+/** = Description
+  * Sets a element attribute of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  * +_value+::     Value for markup element.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  setAttrOfPart: function( _partName, _value, _force ) {
+    if (this.markupElemIds[_partName]===undefined) {
+      console.log('Warning, setAttrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+    }
+    else {
+      ELEM.setAttr( this.markupElemIds[_partName], _value, _force );
+    }
+    return this;
+  },
+  
+/** = Description
+  * Returns a element attribute of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  *
+  * = Returns
+  * The attribute of a specified markup element.
+  *
+  **/
+  attrOfPart: function(_partName, _force) {
+    if (this.markupElemIds[_partName]===undefined) {
+      console.log('Warning, attrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      return '';
+    }
+    return ELEM.getAttr(this.markupElemIds[_partName], _force);
+  },
+
+/** = Description
+  * Returns a element itself of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  *
+  * = Returns
+  * The element of a specified markup element.
+  *
+  **/
+  elemOfPart: function(_partName) {
+    if (this.markupElemIds[_partName]===undefined) {
+      console.log('Warning, elemOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      return '';
+    }
+    return ELEM.get( this.markupElemIds[_partName] );
   },
 
 /** = Description
@@ -1889,6 +1949,7 @@ HView = HClass.extend({
     }
     var
     _searchTarget = HLocale.components[_componentClassName],
+    i = 0,
     _key;
     if( _searchTarget === undefined && (typeof _componentClassName === 'string') ){
       _searchTarget = HLocale.components;
@@ -1909,7 +1970,8 @@ HView = HClass.extend({
     if( _searchTarget[ _attrPath[0] ] === undefined ){
       return _default;
     }
-    for( _key in _attrPath ){
+    for( ; i < _attrPath.length; i++ ){
+      _key = _attrPath[i];
       if( typeof _searchTarget[_key] === 'object' ){
         _searchTarget = _searchTarget[_key];
       }
