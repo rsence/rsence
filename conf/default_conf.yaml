@@ -110,7 +110,7 @@
     :client_poll_priority: 60
     #
     # Reload the client after any plugins are reloaded:
-    :client_autoreload: false
+    :client_autoreload: true
   #
   #
   # Session-related settings
