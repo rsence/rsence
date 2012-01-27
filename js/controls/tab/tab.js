@@ -280,6 +280,13 @@ HTab = HControl.extend({
 var//RSence.Controls
 HTabItem = {
   nu: function(_rect, _parent, _options){
+    if( _rect.hasAncestor && _rect.hasAncestor( HView ) ){
+      _options = _parent;
+      _parent = _rect;
+    }
+    else {
+      console.warn && console.warn( "Warning: the rect constructor argument of HTabItem is deprecated." );
+    }
     return _parent.addTab( _options.label, _options.select );
   }
 };
@@ -356,6 +363,13 @@ GUITreeTabView = HControl.extend({
 var//RSence.Controls
 GUITreeTabItem = {
   nu: function( _rect, _parent, _options ){
+    if( _rect.hasAncestor && _rect.hasAncestor( HView ) ){
+      _options = _parent;
+      _parent = _rect;
+    }
+    else {
+      console.warn && console.warn( "Warning: the rect constructor argument of GUITreeTabItem is deprecated." );
+    }
     return _parent.addTab( _options.label, _options.select, GUITreeTabView, _options );
   }
 };
