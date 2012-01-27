@@ -77,7 +77,6 @@ HUploader = HControl.extend
     @setStyleOfPart( 'form', 'visibility', 'hidden' )
 
   setUploadState: (_state, _uploadKey)->
-    console.log('state:',_state,', uploadKey:',_uploadKey)
     if _state != @uploadState
       @uploadState = _state
       _stateKey = _state.toString()

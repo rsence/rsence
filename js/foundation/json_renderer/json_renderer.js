@@ -24,7 +24,7 @@
 //var//RSence.Foundation
 COMM.JSONRenderer = HClass.extend({
   
-  version: 0.9,
+  version: 1.0,
 
 /** = Description
   * Renders JSON structured data, see some of the demos for usage examples.
@@ -37,11 +37,48 @@ COMM.JSONRenderer = HClass.extend({
     if((_data['type'] === 'GUITree') && (this.version >= _data['version'])){
       this.data   = _data;
       this.parent = _parent;
+      this.byId = {};
+      this.byName = {};
       this.render();
+      var _rndr = this;
+      if( this.view.hasAncestor( HApplication ) ){
+        this.view.getViewbyId = function(_id){ return _rndr.getViewById(_id); };
+        this.view.getViewsbyName = function(_id){ return _rndr.getViewsByName(_id); };
+      }
+      else if ( this.view.hasAncestor( HView ) ){
+        this.view.app.getViewbyId = function(_id){ return _rndr.getViewById(_id); };
+        this.view.app.getViewsbyName = function(_id){ return _rndr.getViewsByName(_id); };
+      }
     }
     else{
       throw("JSONRenderer: Only GUITree version "+this.version+" or older data can be handled.");
     }
+  },
+  getViewById: function(_id){
+    if( this.byId[_id] !== undefined ){
+      return this.byId[_id];
+    }
+    console.log('JSONRenderer; no such view Id: '+_id);
+    return null;
+  },
+  addViewId: function(_id, _view){
+    if( this.byId[_id] !== undefined ){
+      console.log('JSONRenderer; already has id: '+_id+' (replacing)');
+    }
+    this.byId[_id] = _view;
+  },
+  getViewsByName: function(_name){
+    if( this.byName[_id] !== undefined ){
+      return this.byName[_name];
+    }
+    console.log('JSONRenderer; no views named: '+_name);
+    return [];
+  },
+  addViewName: function(_name, _view){
+    if( this.byName[_name] === undefined ){
+      this.byName[_name] = [];
+    }
+    this.byName[_name].push(_view);
   },
   render: function(){
     this.scopes = [window];
@@ -141,11 +178,41 @@ COMM.JSONRenderer = HClass.extend({
       return (new _class(_args));
     }
   },
+  _handleCall: function( _instance, _call ){
+    if( _call instanceof Object ){
+      var
+      _methodName, _arguments;
+      for( _methodName in _call ){
+        // console.log('methodName:',_methodName);
+        if( typeof _instance[_methodName] === 'function' ){
+          // console.log('callArguments:',_call[_methodName]);
+          try{
+            _instance[_methodName].apply( _instance, _call[_methodName] );
+          }
+          catch(e){
+            console.log('JSONRenderer handleCall error:',e.toString()+', method:',_instance[_methodName],', call args:', _call[_methodName],', e:',e);
+          }
+        }
+        else {
+          console.log('JSONRenderer handleCall error; undefined method: ',_methodName);
+        }
+      }
+    }
+    else {
+      console.log('JSONRenderer handleCall error, unable to handle call format: ',_call);
+    }
+  },
   renderNode: function( _dataNode, _parent ){
     var
     _reserved = [ 'type', 'args', 'version', 'class', 'rect', 'bind', 'extend', 'options', 'subviews', 'define' ],
     _className, _class, _origNode, _straightParams = false, _rect, _hasRect, _hasSubviews, _subViews,
     _hasOptions, _options, _hasExtension, _extension, _hasBind, _bind,
+    _hasName, _hasId,
+    _isAppClass = false, _isViewClass = false,
+    _autoOptionItems = [
+      'label', 'style', 'visible', 'theme', 'html',
+      'value', 'enabled', 'events', 'active', 'minValue', 'maxValue'
+    ], _autoOptionItem, _hasCall, _call,
     _hasDefinition, _definition, _instance, i, _subView = null;
 
     // The name of the class:
@@ -166,18 +233,35 @@ COMM.JSONRenderer = HClass.extend({
     }
 
     _class = this.findInScope( _className );
+    
+    if (_class['hasAncestor'] !== undefined){
+      _isAppClass = _class.hasAncestor( HApplication );
+      _isViewClass = _class.hasAncestor( HView );
+    }
+
+    _hasId = ( _dataNode['id'] !== undefined ) && ( typeof _dataNode['id'] === 'string' );
+    _hasName = ( _dataNode['name'] !== undefined ) && ( typeof _dataNode['name'] === 'string' );
 
     if( _straightParams ){
-      return this.initStraight( _class, _dataNode );
+      _instance = this.initStraight( _class, _dataNode );
     }
     else if( _dataNode['args'] !== undefined ){
-      return this.initStraight( _class, _dataNode['args'] );
+      _instance = this.initStraight( _class, _dataNode['args'] );
     }
     else if( _origNode && _origNode['args'] !== undefined ){
-      return this.initStraight( _class, _origNode['args'] );
+      _instance = this.initStraight( _class, _origNode['args'] );
+    }
+    if( _instance ){
+      if( _hasId ){
+        this.addViewId( _dataNode.id, _instance );
+      }
+      if( _hasName ){
+        this.addViewName( _dataNode.id, _instance );
+      }
+      return _instance;
     }
     
-    // Currently only HView -derived classes are supported, so 
+    // Currently only HView -derived classes are supported, so
     // the rect is mandatory.
     _rect = _dataNode['rect'];
     _hasRect = (_rect !== undefined) && (_rect instanceof Array || typeof _rect === 'string');
@@ -185,7 +269,12 @@ COMM.JSONRenderer = HClass.extend({
       _hasRect = _origNode['rect'] !== undefined;
       _rect    = _hasRect?_origNode['rect']:null;
     }
-    
+    if( !_isViewClass ){
+      if( _hasRect ){
+        console.log( "renderNode warning; Supposedly rect-incompatible class supplied: "+_className );
+      }
+    }
+
     // Checks, if any sub-views are defined.
     _hasSubviews = _dataNode['subviews'] !== undefined;
     _subViews    = _hasSubviews?_dataNode['subviews']:null;
@@ -200,6 +289,16 @@ COMM.JSONRenderer = HClass.extend({
     if( !_hasOptions && _origNode){
       _hasOptions = _origNode['options'] !== undefined;
       _options    = _hasOptions?_origNode['options']:null;
+    }
+    for( i=0; i < _autoOptionItems.length; i++ ){
+      _autoOptionItem = _autoOptionItems[i];
+      if( _dataNode[ _autoOptionItem ] !== undefined ){
+        if( !_hasOptions ){
+          _hasOptions = true;
+          _options = {};
+        }
+        _options[_autoOptionItem] = _dataNode[ _autoOptionItem ];
+      }
     }
     
     // JS Extension block
@@ -217,6 +316,11 @@ COMM.JSONRenderer = HClass.extend({
       _hasBind = _origNode['bind'] !== undefined;
       _bind    = _hasBind?_origNode['bind']:null;
     }
+
+    _hasCall = _dataNode['call'] !== undefined;
+    if( _hasCall ){
+      _call = _dataNode['call'];
+    }
     
     // JS Definition block
     _hasDefinition = _dataNode['define'] !== undefined;
@@ -225,7 +329,10 @@ COMM.JSONRenderer = HClass.extend({
       _hasDefinition  = _origNode['define'] !== undefined;
       _definitions    = _hasDefinition?_origNode['define']:null;
     }
-    
+    if( _rect === null && _class['hasAncestor'] && _class.hasAncestor( HView ) ) {
+      console.log( 'Ancestors include HView, but no rect defined!' );
+    }
+
     // The HView-derived class instance, instance is by default the parent
     _instance = _parent;
     
@@ -280,12 +387,34 @@ COMM.JSONRenderer = HClass.extend({
           }
         }
         // For HApplication -derived classes
-        if(!_hasRect && _hasOptions){
-          _instance = _class.nu(_options);
+        if( _isAppClass ){
+          if( _hasOptions ){
+            _instance = _class.nu( _options );
+          }
+          else {
+            _instance = _class.nu();
+          }
         }
-        // For HView and HControl -derived classes
-        else if(_hasRect){
-          _instance = _class.nu(_rect,_parent,_options);
+        else if ( _isViewClass ){
+          _instance = _class.nu( _rect, _parent, _options );
+        }
+        else {
+          if( _hasRect ){
+            if( _hasOptions ){
+              _instance = _class.nu(_rect,_parent,_options);
+            }
+            else {
+              _instance = _class.nu(_rect,_parent);
+            }
+          }
+          else if ( _hasOptions ){
+            // console.log(_className,_parent,_options);
+            _instance = _class.nu( _parent, _options );
+          }
+          else {
+            // console.log('renderNode warning; unsure how to construct: '+_className+', rect:',_rect,', options:',_options);
+            _instance = _class.nu( _parent );
+          }
         }
         if(!_hasOptions){
           if(_hasBind){
@@ -304,8 +433,17 @@ COMM.JSONRenderer = HClass.extend({
       else if(!(!_class && _hasSubviews)) {
         console.log('renderNode warning; No such class: '+_className+', node: ',_dataNode);
       }
+      if( _hasId ){
+        this.addViewId( _dataNode.id, _instance );
+      }
+      if( _hasName ){
+        this.addViewName( _dataNode.id, _instance );
+      }
+      if(_hasCall){
+        this._handleCall(_instance,_call);
+      }
     }
-    catch(e){
+    catch (e){
       console.log('renderNode error:',e.toString()+', rect:',_rect,', class:',_dataNode['class'],', options:', _options,', e:',e);
     }
     // Iterates recursively through all subviews, if specified.
