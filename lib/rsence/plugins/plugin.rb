@@ -380,6 +380,12 @@ module RSence
       
       # @private  Returns a sanitized copy of a single value item.
       def sanitize_value_item( value_item_dirty )
+        unless value_item_dirty.class == Hash
+          value_item_dirty = {
+            :value => value_item_dirty,
+            :restore_default => false
+          }
+        end
         value_item_clean = {}
         value_item_dirty.each do | key, value |
           if key.to_sym == :value or key.to_sym == :data
