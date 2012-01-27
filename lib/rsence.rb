@@ -74,7 +74,9 @@ module RSence
   # +:autoupdate+:: (true or false) True, if the +-a+ or +--auto-update+ command-line option was given. Default is false.
   # +:latency+:: (Number) Amount of milliseconds to sleep in each request given with the +--latency+ command-line option. Default is 0.
   # +:say+:: (true or false) True, if the +-S+ or +--say+ command-line option was given. Default is false.
-  def self.args;    @@argv_parser.args;    end
+  def self.args; @@argv_parser.args; end
+
+  def self.env_path; @@argv_parser.args[:env_path]; end
   
   # @private  This accessor enables RSence.startable? method, which returns true if a start-type command was given.
   def self.startable?; @@argv_parser.startable?; end
