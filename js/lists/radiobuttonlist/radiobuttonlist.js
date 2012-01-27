@@ -11,9 +11,10 @@
   ** The value of the instance is the selected key in the listItems.
   ***/
 var//RSence.Lists
-HRadioButtonList = HControl.extend({
+HRadioButtonList = HListItemControl.extend({
   drawSubviews: function(){
-    this.setStyle('border','1px solid #999');
+    this.setStyle('border','1px solid #999999');
+    this.setStyle('border-radius','3px');
     this.setStyle('overflow-y','auto');
   },
   listItems: [],
@@ -32,6 +33,7 @@ HRadioButtonList = HControl.extend({
   *
   **/
   setListItems: function(_listItems){
+    _listItems = this._cleanListItems(_listItems);
     var _listItem,
         _value,
         _label,

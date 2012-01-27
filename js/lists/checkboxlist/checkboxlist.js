@@ -13,7 +13,7 @@
   **
   ***/
 var//RSence.Lists
-HCheckboxList = HControl.extend({
+HCheckboxList = HListItemControl.extend({
   
 /** = Description
   * Draws borders with 1px and sets 'overflow' to 'auto'.
@@ -21,6 +21,7 @@ HCheckboxList = HControl.extend({
   **/
   drawSubviews: function(){
     this.setStyle('border','1px solid #999');
+    this.setStyle('border-radius','3px');
     this.setStyle('overflow','auto');
   },
   listItems: [],
@@ -103,6 +104,7 @@ HCheckboxList = HControl.extend({
   *
   **/
   setListItems: function(_listItems){
+    _listItems = this._cleanListItems(_listItems);
     var _listItem,
         _value,
         _label,

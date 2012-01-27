@@ -132,8 +132,8 @@ HMiniMenu = HRadioButtonList.extend({
     );
   },
   
-  setListItems: function(listItems){
-    this.base(listItems);
+  setListItems: function(_listItems){
+    this.base(_listItems);
     this.valueMatrix = this.menuItemView.valueMatrix;
     this.refreshValue();
     if( this.options.initialVisibility ){
