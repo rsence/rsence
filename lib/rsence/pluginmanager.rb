@@ -306,7 +306,7 @@ module RSence
         
         # System version requirement.
         # NOTE: Has no effect yet!
-        :sys_version => '>= 2.0.0',
+        :sys_version => '>= 2.2.0',
         
         # Dependency, by default the system category (built-in plugins).
         # A nil ( "~" in yaml ) value means no dependencies.
