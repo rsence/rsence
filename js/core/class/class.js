@@ -129,6 +129,9 @@ HClass.prototype = {
         } )
       )( arguments );
     };
+    this.hasAncestor = function( _obj ){
+      return this.ancestors.indexOf( _obj ) !== -1;
+    };
     this['new'] = this.nu;
     return this;
   },
@@ -190,7 +193,8 @@ HClass.prototype = {
 HClass.extend = function(_instance, _static) {
   // reference to HClass's prototype extend method (HClass's class structure extend method)
   var _extend = HClass.prototype.extend,
-      _prototype, _constructor, _klass, _object;
+      _prototype, _constructor, _klass, _object,
+      _ancestors, i=0;
   // if _instance is undefined,null,"" etc. creates object so that code below works
   if (!_instance) {
     _instance = {};
@@ -206,11 +210,13 @@ HClass.extend = function(_instance, _static) {
   _prototype.constructor = this;
   delete HClass._prototyping;
   
+  _ancestors = [];
   _klass = function() {
     if (!HClass._prototyping) {
       _constructor.apply(this, arguments);
     }
     this.constructor = _klass;
+    this.ancestors = _ancestors;
   };
   // this is the new class's prototype (class structure)
   _klass.prototype = _prototype;
@@ -232,8 +238,14 @@ HClass.extend = function(_instance, _static) {
   if (_object.init instanceof Function) {
     _object.init();
   }
+  _ancestors.push( _object );
+  for( ; i < this.ancestors.length; i++ ){
+    _ancestors.push( this.ancestors[i] );
+  }
+  _object.ancestors = _ancestors;
   return _object;
 };
+HClass.ancestors = [ HClass ];
 
 /** = Description
   * Copies the prototype properties and methods from _interface or if it is an object it's properties and functions
