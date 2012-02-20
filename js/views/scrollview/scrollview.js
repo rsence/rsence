@@ -17,6 +17,12 @@ HScrollView = HControl.extend({
     scrollY: true
   }),
   drawSubviews: function(){
+    if(this.options.scrollX === 'auto' || this.options.scrollY === 'auto'){
+      this.setStyle('overflow','auto');
+    }
+    else if(this.options.scrollX || this.options.scrollY){
+      this.setStyle('overflow','scroll');
+    }
     if(!this.options.scrollX){
       this.setStyle('overflow-x','hidden');
     }

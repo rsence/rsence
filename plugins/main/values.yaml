@@ -5,4 +5,6 @@
   :value: ''
   :restore_default: true
   :responders:
-  - { :plugin: main, :method: url_responder }
+  - 
+    :plugin: main
+    :method: url_responder

@@ -13,7 +13,7 @@
   **
   ***/
 var//RSence.Lists
-HCheckboxList = HControl.extend({
+HCheckboxList = HListItemControl.extend({
   
 /** = Description
   * Draws borders with 1px and sets 'overflow' to 'auto'.
@@ -21,16 +21,17 @@ HCheckboxList = HControl.extend({
   **/
   drawSubviews: function(){
     this.setStyle('border','1px solid #999');
+    this.setStyle('border-radius','3px');
     this.setStyle('overflow','auto');
   },
   listItems: [],
   listItemViews: [],
   ListCheckbox: HCheckbox.extend({
 
-/** = Description
-  * Adds listValues to the parent if they are true otherwise deletes them.
-  *
-  **/
+  /** = Description
+    * Adds listValues to the parent if they are true otherwise deletes them.
+    *
+    **/
     refreshValue: function(){
       this.base();
       if(this.value === true){
@@ -40,7 +41,15 @@ HCheckboxList = HControl.extend({
         this.parent.delItem( this.options.listValue );
       }
     }
-  }),
+  }), // End ListCheckbox
+
+  setEnabled: function(_state){
+    this.base(_state);
+    if(!this['listItemViews']){ return; }
+    for(var i=0;i<this.listItems.length;i++){
+      this.listItemViews[i].setEnabled(_state)
+    }
+  },
 
 /** = Description
   * Checks if +_listValue+ can be found from the values. Adds the value
@@ -95,6 +104,7 @@ HCheckboxList = HControl.extend({
   *
   **/
   setListItems: function(_listItems){
+    _listItems = this._cleanListItems(_listItems);
     var _listItem,
         _value,
         _label,
@@ -121,7 +131,8 @@ HCheckboxList = HControl.extend({
         this, {
           label: _label,
           value: _checked,
-          listValue: _value
+          listValue: _value,
+          enabled: this.enabled
         }
       );
       this.listItemViews[i] = _checkbox;

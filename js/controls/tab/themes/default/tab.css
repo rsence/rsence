@@ -68,10 +68,12 @@
 .tab_bg {
   position: absolute;
   top: 24px; left: 0px; right: 0px; bottom: 0px;
+  border-radius: 0 0 3px 3px;
   background-image: #{this.getCssFilePath('tab_border_pattern.png')};
 }
 .tab_fg {
   position: absolute;
   top: 0px; left: 1px; right: 1px; bottom: 1px;
+  border-radius: 0 0 3px 3px;
   background-image: #{this.getCssFilePath('tab_bg_color.png')};
 }

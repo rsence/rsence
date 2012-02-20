@@ -28,8 +28,20 @@ HTextControl = HControl.extend({
   
   controlDefaults: (HControlDefaults.extend({
     refreshOnBlur: true,
-    refreshOnInput: true
+    refreshOnInput: true,
+    focusOnCreate: false
   })),
+  
+  drawSubviews: function(){
+    ELEM.setStyle(this.elemId,'overflow','visible');
+    this.base();
+    if(this.options.focusOnCreate){
+      this.getInputElement().focus();
+      if( typeof this.value === 'string' ){
+        this.setSelectionRange( this.value.length, this.value.length );
+      }
+    }
+  },
   
 /** = Description
   * The contextMenu event for text input components is not prevented by default.
@@ -48,6 +60,13 @@ HTextControl = HControl.extend({
       if(this.markupElemIds['label']!==undefined){
         ELEM.setAttr(this.markupElemIds.label,'title',this.label);
       }
+    }
+  },
+
+  lostActiveStatus: function(){
+    if(this['markupElemIds']!==undefined){
+      ELEM.get( this.markupElemIds.value ).blur();
+      this.textBlur();
     }
   },
   
@@ -118,6 +137,7 @@ HTextControl = HControl.extend({
   *
   **/
   textFocus: function(){
+    EVENT.changeActiveControl( this );
     this.hasTextFocus = true;
     this._setChangeEventFn();
     return true;
@@ -140,7 +160,14 @@ HTextControl = HControl.extend({
   
   onIdle: function(){
     this.hasTextFocus && this._updateValueFromField();
-    this.base();
+    try{
+      this.base();
+    }
+    catch(e){
+      console.error('HTextControl::onIdle error -> ',e);
+      debugger;
+      this.base();
+    }
   },
   
 /** = Description
@@ -208,6 +235,9 @@ HTextControl = HControl.extend({
   },
   
   die: function(){
+    if( this.hasTextFocus ){
+      this.getInputElement().blur();
+    }
     this._clearChangeEventFn();
     this.base();
   },

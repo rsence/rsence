@@ -306,9 +306,12 @@ module Common
       if @raw_uris.include?(file_id)
         (content_type,content_size,content) = @raw_uris[file_id]
       elsif @files[:by_id].include?(file_id)
-        (content_type,content_size,content,ses_id) = @files[:by_id][file_id]
-        if req.header.has_key?('keep-alive') and req.header['keep-alive'].size > 0
-          keep_alive = req.header['keep-alive'][0].to_i
+        (content_type,content_size,content,ses_id,filename) = @files[:by_id][file_id]
+        if filename != nil and filename != ''
+          res['Content-Disposition'] = "attachment; filename=#{filename}"
+        end
+        if req.header.has_key?('Keep-Alive') and req.header['Keep-Alive'].size > 0
+          keep_alive = req.header['Keep-Alive'][0].to_i
           keep_alive = 10  if keep_alive < 10
           keep_alive = 600 if keep_alive > 600
           push_keepalive_file( file_id, keep_alive )

@@ -32,7 +32,7 @@ class ClientPkgPlugin < Servlet
       @log_file = nil
     end
     def log( str )
-      if RSence.args[:verbose]
+      if RSence.args[:verbose] or not RSence.args[:suppress_build_messages]
         puts str
         return
       else
@@ -55,18 +55,23 @@ class ClientPkgPlugin < Servlet
   end
   
   def rebuild_client
-    until not @build_busy
-      puts "build busy, sleeping.."
-      sleep 0.5
+    while @build_busy
+      puts "-- build busy, sleeping.. --"
+      sleep 0.1
     end
     @build_busy = true
     @last_change = Time.now.to_i
     @client_build.setup_dirs
     @client_build.run
     @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
+    RSence.plugin_manager.incr! if RSence.config[:transporter_conf][:client_autoreload]
     @build_busy = false
   end
   
+  def ready?
+    return (not @build_busy)
+  end
+
   def open
     if not @thr and RSence.args[:autoupdate]
       @thr = Thread.new do
@@ -135,6 +140,10 @@ class ClientPkgPlugin < Servlet
   
   def squeeze( js )
     return @client_build.squeeze( js )
+  end
+
+  def coffee( src )
+    return @client_build.coffee( src )
   end
   
   def init

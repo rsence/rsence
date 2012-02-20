@@ -70,7 +70,7 @@ HClass.prototype = {
  /* The property copying method. */
   extend: function(_source, _value) {
     var _extend = HClass.prototype.extend,
-        _ancestor, _method, _previous, _returnValue, i, _name, _prototype, _protected;
+        _ancestor, _method, _returnValue, i, _name, _prototype, _protected;
     if (arguments.length === 2) {
       _ancestor = this[_source];
       // only methods are inherited
@@ -79,7 +79,7 @@ HClass.prototype = {
         _method = _value;
         _value = function() {
           // saves the this.base that is the this.base method of this child
-          _previous = this.base;
+          var _previous = this.base;
           // copies previous this.base from the direction from HClass
           this.base = _ancestor;
           // current class's method is called
@@ -129,6 +129,10 @@ HClass.prototype = {
         } )
       )( arguments );
     };
+    this.hasAncestor = function( _obj ){
+      return this.ancestors.indexOf( _obj ) !== -1;
+    };
+    this['new'] = this.nu;
     return this;
   },
   /** = Description
@@ -189,7 +193,8 @@ HClass.prototype = {
 HClass.extend = function(_instance, _static) {
   // reference to HClass's prototype extend method (HClass's class structure extend method)
   var _extend = HClass.prototype.extend,
-      _prototype, _constructor, _klass, _object;
+      _prototype, _constructor, _klass, _object,
+      _ancestors, i=0;
   // if _instance is undefined,null,"" etc. creates object so that code below works
   if (!_instance) {
     _instance = {};
@@ -205,11 +210,13 @@ HClass.extend = function(_instance, _static) {
   _prototype.constructor = this;
   delete HClass._prototyping;
   
+  _ancestors = [];
   _klass = function() {
     if (!HClass._prototyping) {
       _constructor.apply(this, arguments);
     }
     this.constructor = _klass;
+    this.ancestors = _ancestors;
   };
   // this is the new class's prototype (class structure)
   _klass.prototype = _prototype;
@@ -231,8 +238,14 @@ HClass.extend = function(_instance, _static) {
   if (_object.init instanceof Function) {
     _object.init();
   }
+  _ancestors.push( _object );
+  for( ; i < this.ancestors.length; i++ ){
+    _ancestors.push( this.ancestors[i] );
+  }
+  _object.ancestors = _ancestors;
   return _object;
 };
+HClass.ancestors = [ HClass ];
 
 /** = Description
   * Copies the prototype properties and methods from _interface or if it is an object it's properties and functions
@@ -300,7 +313,6 @@ if ([]['indexOf']===undefined) {
   };
 }
 
-
 // ff version 3.0.3 fails on this, when firebug installed: try/catch block
 try {
 
@@ -314,5 +326,4 @@ if(window['console']===undefined){
 
 
 } catch(e) {}
-
 

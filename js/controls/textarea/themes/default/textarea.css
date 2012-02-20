@@ -14,6 +14,10 @@
 .default .disabled .textarea_input {
   #{(BROWSER_TYPE.safari||BROWSER_TYPE.chrome)?'color:#ccc;':'color:#999'}
 }
+.default .textarea_input:focus {
+  outline-color: transparent;
+  outline-style: none;
+}
 
 .default .textarea_input_parent {
   position: absolute;

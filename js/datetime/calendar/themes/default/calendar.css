@@ -1,7 +1,6 @@
 .calendar_control {
   position: absolute;
-  left: 0px; top: 0px; right: 1px; bottom: 1px;
-  border: 1px solid #999;
+  left: 0px; top: 0px; right: 0px; bottom: 0px;
 }
 .calendar_head {
   position: absolute;
@@ -12,7 +11,6 @@
   position: absolute;
   top: 2px; width: 16px; height: 16px;
   font-size: 0; line-height: 0;
-  line-height: 20px;
   cursor: pointer;
   background-image: #{this.getCssFilePath('calendar_arrows.png')};
 }
@@ -55,7 +53,7 @@
   color: #000;
   font-family: Arial, sans-serif;
   font-size: 11px;
-  line-height: 15px;
+  line-height: 16px;
   vertical-align: middle;
   text-align: center;
 }
@@ -86,11 +84,8 @@
 }
 .calendar_weeks_week_col_no {
   color: #666;
-  border-left: 1px solid #999;
-  border-top: 1px solid #999;
 }
 .calendar_weeks_week_col_no:hover {
-  background-color: #fff;
   color: #000;
 }
 .calendar_weeks_week_col_yes,
@@ -98,11 +93,97 @@
   color: #000;
   background-color: #ddd;
   font-weight: bold;
-  border-left: 1px solid #666;
-  border-top: 1px solid #666;
+  border: 1px solid #666;
 }
 .calendar_weeks_week_col_sel,
 .calendar_weeks_week_col_yes:hover {
   background-color: #fff;
 }
+.calendar_bg {
+  position: absolute;
+  left: -1px; right: -1px;
+  top: -1px; bottom: -2px;
+}
+.calendar_bg * {
+  position: absolute;
+  font-size: 0; line-height: 0; /* ie bug work-arounds */
+}
+.disabled > .calendar_bg {
+  opacity: 0.9;
+}
+.calendar_bg .calendar_nw,
+.calendar_bg .calendar_n,
+.calendar_bg .calendar_ne,
+.calendar_bg .calendar_sw,
+.calendar_bg .calendar_s,
+.calendar_bg .calendar_se {
+  height: 12px;
+  background-image: #{this.getCssFilePath('calendar_parts1.png')};
+}
+.calendar_bg .calendar_c {
+  left: 12px; right: 12px; top: 12px; bottom: 12px;
+  background-color: #fbfafb;
+/*  background-image: #{this.getCssFilePath('calendar_bg.png')};*/
+}
+.calendar_bg .calendar_w,
+.calendar_bg .calendar_e {
+  top: 12px; bottom: 12px;
+  width: 12px;
+  background-image: #{this.getCssFilePath('calendar_parts2.png')};
+}
+.calendar_bg .calendar_n,
+.calendar_bg .calendar_s {
+  left: 12px; right: 12px;
+}
+.calendar_bg .calendar_nw,
+.calendar_bg .calendar_ne,
+.calendar_bg .calendar_sw,
+.calendar_bg .calendar_se {
+  width: 12px;
+}
+.calendar_bg .calendar_nw,
+.calendar_bg .calendar_n,
+.calendar_bg .calendar_ne {
+  top: 0px;
+}
+.calendar_bg .calendar_sw,
+.calendar_bg .calendar_s,
+.calendar_bg .calendar_se {
+  bottom: 0px;
+}
+.calendar_bg .calendar_nw,
+.calendar_bg .calendar_w,
+.calendar_bg .calendar_sw {
+  left: 0px;
+}
+.calendar_bg .calendar_ne,
+.calendar_bg .calendar_e,
+.calendar_bg .calendar_se {
+  right: 0px;
+}
+.calendar_bg .calendar_nw {
+  background-position: 0px 0px;
+}
+.calendar_bg .calendar_n {
+  background-position: 0px -24px;
+}
+.calendar_bg .calendar_ne {
+  background-position: -12px 0px;
+}
+.calendar_bg .calendar_sw {
+  background-position: 0px -12px;
+}
+.calendar_bg .calendar_s {
+  background-position: 0px -36px;
+}
+.calendar_bg .calendar_se {
+  background-position: -12px -12px;
+}
+.calendar_bg .calendar_w {
+  background-position: 0px 0px;
+}
+.calendar_bg .calendar_e {
+  background-position: -12px 0px;
+}
+
 

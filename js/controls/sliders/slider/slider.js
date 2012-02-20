@@ -44,6 +44,7 @@ HSlider = HControl.extend({
   controlDefaults: (HControlDefaults.extend({
     minValue: 0,
     maxValue: 1,
+    roundValue: false,
     inverseAxis: false
   })),
   
@@ -66,7 +67,12 @@ HSlider = HControl.extend({
     if (_value > this.maxValue) {
       _value = this.maxValue;
     }
-    this.base(_value);
+    if( this.options.roundValue ){
+      this.base( Math.round( _value ) );
+    }
+    else {
+      this.base(_value);
+    }
     if(this._thumbElemId){
       this.drawThumbPos();
     }

@@ -17,47 +17,58 @@
   ** +type+::   '[HStringView]'
   ** +value+::  The string that this string view displays when drawn.
   ***/
-var//RSence.Controls
-HStringView = HControl.extend({
+var HStringView, HLabel;
 
-  componentName: "stringview",
-  
-  defaultEvents: {
-    contextMenu: true
-  },
-  
-/** = Description
-  * HStringView allows the default contextMenu action.
-  *
-  **/
-  contextMenu: function(){
-    return true;
-  },
-  
-/** = Description
-  * The setStyle method of HStringView applies only to the value 
-  * element (not the whole component).
-  *
-  **/
-  setStyle: function(_name, _value, _cacheOverride) {
-    if (!this['markupElemIds']||!this.markupElemIds['value']) {
+(function(){
+  var _HStringViewInterface = {
+
+    componentName: "stringview",
+
+  /** = Description
+    * The setStyle method of HStringView applies only to the value
+    * element (not the whole component).
+    *
+    **/
+    setStyle: function(_name, _value, _cacheOverride) {
+      if (!this['markupElemIds']||!this.markupElemIds['value']) {
+        return this;
+      }
+      this.setStyleOfPart( 'value', _name, _value, _cacheOverride);
       return this;
-    }
-    ELEM.setStyle(this.markupElemIds.value, _name, _value, _cacheOverride);
-    return this;
-  },
-  
-/** = Description
-  * The refreshLabel of HStringView sets a tool tip.
-  * Applied by the setLabel method and the label attribute of options.
-  *
-  **/
-  refreshLabel: function() {
-    if(this.markupElemIds) {
-      if(this.markupElemIds.value) {
-        ELEM.setAttr(this.markupElemIds.value, 'title', this.label);
+    },
+    
+  /** = Description
+    * The refreshLabel of HStringView sets a tool tip.
+    * Applied by the setLabel method and the label attribute of options.
+    *
+    **/
+    refreshLabel: function() {
+      if(this.markupElemIds) {
+        if(this.markupElemIds.value) {
+          if( this.value !== undefined ){
+            this.setAttrOfPart( 'value', 'title', this.label );
+          }
+          else {
+            this.setMarkupOfPart( 'value', this.label );
+          }
+        }
       }
     }
-  }
-});
+  };
 
+  HLabel = HView.extend( _HStringViewInterface );
+  HStringView = HControl.extend( _HStringViewInterface ).extend({
+    defaultEvents: {
+      contextMenu: true
+    },
+    
+  /** = Description
+    * HStringView allows the default contextMenu action.
+    *
+    **/
+    contextMenu: function(){
+      return true;
+    }
+  });
+
+})();

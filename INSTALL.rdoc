@@ -25,12 +25,12 @@ This is a list of system level dependencies. You only need to do this step once;
 
 === Mac OS X
 
-==== Mac OS X 10.6
+==== Mac OS X 10.6 "Snow Leopard" and 10.7 "Lion"
 
 * Install *XCode*[http://developer.apple.com/mac/] to get the essential development tools, like compilers.
 * Proceed to section 3.0
 
-==== Mac OS X 10.4 and 10.5
+==== Mac OS X 10.4 "Tiger" and 10.5 "Leopard"
 
 This step applies only to Mac OS X 10.4 "Tiger" and 10.5 "Leopard". The default ruby build of these versions of Mac OS X is somewhat broken.
 
@@ -120,6 +120,8 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *rake*[http://rake.rubyforge.org]
   * Ruby build tool
   * Not necessarily required via ruby gems, if installed via a system-level package
+* *coffee-script*[https://github.com/josh/ruby-coffee-script]
+  * Ruby library for .coffee -> .js compliation
 * *rack*[http://rack.rubyforge.org]
   * Abstract ruby web server interface
   * A rack handler is also required. One of the following is suggested:

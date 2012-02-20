@@ -118,7 +118,7 @@ COMM.Queue = HApplication.extend({
           _strs.JS_EXEC_FAIL,
           _item,
           _strs.REASON,
-          e.description
+          e
         ].join(''));
       }
     }

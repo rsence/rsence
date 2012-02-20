@@ -18,7 +18,14 @@ HMiniMenu = HRadioButtonList.extend({
   
   defaultEvents: {
     draggable: true,
-    click: true
+    click: true,
+    resize: true
+  },
+
+  subComponentHeight: 15,
+
+  resize: function(){
+    this.repositionMenuItems();
   },
   
   repositionMenuItems: function(){
@@ -26,7 +33,7 @@ HMiniMenu = HRadioButtonList.extend({
     x = this.pageX(),
     y = this.pageY(),
     w = this.rect.width,
-    h = this.listItems.length*15,
+    h = this.listItems.length*this.subComponentHeight,
     i = 0,
     listItem = null;
     for(;i<this.listItems.length && listItem === null;i++){
@@ -34,9 +41,9 @@ HMiniMenu = HRadioButtonList.extend({
         listItem = this.listItems[i];
       }
     }
-    y -= (i-1)*15;
+    y -= (i-1)*this.subComponentHeight;
     if(y < 0){
-      y = y%15;
+      y = this.subComponentHeight%y;
     }
     if(this.options['menuItemGeom']){
       if(this.options.menuItemGeom.width){
@@ -106,29 +113,38 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   drawSubviews: function(){
+    var
+    itemStyle = {
+      'background-color': '#f6f6f6',
+      'border': '1px solid #999',
+      'overflow': 'auto',
+      'overflow-x': 'hidden'
+    };
+    if(!BROWSER_TYPE.ie){
+      itemStyle.opacity = 0.9;
+    }
     this.menuItemView = HView.nu(
       [ this.rect.left, this.rect.top, this.rect.width, 10 ],
       this.app, {
         visible: false,
-        style: [
-          ['background-color','#f6f6f6'],
-          ['border', '1px solid #999'],
-          ['overflow-y', 'auto'],
-          ['opacity', 0.9]
-        ]
+        style: itemStyle
       }
     );
   },
   
-  setListItems: function(listItems){
-    this.base(listItems);
+  setListItems: function(_listItems){
+    this.base(_listItems);
     this.valueMatrix = this.menuItemView.valueMatrix;
     this.refreshValue();
+    if( this.options.initialVisibility ){
+      EVENT.changeActiveControl(this);
+      this.menuShow();
+    }
   },
   
   createComponent: function( i, _label ){
     return HMiniMenuItem.nu(
-      [ 0, (i*15), null, 15, 0, null ],
+      [ 0, (i*this.subComponentHeight), null, this.subComponentHeight, 0, null ],
       this.menuItemView, {
         label: _label
       }

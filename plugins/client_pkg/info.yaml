@@ -3,7 +3,7 @@
 title: Client Resource Package
 
 # The human-readable version of the package
-version: 2.1.0
+version: 2.2.0
 
 # A brief description of the package (rdoc formatting supported)
 description: |
@@ -17,7 +17,7 @@ description: |
 reloadable: false
 
 # System version requirement.
-sys_version: '>= 2.1.0'
+sys_version: '>= 2.2.0'
 
 category: :system
 

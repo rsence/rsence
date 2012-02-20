@@ -24,7 +24,7 @@ module ClientPkgServe
   def build_busy_wait
     while @build_busy
       puts "-- build not finished, waiting.. --"
-      sleep 0.1
+      sleep 0.4
     end
   end
   

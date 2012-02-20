@@ -35,6 +35,18 @@ COMM.JSLoader = HClass.extend({
     console.log("failed to load js: "+_resp.url);
   },
   
+  _formatUrl: function( _jsName ){
+    var
+    _this = this,
+    _isFullUrl = _jsName.slice(0,7) === 'http://' || _jsName.slice(0,8) === 'https://',
+    _url = _isFullUrl?_jsName:_this.uri+_jsName+'.js';
+    return _url;
+  },
+  loaded: function(_jsName){
+    var _url = this._formatUrl( _jsName );
+    this._loadedJS.push( _url );
+  },
+
 /** = Description
   * Loads a js package using the name.
   *
@@ -51,12 +63,13 @@ COMM.JSLoader = HClass.extend({
   *
   **/
   load: function(_jsName){
-    var _this = this,
-        _isFullUrl = _jsName.slice(0,7) === 'http://' || _jsName.slice(0,8) === 'https://',
-        _url = _isFullUrl?_jsName:_this.uri+_jsName+'.js';
+    var
+    _this = this,
+    _url = _this._formatUrl( _jsName );
     if((_this._loadedJS.indexOf(_url)!==-1)) {
       return;
     }
+    // console.log('jsLoader load:',_url);
     COMM.Queue.pause();
     _this._loadedJS.push(_url);
     if(BROWSER_TYPE.symbian && _isFullUrl){

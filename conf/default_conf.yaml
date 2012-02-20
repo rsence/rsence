@@ -26,6 +26,12 @@
     #
     # A list of javascript dependencies to include in the html
     :deps: [ ]
+    #
+    # Boot library:
+    :boot_lib: rsence
+    #
+    # Default additional libraries to use:
+    :default_libs: []
   #
   # The settings for the main plugin
   :main_plugin:
@@ -35,6 +41,27 @@
     #
     # how many milliseconds to wait before doing an idle poll
     :server_poll_interval: 2000 # 2 seconds
+  #
+  # The settings for the daemon
+  :daemon:
+    #
+    # How long to wait before binding the broker to the
+    # HTTP address and port after starting the Transporter.
+    # A value of -1 disables the broker completely.
+    # Before waiting, the daemon starts all subsystems except the
+    # http handling front-end (Broker).
+    # Useful in situations where RSence itself configures the
+    # network interfaces or the interfaces become available after
+    # RSence is started.
+    :http_delayed_start: 0
+    #
+    # Save plugin and session state every n seconds.
+    # Set to 0 or negative to disable.
+    :autosave_interval: 180 # once every 3 minutes
+    #
+    # Daemon helper files, leave empty for defaults.
+    #:pid_fn: /var/run/rsence.pid
+    #:log_fn: /var/log/rsence.log
   #
   # Switches on debug-mode:
   #  - Generates more output
@@ -54,7 +81,7 @@
     :port:  8001
     #
     # Bind this ip address ('0.0.0.0' means all)
-    :bind_address:  '0.0.0.0'
+    :bind_address:  '127.0.0.1'
     #
     # Rack handler to use, defaults to thin
     :rack_require: mongrel
@@ -83,7 +110,7 @@
     :client_poll_priority: 60
     #
     # Reload the client after any plugins are reloaded:
-    :client_autoreload: false
+    :client_autoreload: true
   #
   #
   # Session-related settings
@@ -161,12 +188,6 @@
     # Disposable keys, when enabled, changes the value id on each session restoration
     :disposable_keys:   true
   #
-  # Daemon helper files, leave empty for defaults.
-  :daemon: {
-    #:pid_fn: /var/run/rsence.pid
-    #:log_fn: /var/log/rsence.log
-  }
-  #
   # Entered by code, empty container
   :broker_urls: { }
 
@@ -178,13 +199,7 @@
 
     # Source directories to scan
     :src_dirs: []
-
-      # RSence Client Framework
-      #- js
-
-      # How to include your own custom js package directory:
-      # - /home/me/code/extra_components
-
+    
     # List of theme names to include and pack
     :theme_names:
       - default  # Makes default_theme.js containing css and html templates
@@ -195,23 +210,25 @@
 
       # The core package, loaded by default using a script tag in index_html
       core:
-  
+        
         # RSence.*
         - rsence_ns
-  
+        
+        - locale_settings    # HLocaleSettings
+        
         # RSence.Core
         - class             # HClass
         - elem              # ELEM
         - event             # Event
-  
+        
         # RSence.Util
         - sha               # SHA
-  
+        
         # RSence.Foundation
         - system            # HSystem
         - valueresponder    # HValueResponder
         - application       # HApplication
-  
+        
         # COMM
         - comm              # COMM
         - queue             # COMM.Queue
@@ -237,6 +254,7 @@
         - eventmanager      # EVENT
         - controldefaults   # HControlDefaults
         - control           # HControl
+        - valueaction       # HValueAction
         - dyncontrol        # HDynControl
         - centerview        # HCenterView
         - scrollview        # HScrollView
@@ -251,6 +269,7 @@
         - textcontrol       # HTextControl
         - passwordcontrol   # HPasswordControl
         - textarea          # HTextArea
+        - searchfield       # HSearchField
         - uploader          # HUploader
         - slider            # HSlider
         - vslider           # HVSlider
@@ -279,6 +298,7 @@
       datetime:
         - datetimevalue       # HDateTime
         - calendar            # HCalendar
+        - datetimepicker      # HDateTimePicker
         - timesheet           # HTimeSheet
         - timesheet_item      # HTimeSheetItem
         - timesheet_item_edit # HTimeSheetItemEditor
@@ -294,15 +314,38 @@
         - propertylisteditor  # HPropertyEditor
         - minimenu            # HMiniMenu
         - minimenuitem        # HMiniMenuItem
+        - popupmenu           # HPopupMenu
+        - menuitem            # HMenuItem
+      
+      tables:
+        - table               # HTable
 
-    # Special packages that include other packages (not used currently)
+      # Graphics related control widgets (components)
+      # These are not complete and there will probably never be any
+      # serious efforts to support legacy browsers, like old IE versions,
+      # unless someone is interested in sponsoring such efforts.
+      graphics:
+        - svgcontrol
+    
+    # Special packages that include other packages
     :compound_packages:
-      allinone:
+      rsence:
         - core
         - default_theme
         - controls
         - lists
         - datetime
+        - tables
+        - graphics
+        - servermessage
+      std_widgets:
+        - default_theme
+        - controls
+        - lists
+        - datetime
+        - tables
+        - graphics
+        - servermessage
 
     # List of variables and other names beginning
     # with a underscore that should not be obfuscated
@@ -324,9 +367,6 @@
       - .swf
       - .svg
       - .pdf
-
-    # The name of the include file
-    :js_inc: js.inc
 
     # If disabled, makes packages out of single source bundles automatically
     :dont_pack_undefined: true

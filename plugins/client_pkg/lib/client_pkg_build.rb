@@ -10,6 +10,13 @@
 require 'jsmin_c'
 require 'jscompress'
 require 'html_min'
+begin
+  require 'coffee-script'
+  RSence.config[:client_pkg][:coffee_supported] = true
+rescue LoadError
+  warn "CoffeeScript not installed. Install the 'coffee-script' gem to enable."
+  RSence.config[:client_pkg][:coffee_supported] = false
+end
 
 
 class ClientPkgBuild
@@ -99,7 +106,7 @@ class ClientPkgBuild
             :gzip => gz_css
           }
           @theme_sizes[   theme_name ][:css][0] += File.stat( src_file_css ).size
-          @theme_sizes[   theme_name ][:css][1] += css_data.size
+          @theme_sizes[   theme_name ][:css][1] += css_data.bytesize
           @css_by_theme[  theme_name ][ bundle_name ] = css_data
         end
       end
@@ -113,7 +120,7 @@ class ClientPkgBuild
             :gzip => gz_html
           }
           @theme_sizes[   theme_name ][:html][0] += File.stat( src_file_html ).size
-          @theme_sizes[   theme_name ][:html][1] += html_data.size
+          @theme_sizes[   theme_name ][:html][1] += html_data.bytesize
           @html_by_theme[ theme_name ][ bundle_name ] = html_data
         end
       end
@@ -123,7 +130,7 @@ class ClientPkgBuild
     end
   end
   
-  def add_bundle( bundle_name, bundle_path, entries )
+  def add_bundle( bundle_name, bundle_path, entries, has_js=false, has_coffee=false )
     has_themes = entries.include?( 'themes' ) and File.directory?( File.join( bundle_path, 'themes' ) )
     if @bundles_found.has_key?( bundle_name )
       @logger.log( "JSBuilder ERROR: duplicate bundles with the name #{bundle_name.inspect} found." )
@@ -136,11 +143,41 @@ class ClientPkgBuild
       warn "JSBuilder WARNING: bundle name #{bundle_name.inspect} does not belong to any package, skipping.." if ARGV.include?('-d')
       return true
     end
-    js_data = read_file( File.join( bundle_path, bundle_name+'.js' ) )
+    if has_coffee and @coffee_supported
+      begin
+        coffee_start = Time.new.to_f
+        coffee_path = File.join( bundle_path, bundle_name+'.coffee' )
+        coffee_timestamp = File.stat( coffee_path ).mtime.to_i
+        has_cache_compiled = @coffee_cache[:path_compiled].has_key?( coffee_path )
+        has_cache_timestamp = @coffee_cache[:path_timestamp].has_key?( coffee_path )
+        has_cache_entry = has_cache_compiled and has_cache_timestamp
+        has_cached = ( has_cache_entry and ( @coffee_cache[:path_timestamp][coffee_path] == coffee_timestamp ) )
+        if has_cached
+          js_data = @coffee_cache[:path_compiled][coffee_path]
+        else
+          coffee_src = read_file( coffee_path )
+          js_data = CoffeeScript.compile( coffee_src, :bare => true )
+          @coffee_cache[:path_timestamp][coffee_path] = coffee_timestamp
+          @coffee_cache[:path_compiled][coffee_path] = js_data
+        end
+        @coffee_time += ( Time.new.to_f - coffee_start )
+      rescue CoffeeScript::CompilationError
+        if has_js
+          js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}, using the js variant instead." );}
+          js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
+        else
+          js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}" );}
+        end
+      end
+    elsif not has_js
+      js_data = %{console.log( "ERROR: CoffeeScript not suuported and no JS source available for #{bundle_path}" );}
+    else
+      js_data = read_file( File.join( bundle_path, bundle_name+'.js' ) )
+    end
     @bundles_found[ bundle_name ] = {
       :path => bundle_path,
       :js_data => js_data,
-      :js_size => js_data.size,
+      :js_size => js_data.bytesize,
       :has_themes => has_themes
     }
     if has_themes
@@ -157,10 +194,13 @@ class ClientPkgBuild
       # the name of src_dir (src_dir itself is a full path)
       dir_name    = File.split( src_dir )[1]
       # bundles are defined as directories with a js file of the same name plus the 'js.inc' tagfile
-      is_bundle   = dir_entries.include?( @js_inc ) and dir_entries.include?( dir_name+'.js' )
+      not_disabled = ( not dir_entries.include?( 'disabled' ) )
+      has_js = dir_entries.include?( dir_name+'.js' )
+      has_coffee = dir_entries.include?( dir_name+'.coffee' )
+      is_bundle   = not_disabled and ( has_js or has_coffee )
       # if src_dir is detected as a bundle, handle it in add_bundle
       if is_bundle
-        add_bundle( dir_name, src_dir, dir_entries )
+        add_bundle( dir_name, src_dir, dir_entries, has_js, has_coffee )
       end
       # descend into the sub-directory:
       dir_entries.each do | dir_entry |
@@ -193,34 +233,26 @@ class ClientPkgBuild
       @logger.log(  "                              :           |             |" )
     end
     @destination_files.each_key do | package_name |
-      jsc_data = @destination_files[package_name]
-      unless @debug
-        unless @no_whitespace_removal
-          jsc_data = @jsmin.minimize( jsc_data ) #.strip
-        end
-        unless @no_obfuscation
-          jsc_data = pre_convert( jsc_data )
-        end
-      end
-      @js[package_name] = jsc_data.strip
+      jsc_data = process_js( @destination_files[package_name] )
+      @js[package_name] = jsc_data
       unless @no_gzip
-        gz_data = gzip_string( @js[package_name] )
+        gz_data = gzip_string( jsc_data )
         @gz[package_name] = gz_data
       end
       unless @quiet
-        js_size  = @destination_files[ package_name ].size
-        jsc_size = jsc_data.size
+        js_size  = @destination_files[ package_name ].bytesize
+        jsc_size = jsc_data.bytesize
         if @no_gzip
           gz_size  = -1
         else
-          gz_size  = gz_data.size
+          gz_size  = gz_data.bytesize
         end
         print_stat( package_name, js_size, jsc_size, gz_size )
       end
     end
   end
   
-  def squeeze( js )
+  def squeeze( js, is_coffee=false )
     unless @no_whitespace_removal
       begin
         js = @jsmin.minimize( js )#.strip
@@ -233,6 +265,34 @@ class ClientPkgBuild
       js = @jscompress.compress( js )
     end
     return js.strip
+  end
+
+  def coffee( src )
+    begin
+      js = CoffeeScript.compile( src, :bare => true )
+    rescue ExecJS::RuntimeError => e
+      warn "ExecJS RuntimeError, invalid CoffeScript supplied:\n----\n#{src}----\n"
+      js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
+    rescue CoffeeScript::CompilationError
+      warn "Invalid CoffeeScript supplied:\n----\n#{src}----\n"
+      js = "function(){console.log('ERROR; invalid CoffeeScript supplied: #{src.to_json}');}"
+    rescue
+      js = "function(){console.log('ERROR; CoffeeScript compilation failed: #{src.to_json}');}"
+    end
+    js = squeeze( js )
+    return js[1..-3] if js.start_with?('(') and js.end_with?(');')
+    return js
+  end
+
+  def process_js( src_in )
+    if @debug
+      return src_in
+    else
+      src_out = src_in
+      src_out = @jsmin.minimize( src_out ) unless @no_whitespace_removal
+      src_out = pre_convert( src_out ) unless @no_obfuscation
+      return src_out.strip
+    end
   end
   
   def build_themes
@@ -250,24 +310,21 @@ class ClientPkgBuild
       theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]=#{html_templates.to_json}; "
       theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json});"
       theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json});"
-      theme_html_js_arr.push "HThemeManager._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, HThemeManager.themePath, null );"
-      theme_html_js_arr.push "HThemeManager.useCSS(#{theme_css_template_data.to_json}); "
-      theme_html_js = theme_html_js_arr.join('')
-      unless @debug
-        unless @no_whitespace_removal
-          theme_html_js = @jsmin.minimize( theme_html_js ) #.strip
-        end
-        unless @no_obfuscation
-          theme_html_js = pre_convert( theme_html_js )
-        end
-      end
-      @js[theme_name+'_theme'] = theme_html_js.strip
+      theme_html_js_arr.push %{
+        HThemeManager._pushStart( function(){
+          var _this = HThemeManager;
+          _this._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, _this.themePath, null );
+          _this.useCSS(#{theme_css_template_data.to_json});
+        } );
+      }
+      theme_html_js = process_js( theme_html_js_arr.join('') )
+      @js[theme_name+'_theme'] = theme_html_js
       unless @no_gzip
         theme_html_gz = gzip_string( @js[theme_name+'_theme'] )
         @gz[theme_name+'_theme'] = theme_html_gz
       end
       unless @quiet
-        print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.size )
+        print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.bytesize )
       end
       @themes[theme_name][:css][theme_name+'_theme'] = {
         :data => theme_css_template_data,
@@ -278,16 +335,47 @@ class ClientPkgBuild
         @themes[theme_name][:css][theme_name+'_theme'][:gzip] = theme_css_template_data_gz
       end
       unless @quiet
-        print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.size )
+        print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.bytesize )
         print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
         @logger.log( '' )
       end
     end
   end
   
+  def build_compound_packages
+    unless @quiet
+      @logger.log(  '' )
+      @logger.log(  "Compound package..............:  Original |   Minimized |  Compressed" )
+      @logger.log(  "                              :           |             |" )
+    end
+    @compound_config.each do |pkg_name, js_order|
+      pkg_parts = []
+      js_order.each do |js_pkg|
+        pkg_part = @js[ js_pkg ]
+        pkg_parts.push( pkg_part )
+      end
+      js_src = pkg_parts.join('')
+      @js[ pkg_name ] = js_src
+      unless @no_gzip
+        gz_data = gzip_string( js_src )
+        @gz[ pkg_name ] = gz_data
+      end
+      unless @quiet
+        js_size  = js_src.bytesize
+        if @no_gzip
+          gz_size  = -1
+        else
+          gz_size  = gz_data.bytesize
+        end
+        print_stat( pkg_name, js_size, -1, gz_size )
+      end
+    end
+  end
+
   def run
     
     time_start = Time.now.to_f*10000
+    @coffee_time = 0
     
     # hash of bundles per bundle name per theme; @html_by_theme[theme_name][bundle_name] = bundle_data
     @html_by_theme = {}
@@ -307,7 +395,8 @@ class ClientPkgBuild
     end
     @bundles_found = {} # populated by add_bundle
     @conversion_stats = {} # populated by add_hints
-    @src_dirs.each do | src_dir |
+    src_dirs = @src_dirs.clone
+    src_dirs.each do | src_dir |
       find_bundles( src_dir )
     end
     @destination_files = {} # rename to package_products
@@ -325,11 +414,14 @@ class ClientPkgBuild
     end
     
     build_indexes
-    minimize_data
     build_themes
+    minimize_data
+    build_compound_packages
     
-    ms_taken = ((Time.now.to_f*10000)-time_start).to_i/10.0
-    @logger.log( "Time taken:  #{ms_taken}ms\n\n" )
+    ms_taken = ((Time.now.to_f*10000)-time_start).round/10.0
+    coffee_taken = (@coffee_time*10000).round/10.0
+    without_coffee = ((ms_taken - coffee_taken)*10).round/10.0
+    @logger.log( "Time taken:\n .coffee: #{coffee_taken}ms\n  other:  #{without_coffee}ms\n  total:  #{ms_taken}ms\n\n" )
     
   end
   
@@ -449,6 +541,12 @@ class ClientPkgBuild
   
   def initialize( config, logger )
     
+    @coffee_supported = config[:coffee_supported]
+    @coffee_cache = {
+      :path_timestamp => {},
+      :path_compiled => {}
+    }
+
     @logger = logger
     
     # src_dirs is supposed to be an array of js source directories
@@ -502,9 +600,9 @@ class ClientPkgBuild
     @no_gzip = config[:no_gzip]
     @no_obfuscation = config[:no_obfuscation]
     @no_whitespace_removal = config[:no_whitespace_removal]
-    @js_inc = config[:js_inc]
     @debug = RSence.args[:debug]
-    @quiet = (not RSence.args[:verbose])
+    @quiet = (not RSence.args[:verbose] and RSence.args[:suppress_build_messages])
+    @compound_config = config[:compound_packages]
   end
   
   def find_newer( src_dir, newer_than )

@@ -1,0 +1,65 @@
+
+.popupmenu_control,
+.popupmenu_edge_left,
+.popupmenu_center,
+.popupmenu_edge_right,
+.popupmenu_label,
+.popupmenu_antiselect {
+  position: absolute;
+  top: 0px; height: 23px;
+}
+
+.popupmenu_control {
+  left: 0px; right: 0px;
+  cursor: pointer;
+}
+.disabled .popupmenu_control {
+  cursor: default;
+}
+
+.popupmenu_edge_left,
+.popupmenu_center,
+.popupmenu_edge_right {
+  background-image: #{this.getCssFilePath('popupmenu.png')};
+}
+
+.popupmenu_edge_left {
+  left: 0px; width: 9px;
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+
+.popupmenu_edge_right {
+  right: 0px; width: 17px;
+  background-position: -9px 0px;
+  background-repeat: no-repeat;
+}
+
+.popupmenu_center {
+  left: 9px; right: 17px;
+  background-position: 0px -23px;
+  background-repeat: repeat-x;
+}
+
+.popupmenu_label {
+  left: 13px; right: 11px; top: 0px;
+  height: 22px; line-height: #{(BROWSER_TYPE.ie7||BROWSER_TYPE.ie6)?'20':'22'}px;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space:nowrap;
+  vertical-align: middle;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #333;
+}
+.popupmenu_control:hover > .popupmenu_label {
+  color: #000;
+}
+.disabled .popupmenu_control {
+  opacity: 0.6;
+}
+
+.popupmenu_antiselect {
+  left: 0px; right: 0px;
+}

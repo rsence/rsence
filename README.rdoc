@@ -1,21 +1,30 @@
 
-= RSence-2.1.0[http://rsence.org/]
+= RSence-2.2.0[http://rsence.org/]
 
 == Introduction
 
-RSence is a RIA framework designed for responsive GUI applications on the web; it's implemented as a hybrid Ruby - Javascript system. The server is written in Ruby and C. Applications are installed as plugin bundles. The GUI framework is written in Javascript; it doesn't strictly require the server, but has extensive transport support with automatic data synchronization with the server. User interfaces are usually described in structured view trees represented by YAML data structures, which are automatically converted for rendering in the client. 
+RSence is a different and unique development model and software frameworks designed first-hand for real-time web applications. RSence consists of separate, but tigtly integrated data- and user interface frameworks.
 
-Javascript knowledge is required only when creating custom client-driven functionality; basic understanding of the YAML GUITree structures is enough in most cases. Likewise, no prior Ruby knowledge is needed if you want to create stand-alone Javascript applications. Javascript component themes are easily created with just basic web designer skills. Data API's are easy to link no matter what language is used to create them. Skills in your organization are easily combined for various parts of larger applications.
+RSence could be classified as a thin server - thick client system.
 
-RSence is not primarily targeted as an engine for plain old html web sites, there are plenty of other tools for that purpose and RSence is easily integrated with them in various ways.
+Applications and submobules are installed as indepenent plugin bundles into the plugins folder of a RSence environment, which in itself is a self-contained bundle. A big part of RSence itself is implemented as shared plugin bundles.
+
+The user interface framework of RSence is implemented in high-level user interface widget classes. The widget classes share a common foundation API and access the browser's native API's using an abstracted event- and element layer, which provides exceptional cross-browser compatibility.
+
+The data framework of RSence is a event-driven system, which synchronized shared values between the client and server. It's like a realtime bidirectional form-submission engine that handles data changes intelligently. On the client, changed values trigger events on user interface widgets. On the server, changed values trigger events on value responder methods of server plugin modules. It doesn't matter if the change originates on client or server, it's all synchronized and propagated automatically.
+
+The server framework is implemented as a high-level, modular data-event-driven system, which handles delegation of tasks impossible to implement using a client-only approach.
+Client sessions are selectively connected to other client sessions and legacy back-ends via the server by using the data framework.
+
+The client is written in Javascript and the server is written in Ruby. The client also supports CoffeeScript for custom logic. In many cases, no custom client logic is needed; the user interfaces can be defined in tree-like data models. By default, the models are parsed from YAML files, and other structured data formats are possible, including XML, JSON, databases or any custom logic capable of producing similar objects. The server can connect to custom environments and legacy backends accessible on the server, including software written in other languages.
 
 
-== Installing
-Just run this command in the shell, if you have ruby installed. Otherwise, read the {file:INSTALL Install Guide} for full installation instructions.
+== Installing RSence
+Just run this command in the shell, if you have functioning ruby environment installed. Otherwise, read the {file:INSTALL Install Guide} for full installation instructions.
  gem install rsence
 
 
-== Initializing a new project
+== Initializing a new RSence environment
 
 The +init+ command will create a directory called `env_dir` in this example. It asks a few questions about the environment. Use a path and project name that matches your purposes.
  rsence init /home/me/rsence_projects/env_dir
@@ -89,26 +98,18 @@ For more detailed installation and usage instructions, read the {file:INSTALL In
 
 === The bleeding edge (for developers)
 RSence comes in two varieties:
-1. rsence : The stable (no major new features, just bug fixes) release.
-2. rsence-pre : The active development snapshot released periodically.
+1. rsence : The stable release intended for running in production environments.
+2. rsence-pre : The active development snapshot intended for develoment environments. Runtime-wise, it's nearly as stable as the stable version, but features are constantly added and sometimes changed.
 
-Both varieties can be installed simultaneously and it's suggested to use
-the stable "rsence" package for production installations and to use the
-"rsence-pre" package for development purposes, because the RSence crew
-can't possibly test each and every application available. It's your 
-responsibility as a developer to report any RSence issues effecting your
-software. The sooner reported, the better; it ensures better release 
-versions.
-
-To use "rsence-pre", install the "rsence-pre" gem and use the "rsence-pre" 
-command instead of the "rsence" command.
+To use "rsence-pre", install the "rsence-pre" gem and use the "rsence-pre" instead of "rsence" command-line tool.
 
 === Licensing and commercial support options
 * {file:LICENSE.txt *GPL*} version 3 by default.
 * Riassence[http://riassence.com/] Inc. provides commercial support, custom licensing arrangements and various other services.
 
 === Community support
-* http://rsence.org
-* IRC channel +#rsence+ on the IRCNet and FreeNode networks
+* http://rsence.org/
+* IRC channel +#rsence+ on the FreeNode IRC network
 
-
+=== Keywords:
+HTML5 Javascript CoffeeScript Ruby RIA Server Client Data-Driven Event-Driven Web Framework

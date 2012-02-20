@@ -68,7 +68,7 @@
 
 .button_label {
   left: 6px; right: 6px; top: 2px;
-  height: 20px; line-height: 21px;
+  height: 20px; line-height: 20px;
   text-align: center; vertical-align: middle;
   font-family: Arial, sans-serif;
   font-size: 12px; font-weight: bold;

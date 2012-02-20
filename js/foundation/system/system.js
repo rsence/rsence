@@ -64,15 +64,21 @@ HSystem = {
 /** Calls applications, uses the prority as a prioritizer.
   **/
   scheduler: function(){
-    
+    var
+    _appId=0,
+    _priority;
     // Loop through all applications:
-    for( var _appId=0; _appId<this.apps.length; _appId++ ){
+    for( ; _appId<this.apps.length; _appId++ ){
       // Check, if the application exists:
       if( this.apps[ _appId ] ){
         // Check, if the application is busy:
         if( !this.busyApps[ _appId ] ){
+          _priority = this.appPriorities[ _appId ];
+          if( _priority < 0 ){
+            continue;
+          }
           // Check, if the tick count matches the priority of the app:
-          if( (this.ticks % this.appPriorities[ _appId ]) === 0 ){
+          if( this.ticks % _priority === 0 ){
             // Set the app busy, the app itself should "unbusy" itself, when the idle call is done.
             // That happens in <HApplication._startIdle>
             
@@ -198,15 +204,33 @@ HSystem = {
   *
   **/
   killApp: function(_appId, _forced){
-    if( !_forced ){
-      var _startedWaiting = new Date().getTime();
-      while( this.busyApps[ _appId ] === true ) {
-        /* Waiting for the app to finish its idle loop... */
-        if (new Date().getTime() > _startedWaiting + this.maxAppRunTime) {
-          break;
-        }
-      }
+    this.reniceApp( _appId, -1 ); // prevent new idle calls to the app
+    if( _forced || ( this.busyApps[ _appId ] === false ) ){
+      this._forceKillApp( _appId );
     }
+    else {
+      /* Waiting for the app to finish its idle loop before killing it */
+      var
+      _startedWaiting = new Date().getTime(),
+      _this = this,
+      _timeout = setInterval(
+        function(){
+          if( _this.busyApps[ _appId ] === true ) {
+            if (new Date().getTime() > _startedWaiting + _this.maxAppRunTime) {
+              clearTimeout(_timeout);
+              _this._forceKillApp( _appId );
+            }
+            else {
+              clearTimeout(_timeout);
+              _this._forceKillApp( _appId );
+            }
+          }
+        }, 10
+      );
+    }
+  },
+
+  _forceKillApp: function( _appId ){
     this.busyApps[_appId] = true;
     
     this.apps[ _appId ].destroyAllViews();
@@ -331,7 +355,6 @@ HSystem = {
       _viewLen = _views.length,
       
       // reference to the setStyle method of the element manager
-      _setStyl = ELEM.setStyle,
       
       // reference to HSystem.views (collection of all views, by index)
       _sysViews = _this.views,
@@ -370,8 +393,12 @@ HSystem = {
         // the element id of the view
         _elemId = _view[ _elemIdStr ];
         
+        if( _elemId === undefined ){
+          continue;
+        }
+
         // do the element manager call itself to update the dom property
-        _setStyl( _elemId, _zIdxStr, i );
+        ELEM.setStyle( _elemId, _zIdxStr, i );
       }
     }
   }

@@ -4,17 +4,17 @@
     Invalid option for <%%= option_name.to_s %>:
       Expected number, got: <%%= arg.inspect %>.
     
-    Type 'rsence help <%%= @cmd.to_s %>' for usage.
+    Type ”rsence help <%%= @cmd.to_s %>” for usage.
   :no_such_configuration_file: |+
     No such configuration file:
       <%%= arg.inspect %>
     
-    Type 'rsence help <%%= @cmd.to_s %>' for usage.
+    Type ”rsence help <%%= @cmd.to_s %>” for usage.
   :no_value_for_option: |+
     No value for option:
       <%%= option_name.to_s.inspect %>
     
-    Type 'rsence help <%%= @cmd.to_s %> for usage."
+    Type ”rsence help <%%= @cmd.to_s %>” for usage.
   :no_such_directory: |
     No such directory:
       <%%= path.inspect %>
@@ -45,32 +45,34 @@
   :invalid_environment: |
     Invalid environment: <%%= env_path.inspect %>
     
-    Type 'rsence help <%%= @cmd.to_s %>' for usage."
-    Type 'rsence help init' for environment initialization usage."
+    Type ”rsence help <%%= @cmd.to_s %>” for usage.
+    Type ”rsence help init” for environment initialization usage.
   :invalid_option_chr: |
     Invalid option character for option character block <%%= arg.inspect %>:
       <%%= chr.inspect %>
     
-    Type 'rsence help <%%= @cmd.to_s %>' for usage."
+    Type ”rsence help <%%= @cmd.to_s %>” for usage.
   :invalid_option: |
     Invalid option:
       <%%= arg.inspect %>.
     
-    Type 'rsence help <%%= @cmd.to_s %>' for usage."
+    Type ”rsence help <%%= @cmd.to_s %>” for usage.
   :no_pid: |
     No PID, unable to check process status.
   :no_pid_file: |
     No PID file, unable to check process status.
   :no_pid_support: |
     No PID support, unable to check process status.
+  :something_responds:
+    Something responds on <%%= addr_descr %>
   :no_process_running_but_something_responds: |
-    No process running, but something responds on <%%= addr %>:<%%= port %>.
+    No process running, but something responds on <%%= addr_descr %>.
   :no_process_running_and_nothing_responds: |
-    No process running, and nothing responds on <%%= addr %>:<%%= port %>.
+    No process running, and nothing responds on <%%= addr_descr %>.
   :process_running_and_responds: |
-    Process ID <%%= pid %> is running and responds on <%%= addr %>:<%%= port %>.
+    Process ID <%%= pid %> is running and responds on <%%= addr_descr %>.
   :process_running_but_nothing_responds: |
-    Process ID <%%= pid %> is running, but does not respond on <%%= addr %>:<%%= port %>.
+    Process ID <%%= pid %> is running, but does not respond on <%%= addr_descr %>.
   :saving_message: <
     Saving session data...
   :no_pid_unable_to_save: |
@@ -79,12 +81,18 @@
     No process running.
   :session_data_saved: |
     Session data saved.
+
 # Strings for the init command
 :initenv:
+  :continue_question: "Do you want to continue, "
   :env_already_initialized: |
     Environment already initialized.
+  :env_not_clear: |
+    Environment directory <%%= @args[:env_path] %> is not empty,
+    and appears to be an RSence environment.
   :env_not_empty: |
-    Environment directory <%%= @args[:env_path] %> is not empty.
+    Environment directory <%%= @args[:env_path] %> is not empty,
+    but does not appear to be an RSence environment.
   :creating_env: |+
     
     Creating a new RSence environment at <%%= @args[:env_path] %>
@@ -111,7 +119,7 @@
     
     
      Please specify the connection string for the session database to use.
-     By default, a local SQLite database is created in the 'db' subdirectory
+     By default, a local SQLite database is created in the ”db” subdirectory
      of the environment directory. Any database supported by Sequel is supported
      by RSence.
     
@@ -171,16 +179,16 @@
     
   :confirm_config: "Is the configuration correct, "
   :creating_dirs: "Creating directories..."
-  :install_welcome: "Do you want to install the 'welcome' plugin as a starting point, "
+  :install_welcome: "Do you want to install the ”welcome” plugin as a starting point, "
   :installing_welcome_plugin: |+
       Installing the welcome plugin. To remove it, just delete this folder:
         <%%= welcome_plugin_dst %>
   :creating_files: "Creating files..."
   :congratulations: |+
     
-    <%= '-='*39 %>-
+    <%= ('-='*39)+'-' %>
     
-    RSence project environment for '<%%= config[:index_html][:title] %>' created.
+    RSence project environment for <%%= config[:index_html][:title] %> created.
     
     You may configure the environment by editing the file:
     
@@ -203,26 +211,26 @@
     Congratulations!
     
   :readme: |
-    This directory contains a RSence environment titled '<%%= config[:index_html][:title] %>'.
+    This directory contains a RSence environment titled <%%= config[:index_html][:title] %>.
     Visit http://rsence.org/ for further information.
-# Help for the 'rsence' command line tool.
+# Help for the ”rsence” command line tool.
 :help:
   :head: |+
-    RSence command-line tool, version <%= @@version %>
+    RSence command-line tool, version <%= @version %>
   
   :tail: |+
-    RSence is a self-contained rich internet application client-server framework.
+    RSence is a self-contained web app framework.
     For further information, see http://rsence.org/
   :unknown: >
     Unknown command: 
 
   :help_help: >
-    Type 'rsence help' for usage.
+    Type ”rsence help” for usage.
 
   :help_main: |+
     usage: rsence <command> [options] [args]
   
-    Type 'rsence help <command>' for help on a specific command.
+    Type ”rsence help <command>” for help on a specific command.
   
     Available commands:
        <%= help_avail_cmds %>
@@ -252,9 +260,9 @@
   
       --port <number>         The port number the http server listens to.
   
-      --addr <ip address>     The IP address or net mask the http server listens to.
-                              '0.0.0.0' matches all interfaces.
-                              '127.0.0.1' matches the local loopback interface.
+      --bind <ip address>     The IP address or net mask the http server listens to.
+                              ”0.0.0.0” matches all interfaces.
+                              ”127.0.0.1” matches the local loopback interface.
   
       --server <handler>      The Rack handler to use. Defaults to mongrel
   
@@ -269,31 +277,50 @@
       --latency <number>      Sleeps <number> amount of milliseconds on every
                               request. Useful for testing slow connections.
   
-      --say (-S)              Uses speech synthesis via the 'say' command to
+      --say (-S)              Uses speech synthesis via the ”say” command to
                               provide audible feedback, when --auto-update is
-                              enabled. Says 'Autobuild complete.',
-                              'Loaded [plugin name].', 'Unloaded [plugin name].',
-                              'Reloaded [plugin name].', 'Reloading plugins.' and
-                              'Plugins reloaded.'
+                              enabled. Says ”Autobuild complete.”,
+                              ”Loaded [plugin name].”, ”Unloaded [plugin name].”,
+                              ”Reloaded [plugin name].”, ”Reloading plugins.” and
+                              ”Plugins reloaded.”
                               Only available on Mac OS X and other systems with a
-                              'say' command installed.
+                              ”say” command installed.
+  
+      --delayed-start <secs>  Waits for <secs> of seconds before starting
+                              the HTTP Broker after starting the Transporter.
+                              
+                              A value of -1 disables the broker completely.
+                              Before waiting, the daemon starts all subsystems except the
+                              http handling front-end (Broker).
+                              Useful in situations where RSence itself configures the
+                              network interfaces or the interfaces become available after
+                              RSence is started.
+      
+      --disable-gzip          Disables client resource GZIP compression for every browser.
+
+      --disable-obfuscation   Disables client resource compression (obfuscation).
+
+      --disable-jsmin         Does not strip whitespace from client resources (jsmin).
+
+      --build-report          Outputs verbose client resource actions.
+
   
   :initenv: |+
-    Alias name of the 'init' command.
+    Alias name of the ”init” command.
     
     See: rsence help init
   
   :initialize: |+
-    Alias name of the 'init' command.
+    Alias name of the ”init” command.
     
     See: rsence help init
   
   :init: |+
-    usage: 'rsence init [options] [PATH]'
+    usage: ”rsence init [options] [PATH]”
   
-    The 'init' command creates a new RSence environment. 
+    The ”init” command creates a new RSence environment. 
   
-    The expected structure of a project environment (where 'project_directory'
+    The expected structure of a project environment (where ”project_directory”
     is the directory of your project) is:
   
      [d]  project_name       :  The name of your project.
@@ -306,7 +333,7 @@
        [f]  README           :  Description of the environment directory.
        [f]  VERSION          :  RSence version the environment was created with
   
-    The 'config.yaml' file contains patches specific to your project.
+    The ”config.yaml” file contains patches specific to your project.
   
     The configuration files are loaded and applied in this order:
       1:  [rsence_install_path]/conf/default_conf.yaml
@@ -324,8 +351,8 @@
       --port <number>         The port number the http server listens to.
   
       --addr <ip address>     The IP address or net mask the http server listens to.
-                              '0.0.0.0' matches all interfaces.
-                              '127.0.0.1' matches the local loopback interface.
+                              ”0.0.0.0” matches all interfaces.
+                              ”127.0.0.1” matches the local loopback interface.
                               Defaults to 0.0.0.0
   
       --server <handler>      The Rack handler to use. Defaults to mongrel
@@ -335,55 +362,55 @@
       --database <conn_str>   Use the Sequel connection string to configure the
                               default session database.
   
-      --uri-prefix <path>     Configure RSence to use this http "directory" as
+      --uri-prefix <path>     Configure RSence to use this http ”directory” as
                               the prefix. It defaults to the root directory: /
   
-      --blank                 Doesn't install the Welcome -plugin.
+      --blank                 Doesn’t install the Welcome -plugin.
   
-      --non-interactive (-q)  Doesn't ask anything, just creates the environment
+      --non-interactive (-q)  Doesn’t ask anything, just creates the environment
                               with the options supplied.
                             
     For further configuration, edit the config.yaml file.
   
   :run: |+
-    usage: 'rsence run [options] [PATH]'
+    usage: ”rsence run [options] [PATH]”
   
-    The 'run' command starts RSence in foreground (no daemon). Exit with CTRL-C.
+    The ”run” command starts RSence in foreground (no daemon). Exit with CTRL-C.
   
   :start: |+
-    usage: 'rsence start [options] [PATH]'
+    usage: ”rsence start [options] [PATH]”
   
-    The 'start' command starts RSence in the background (as a daemon).
+    The ”start” command starts RSence in the background (as a daemon).
   
-    Use the 'stop' command to stop RSence.
+    Use the ”stop” command to stop RSence.
   
-    Use the 'restart' command to restart RSence in the background.
+    Use the ”restart” command to restart RSence in the background.
   
-    Use the 'status' command to see if RSence is running.
+    Use the ”status” command to see if RSence is running.
   
   :stop: |+
-    usage: 'rsence stop [options] [PATH]'
+    usage: ”rsence stop [options] [PATH]”
   
-    The 'stop' command stops RSence running in the background (as a daemon).
+    The ”stop” command stops RSence running in the background (as a daemon).
   
-    Use the 'status' command to see if RSence is running.
+    Use the ”status” command to see if RSence is running.
   
   :restart: |+
-    usage: 'rsence restart [options] [PATH]'
+    usage: ”rsence restart [options] [PATH]”
   
-    The 'restart' command restarts RSence in the background (as a daemon).
-    If RSence wasn't running before the 'restart' command was issued, the
-    effect is the same as 'start'.
+    The ”restart” command restarts RSence in the background (as a daemon).
+    If RSence wasn’t running before the ”restart” command was issued, the
+    effect is the same as ”start”.
   
-    Use the 'stop' command to stop RSence.
+    Use the ”stop” command to stop RSence.
   
-    Use the 'status' command to see if RSence is running.
+    Use the ”status” command to see if RSence is running.
   
   :status: |+
-    usage: 'rsence status [options] [PATH]'
+    usage: ”rsence status [options] [PATH]”
   
-    The 'status' command checks if RSence is running.
-    If started with the 'start', 'run' or 'restart' command, a PID file is written.
+    The ”status” command checks if RSence is running.
+    If started with the ”start”, ”run” or ”restart” command, a PID file is written.
     Status checks if the PID file exists, if the RSence process responds and if
     the configured TCP port responds in the configured IP address.
   
@@ -403,9 +430,9 @@
       --addr <ip address>     The IP address or net mask the http server listens to.
   
   :save: |+
-    usage: 'rsence save [options] [PATH]'
+    usage: ”rsence save [options] [PATH]”
   
-    The 'save' command signals the RSence process to tell the plugins to save their
+    The ”save” command signals the RSence process to tell the plugins to save their
     data and the session manager to save its session database.
   
     Available options:
@@ -420,9 +447,9 @@
       --verbose (-v)          More verbose output. Also enabled by --debug
   
   :version: |+
-    usage: 'rsence version'
+    usage: ”rsence version”
     
-    The 'version' command simply outputs the version number of RSence.
+    The ”version” command simply outputs the version number of RSence.
     
     RSence follows the common three-numbered sequence-based version identification
     scheme. The scheme is defined like: major.minor[.maintenance]
@@ -431,7 +458,7 @@
     backwards compatibility with software written for previous versions.
     
     The minor number designates minor changes in functionality, like minor or
-    moderate changes in functionality that usually don't impact backwards
+    moderate changes in functionality that usually don’t impact backwards
     compatibilty of software written for a previous release with the same major
     version.
     
@@ -442,14 +469,17 @@
     requires an unique version for each gem released, so pre-releases usually
     occupy the first package numbers of any release.
     
-    RSence also comes in a '-pre' variety. Consider RSence prereleases as
-    anything between 'Alpha', 'Beta' and 'Release Candidate'. The prereleases
+    RSence also comes in a ”-pre” variety. Consider RSence prereleases as
+    anything between ”Alpha”, ”Beta” and ”Release Candidate”. The prereleases
     are have a fourth number in their version number string. That number
-    is the 'package' or 'build' number.
+    is the ”package” or ”build” number.
     
     Version number conventions in written text should include both major and
-    minor version numbers prefixed with 'RSence'. The maintennance number
+    minor version numbers prefixed with ”RSence”. The maintennance number
     is usally not mentioned unless an issue is fix or such is discussed.
     
-    Example: "RSence 2.0 has undergone some major refactoring since 1.2.1"
+    Examples:
+      • ”RSence 2.0 is not fully backwards compatible with 1.2.1”
+      • ”RSence 2.1.4 has bugs fixed that were still present in 2.1.3”
+      • ”RSence 2.2 has major new features compared to 2.0 and 2.1”
   

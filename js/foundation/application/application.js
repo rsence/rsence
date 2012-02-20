@@ -129,7 +129,24 @@ HApplication = HClass.extend({
   *
   **/
   removeView: function(_viewId){
-    HSystem.views[_viewId].remove();
+    if( typeof _viewId === 'object' ){
+      console.log('warning, viewId not a number:',_viewId,', trying to call its remove method directly..');
+      _viewId.remove();
+      return this;
+    }
+    var
+    _view = HSystem.views[_viewId];
+    if( _view ){
+      if( _view['remove'] ){
+        HSystem.views[_viewId].remove();
+      }
+      else {
+        console.log('view does not have method "remove":',_view);
+      }
+    }
+    else {
+      console.log('tried to remove non-existent viewId:'+_viewId);
+    }
   },
 
 /** = Description
@@ -166,7 +183,12 @@ HApplication = HClass.extend({
   **/
   destroyAllViews: function(){
     for(var i = 0; i < this.views.length; i++) {
-      HSystem.views[this.views[i]].die();
+      try{
+        HSystem.views[this.views[i]].die();
+      }
+      catch(e){
+        console.log('unable to destroy:',this.views[i]);
+      }
     }
   },
   

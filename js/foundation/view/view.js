@@ -625,7 +625,6 @@ HView = HClass.extend({
       i = 0,
       _this = this,
       _elemId = _this.elemId,
-      _styl = ELEM.setStyle,
       _rect = _this.rect,
       _auto = 'auto',
       _left = _this.flexLeft?_rect.left:_auto,
@@ -655,7 +654,7 @@ HView = HClass.extend({
         if( i < 6 && _value !== _auto ){
           _value += 'px';
         }
-        _styl(_elemId,_key,_value,true);
+        ELEM.setStyle(_elemId,_key,_value,true);
       }
       (this.drawn === false) && _this._updateZIndex();
       
@@ -875,8 +874,16 @@ HView = HClass.extend({
 /** Gets the size of the parent. If the parent is the document body, uses the browser window size.
   **/
   parentSize: function(){
+    if(!this.parent){
+      return [ 0, 0 ];
+    }
     if(this.parent.elemId === 0){
-      var _winSize = ELEM.windowSize();
+      var
+      _winSize = ELEM.windowSize(),
+      _docSize = ELEM.getScrollSize(0);
+      if( _docSize[0] > _winSize[0] || _docSize[1] > _winSize[1] ){
+        _docSize = _winSize;
+      }
       return [ _winSize[0], _winSize[1] ];
     }
     else {
@@ -1003,6 +1010,12 @@ HView = HClass.extend({
           _validHeight && this.setMinHeight( _height );
           _bottom = _parentHeight - _bottomOffset;
         }
+        if( _leftOffset > _right ){
+          _right = _leftOffset;
+        }
+        if( _topOffset > _bottom ){
+          _bottom = _topOffset;
+        }
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
         
         if(!this.rect.isValid){
@@ -1113,7 +1126,7 @@ HView = HClass.extend({
   * +self+
   *
   **/
-  setStyleOfPart: function(_partName, _name, _value, _cacheOverride) {
+  setStyleOfPart: function(_partName, _name, _value, _force) {
     if (!this['markupElemIds']){
       console.log('Warning, setStyleOfPart: no markupElemIds');
     }
@@ -1121,7 +1134,7 @@ HView = HClass.extend({
       console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
-      ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _cacheOverride);
+      ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _force);
     }
     return this;
   },
@@ -1138,12 +1151,12 @@ HView = HClass.extend({
   * The style of a specified markup element.
   *
   **/
-  styleOfPart: function(_partName, _name) {
+  styleOfPart: function(_partName, _name, _force) {
     if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
-    return ELEM.getStyle(this.markupElemIds[_partName], _name);
+    return ELEM.getStyle(this.markupElemIds[_partName], _name, _force);
   },
   
 /** = Description
@@ -1176,7 +1189,7 @@ HView = HClass.extend({
   * +_partName+::  The identifier of the markup element.
   *
   * = Returns
-  * The style of a specified markup element.
+  * The markup of a specified markup element.
   *
   **/
   markupOfPart: function(_partName) {
@@ -1185,6 +1198,66 @@ HView = HClass.extend({
       return '';
     }
     return ELEM.getHTML(this.markupElemIds[_partName]);
+  },
+  
+/** = Description
+  * Sets a element attribute of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  * +_value+::     Value for markup element.
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  setAttrOfPart: function( _partName, _value, _force ) {
+    if (this.markupElemIds[_partName]===undefined) {
+      console.log('Warning, setAttrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+    }
+    else {
+      ELEM.setAttr( this.markupElemIds[_partName], _value, _force );
+    }
+    return this;
+  },
+  
+/** = Description
+  * Returns a element attribute of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  *
+  * = Returns
+  * The attribute of a specified markup element.
+  *
+  **/
+  attrOfPart: function(_partName, _force) {
+    if (this.markupElemIds[_partName]===undefined) {
+      console.log('Warning, attrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      return '';
+    }
+    return ELEM.getAttr(this.markupElemIds[_partName], _force);
+  },
+
+/** = Description
+  * Returns a element itself of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  *
+  * = Returns
+  * The element of a specified markup element.
+  *
+  **/
+  elemOfPart: function(_partName) {
+    if (this.markupElemIds[_partName]===undefined) {
+      console.log('Warning, elemOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      return '';
+    }
+    return ELEM.get( this.markupElemIds[_partName] );
   },
 
 /** = Description
@@ -1361,7 +1434,7 @@ HView = HClass.extend({
   *
   **/
   removeView: function(_viewId) {
-    HSystem.views[_viewId].remove();
+    this.app.removeView( _viewId ); // no reason to duplicate this functionality here
     return this;
   },
   
@@ -1799,7 +1872,7 @@ HView = HClass.extend({
   **/
   invalidatePositionCache: function() {
     for(var i=0; i<this.views.length; i++) {
-      HSystem.views[this.views[i]].invalidatePositionCache();
+      HSystem.views[this.views[i]]['invalidatePositionCache'] && HSystem.views[this.views[i]].invalidatePositionCache();
     }
     return this;
   },
@@ -1843,6 +1916,73 @@ HView = HClass.extend({
       ELEM.del(_elementId);
       this._domElementBindings.splice(_indexOfElementId, 1);
     }
+  },
+  
+  
+/** = Description
+  * Finds a string from the locale of the component.
+  * The attrPath is a string or array to find an object.
+  * For instance, if a component has a structure like this defined:
+  *   HLocale.components.FooComponent = {
+  *     strings: {
+  *       defaultLabel: 'Default Label',
+  *       otherLabel: 'Other Label',
+  *     }
+  *   };
+  * 
+  * To get the defaultLabel, call getLocaleString like this:
+  *   this.getLocaleString( 'FooComponent', 'strings.defaultLabel' );
+  * ..or:
+  *   this.getLocaleString( 'FooComponent', ['strings','defaultLabel'] );
+  * ..or:
+  *   this.getLocaleString( 'FooComponent.strings.defaultLabel' );
+  *
+  * = Parameters
+  * +_componentClassName+:: The name of the item in HLocale.components
+  * +_attrPath+::     The object path to the string. String or Array.
+  * +_default+::      The default object to return if nothing matched.
+  * 
+  **/
+  getLocaleString: function( _componentClassName, _attrPath, _default ){
+    if( _default === undefined ){
+      _default = '';
+    }
+    var
+    _searchTarget = HLocale.components[_componentClassName],
+    i = 0,
+    _key;
+    if( _searchTarget === undefined && (typeof _componentClassName === 'string') ){
+      _searchTarget = HLocale.components;
+      _attrPath = _componentClassName;
+      _default = _attrPath;
+    }
+    if( typeof _attrPath === 'string' ){
+      if( _attrPath.indexOf( '.' ) > 0 ){
+        _attrPath = _attrPath.split('.');
+      }
+      else {
+        _attrPath = [ _attrPath ];
+      }
+    }
+    if( _searchTarget[ _attrPath[0] ] === undefined ){
+      _searchTarget = HLocale;
+    }
+    if( _searchTarget[ _attrPath[0] ] === undefined ){
+      return _default;
+    }
+    for( ; i < _attrPath.length; i++ ){
+      _key = _attrPath[i];
+      if( typeof _searchTarget[_key] === 'object' ){
+        _searchTarget = _searchTarget[_key];
+      }
+      else if( typeof _searchTarget[_key] === 'string' ){
+        return _searchTarget[_key];
+      }
+      else {
+        return _default;
+      }
+    }
+    return _default;
   }
   
   

@@ -101,7 +101,7 @@ ReloadApp = HApplication.extend({
         ELEM.setCSS(_alertIcon,'position:absolute;left:8px;top:8px;width:48px;height:48px;background-image:url('+_iconUrl+');');
         ELEM.setCSS(_alertTitle,'position:absolute;left:64px;top:8px;width:300px;height:24px;line-height:24px;vertical-align:middle;text-align:center;font-weight:bold;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;');
         ELEM.setHTML(_alertTitle,_this.app._title);
-        ELEM.setCSS(_alertMessage,'position:absolute;left:64px;top:42px;width:332px;height:186px;border-bottom:1px dotted #999;line-height:17px;vertical-align:middle;overflow:auto;');
+        ELEM.setCSS(_alertMessage,'position:absolute;left:64px;top:42px;width:332px;height:186px;border-bottom:1px dotted #999;line-height:18px;vertical-align:middle;overflow:auto;');
         ELEM.setHTML(_alertMessage,_this.app._message);
         HButton.extend({
           click: this.app.reload

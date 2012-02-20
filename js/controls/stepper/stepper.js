@@ -141,17 +141,19 @@ HStepper = HControl.extend({
   mouseDown: function( x, y ){
     this.setMouseUp(true);
     this._setRepeatInterval(  ( y - ELEM.getVisiblePosition( this.elemId )[1] ) <= 11  );
-    
+    return true;
   },
   
   /** Stops the repeating stepping, when the mouse button goes up
     **/
   mouseUp: function(){
     this._clearRepeatInterval();
+    return true;
   },
   
   click: function(){
     this.mouseUp();
+    return true;
   },
   
   /** Stops the repeating stepping, when the control becomes inactive
@@ -186,18 +188,21 @@ HStepper = HControl.extend({
     else if (_keyCode === Event.KEY_PAGEDOWN) {
       this._setRepeatInterval( 0 );
     }
+    return true;
   },
   
 /** stops the repeating when a key goes up
   **/
   keyUp: function(){
     this._clearRepeatInterval();
+    return true;
   },
   
 /** steps the value up/down based on the mouse scroll wheel
   **/
   mouseWheel: function(_delta) {
     (_delta>0)?this.stepUp():this.stepDown();
+    return true;
   }
   
   

@@ -597,20 +597,21 @@ EVENT = {
   *
   **/
   mouseDown: function(e, _isLeftButton) {
-    var _this = EVENT,
-        _didStartDrag = false,
-        x = _this.status[_this.crsrX],
-        y = _this.status[_this.crsrY],
-        i = 0,
-        
-        // Unset the active control when clicking on anything.
-        _newActiveControl = null,
-        
-        // The startDrag and mouseDown event receivers are first collected into
-        // these arrays and the events are sent after the active control status has
-        // been changed.
-        _startDragElementIds = [],
-        _mouseDownElementIds = [];
+    var
+    _this = EVENT,
+    _didStartDrag = false,
+    x = _this.status[_this.crsrX],
+    y = _this.status[_this.crsrY],
+    i = 0,
+    
+    // Unset the active control when clicking on anything.
+    _newActiveControl = null,
+    
+    // The startDrag and mouseDown event receivers are first collected into
+    // these arrays and the events are sent after the active control status has
+    // been changed.
+    _startDragElementIds = [],
+    _mouseDownElementIds = [];
     
     _this._modifiers(e);
     if (_isLeftButton === undefined) {
@@ -665,11 +666,15 @@ EVENT = {
       Event.stop(e);
     }
     // Stop the event only when we are hovering over some control, allows normal DOM events to co-exist.
-    if (this.enableDroppableChecks) {
-      if ((_stopEvent === 0) && (_this.hovered.length !== 0) && _newActiveControl) {
+    if (_this.enableDroppableChecks) {
+      // console.log('stopEvent:',_stopEvent,', hoverlen:',(_this.hovered.length !== 0),', newActive:',_newActiveControl);
+      if ( (_mouseDownElementIds.length !== 0) && (_stopEvent === 0) && (_this.hovered.length !== 0) && _newActiveControl) {
         Event.stop(e);
       }
     }
+    // else {
+    //   console.log('not enableDroppableChecks');
+    // }
     return true;
   },
 
@@ -725,6 +730,9 @@ EVENT = {
         _stopEvent--;
       }
     }
+    if( _stopEvent === 0 ){
+      Event.stop(e);
+    }
     return true;
   },
   
@@ -742,14 +750,16 @@ EVENT = {
     // if it's no longer the active control.
     _prevActiveCtrl = _this.activeControl;
     // Did the active control change?
-    if (_ctrl && (_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || _prevActiveCtrl._lostActiveStatus)) {
+    if (_ctrl && (_ctrl !== _prevActiveCtrl) && (_ctrl._gainedActiveStatus || (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus))) {
       if (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus) {
         // Previously active control just lost the active status.
-        _prevActiveCtrl.active = false;
-        _prevActiveCtrl._lostActiveStatus(_ctrl);
-        if(_this.focusTrace){
-          _prevActiveCtrl.setStyle('border','2px solid green');
-          _this.prevActiveCtrl && _this.prevActiveCtrl.setStyle('border','2px solid blue');
+        if( _prevActiveCtrl ){
+          _prevActiveCtrl.active = false;
+          _prevActiveCtrl._lostActiveStatus(_ctrl);
+          if(_this.focusTrace){
+            _prevActiveCtrl.setStyle('border','2px solid green');
+            _this.prevActiveCtrl && _this.prevActiveCtrl.setStyle('border','2px solid blue');
+          }
         }
         _this.prevActiveCtrl = _prevActiveCtrl;
       }
@@ -780,14 +790,15 @@ EVENT = {
   *
   **/
   mouseUp: function(e) {
-    var _this = EVENT,
-        _didEndDrag = false,
-        _isLeftButton = Event.isLeftClick(e),
-        x = _this.status[_this.crsrX],
-        y = _this.status[_this.crsrY],
-        _elemId,
-        _ctrl,
-        i = 0;
+    var
+    _this = EVENT,
+    _didEndDrag = false,
+    _isLeftButton = Event.isLeftClick(e),
+    x = _this.status[_this.crsrX],
+    y = _this.status[_this.crsrY],
+    _elemId,
+    _ctrl,
+    i = 0;
     _this._modifiers(e);
     // Send endDrag for the currently dragged items even when they don't have focus, and clear the drag item array.
     for (; i !== _this.dragItems.length; i++) {
@@ -820,7 +831,9 @@ EVENT = {
       if (_this.focused[i] === true) {
         _ctrl = _this.focusOptions[i].ctrl;
         if (_this.focusOptions[i].mouseUp === true) {
-          _ctrl.mouseUp(x, y, _isLeftButton);
+          if( _ctrl.mouseUp(x, y, _isLeftButton) ){
+            // Event.stop(e);
+          }
         }
       }
     }
@@ -877,7 +890,7 @@ EVENT = {
     else if (e.detail) {
       _delta = 0 - (e.detail / 3);
     }
-    if (BROWSER_TYPE.opera || BROWSER_TYPE.safari) {
+    if (BROWSER_TYPE.opera || BROWSER_TYPE.safari || BROWSER_TYPE.ie) {
       _delta = 0 - _delta;
     }
     for (; i !== _this.focused.length; i++) {
