@@ -132,7 +132,7 @@ This not only enables SessionStorage (persistent sessions between RSence restart
 * *json*[http://flori.github.com/json]:: Library for bi-directional JSON[http://json.org] conversion.
 * *yaml*[http://yaml4r.sourceforge.net/doc]:: Library for handling YAML[http://www.yaml.org] files
 * *randgen*:: C-optimized random string generator developed for RSence specifically
-* *jsmin_c*:: C-optimized Javascript whitespace removal library; Ruby wrapper developed for RSence specifically; based on the original JSMin[http://www.crockford.com/javascript/jsmin.html]
+* *jsminc*:: C-optimized Javascript whitespace removal library; Ryan Fitzgerald's Ruby wrapper for Douglas Crockford's jsmin.c
 * *jscompress*:: C-optimized Javascript compression and obfuscation library developed for RSence specifically
 * *html_min*:: C-optimized HTML whitespace removal library developed for RSence specifically
 * *cssmin*:: CSS whitespace removal library
