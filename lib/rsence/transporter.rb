@@ -85,17 +85,15 @@ module RSence
   
     def shutdown
       online=false
-      @plugins.shutdown
       @sessions.shutdown
+      @plugins.shutdown
     end
   
     def servlet( request_type, request, response )
       broker_urls = RSence.config[:broker_urls]
       uri = request.fullpath
     
-      if @plugins.match_servlet( request_type, request, response, {} )
-        return true
-      elsif request_type == :post
+      if request_type == :post
         ## /x handles xhr without cookies
         if uri == broker_urls[:x] and @sessions.accept_requests
           xhr( request, response, { :cookies => true, :servlet => false } )
@@ -106,7 +104,7 @@ module RSence
           return true
         end
       end
-      return false
+      return @plugins.match_servlet( request_type, request, response, @sessions.servlet_cookie_ses( request, response ) )
     end
   
     # wrapper for the session manager stop client functionality

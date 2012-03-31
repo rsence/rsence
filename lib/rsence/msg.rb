@@ -248,6 +248,7 @@ module RSence
           {}, # no session values
         ] + @error_js
       else
+        @session.delete( :_msg_unused ) if @session.has_key?( :_msg_unused )
         ## The response status should always be 200 (OK)
         @response.status = 200
         

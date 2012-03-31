@@ -218,8 +218,12 @@ module RSence
             @sessions[ses_id] = ses_data
             @session_keys[ ses_key ] = ses_id
             @session_cookie_keys[ ses_data[:cookie_key] ] = ses_id
+            if @plugins
+              @plugins.delegate( :load_ses_id, ses_id )
+              @plugins.delegate( :load_ses, ses_data )
+            end
           rescue => e
-            warn "Unable to restore session id: #{ses_id}, error: #{e.inspect}"
+            warn "Unable to load session: #{ses_id}, because: #{e.message}"
             @db[:rsence_session].filter(:id => ses_id).delete
             @db[:rsence_uploads].filter(:ses_id => ses_id).delete
           end
@@ -236,19 +240,26 @@ module RSence
       end
       puts "Storing sessions..." if RSence.args[:verbose]
       db_open
-      @sessions.each_key do |ses_id|
-        ses_data = @sessions[ ses_id ]
-        ses_data_dump = Marshal.dump( ses_data )
-        @db[:rsence_session].filter(
-          :id => ses_id
-        ).update(
-          :cookie_key  => ses_data[:cookie_key],
-          :ses_key     => ses_data[:ses_key],
-          :user_id     => ses_data[:user_id],
-          :ses_data    => ses_data_dump.to_sequel_blob,
-          :ses_timeout => ses_data[:timeout],
-          :ses_stored  => Time.now.to_i
-        )
+      @sessions.each do |ses_id,ses_data|
+        if @plugins
+          @plugins.delegate( :dump_ses, ses_data )
+          @plugins.delegate( :dump_ses_id, ses_id )
+        end
+        begin
+          ses_data_dump = Marshal.dump( ses_data )
+          @db[:rsence_session].filter(
+            :id => ses_id
+          ).update(
+            :cookie_key  => ses_data[:cookie_key],
+            :ses_key     => ses_data[:ses_key],
+            :user_id     => ses_data[:user_id],
+            :ses_data    => ses_data_dump.to_sequel_blob,
+            :ses_timeout => ses_data[:timeout],
+            :ses_stored  => Time.now.to_i
+          )
+        rescue => e
+          warn "Unable to dump session: #{ses_id}, because: #{e.message}"
+        end
       end
       db_close
     end
@@ -296,7 +307,10 @@ module RSence
       @sessions.delete( ses_id )
     
       # Removes all ticket-based storage bound to the session
-      @plugins[:ticket].expire_ses_id( ses_id ) if @plugins
+      if @plugins
+        @plugins.delegate( :expire_ses, ses_data )
+        @plugins.delegate( :expire_ses_id, ses_id )
+      end
     
       # target -> source cleanup
       if @clone_sources.has_key?( ses_id )

@@ -51,7 +51,11 @@ module RSence
     end
   
     ### Creates a new session
-    def init_ses( msg, ses_seed )
+    def init_ses( msg=nil, ses_seed=false )
+
+      if ses_seed == false
+        ses_seed = @randgen.gen
+      end
     
       ## Assigns new timeout for the session
       time_now = Time.now.to_i # seconds since epoch
@@ -88,6 +92,9 @@ module RSence
       
         # user id, map to your own user management code
         :user_id    =>  0,
+
+        # unused in msg context:
+        :_msg_unused => true,
         
         # user info, map to your own user management code
         :user_info  => {},
@@ -108,17 +115,19 @@ module RSence
     
       # map the ses_id to cookie key
       @session_cookie_keys[ cookie_key ] = ses_id
-    
-      ### Tell the client what the new key is
-      msg.ses_key = ses_key
-    
-      ### Set the session data and id to the message object
-      msg.session = ses_data
-    
-      # Flag the session as new, so associated
-      # plugins know when to create new data
-      msg.new_session = true
-    
+      
+      if msg
+        ### Tell the client what the new key is
+        msg.ses_key = ses_key
+      
+        ### Set the session data and id to the message object
+        msg.session = ses_data
+      
+        # Flag the session as new, so associated
+        # plugins know when to create new data
+        msg.new_session = true
+      end
+
       # Returns the cookie key, so it can be sent in the response header
       return cookie_key
     
@@ -152,12 +161,11 @@ module RSence
         # tell the client what its new session key is
         msg.ses_key = ses_key
       end
-    
+      
       if @config[:clone_cookie_sessions] and @clone_targets.has_key? ses_id
         targets = []
         @clone_targets[ ses_id ].length.times do |n|
           target_id  = @clone_targets[ ses_id ].shift
-          # warn "target_id: #{target_id}"
           target_ses = @sessions[ target_id ]
           if @sessions.has_key?( target_id ) and @sessions[ target_id ].class == Hash
             targets.push( target_ses )
@@ -173,7 +181,22 @@ module RSence
     end
   
     def clone_ses( msg, old_data, old_id, old_key, ses_seed )
-      ses_data = Marshal.load( Marshal.dump( old_data ) )
+      if @plugins
+        @plugins.delegate( :dump_ses, old_data )
+        @plugins.delegate( :dump_ses_id, old_id )
+      end
+      begin
+        old_dump = Marshal.dump( old_data )
+        if @plugins
+          @plugins.delegate( :load_ses_id, old_id )
+          @plugins.delegate( :load_ses, old_data )
+        end
+        ses_data = Marshal.load( old_dump )
+      rescue => e
+        warn "Unable to clone session #{old_id}, because: #{e.message}"
+        init_ses( msg, ses_seed )
+        return
+      end
       old_data[:timeout] = Time.now.to_i + @config[:cloned_session_expires_in]
       timeout = Time.now.to_i + @config[:timeout_secs]
       cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
@@ -191,6 +214,10 @@ module RSence
       @session_cookie_keys[ cookie_key ] = ses_id
       msg.ses_key = ses_key
       msg.session = ses_data
+      if @plugins
+        @plugins.delegate( :load_ses_id, ses_id )
+        @plugins.delegate( :load_ses, ses_data )
+      end
       if @clone_targets.has_key? old_id
         @clone_targets[ old_id ].push( ses_id )
       else
@@ -215,7 +242,7 @@ module RSence
         # get the session's data based on its id
         ses_data = @sessions[ ses_id ]
       
-        if @config[:clone_cookie_sessions] and ses_seed
+        if not ses_data.has_key?(:_msg_unused) and @config[:clone_cookie_sessions] and ses_seed
           clone_ses( msg, ses_data, ses_id, ses_key, ses_seed )
           return [true, true]
         else
@@ -223,9 +250,9 @@ module RSence
           return [true, false]
         end
       
-    
       ## The session was either faked or expired:
-      else
+      elsif RSence.args[:debug]
+    
         ### Tells the client to stop connecting with its session key and reload instead to get a new one.
         stop_client_with_message( msg,
           @config[:messages][:invalid_session][:title],
@@ -235,6 +262,18 @@ module RSence
       
         ## Return failure
         return [false, false]
+
+      else
+
+        msg.error_msg( [
+          "COMM.Transporter.stop = true;",
+          "setTimeout(function(){window.location.reload(true);},3000);",
+          "COMM.Transporter.setInterruptAnim('Session failure, reloading in 3 seconds..','#039');",
+          "setTimeout(function(){COMM.Transporter.setInterruptAnim('Reloading...');},2500);",
+          "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 1 seconds..');},2000);",
+          "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 2 seconds..');},1000);",
+        ] )
+        return [ false, false ]
       end
     
     end
@@ -254,6 +293,23 @@ module RSence
         "jsLoader.load('servermessage');",
         "ReloadApp.nu( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
       ] )
+    end
+
+    def servlet_cookie_ses( request, response )
+      cookie_raw = request.cookies
+      if cookie_raw.has_key?('ses_key')
+        cookie_key = cookie_raw['ses_key'].split(';')[0]
+      else
+        cookie_key = nil
+      end
+      unless @session_cookie_keys.has_key?( cookie_key )
+        cookie_key = init_ses
+      end
+      ses_id = @session_cookie_keys[ cookie_key ]
+      ses_data = @sessions[ ses_id ]
+      ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
+      renew_cookie_req_res( request, response, cookie_key, request.fullpath )
+      return ses_data
     end
   
     ### Checks / Sets cookies
@@ -302,18 +358,20 @@ module RSence
           cookie_key = msg.session[:cookie_key]
           @valuemanager.resend_session_values( msg )
         elsif ses_status
-          # delete the old cookie key:
-          @session_cookie_keys.delete( cookie_key )
-        
-          # get a new cookie key
-          cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
-        
-          # map the new cookie key to the old session identifier
-          @session_cookie_keys[ cookie_key ] = ses_id
-        
-          # binds the new cookie key to the old session data
-          @sessions[ses_id][:cookie_key] = cookie_key
+
+          unless @sessions[ses_id].has_key?(:_msg_unused)
+            # delete the old cookie key:
+            @session_cookie_keys.delete( cookie_key )
           
+            # get a new cookie key
+            cookie_key = @randgen.gen_many(@config[:cookie_key_multiplier]).join('')
+          
+            # map the new cookie key to the old session identifier
+            @session_cookie_keys[ cookie_key ] = ses_id
+          
+            # binds the new cookie key to the old session data
+            @sessions[ses_id][:cookie_key] = cookie_key
+          end
           
           msg.session[:plugin_incr] = @plugins.incr
         
@@ -353,19 +411,23 @@ module RSence
     end
   
     def renew_cookie( msg, cookie_key )
+      renew_cookie_req_res( msg.request, msg.response, cookie_key )
+    end
+
+    def renew_cookie_req_res( request, response, cookie_key, ses_cookie_path=nil )
       # Uses a cookie comment to tell the user what the
       # cookie is for, change it to anything valid in the
       # configuration.
       ses_cookie_comment = @config[:ses_cookie_comment]
     
       ## mod_rewrite changes the host header to x-forwarded-host:
-      if msg.request.header.has_key?('x-forwarded-host')
-        domain = msg.request.header['x-forwarded-host']
+      if request.header.has_key?('x-forwarded-host')
+        domain = request.header['x-forwarded-host']
       
       ## direct access just uses host (at least mongrel
       ## does mod_rewrite header translation):
       else
-        domain = msg.request.host
+        domain = request.host
       end
     
       if domain == 'localhost'
@@ -373,7 +435,7 @@ module RSence
         return
       end
     
-      server_port = msg.request.port
+      server_port = request.port
     
       ## if the host address is a real domain
       ## (not just hostname or 'localhost'),
@@ -396,10 +458,10 @@ module RSence
       ## prevents unnecessary cookie-juggling in xhr's
       if @config[:trust_cookies]
         ses_cookie_path    = '/'
-      else
+      elsif ses_cookie_path == nil
         ses_cookie_path    = RSence.config[:broker_urls][:hello]
       end
-    
+
       ## Formats the cookie to string
       ## (through array, to keep it readable in the source)
       ses_cookie_arr = [
@@ -412,7 +474,7 @@ module RSence
       ]
     
       ### Sets the set-cookie header
-      msg.response['Set-Cookie'] = ses_cookie_arr.join('; ')
+      response['Set-Cookie'] = ses_cookie_arr.join('; ')
     end
     
     def expire_ses_by_req( req, res )
@@ -478,7 +540,7 @@ module RSence
         
         ## get the ses_key from the request query:
         ses_key = query[ 'ses_key' ]
-        # puts "ses key: #{ses_key}"
+
         ## The message object binds request, response
         ## and all user/session -related data to one
         ## object, which is passed around where

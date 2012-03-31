@@ -401,7 +401,7 @@ module RSence
     
     # Called on INFO (PWR) signals ("Alive?")
     def info
-      puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- RSence version #{RSence.version} is running."
+      puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- RSence version #{RSence.version} is running the project: #{RSence.args[:env_path]}"
     end
     
     # Called on ALRM signals (save data, reload all plugins manually)
@@ -427,8 +427,8 @@ module RSence
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Saving state..."
       # transporter_state = @transporter.online?
       # @transporter.online = false
-      @transporter.plugins.delegate(:flush)
       @transporter.sessions.store_sessions
+      @transporter.plugins.delegate(:flush)
       # @transporter.online = transporter_state
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- State saved."
     end

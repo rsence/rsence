@@ -197,10 +197,18 @@ module RSence
       # @return [Hash] Plugin-specific session hash
       def get_ses( msg, key=false )
         name_sym = name_with_manager_s.to_sym
-        unless msg.session.has_key?( name_sym )
-          msg.session[ name_sym ] = {}
+        if msg.class == RSence::Message
+          session = msg.session
+        elsif msg.class == Hash
+          session = msg
+        else
+          warn "Invalid class (#{msg.class}) for get_ses in #{name_sym.inspect}!"
+          return nil
         end
-        ses = msg.session[ name_sym ]
+        unless session.has_key?( name_sym )
+          session[ name_sym ] = {}
+        end
+        ses = session[ name_sym ]
         return ses[key] if key
         return ses
       end

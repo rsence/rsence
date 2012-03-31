@@ -154,10 +154,6 @@
     # Defaults to false, will be the default in a future version.
     :clone_cookie_sessions: true
     #
-    # This limits the amount of cloned targets of a source session.
-    # NOTE: This has no effect yet, the code is not implemented.
-    :max_cloned_sessions: 10
-    #
     # This option overrides the default session timeout.
     # Don't set this to less than the expected poll interval,
     # otherwise the session might expire before the previous

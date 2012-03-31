@@ -186,7 +186,15 @@ class TicketPlugin < Plugin
   
   # @private Removes data used by the session, takes msg
   def expire_ses( msg )
-    expire_ses_id( msg.ses_id )
+    if msg.class == RSence::Message
+      expire_ses_id( msg.ses_id )
+    elsif msg.class == Hash
+      expire_ses_id( msg[:ses_id] )
+    elsif msg.class == Integer
+      expire_ses_id( msg )
+    else
+      warn "ticket: Unknown session class: #{msg.class}"
+    end
   end
   
   # Sets a custom favicon for RSence

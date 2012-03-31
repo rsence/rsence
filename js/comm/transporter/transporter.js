@@ -161,7 +161,7 @@ COMM.Transporter = HApplication.extend({
         _this._clientEvalError = e+" - "+e.description+' - '+_responseArray[i];
       }
     }
-    if(_this._serverInterruptView){
+    if(_this._serverInterruptView && _sesKey !== '' ){
       _this._serverInterruptView.die();
       _this._serverInterruptView = false;
     }
@@ -187,6 +187,110 @@ COMM.Transporter = HApplication.extend({
     _queue.push(function(){jsLoader.load('servermessage');});
     _queue.push(function(){ReloadApp.nu(_title,_message);});
   },
+
+  setInterruptAnim: function(_customMessage,_customColor){
+    var _this = COMM.Transporter;
+    if(!_this._serverInterruptView){
+      _this._serverInterruptView = HView.extend({
+        _setCustomMessage: function(_text){
+          ELEM.setHTML(this._messageDiv,_text);
+        },
+        _setCustomColor: function(_color){
+          this.setStyle('background-color',_color);
+        },
+        _setFailedResp: function(_resp){
+          if( _resp !== undefined && typeof _resp !== 'string' ){
+            this._failedResp = _resp;
+          }
+          this._errorIndex++;
+          return this;
+        },
+        _retry: function(){
+          this._retryIndex++;
+          var _resp = this._failedResp;
+          COMM.request(
+            _resp.url,
+            _resp.options
+          );
+        },
+        onIdle: function(){
+          var _currentDate = new Date().getTime();
+          this.bringToFront();
+          if( this._errorIndex > 0 &&
+              (this._retryIndex !== this._errorIndex) &&
+              (this._lastError + 2000 < _currentDate) &&
+              this._failedResp ){
+            this._lastError = _currentDate;
+            this._retry();
+          }
+          this.base();
+        },
+        _errorIndex: 0,
+        _retryIndex: 0,
+        _lastError: new Date().getTime(),
+        die: function(){
+          var _app = this.app;
+          HSystem.reniceApp(_app.appId,this._origPriority);
+          this.base();
+          _app.sync();
+        },
+        drawSubviews: function(){
+          var _style = [
+            ['padding-left', '8px'],
+            ['background-color', '#600'],
+            ['text-align','center'],
+            ['color', '#fff'],
+            ['font-size', '16px'],
+            ['opacity', 0.85]
+          ], i = 0;
+          for( ; i<_style.length; i++ ){
+            this.setStyle( _style[i][0], _style[i][1] );
+          }
+          this._messageDiv = ELEM.make(this.elemId);
+          ELEM.setHTML(this._messageDiv,this.app.serverLostMessage);
+          this._origPriority = HSystem.appPriorities[this.appId];
+          if(HSystem.appPriorities[this.appId]<10){
+            HSystem.reniceApp(this.appId,10);
+          }
+          this._anim = HView.extend({
+            _animIndex: 0,
+            _anim: function(){
+              var _targetRect,
+                  _width = ELEM.getSize(this.parent.elemId)[0];
+              this._animIndex++;
+              if(this._animIndex%2===0){
+                _targetRect = HRect.nu(0,0,80,20);
+              }
+              else {
+                _targetRect = HRect.nu(_width-80,0,_width,20);
+              }
+              this.animateTo(_targetRect,2000);
+            },
+            onAnimationEnd: function(){
+              if(this.drawn){
+                this._anim();
+              }
+            }
+          }
+        ).nu( [0,0,80,20], this ).setStyle('background-color','#fff').setStyle('opacity',0.8)._anim();
+        }
+      }).nu([0,0,200,20,0,null],_this);
+      if( typeof _customMessage !== 'string' ){
+        _this._serverInterruptView._setFailedResp(_customMessage);
+      }
+    }
+    if( _customMessage !== undefined ) {
+      if( typeof _customMessage === 'string' ){
+        _this._serverInterruptView._setCustomMessage(_customMessage);
+      }
+    }
+    if( !_this.stop ){
+      _this._serverInterruptView._setFailedResp();
+    }
+    if( _customColor !== undefined ){
+      _this._serverInterruptView._setCustomColor(_customColor);
+    }
+  },
   
 /** Called by the XMLHttpRequest, when there was a failure in communication.
   **/
@@ -195,88 +299,7 @@ COMM.Transporter = HApplication.extend({
     // server didn't respond, likely network issue.. retry.
     if(_resp.X.status===0){
       console.log(_this.serverLostMessage);
-      if(!_this._serverInterruptView){
-        _this._serverInterruptView = HView.extend({
-          _setFailedResp: function(_resp){
-            if(_resp!==undefined){
-              this._failedResp = _resp;
-            }
-            this._errorIndex++;
-            return this;
-          },
-          _retry: function(){
-            this._retryIndex++;
-            var _resp = this._failedResp;
-            COMM.request(
-              _resp.url,
-              _resp.options
-            );
-          },
-          onIdle: function(){
-            var _currentDate = new Date().getTime();
-            this.bringToFront();
-            if( this._errorIndex > 0 &&
-                (this._retryIndex !== this._errorIndex) &&
-                (this._lastError + 2000 < _currentDate) &&
-                this._failedResp ){
-              this._lastError = _currentDate;
-              this._retry();
-            }
-            this.base();
-          },
-          _errorIndex: 0,
-          _retryIndex: 0,
-          _lastError: new Date().getTime(),
-          die: function(){
-            var _app = this.app;
-            HSystem.reniceApp(_app.appId,this._origPriority);
-            this.base();
-            _app.sync();
-          },
-          drawSubviews: function(){
-            var _style = [
-              ['padding-left', '8px'],
-              ['background-color', '#600'],
-              ['text-align','center'],
-              ['color', '#fff'],
-              ['font-size', '16px'],
-              ['opacity', 0.85]
-            ], i = 0;
-            for( ; i<_style.length; i++ ){
-              this.setStyle( _style[i][0], _style[i][1] );
-            }
-            this.setHTML(this.app.serverLostMessage);
-            this._origPriority = HSystem.appPriorities[this.appId];
-            if(HSystem.appPriorities[this.appId]<10){
-              HSystem.reniceApp(this.appId,10);
-            }
-            this._anim = HView.extend({
-              _animIndex: 0,
-              _anim: function(){
-                var _targetRect,
-                    _width = ELEM.getSize(this.parent.elemId)[0];
-                this._animIndex++;
-                if(this._animIndex%2===0){
-                  _targetRect = HRect.nu(0,0,80,20);
-                }
-                else {
-                  _targetRect = HRect.nu(_width-80,0,_width,20);
-                }
-                this.animateTo(_targetRect,2000);
-              },
-              onAnimationEnd: function(){
-                if(this.drawn){
-                  this._anim();
-                }
-              }
-            }
-          ).nu( [0,0,80,20], this ).setStyle('background-color','#fff').setStyle('opacity',0.8)._anim();
-          }
-        }).nu([0,0,200,20,0,null],_this)._setFailedResp(_resp);
-      }
-      else {
-        _this._serverInterruptView._setFailedResp();
-      }
+      _this.setInterruptAnim(_resp);
     }
     else {
       _this.failMessage('Transporter Error','Transporter was unable to complete the synchronization request.');
