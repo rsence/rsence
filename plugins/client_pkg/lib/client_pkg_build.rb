@@ -7,7 +7,7 @@
  ##
 
 
-require 'jsmin_c'
+require 'jsminc'
 require 'jscompress'
 require 'html_min'
 begin
@@ -255,7 +255,8 @@ class ClientPkgBuild
   def squeeze( js, is_coffee=false )
     unless @no_whitespace_removal
       begin
-        js = @jsmin.minimize( js )#.strip
+        # js = @jsmin.minimize( js )#.strip
+        js = JSMinC.minify( js )
       rescue IndexError => e
         warn "js can't get smaller using js; just ignoring jsmin"
       end
@@ -289,7 +290,8 @@ class ClientPkgBuild
       return src_in
     else
       src_out = src_in
-      src_out = @jsmin.minimize( src_out ) unless @no_whitespace_removal
+      # src_out = @jsmin.minimize( src_out ) unless @no_whitespace_removal
+      src_out = JSMinC.minify( src_out ) unless @no_whitespace_removal
       src_out = pre_convert( src_out ) unless @no_obfuscation
       return src_out.strip
     end
@@ -578,7 +580,7 @@ class ClientPkgBuild
     @html_min = HTMLMin.new
     
     # JSMin removes js white-space (makes the source shorter)
-    @jsmin = JSMin.new
+    # @jsmin = JSMin.new
     
     # makes sure the specified dirs are ok
     return if not setup_dirs

@@ -63,6 +63,7 @@ class ClientPkgPlugin < Servlet
     @last_change = Time.now.to_i
     @client_build.setup_dirs
     @client_build.run
+    @client_cache = ClientPkgCache.new
     @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
     RSence.plugin_manager.incr! if RSence.config[:transporter_conf][:client_autoreload]
     @build_busy = false

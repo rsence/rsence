@@ -41,7 +41,7 @@ class ClientPkgCache
     @gz_cache    = gz
     @theme_cache = themes
     time_now = Time.now
-    @client_rev  = time_now.to_i.to_s
+    @client_rev  = time_now.to_i.to_s( 36 )
     @last_modified = httime( time_now )
   end
   
