@@ -313,6 +313,13 @@ if ([]['indexOf']===undefined) {
   };
 }
 
+// String fix
+if(typeof String.prototype.trim !== 'function') {
+  String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g, '');
+  };
+}
+
 // ff version 3.0.3 fails on this, when firebug installed: try/catch block
 try {
 

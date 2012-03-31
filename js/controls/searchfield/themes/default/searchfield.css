@@ -8,12 +8,12 @@
   background-color: transparent;
   vertical-align: middle;
   border: 0px;
-  left: 18px; top: 4px;
+  left: 18px; top: 0px;
   line-height: 18px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.opera)?'padding-left:2px;width:100% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:3px;height:16px;':'padding:2px;padding-top:4px;right:3px;height:16px;width:auto;'}
+  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'padding-left:2px;width:85% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:3px;height:16px;':'padding:2px;padding-top:4px;right:3px;height:22px;width:auto;'}
 }
 
 .default .searchfield_input:focus {
@@ -27,7 +27,7 @@
 
 .default .searchfield_input_parent {
   position: absolute;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:0;right:4px;bottom:0;':BROWSER_TYPE.ie6?'left:2px;top:1px;right:1px;height:20px;':'left:-2px;top:-2px;right:-2px;height:20px;'}
+  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:0;right:4px;bottom:0;':BROWSER_TYPE.ie6?'left:2px;top:1px;right:1px;height:20px;':'left:-2px;top:-2px;right:-2px;height:24px;'}
 }
 
 .default .searchfield_fade,

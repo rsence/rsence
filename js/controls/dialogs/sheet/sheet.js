@@ -68,7 +68,7 @@ HSheet = HControl.extend({
         'min-width', _width+'px',
         'min-height', _height+'px'
       ],
-      i = 0, _len;;
+      i = 0, _len;
       for( _len = _styles.length; i < _len; i+=2 ){
         ELEM.setStyle( _elemId, _styles[i], _styles[i+1] );
       }

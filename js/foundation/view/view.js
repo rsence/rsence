@@ -299,7 +299,6 @@ HView = HClass.extend({
   *
   **/
   constructor: function(_rect, _parent, _options) {
-    
     if( !_options ){
       _options = {};
     }
@@ -656,7 +655,9 @@ HView = HClass.extend({
         }
         ELEM.setStyle(_elemId,_key,_value,true);
       }
-      (this.drawn === false) && _this._updateZIndex();
+      if(this.drawn === false){
+        _this._updateZIndex();
+      }
       
       if ( _this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
         _this.invalidatePositionCache();
@@ -697,6 +698,7 @@ HView = HClass.extend({
   * +self+
   *
   **/
+  _ieNoThrough: null,
   draw: function() {
     var _isDrawn = this.drawn;
     this.drawRect();
@@ -704,6 +706,11 @@ HView = HClass.extend({
       this.firstDraw();
       if(this['componentName']!==undefined){
         this.drawMarkup();
+      }
+      else if(BROWSER_TYPE.ie && this._ieNoThrough === null){
+        this._ieNoThrough = ELEM.make( this.elemId );
+        ELEM.setCSS( this._ieNoThrough, 'position:absolute;left:0;top:0;bottom:0;right:0;background-color:#ffffff;font-size:0;line-height:0' );
+        ELEM.setStyle( this._ieNoThrough, 'opacity', 0.01 );
       }
       this.drawSubviews();
       if(this.options.style){
@@ -836,7 +843,7 @@ HView = HClass.extend({
       _reFrom = _reArr[i][0];
       _reTo = _reArr[i][1];
       _html = _html.replace( _reFrom, _reTo );
-    } 
+    }
     return _html;
   },
   _escapeHTMLArr: [
@@ -881,8 +888,9 @@ HView = HClass.extend({
       var
       _winSize = ELEM.windowSize(),
       _docSize = ELEM.getScrollSize(0);
+      // console.log('winSize:',JSON.stringify(_winSize),', docSize:',JSON.stringify(_docSize));
       if( _docSize[0] > _winSize[0] || _docSize[1] > _winSize[1] ){
-        _docSize = _winSize;
+        _winSize = _docSize;
       }
       return [ _winSize[0], _winSize[1] ];
     }
@@ -892,7 +900,7 @@ HView = HClass.extend({
       _width, // = _rect.width,
       _height, // = _rect.height;
       _parentElemId = ( this.parent.markupElemIds && this.parent.markupElemIds.subview ) ? this.parent.markupElemIds.subview : this.parent.elemId;
-     if (this.parent.flexLeft && this.parent.flexRight){
+      if (this.parent.flexLeft && this.parent.flexRight){
         _width = parseInt( ELEM.getStyle( _parentElemId, 'width', true ), 10 );
       }
       else {
@@ -963,11 +971,13 @@ HView = HClass.extend({
         _validWidth   = (typeof _width   === 'number'),
         _validHeight  = (typeof _height  === 'number'),
         _right,
-        _bottom;
+        _bottom,
+        _parentSize,
+        _parentWidth,
+        _parentHeight;
         if(_arrLen === 6){
-          var
-          _parentSize = this.parentSize(),
-          _parentWidth = _parentSize[0],
+          _parentSize = this.parentSize();
+          _parentWidth = _parentSize[0];
           _parentHeight = _parentSize[1];
         }
         
@@ -994,7 +1004,9 @@ HView = HClass.extend({
         }
         else if(_validLeftOffset && _validRightOffset){
           _right = _parentWidth - _rightOffset;
-          _validWidth && this.setMinWidth( _width );
+          if( _validWidth ){
+            this.setMinWidth( _width );
+          }
           _right = _parentWidth - _rightOffset;
         }
         
@@ -1007,7 +1019,9 @@ HView = HClass.extend({
         }
         else if(_validTopOffset && _validBottomOffset){
           _bottom = _parentHeight - _bottomOffset;
-          _validHeight && this.setMinHeight( _height );
+          if( _validHeight ){
+            this.setMinHeight( _height );
+          }
           _bottom = _parentHeight - _bottomOffset;
         }
         if( _leftOffset > _right ){
@@ -1017,7 +1031,6 @@ HView = HClass.extend({
           _bottom = _topOffset;
         }
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
-        
         if(!this.rect.isValid){
           console.log('---------------------------------------------');
           console.log('invalid rect:', this.rect.left, ',', this.rect.top, ',', this.rect.width, ',', this.rect.height, ',', this.rect.right, ',', this.rect.bottom );
@@ -1366,9 +1379,12 @@ HView = HClass.extend({
       // this._domElementBindings = [];
     }
     
+    if( this._ieNoThrough !== null ){
+      ELEM.del( this._ieNoThrough );
+    }
     // Remove the DOM object itself
     ELEM.del(this.elemId);
-    
+
     this.rect = null;
     var _this = this;
     for( i in _this ){
@@ -1379,11 +1395,11 @@ HView = HClass.extend({
   
 /** Recursive idle poller. Should be extended if functionality is desired.
   **/
-  onIdle: function() {
-    for(var i = 0; i < this.views.length; i++) {
-      HSystem.views[this.views[i]].onIdle();
-    }
-  },
+  // onIdle: function() {
+  //   for(var i = 0; i < this.views.length; i++) {
+  //     HSystem.views[this.views[i]].onIdle();
+  //   }
+  //},
   
 /** Used by addView to build a parents array of parent classes.
   **/
@@ -1872,7 +1888,9 @@ HView = HClass.extend({
   **/
   invalidatePositionCache: function() {
     for(var i=0; i<this.views.length; i++) {
-      HSystem.views[this.views[i]]['invalidatePositionCache'] && HSystem.views[this.views[i]].invalidatePositionCache();
+      if( typeof HSystem.views[this.views[i]]['invalidatePositionCache'] === 'function' ){
+        HSystem.views[this.views[i]].invalidatePositionCache();
+      }
     }
     return this;
   },
@@ -1983,6 +2001,42 @@ HView = HClass.extend({
       }
     }
     return _default;
+  },
+
+  isParentOf: function( _obj ){
+    if( !_obj ){
+      return false;
+    }
+    if( typeof _obj['hasAncestor'] === 'function' ){
+      if( _obj.parents.indexOf( this ) !== -1 ){
+        return true;
+      }
+    }
+    return false;
+  },
+
+  isChildOf: function( _obj ){
+    if( !_obj ){
+      return false;
+    }
+    if( typeof _obj['isParentOf'] === 'function' ){
+      return _obj.isParentOf( this );
+    }
+    return false;
+  },
+
+  isSiblingOf: function( _obj ){
+    if( !_obj ){
+      return false;
+    }
+    if( typeof _obj['parents'] === 'object' && _obj.parents instanceof Array ){
+      if( _obj.parents.length !== this.parents.length ){
+        return false;
+      }
+      var i = this.parents.length-1;
+      return _obj.parents[i] === this.parents[i];
+    }
+    return false;
   }
   
   

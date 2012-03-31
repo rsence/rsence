@@ -275,7 +275,9 @@ EVENT = {
     }
     if(_ctrl.drawn){
       _this._updateHoverItems();
-      (_this.hovered.length !== 0) && (_this.hovered.indexOf(_ctrl.elemId) === _this.hovered.length-1) && _this.focus(_ctrl);
+      if (_this.hovered.length !== 0 && _this.hovered.indexOf(_ctrl.elemId) === _this.hovered.length-1){
+        _this.focus(_ctrl);
+      }
     }
   },
   
@@ -581,6 +583,7 @@ EVENT = {
   *
   **/
   startDragging: function(_ctrl, _isLeftButton) {
+    // console.log('startDragging');
     var _this = EVENT;
     _this.dragItems = [_ctrl.elemId];
     _this.focus(_ctrl);
@@ -597,6 +600,7 @@ EVENT = {
   *
   **/
   mouseDown: function(e, _isLeftButton) {
+    // console.log('mouseDown');
     var
     _this = EVENT,
     _didStartDrag = false,
@@ -685,6 +689,13 @@ EVENT = {
   *
   **/
   click: function(e, _isLeftButton) {
+    // if( new Date().getTime() - EVENT.lastMouseUp < 10 ){
+    //   console.log('should prevent click?');
+    //   // return false; // prevent click and mousedown coexistence
+    // }
+    // else{
+    //   console.log('click');
+    // }
     var _this = EVENT,
         x = _this.status[_this.crsrX],
         y = _this.status[_this.crsrY],
@@ -722,6 +733,7 @@ EVENT = {
     }
     // Handle the active control selection.
     if (_newActiveControl) {
+      // console.log('click new active control');
       _this.changeActiveControl(_newActiveControl);
     }
     var _stopEvent = _clickElementIds.length;
@@ -746,6 +758,7 @@ EVENT = {
   changeActiveControl: function(_ctrl) {
     var
     _this = EVENT,
+    _disAllowLose = true,
     // Store the currently active control so we can inform it,
     // if it's no longer the active control.
     _prevActiveCtrl = _this.activeControl;
@@ -754,11 +767,20 @@ EVENT = {
       if (_prevActiveCtrl && _prevActiveCtrl._lostActiveStatus) {
         // Previously active control just lost the active status.
         if( _prevActiveCtrl ){
+          _disAllowLose = _prevActiveCtrl._lostActiveStatus(_ctrl) === false;
+          if( _disAllowLose ){
+            // console.log('disallow losing focus: ',_prevActiveCtrl.componentName,' -> ',_ctrl.componentName);
+            return;
+          }
+          // else{
+          //   console.log('allow losing focus: ',_prevActiveCtrl.componentName,' -> ',_ctrl.componentName);
+          // }
           _prevActiveCtrl.active = false;
-          _prevActiveCtrl._lostActiveStatus(_ctrl);
           if(_this.focusTrace){
             _prevActiveCtrl.setStyle('border','2px solid green');
-            _this.prevActiveCtrl && _this.prevActiveCtrl.setStyle('border','2px solid blue');
+            if( _this.prevActiveCtrl ){
+              _this.prevActiveCtrl.setStyle('border','2px solid blue');
+            }
           }
         }
         _this.prevActiveCtrl = _prevActiveCtrl;
@@ -789,7 +811,10 @@ EVENT = {
   * - endDrag
   *
   **/
+  // lastMouseUp: 0,
   mouseUp: function(e) {
+    // console.log('mouseUp',EVENT.dragItems.length);
+    // EVENT.lastMouseUp = new Date().getTime();
     var
     _this = EVENT,
     _didEndDrag = false,

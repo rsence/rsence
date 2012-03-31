@@ -92,7 +92,7 @@ Event = {
     Event.observers = false;
   },
   
-/** Starts observing the named event of the element and 
+/** Starts observing the named event of the element and
   * specifies a callback function.
   **/
   observe: function(_elem, _name, _function, _useCapture) {
@@ -145,7 +145,7 @@ Event = {
   
 };
 
-// Activates the garbage collector of Internet Explorer 
+// Activates the garbage collector of Internet Explorer
 // when the document is unloaded:
 if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
   Event.observe(window, "unload", Event.unloadCache, false);

@@ -19,7 +19,7 @@ HMarkupView = HClass.extend({
 /** = Description
   * Evaluates the pieces of code defined in the markup template marked with
   * syntax #{}.
-  * Can't use } characters in the code though. 
+  * Can't use } characters in the code though.
   * --
   * This might need another look...
   * ++
@@ -30,10 +30,10 @@ HMarkupView = HClass.extend({
     
     var _markup = this.markup;
     
-    while ( HMarkupView._assignment_match.test(_markup) ) {  
+    while ( HMarkupView._assignment_match.test(_markup) ) {
       _markup = _markup.replace( HMarkupView._assignment_match, this.evalMarkupVariable(RegExp.$1,true) );
     }
-    while ( HMarkupView._variable_match.test(_markup) ) {  
+    while ( HMarkupView._variable_match.test(_markup) ) {
       _markup = _markup.replace( HMarkupView._variable_match, this.evalMarkupVariable(RegExp.$1) );
     }
     
@@ -42,20 +42,20 @@ HMarkupView = HClass.extend({
     return this;
   },
 /** = Description
-  * Evaluates a string and throws an error into console.log 
-  * if the string doesn't pass evaluation. 
-  * If _isAssignment flag is set to true returns empty string. 
-  * if _isAssignment is set to false will return string if it passes 
+  * Evaluates a string and throws an error into console.log
+  * if the string doesn't pass evaluation.
+  * If _isAssignment flag is set to true returns empty string.
+  * if _isAssignment is set to false will return string if it passes
   * evaluation.
   *
   * = Parameters
   * +_strToEval+::      A String to evaluate.
   * 
-  * +_isAssignment+::   Flag to indicate return the String upon passed 
+  * +_isAssignment+::   Flag to indicate return the String upon passed
   *                     evaluation(false) or return of an empty String(true).
   *
   * = Returns
-  * +String+ 
+  * +String+
   * 
   **/
   evalMarkupVariable: function(_strToEval,_isAssignment){
@@ -81,14 +81,14 @@ HMarkupView = HClass.extend({
   },
   
 /** = Description
-  * Sets or unsets the _cssClass into a DOM element that goes by the ID 
+  * Sets or unsets the _cssClass into a DOM element that goes by the ID
   * _elementId.
   * 
   * = Parameters
-  * +_elementId+:: ID of the DOM element, or the element itself, to be 
+  * +_elementId+:: ID of the DOM element, or the element itself, to be
   *                modified.
   * +_cssClass+::  Name of the CSS class to be added or removed.
-  * +_setOn+::     Boolean value that tells should the CSS class be added or 
+  * +_setOn+::     Boolean value that tells should the CSS class be added or
   *                removed.
   *
   * = Returns

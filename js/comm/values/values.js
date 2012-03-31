@@ -66,7 +66,7 @@ COMM.Values = HClass.extend({
   },
   
 /** = Description
-  * Sets and decodes the +_data+. Main value setter interface 
+  * Sets and decodes the +_data+. Main value setter interface
   * for the server representation of +HValue+.
   *
   * = Parameters
@@ -328,7 +328,7 @@ COMM.Values = HClass.extend({
     }
     catch(e){
       console.log('invalid json:',_obj);
-      return "{}"
+      return "{}";
     }
   },
   

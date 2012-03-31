@@ -503,15 +503,18 @@ HEventResponder = HClass.extend({
   *
   **/
   lostActiveStatus: function(_newActiveControl) {
-    
+    return true;
   },
   
   // --A low-level handler for lost active status, don't extend this.++
   _lostActiveStatus: function(_newActiveControl) {
-    if(this.enabled) {
-      this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, false);
+    if( this.lostActiveStatus(_newActiveControl) !== false ){
+      if(this.enabled) {
+        this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, false);
+      }
+      return true;
     }
-    this.lostActiveStatus(_newActiveControl);
+    return false;
   },
   
   

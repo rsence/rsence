@@ -9,7 +9,7 @@
   vertical-align: middle;
   border: 0px;
   left: 0px; top: 0px;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.opera)?'padding-left:2px;width:100% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:4px;bottom:2px;':'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'}
+  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'padding-left:2px;width:100% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:4px;bottom:2px;':'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'}
 }
 
 .default .textcontrol_input:focus {

@@ -94,7 +94,7 @@ HApplication = HClass.extend({
 /** = Description
   * Adds a view to the app, +HView+ defines an indentical structure for subviews.
   *
-  * Called from inside the +HView+ constructor and should be automatic for all 
+  * Called from inside the +HView+ constructor and should be automatic for all
   * components that accept the +_parent+ parameter, usually the second argument,
   * after the +HRect+ instance.
   *
@@ -192,16 +192,35 @@ HApplication = HClass.extend({
     }
   },
   
+  renice: function(_priority){
+    HSystem.reniceApp(this.appId,_priority);
+  },
   
   /* Calls the idle method of each view. Don't extend this method. */
   _pollViews: function(){
-    var i, _viewId, _view;
-    for(i=0;i<this.views.length;i++){
-      _viewId = this.views[i];
+    this._pollViewsRecurse( this.views );
+  },
+  _pollViewsRecurse: function( _views ){
+    var i = 0, _viewId, _view, _pollViews = [];
+    for( ; i < _views.length;i++){
+      _viewId = _views[i];
       _view = HSystem.views[_viewId];
-      if((_view!==null)&&(_view['onIdle']!==undefined)){
-        _view.onIdle();
+      if( _view !== undefined && _view !== null && typeof _view === 'object' ){
+        if( _view['idle'] !== undefined && typeof _view['idle'] === 'function' ){
+          _view.idle();
+        }
+        if( _view['onIdle'] !== undefined && typeof _view['onIdle'] === 'function' ){
+          _view.onIdle();
+        }
+        if( _view['hasAncestor'] !== undefined && typeof _view.hasAncestor === 'function' && _view.hasAncestor( HView ) ) {
+          if( _view.views && _view.views instanceof Array ){
+            _pollViews.push( _view.views );
+          }
+        }
       }
+    }
+    while( _pollViews.length > 0 ){
+      this._pollViewsRecurse( _pollViews.shift() );
     }
   },
   
@@ -213,6 +232,7 @@ HApplication = HClass.extend({
     HSystem.busyApps[ _this.appId ] = true;
     this._busyTimer = setTimeout(
       function(){
+        _this.idle();
         _this.onIdle();
         _this._pollViews();
         HSystem.busyApps[ _this.appId ] = false;
@@ -231,6 +251,7 @@ HApplication = HClass.extend({
   **/
   onIdle: function(){
     /* Your code here */
-  }
+  },
+  idle: function(){}
 });
 HApplication.implement(HValueResponder.nu());

@@ -122,13 +122,14 @@ HRect = HClass.extend({
       _viewId = _viewIds[i];
       _view = HSystem.views[_viewId];
       if(_view.flexRight || _view.flexBottom){
-        ELEM.flushLoop();
+        ELEM.flush();
         if( !_view.parent ){
           _this.updateSecondaryValues();
           return;
         }
         _parentElemId = _view.parent.elemId;
         _parentSize = _view.parentSize();
+        // console.log('parentSize:',JSON.stringify(_parentSize));
         _parentWidth = _parentSize[0];
         if(_view.flexRight){
           _this.right = _parentWidth - _view.flexRightOffset;

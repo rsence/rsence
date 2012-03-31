@@ -19,7 +19,7 @@ BROWSER_TYPE =
   firefox: false
   firefox2: false
   firefox3: false
-  firefox4: false
+  firefox4: false # version 4 or newer
 
 ###
 The DOM Element abstraction engine
@@ -260,8 +260,10 @@ ELEM = HClass.extend
   Sets the opcity of the element as a number equaling or between 0 and 1
   ###
   setOpacity: (_id, _opacity)->
-    @_elements[_id].style.setProperty('opacity', _opacity, '')
-    @_setOpacityIE( _id, _opacity) if BROWSER_TYPE.ie6 or BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
+    if BROWSER_TYPE.ie6 or BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
+      @_setOpacityIE( _id, _opacity)
+    else
+      @_elements[_id].style.setProperty('opacity', _opacity.toString(), '')
     null
   
   ###
@@ -633,9 +635,9 @@ ELEM = HClass.extend
   ###
   windowSize: ->
     _size = [ window.innerWidth, window.innerHeight ]
-    unless _size[0] or _size[1]
+    if _size[0] == undefined or _size[1] == undefined
       _docElem = document.documentElement
-      _size = [ _docElem.clientWidth, _docElem.clientHeigh ]
+      _size = [ _docElem.clientWidth, _docElem.clientHeight ]
     _size
   
   ###
@@ -750,13 +752,14 @@ ELEM = HClass.extend
       _browserType.ie8 = _ua.indexOf('MSIE 8') != -1
       _browserType.ie9 = _ua.indexOf('MSIE 9') != -1
       _browserType.ie10 = _ua.indexOf('MSIE 10') != -1
-      _browserType.ie9 = _browserType.ie10 # IE 10 is treated like IE 9
+      unless _browserType.ie9
+        _browserType.ie9 = _browserType.ie10 # IE 10 is treated like IE 9
     _browserType.mac = _ua.indexOf('Macintosh') != -1
     _browserType.win = _ua.indexOf('Windows') != -1
     _browserType.firefox = _ua.indexOf('Firefox') != -1
     _browserType.firefox2 = _ua.indexOf('Firefox/2.') != -1
     _browserType.firefox3 = _ua.indexOf('Firefox/3.') != -1
-    _browserType.firefox4 = _ua.indexOf('Firefox/4.') != -1
+    _browserType.firefox4 = _browserType.firefox and not _browserType.firefox2 and not _browserType.firefox3
     @_domWaiter()
     null
   
@@ -775,13 +778,17 @@ ELEM = HClass.extend
   ###
   _domWaiter: ->
     if BROWSER_TYPE.ie6 or BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
-      if location.protocol = 'https:'
+      if location.protocol == 'https:'
         _ie_proto = 'src=//0'
       else
         _ie_proto = 'javascript:void(0)'
-      document.write('<scr'+'ipt id=__ie_onload defer src='+ _ie_proto +'></scr'+'ipt>')
-      document.getElementById('__ie_onload').onreadystatechange ->
-        if ELEM.readyState == 'complete'
+      _s1 = '<scr'
+      _s2 = 'ipt id=__ie_onload defer src='
+      _s3 = '></scr'
+      _s4 = 'ipt>'
+      document.write(_s1+_s2+_ie_proto+_s3+_s4)
+      document.getElementById('__ie_onload').onreadystatechange = ->
+        if this.readyState == 'complete'
           clearTimeout( ELEM._domLoadTimer )
           ELEM._domLoadStatus = true
           ELEM._init()

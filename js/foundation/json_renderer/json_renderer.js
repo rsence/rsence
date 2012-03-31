@@ -42,12 +42,12 @@ COMM.JSONRenderer = HClass.extend({
       this.render();
       var _rndr = this;
       if( this.view.hasAncestor( HApplication ) ){
-        this.view.getViewbyId = function(_id){ return _rndr.getViewById(_id); };
-        this.view.getViewsbyName = function(_id){ return _rndr.getViewsByName(_id); };
+        this.view.getViewById = function(_id){ return _rndr.getViewById(_id); };
+        this.view.getViewsByName = function(_id){ return _rndr.getViewsByName(_id); };
       }
       else if ( this.view.hasAncestor( HView ) ){
-        this.view.app.getViewbyId = function(_id){ return _rndr.getViewById(_id); };
-        this.view.app.getViewsbyName = function(_id){ return _rndr.getViewsByName(_id); };
+        this.view.app.getViewById = function(_id){ return _rndr.getViewById(_id); };
+        this.view.app.getViewsByName = function(_id){ return _rndr.getViewsByName(_id); };
       }
     }
     else{
@@ -444,7 +444,7 @@ COMM.JSONRenderer = HClass.extend({
       }
     }
     catch (e){
-      console.log('renderNode error:',e.toString()+', rect:',_rect,', class:',_dataNode['class'],', options:', _options,', e:',e);
+      console.log('renderNode error:',e.toString()+', rect:',_rect,', class:',_dataNode['class'],', options:', JSON.stringify(_options),', e:',e);
     }
     // Iterates recursively through all subviews, if specified.
     if(_hasSubviews){

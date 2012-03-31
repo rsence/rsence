@@ -59,6 +59,7 @@ HMiniMenu = HRadioButtonList.extend({
   
   click: function(){
     this.menuShow();
+    return false;
   },
   
   refreshValue: function(){
@@ -88,10 +89,20 @@ HMiniMenu = HRadioButtonList.extend({
   startDrag: function(x,y){
     this.dragStart = [x,y];
     this.menuShow();
+    return false;
   },
   
-  lostActiveStatus: function(newActive){
-    this.menuHide();
+  lostActiveStatus: function(_newActive){
+    // console.log('menu lost active status',_newActive);
+    if( !_newActive.isChildOf( this.menuItemView ) ){
+      this.menuHide();
+    }
+    this.base(_newActive);
+  },
+  
+  gainedActiveStatus: function(_prevActive){
+    // console.log('menu gained active status',_prevActive);
+    this.base(_prevActive);
   },
   
   endDrag: function(x,y){
@@ -103,13 +114,16 @@ HMiniMenu = HRadioButtonList.extend({
     else {
       this.menuHide();
     }
+    return false;
   },
   
   die: function(){
     this.valueMatrix = null;
     var _menuItemView = this.menuItemView;
     this.base();
-    _menuItemView && _menuItemView.die();
+    if( _menuItemView ){
+      _menuItemView.die();
+    }
   },
   
   drawSubviews: function(){
@@ -127,7 +141,8 @@ HMiniMenu = HRadioButtonList.extend({
       [ this.rect.left, this.rect.top, this.rect.width, 10 ],
       this.app, {
         visible: false,
-        style: itemStyle
+        style: itemStyle,
+        logicParent: this
       }
     );
   },
