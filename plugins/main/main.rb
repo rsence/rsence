@@ -254,7 +254,11 @@ class MainPlugin < Plugin
         end
       end
       ses[:deps].push( boot_dep )
-      msg.reply(%{jsLoader.loaded("#{boot_dep}");})
+      begin
+        msg.reply(%{jsLoader.loaded("#{boot_dep}");})
+      rescue => e
+        warn %{ses_id: #{msg.ses_id} failed to load boot_dep: "#{boot_dep}", because: #{e.inspect}}
+      end
       if boot_dep == 'rsence'
         ses[:deps].push( 'std_widgets' )
         msg.reply(%{jsLoader.loaded("std_widgets");})

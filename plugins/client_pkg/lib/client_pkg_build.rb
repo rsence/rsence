@@ -101,7 +101,7 @@ class ClientPkgBuild
       ].each do |src_file_css|
         if File.exist?( src_file_css )
           ( css_data, gz_css ) = read_css( src_file_css )
-          tgt_hash_css = tgt_hash_theme[:css][bundle_name] = {
+          tgt_hash_theme[:css][bundle_name] = {
             :data => css_data,
             :gzip => gz_css
           }
@@ -115,7 +115,7 @@ class ClientPkgBuild
       ].each do |src_file_html|
         if File.exist?( src_file_html )
           ( html_data, gz_html ) = read_html( src_file_html )
-          tgt_hash_html = tgt_hash_theme[:html][bundle_name] = {
+          tgt_hash_theme[:html][bundle_name] = {
             :data => html_data,
             :gzip => gz_html
           }
@@ -262,8 +262,12 @@ class ClientPkgBuild
       end
     end
     unless @no_obfuscation
-      @jscompress.build_indexes( js )
-      js = @jscompress.compress( js )
+      begin
+        @jscompress.build_indexes( js )
+        js = @jscompress.compress( js )
+      rescue
+        warn "jscompress failed squeeze; just ignoring jscompress"
+      end
     end
     return js.strip
   end
@@ -635,7 +639,7 @@ class ClientPkgBuild
   end
   
   def print_stat( package_name, dst_size, jsc_size, gz_size )
-    percent = 'n/a'
+    # percent = 'n/a'
     if dst_size > 0
       percent1 = (100*(jsc_size/dst_size.to_f)).to_i.to_s + '%'
       percent2 = (100*(gz_size/dst_size.to_f)).to_i.to_s + '%'
