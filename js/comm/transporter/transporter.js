@@ -116,7 +116,7 @@ COMM.Transporter = HApplication.extend({
         _valueId = _values['del'][i];
         _valueManager.del( _valueId );
       }
-    }    
+    }
   },
   
 /** = Description
@@ -138,13 +138,15 @@ COMM.Transporter = HApplication.extend({
       _this.failure(resp);
       return;
     }
-    var _responseArray = _this.parseResponseArray(resp.X.responseText),
-        i = 2,
-        _responseArrayLen = _responseArray.length,
-        _sesKey = _responseArray[0],
-        _values = _responseArray[1],
-        _session = COMM.Session,
-        _queue = COMM.Queue;
+    var
+    _responseArray = _this.parseResponseArray(resp.X.responseText),
+    i = 2,
+    _responseArrayLen = _responseArray.length,
+    _sesKey = _responseArray[0],
+    _values = _responseArray[1],
+    _session = COMM.Session,
+    _queue = COMM.Queue,
+    _errorText;
     if(_sesKey === ''){
       console.log('Invalid session, error message should follow...');
     }
@@ -157,8 +159,7 @@ COMM.Transporter = HApplication.extend({
         _queue.pushEval( _responseArray[i] );
       }
       catch(e) {
-        console.log( 'clientError:'+e+" - "+e.description+' - '+_responseArray[i]);
-        _this._clientEvalError = e+" - "+e.description+' - '+_responseArray[i];
+        _this._clientEvalError = _queue.clientException( e, _responseArray[i] );
       }
     }
     if(_this._serverInterruptView && _sesKey !== '' ){

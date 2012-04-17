@@ -72,6 +72,22 @@ COMM.Queue = HApplication.extend({
     JS_EXEC_FAIL: 'Failed to execute the Javascript function: ',
     REASON: ' Reason:'
   },
+
+/** Basic queue item exception reporter. Override with your own, if needed.
+  **/
+  clientException: function( _exception, _item ){
+    var
+    _strs = this.STRINGS,
+    _errorText = [
+      _strs.ERR_PREFIX,
+      _strs.JS_EXEC_FAIL,
+      _item.toString(),
+      _strs.REASON,
+      _exception
+    ].join('');
+    console.log( _errorText );
+    return _errorText;
+  },
   
 /** = Description
   * Flushes the queue until stopped.
@@ -112,14 +128,7 @@ COMM.Queue = HApplication.extend({
       
       // Displays an error message in the Javascript console, if failure.
       catch(e){
-        var _strs = this.STRINGS;
-        console.log([
-          _strs.ERR_PREFIX,
-          _strs.JS_EXEC_FAIL,
-          _item,
-          _strs.REASON,
-          e
-        ].join(''));
+        this.clientException( e, _item );
       }
     }
   },
