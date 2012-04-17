@@ -670,7 +670,6 @@ module RSence
       # Called from +#restore_ses+
       def restore_ses_values( msg )
         return unless @values
-        ses = get_ses( msg )
         if @values.class == Array
           @values.each do | value_item |
             value_item.each do | value_name, value_properties |
