@@ -1001,6 +1001,7 @@ HView = HClass.extend({
         else if(!_validLeftOffset && _validWidth && _validRightOffset){
           _right = _parentWidth-_validRightOffset;
           _leftOffset = _right-_width;
+          this.setMinWidth( _width );
         }
         else if(_validLeftOffset && _validRightOffset){
           _right = _parentWidth - _rightOffset;
@@ -1016,6 +1017,7 @@ HView = HClass.extend({
         else if(!_validTopOffset && _validHeight && _validBottomOffset){
           _bottom = _parentHeight-_validBottomOffset;
           _topOffset = _bottom-_height;
+          this.setMinHeight( _height );
         }
         else if(_validTopOffset && _validBottomOffset){
           _bottom = _parentHeight - _bottomOffset;
@@ -1214,23 +1216,57 @@ HView = HClass.extend({
   },
   
 /** = Description
-  * Sets a element attribute of a specified markup element that has been bound to this
-  * view.
+  * Sets a element attribute of the view's cell.
   *
   * = Parameters
-  * +_partName+::  The identifier of the markup element.
+  * +_key+::       The attribute key to set.
   * +_value+::     Value for markup element.
+  * +_force+::     Optional force switch, defaults to false
   *
   * = Returns
   * +self+
   *
   **/
-  setAttrOfPart: function( _partName, _value, _force ) {
+  setAttr: function( _key, _value, _force ){
+    ELEM.setAttr( this.elemId, _key, _value, _force );
+    return this;
+  },
+
+/** = Description
+  * Gets a element attribute of the view's cell.
+  *
+  * = Parameters
+  * +_key+::       The attribute key to get.
+  * +_force+::     Optional force switch, defaults to false
+  *
+  * = Returns
+  * The attribute value.
+  *
+  **/
+  attr: function( _key, _force ){
+    return ELEM.getAttr( this.elemId, _key, _force );
+  },
+
+/** = Description
+  * Sets a element attribute of a specified markup element that has been bound to this
+  * view.
+  *
+  * = Parameters
+  * +_partName+::  The identifier of the markup element.
+  * +_key+::       The attribute key to set
+  * +_value+::     Value for markup element.
+  * +_force+::     Optional force switch, defaults to false
+  *
+  * = Returns
+  * +self+
+  *
+  **/
+  setAttrOfPart: function( _partName, _key, _value, _force ) {
     if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, setAttrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
-      ELEM.setAttr( this.markupElemIds[_partName], _value, _force );
+      ELEM.setAttr( this.markupElemIds[_partName], _key, _value, _force );
     }
     return this;
   },
@@ -1241,17 +1277,19 @@ HView = HClass.extend({
   *
   * = Parameters
   * +_partName+::  The identifier of the markup element.
+  * +_key+::       The attribute key to get.
+  * +_force+::     Optional force switch, defaults to false
   *
   * = Returns
   * The attribute of a specified markup element.
   *
   **/
-  attrOfPart: function(_partName, _force) {
+  attrOfPart: function(_partName, _key, _force) {
     if (this.markupElemIds[_partName]===undefined) {
       console.log('Warning, attrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
-    return ELEM.getAttr(this.markupElemIds[_partName], _force);
+    return ELEM.getAttr(this.markupElemIds[_partName], _key, _force);
   },
 
 /** = Description

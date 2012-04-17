@@ -8,7 +8,7 @@
 
 /*** = Description
   ** A Rect object represents a rectangle. Rects are used throughout the
-  ** Components to define the frames of windows, views, bitmaps even the 
+  ** Components to define the frames of windows, views, bitmaps even the
   ** screen itself. A HRect is defined by its four sides, expressed as the public
   ** data members left, top, right, and bottom.
   **
@@ -26,7 +26,7 @@
   ** +rightBottom+::  A HPoint representing the coordinate of the rect's right bottom corner
   ** +width+::        The width of the rect.
   ** +height+::       The height of the rect.
-  ***/  
+  ***/
 var//RSence.Foundation.Geom
 HRect = HClass.extend({
 /** = Description
@@ -35,7 +35,7 @@ HRect = HClass.extend({
   * any initial values is invalid, until a specific assignment is made, either
   * through a set() function or by setting the object's data members directly.
   *
-  * = Parameters 
+  * = Parameters
   * using a HRect instance:
   * +rect+::  Another HRect.
   *
@@ -115,6 +115,8 @@ HRect = HClass.extend({
     _parentSize,
     _parentWidth,
     _parentHeight,
+    _virtualWidth,
+    _virtualHeight,
     _viewId,
     _view,
     i = 0;
@@ -123,35 +125,32 @@ HRect = HClass.extend({
       _view = HSystem.views[_viewId];
       if(_view.flexRight || _view.flexBottom){
         ELEM.flush();
-        if( !_view.parent ){
-          _this.updateSecondaryValues();
-          return;
-        }
-        _parentElemId = _view.parent.elemId;
         _parentSize = _view.parentSize();
-        // console.log('parentSize:',JSON.stringify(_parentSize));
-        _parentWidth = _parentSize[0];
-        if(_view.flexRight){
-          _this.right = _parentWidth - _view.flexRightOffset;
+        if( _view.flexRight && _view.flexLeft ){ // calculate width and right
+          _this.width = _parentSize[0] - _this.left - _view.flexRightOffset;
+          _this.right = _this.left+_this.width;
         }
-        if(!_view.flexLeft){
-          _this.left = _this.right - _this.width;
+        else if( _view.flexRight ){ // calculate left and right
+          _this.width = _view.minWidth;
+          _this.left = _parentSize[0] - _this.width - _view.flexRightOffset;
+          _this.right = _this.width + _this.left;
         }
-        _parentHeight = _parentSize[1];
-        if(_view.flexBottom){
-          _this.bottom = _parentHeight - _view.flexBottomOffset - _this.top;
+        else { // calculate width
+          _this.width = _this.right - _this.left;
         }
-        if(!_view.flexTop){
-          _this.top = _this.bottom - _this.height;
+        if( _view.flexTop && _view.flexBottom ){ // calculate height and bottom
+          _this.height = _parentSize[1] - _this.top - _view.flexBottomOffset;
+          _this.bottom = _this.top+_this.height;
         }
-        if( _this.bottom-_this.top < 0 ){
-          _this.bottom = _this.top;
+        else if( _view.flexBottom ){ // calculate top and bottom
+          _this.height = _view.minHeight;
+          _this.top = _parentSize[1] - _this.height - _view.flexBottomOffset;
+          _this.bottom = _this.height + _this.top;
         }
-        if( _this.right-_this.left < 0 ){
-          _this.right = _this.left;
+        else { // calculate height
+          _this.height = _this.bottom - _this.top;
         }
-        // console.log(_this.left,this.top,this.right-this.left,this.bottom-this.top);
-        _this.updateSecondaryValues();
+        _this.updateSecondaryValues( true );
       }
     }
   },
@@ -166,7 +165,7 @@ HRect = HClass.extend({
   * Use the accompanied methods instead.
   *
   **/
-  updateSecondaryValues: function() {
+  updateSecondaryValues: function(_noSize) {
     
     // this._updateFlexibleDimensions();
     
@@ -181,7 +180,7 @@ HRect = HClass.extend({
     /**
       *
       * The Point-returning functions return the coordinates of one of the
-      * rectangle's four corners. 
+      * rectangle's four corners.
       **/
     this.leftTop = new HPoint(this.left, this.top);
     this.leftBottom = new HPoint(this.left, this.bottom);
@@ -192,8 +191,10 @@ HRect = HClass.extend({
       * The width and height of a Rect's rectangle, as returned through these
       * properties.
       **/
-    this.width = (this.right - this.left);
-    this.height = (this.bottom - this.top);
+    if(!_noSize){
+      this.width = (this.right - this.left);
+      this.height = (this.bottom - this.top);
+    }
   },
   
 /** = Description
@@ -363,7 +364,7 @@ HRect = HClass.extend({
 /** = Description
   * Moves the rects right and bottom sides to new coordinates. Does not affect the position.
   *
-  * = Parameters 
+  * = Parameters
   * by separate numeric values:
   * +_width+::   A numeric value representing the new target width of the rect.
   * +_height+::  A numeric value representing the new target height of the rect.
@@ -391,7 +392,7 @@ HRect = HClass.extend({
   },
   
 /** = Description
-  * Returns true if the Rect has any area even a corner or part 
+  * Returns true if the Rect has any area even a corner or part
   * of a side in common with rect, and false if it doesn't.
   *
   * = Parameters
@@ -414,7 +415,7 @@ HRect = HClass.extend({
     return (
       ( ( _rect.left >= this.left && _rect.left <= this.right ) ||
         ( _rect.right >= this.left && _rect.right <= this.right )
-      ) && 
+      ) &&
       ( ( _rect.top >= this.top && _rect.top <= this.bottom) ||
         ( _rect.bottom >= this.top && _rect.bottom <= this.bottom)
       )
@@ -467,12 +468,12 @@ HRect = HClass.extend({
   * left side moves (to the right) four units and the right side moves (to the
   * left) four units (and similarly with the top and bottom).
   *
-  * = Parameters 
+  * = Parameters
   * using a HPoint:
   * +point+::  A HPoint to inset by.
   *
   * using separate x and y coordinates:
-  * +x+::  x Coordinate 
+  * +x+::  x Coordinate
   * +y+::  y Coordinate
   *
   **/
@@ -501,7 +502,7 @@ HRect = HClass.extend({
   * Moves the Rect horizontally by x units and vertically by y
   * units. The rectangle's size doesn't change.
   *
-  * = Parameters 
+  * = Parameters
   * using a HPoint:
   * +point+::  A HPoint to offset by.
   *
@@ -534,12 +535,12 @@ HRect = HClass.extend({
 /** = Description
   * Moves the Rect to the location (x,y).
   *
-  * = Parameters 
+  * = Parameters
   * using a HPoint:
   * +point+::  A HPoint to offset to.
   *
   * using separate x and y coordinates):
-  * +x+::  X coordinate 
+  * +x+::  X coordinate
   * +y+::  Y coordinate
   *
   **/
