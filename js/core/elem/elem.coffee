@@ -451,7 +451,7 @@ ELEM = HClass.extend
     for i in [ 1.._loopMaxL ]
       _key = _currTodo.shift()
       _val = _attrCache[_key]
-      _elem.setAttribute( _key, _val )
+      _elem[_key] = _val
     null
   
   ###
@@ -459,27 +459,28 @@ ELEM = HClass.extend
   ###
   _getAttrDirect: (_id, _key)->
     _elem = @_elements[_id]
-    _elem.getAttribute( _key )
+    _elem[_key]
 
   ###
   Gets a named element attribute from the cache or selectively direct
   ###
   getAttr: (_id, _key, _noCache)->
-    if _noCache
+    return null if not @_attrCache[_id]?
+    _val = @_attrCache[_id][_key]
+    if _noCache or not _val?
       _val = @_getAttrDirect( _id, _key )
-    else
-      _val = @_attrCache[_id][_key]
-    @_attrCache[_id][_key] = _val
+      @_attrCache[_id][_key] = _val
     _val
   
   ###
   Sets a named element attribute into the cache and buffer or selectively direct
   ###
   setAttr: (_id, _key, _value, _noCache)->
+    return null unless @_elements[_id]? # item is deleted
     _attrTodo = @_attrTodo[_id]
     _attrCache = @_attrCache[_id]
-    @_elements[_id].setAttribute( _key, _value ) if _noCache
-    _reCache = _value != @getAttr( _id, _key )
+    @_elements[_id][_key] = _value if _noCache
+    _reCache = ( _value != @getAttr( _id, _key ) )
     if _reCache or _noCache
       _attrCache[_key] = _value
       unless _noCache
@@ -488,25 +489,27 @@ ELEM = HClass.extend
           @_elemTodo.push( _id )
           @_elemTodoH[ _id ] = true
           @_checkNeedFlush()
-    null
+    true
   
   ###
   Deletes a named element attribute
   ###
   delAttr: (_id, _key)->
-    _attrTodo = @_attrtodo[_id]
+    return null unless @_elements[_id]? # item is deleted
+    _attrTodo = @_attrTodo[_id]
     _attrCache = @_attrCache[_id]
     delete _attrCache[_key]
     @_elements[_id].removeAttribute( _key )
     _todoIndex = _attrTodo.indexOf( _key )
     _attrTodo.splice( _todoIndex, 1 ) unless _todoIndex == -1
     @_checkNeedFlush()
-    null
+    true
 
   ###
   Checks if the element has a named CSS className
   ###
   hasClassName: (_id, _className)->
+    return null unless @_elements[_id]? # item is deleted
     _classNames = @_elements[_id].className.split(' ')
     return _classNames.indexOf( _className ) != -1
   
@@ -514,6 +517,7 @@ ELEM = HClass.extend
   Adds a named CSS className to the element
   ###
   addClassName: (_id, _className)->
+    return null unless @_elements[_id]? # item is deleted
     unless @hasClassName( _id, _className )
       _elem = @_elements[_id]
       if _elem.className.trim() == ''
@@ -527,13 +531,18 @@ ELEM = HClass.extend
   ###
   Removes a named CSS className of the element
   ###
-  removeClassName: (_id, _className)->
+  delClassName: (_id, _className)->
+    return null unless @_elements[_id]? # item is deleted
     if @hasClassName( _id, _className )
       _elem = @_elements[_id]
       _classNames = _elem.className.split(' ')
       _classNames.splice( _classNames.indexOf( _className ), 1 )
       _elem.className = _classNames.join(' ')
     null
+
+  removeClassName: (_id, _className)->
+    console.log( 'ELEM.removeClassName is deprecated. Use ELEM.delClassName instead.' )
+    return @delClassName( _id, _className )
 
   ###
   Checks if buffers need to be flushed
@@ -583,6 +592,7 @@ ELEM = HClass.extend
   Sets and buffers the named style attribute value or selectively direct
   ###
   setStyle: (_id, _key, _value, _noCache)->
+    return null unless @_elements[_id]? # item is deleted
     if _id == undefined
       console.log('ERROR; undefined id in ELEM#setStyle(',_id, _key, _value, _noCache,')')
     _noCache = true if BROWSER_TYPE.ie9
@@ -658,6 +668,7 @@ ELEM = HClass.extend
   Gets the named element style attribute value.
   ###
   getStyle: (_id, _key, _noCache)->
+    return null unless @_styleCache[_id]?
     _cached = @_styleCache[_id]
     _key = @_deCamelize(_key)
     if _cached[_key] == undefined or _noCache
