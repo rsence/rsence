@@ -174,7 +174,8 @@ HTab = HControl.extend({
       ELEM.setAttr(_tabLabelElemId,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
     else if (this.tabTriggerLink && !(BROWSER_TYPE.ie7 || BROWSER_TYPE.ie6)){
-      ELEM.setAttr(_tabLabelElemId,'onclick','HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
+      var _this = this;
+      Event.observe( ELEM.get(_tabLabelElemId), 'click', function(){ console.log('click');_this.selectTab(_tabIdx); } );
     }
     else {
       this.tabTriggerLink = false;
