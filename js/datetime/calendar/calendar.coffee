@@ -11,15 +11,16 @@
   ## and weeks as rows. Its value is a date/time number specified in seconds
   ## since or before epoch (1970-01-01 00:00:00 UTC).
   ####
-HCalendar = HControl.extend(
+HCalendar = HControl.extend
   
   componentName: 'calendar'
+  markupElemNames: [ 'control', 'state', 'label', 'value', 'prevMonth', 'nextMonth' ]
 
   ## Disable the mouseWheel event to prevent prev/next -month switching with
   ## the mouse wheel or equivalent content-scrolling user interface gesture
   defaultEvents:
     mouseWheel: true
-    click: true
+    # click: true
   
   ## Calls HCalendar#nextMonth or HCalendar#prevMonth based on delta change
   ## of the mouseWheel event
@@ -33,6 +34,15 @@ HCalendar = HControl.extend(
   click: ->
     false
   
+  drawSubviews: ->
+    _this = @
+    Event.observe( @elemOfPart( 'prevMonth' ), 'click', ->
+      _this.prevMonth()
+    )
+    Event.observe( @elemOfPart( 'nextMonth' ), 'click', ->
+      _this.nextMonth()
+    )
+
   ## Returns an array of week day names starting with the short name of the word "week".
   ## The default locale returns: ['Wk','Mon','Tue','Wed','Thu','Fri','Sat','Sun']
   ## See HLocale for more details
@@ -244,6 +254,7 @@ HCalendar = HControl.extend(
     _parentElem = @markupElemIds.value
     ELEM.setStyle( _parentElem, 'visibility', 'hidden', true )
     _elems = []
+    _this = @
     for _row in [0..5]
       _weekElem = ELEM.make( _parentElem )
       _elems.push( _weekElem )
@@ -276,7 +287,11 @@ HCalendar = HControl.extend(
             ELEM.addClassName( _colElem, 'calendar_weeks_week_col_no' )
           else
             ELEM.addClassName( _colElem, 'calendar_weeks_week_col_yes' )
-          ELEM.setAttr( _colElem, 'href', "javascript:HSystem.views[#{@viewId}].setValue(#{_colSecs})" )
+          ELEM.setAttr( _colElem, '_colSecs', _colSecs )
+          Event.observe( ELEM.get( _colElem ), 'click', ->
+            _this.setValue( @_colSecs )
+          )
+          # ELEM.setAttr( _colElem, 'href', "javascript:HSystem.views[#{@viewId}].setValue(#{_colSecs})" )
           _left = (_col*_colWidth+_leftPlus)
           ELEM.setStyle( _colElem, 'left', _left+'px' )
           ELEM.setStyle( _colElem, 'width', (_colWidth-1)+'px' )
@@ -286,22 +301,23 @@ HCalendar = HControl.extend(
     ELEM.setStyle( _parentElem, 'visibility', 'inherit' )
     _stateElem = @markupElemIds.state
 
-    @_monthMenu = ELEM.make( _stateElem, 'a' )
+    @_monthMenu = ELEM.make( _stateElem, 'span' )#, 'a' )
     _elems.push( @_monthMenu )
-    ELEM.setAttr( @_monthMenu, 'href', "javascript:HSystem.views[#{@viewId}].monthMenu()" )
+    # ELEM.setAttr( @_monthMenu, 'href', "javascript:HSystem.views[#{@viewId}].monthMenu()" )
+    Event.observe( ELEM.get( @_monthMenu ), 'click', ( -> _this.monthMenu() ), false )
     ELEM.setHTML( @_monthMenu, @monthName( _date ) )
 
     _spacer = ELEM.make( _stateElem, 'span' )
     _elems.push( _spacer )
     ELEM.setHTML( _spacer, '&nbsp;' )
 
-    @_yearMenu = ELEM.make( _stateElem, 'a' )
+    @_yearMenu = ELEM.make( _stateElem, 'span' )#, 'a' )
     _elems.push( @_yearMenu )
-    ELEM.setAttr( @_yearMenu, 'href', "javascript:HSystem.views[#{@viewId}].yearMenu()" )
+    Event.observe( ELEM.get( @_yearMenu ), 'click', ( -> _this.yearMenu() ), false )
+    # ELEM.setAttr( @_yearMenu, 'href', "javascript:HSystem.views[#{@viewId}].yearMenu()" )
     ELEM.setHTML( @_yearMenu, @year( _date ) )
 
     @viewMonth = [ _monthFirst.getUTCFullYear(), _monthFirst.getUTCMonth() ]
     @_drawCalendarElems = _elems
-)
 
 HCalendar.implement( HDateTime )

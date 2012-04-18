@@ -82,8 +82,10 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   menuHide: function(){
-    this.menuItemView.sendToBack();
-    this.menuItemView.hide();
+    if( this.menuItemView ){
+      this.menuItemView.sendToBack();
+      this.menuItemView.hide();
+    }
   },
   
   startDrag: function(x,y){
