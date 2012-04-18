@@ -925,13 +925,23 @@ HView = HClass.extend({
   
   minWidth: 0,
   setMinWidth: function(_minWidth){
-    this.minWidth = _minWidth;
-    ELEM.setStyle( this.elemId, 'min-width', this.minWidth+'px', true);
+    if( typeof _minWidth === 'number' ){
+      this.minWidth = _minWidth;
+      ELEM.setStyle( this.elemId, 'min-width', this.minWidth+'px', true);
+    }
+    else {
+      console.log('warning: setMinWidth( '+(typeof _minWidth)+' '+_minWidth+' ) should be a number; value ignored!');
+    }
   },
   minHeight: 0,
   setMinHeight: function(_minHeight){
-    this.minHeight = _minHeight;
-    ELEM.setStyle( this.elemId, 'min-height', this.minHeight+'px', true);
+    if( typeof _minHeight === 'number' ){
+      this.minHeight = _minHeight;
+      ELEM.setStyle( this.elemId, 'min-height', this.minHeight+'px', true);
+    }
+    else {
+      console.log('warning: setMinHeight( '+(typeof _minHeight)+' '+_minHeight+' ) should be a number; value ignored!');
+    }
   },
   
 /** = Description
@@ -990,11 +1000,6 @@ HView = HClass.extend({
           console.log(_throwPrefix + 'the (height or width) must be specified unless both (left and top) or (top and bottom) are specified.');
         }
         
-        this.setFlexLeft(_validLeftOffset,_leftOffset);
-        this.setFlexTop(_validTopOffset,_topOffset);
-        this.setFlexRight(_validRightOffset,_rightOffset);
-        this.setFlexBottom(_validBottomOffset,_bottomOffset);
-        
         if(_validLeftOffset && _validWidth && !_validRightOffset){
           _right = _leftOffset + _width;
         }
@@ -1007,8 +1012,27 @@ HView = HClass.extend({
           _right = _parentWidth - _rightOffset;
           if( _validWidth ){
             this.setMinWidth( _width );
+            if( _right - _leftOffset < _width ){
+              _right = _leftOffset+_width;
+              console.log('warning: the min-width('+
+                _width+
+                ') is less than available width('+
+                (_parentWidth-_leftOffset-_rightOffset)+
+                '). flexRightOffset yields to: '+_right+'!');
+            }
           }
-          _right = _parentWidth - _rightOffset;
+          else if ( _right < _leftOffset ) {
+            console.log('warning: there is not enough width ('+
+              _parentWidth+') to fit flexRightOffset ('+
+              _rightOffset+
+              ') and left ('+
+              _leftOffset+
+              '). right yields to ('+
+              _leftOffset+') and flexRightOffset yields to ('+
+              (_parentWidth-_leftOffset)+')!');
+            _rightOffset = _parentWidth-_leftOffset;
+            _right = _leftOffset;
+          }
         }
         
         if(_validTopOffset && _validHeight && !_validBottomOffset){
@@ -1023,8 +1047,27 @@ HView = HClass.extend({
           _bottom = _parentHeight - _bottomOffset;
           if( _validHeight ){
             this.setMinHeight( _height );
+            if( _bottom - _topOffset < _height ){
+              _bottom = _topOffset + _height;
+              console.log('warning: the min-height('+
+                _height+
+                ') is less than available width('+
+                (_parentHeight-_topOffset-_bottomOffset)+
+                '). flexBottomOffset yields to: '+_bottom+'!');
+            }
           }
-          _bottom = _parentHeight - _bottomOffset;
+          else if ( _bottom < _topOffset ) {
+            console.log('warning: there is not enough height ('+
+              _parentHeight+') to fit flexBottomOffset ('+
+              _bottom+
+              ') and bottom ('+
+              _bottomOffset+
+              '). bottom yields to ('+
+              _topOffset+') and flexBottomOffset yields to ('+
+              (_parentHeight-_topOffset)+')!');
+            _bottomOffset = _parentHeight-_topOffset;
+            _bottom = _topOffset;
+          }
         }
         if( _leftOffset > _right ){
           _right = _leftOffset;
@@ -1032,6 +1075,12 @@ HView = HClass.extend({
         if( _topOffset > _bottom ){
           _bottom = _topOffset;
         }
+        this.setMinWidth(this.minWidth);
+        this.setMinHeight(this.minHeight);
+        this.setFlexLeft(_validLeftOffset,_leftOffset);
+        this.setFlexTop(_validTopOffset,_topOffset);
+        this.setFlexRight(_validRightOffset,_rightOffset);
+        this.setFlexBottom(_validBottomOffset,_bottomOffset);
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
         if(!this.rect.isValid){
           console.log('---------------------------------------------');

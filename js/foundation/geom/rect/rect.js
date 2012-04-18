@@ -127,7 +127,13 @@ HRect = HClass.extend({
         ELEM.flush();
         _parentSize = _view.parentSize();
         if( _view.flexRight && _view.flexLeft ){ // calculate width and right
-          _this.width = _parentSize[0] - _this.left - _view.flexRightOffset;
+          _virtualWidth = _parentSize[0] - _this.left - _view.flexRightOffset;
+          if( _view.minWidth !== null && _virtualWidth < _view.minWidth ){
+            _this.width = _view.minWidth;
+          }
+          else{
+            _this.width = _virtualWidth;
+          }
           _this.right = _this.left+_this.width;
         }
         else if( _view.flexRight ){ // calculate left and right
@@ -139,7 +145,13 @@ HRect = HClass.extend({
           _this.width = _this.right - _this.left;
         }
         if( _view.flexTop && _view.flexBottom ){ // calculate height and bottom
-          _this.height = _parentSize[1] - _this.top - _view.flexBottomOffset;
+          _virtualHeight = _parentSize[1] - _this.top - _view.flexBottomOffset;
+          if( _view.minHeight !== null && _virtualHeight < _view.minHeight ){
+            _this.height = _view.minHeight;
+          }
+          else{
+            _this.height = _virtualHeight;
+          }
           _this.bottom = _this.top+_this.height;
         }
         else if( _view.flexBottom ){ // calculate top and bottom
