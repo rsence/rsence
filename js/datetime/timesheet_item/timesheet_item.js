@@ -73,7 +73,7 @@ HTimeSheetItem = HControl.extend({
       ELEM.addClassName( this.elemId, 'locked' );
     }
     else {
-      ELEM.removeClassName( this.elemId, 'locked' );
+      ELEM.delClassName( this.elemId, 'locked' );
     }
     this.refreshState();
     this.clearAllIcons();

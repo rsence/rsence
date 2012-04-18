@@ -101,7 +101,7 @@ HMarkupView = HClass.extend({
         ELEM.addClassName(_elementId, _cssClass);
       }
       else {
-        ELEM.removeClassName(_elementId, _cssClass);
+        ELEM.delClassName(_elementId, _cssClass);
       }
     }
     return this;

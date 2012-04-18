@@ -120,14 +120,14 @@ HTab = HControl.extend({
     if(this.selectIdx!==-1){
       var _tabSelectElemId = this.tabLabels[this.selectIdx],
           _tabSelectViewId = this.tabs[this.selectIdx];
-      ELEM.removeClassName(_tabSelectElemId,'item-fg');
+      ELEM.delClassName(_tabSelectElemId,'item-fg');
       ELEM.addClassName(_tabSelectElemId,'item-bg');
       HSystem.views[_tabSelectViewId].hide();
     }
     if(_tabIdx!==-1){
       var _tabLabelElemId = this.tabLabels[_tabIdx],
           _tabViewId = this.tabs[_tabIdx];
-      ELEM.removeClassName(_tabLabelElemId,'item-bg');
+      ELEM.delClassName(_tabLabelElemId,'item-bg');
       ELEM.addClassName(_tabLabelElemId,'item-fg');
       HSystem.views[_tabViewId].show();
     }
