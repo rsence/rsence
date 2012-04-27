@@ -175,7 +175,7 @@ HTab = HControl.extend({
     }
     else if (this.tabTriggerLink && !(BROWSER_TYPE.ie7 || BROWSER_TYPE.ie6)){
       var _this = this;
-      Event.observe( ELEM.get(_tabLabelElemId), 'click', function(){ console.log('click');_this.selectTab(_tabIdx); } );
+      Event.observe( ELEM.get(_tabLabelElemId), 'click', function(){ _this.selectTab(_tabIdx); } );
     }
     else {
       this.tabTriggerLink = false;
