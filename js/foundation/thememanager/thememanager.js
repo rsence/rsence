@@ -289,6 +289,9 @@ HThemeManager = HClass.extend({
     if (null === _markup || undefined === _markup) {
       _markup = "";
     }
+    if( this._tmplCache[_themeName] === undefined ){
+      this._tmplCache[_themeName] = {};
+    }
     this._tmplCache[_themeName][_componentName] = _markup;
     return _markup;
   },
