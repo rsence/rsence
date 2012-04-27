@@ -55,17 +55,15 @@ class ClientPkgPlugin < Servlet
   end
   
   def rebuild_client
-    while @build_busy
-      puts "-- build busy, sleeping.. --"
-      sleep 0.1
-    end
     @build_busy = true
-    @last_change = Time.now.to_i
+    next_change=Time.now.to_f
     @client_build.setup_dirs
-    @client_build.run
-    @client_cache = ClientPkgCache.new
-    @client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
+    @client_build.run( next_change )
+    client_cache = ClientPkgCache.new
+    client_cache.set_cache( @client_build.js, @client_build.gz, @client_build.themes )
+    @client_cache = client_cache
     RSence.plugin_manager.incr! if RSence.config[:transporter_conf][:client_autoreload]
+    @last_change = next_change
     @build_busy = false
   end
   
@@ -79,7 +77,7 @@ class ClientPkgPlugin < Servlet
         Thread.pass
         while true
           begin
-            if @client_build.bundle_changes( @last_change )
+            if not @build_busy and @client_build.bundle_changes( @last_change )
               rebuild_client
               puts "Autobuilt."
               if RSence.args[:say]

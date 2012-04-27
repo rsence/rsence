@@ -69,7 +69,7 @@ module ArgvUtil
             elsif arg == '--disable-obfuscation'
               @args[:client_pkg_no_obfuscation] = true
             elsif arg == '--disable-jsmin'
-              @args[:client_pkg_no_whitespace_removel] = true
+              @args[:client_pkg_no_whitespace_removal] = true
             elsif arg == '--build-report'
               @args[:suppress_build_messages] = false
             else

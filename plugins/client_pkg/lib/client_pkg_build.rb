@@ -7,7 +7,7 @@
  ##
 
 
-require 'jsminc'
+require 'jsmin_c'
 require 'jscompress'
 require 'html_min'
 begin
@@ -69,65 +69,110 @@ class ClientPkgBuild
     return [html_data, gz_html]
   end
   
-  def read_gfx( src_path_theme, tgt_hash_gfx )
+  def read_gfx( src_path_theme, theme_newest )
     gfx_size = 0
+    gfx_data = {}
     src_files_gfx_path = File.join( src_path_theme, 'gfx' )
     [ src_path_theme, src_files_gfx_path ].each do |src_files_gfx|
       if File.exist?( src_files_gfx )
         Dir.entries( src_files_gfx ).each do |src_gfx_filename|
           src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
           if @gfx_formats.include?( src_file_gfx[-4..-1] )
-            tgt_hash_gfx[src_gfx_filename] = read_file( src_file_gfx )
-            gfx_size += File.stat( src_file_gfx ).size
+            fstat = File.stat( src_file_gfx )
+            theme_newest = fstat.mtime.to_f if fstat.mtime.to_f > theme_newest
+            gfx_size += fstat.size
+            gfx_data[src_gfx_filename] = read_file( src_file_gfx )
           end
         end
       end
     end
-    return gfx_size
+    return [ gfx_size, gfx_data, theme_newest ]
   end
   
   # processes theme-related files
   def read_theme( bundle_dir, bundle_name )
+    time_start = Time.now.to_f
     @theme_names.each do |theme_name|
-      @theme_sizes[ theme_name ] = {
-        :css  => [0,0],
-        :html => [0,0],
-        :gfx  => 0
-      } unless @theme_sizes.has_key?( theme_name )
-      tgt_hash_theme = @themes[theme_name]
       src_path_theme = File.join( bundle_dir, 'themes', theme_name )
-      [ File.join( src_path_theme, bundle_name+'.css' ),
-        File.join( src_path_theme, 'css', bundle_name+'.css' )
-      ].each do |src_file_css|
-        if File.exist?( src_file_css )
-          ( css_data, gz_css ) = read_css( src_file_css )
-          tgt_hash_theme[:css][bundle_name] = {
-            :data => css_data,
-            :gzip => gz_css
-          }
-          @theme_sizes[   theme_name ][:css][0] += File.stat( src_file_css ).size
-          @theme_sizes[   theme_name ][:css][1] += css_data.bytesize
-          @css_by_theme[  theme_name ][ bundle_name ] = css_data
-        end
+      if @src_cache[:theme_timestamp].has_key?(src_path_theme)
+        theme_newest = @src_cache[:theme_timestamp][src_path_theme]
+      else
+        theme_newest = 0
       end
-      [ File.join( src_path_theme, bundle_name+'.html' ),
-        File.join( src_path_theme, 'html', bundle_name+'.html' )
-      ].each do |src_file_html|
-        if File.exist?( src_file_html )
-          ( html_data, gz_html ) = read_html( src_file_html )
-          tgt_hash_theme[:html][bundle_name] = {
-            :data => html_data,
-            :gzip => gz_html
-          }
-          @theme_sizes[   theme_name ][:html][0] += File.stat( src_file_html ).size
-          @theme_sizes[   theme_name ][:html][1] += html_data.bytesize
-          @html_by_theme[ theme_name ][ bundle_name ] = html_data
+      if theme_newest == 0 or find_newer( src_path_theme, theme_newest )
+        theme_css = { :data => '' }
+        theme_html = { :data => '' }
+        theme_size = {
+          :css => [0,0],
+          :html => [0,0],
+          :gfx => 0
+        }
+        [ File.join( src_path_theme, bundle_name+'.css' ),
+          File.join( src_path_theme, 'css', bundle_name+'.css' )
+        ].each do |src_file_css|
+          if File.exist?( src_file_css )
+            fstat = File.stat( src_file_css )
+            theme_newest = fstat.mtime.to_f if fstat.mtime.to_f > theme_newest
+            ( css_data, gz_css ) = read_css( src_file_css )
+            theme_css = { :data => css_data, :gzip => gz_css }
+            theme_size[:css][0] += fstat.size
+            theme_size[:css][1] += css_data.bytesize
+            break
+          end
         end
+        [ File.join( src_path_theme, bundle_name+'.html' ),
+          File.join( src_path_theme, 'html', bundle_name+'.html' )
+        ].each do |src_file_html|
+          if File.exist?( src_file_html )
+            fstat = File.stat( src_file_html )
+            theme_newest = fstat.mtime.to_f if fstat.mtime.to_f > theme_newest
+            ( html_data, gz_html ) = read_html( src_file_html )
+            theme_html = { :data => html_data, :gzip => gz_html }
+            theme_size[:html][0] += fstat.size
+            theme_size[:html][1] += html_data.bytesize
+            break
+          end
+        end
+        ( gfx_size, theme_gfx, theme_newest ) = read_gfx( src_path_theme, theme_newest )
+        theme_size[:gfx] += gfx_size
+        @src_cache[:theme_timestamp][src_path_theme] = theme_newest
+        @src_cache[:theme_data][src_path_theme] = {} unless @src_cache[:theme_data].has_key?(src_path_theme)
+        @src_cache[:theme_data][src_path_theme][:size] = theme_size
+        @src_cache[:theme_data][src_path_theme][:data] = {
+          :css => theme_css,
+          :html => theme_html,
+          :gfx => theme_gfx
+        }
+      else
+        theme_size = @src_cache[:theme_data][src_path_theme][:size]
+        tc = @src_cache[:theme_data][src_path_theme][:data]
+        theme_css = tc[:css]
+        theme_html = tc[:html]
+        theme_gfx = tc[:gfx]
       end
-      tgt_hash_gfx = tgt_hash_theme[:gfx]
-      gfx_size = read_gfx( src_path_theme, tgt_hash_gfx )
-      @theme_sizes[   theme_name ][:gfx] += gfx_size
+      @html_by_theme[theme_name][bundle_name] = theme_html[:data]
+      @css_by_theme[theme_name][bundle_name] = theme_css[:data]
+      th = @themes[theme_name]
+      th[:css][bundle_name] = theme_css
+      th[:html][bundle_name] = theme_html
+      th[:gfx].merge!(theme_gfx)
+      unless @theme_sizes.has_key?( theme_name )
+        @theme_sizes[ theme_name ] = {
+          :css => [0,0],
+          :html => [0,0],
+          :gfx => 0
+        }
+      end
+      ts = @theme_sizes[theme_name]
+      ts[:css][0] += theme_size[:css][0]
+      ts[:css][1] += theme_size[:css][1]
+      ts[:html][0] += theme_size[:html][0]
+      ts[:html][1] += theme_size[:html][1]
+      ts[:gfx] += theme_size[:gfx]
+
     end
+
+    @theme_time += (Time.now.to_f - time_start)
   end
   
   def add_bundle( bundle_name, bundle_path, entries, has_js=false, has_coffee=false )
@@ -144,45 +189,74 @@ class ClientPkgBuild
       return true
     end
     if has_coffee and @coffee_supported
-      begin
-        coffee_start = Time.new.to_f
-        coffee_path = File.join( bundle_path, bundle_name+'.coffee' )
-        coffee_timestamp = File.stat( coffee_path ).mtime.to_i
-        has_cache_compiled = @coffee_cache[:path_compiled].has_key?( coffee_path )
-        has_cache_timestamp = @coffee_cache[:path_timestamp].has_key?( coffee_path )
-        has_cache_entry = has_cache_compiled and has_cache_timestamp
-        has_cached = ( has_cache_entry and ( @coffee_cache[:path_timestamp][coffee_path] == coffee_timestamp ) )
-        if has_cached
-          js_data = @coffee_cache[:path_compiled][coffee_path]
-        else
-          coffee_src = read_file( coffee_path )
-          js_data = CoffeeScript.compile( coffee_src, :bare => true )
-          @coffee_cache[:path_timestamp][coffee_path] = coffee_timestamp
-          @coffee_cache[:path_compiled][coffee_path] = js_data
-        end
-        @coffee_time += ( Time.new.to_f - coffee_start )
-      rescue CoffeeScript::CompilationError
-        if has_js
-          js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}, using the js variant instead." );}
-          js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
-        else
-          js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{coffee_path}" );}
-        end
-      end
+      src_path = File.join( bundle_path, bundle_name+'.coffee' )
+      is_coffee = true
     elsif not has_js
-      js_data = %{console.log( "ERROR: CoffeeScript not suuported and no JS source available for #{bundle_path}" );}
+      src_path = false
     else
-      js_data = read_file( File.join( bundle_path, bundle_name+'.js' ) )
+      src_path = File.join( bundle_path, bundle_name+'.js' )
+      is_coffee = false
+    end
+    if src_path
+      src_timestamp = File.stat( src_path ).mtime.to_i
+      src_cache_compiled = @src_cache[:path_compiled].has_key?( src_path )
+      src_cache_timestamp = @src_cache[:path_timestamp].has_key?( src_path )
+      src_cache_entry = src_cache_compiled and src_cache_timestamp
+      src_cached = ( src_cache_entry and ( @src_cache[:path_timestamp][src_path] == src_timestamp ) )
+      if src_cached
+        js_data = @src_cache[:path_compiled][src_path]
+        js_size = @src_cache[:orig_size][src_path]
+        min_size = js_data.bytesize
+      else
+        process_start = Time.new.to_f
+        if is_coffee
+          begin
+            coffee_src = read_file( src_path )
+            js_data = CoffeeScript.compile( coffee_src, :bare => true )
+          rescue CoffeeScript::CompilationError
+            if has_js
+              js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead." );}
+              js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
+            else
+              js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}" );}
+            end
+          end
+        else
+          js_data = read_file( src_path )
+        end
+        js_size = js_data.bytesize
+        if @debug
+          min_size = js_size
+        else
+          js_data = @jsmin.minimize( js_data ) unless @no_whitespace_removal
+          min_size = js_data.bytesize
+        end
+        if is_coffee
+          @coffee_time += ( Time.new.to_f - process_start )
+        else
+          @js_time += ( Time.new.to_f - process_start )
+        end
+        @src_cache[:path_timestamp][src_path] = src_timestamp
+        @src_cache[:path_compiled][src_path] = js_data
+        @src_cache[:orig_size][src_path] = js_size
+      end
+    else
+      js_data = %{console.log( "ERROR: CoffeeScript not suuported and no JS source available for #{bundle_path}" );}
+      js_size = js_data.bytesize
+      min_size = js_size
+      src_timestamp = 0
     end
     @bundles_found[ bundle_name ] = {
       :path => bundle_path,
       :js_data => js_data,
-      :js_size => js_data.bytesize,
-      :has_themes => has_themes
+      :js_size => min_size,
+      :orig_size => js_size,
+      :has_themes => has_themes,
+      :src_timestamp => src_timestamp
     }
-    if has_themes
-      read_theme( bundle_path, bundle_name )
-    end
+    
+    read_theme( bundle_path, bundle_name ) if has_themes
+
     return true
   end
   
@@ -229,9 +303,10 @@ class ClientPkgBuild
       @logger.log(  '' )
       @logger.log(  "Client package build report.......................#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" )
       @logger.log(  '' )
-      @logger.log(  "JS Package....................:  Original |   Minimized |  Compressed" )
+      @logger.log(  "JS Package....................:    Source |   Minimized |   GNUZipped" )
       @logger.log(  "                              :           |             |" )
     end
+    @package_origsizes = {}
     @destination_files.each_key do | package_name |
       jsc_data = process_js( @destination_files[package_name] )
       @js[package_name] = jsc_data
@@ -240,7 +315,8 @@ class ClientPkgBuild
         @gz[package_name] = gz_data
       end
       unless @quiet
-        js_size  = @destination_files[ package_name ].bytesize
+        js_size  = @destination_origsize[package_name] #@destination_files[ package_name ].bytesize
+        @package_origsizes[package_name] = js_size
         jsc_size = jsc_data.bytesize
         if @no_gzip
           gz_size  = -1
@@ -255,21 +331,22 @@ class ClientPkgBuild
   def squeeze( js, is_coffee=false )
     unless @no_whitespace_removal
       begin
-        # js = @jsmin.minimize( js )#.strip
-        js = JSMinC.minify( js )
+        js = @jsmin.minimize( js ).strip
+        # js = JSMinC.minify( js )
       rescue IndexError => e
         warn "js can't get smaller using js; just ignoring jsmin"
       end
     end
     unless @no_obfuscation
       begin
-        @jscompress.build_indexes( js )
+        ## Not creating new indexes on the fly, to save some speed
+        # @jscompress.build_indexes( js )
         js = @jscompress.compress( js )
       rescue
         warn "jscompress failed squeeze; just ignoring jscompress"
       end
     end
-    return js.strip
+    return js
   end
 
   def coffee( src )
@@ -294,17 +371,16 @@ class ClientPkgBuild
       return src_in
     else
       src_out = src_in
-      # src_out = @jsmin.minimize( src_out ) unless @no_whitespace_removal
-      src_out = JSMinC.minify( src_out ) unless @no_whitespace_removal
       src_out = pre_convert( src_out ) unless @no_obfuscation
-      return src_out.strip
+      return src_out
     end
   end
   
   def build_themes
+    time_start = Time.now.to_f
     unless @quiet
       @logger.log(  '' )
-      @logger.log(  "Theme name and part...........:  Original |   Minimized |  Compressed" )
+      @logger.log(  "Theme name and part...........:    Source |   Minimized |   GNUZipped" )
       @logger.log(  "                              :           |             |" )
     end
     # compile "all-in-one" css and html resources
@@ -313,6 +389,7 @@ class ClientPkgBuild
       css_templates  = @css_by_theme[  theme_name ]
       theme_css_template_data = css_templates.values.join("\n")
       theme_html_js_arr = []
+      theme_html_js_arr.push "(function(){"
       theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]=#{html_templates.to_json}; "
       theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json});"
       theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json});"
@@ -323,7 +400,10 @@ class ClientPkgBuild
           _this.useCSS(#{theme_css_template_data.to_json});
         } );
       }
-      theme_html_js = process_js( theme_html_js_arr.join('') )
+      theme_html_js_arr.push "})();"
+      theme_html_js = theme_html_js_arr.join("\n")
+      @package_origsizes[theme_name+'_theme'] = theme_html_js.bytesize
+      theme_html_js = process_js( theme_html_js )
       @js[theme_name+'_theme'] = theme_html_js
       unless @no_gzip
         theme_html_gz = gzip_string( @js[theme_name+'_theme'] )
@@ -342,47 +422,48 @@ class ClientPkgBuild
       end
       unless @quiet
         print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.bytesize )
-        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], -1, -1 )
+        print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], @theme_sizes[theme_name][:gfx], @theme_sizes[theme_name][:gfx] )
         @logger.log( '' )
       end
     end
+    @theme_time += (Time.now.to_f - time_start)
   end
   
   def build_compound_packages
+    time_start = Time.now.to_f
     unless @quiet
       @logger.log(  '' )
-      @logger.log(  "Compound package..............:  Original |   Minimized |  Compressed" )
+      @logger.log(  "Compound package..............:    Source |   Minimized |   GNUZipped" )
       @logger.log(  "                              :           |             |" )
     end
     @compound_config.each do |pkg_name, js_order|
+      js_size = 0
       pkg_parts = []
       js_order.each do |js_pkg|
         pkg_part = @js[ js_pkg ]
         pkg_parts.push( pkg_part )
+        js_size += ( @package_origsizes[ js_pkg ] or @destination_origsize[ js_pkg ] )
       end
-      js_src = pkg_parts.join('')
+      js_src = pkg_parts.join("\n")
       @js[ pkg_name ] = js_src
       unless @no_gzip
         gz_data = gzip_string( js_src )
         @gz[ pkg_name ] = gz_data
       end
       unless @quiet
-        js_size  = js_src.bytesize
+        jsc_size  = js_src.bytesize
         if @no_gzip
           gz_size  = -1
         else
           gz_size  = gz_data.bytesize
         end
-        print_stat( pkg_name, js_size, -1, gz_size )
+        print_stat( pkg_name, js_size, jsc_size, gz_size )
       end
     end
+    @js_time += (Time.now.to_f - time_start)
   end
 
-  def run
-    
-    time_start = Time.now.to_f*10000
-    @coffee_time = 0
-    
+  def reset_structures
     # hash of bundles per bundle name per theme; @html_by_theme[theme_name][bundle_name] = bundle_data
     @html_by_theme = {}
     @css_by_theme  = {}
@@ -401,33 +482,60 @@ class ClientPkgBuild
     end
     @bundles_found = {} # populated by add_bundle
     @conversion_stats = {} # populated by add_hints
+  end
+
+  def traverse_bundles
     src_dirs = @src_dirs.clone
     src_dirs.each do | src_dir |
       find_bundles( src_dir )
     end
+  end
+
+  def compose_destinations
     @destination_files = {} # rename to package_products
+    @destination_origsize = {}
     @package_names.each do |package_name|
       @packages[package_name].each do |bundle_name|
         if @bundles_found.has_key?( bundle_name )
           @destination_files[ package_name ] = [] unless @destination_files.has_key?( package_name )
           @destination_files[ package_name ].push( @bundles_found[bundle_name][:js_data] )
+          @destination_origsize[ package_name ] = 0 unless @destination_origsize.has_key?( package_name )
+          @destination_origsize[ package_name ] += @bundles_found[bundle_name][:orig_size]
         end
       end
     end
     @destination_files.each do | package_name, package_array |
-      package_data = package_array.join('')
+      package_data = package_array.join("\n")
       @destination_files[ package_name ] = package_data
     end
+  end
+
+  def run( last_change=0 )
+
+    time_start = Time.now.to_f*10000
+    @coffee_time = 0
+    @js_time = 0
+    @theme_time = 0
+    @last_change = last_change
+
+    reset_structures
     
+    traverse_bundles
+
+    compose_destinations
+
     build_indexes
-    build_themes
+
     minimize_data
+    build_themes
     build_compound_packages
     
     ms_taken = ((Time.now.to_f*10000)-time_start).round/10.0
+    js_taken = (@js_time*10000).round/10.0
     coffee_taken = (@coffee_time*10000).round/10.0
-    without_coffee = ((ms_taken - coffee_taken)*10).round/10.0
-    @logger.log( "Time taken:\n .coffee: #{coffee_taken}ms\n  other:  #{without_coffee}ms\n  total:  #{ms_taken}ms\n\n" )
+    themes_taken = (@theme_time*10000).round/10.0
+    other_taken = ((ms_taken - coffee_taken - js_taken - themes_taken)*10).round/10.0
+    @logger.log( "\nTime taken:\n     js:  #{js_taken}ms\n coffee:  #{coffee_taken}ms\n themes:  #{themes_taken}ms\n  other:  #{other_taken}ms\n  total:  #{ms_taken}ms\n\n" )
     
   end
   
@@ -548,9 +656,12 @@ class ClientPkgBuild
   def initialize( config, logger )
     
     @coffee_supported = config[:coffee_supported]
-    @coffee_cache = {
+    @src_cache = {
       :path_timestamp => {},
-      :path_compiled => {}
+      :path_compiled => {},
+      :orig_size => {},
+      :theme_timestamp => {},
+      :theme_data => {}
     }
 
     @logger = logger
@@ -584,7 +695,7 @@ class ClientPkgBuild
     @html_min = HTMLMin.new
     
     # JSMin removes js white-space (makes the source shorter)
-    # @jsmin = JSMin.new
+    @jsmin = JSMin.new
     
     # makes sure the specified dirs are ok
     return if not setup_dirs
@@ -611,7 +722,7 @@ class ClientPkgBuild
     @compound_config = config[:compound_packages]
   end
   
-  def find_newer( src_dir, newer_than )
+  def find_newer( src_dir, newer_than, quiet=false )
    if File.exist?( src_dir ) and File.directory?( src_dir )
      Dir.entries( src_dir ).each do | dir_entry |
        next if dir_entry[0].chr == '.'
@@ -620,7 +731,7 @@ class ClientPkgBuild
          return true if find_newer( sub_dir, newer_than )
        else
          if newer_than < File.stat( sub_dir ).mtime.to_i
-           @logger.log( "File changed: #{sub_dir}" )
+           @logger.log( "File changed: #{sub_dir}" ) unless quiet
            return true
          end
        end
