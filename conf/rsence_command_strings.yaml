@@ -39,7 +39,7 @@
   :plugin_directory_not_a_directory: |
     Plugin directory not a directory, expected:
       <%%= plugin_path.inspect %>
-  :warn_no_plugin_directory_in_project: |
+  :warn_no_directory_creating: |
     Warning! No <%%= dir_name %> directory in project, creating:
       <%%= dir_path.inspect %>
   :invalid_environment: |
