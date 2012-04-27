@@ -459,13 +459,16 @@ ELEM = HClass.extend
   ###
   _getAttrDirect: (_id, _key)->
     _elem = @_elements[_id]
-    _elem[_key]
+    _attr = _elem[_key]
+    return _attr if _attr? and _attr != null
+    return _elem.getAttribute(_key)
 
   ###
   Gets a named element attribute from the cache or selectively direct
   ###
   getAttr: (_id, _key, _noCache)->
-    return null if not @_attrCache[_id]?
+    return null unless @_attrCache[_id]?
+    _key = 'className' if _key == 'class'
     _val = @_attrCache[_id][_key]
     if _noCache or not _val?
       _val = @_getAttrDirect( _id, _key )
@@ -582,7 +585,10 @@ ELEM = HClass.extend
   IE version of _setElementStyle
   ###
   _setElementStyleIE: (_elem, _key, _value)->
-    _elem.style[@_camelize(_key)] = _value
+    try
+      _elem.style[@_camelize(_key)] = _value
+    catch e
+      console.log('ie setstyle error:'+_key+', '+_value+', '+e)
     if BROWSER_TYPE.ie6
       unless iefix._traverseStyleProperties.indexOf(_key) == -1
         @_ieFixesNeeded = true
@@ -595,7 +601,7 @@ ELEM = HClass.extend
     return null unless @_elements[_id]? # item is deleted
     if _id == undefined
       console.log('ERROR; undefined id in ELEM#setStyle(',_id, _key, _value, _noCache,')')
-    _noCache = true if BROWSER_TYPE.ie9
+    # _noCache = true if BROWSER_TYPE.ie9
     try
       _cached = @_styleCache[_id]
     catch e
@@ -662,8 +668,11 @@ ELEM = HClass.extend
   _getComputedStyleIE: (_elem, _key)->
     return _elem.clientWidth if _key == 'width'
     return _elem.clientHeight if _key == 'height'
-    _elem.currentStyle[@_camelize(_key)]
-  
+    if _elem.currentStyle?
+      return _elem.currentStyle[@_camelize(_key)]
+    else
+      return _elem.style[@_camelize(_key)]
+
   ###
   Gets the named element style attribute value.
   ###
