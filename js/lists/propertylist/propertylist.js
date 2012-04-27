@@ -69,7 +69,7 @@ HPropertyList = HControl.extend({
   drawSubviews: function(){
     
     var borderAndBg = ELEM.make(this.elemId);
-    ELEM.setCSS(borderAndBg,'position:absolute;left:0;top:0;right:0;bottom:0;background-color:#e6e6e6;border:1px solid #999;');
+    ELEM.setCSS(borderAndBg,'position:absolute;left:0;top:0;right:0;bottom:0;background-color:#e6e6e6;border:1px solid #999999;');
     
     this.markupElemIds = {
       bg: borderAndBg
@@ -131,7 +131,9 @@ HPropertyList = HControl.extend({
     this.keyColumn = HView.nu(
       [ 0, 0, this.keyColumnRight(), 24 ],
       this.contentView, {
-        style: [ [ 'border-right', '1px solid #999' ] ]
+        style: {
+          borderRight: '1px solid #999'
+        }
       }
     );
     
@@ -140,7 +142,9 @@ HPropertyList = HControl.extend({
       this.typeColumn = HView.nu(
         [ this.typeColumnLeft(), 0, 60, 24 ],
         this.contentView, {
-          style: [ [ 'border-right', '1px solid #999' ] ]
+          style: {
+            borderRight: '1px solid #999'
+          }
         }
       );
     }
@@ -160,13 +164,13 @@ HPropertyList = HControl.extend({
           [ 0, 0, this.parent.keyColumnRight(), 24 ],
           this, {
             html: '<b>Key</b>',
-            style: [
-              [ 'text-align', 'middle' ],
-              [ 'text-indent', '16px' ],
-              [ 'line-height', '24px' ],
-              [ 'font-size', '13px' ],
-              [ 'border-right', '3px double #999' ]
-            ]
+            style: {
+              verticalAlign: 'middle',
+              textIndent: '16px',
+              lineHeight: '24px',
+              fontSize: '13px',
+              borderRight: '3px double #999999'
+            }
           }
         );
         if(!this.parent.options.hideTypeColumn){
@@ -174,14 +178,14 @@ HPropertyList = HControl.extend({
             [ this.parent.typeColumnLeft(), 0, 60, 24 ],
             this, {
               html: '<b>Type</b>',
-              style: [
-                [ 'text-align', 'middle' ],
-                [ 'text-indent', '8px' ],
-                [ 'line-height', '24px' ],
-                [ 'font-size', '13px' ],
-                [ 'padding-right', '1px' ],
-                [ 'border-right', '1px solid #999' ]
-              ]
+              style: {
+                verticalAlign: 'middle',
+                textIndent: '8px',
+                lineHeight: '24px',
+                fontSize: '13px',
+                paddingRight: '1px',
+                borderRight: '1px solid #999999'
+              }
             }
           );
         }
@@ -189,19 +193,19 @@ HPropertyList = HControl.extend({
           [ this.parent.valueColumnLeft(), 0, 80, 24, 0, null ],
           this, {
             html: '<b>Value</b>',
-            style: [
-              [ 'text-align', 'middle' ],
-              [ 'text-indent', '8px' ],
-              [ 'line-height', '24px' ],
-              [ 'font-size', '13px' ]
-            ]
+            style: {
+              verticalAlign: 'middle',
+              textIndent: '8px',
+              lineHeight: '24px',
+              fontSize: '13px'
+            }
           }
         );
       }
     }).nu(
       [ 0, 0, null, 24, 0, null ],
       this, {
-        style: [ [ 'border-bottom', '1px solid #999' ] ]
+        style: { borderBottom: '1px solid #999' }
       }
     );
     
@@ -231,8 +235,8 @@ HPropertyList = HControl.extend({
         keyColumn = parent.keyColumn,
         keyLabel  = parent.header.keyLabel,
         keyRight  = parent.keyColumnRight();
-        keyColumn.rect.setRight( keyRight ); 
-        keyLabel.rect.setRight(  keyRight ); 
+        keyColumn.rect.setRight( keyRight );
+        keyLabel.rect.setRight(  keyRight );
         
         var
         valueColumn = parent.valueColumn,
@@ -275,9 +279,7 @@ HPropertyList = HControl.extend({
       [ this.keyColumnRight(), 0, 5, 25 ],
       this, {
         events: { draggable: true },
-        style: [
-          [ 'cursor', 'ew-resize' ]
-        ]
+        style: { cursor: 'ew-resize' }
       }
     );
     
@@ -452,7 +454,7 @@ HPropertyList = HControl.extend({
   },
   
   // Row separator style
-  rowSeparatorStyle: "position:absolute;left:1px;right:1px;font-size:0px;height:1px;overflow:hidden;border-bottom:1px solid #999;",
+  rowSeparatorStyle: "position:absolute;left:1px;right:1px;font-size:0px;height:1px;overflow:hidden;border-bottom:1px solid #999999;",
   
   // Adds row separator
   addRowSeparator: function( token, i, even ){
