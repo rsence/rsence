@@ -81,7 +81,7 @@ COMM.Queue = HApplication.extend({
     _errorText = [
       _strs.ERR_PREFIX,
       _strs.JS_EXEC_FAIL,
-      _item.toString(),
+      _exception.name+'->'+_exception.message,
       _strs.REASON,
       _exception
     ].join('');
