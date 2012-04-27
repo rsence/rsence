@@ -541,6 +541,8 @@ HView = HClass.extend({
   **/
   _makeElem: function(_parentElemId){
     this.elemId = ELEM.make(_parentElemId,'div');
+    ELEM.setAttr( this.elemId, 'view_id', this.viewId );
+    ELEM.setAttr( this.elemId, 'elem_id', this.elemId );
   },
   
 /** --
@@ -613,10 +615,10 @@ HView = HClass.extend({
   *
   **/
   drawRect: function() {
-    if(!this.rect.isValid){
+    if(!this.rect.isValid && !this.isProduction){
       console.log('invalid rect:',this.rect);//,ELEM.get(this.elemId));
     }
-    if(!this.parent){
+    if(!this.parent && !this.isProduction){
       console.log('no parent:',ELEM.get(this.elemId));
     }
     if (this.parent && this.rect.isValid) {
@@ -759,7 +761,7 @@ HView = HClass.extend({
       _themeName = HThemeManager.currentTheme;
     }
     _markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath );
-    if(_markup === false){
+    if(_markup === false && !this.isProduction){
       console.log('Warning: Markup template for "'+this.componentName+'" using theme "'+_themeName+'" not loaded.');
     }
     this.markup = _markup;
@@ -929,7 +931,7 @@ HView = HClass.extend({
       this.minWidth = _minWidth;
       ELEM.setStyle( this.elemId, 'min-width', this.minWidth+'px', true);
     }
-    else {
+    else if ( !this.isProduction) {
       console.log('warning: setMinWidth( '+(typeof _minWidth)+' '+_minWidth+' ) should be a number; value ignored!');
     }
   },
@@ -939,7 +941,7 @@ HView = HClass.extend({
       this.minHeight = _minHeight;
       ELEM.setStyle( this.elemId, 'min-height', this.minHeight+'px', true);
     }
-    else {
+    else if ( !this.isProduction) {
       console.log('warning: setMinHeight( '+(typeof _minHeight)+' '+_minHeight+' ) should be a number; value ignored!');
     }
   },
@@ -991,13 +993,15 @@ HView = HClass.extend({
           _parentHeight = _parentSize[1];
         }
         
-        if( (!_validLeftOffset && !_validRightOffset) ||
-            (!_validTopOffset && !_validBottomOffset) ){
-          console.log(_throwPrefix + '(left or top) and (top or bottom) must be specified.');
-        }
-        else if( (!_validWidth   && !(_validLeftOffset && _validRightOffset)) ||
-                 (!_validHeight  && !(_validTopOffset  && _validBottomOffset)) ){
-          console.log(_throwPrefix + 'the (height or width) must be specified unless both (left and top) or (top and bottom) are specified.');
+        if( !this.isProduction ){
+          if( (!_validLeftOffset && !_validRightOffset) ||
+              (!_validTopOffset && !_validBottomOffset) ){
+            console.log(_throwPrefix + '(left or top) and (top or bottom) must be specified.');
+          }
+          else if( (!_validWidth   && !(_validLeftOffset && _validRightOffset)) ||
+                   (!_validHeight  && !(_validTopOffset  && _validBottomOffset)) ){
+            console.log(_throwPrefix + 'the (height or width) must be specified unless both (left and top) or (top and bottom) are specified.');
+          }
         }
         
         if(_validLeftOffset && _validWidth && !_validRightOffset){
@@ -1012,24 +1016,28 @@ HView = HClass.extend({
           _right = _parentWidth - _rightOffset;
           if( _validWidth ){
             this.setMinWidth( _width );
-            if( _right - _leftOffset < _width ){
+            if( _parentWidth - _leftOffset < _width ){
+              if( !this.isProduction ){
+                console.log('warning: the minWidth('+
+                  _width+
+                  ') is less than available width('+
+                  (_parentWidth-_leftOffset-_rightOffset)+
+                  '); right ('+_right+') yields to: '+_leftOffset+_width+'!');
+              }
               _right = _leftOffset+_width;
-              console.log('warning: the min-width('+
-                _width+
-                ') is less than available width('+
-                (_parentWidth-_leftOffset-_rightOffset)+
-                '). flexRightOffset yields to: '+_right+'!');
             }
           }
           else if ( _right < _leftOffset ) {
-            console.log('warning: there is not enough width ('+
-              _parentWidth+') to fit flexRightOffset ('+
-              _rightOffset+
-              ') and left ('+
-              _leftOffset+
-              '). right yields to ('+
-              _leftOffset+') and flexRightOffset yields to ('+
-              (_parentWidth-_leftOffset)+')!');
+            if( !this.isProduction ){
+              console.log('warning: there is not enough width ('+
+                _parentWidth+') to fit flexRightOffset ('+
+                _rightOffset+
+                ') and left ('+
+                _leftOffset+
+                '). right yields to ('+
+                _leftOffset+') and flexRightOffset yields to ('+
+                (_parentWidth-_leftOffset)+')!');
+            }
             _rightOffset = _parentWidth-_leftOffset;
             _right = _leftOffset;
           }
@@ -1047,24 +1055,28 @@ HView = HClass.extend({
           _bottom = _parentHeight - _bottomOffset;
           if( _validHeight ){
             this.setMinHeight( _height );
-            if( _bottom - _topOffset < _height ){
+            if( _parentHeight - _topOffset < _height ){
+              if( !this.isProduction ){
+                console.log('warning: the minHeight('+
+                  _height+
+                  ') is less than available height('+
+                  (_parentHeight-_topOffset-_bottom)+
+                  '). bottom('+_bottom+') yields: '+(_topOffset + _height)+'!');
+              }
               _bottom = _topOffset + _height;
-              console.log('warning: the min-height('+
-                _height+
-                ') is less than available width('+
-                (_parentHeight-_topOffset-_bottomOffset)+
-                '). flexBottomOffset yields to: '+_bottom+'!');
             }
           }
           else if ( _bottom < _topOffset ) {
-            console.log('warning: there is not enough height ('+
-              _parentHeight+') to fit flexBottomOffset ('+
-              _bottom+
-              ') and bottom ('+
-              _bottomOffset+
-              '). bottom yields to ('+
-              _topOffset+') and flexBottomOffset yields to ('+
-              (_parentHeight-_topOffset)+')!');
+            if( !this.isProduction ){
+              console.log('warning: there is not enough height ('+
+                _parentHeight+') to fit flexBottomOffset ('+
+                _bottom+
+                ') and bottom ('+
+                _bottomOffset+
+                ') bottom yields to ('+
+                _topOffset+') and flexBottomOffset yields to ('+
+                (_parentHeight-_topOffset)+')!');
+            }
             _bottomOffset = _parentHeight-_topOffset;
             _bottom = _topOffset;
           }
@@ -1082,7 +1094,7 @@ HView = HClass.extend({
         this.setFlexRight(_validRightOffset,_rightOffset);
         this.setFlexBottom(_validBottomOffset,_bottomOffset);
         this.rect = HRect.nu(_leftOffset,_topOffset,_right,_bottom);
-        if(!this.rect.isValid){
+        if(!this.rect.isValid && !this.isProduction){
           console.log('---------------------------------------------');
           console.log('invalid rect:', this.rect.left, ',', this.rect.top, ',', this.rect.width, ',', this.rect.height, ',', this.rect.right, ',', this.rect.bottom );
           console.log(' parent size:', this.parentSize() );
@@ -1091,7 +1103,7 @@ HView = HClass.extend({
         }
         
       }
-      else {
+      else if (!this.isProduction){
         console.log(_throwPrefix + 'the length has to be either 4 or 6.');
       }
     }
@@ -1131,7 +1143,7 @@ HView = HClass.extend({
     else if(_stylesObjType==='h'){
       this.setStylesHash(_styles);
     }
-    else {
+    else if (!this.isProduction){
       console.log('HView#setStyles: Invalid data, expected array or hash; type: '+h+', data:',_styles);
     }
     return this;
@@ -1192,10 +1204,10 @@ HView = HClass.extend({
   **/
   setStyleOfPart: function(_partName, _name, _value, _force) {
     if (!this['markupElemIds']){
-      console.log('Warning, setStyleOfPart: no markupElemIds');
+      !this.isProduction && console.log('Warning, setStyleOfPart: no markupElemIds');
     }
     else if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
       ELEM.setStyle(this.markupElemIds[_partName], _name, _value, _force);
@@ -1217,7 +1229,7 @@ HView = HClass.extend({
   **/
   styleOfPart: function(_partName, _name, _force) {
     if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
     return ELEM.getStyle(this.markupElemIds[_partName], _name, _force);
@@ -1237,7 +1249,7 @@ HView = HClass.extend({
   **/
   setMarkupOfPart: function( _partName, _value ) {
     if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
       ELEM.setHTML( this.markupElemIds[_partName], _value );
@@ -1258,7 +1270,7 @@ HView = HClass.extend({
   **/
   markupOfPart: function(_partName) {
     if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
     return ELEM.getHTML(this.markupElemIds[_partName]);
@@ -1312,7 +1324,7 @@ HView = HClass.extend({
   **/
   setAttrOfPart: function( _partName, _key, _value, _force ) {
     if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, setAttrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, setAttrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
       ELEM.setAttr( this.markupElemIds[_partName], _key, _value, _force );
@@ -1335,7 +1347,7 @@ HView = HClass.extend({
   **/
   attrOfPart: function(_partName, _key, _force) {
     if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, attrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, attrOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
     return ELEM.getAttr(this.markupElemIds[_partName], _key, _force);
@@ -1354,7 +1366,7 @@ HView = HClass.extend({
   **/
   elemOfPart: function(_partName) {
     if (this.markupElemIds[_partName]===undefined) {
-      console.log('Warning, elemOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
+      !this.isProduction && console.log('Warning, elemOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
     return ELEM.get( this.markupElemIds[_partName] );
@@ -1449,7 +1461,7 @@ HView = HClass.extend({
     this.stopAnimation();
     // Delete the children first.
     var _childViewId, i;
-    if(!this.views){
+    if(!this.views && !this.isProduction){
       console.log('HView#die: no subviews for component name: ',this.componentName,', self:',this);
     }
     while (this.views.length !== 0) {
