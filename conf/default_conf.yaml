@@ -83,8 +83,8 @@
     # Bind this ip address ('0.0.0.0' means all)
     :bind_address:  '127.0.0.1'
     #
-    # Rack handler to use, defaults to thin
-    :rack_require: mongrel
+    # Rack handler to use, defaults to puma
+    :rack_require: puma
   #
   # When enabled, sets http cache headers
   # to cache content as long as possible.
