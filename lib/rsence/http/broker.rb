@@ -115,16 +115,14 @@ class Broker
     puts conf.inspect if RSence.args[:debug]
 
     require rack_require
+    require 'rack/handler/puma.rb' if rack_require == 'puma'
     
     # Selects the handler for Rack
     handler = {
-      'mongrel2' => lambda { Rack::Handler::Mongrel2 },
       'webrick'  => lambda { Rack::Handler::WEBrick  },
-      'ebb'      => lambda { Rack::Handler::Ebb      },
       'thin'     => lambda { Rack::Handler::Thin     },
       'mongrel'  => lambda { Rack::Handler::Mongrel  },
-      'unicorn'  => lambda { Rack::Handler::Unicorn  },
-      'rainbows' => lambda { Rack::Handler::Rainbows }
+      'puma'     => lambda { Rack::Handler::Puma     }
     }[rack_require].call
     handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
   end
