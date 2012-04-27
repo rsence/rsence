@@ -51,7 +51,7 @@ HWindow = HDynControl.extend({
   * +resizeSE+::  The size of the south-east (right bottom) resizable corner.
   *               Defaults to +[ 16, 16 ]+
   * +noResize+::  A flag (when true) disables all resizing and only allows
-  *               moving.
+  *               moving. Does not disable the (-) and (+) buttons.
   * +fullWindowMove+:: A flag (when true) enables the full HWindow area 
   *                    responds to drag events. By default it's false,
   *                    meaning only the title bar is draggable.
@@ -64,12 +64,15 @@ HWindow = HDynControl.extend({
   *                    disabled. When enabled, extend the 
   *                    HWindow#windowCollapse method, which by default
   *                    zooms the window to its +minSize+.
+  * +minimizeButton+:: An alias for +collapseButton+
   * +zoomButton+:: A flag (when true) enables the zoom (or maximize)
   *                button of the HWindow instance. By default it's
   *                disabled. When enabled, extend the 
   *                HWindow#windowZoom method, which by default zooms the
   *                contents of the HWindow to fit or the +maxSize+ depending
   *                on which is smaller.
+  * +resizeButton+:: An alias for +zoomButton+
+  * +maximizeButton+:: An alias for +zoomButton+
   *
   **/
   controlDefaults: (HDynControl.prototype.controlDefaults.extend({
@@ -104,7 +107,7 @@ HWindow = HDynControl.extend({
         this.resizeSW = [ 6, 6 ];
       }
       if(!this.resizeSE){
-        this.resizeSE = [ 16, 16 ];
+        this.resizeSE = [ 25, 25 ];
       }
     },
     maxX: 'auto',
@@ -117,7 +120,10 @@ HWindow = HDynControl.extend({
     fullWindowMove: false,
     closeButton: false,
     collapseButton: false,
-    zoomButton: false
+    minimizeButton: false,
+    zoomButton: false,
+    resizeButton: false,
+    maximizeButton: false
   })),
   
   draw: function(){
@@ -126,6 +132,61 @@ HWindow = HDynControl.extend({
     if(!_drawn){
       HSystem.windowFocus(this);
     }
+  },
+
+  markupElemNames: [
+    'label', 'control', 'subview', 'close', 'collapse', 'zoom', 'resize'
+  ],
+
+  refreshWidgetStates: function(){
+    if(!this.drawn){ return; }
+    var
+    _this = this,
+    _opts = _this.options,
+    _elemId, _elem,
+    // _elemId = _this.markupElemIds.zoom,
+    // _elem = ELEM.get(_elemId),
+    _enablePrefix = 'enable_', _disablePrefix = 'disable_',
+    _listenEvent = 'click',
+    _addClass, _delClass,
+    _widgets = [
+      [ 'zoom', (_this.enabled && (_opts.zoomButton || _opts.maximizeButton || _opts.resizeButton)), function(){_this.windowZoom();} ],
+      [ 'collapse', (_this.enabled && (_opts.collapseButton || _opts.minimizeButton)), function(){_this.windowCollapse();} ],
+      [ 'close', (_this.enabled && _opts.closeButton), function(){_this.windowClose();} ]
+    ],
+    _elemName, _enabled, _callback,
+    _item, i = 0;
+    for(;i<_widgets.length;i++){
+      _item = _widgets[i];
+      _elemName = _item[0];
+      _enabled = _item[1];
+      _callback = _item[2];
+      _elemId = _this.markupElemIds[_elemName];
+      _elem = ELEM.get(_elemId);
+      Event.stopObserving( _elem, _listenEvent, _callback );
+      if(_enabled){
+        Event.observe( _elem, _listenEvent, _callback );
+        _addClass = _enablePrefix+_elemName;
+        _delClass = _disablePrefix+_elemName;
+      }
+      else {
+        _delClass = _enablePrefix+_elemName;
+        _addClass = _disablePrefix+_elemName;
+      }
+      ELEM.addClassName( _elemId, _addClass );
+      ELEM.delClassName( _elemId, _delClass );
+    }
+    _this.setStyleOfPart('resize','visibility',(_opts.noResize?'hidden':'inherit'));
+  },
+
+  drawSubviews: function(){
+    this.base();
+    this.refreshWidgetStates();
+  },
+
+  setEnabled: function(_state){
+    this.base(_state);
+    this.refreshWidgetStates();
   },
   
   // -- overrides the drag rules to adapt to the !fullWindowMove as well
@@ -143,10 +204,10 @@ HWindow = HDynControl.extend({
         _opts = _this.options,
         _leftPx=_opts.resizeW;
     if(!_opts.fullWindowMove){
-      if(_opts.zoomButton){
+      if(_opts.zoomButton || _opts.maximizeButton || _opts.resizeButton){
         _leftPx = 61;
       }
-      else if(_opts.collapseButton){
+      else if(_opts.collapseButton || _opts.minimizeButton){
         _leftPx = 46;
       }
       else if(_opts.closeButton){
@@ -158,18 +219,18 @@ HWindow = HDynControl.extend({
   },
   
   maxRect: function(){
-    var _rect = this.base();
-    if(_rect[2]<this.options.minSize[0]){
-      _rect[2] = this.options.minSize[0];
+    var _rect = this.base(), _opts = this.options;
+    if(_rect[2]<_opts.minSize[0]){
+      _rect[2] = _opts.minSize[0];
     }
-    else if(_rect[2]>this.options.maxSize[0]){
-      _rect[2] = this.options.maxSize[0];
+    else if(_rect[2]>_opts.maxSize[0]){
+      _rect[2] = _opts.maxSize[0];
     }
-    if(_rect[3]<this.options.minSize[1]){
-      _rect[3] = this.options.minSize[1];
+    if(_rect[3]<_opts.minSize[1]){
+      _rect[3] = _opts.minSize[1];
     }
-    else if(_rect[3]>this.options.maxSize[1]){
-      _rect[3] = this.options.maxSize[1];
+    else if(_rect[3]>_opts.maxSize[1]){
+      _rect[3] = _opts.maxSize[1];
     }
     return _rect;
   },
@@ -204,44 +265,74 @@ HWindow = HDynControl.extend({
   windowClose: function(){
     this.die(); // extend this to this.app.die(), if your app needs to die instead of just the window
   },
+
+  setLabel: function(_label){
+    this.base(_label);
+    var
+    _labelWidth = 128 + _win.stringWidth( _win.label );
+    if(this._origMinWidth === undefined){
+      this._origMinWidth = this.options.minSize[0];
+    }
+    if(this._origMinWidth<_labelWidth){
+      this.options.minSize[0] = _labelWidth;
+    }
+    else{
+      this.options.minSize[0] = this._origMinWidth;
+    }
+    this.makeRectRules();
+  },
   
 /** This method gets called, whenever the collapse (minimize) button has 
   * been clicked
   **/
-  windowCollapse: function(){
-    if(this.options.collapseUsing){
-      this.options.collapseUsing( this );
+  windowCollapse: function(_rectOnly){
+    var
+    _win = this, _opts = _win.options;
+    if(HSystem.globalCollapseHandler && !_rectOnly && HSystem.globalCollapseHandler( _win )){
+      return;
+    }
+    if(_opts.collapseUsing && !_rectOnly){
+      _opts.collapseUsing( this );
     }
     else {
-      var _minRect = HRect.nu(
-        this.rect.leftTop,
-        this.rect.leftTop.subtract(
-          0-this.options.minSize[0],
-          0-this.options.minSize[1]
+      var
+      _labelSize = 128 + _win.stringWidth( _win.label ),
+      _minWidth = (_opts.minSize[1] > _labelSize)?_opts.minSize[0]:_labelSize,
+      _minRect = HRect.nu(
+        _win.rect.leftTop,
+        _win.rect.leftTop.subtract(
+          0-_minWidth,
+          0-_opts.minSize[1]
         )
       );
-      if(!this.rect.equals(_minRect)){
-        this.prevRect = HRect.nu(_minRect);
-        this.animateTo( _minRect );
+      if(_rectOnly){
+        return _minRect;
+      }
+      if(!_win.rect.equals(_minRect)){
+        _win.prevRect = HRect.nu(_minRect);
+        _win.animateTo( _minRect );
       }
     }
+    this.makeRectRules();
   },
   
 /** This method gets called, whenever the zoom (maximize/restore) 
   * button has been clicked
   **/
   windowZoom: function(){
-    var _maxSize = this.options.maxSize === 'auto' ? this.parentSize() : this.options.maxSize,
-        _maxRect = HRect.nu(
-          this.options.minX,
-          this.options.minY,
-          _maxSize[0],
-          _maxSize[1]
-        ),
-        _fitsRect = HRect.nu( this.rect ),
-        i = 0,
-        _views = this.views,
-        _view, _size, _right, _bottom;
+    var
+    _maxSize = this.options.maxSize === 'auto' ? this.parentSize() : this.options.maxSize,
+    _maxRect = HRect.nu(
+      this.options.minX,
+      this.options.minY,
+      _maxSize[0],
+      _maxSize[1]
+    ),
+    _fitsRect = HRect.nu( this.rect ),
+    _newRect,
+    i = 0,
+    _views = this.views,
+    _view, _size, _right, _bottom;
     for( ; i < _views.length; i++ ){
       _view = HSystem.views[_views[i]];
       _size = ELEM.getSize(_view.elemId);
@@ -267,22 +358,58 @@ HWindow = HDynControl.extend({
     else if(_fitsRect.height < this.options.minSize[1]){
       _fitsRect.setHeight( this.options.minSize[1] );
     }
+    // doesn't fit or right-clicked or alt-clicked, maximize:
     if (!_fitsRect.equals(_maxRect) && (EVENT.status[ EVENT.button2 ] || EVENT.status[ EVENT.altKeyDown ]) ){
+      // console.log('force-max');
       this.animateTo( _maxRect );
       this.prevRect = HRect.nu( this.rect );
       this.animateTo( _maxRect );
     }
-    else if(this.rect.equals(_fitsRect)){
-      if(this.prevRect !== undefined && !this.prevRect.equals(_fitsRect)){
-        this.animateTo( HRect.nu(this.prevRect) );
+    // already fits content
+    else if(this.rect.contains(_fitsRect)){
+      // restore previous
+      if(this.prevRect && !this.prevRect.equals(_fitsRect) && !this.prevRect.equals(this.windowCollapse(true))){
+        // restore previous size and position:
+        if( this.rect.equals( _maxRect ) ){
+          // console.log('restore');
+          this.animateTo( HRect.nu(this.prevRect) );
+          // this.prevRect = HRect.nu( this.rect );
+        }
+        else if( this.prevRect.equals( this.rect ) && !this.prevRect.equals(_fitsRect) ){
+          // console.log('smart-down');
+          this.animateTo( _fitsRect );
+          // this.prevRect = HRect.nu( this.rect );
+        }
+        else if( this.prevRect.equals( this.rect ) && this.prevRect.equals(_fitsRect) ){
+          // console.log('smart-max');
+          this.animateTo( _maxRect );
+          this.prevRect = HRect.nu( this.rect );
+        }
+        else{
+          // console.log('prev-size');
+          _newRect = HRect.nu( this.prevRect );
+          _newRect.offsetTo(this.rect.leftTop);
+          this.animateTo( _newRect );
+          this.prevRect = HRect.nu( _newRect );
+        }
       }
+      // restore previous size only:
+      else if( this.rect.equals( _fitsRect ) && this.prevRect && !this.prevRect.equals(this.rect) ){
+        // console.log('restore-smart');
+        this.animateTo( this.prevRect );
+        // this.prevRect = HRect.nu( this.rect );
+      }
+      // maximize
       else {
+        // console.log('max');
         this.prevRect = HRect.nu( this.rect );
         this.animateTo( _maxRect );
       }
     }
+    // smart-resize to fit content:
     else {
-      this.prevRect = HRect.nu(_fitsRect);
+      // console.log('smart-up');
+      // this.prevRect = HRect.nu(_fitsRect);
       this.animateTo( _fitsRect );
     }
   }
