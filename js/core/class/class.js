@@ -66,6 +66,9 @@ HClass = function() {
 
 
 HClass.prototype = {
+
+  // detection for production build (compressed source; '_compressed' would be something like '_x4', whereas '_'+'compressed' is still '_compressed')
+  isProduction: '_'+'compressed' !== '_compressed',
   
  /* The property copying method. */
   extend: function(_source, _value) {
