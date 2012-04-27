@@ -106,6 +106,29 @@ HRect = HClass.extend({
     this.bottom = _rect.bottom;
     this.right = _rect.right;
   },
+
+  toArray: function(){
+    var
+    _arr = new Array(6,null),
+    _this = this,
+    _view = HSystem.views[_this.viewIds[0]],
+    _parentSize = _view.parentSize();
+    if( _view && ( _view.flexRight || _view.flexBottom ) ){
+      if(_this.viewIds.length > 1){
+        console.log("warning: HRect#toArray doesn't work reliably with several views bound.");
+      }
+      _arr[0] = _view.flexLeft?_this.left:null;
+      _arr[1] = _view.flexTop?_this.top:null;
+      _arr[2] = ( _view.minWidth !== 0 )?_view.minWidth:null;
+      _arr[3] = ( _view.minHeight !== 0 )?_view.minHeight:null;
+      _arr[4] = _view.flexRight?_view.flexRightOffset:null;
+      _arr[5] = _view.flexBottom?_view.flexBottomOffset:null;
+      return _arr;
+    }
+    else {
+      return [ _this.left, _this.top, _this.width, _this.height ];
+    }
+  },
   
   _updateFlexibleDimensions: function(){
     var
@@ -118,52 +141,52 @@ HRect = HClass.extend({
     _virtualWidth,
     _virtualHeight,
     _viewId,
-    _view,
-    i = 0;
-    for(;i<_viewIds.length;i++){
-      _viewId = _viewIds[i];
-      _view = HSystem.views[_viewId];
-      if(_view.flexRight || _view.flexBottom){
-        ELEM.flush();
-        _parentSize = _view.parentSize();
-        if( _view.flexRight && _view.flexLeft ){ // calculate width and right
-          _virtualWidth = _parentSize[0] - _this.left - _view.flexRightOffset;
-          if( _view.minWidth !== null && _virtualWidth < _view.minWidth ){
-            _this.width = _view.minWidth;
-          }
-          else{
-            _this.width = _virtualWidth;
-          }
-          _this.right = _this.left+_this.width;
-        }
-        else if( _view.flexRight ){ // calculate left and right
+    _view;
+    if(_this.viewIds.length > 1){
+      console.log("warning: HRect#_updateFlexibleDimensions doesn't work reliably with several views bound.");
+    }
+    _viewId = _viewIds[0];
+    _view = HSystem.views[_viewId];
+    if(_view.flexRight || _view.flexBottom){
+      ELEM.flush();
+      _parentSize = _view.parentSize();
+      if( _view.flexRight && _view.flexLeft ){ // calculate width and right
+        _virtualWidth = _parentSize[0] - _this.left - _view.flexRightOffset;
+        if( _view.minWidth !== null && _virtualWidth < _view.minWidth ){
           _this.width = _view.minWidth;
-          _this.left = _parentSize[0] - _this.width - _view.flexRightOffset;
-          _this.right = _this.width + _this.left;
         }
-        else { // calculate width
-          _this.width = _this.right - _this.left;
+        else{
+          _this.width = _virtualWidth;
         }
-        if( _view.flexTop && _view.flexBottom ){ // calculate height and bottom
-          _virtualHeight = _parentSize[1] - _this.top - _view.flexBottomOffset;
-          if( _view.minHeight !== null && _virtualHeight < _view.minHeight ){
-            _this.height = _view.minHeight;
-          }
-          else{
-            _this.height = _virtualHeight;
-          }
-          _this.bottom = _this.top+_this.height;
-        }
-        else if( _view.flexBottom ){ // calculate top and bottom
-          _this.height = _view.minHeight;
-          _this.top = _parentSize[1] - _this.height - _view.flexBottomOffset;
-          _this.bottom = _this.height + _this.top;
-        }
-        else { // calculate height
-          _this.height = _this.bottom - _this.top;
-        }
-        _this.updateSecondaryValues( true );
+        _this.right = _this.left+_this.width;
       }
+      else if( _view.flexRight ){ // calculate left and right
+        _this.width = _view.minWidth;
+        _this.left = _parentSize[0] - _this.width - _view.flexRightOffset;
+        _this.right = _this.width + _this.left;
+      }
+      else { // calculate width
+        _this.width = _this.right - _this.left;
+      }
+      if( _view.flexTop && _view.flexBottom ){ // calculate height and bottom
+        _virtualHeight = _parentSize[1] - _this.top - _view.flexBottomOffset;
+        if( _view.minHeight !== null && _virtualHeight < _view.minHeight ){
+          _this.height = _view.minHeight;
+        }
+        else{
+          _this.height = _virtualHeight;
+        }
+        _this.bottom = _this.top+_this.height;
+      }
+      else if( _view.flexBottom ){ // calculate top and bottom
+        _this.height = _view.minHeight;
+        _this.top = _parentSize[1] - _this.height - _view.flexBottomOffset;
+        _this.bottom = _this.height + _this.top;
+      }
+      else { // calculate height
+        _this.height = _this.bottom - _this.top;
+      }
+      _this.updateSecondaryValues( true );
     }
   },
 
