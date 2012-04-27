@@ -29,6 +29,7 @@ HTextControl = HControl.extend({
   controlDefaults: (HControlDefaults.extend({
     refreshOnBlur: true,
     refreshOnInput: true,
+    refreshOnIdle: true,
     focusOnCreate: false
   })),
   
@@ -158,7 +159,8 @@ HTextControl = HControl.extend({
     return true;
   },
   
-  onIdle: function(){
+  idle: function(){
+    if( !this.options.refreshOnIdle ){ return; }
     this.hasTextFocus && this._updateValueFromField();
     try{
       this.base();
