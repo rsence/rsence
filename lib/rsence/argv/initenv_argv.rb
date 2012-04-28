@@ -157,7 +157,7 @@ module ArgvUtil
         say @strs[:initenv][:enter_http_port]
         str_http_port = @strs[:initenv][:http_port]
         config[:http_server][:port] = ask(str_http_port) do |q|
-          q.default = config[:http_server][:port]
+          q.default = config[:http_server][:port].to_s
         end
       
         say @strs[:initenv][:enter_tcp_ip]
