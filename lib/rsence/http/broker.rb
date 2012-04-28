@@ -124,7 +124,7 @@ class Broker
       'mongrel'  => lambda { Rack::Handler::Mongrel  },
       'puma'     => lambda { Rack::Handler::Puma     }
     }[rack_require].call
-    handler.run( Rack::Lint.new(self.new), {
+    handler.run( self.new, {
       :Host => host, :Port => port
     }.merge( conf[:handler_options] ) )
   end

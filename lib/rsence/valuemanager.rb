@@ -114,10 +114,10 @@ module RSence
     end
   
     # @private Parses the json from the client and passes it on to associated values
-    def xhr( msg, syncdata_str )
+    def sync( msg, syncdata )
     
       # parses the json data sent by the client
-      syncdata = JSON.parse( syncdata_str )
+      # syncdata = JSON.parse( syncdata_str )
     
       session_values = msg.session[:values][:by_id]
       syncdata.each do |value_key, value_data|
@@ -125,7 +125,7 @@ module RSence
           value_obj = session_values[ value_key ]
           value_obj.from_client( msg, value_data )
         else
-          raise "HValue; unassigned value id! (#{val_id.inspect})"
+          warn "HValue; unassigned value key: (#{value_key.inspect})"
         end
       end
     end

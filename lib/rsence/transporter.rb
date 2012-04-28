@@ -94,13 +94,13 @@ module RSence
       uri = request.fullpath
     
       if request_type == :post
-        ## /x handles xhr without cookies
+        ## /x handles sync without cookies
         if uri == broker_urls[:x] and @sessions.accept_requests
-          xhr( request, response, { :cookies => true, :servlet => false } )
+          sync( request, response, { :cookies => true, :servlet => false } )
           return true
-        ## /hello handles the first xhr (with cookies, for session key)
+        ## /hello handles the first sync (with cookies, for session key)
         elsif uri == broker_urls[:hello] and @sessions.accept_requests
-          xhr( request, response, { :cookies => true, :servlet => false } )
+          sync( request, response, { :cookies => true, :servlet => false } )
           return true
         end
       end
@@ -108,7 +108,7 @@ module RSence
     end
   
     # wrapper for the session manager stop client functionality
-    def xhr_error_handler(msg,err_name,err_extra_descr='')
+    def sync_error_handler(msg,err_name,err_extra_descr='')
       @sessions.stop_client_with_message( msg,
         @config[:messages][err_name][:title],
         @config[:messages][err_name][:descr]+err_extra_descr,
@@ -116,8 +116,8 @@ module RSence
       )
     end
   
-    # wrapper for tracebacks in xhr
-    def xhr_traceback_handler(e,err_descr='Transporter::UnspecifiedError')
+    # wrapper for tracebacks in sync
+    def sync_traceback_handler(e,err_descr='Transporter::UnspecifiedError')
       puts "=="*40 if RSence.args[:debug]
       puts err_descr
       if RSence.args[:debug]
@@ -127,10 +127,32 @@ module RSence
         puts "=="*40
       end
     end
+
+    def find_client_sync_error( options )
+      return false if options.length == 0
+      errors = []
+      options.each do |err|
+        if err.class == Hash and err.has_key?('err_msg')
+          errors.push( err['err_msg'] )
+        end
+      end
+      return false if errors.length == 0
+      return errors
+    end
   
     ## handles incoming XMLHttpRequests from the browser
-    def xhr(request, response, options = { :cookies => false, :servlet => false } )
-    
+    def sync(request, response, options = { :cookies => false, :servlet => false } )
+      request_body = request.body.read
+      begin
+        request_content = JSON.parse( request_body )
+      rescue JSON::ParseError
+        warn "Request body isn't valid JSON: #{request_body}"
+        request_content = ['-1:.o.:INVALID',{},[]]
+      end
+      options[:ses_key] = request_content[0]
+      options[:values] = request_content[1]
+      options[:messages] = request_content[2]
+
       session_conf = RSence.config[:session_conf]
     
       options[:cookies] = false unless options.has_key?(:cookies)
@@ -143,13 +165,15 @@ module RSence
       msg = @sessions.init_msg( request, response, options )
     
       response_success = true
-    
+      
+      client_errors = find_client_sync_error( options[:messages] )
+
       # If the client encounters an error, display error message
-      if request.query.has_key?('err_msg')
+      if client_errors #request.query.has_key?('err_msg')
         response_success = false
-        client_error_msg = request.query['err_msg'].inspect
+        client_error_msg = client_errors.inspect
         puts "\nCLIENT ERROR:\n#{client_error_msg}\n" if RSence.args[:debug]
-        xhr_error_handler(msg,:client_error,client_error_msg)
+        sync_error_handler(msg,:client_error,client_error_msg)
       end
     
       # If the session is valid, continue:
@@ -175,14 +199,14 @@ module RSence
         end
         
         ## Pass the client XML to the value manager
-        if request.query.has_key?( 'values' )
-          syncdata_str = request.query[ 'values' ]
+        if options[:values].has_key?('set')#request.query.has_key?( 'values' )
+          # syncdata_str = request.query[ 'values' ]
           begin
-            @valuemanager.xhr( msg, syncdata_str )
+            @valuemanager.sync( msg, options[:values]['set'] )
           rescue => e
             response_success = false
-            xhr_error_handler( msg, :valuemanager_xhr_error, e.message )
-            xhr_traceback_handler( e, "Transporter::ValueManagerXHRError: @valuemanager.xhr failed." )
+            sync_error_handler( msg, :valuemanager_sync_error, e.message )
+            sync_traceback_handler( e, "Transporter::ValueManagerXHRError: @valuemanager.sync failed." )
           end
         end
       
@@ -195,8 +219,8 @@ module RSence
               @plugins.delegate( :cloned_target, msg, msg.cloned_source )
             rescue => e
               response_success = false
-              xhr_error_handler( msg, :plugin_delegate_cloned_target_error, e.message )
-              xhr_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: @plugins.delegate 'cloned_target' failed." )
+              sync_error_handler( msg, :plugin_delegate_cloned_target_error, e.message )
+              sync_traceback_handler( e, "Transporter::PluginDelegateClonedTargetError: @plugins.delegate 'cloned_target' failed." )
             end
           end
           
@@ -205,8 +229,8 @@ module RSence
             msg.session[:plugin_incr] = @plugins.incr
           rescue => e
             response_success = false
-            xhr_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
-            xhr_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: @plugins.delegate 'restore_ses' failed." )
+            sync_error_handler( msg, :plugin_delegate_restore_ses_error, e.message )
+            sync_traceback_handler( e, "Transporter::PluginDelegateRestoreSesError: @plugins.delegate 'restore_ses' failed." )
           end
           
         elsif msg.new_session
@@ -216,8 +240,8 @@ module RSence
             msg.session[:plugin_incr] = @plugins.incr
           rescue => e
             response_success = false
-            xhr_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
-            xhr_traceback_handler( e, "Transporter::PluginDelegateInitSesError: @plugins.delegate 'init_ses' failed." )
+            sync_error_handler( msg, :plugin_delegate_init_ses_error, e.message )
+            sync_traceback_handler( e, "Transporter::PluginDelegateInitSesError: @plugins.delegate 'init_ses' failed." )
           end
           
         elsif msg.cloned_targets
@@ -226,8 +250,8 @@ module RSence
             @plugins.delegate( :cloned_source, msg, msg.cloned_targets )
           rescue => e
             response_success = false
-            xhr_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
-            xhr_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @plugins.delegate 'cloned_source' failed." )
+            sync_error_handler( msg, :plugin_delegate_cloned_source_error, e.message )
+            sync_traceback_handler( e, "Transporter::PluginDelegateClonedSourceError: @plugins.delegate 'cloned_source' failed." )
           end
           
         elsif msg.refresh_page?( @plugins.incr ) and @config[:client_autoreload]
@@ -244,8 +268,8 @@ module RSence
           @valuemanager.validate( msg )
         rescue => e
           response_success = false
-          xhr_error_handler( msg, :valuemanager_validate_error, e.message )
-          xhr_traceback_handler( e, "Transporter::ValueManagerValidateError: @valuemanager.validate failed." )
+          sync_error_handler( msg, :valuemanager_validate_error, e.message )
+          sync_traceback_handler( e, "Transporter::ValueManagerValidateError: @valuemanager.validate failed." )
         end
         
         ### Allows every plugin to respond to the idle call
@@ -253,8 +277,8 @@ module RSence
           @plugins.delegate( :idle, msg )
         rescue => e
           response_success = false
-          xhr_error_handler( msg, :plugin_idle_error, e.message )
-          xhr_traceback_handler( e, "Transporter::PluginIdleError: @plugins.idle failed." )
+          sync_error_handler( msg, :plugin_idle_error, e.message )
+          sync_traceback_handler( e, "Transporter::PluginIdleError: @plugins.idle failed." )
         end
         
         ### Processes outgoing values to client
@@ -262,8 +286,8 @@ module RSence
           @valuemanager.sync_client( msg )
         rescue => e
           response_success = false
-          xhr_error_handler( msg, :valuemanager_sync_client_error, e.message )
-          xhr_traceback_handler( e, "Transporter::ValueManagerSyncClientError: @valuemanager.sync_client failed." )
+          sync_error_handler( msg, :valuemanager_sync_client_error, e.message )
+          sync_traceback_handler( e, "Transporter::ValueManagerSyncClientError: @valuemanager.sync_client failed." )
         end
         
       else

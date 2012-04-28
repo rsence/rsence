@@ -70,20 +70,18 @@ COMM.Transporter = HApplication.extend({
   * to report js errors to the server.
   * If no error, returns an empty string.
   **/
-  getClientEvalError: function(){
-    var _this = COMM.Transporter;
-    return _this._clientEvalError?'&err_msg=' +
-           COMM.Values._encodeString(_this._clientEvalError):'';
-  },
+  // getClientEvalError: function(){
+  //   var _this = COMM.Transporter;
+  //   return _this._clientEvalError?'&err_msg=' +
+  //          COMM.Values._encodeString(_this._clientEvalError):'';
+  // },
   
   parseResponseArray: function( _responseText ){
-    var _arr = eval( _responseText );
-    return _arr;
+    return HVM.decode( _responseText );
   },
   
   _nativeParseResponseArray: function( _responseText ){
-    var _arr = JSON.parse( _responseText );
-    return _arr;
+    return JSON.parse( _responseText );
   },
   
   setValues: function( _values ){
@@ -176,7 +174,9 @@ COMM.Transporter = HApplication.extend({
   flushBusy: function(){
     var _this = COMM.Transporter;
     _this.busy = false;
-    COMM.Values.tosync.length !== 0 && _this.sync();
+    if( COMM.Values.tosync.length !== 0 ){
+      _this.sync();
+    }
   },
   failMessage: function(_title,_message){
     var _this = COMM.Transporter,
@@ -320,18 +320,34 @@ COMM.Transporter = HApplication.extend({
     }
     // console.log('sync.');
     this.busy = true;
+    var _now = new Date().getTime();
     if(window['sesWatcher'] && window.sesWatcher['sesTimeoutValue']){
       // Sets the value of the session watcher to the current time. It could cause an unnecessary re-sync poll immediately after this sync otherwise.
-      sesWatcher.sesTimeoutValue.set( new Date().getTime() );
+      sesWatcher.sesTimeoutValue.set( _now );
     }
-    var _this = this,
-        _values = COMM.Values.sync(),
-        _sesKey = 'ses_key='+COMM.Session.ses_key,
-        _errorMessage = _this.getClientEvalError(),
-        _body = [_sesKey,_errorMessage,_values?'&values='+_values:''].join('');
+    var
+    _this = this,
+    // _values = HVM.sync(),
+    // _boundary = _now.toString(36)+(Math.random()*10000).toString(36)+(Math.random()*10000).toString(36),
+    // _separator = '--'+_boundary,
+    // _errorMessage = _this.getClientEvalError(),
+    _body = HVM.sync();
+    // _body = _separator+
+    //   '\r\nContent-Disposition: form-data; name="ses_key"\r\nContent-Type: text/plain\r\n'+
+    //   '\r\n'+COMM.Session.ses_key+'\r\n'+_separator;
+    // if( _values ){
+    //   _body += '\r\nContent-Disposition: form-data; name="values"\r\nContent-Type: application/json; charset=UTF-8\r\n'+
+    //   '\r\n'+_values+'\r\n'+_separator+'--\r\n';
+    // }
+    // else {
+    //   _body += '--\r\n';
+    // }
+    // _body = [_sesKey,_errorMessage,_values?'&values='+_values:''].join('');
     COMM.request(
       _this.url, {
         _this: _this,
+        // contentType: 'multipart/form-data; boundary='+_boundary,
+        contentType: 'application/json',
         onSuccess: COMM.Transporter.success,
         onFailure: COMM.Transporter.failure,
         method: 'POST',

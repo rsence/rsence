@@ -84,7 +84,7 @@ module RSence
         # session id, used internally
         :ses_id     =>  ses_id,
       
-        # session key, used externally (client xhr)
+        # session key, used externally (client sync)
         :ses_key    =>  ses_sha,
       
         # session key, used externally (client cookies)
@@ -137,7 +137,7 @@ module RSence
       # new time-out
       ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
     
-      # re-generates the ses_key for each xhr
+      # re-generates the ses_key for each sync
       if @config[:disposable_keys]
       
         # disposes the old (current) ses_key:
@@ -233,7 +233,7 @@ module RSence
     ### Otherwise stops the client and returns false.
     def check_ses( msg, ses_key, ses_seed=false )
     
-      # first, check if the session key exists (xhr)
+      # first, check if the session key exists (sync)
       if @session_keys.has_key?( ses_key )
       
         # get the session's id based on its key
@@ -455,7 +455,7 @@ module RSence
       ses_cookie_max_age = @config[:timeout_secs]
     
       ## Only match the handshaking address of rsence,
-      ## prevents unnecessary cookie-juggling in xhr's
+      ## prevents unnecessary cookie-juggling in sync's
       if @config[:trust_cookies]
         ses_cookie_path    = '/'
       elsif ses_cookie_path == nil
@@ -527,19 +527,19 @@ module RSence
         query = request.query
       end
       
-      ## Perform old-session cleanup on all xhr:s
+      ## Perform old-session cleanup on all sync:s
       expire_sessions
       
       ## The 'ses_id' request query key is required.
       ## The client defaults to '0', which means the
       ## client needs to be initialized.
       ## The client's ses_id is the server's ses_key.
-      if not query.has_key?( 'ses_key' )
+      if not options.has_key?( :ses_key )
         return Message.new( @transporter, request, response, options )
       else
         
         ## get the ses_key from the request query:
-        ses_key = query[ 'ses_key' ]
+        ses_key = options[:ses_key]
 
         ## The message object binds request, response
         ## and all user/session -related data to one

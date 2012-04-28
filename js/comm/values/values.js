@@ -468,22 +468,54 @@ COMM.Values = HClass.extend({
   * An encoded string representation of values to synchronize.
   **/
   sync: function(){
-    if(this.tosync.length===0){
-      return false;
+    var
+    _this = this,
+    _response = [ COMM.Session.ses_key,{},[] ],
+    _error = COMM.Transporter._clientEvalError;
+
+    if( _error ){
+      _response[2].push({'err_msg':_error});
     }
-    var _syncValues = {},
-        _this = this,
-        _values = _this.values,
-        _tosync = _this.tosync,
-        _len = _tosync.length,
-        i = 0, _id, _value;
-    for(;i<_len;i++){
-      _id = _tosync.shift();
-      _value = _values[_id].value;
-      _syncValues[_id] = _value;
+
+    // new implementation, symmetric with the server response format
+    if( this.tosync.length > 0 ){
+      _response[1].set=[];
+      var
+      _syncValues = _response[1].set,
+      _values = _this.values,
+      _tosync = _this.tosync,
+      i = _tosync.length,
+      _id, _value;
+      while(i--){
+        _id = _tosync.shift();
+        _value = _values[_id].value;
+        _syncValues.push( [ _id, _value ] );
+      }
     }
-    return encodeURIComponent(_this.encode(_syncValues));
+    // console.log('response:',_response);
+    // console.log('encoded:',_this.encode(_response));
+    return _this.encode(_response);
   },
+
+  // Old sync implementation:
+  // sync: function(){
+  //   if(this.tosync.length===0){
+  //     return false;
+  //   }
+  //   var
+  //   _syncValues = {},
+  //   _this = this,
+  //   _values = _this.values,
+  //   _tosync = _this.tosync,
+  //   _len = _tosync.length,
+  //   i = 0, _id, _value;
+  //   for(;i<_len;i++){
+  //     _id = _tosync.shift();
+  //     _value = _values[_id].value;
+  //     _syncValues[_id] = _value;
+  //   }
+  //   return encodeURIComponent(_this.encode(_syncValues));
+  // },
   
   _detectNativeJSONSupport: function(){
     if(window['JSON']){
