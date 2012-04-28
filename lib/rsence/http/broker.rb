@@ -124,7 +124,9 @@ class Broker
       'mongrel'  => lambda { Rack::Handler::Mongrel  },
       'puma'     => lambda { Rack::Handler::Puma     }
     }[rack_require].call
-    handler.run( Rack::Lint.new(self.new), :Host => host, :Port => port )
+    handler.run( Rack::Lint.new(self.new), {
+      :Host => host, :Port => port
+    }.merge( conf[:handler_options] ) )
   end
   
   # Generic 404 error handler. Just sets up response status, headers, body as a small "Page Not Found" html page

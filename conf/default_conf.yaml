@@ -78,13 +78,18 @@
     :latency: 0
     #
     # HTTP Port number to listen to.
-    :port:  8001
+    :port:  '8001'
     #
     # Bind this ip address ('0.0.0.0' means all)
     :bind_address:  '127.0.0.1'
     #
     # Rack handler to use, defaults to puma
     :rack_require: puma
+    #
+    # These are default options. Ymmv, but these work fine for puma
+    :handler_options:
+      :Verbose: false
+      :Threads: '4:64' # puma default is '0:16'
   #
   # When enabled, sets http cache headers
   # to cache content as long as possible.
