@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   prerelease  = s.version.to_s.end_with?('.pre')
   s.name      = 'rsence-pre' if prerelease
   normalized_version = s.version.to_s.to_f
-  # there is no actual 2.1 version yet, so lets make the "gem install rsence-pre --pre" -> "gem install rsence-pre"
+  # release .pre -versions a separate rsence-pre gem since 2.1
   if normalized_version >= 2.1 and prerelease
     s.version = s.version.to_s[0..-5]
   end
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   # deprecated in rubygems 1.8:
   # s.has_rdoc  = 'yard'
   s.description = File.read('README.rdoc').split('== Introduction')[1].split('== Installing RSence')[0].strip
-  s.add_dependency( "rsence-deps", "970" )
+  s.add_dependency( "rsence-deps", "971" )
   require 'rake'
   s.files = FileList[
     'lib/**/*',
