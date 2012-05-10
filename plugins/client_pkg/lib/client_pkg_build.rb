@@ -436,13 +436,15 @@ class ClientPkgBuild
       @logger.log(  "Compound package..............:    Source |   Minimized |   GNUZipped" )
       @logger.log(  "                              :           |             |" )
     end
-    @compound_config.each do |pkg_name, js_order|
+    @compounds.each do |pkg_name, js_order|
       js_size = 0
       pkg_parts = []
       js_order.each do |js_pkg|
         pkg_part = @js[ js_pkg ]
         pkg_parts.push( pkg_part )
-        js_size += ( @package_origsizes[ js_pkg ] or @destination_origsize[ js_pkg ] )
+        pkg_size = ( @package_origsizes[ js_pkg ] or @destination_origsize[ js_pkg ] or 0 )
+        warn "nil pkg size of: #{js_pkg}" if pkg_size.nil?
+        js_size += pkg_size.nil? ? 0 : pkg_size
       end
       js_src = pkg_parts.join("\n")
       @js[ pkg_name ] = js_src
@@ -623,6 +625,27 @@ class ClientPkgBuild
     packages.each { |pkg_name| del_package( pkg_name ) }
   end
   
+  def add_compound( compound_name, pkg_names )
+    if @compounds.has_key?( compound_name )
+      warn "Compound #{compound_name} already exists, ignoring."
+    else
+      @compounds[ compound_name ] = pkg_names
+    end
+  end
+  def add_compounds( compounds )
+    compounds.each do | compound_name, pkg_names |
+      add_compound( compound_name, pkg_names )
+    end
+  end
+  def del_compound( compound_name )
+    if @compounds.has_key?( compound_name )
+      @compounds.delete( compound_name )
+    end
+  end
+  def del_compounds( compounds )
+    compounds.each { |compound_name| del_compound( compound_name ) }
+  end
+
   def add_reserved_name( reserved_name )
     @reserved_names.push( reserved_name ) unless @reserved_names.include? reserved_name
   end
@@ -719,7 +742,7 @@ class ClientPkgBuild
     @no_whitespace_removal = config[:no_whitespace_removal]
     @debug = RSence.args[:debug]
     @quiet = (not RSence.args[:verbose] and RSence.args[:suppress_build_messages])
-    @compound_config = config[:compound_packages]
+    @compounds = config[:compound_packages]
   end
   
   def find_newer( src_dir, newer_than, quiet=false )

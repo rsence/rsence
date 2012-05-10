@@ -95,6 +95,7 @@ module RSence
           end
           sleep 0.1 until client_pkg.ready?
           client_pkg.add_packages(       @client_pkgs[:packages      ] ) if @client_pkgs.has_key?(:packages      )
+          client_pkg.add_compounds(      @client_pkgs[:compound_packages] ) if @client_pkgs.has_key?(:compound_packages)
           client_pkg.add_themes(         @client_pkgs[:theme_names   ] ) if @client_pkgs.has_key?(:theme_names   )
           client_pkg.add_gfx_formats(    @client_pkgs[:gfx_formats   ] ) if @client_pkgs.has_key?(:gfx_formats   )
           client_pkg.add_reserved_names( @client_pkgs[:reserved_names] ) if @client_pkgs.has_key?(:reserved_names)
@@ -117,6 +118,7 @@ module RSence
           client_pkg.del_reserved_names( @client_pkgs[:reserved_names] ) if @client_pkgs.has_key?(:reserved_names)
           client_pkg.del_gfx_formats(    @client_pkgs[:gfx_formats   ] ) if @client_pkgs.has_key?(:gfx_formats   )
           client_pkg.del_themes(         @client_pkgs[:theme_names   ] ) if @client_pkgs.has_key?(:theme_names   )
+          client_pkg.del_compounds(      @client_pkgs[:compound_packages] ) if @client_pkgs.has_key?(:compound_packages)
           client_pkg.del_packages(       @client_pkgs[:packages].keys  ) if @client_pkgs.has_key?(:packages      )
           client_pkg.rebuild_client
         end

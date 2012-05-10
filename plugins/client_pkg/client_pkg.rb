@@ -112,6 +112,11 @@ class ClientPkgPlugin < Servlet
   def del_package( pkg_name ); @client_build.del_package( pkg_name ); end
   def del_packages( packages ); @client_build.del_packages( packages ); end
   
+  def add_compound( compound_name, pkg_names ); @client_build.add_compound( compound_name, pkg_names ); end
+  def add_compounds( compounds ); @client_build.add_compounds( compounds ); end
+  def del_compound( compound_name ); @client_build.del_compound( compound_name ); end
+  def del_compounds( compounds ); @client_build.del_compounds( compounds ); end
+  
   def add_reserved_name( reserved_name ); @client_build.add_reserved_name( reserved_name ); end
   def add_reserved_names( reserved_names ); @client_build.add_reserved_names( reserved_names ); end
   def del_reserved_name( reserved_name ); @client_build.del_reserved_name( reserved_name ); end
