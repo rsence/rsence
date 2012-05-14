@@ -140,7 +140,7 @@ HStepper = HControl.extend({
     **/
   mouseDown: function( x, y ){
     this.setMouseUp(true);
-    this._setRepeatInterval(  ( y - ELEM.getVisiblePosition( this.elemId )[1] ) <= 11  );
+    this._setRepeatInterval(  ( y - this.pageY() ) <= 11  );
     return true;
   },
   
