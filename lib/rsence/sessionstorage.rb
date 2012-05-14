@@ -240,7 +240,9 @@ module RSence
       end
       puts "Storing sessions..." if RSence.args[:verbose]
       db_open
-      @sessions.each do |ses_id,ses_data|
+      ses_ids = @sessions.keys
+      ses_ids.each do |ses_id|
+        ses_data = @sessions[ses_id]
         if @plugins
           @plugins.delegate( :dump_ses, ses_data )
           @plugins.delegate( :dump_ses_id, ses_id )
