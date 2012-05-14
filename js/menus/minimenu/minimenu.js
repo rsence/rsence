@@ -29,6 +29,7 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   repositionMenuItems: function(){
+    if(!this.listItems || (this.listItems && !this.listItems.length)){ return; }
     var
     x = this.pageX(),
     y = this.pageY(),
@@ -95,16 +96,10 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   lostActiveStatus: function(_newActive){
-    // console.log('menu lost active status',_newActive);
     if( !_newActive.isChildOf( this.menuItemView ) ){
       this.menuHide();
     }
     this.base(_newActive);
-  },
-  
-  gainedActiveStatus: function(_prevActive){
-    // console.log('menu gained active status',_prevActive);
-    this.base(_prevActive);
   },
   
   endDrag: function(x,y){
@@ -154,7 +149,7 @@ HMiniMenu = HRadioButtonList.extend({
     this.valueMatrix = this.menuItemView.valueMatrix;
     this.refreshValue();
     if( this.options.initialVisibility ){
-      EVENT.changeActiveControl(this);
+      EVENT.changeActiveControl(null);
       this.menuShow();
     }
   },
