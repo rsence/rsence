@@ -76,6 +76,13 @@ HListItems = HValueResponder.extend({
 var
 HListItemControl = HControl.extend({
 
+  constructor: function( _rect, _parent, _options ){
+    this.base( _rect, _parent, _options );
+    if( this.options.listItems && this.options.listItems instanceof Array ){
+      this.setListItems( this.options.listItems );
+    }
+  },
+
   _cleanListItems: function(_listItemsIn){
     var _listItems = [],
         _row, _rowType,
