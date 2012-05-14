@@ -35,7 +35,9 @@ HVSlider = HSlider.extend({
   componentName: "vslider",
     
   // This overrides the HSlider property.
-  _isVertical: true
+  _isVertical: true,
+
+  orientations: ['w','e','c']
   
 });
 

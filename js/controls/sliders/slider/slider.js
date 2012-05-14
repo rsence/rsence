@@ -289,7 +289,7 @@ HSlider = HControl.extend({
   
   prevOrientation: 'c',
   
-  cssClassPrefix: 'h',
+  orientations: ['n','s','c'],
   
 /** = Description
   * Changes the thumb graphic. Possible orientations by default are
@@ -316,17 +316,16 @@ HSlider = HControl.extend({
     }
     var _toggleCSS = this.toggleCSSClass,
         _ctrlId    = this.markupElemIds.control,
-        _orientations = ['n','s','w','e','c'],
+        _orientations = this.orientations,
         _iOrientation = '',
         _cssClassName = '',
-        _cssClassPrefix = this.cssClassPrefix,
-        _cssClassVert = this._isVertical?'v':'',
+        _componentName = this.componentName,
         _activeOrientation = false,
         i = 0;
-    for(;i<5;i++){
+    for(;i<3;i++){
       _iOrientation = _orientations[i];
       _activeOrientation = (_orientation===_iOrientation);
-      _cssClassName = (_orientation==='c')?_cssClassPrefix+_cssClassVert+'slider_thumb':_cssClassPrefix+'slider_thumb_'+_iOrientation;
+      _cssClassName = (_orientation==='c')?_componentName+'_thumb':_componentName+'_thumb_'+_iOrientation;
       _toggleCSS( _ctrlId, _cssClassName, _activeOrientation );
     }
     
