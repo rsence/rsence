@@ -1464,7 +1464,7 @@ HView = HClass.extend({
     if(!this.views && !this.isProduction){
       console.log('HView#die: no subviews for component name: ',this.componentName,', self:',this);
     }
-    while (this.views.length !== 0) {
+    while (this.views && this.views.length !== 0) {
       _childViewId = this.views[0];
       this.destroyView(_childViewId);
     }
