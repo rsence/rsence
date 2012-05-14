@@ -95,9 +95,11 @@
   font-weight: bold;
   border: 1px solid #666;
 }
-.calendar_weeks_week_col_sel,
-.calendar_weeks_week_col_yes:hover {
+.calendar_weeks_week_col_sel {
   background-color: #fff;
+}
+.calendar_weeks_week_col_yes:hover {
+  border: 2px solid black; margin: -1px; z-index: 100; border-radius: 3px;
 }
 .calendar_bg {
   position: absolute;
