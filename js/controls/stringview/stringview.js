@@ -43,14 +43,12 @@ var HStringView, HLabel;
     *
     **/
     refreshLabel: function() {
-      if(this.markupElemIds) {
-        if(this.markupElemIds.value) {
-          if( this.value !== undefined ){
-            this.setAttrOfPart( 'value', 'title', this.label );
-          }
-          else {
-            this.setMarkupOfPart( 'value', this.label );
-          }
+      if(this.markupElemIds && this.markupElemIds.value) {
+        if( this.value !== undefined ){
+          this.setAttrOfPart( 'value', 'title', this.label );
+        }
+        else {
+          this.setMarkupOfPart( 'value', this.label );
         }
       }
     }
