@@ -431,8 +431,9 @@ EVENT = {
   **/
   mouseMove: function(e) {
     var _this = EVENT,
-        x = Event.pointerX(e),
-        y = Event.pointerY(e),
+        _scrollPos = ELEM.getScrollPosition(0),
+        x = Event.pointerX(e) - _scrollPos[0],
+        y = Event.pointerY(e) - _scrollPos[1],
         _currentlyDragging = _this.flushMouseMove(x, y);
     _this.status[_this.crsrX] = x;
     _this.status[_this.crsrY] = y;
@@ -988,7 +989,7 @@ EVENT = {
       }
     }
     // Insert key to the realtime array, remove in keyUp
-    if (_this.status[_this.keysDown].indexOf(_keyCode) === -1) {
+    if (_this.isKeyDown(_keyCode)) {
       _this.status[_this.keysDown].push(_keyCode);
     }
     if (!_this.status[_this.cmdKeyDown] && _stopEvent){
@@ -1037,10 +1038,34 @@ EVENT = {
       _this.status[_this.cmdKeyDown] = false;
     }
     // Remove the key from the realtime array, inserted in keyDown
-    _keyCodeIndex = _this.status[_this.keysDown].indexOf(_keyCode);
-    if (_keyCodeIndex !== -1) {
+    if(!_this.isKeyDown(_keyCode)){
+      _keyCodeIndex = _this.status[_this.keysDown].indexOf(_keyCode);
       _this.status[_this.keysDown].splice(_keyCodeIndex, 1);
     }
+  },
+
+  isKeyDown: function(_keyCode){
+    return ( this.status[this.keysDown].indexOf(_keyCode) !== -1 );
+  },
+
+  isKeyUp: function(_keyCode){
+    return !this.isKeyDown(_keyCode);
+  },
+
+  isAltKeyDown: function(){
+    return this.status[this.altKeyDown];
+  },
+
+  isCtrlKeyDown: function(){
+    return this.status[this.ctrlKeyDown];
+  },
+
+  isShiftKeyDown: function(){
+    return this.status[this.shiftKeyDown];
+  },
+
+  isMetaKeyDown: function(){
+    return this.status[this.metaKeyDown];
   },
 
   /* The keyPress itself is ignored per se and used only as a repetition event for the last keyDown. */

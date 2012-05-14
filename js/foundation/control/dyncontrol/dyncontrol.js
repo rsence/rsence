@@ -441,6 +441,11 @@ HDynControl = HControl.extend({
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
+    else {
+      var _scrollPos = ELEM.getScrollPosition(0);
+      x+=_scrollPos[0];
+      y+=_scrollPos[1];
+    }
     this._startPoint = new HPoint(x,y);
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
@@ -473,6 +478,11 @@ HDynControl = HControl.extend({
       x-=_parent.pageX();
       y-=_parent.pageY();
     }
+    else {
+      var _scrollPos = ELEM.getScrollPosition(0);
+      x+=_scrollPos[0];
+      y+=_scrollPos[1];
+    }
     if(this._actionFlag!==-1){
       this._actionFns[this._actionFlag](this,x,y);
     }
@@ -502,6 +512,11 @@ HDynControl = HControl.extend({
     else if(_parent.elemId){
       x-=_parent.pageX();
       y-=_parent.pageY();
+    }
+    else {
+      var _scrollPos = ELEM.getScrollPosition(0);
+      x+=_scrollPos[0];
+      y+=_scrollPos[1];
     }
     if(this._actionFlag!==-1){
       this._actionFns[this._actionFlag](this,x,y);
