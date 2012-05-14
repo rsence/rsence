@@ -152,23 +152,16 @@ HTextControl = HControl.extend({
   textBlur: function(){
     this.hasTextFocus = false;
     this._clearChangeEventFn();
-    this._updateValueFromField();
     if(this.options.refreshOnBlur){
+      this._updateValueFromField();
       this.refreshValue();
     }
     return true;
   },
   
   idle: function(){
-    if( !this.options.refreshOnIdle ){ return; }
-    this.hasTextFocus && this._updateValueFromField();
-    try{
-      this.base();
-    }
-    catch(e){
-      console.error('HTextControl::onIdle error -> ',e);
-      debugger;
-      this.base();
+    if( this.hasTextFocus && this.options.refreshOnIdle && this.options.refreshOnInput ){
+      this._updateValueFromField();
     }
   },
   
@@ -354,12 +347,12 @@ HTextControl = HControl.extend({
   *
   **/
   textEnter: function(){
-    this.setValue(
-      this.validateText(
-        this.getTextFieldValue()
-      )
-    );
     if(this.options.refreshOnInput){
+      this.setValue(
+        this.validateText(
+          this.getTextFieldValue()
+        )
+      );
       this.refreshValue();
     }
     return false;
