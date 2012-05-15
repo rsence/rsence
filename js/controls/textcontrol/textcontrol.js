@@ -373,7 +373,8 @@ HNumericTextControl = HTextControl.extend({
   defaultEvents: {
     mouseWheel: true,
     textEnter: true,
-    contextMenu: true
+    contextMenu: true,
+    keyDown: true
   },
   
 /** Uses the mouseWheel event to step up/down the value.
@@ -382,6 +383,18 @@ HNumericTextControl = HTextControl.extend({
     var _value = this.value;
     _value = _value-((_delta<0)?1:-1);
     this.setValue(Math.round(this.validateText(_value)));
+  },
+
+  keyDown: function(_key){
+    if(_key===Event.KEY_UP){
+      this.mouseWheel(1);
+      return true;
+    }
+    else if(_key===Event.KEY_DOWN){
+      this.mouseWheel(-1);
+      return true;
+    }
+    return false;
   },
 
 /** = Description
