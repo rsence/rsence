@@ -442,8 +442,8 @@ class ClientPkgBuild
       js_order.each do |js_pkg|
         pkg_part = @js[ js_pkg ]
         pkg_parts.push( pkg_part )
-        pkg_size = ( @package_origsizes[ js_pkg ] or @destination_origsize[ js_pkg ] or 0 )
-        warn "nil pkg size of: #{js_pkg}" if pkg_size.nil?
+        pkg_size = ( @package_origsizes[ js_pkg ] or @destination_origsize[ js_pkg ] or @compound_origsize[ js_pkg ] )
+        warn "nil pkg size of: #{js_pkg}" if pkg_size.nil? or pkg_size == 0
         js_size += pkg_size.nil? ? 0 : pkg_size
       end
       js_src = pkg_parts.join("\n")
@@ -459,6 +459,7 @@ class ClientPkgBuild
         else
           gz_size  = gz_data.bytesize
         end
+        @compound_origsize[ pkg_name ] = js_size
         print_stat( pkg_name, js_size, jsc_size, gz_size )
       end
     end
@@ -496,6 +497,7 @@ class ClientPkgBuild
   def compose_destinations
     @destination_files = {} # rename to package_products
     @destination_origsize = {}
+    @compound_origsize = {}
     @package_names.each do |package_name|
       @packages[package_name].each do |bundle_name|
         if @bundles_found.has_key?( bundle_name )
