@@ -44,6 +44,9 @@ HSystem = {
   
 /** The default HSystem ticker interval. Unit is milliseconds. **/
   defaultInterval: 10,
+
+// The ticker interval, when window has no focus.
+  _blurredInterval: 300,
   
 /** The default HApplication priority. Unit is "On the n:th tick: poll". **/
   defaultPriority: 20,

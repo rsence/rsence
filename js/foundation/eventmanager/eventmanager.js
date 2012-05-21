@@ -137,20 +137,55 @@ EVENT = {
     _this.hoverTimer = new Date().getTime();
     // Time since last hover event triggered
   },
+
+
+  // cleans up events that would be lost when browser window is blurred
+  _domWindowBlur: function(){
+    // console.log('window blurred');
+    var
+    _this = EVENT,
+    _status = _this.status;
+    // _status[_this.button1] = false;
+    // _status[_this.button2] = false;
+    // _status[_this.crsrX] = -1;
+    // _status[_this.crsrY] = -1;
+    _status[_this.keysDown] = [];
+    _status[_this.altKeyDown] = false;
+    _status[_this.ctrlKeyDown] = false;
+    _status[_this.shiftKeyDown] = false;
+    _status[_this.metaKeyDown] = false;
+    _status[_this.cmdKeyDown] = false;
+    _this.enableDroppableChecks = false;
+    if( HSystem.defaultInterval !== HSystem._blurredInterval ){
+      _this._sysDefaultInterval = HSystem.defaultInterval;
+      COMM.Queue.push( function(){
+        HSystem.defaultInterval = HSystem._blurredInterval;
+      } );
+    }
+  },
+  _domWindowFocus: function(){
+    var
+    _this = EVENT;
+    _this.enableDroppableChecks = _this._origDroppableChecks;
+    if( HSystem.defaultInterval === HSystem._blurredInterval && _this._sysDefaultInterval ){
+      COMM.Queue.push( function(){
+        HSystem.defaultInterval = _this._sysDefaultInterval;
+      } );
+    }
+    // console.log('window focused');
+  },
   
 /** Starts event listening.
   **/
   start: function() {
     var _globalEventTargetElement = (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9)?document:window,
         _this = EVENT;
-        // _eventMap = [
     Event.observe( _globalEventTargetElement, 'mousemove', _this.mouseMove );
     Event.observe( _globalEventTargetElement, 'mouseup', _this.mouseUp );
     Event.observe( _globalEventTargetElement, 'mousedown', _this.mouseDown );
     Event.observe( _globalEventTargetElement, 'click', _this.click );
     Event.observe( _globalEventTargetElement, 'keyup', _this.keyUp );
     Event.observe( _globalEventTargetElement, 'keydown', _this.keyDown );
-    // IE and WebKit browsers don't need keyPress for repeat
     if( !BROWSER_TYPE.safari && !BROWSER_TYPE.ie){
       Event.observe( _globalEventTargetElement, 'keypress', _this.keyPress );
     }
@@ -158,16 +193,13 @@ EVENT = {
     Event.observe( _globalEventTargetElement, 'resize', _this.resize );
     Event.observe( _globalEventTargetElement, 'mousewheel', _this.mouseWheel );
     Event.observe( _globalEventTargetElement, 'dblclick', _this.doubleClick );
-        // ],
-        // i = 0;
-    // for (; i !== _eventMap.length; i++) {
-    // Event.observe(_globalEventTargetElement, _eventMap[i][0], _eventMap[i][1]);
-    // }
     if (window.addEventListener) {
       window.addEventListener('DOMMouseScroll', EVENT.mouseWheel, false);
       window.addEventListener('resize', EVENT.resize, false);
     }
-    //window.onmousewheel=document.onmousewheel=EVENT.mouseWheel;
+    _this._origDroppableChecks = _this.enableDroppableChecks;
+    Event.observe( window, 'blur', _this._domWindowBlur );
+    Event.observe( window, 'focus', _this._domWindowFocus );
     _this.listeners = [];
     // keep elemId buffer of all listeners
     _this.focused = [];
@@ -458,18 +490,37 @@ EVENT = {
     clearTimeout(_this._lastCoordFlushTimeout);
     
     // send drag event to all drag-interested ctrls
-    for (; i !== _this.dragItems.length; i++) {
+    for (; i < _this.dragItems.length; i++) {
       _elemId = _this.dragItems[i];
       _this.focusOptions[_elemId].ctrl.drag(x, y);
       _this.coordCacheFlush(_elemId);
       _currentlyDragging = true;
+    }
+    if(!_currentlyDragging){
+      if (new Date().getTime() > _this.hoverTimer + _this.hoverInterval) {
+        // sends mouseMove pseudo-events to ctrls interested
+        for (i = 0; i < _this.coordListeners.length; i++) {
+          _elemId = _this.coordListeners[i];
+          _ctrl = _this.focusOptions[_elemId].ctrl;
+          _ctrl.mouseMove(x, y);
+        }
+        _this.hoverTimer = new Date().getTime();
+      }
+      else {
+        _this._lastCoordFlushTimeout = setTimeout(
+          function(){
+            EVENT.flushMouseMove(x,y);
+          }, _this.hoverInterval
+        );
+      }
+      return false;
     }
 
     if (_this.enableDroppableChecks) {
       // Check which items are under the mouse coordinates now.
       if (new Date().getTime() > _this.hoverTimer + _this.hoverInterval) {
         // sends mouseMove pseudo-events to ctrls interested
-        for (i = 0; i !== _this.coordListeners.length; i++) {
+        for (i = 0; i < _this.coordListeners.length; i++) {
           _elemId = _this.coordListeners[i];
           _ctrl = _this.focusOptions[_elemId].ctrl;
           _ctrl.mouseMove(x, y);
@@ -479,7 +530,7 @@ EVENT = {
         }
         // sends drag&drop pseudo-events
         var _wasTopmostDroppable;
-        for (i = 0; i !== _this.dragItems.length; i++) {
+        for (i = 0; i < _this.dragItems.length; i++) {
           // Find the current droppable while dragging.
           _wasTopmostDroppable = _this.topmostDroppable;
           _this.topmostDroppable = null;
@@ -529,7 +580,7 @@ EVENT = {
         );
       }
     }
-    return _currentlyDragging;
+    return true;
   },
 
   // Loops through all registered items and store indices of elements
@@ -547,7 +598,7 @@ EVENT = {
         _size,
         _coords,
         _hovered = [];
-    for (; i !== _this.listeners.length; i++) {
+    for (; i < _this.listeners.length; i++) {
       if (!_this.listeners[i] || !_this.focusOptions[i].ctrl) {
         continue;
       }
@@ -629,7 +680,7 @@ EVENT = {
       _this.status[_this.button2] = true;
     }
     
-    for (; i !== _this.focused.length; i++) {
+    for (; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         // Set the active control to the currently focused item.
         if (_this.focusOptions[i].ctrl.enabled) {
@@ -648,14 +699,14 @@ EVENT = {
       _this.changeActiveControl(_newActiveControl);
     }
     // Call the mouseDown and startDrag events after the active control change has been handled.
-    for (i = 0; i !== _startDragElementIds.length; i++) {
+    for (i = 0; i < _startDragElementIds.length; i++) {
       _this.dragItems.push(_startDragElementIds[i]);
       _this.focusOptions[_startDragElementIds[i]].ctrl.startDrag(x, y, _isLeftButton);
       _didStartDrag = true;
     }
 
     var _stopEvent = _mouseDownElementIds.length;
-    for (i = 0; i !== _mouseDownElementIds.length; i++) {
+    for (i = 0; i < _mouseDownElementIds.length; i++) {
       if (_this.focusOptions[_mouseDownElementIds[i]].ctrl.mouseDown(x, y, _isLeftButton)) {
         _stopEvent--;
       }
@@ -721,7 +772,7 @@ EVENT = {
     if(!_isLeftButton){
       return true;
     }
-    for (; i !== _this.focused.length; i++) {
+    for (; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         // Set the active control to the currently focused item.
         if (_this.focusOptions[i].ctrl.enabled) {
@@ -738,7 +789,7 @@ EVENT = {
       _this.changeActiveControl(_newActiveControl);
     }
     var _stopEvent = _clickElementIds.length;
-    for (i = 0; i !== _clickElementIds.length; i++) {
+    for (i = 0; i < _clickElementIds.length; i++) {
       if (_this.focusOptions[_clickElementIds[i]].ctrl.click(x, y, _isLeftButton)) {
         _stopEvent--;
       }
@@ -827,7 +878,7 @@ EVENT = {
     i = 0;
     _this._modifiers(e);
     // Send endDrag for the currently dragged items even when they don't have focus, and clear the drag item array.
-    for (; i !== _this.dragItems.length; i++) {
+    for (; i < _this.dragItems.length; i++) {
       _elemId = _this.dragItems[i];
       _ctrl = _this.focusOptions[_elemId].ctrl;
       _ctrl.endDrag(x, y, _isLeftButton);
@@ -888,10 +939,12 @@ EVENT = {
         i = 0;
     _this._modifiers(e);
     // Check for doubleClick listeners.
-    for (i = 0; i !== _this.focused.length; i++) {
+    for (i = 0; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         if (_this.focusOptions[i].doubleClick === true) {
-          _this.focusOptions[i].ctrl.doubleClick(x, y, true);
+          if ( _this.focusOptions[i].ctrl.doubleClick(x, y, true) ){
+            Event.stop(e);
+          }
         }
       }
     }
@@ -919,7 +972,7 @@ EVENT = {
     if (BROWSER_TYPE.opera || BROWSER_TYPE.safari || BROWSER_TYPE.ie) {
       _delta = 0 - _delta;
     }
-    for (; i !== _this.focused.length; i++) {
+    for (; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         if (_this.focusOptions[i].mouseWheel === true) {
           Event.stop(e);
@@ -948,7 +1001,7 @@ EVENT = {
         i = 0;
     _this._modifiers(e);
     // Check for contextMenu listeners.
-    for (i = 0; i !== _this.focused.length; i++) {
+    for (i = 0; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
         if (_this.focusOptions[i].contextMenu === true) {
           if( _this.focusOptions[i].ctrl.contextMenu() ){
@@ -989,7 +1042,7 @@ EVENT = {
       }
     }
     // Insert key to the realtime array, remove in keyUp
-    if (_this.isKeyDown(_keyCode)) {
+    if(!_this.isKeyDown(_keyCode)) {
       _this.status[_this.keysDown].push(_keyCode);
     }
     if (!_this.status[_this.cmdKeyDown] && _stopEvent){
@@ -1038,7 +1091,7 @@ EVENT = {
       _this.status[_this.cmdKeyDown] = false;
     }
     // Remove the key from the realtime array, inserted in keyDown
-    if(!_this.isKeyDown(_keyCode)){
+    if(_this.isKeyDown(_keyCode)){
       _keyCodeIndex = _this.status[_this.keysDown].indexOf(_keyCode);
       _this.status[_this.keysDown].splice(_keyCodeIndex, 1);
     }
