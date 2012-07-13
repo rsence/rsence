@@ -32,7 +32,7 @@ HListItems = HValueResponder.extend({
       _parent = _rect;
     }
     else {
-      console.warn && console.warn( "Warning: the rect constructor argument of HListItems is deprecated." );
+      !this.isProduction && console.warn && console.warn( "Warning: the rect constructor argument of HListItems is deprecated." );
     }
     this.parent = _parent;
     if ( this.parent.setListItemResponder ){

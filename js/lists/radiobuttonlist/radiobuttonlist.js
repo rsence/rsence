@@ -101,7 +101,7 @@ HRadioButtonList = HListItemControl.extend({
     this.base(_state);
     if(!this['listItemViews']){ return; }
     for(var i=0;i<this.listItems.length;i++){
-      this.listItemViews[i].setEnabled(_state)
+      this.listItemViews[i].setEnabled(_state);
     }
   },
   
@@ -122,7 +122,10 @@ HRadioButtonList = HListItemControl.extend({
       }
       if(_listItems[ this.value ] !== undefined){
         _value = _listItems[ this.value ];
-        this.parent.setValue( _value[0] );
+        if( this.parent.value !== _value[0] ){
+          // console.log('radio button index responder:',_value[0],', parent value:',this.parent.value);
+          this.parent.setValue( _value[0] );
+        }
       }
     }
   }),
@@ -141,8 +144,10 @@ HRadioButtonList = HListItemControl.extend({
       }
       for ( var i = 0; i < this.listItems.length; i++ ) {
         if ( this.listItems[i][0] === _value ) {
-          this.radioButtonResponder.setValue( -1 );
-          this.radioButtonResponder.setValue( i );
+          if( this.radioButtonResponder.value !== i ){
+            // this.radioButtonResponder.setValue( -1 );
+            this.radioButtonResponder.setValue( i );
+          }
           break;
         }
       }
