@@ -325,7 +325,7 @@ HSlider = HControl.extend({
     for(;i<3;i++){
       _iOrientation = _orientations[i];
       _activeOrientation = (_orientation===_iOrientation);
-      _cssClassName = (_orientation==='c')?_componentName+'_thumb':_componentName+'_thumb_'+_iOrientation;
+      _cssClassName = (_orientation==='c')?_componentName+'_'+'thumb':_componentName+'_'+'thumb'+'_'+_iOrientation;
       _toggleCSS( _ctrlId, _cssClassName, _activeOrientation );
     }
     
