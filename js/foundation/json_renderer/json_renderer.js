@@ -271,7 +271,7 @@ COMM.JSONRenderer = HClass.extend({
     }
     if( !_isViewClass ){
       if( _hasRect ){
-        console.log( "renderNode warning; Supposedly rect-incompatible class supplied: "+_className );
+        !this.isProduction && console.log( "renderNode warning; Supposedly rect-incompatible class supplied: "+_className );
       }
     }
 
