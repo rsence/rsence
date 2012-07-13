@@ -772,17 +772,24 @@ EVENT = {
     if(!_isLeftButton){
       return true;
     }
+    var _fCount = 0;
     for (; i < _this.focused.length; i++) {
       if (_this.focused[i] === true) {
+        _fCount+=1;
         // Set the active control to the currently focused item.
+
         if (_this.focusOptions[i].ctrl.enabled) {
           _newActiveControl = _this.focusOptions[i].ctrl;
+        }
+        if(_this.traceFocused){
+          _newActiveControl.setStyle('border','2px solid #FF00FF');
         }
         if (_this.focusOptions[i].click === true) {
           _clickElementIds.push(i);
         }
       }
     }
+    console.log('focused length:',_fCount);
     // Handle the active control selection.
     if (_newActiveControl) {
       // console.log('click new active control');
@@ -827,6 +834,8 @@ EVENT = {
           // else{
           //   console.log('allow losing focus: ',_prevActiveCtrl.componentName,' -> ',_ctrl.componentName);
           // }
+          _this.blur(_prevActiveCtrl);
+          _this.focus(_ctrl);
           _prevActiveCtrl.active = false;
           if(_this.focusTrace){
             _prevActiveCtrl.setStyle('border','2px solid green');
@@ -850,6 +859,7 @@ EVENT = {
         _this.activeControl = null;
       }
     }
+
   },
 
 
