@@ -18,6 +18,7 @@ HMiniMenu = HRadioButtonList.extend({
   
   defaultEvents: {
     draggable: true,
+    mouseUp: true,
     click: true,
     resize: true
   },
@@ -59,6 +60,7 @@ HMiniMenu = HRadioButtonList.extend({
   },
   
   click: function(){
+    if(!this.active){return false;}
     this.menuShow();
     return false;
   },
@@ -91,17 +93,26 @@ HMiniMenu = HRadioButtonList.extend({
   
   startDrag: function(x,y){
     this.dragStart = [x,y];
+    if(!this.active){return false;}
     this.menuShow();
     return false;
   },
   
   lostActiveStatus: function(_newActive){
-    if( !_newActive.isChildOf( this.menuItemView ) ){
+    if( _newActive && !_newActive.isChildOf( this.menuItemView ) ){
       this.menuHide();
     }
     this.base(_newActive);
   },
   
+  gainedActiveStatus: function(_prevActive){
+    if( _prevActive && _prevActive.isChildOf( this.menuItemView ) ){
+      this.menuHide();
+      // EVENT.changeActiveControl(null);
+    }
+    this.base(_prevActive);
+  },
+
   endDrag: function(x,y){
     if( (Math.round(this.dragStart[0]*0.2)===Math.round(x*0.2)) &&
         (Math.round(this.dragStart[1]*0.2)===Math.round(y*0.2))

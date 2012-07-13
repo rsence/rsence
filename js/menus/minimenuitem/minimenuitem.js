@@ -17,19 +17,21 @@ HMiniMenuItem = HRadioButton.extend({
   
   defaultEvents: {
     click: true,
-    mouseUp: true //,
-    // mouseDown: true
+    mouseUp: true,
+    mouseDown: true
   },
-
+  
   _activateParentParent: function(){
     var _parentParent = this.parent.options.logicParent;
     EVENT.changeActiveControl(_parentParent);
+    // EVENT.changeActiveControl(null);
+    // EVENT.blur( _this );
   },
 
-  // gainedActiveStatus: function( _prevActive ){
-  //   console.log('menuitem gained active status',_prevActive === this.parent.options.logicParent);
-  //   this.base( _prevActive );
-  // },
+  gainedActiveStatus: function( _prevActive ){
+    // console.log('menuitem gained active status',_prevActive === this.parent.options.logicParent);
+    this.base( _prevActive );
+  },
 
   lostActiveStatus: function( _newActive ){
     this.parent.options.logicParent.menuHide();
@@ -40,7 +42,6 @@ HMiniMenuItem = HRadioButton.extend({
   click: function(){
     var _now = new Date().getTime();
     if( _now - this._parentLastActivation > 200 ){
-      // console.log('click:',this.label);
       this.base();
       this._parentLastActivation = _now;
       this._activateParentParent();
@@ -48,11 +49,11 @@ HMiniMenuItem = HRadioButton.extend({
     return true;
   },
   
-  // mouseDown: function(){
-  //   this.base();
-  //   this.click();
-  //   return true;
-  // },
+  mouseDown: function(){
+    this.base();
+    this.click();
+    return true;
+  },
   
   mouseUp: function(){
     this.base();
