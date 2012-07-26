@@ -7,8 +7,8 @@
   color: #000;
   background-color: transparent;
   vertical-align: middle;
-  border: 0px;
-  left: 0px; top: 0px;
+  border: 0;
+  left: 0; top: 0;
   #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'padding-left:2px;width:100% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:4px;bottom:2px;':'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'}
 }
 
@@ -23,7 +23,8 @@
 
 .default .textcontrol_input_parent {
   position: absolute;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:0;right:4px;bottom:0;':BROWSER_TYPE.ie6?'left:2px;top:1px;right:1px;bottom:1px;':'left:-2px;top:-2px;right:-2px;bottom:-2px;'}
+  #{(BROWSER_TYPE.chrome||BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:0;right:4px;bottom:0;':BROWSER_TYPE.ie6?'left:2px;top:1px;right:1px;bottom:1px;':'left:-2px;top:-2px;right:-2px;bottom:-2px;'}
+  #{(BROWSER_TYPE.chrome)?'top:1px;':''}
 }
 
 .default .textcontrol_bg {
@@ -34,10 +35,10 @@
 }
 
 .default .active>.textcontrol_bg {
-  left: 0px; top: 0px; right: 0px; bottom: 0px;
-  -moz-box-shadow: 0px 0px 3px #333;
-  -webkit-box-shadow: 0px 0px 3px #333;
-  box-shadow: 0px 0px 3px #333;
+  left: 0; top: 0; right: 0; bottom: 0;
+  -moz-box-shadow: 0 0 3px #333;
+  -webkit-box-shadow: 0 0 3px #333;
+  box-shadow: 0 0 3px #333;
 }
 
 .default .disabled .textcontrol_bg {
@@ -57,22 +58,22 @@
 }
 
 .default .textcontrol_nw {
-  left: 0px; top: 0px;
-  background-position: 0px 0px;
+  left: 0; top: 0;
+  background-position: 0 0;
 }
 
 .default .textcontrol_ne {
-  right: 0px; top: 0px;
-  background-position: -7px 0px;
+  right: 0; top: 0;
+  background-position: -7px 0;
 }
 
 .default .textcontrol_sw {
-  left: 0px; bottom: 0px;
-  background-position: 0px -7px;
+  left: 0; bottom: 0;
+  background-position: 0 -7px;
 }
 
 .default .textcontrol_se {
-  right: 0px; bottom: 0px;
+  right: 0; bottom: 0;
   background-position: -7px -7px;
 }
 
@@ -88,13 +89,13 @@
 }
 
 .default .textcontrol_w {
-  left: 0px;
-  background-position: 0px 0px;
+  left: 0;
+  background-position: 0 0;
 }
 
 .default .textcontrol_e {
-  right: 0px;
-  background-position: -7px 0px;
+  right: 0;
+  background-position: -7px 0;
 }
 
 
@@ -109,13 +110,13 @@
 }
 
 .default .textcontrol_n {
-  top: 0px;
-  background-position: 0px 0px;
+  top: 0;
+  background-position: 0 0;
 }
 
 .default .textcontrol_s {
-  bottom: 0px;
-  background-position: 0px -7px;
+  bottom: 0;
+  background-position: 0 -7px;
 }
 
 
