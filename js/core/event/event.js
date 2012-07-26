@@ -65,11 +65,11 @@ Event = {
     if (!Event.observers) {
       Event.observers = [];
     }
-    if (_elem.addEventListener) {
+    if (_elem && _elem.addEventListener) {
       this.observers.push([_elem, _name, _function, _useCapture]);
       _elem.addEventListener(_name, _function, _useCapture);
     }
-    else if (_elem.attachEvent) {
+    else if (_elem && _elem.attachEvent) {
       this.observers.push([_elem, _name, _function, _useCapture]);
       _elem.attachEvent("on" + _name, _function);
     }
@@ -98,6 +98,7 @@ Event = {
   observe: function(_elem, _name, _function, _useCapture) {
     _useCapture = _useCapture || false;
     Event._observeAndCache(_elem, _name, _function, _useCapture);
+    return _function;
   },
   
 /** Stops observing the named event of the element and

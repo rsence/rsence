@@ -31,6 +31,9 @@
 ***/
 var//RSence.Foundation
 HView = HClass.extend({
+
+  isView: true,  // attribute to check if the object is a view
+  isCtrl: false, // attribute to check for if the object is a control
   
 /** Component specific theme path.
   **/
@@ -347,9 +350,6 @@ HView = HClass.extend({
     // Set the geometry
     this.setRect(_rect);
     
-    this._cachedLeft = _rect.left;
-    this._cachedTop = _rect.top;
-    
     // Additional DOM element bindings are saved into this array so they can be
     // deleted from the element manager when the view gets destroyed.
     this._domElementBindings = [];
@@ -541,8 +541,8 @@ HView = HClass.extend({
   **/
   _makeElem: function(_parentElemId){
     this.elemId = ELEM.make(_parentElemId,'div');
-    ELEM.setAttr( this.elemId, 'view_id', this.viewId );
-    ELEM.setAttr( this.elemId, 'elem_id', this.elemId );
+    ELEM.setAttr( this.elemId, 'view_id', this.viewId, true );
+    ELEM.setAttr( this.elemId, 'elem_id', this.elemId, true );
   },
   
 /** --
@@ -661,12 +661,6 @@ HView = HClass.extend({
         _this._updateZIndex();
       }
       
-      if ( _this._cachedLeft !== _rect.left || _this._cachedTop !== _rect.top) {
-        _this.invalidatePositionCache();
-        _this._cachedLeft = _rect.left;
-        _this._cachedTop = _rect.top;
-      }
-    
       _this.drawn = true;
     }
     return this;
@@ -1974,24 +1968,6 @@ HView = HClass.extend({
   **/
   optimizeWidth: function() {
 
-  },
-  
-  
-/** = Description
-  * Invalidates event manager's element position cache for this view and its
-  * subviews. Actual functionality is implemented in HControl.
-  * 
-  * = Returns
-  * +self+
-  * 
-  **/
-  invalidatePositionCache: function() {
-    for(var i=0; i<this.views.length; i++) {
-      if( typeof HSystem.views[this.views[i]]['invalidatePositionCache'] === 'function' ){
-        HSystem.views[this.views[i]].invalidatePositionCache();
-      }
-    }
-    return this;
   },
   
   

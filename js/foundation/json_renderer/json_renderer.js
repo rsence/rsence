@@ -444,7 +444,9 @@ COMM.JSONRenderer = HClass.extend({
       }
     }
     catch (e){
-      console.log('renderNode error:',e.toString()+', rect:',_rect,', class:',_dataNode['class'],', options:', JSON.stringify(_options),', e:',e);
+      var _optStr;
+      console.log('err:',e);
+      COMM.Queue.clientException(e,{name:'renderNode error',options:_options,className:_className,rect:_rect});
     }
     // Iterates recursively through all subviews, if specified.
     if(_hasSubviews){

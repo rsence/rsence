@@ -28,6 +28,8 @@
   **                         on the droppable.
   ** +startHover+::          Called when a draggable item is moved 
   **                         over the droppable.
+  ** +hover+::               Called while a dragged item is moved between
+  **                         startHover and endHover.
   ** +endHover+::            Called when a draggable item is moved out 
   **                         of the droppable.
   ** +keyDown+::             Called when the user presses a key, and 
@@ -154,10 +156,11 @@ HEventResponder = HClass.extend({
         click:       false,
         resize:      false,
         doubleClick: false,
-        contextMenu: false
+        contextMenu: false,
+        rectHover:   false,
+        multiDrop:   false
       } ).extend( this.defaultEvents ).extend( _events?_events:{} ).nu();
     }
-    this.events.ctrl = this;
     EVENT.reg( this, this.events );
     return this;
   },
@@ -487,7 +490,7 @@ HEventResponder = HClass.extend({
     if(this.enabled) {
       this.toggleCSSClass(this.elemId, HControl.CSS_ACTIVE, true);
     }
-    this.gainedActiveStatus(_lastActiveControl);
+    return this.gainedActiveStatus(_lastActiveControl);
   },
   
   
@@ -644,7 +647,6 @@ HEventResponder = HClass.extend({
   *
   **/
   endDrag: function(x, y) {
-    this.invalidatePositionCache();
   },
 
 /** = Description
@@ -678,6 +680,10 @@ HEventResponder = HClass.extend({
   },
   onHoverStart: function(obj) {},
   
+  hover: function(obj){
+
+  },
+
 /** = Description
   * Default endHover event responder method. Does nothing by default.
   * Extend the endHover method, if you want to do something 
@@ -763,21 +769,24 @@ HEventResponder = HClass.extend({
     EVENT.blur(_this);
     Event.stop(e);
   },
-  
-  
-/** = Description
-  * Forces retrieving this control's DOM element position directly rather than
-  * using the cached version when the position is needed by +EVENT+.
-  * Child controls are invalidated recursively by +HView+.
-  *
-  * = Returns
-  * +self+
-  * 
+
+/** Selection handling; currently under construction
   **/
-  invalidatePositionCache: function() {
-    this.base();
-    EVENT.coordCacheFlush(this.elemId);
-    return this;
-  }
-  
+  selected: false,
+  select: function(){
+    this.selected = true;
+    console.warn("HControl#select not supported yet.");
+  },
+  deSelect: function(){
+    this.selected = false;
+    console.warn("HControl#deSelect not supported yet.");
+  },
+  setSelected: function(_state){
+    if( _state ){
+      this.select();
+    }
+    else {
+      this.deSelect();
+    }
+  }  
 });

@@ -73,7 +73,7 @@ HCalendar = HControl.extend
 
   ## Keyboard control
   keyDown: (_key)->
-    if EVENT.isShiftKeyDown()
+    if EVENT.status.shiftKeyDown
       @prevMonth(true) if _key == Event.KEY_LEFT
       @nextMonth(true) if _key == Event.KEY_RIGHT
       @prevYear(true) if _key == Event.KEY_UP

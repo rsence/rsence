@@ -139,7 +139,7 @@ HClass.prototype = {
     return this;
   },
   /** = Description
-    * If a method has been overridden then the base method provides access to the overridden method. 
+    * If a method has been overridden then the base method provides access to the overridden method.
     * Call this method from any other method to invoke that method's ancestor.
     * It is also possible to call the base method from within a constructor function.
     *
@@ -205,7 +205,7 @@ HClass.extend = function(_instance, _static) {
   HClass._prototyping = true;
   // this is base for single instance or prototype (class structure) for object that are created
   // from this class
-  _prototype = new this;
+  _prototype = new this();
   // copies properties and methods from _instance to _prototype (class structure)
   _extend.call(_prototype, _instance);
   // this constructor came from _instance
@@ -329,8 +329,8 @@ try {
 // console.log surrogate for browsers without a console
 if(window['console']===undefined){
   window.console = {
-    log: function(){
-    }
+    log: function(){},
+    warn: function(){}
   };
 }
 

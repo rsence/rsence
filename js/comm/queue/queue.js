@@ -85,7 +85,6 @@ COMM.Queue = HApplication.extend({
       _strs.REASON,
       _exception
     ].join('');
-    console.log( _errorText );
     return _errorText;
   },
   

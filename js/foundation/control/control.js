@@ -16,6 +16,8 @@
   **/
 var//RSence.Foundation
 HControl = HView.extend({
+
+  isCtrl: true,
   
 /** A flag: when true, calls the +refreshValue+ method whenever
   * +self.value+ is changed.

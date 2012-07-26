@@ -359,7 +359,7 @@ HWindow = HDynControl.extend({
       _fitsRect.setHeight( this.options.minSize[1] );
     }
     // doesn't fit or right-clicked or alt-clicked, maximize:
-    if (!_fitsRect.equals(_maxRect) && (EVENT.status[ EVENT.button2 ] || EVENT.status[ EVENT.altKeyDown ]) ){
+    if (!_fitsRect.equals(_maxRect) && (EVENT.status.button2 || EVENT.status.altKeyDown) ){
       // console.log('force-max');
       this.animateTo( _maxRect );
       this.prevRect = HRect.nu( this.rect );
