@@ -687,40 +687,7 @@ EventManagerApp = HApplication.extend
     _search( HSystem.viewsZOrder.slice().reverse() )
     return _found
   #
-  # Sets the active control
-  ###
-  changeActiveControl: (_ctrl)->
-    _isCtrl = (_ctrl != null) and @_ensureValidControl( _ctrl )
-    _ctrl = null unless _isCtrl
-    _active = @_listeners.active
-    _focused = @_listeners.focused
-    return if _ctrl != null and _active[0] == _ctrl.viewId
-    _prevActive = _active.slice()
-    if _isCtrl and _prevActive.indexOf( _ctrl.viewId ) != -1
-      _idx = _prevActive.indexOf( _ctrl.viewId )
-      _prevActive.splice( _idx, 1 )
-    _deactivated = []
-    # lose activity in previous controls first:
-    for _viewId in _active
-      continue if _isCtrl and _viewId == _ctrl.viewId
-      _target = @_views[_viewId]
-      _allowLose = _target._lostActiveStatus( _ctrl )
-      if _allowLose
-        @blur( _target.viewId ) if _focused.indexOf(_target.viewId) != -1
-        _target.active = false
-        _deactivated.push( _viewId )
-    for _viewId in _deactivated
-      _idx = _active.indexOf( _viewId )
-      _active.splice( _idx, 1 )
-      _idx = _prevActive.indexOf( _viewId )
-      _prevActive.splice( _idx, 1 )
-    if _isCtrl
-      _active.unshift(_ctrl.viewId)
-      @focus(_ctrl.viewId) if _focused.indexOf(_ctrl.viewId) == -1
-      _ctrl.active = true
-      for _viewId in _prevActive
-        _ctrl._gainedActiveStatus( @_views[_viewId] )
-  ###
+  # Removes the active control
   delActiveControl: (_newActive)->
     _active = @_listeners.active
     _focused = @_listeners.focused
@@ -738,6 +705,8 @@ EventManagerApp = HApplication.extend
       @blur(_ctrl) if _focused.indexOf(_viewId) != -1
       _ctrl.lostActiveStatus(_newActive)
     _prevActive
+  #
+  # Adds the active control
   addActiveControl: (_ctrl,_prevActive)->
     _active = @_listeners.active
     _focused = @_listeners.focused
@@ -747,12 +716,11 @@ EventManagerApp = HApplication.extend
       @focus(_ctrl) if _focused.indexOf(_ctrl.viewId) == -1
       _ctrl.active = true
       _ctrl.gainedActiveStatus(_prevActive)
+  #
+  # Sets the active control
   changeActiveControl: (_ctrl)->
-    # @idle()
     _prevActive = @delActiveControl(_ctrl)
-    # @idle()
     @addActiveControl(_ctrl, _prevActive) if _ctrl != null
-    # @idle()
   #
   # Method to be called, when you want to make an item draggable from outside of the EventManager
   startDragging: (_ctrl)->
@@ -1058,6 +1026,7 @@ EventManagerApp = HApplication.extend
       @status.setCmdKey( false )
       _stop = true
     _active = @_listeners.active
+    _enabled = @_listeners.enabled
     _keyUppers = @_listeners.byEvent.keyUp
     _keyUps = []
     _textEnterers = @_listeners.byEvent.textEnter
@@ -1065,12 +1034,13 @@ EventManagerApp = HApplication.extend
     if @status.hasKeyDown( _keyCode )
       for _viewId in _active
         _keyUps.push( _viewId ) if _keyUppers.indexOf( _viewId ) != -1
-        _textEnters.push( _viewId ) if _textEnterers.indexOf( _viewId ) != -1
       @status.delKeyDown( _keyCode )
     for _viewId in _keyUppers
       _ctrl = @_views[_viewId]
       if _ctrl.keyUp?
         _stop = true if _ctrl.keyUp( _keyCode )
+    for _viewId in _textEnterers
+      _textEnters.push( _viewId ) if _enabled.indexOf( _viewId ) != -1
     for _viewId in _textEnters
       _ctrl = @_views[_viewId]
       if _ctrl.textEnter?
