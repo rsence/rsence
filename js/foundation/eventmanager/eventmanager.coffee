@@ -667,6 +667,8 @@ EventManagerApp = HApplication.extend
             _dropId = _search( _view.viewsZOrder.slice().reverse() )
             return _dropId if _dropId
             return _viewId
+          else
+            return _search( _view.viewsZOrder.slice().reverse() )
       return false
     _dropId = _search( HSystem.viewsZOrder.slice().reverse() )
     return [ _dropId ] if _dropId
