@@ -52,7 +52,7 @@ COMM.URLResponder = HApplication.extend({
   // - callBack is the component registered
   delResponder: function(_matchStr,_callBack){
     _callBack.hide();
-    if(this.prevCallBacks.indexOf(_callBack) !== -1){
+    if(~this.prevCallBacks.indexOf(_callBack)){
       this.prevCallBacks.splice(this.prevCallBacks.indexOf(_callBack),1);
       this.prevMatchStrs.splice(this.prevMatchStrs.indexOf(_matchStr),1);
     }
@@ -87,7 +87,7 @@ COMM.URLResponder = HApplication.extend({
   
   // Checks the matchStr agains regular expressions
   checkMatch: function(_matchStr){
-    if(this.prevMatchStrs.indexOf( _matchStr ) !== -1 ){
+    if(~this.prevMatchStrs.indexOf( _matchStr )){
       return 0;
     }
     var i=0, _urlMatch, _urlCallBacks=[], _urlCallBack;
@@ -101,14 +101,14 @@ COMM.URLResponder = HApplication.extend({
       for(i=0;i<_urlCallBacks.length;i++){
         _urlCallBack = _urlCallBacks[i];
         _urlCallBack.show();
-        if(this.prevMatchStrs.indexOf(_matchStr)!==-1){
+        if(~this.prevMatchStrs.indexOf(_matchStr)){
           this.prevMatchStrs.push( _matchStr );
         }
       }
       var _prevCallBack;
       for(i=0;i<this.prevCallBacks.length;i++){
         _prevCallBack = this.prevCallBacks[i];
-        if(_urlCallBacks.indexOf(_prevCallBack) === -1){
+        if(!~_urlCallBacks.indexOf(_prevCallBack)){
           this.prevCallBacks[i].hide();
         }
       }

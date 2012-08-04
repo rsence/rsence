@@ -106,7 +106,7 @@ HListItemControl = HControl.extend({
         _listItems.push( _row );
       }
       // strings and integers
-      else if ( ['s','n'].indexOf(_rowType) !== -1 ){
+      else if ( ~['s','n'].indexOf(_rowType) ){
         _label = _row.toString();
         _value = _row;
         _listItems.push( [_value, _label] );

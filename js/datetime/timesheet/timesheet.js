@@ -619,8 +619,8 @@ HTimeSheet = HControl.extend({
     }
     var
     _isntSame = (i !== j),
-    _isntListedSelf = (_overlaps.indexOf(i)===-1),
-    _isntListedOther = (_overlaps.indexOf(j)===-1),
+    _isntListedSelf = (!~_overlaps.indexOf(i)),
+    _isntListedOther = (!~_overlaps.indexOf(j)),
     _rectOther = _items[j].rect;
     if( !_isntSame ){ return false; }
     if( !_isntListedSelf ){ return false; }
@@ -776,12 +776,12 @@ HTimeSheet = HControl.extend({
           _overlaps = [];
           for( j = 0; j < _itemCount; j++){
             if( this._doesOverlap( i, j, _overlaps, _testRect, _items ) ){
-              if( _overlapCols.indexOf( k ) === -1 ){
+              if( !~_overlapCols.indexOf( k ) ){
                 _overlapCols.push( k );
               }
             }
           }
-          if( _vacantCols.indexOf( k ) === -1 && _overlapCols.indexOf( k ) === -1 ){
+          if( !~_vacantCols.indexOf( k ) && !~_overlapCols.indexOf( k ) ){
             _vacantCols.push( k );
           }
         }

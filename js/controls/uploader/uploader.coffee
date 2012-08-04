@@ -93,7 +93,7 @@ HUploader = HControl.extend
   
   refreshValue: ->
     return unless typeof @value == 'string'
-    return if @value.indexOf(':::') == -1
+    return unless ~@value.indexOf(':::')
     _stateAndKey = @value.split(':::')
     return unless _stateAndKey.length == 2
     @setUploadState(

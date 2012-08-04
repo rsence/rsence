@@ -134,7 +134,7 @@ ELEM = HClass.extend
   del: (_id)->
     _elem = @_elements[_id]
     i = @_elemTodo.indexOf( _id )
-    @_elemTodo.splice( i, 1 ) unless i == -1
+    @_elemTodo.splice( i, 1 ) if ~i
     delete @_attrTodo[_id]
     delete @_styleCache[_id]
     delete @_attrCache[_id]
@@ -487,7 +487,7 @@ ELEM = HClass.extend
     if _reCache or _noCache
       _attrCache[_key] = _value
       unless _noCache
-        _attrTodo.push( _key ) if _attrTodo.indexOf( _key ) == -1
+        _attrTodo.push( _key ) unless ~_attrTodo.indexOf( _key )
         unless @_elemTodoH[_id]
           @_elemTodo.push( _id )
           @_elemTodoH[ _id ] = true
@@ -504,7 +504,7 @@ ELEM = HClass.extend
     delete _attrCache[_key]
     @_elements[_id].removeAttribute( _key )
     _todoIndex = _attrTodo.indexOf( _key )
-    _attrTodo.splice( _todoIndex, 1 ) unless _todoIndex == -1
+    _attrTodo.splice( _todoIndex, 1 ) if ~_todoIndex
     @_checkNeedFlush()
     true
 
@@ -514,7 +514,7 @@ ELEM = HClass.extend
   hasClassName: (_id, _className)->
     return null unless @_elements[_id]? # item is deleted
     _classNames = @_elements[_id].className.split(' ')
-    return _classNames.indexOf( _className ) != -1
+    return !!~_classNames.indexOf( _className )
   
   ###
   Adds a named CSS className to the element
@@ -590,7 +590,7 @@ ELEM = HClass.extend
     catch e
       console.log('ie setstyle error:'+_key+', '+_value+', '+e)
     if BROWSER_TYPE.ie6
-      unless iefix._traverseStyleProperties.indexOf(_key) == -1
+      if ~iefix._traverseStyleProperties.indexOf(_key)
         @_ieFixesNeeded = true
     null
 
@@ -620,7 +620,7 @@ ELEM = HClass.extend
           @_setElementStyle( _elem, _key, _value )
       else
         _styleTodo = @_styleTodo[_id]
-        _styleTodo.push( _key ) if _styleTodo.indexOf( _key ) == -1
+        _styleTodo.push( _key ) unless ~_styleTodo.indexOf( _key )
         unless @_elemTodoH[_id]
           @_elemTodo.push( _id )
           @_elemTodoH[_id] = true
@@ -760,25 +760,25 @@ ELEM = HClass.extend
   _warmup: ->
     _ua = navigator.userAgent
     _browserType = BROWSER_TYPE
-    _browserType.opera    = _ua.indexOf('Opera') != -1
-    _browserType.safari   = _ua.indexOf('KHTML') != -1
-    _browserType.symbian  = _ua.indexOf('SymbianOS') != -1
-    _browserType.chrome   = _ua.indexOf('Chrome') != -1
+    _browserType.opera    = !!~_ua.indexOf('Opera')
+    _browserType.safari   = !!~_ua.indexOf('KHTML')
+    _browserType.symbian  = !!~_ua.indexOf('SymbianOS')
+    _browserType.chrome   = !!~_ua.indexOf('Chrome')
     _isIE = document.all and not _browserType.opera
     if _isIE
       _browserType.ie  = _isIE
-      _browserType.ie6 = _ua.indexOf('MSIE 6') != -1
-      _browserType.ie7 = _ua.indexOf('MSIE 7') != -1
-      _browserType.ie8 = _ua.indexOf('MSIE 8') != -1
-      _browserType.ie9 = _ua.indexOf('MSIE 9') != -1
-      _browserType.ie10 = _ua.indexOf('MSIE 10') != -1
+      _browserType.ie6 = !!~_ua.indexOf('MSIE 6')
+      _browserType.ie7 = !!~_ua.indexOf('MSIE 7')
+      _browserType.ie8 = !!~_ua.indexOf('MSIE 8')
+      _browserType.ie9 = !!~_ua.indexOf('MSIE 9')
+      _browserType.ie10 = !!~_ua.indexOf('MSIE 10')
       unless _browserType.ie9
         _browserType.ie9 = _browserType.ie10 # IE 10 is treated like IE 9
-    _browserType.mac = _ua.indexOf('Macintosh') != -1
-    _browserType.win = _ua.indexOf('Windows') != -1
-    _browserType.firefox = _ua.indexOf('Firefox') != -1
-    _browserType.firefox2 = _ua.indexOf('Firefox/2.') != -1
-    _browserType.firefox3 = _ua.indexOf('Firefox/3.') != -1
+    _browserType.mac = !!~_ua.indexOf('Macintosh')
+    _browserType.win = !!~_ua.indexOf('Windows')
+    _browserType.firefox = !!~_ua.indexOf('Firefox')
+    _browserType.firefox2 = !!~_ua.indexOf('Firefox/2.')
+    _browserType.firefox3 = !!~_ua.indexOf('Firefox/3.')
     _browserType.firefox4 = _browserType.firefox and not _browserType.firefox2 and not _browserType.firefox3
     @_domWaiter()
     null

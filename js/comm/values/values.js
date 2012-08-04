@@ -114,7 +114,7 @@ COMM.Values = HClass.extend({
   **/
   changed: function(_value){
     var _this = this;
-    if(_this.tosync.indexOf(_value.id)===-1){
+    if(!~_this.tosync.indexOf(_value.id)){
       _this.tosync.push(_value.id);
       var _transporter = COMM.Transporter;
       if(!_transporter.busy){
@@ -156,7 +156,7 @@ COMM.Values = HClass.extend({
       return '-';
     }
     var _type = (typeof _obj).slice(0,1);
-    if(this._builtins.indexOf(_type)!==-1){
+    if(~this._builtins.indexOf(_type)){
       return _type;
     }
     else if(_type==='o'){

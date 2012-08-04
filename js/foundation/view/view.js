@@ -783,7 +783,7 @@ HView = HClass.extend({
       var _partName = this.markupElemNames[ i ],
           _elemName = _partName + this.elemId,
           _htmlIdMatch = ' id="' + _elemName + '"';
-      if( this.markup.indexOf( _htmlIdMatch ) !== -1 ) {
+      if( ~this.markup.indexOf( _htmlIdMatch ) ) {
         this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
       }
     }
@@ -1432,7 +1432,7 @@ HView = HClass.extend({
       HSystem.delView(this.viewId);
       this.parent.viewsZOrder.splice( _viewZIdx, 1 );
       var _sysUpdateZIndexOfChildrenBufferIndex = HSystem._updateZIndexOfChildrenBuffer.indexOf( this.viewId );
-      if(_sysUpdateZIndexOfChildrenBufferIndex !== -1){
+      if(~_sysUpdateZIndexOfChildrenBufferIndex){
         HSystem._updateZIndexOfChildrenBuffer.splice( _sysUpdateZIndexOfChildrenBufferIndex, 1 );
       }
       
@@ -2005,7 +2005,7 @@ HView = HClass.extend({
   **/
   unbindDomElement: function(_elementId) {
     var _indexOfElementId = this._domElementBindings.indexOf(_elementId);
-    if (_indexOfElementId > -1) {
+    if (~_indexOfElementId) {
       ELEM.del(_elementId);
       this._domElementBindings.splice(_indexOfElementId, 1);
     }
@@ -2083,7 +2083,7 @@ HView = HClass.extend({
       return false;
     }
     if( typeof _obj['hasAncestor'] === 'function' ){
-      if( _obj.parents.indexOf( this ) !== -1 ){
+      if( ~_obj.parents.indexOf( this ) ){
         return true;
       }
     }

@@ -117,14 +117,14 @@ HTab = HControl.extend({
     if(_tabIdx instanceof HTabView){
       _tabIdx = _tabIdx.tabIndex;
     }
-    if(this.selectIdx!==-1){
+    if(~this.selectIdx){
       var _tabSelectElemId = this.tabLabels[this.selectIdx],
           _tabSelectViewId = this.tabs[this.selectIdx];
       ELEM.delClassName(_tabSelectElemId,'item-fg');
       ELEM.addClassName(_tabSelectElemId,'item-bg');
       HSystem.views[_tabSelectViewId].hide();
     }
-    if(_tabIdx!==-1){
+    if(~_tabIdx){
       var _tabLabelElemId = this.tabLabels[_tabIdx],
           _tabViewId = this.tabs[_tabIdx];
       ELEM.delClassName(_tabLabelElemId,'item-bg');

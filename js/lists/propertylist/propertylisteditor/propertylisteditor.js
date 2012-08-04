@@ -68,7 +68,7 @@ HPropertyListEditor = HControl.extend({
   lostActiveStatus: function(newActive){
     this.base();
     if( newActive &&
-      ( (newActive === this) || (newActive.parents.indexOf(this) !== -1) )
+      ( (newActive === this) || ~newActive.parents.indexOf(this) )
     ){
       return;
     }
@@ -132,7 +132,7 @@ HPropertyListEditor = HControl.extend({
       },
       refreshValue: function(){
         if(this.drawn){
-          if(this.boldTypes.indexOf(this.parent.value.type)!==-1){
+          if(~this.boldTypes.indexOf(this.parent.value.type)){
             this.setStyle('font-weight','bold',true);
           }
           else{

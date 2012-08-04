@@ -64,7 +64,7 @@ HValueResponder = HClass.extend({
     if(_value !== undefined && this['valueObj'] && this.valueDiffers(_value)) {
       var _valueManager = COMM.Values;
       this.value = _value;
-      if( _valueManager._builtins.indexOf( _valueManager.type(_value) ) === -1 ){
+      if( !~_valueManager._builtins.indexOf( _valueManager.type(_value) ) ){
         this.valueObj.set( _valueManager.clone( _value ) );
       }
       else {

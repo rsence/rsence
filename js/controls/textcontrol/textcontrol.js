@@ -270,7 +270,7 @@ HTextControl = HControl.extend({
       _marker = this._randomMarker();
       
       // re-generate marker if it's found in the text.
-      while( _origValue.indexOf( _marker ) !== -1){
+      while( ~_origValue.indexOf( _marker ) ){
         _marker = this._randomMarker();
       }
       

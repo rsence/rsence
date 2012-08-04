@@ -30,7 +30,7 @@ HValueAction = HClass.extend({
       HSystem.delView(this.viewId);
       this.parent.viewsZOrder.splice( _viewZIdx, 1 );
       var _sysUpdateZIndexOfChildrenBufferIndex = HSystem._updateZIndexOfChildrenBuffer.indexOf( this.viewId );
-      if(_sysUpdateZIndexOfChildrenBufferIndex !== -1){
+      if(~_sysUpdateZIndexOfChildrenBufferIndex){
         HSystem._updateZIndexOfChildrenBuffer.splice( _sysUpdateZIndexOfChildrenBufferIndex, 1 );
       }
       this.parent  = null;
