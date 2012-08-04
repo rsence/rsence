@@ -66,7 +66,7 @@ COMM.JSLoader = HClass.extend({
     var
     _this = this,
     _url = _this._formatUrl( _jsName );
-    if((_this._loadedJS.indexOf(_url)!==-1)) {
+    if(~_this._loadedJS.indexOf(_url)) {
       return;
     }
     // console.log('jsLoader load:',_url);

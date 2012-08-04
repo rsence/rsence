@@ -133,7 +133,7 @@ HClass.prototype = {
       )( arguments );
     };
     this.hasAncestor = function( _obj ){
-      return this.ancestors.indexOf( _obj ) !== -1;
+      return !!~this.ancestors.indexOf( _obj );
     };
     this['new'] = this.nu;
     return this;

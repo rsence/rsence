@@ -133,7 +133,7 @@ HValue = HClass.extend({
     if(_responder===undefined){
       throw("HValueBindError: responder is undefined!");
     }
-    if(this.views.indexOf(_responder)===-1){
+    if(!~this.views.indexOf(_responder)){
       this.views.push(_responder);
       _responder.setValueObj( this );
     }

@@ -164,7 +164,7 @@ COMM = {
     _this.options = _options;
     _this.X   = _comm._XMLHttpRequest();
     if(_method === 'GET' && _params.length !== 0){
-      _url += ((_url.indexOf('?')!==-1)?'&':'?')+_comm._arrayToQueryString(_params);
+      _url += (~_url.indexOf('?')?'&':'?')+_comm._arrayToQueryString(_params);
     }
     if(!_async){
       console.log(

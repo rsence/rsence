@@ -60,7 +60,7 @@ HCheckboxList = HListItemControl.extend({
   *
   **/
   addItem: function( _listValue ){
-    if(this.value.indexOf(_listValue) === -1){
+    if(!~this.value.indexOf(_listValue)){
       var _newValue = [], i = 0;
       for( ; i < this.value.length; i++ ){
         _newValue.push( this.value[i] );
@@ -80,7 +80,7 @@ HCheckboxList = HListItemControl.extend({
   **/
   delItem: function( _listValue ){
     var _listIndex = this.value.indexOf(_listValue);
-    if(_listIndex !== -1){
+    if(~_listIndex){
       var _newValue = [], i = 0;
       for( ; i < this.value.length; i++ ){
         if(this.value[i] !== _listValue){
@@ -125,7 +125,7 @@ HCheckboxList = HListItemControl.extend({
       _listItem = _listItems[i];
       _value = _listItem[0];
       _label = _listItem[1];
-      _checked = (this.value.indexOf( _value ) !== -1);
+      _checked = !!~this.value.indexOf( _value );
       _checkbox = this.ListCheckbox.nu(
         [ 4, (i*23)+4, null, 23, 4, null ],
         this, {
@@ -180,7 +180,7 @@ HCheckboxList = HListItemControl.extend({
         _isSelected;
     for( ; i < _listItems.length; i++ ){
       _listItemValue = _listItems[i][0];
-      _isSelected = (_value.indexOf( _listItemValue ) !== -1);
+      _isSelected = !!~_value.indexOf( _listItemValue );
       this.listItemViews[i].setValue( _isSelected );
       if(_isSelected){
         _selectedItems.push( _listItemValue );

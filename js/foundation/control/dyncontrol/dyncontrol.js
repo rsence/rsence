@@ -449,7 +449,7 @@ HDynControl = HControl.extend({
     this._startPoint = new HPoint(x,y);
     this._startRect  = new HRect( this.rect );
     this._detectActionFlag();
-    if(this._actionFlag!==-1){
+    if(~this._actionFlag){
       this._actionFns[this._actionFlag](this,x,y);
     }
     return true; // prevents text selection
@@ -483,7 +483,7 @@ HDynControl = HControl.extend({
       x+=_scrollPos[0];
       y+=_scrollPos[1];
     }
-    if(this._actionFlag!==-1){
+    if(~this._actionFlag){
       this._actionFns[this._actionFlag](this,x,y);
     }
     return true; // prevents text selection
@@ -518,7 +518,7 @@ HDynControl = HControl.extend({
       x+=_scrollPos[0];
       y+=_scrollPos[1];
     }
-    if(this._actionFlag!==-1){
+    if(~this._actionFlag){
       this._actionFns[this._actionFlag](this,x,y);
     }
     this.setStyle('cursor','default');

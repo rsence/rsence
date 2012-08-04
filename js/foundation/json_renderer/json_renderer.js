@@ -114,7 +114,7 @@ COMM.JSONRenderer = HClass.extend({
       _extend = HClass;
     }
     for( _key in _definition ){
-      if( _reserved.indexOf( _key ) === -1 ){
+      if( !~_reserved.indexOf( _key ) ){
         _value = _definition[_key];
         if( typeof _value === 'string' ){
           _value = this.extEval( _value );
@@ -134,7 +134,7 @@ COMM.JSONRenderer = HClass.extend({
     if(_className === undefined){
       return false;
     }
-    if(_className.indexOf('.') !== -1){
+    if(~_className.indexOf('.')){
       var
       _splitClass = _className.split('.'),
       j = 1,
@@ -219,7 +219,7 @@ COMM.JSONRenderer = HClass.extend({
     if( !_dataNode['class'] ){
 
       for( i in _dataNode ){
-        if( _reserved.indexOf( i ) === -1 ){
+        if( !~_reserved.indexOf( i ) ){
           _className = i;
           _origNode = _dataNode;
           _dataNode = _dataNode[i];

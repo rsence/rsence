@@ -138,7 +138,7 @@ HThemeManager = HClass.extend({
   **/
   getCssFilePath: function( _fileName ){
     var _themeName      = this._cssEvalParams[0];
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && (BROWSER_TYPE.ie6 || BROWSER_TYPE.symbian) ){
+    if((~HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)) && (BROWSER_TYPE.ie6 || BROWSER_TYPE.symbian) ){
       return "url('"+this._joinPath( this.getThemeGfxPath(), _fileName.replace('.png','-ie6.gif') )+"')";
     }
     else {
@@ -314,14 +314,14 @@ HThemeManager = HClass.extend({
     /* Load Theme-Specific CSS: */
     if(!this._cssCache[_themeName]){
       this._cssCache[_themeName] = {};
-      if(HNoCommonCSS.indexOf(_themeName)===-1){
+      if(!~HNoCommonCSS.indexOf(_themeName)){
         var _commonCssUrl = this._cssUrl( _themeName, 'common', _themePath, null );
         this.loadCSS( _commonCssUrl );
       }
     }
     
     /* Load Component-Specific CSS, unless configured to only load the common css: */
-    if(HNoComponentCSS.indexOf(_themeName)===-1){
+    if(!~HNoComponentCSS.indexOf(_themeName)){
       if (!this._cssCache[_themeName][_componentName]){
         var _componentCssUrl = this._cssUrl( _themeName, _componentName, _themePath );
         this._cssCache[_themeName][_componentName] = true;
@@ -340,7 +340,7 @@ HThemeManager = HClass.extend({
     return _url;
   },
   _componentGfxFile: function( _themeName, _componentName, _themePath, _fileName ){
-    if((HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)!==-1) && BROWSER_TYPE.ie6){
+    if((~HThemeHasIE6GifsInsteadOfPng.indexOf(_themeName)) && BROWSER_TYPE.ie6){
       return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath), _fileName.replace('.png','-ie6.gif') );
     }
     return this._joinPath( this._componentGfxPath(_themeName, _componentName, _themePath), _fileName );

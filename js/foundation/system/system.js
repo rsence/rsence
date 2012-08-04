@@ -317,11 +317,11 @@ HSystem = {
   
 /** Updates the z-indexes of the children of the given +_viewId+. **/
   updateZIndexOfChildren: function(_viewId) {
-    if(this._updateZIndexOfChildrenBuffer.indexOf(_viewId)===-1){
+    if(!~this._updateZIndexOfChildrenBuffer.indexOf(_viewId)){
       this._updateZIndexOfChildrenBuffer.push(_viewId);
     }
     if((_viewId !== undefined && _viewId !== null) && (this.views[_viewId].app === this.views[_viewId].parent)){
-      (this._updateZIndexOfChildrenBuffer.indexOf(null)===-1) && this._updateZIndexOfChildrenBuffer.push(null);
+      (!~this._updateZIndexOfChildrenBuffer.indexOf(null)) && this._updateZIndexOfChildrenBuffer.push(null);
     }
   },
   

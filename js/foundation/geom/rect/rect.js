@@ -663,7 +663,7 @@ HRect = HClass.extend({
   *
   **/
   bind: function(_view){
-    if(this.viewIds.indexOf( _view.viewId ) === -1){
+    if(!~this.viewIds.indexOf( _view.viewId )){
       this.viewIds.push( _view.viewId );
     }
     this._updateFlexibleDimensions();
@@ -674,7 +674,7 @@ HRect = HClass.extend({
   **/
   release: function(_view){
     var _viewIdx = this.viewIds.indexOf(_view.viewId);
-    if(_viewIdx !== -1){
+    if(~_viewIdx){
       this.viewIds.splice( _viewIdx, 1 );
     }
   },

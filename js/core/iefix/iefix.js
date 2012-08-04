@@ -195,7 +195,7 @@ iefix = {
   inlineStyleChanged: function(_element){
     var _this=iefix,
         _currentStyle=_element.currentStyle;
-    if(_this._noStyleTagNames.indexOf(_element.tagName)!==-1){
+    if(~_this._noStyleTagNames.indexOf(_element.tagName)){
       return;
     }
     // check if element needs to be positioned from the right
@@ -315,7 +315,7 @@ iefix = {
       //iefix._traverseTree();
     //}
     else if(_propName.substring(0,6)==='style.'){
-      if(iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])!==-1){
+      if(~iefix._traverseStyleProperties.indexOf(_propName.split('style.')[1])){
         //window.status = 'htcElementEntry: '+iefix._elemEntryCount+' style';
         iefix._traverseTree();
       }
