@@ -281,7 +281,7 @@ HTab = HControl.extend({
 var//RSence.Controls
 HTabItem = {
   nu: function(_rect, _parent, _options){
-    if( _rect.hasAncestor && _rect.hasAncestor( HView ) ){
+    if( _rect && _rect.hasAncestor && _rect.hasAncestor( HView ) ){
       _options = _parent;
       _parent = _rect;
     }
@@ -289,6 +289,9 @@ HTabItem = {
       console.warn && console.warn( "Warning: the rect constructor argument of HTabItem is deprecated." );
     }
     return _parent.addTab( _options.label, _options.select );
+  },
+  'new': function(_rect, _parent, _options){
+    return this.nu(_rect,_parent,_options);
   }
 };
 
