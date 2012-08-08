@@ -122,7 +122,7 @@ EventManagerApp = HApplication.extend
     4: []
     keysDown: []
     hasKeyDown: (k)->
-      if ~@keysDown.indexOf(k) then true else false
+      !!~@keysDown.indexOf(k)
     addKeyDown: (k)->
       if !@hasKeyDown(k)
         @keysDown.push( k )
@@ -199,8 +199,8 @@ EventManagerApp = HApplication.extend
   #
   # List of used event methods for global purposes:
   _eventMethods: [
-    'mouseMove', 'mouseUp', 'mouseDown', 'click', 'keyUp', 'keyDown',
-    'contextMenu', 'resize', 'mouseWheel', 'doubleClick'
+    'resize', 'mouseMove', 'doubleClick', 'contextMenu', 'click', 'mouseUp',
+    'mouseDown', 'keyUp', 'keyDown', 'mouseWheel'
   ]
   #
   # This structure keeps track of registered elem/event/object/method; see #observe and #stopObserving
@@ -425,7 +425,6 @@ EventManagerApp = HApplication.extend
       delete @_listeners.byId[_viewId]
     else
       @warn( "EventManager##{_warnMethodName} => viewId not registered: #{_viewId}" )
-      console.log(@_listeners.byId[_viewId],_viewId,_ctrl)
     for _key, _value of @_listeners.byEvent
       _viewIdx = _value.indexOf(_viewId)
       _value.splice(_viewIdx,1) if ~_viewIdx
@@ -660,7 +659,14 @@ EventManagerApp = HApplication.extend
       for _viewId in _parentIds
         continue if _viewId == _selfId
         _view = _views[_viewId]
-        if _view.hasAncestor? and _view.hasAncestor( HView ) and _view.rect[_matchMethod](_area)
+        if _view.parent.hasAncestor( HView )
+          if _area.offsetTo?
+            _searchArea = HRect.nu(_area).offsetTo( _area.left-_view.parent.pageX(), _area.top-_view.parent.pageY() )
+          else
+            _searchArea = HPoint.nu( _area.x-_view.parent.pageX(), _area.y-_view.parent.pageY() )
+        else
+          _searchArea = _area
+        if _view.hasAncestor? and _view.hasAncestor( HView ) and _view.rect[_matchMethod](_searchArea)
           if ~_droppable.indexOf( _viewId )
             _dropId = _search( _view.viewsZOrder.slice().reverse() )
             return _dropId if _dropId
@@ -691,19 +697,36 @@ EventManagerApp = HApplication.extend
   delActiveControl: (_newActive)->
     _active = @_listeners.active
     _focused = @_listeners.focused
+    _dragged = @_listeners.dragged
+    _hovered = @_listeners.hovered
     return null if _active.length == 0
-    if _active.length == 1
-      _prevActive = @_views[_active[0]]
-    else
+    _prevActive = @_views[_active[0]]
+    if _active.length != 1
       @warn "Danger, too many active items: #{JSON.stringify(_active)}"
     for _viewId in _active.slice()
       continue if _newActive != null and _viewId == _newActive.viewId
       _ctrl = @_views[_viewId]
       _ctrl.active = false
       _idx = _active.indexOf( _viewId )
+      _dragIdx = _dragged.indexOf(_viewId)
+      # console.log('dragIdx:',~_dragIdx)
+      if ~_dragIdx
+        _dragged.splice( _dragIdx, 1 )
+        for _dropViewId in _hovered
+          _dropCtrl = @_views[_dropViewId]
+          _dropCtrl.endHover(_ctrl) if _dropCtrl.endHover?
+          _dropCtrl.drop(_ctrl) if _dropCtrl.drop?
+        [ x, y ] = @status.crsr
+        _ctrl.endDrag( x, y )
       _active.splice( _idx, 1 )
+      # console.log('lost:',_viewId)
       @blur(_ctrl) if ~_focused.indexOf(_viewId)
       _ctrl.lostActiveStatus(_newActive)
+      # _ctrl.setStyle('border','1px dotted red')
+      # if @prevActiveCtrl
+      #   @prevActiveCtrl.setStyle('border','1px dotted gray')
+      #   @prevActiveCtrl = null
+      # @prevActiveCtrl = _ctrl
     _prevActive
   #
   # Adds the active control
@@ -713,9 +736,11 @@ EventManagerApp = HApplication.extend
     _idx = _active.indexOf( _ctrl.viewId )
     unless ~_idx
       _active.unshift(_ctrl.viewId)
+      # console.log('gained:',_ctrl.viewId)
       @focus(_ctrl) unless ~_focused.indexOf(_ctrl.viewId)
       _ctrl.active = true
       _ctrl.gainedActiveStatus(_prevActive)
+      # _ctrl.setStyle('border','1px dotted blue')
   #
   # Sets the active control
   changeActiveControl: (_ctrl)->
@@ -767,6 +792,7 @@ EventManagerApp = HApplication.extend
       _ctrl = @_views[_viewId]
       @changeActiveControl( _ctrl )
     [ x, y ] = @status.crsr
+    @_handleMouseMove(x,y)
     for _viewId in _mouseDownIds
       _ctrl = @_views[_viewId]
       _stop = true if _ctrl.mouseDown( x, y, _leftClick )
@@ -775,7 +801,6 @@ EventManagerApp = HApplication.extend
         _ctrl = @_views[_viewId]
         _dragged.unshift( _viewId )
         _stop = true if _ctrl.startDrag( x, y, _leftClick )
-    @_handleMouseMove(x,y)
     @_cancelTextSelection() unless _startDragIds.length == 0 and _mouseDownIds.length == 0
     Event.stop(e) if _stop
   #
@@ -808,10 +833,8 @@ EventManagerApp = HApplication.extend
         _mouseUpIds.push( _viewId )
       if ~_draggable.indexOf( _viewId ) and ~_dragged.indexOf( _viewId )
         _endDragIds.push( _viewId )
-    for _viewId in _newActive
-      _ctrl = @_views[_viewId]
-      @changeActiveControl( _ctrl )
     [ x, y ] = @status.crsr
+    @_handleMouseMove(x,y)
     for _viewId in _mouseUpIds
       _ctrl = @_views[_viewId]
       _stop = true if _ctrl.mouseUp( x, y, _leftClick )
@@ -825,9 +848,11 @@ EventManagerApp = HApplication.extend
           _dropCtrl.endHover(_ctrl) if _dropCtrl.endHover?
           _dropCtrl.drop(_ctrl) if _dropCtrl.drop?
         _stop = true if _ctrl.endDrag( x, y, _leftClick )
+    for _viewId in _newActive
+      _ctrl = @_views[_viewId]
+      @changeActiveControl( _ctrl )
     @_listeners.hovered = []
     @_listeners.dragged = []
-    @_handleMouseMove(x,y)
     @_cancelTextSelection() unless _endDragIds.length == 0 and _mouseUpIds.length == 0
     Event.stop(e) if _stop
     ## /jatka
@@ -847,28 +872,47 @@ EventManagerApp = HApplication.extend
     _focused = @_listeners.focused
     _active  = @_listeners.active
     _clickable = @_listeners.byEvent.click
+    _doubleClickable = @_listeners.byEvent.doubleClick
+    _doubleClickWait = []
     _newActive = []
     _clickIds = []
     _stop = false
     for _viewId in _focused
       _newActive.push( _viewId ) unless ~_active.indexOf(_viewId)
-      if ~_clickable.indexOf(_viewId)
+      if ~_clickable.indexOf(_viewId) and ~_doubleClickable.indexOf(_viewId)
+        _doubleClickWait.push( _viewId )
+      else if ~_clickable.indexOf(_viewId)
         _clickIds.push( _viewId )
     for _viewId in _newActive
       _ctrl = @_views[_viewId]
       @changeActiveControl( _ctrl )
     [ x, y ] = @status.crsr
+    @_handleMouseMove(x,y)
     for _viewId in _clickIds
       _ctrl = @_views[_viewId]
       unless _ctrl.click? and typeof _ctrl.click == 'function'
         @warn( 'no click:', _ctrl, _ctrl.click?, typeof _ctrl.click )
         continue
       _stop = true if _ctrl.click( x, y, _leftClick )
-    @_handleMouseMove(x,y)
+    if _doubleClickWait.length
+      _this = @
+      @dblClickWait = setTimeout( (->
+          for _viewId in _doubleClickWait
+            _ctrl = _this._views[_viewId]
+            unless _ctrl.click? and typeof _ctrl.click == 'function'
+              _this.warn( 'no click:', _ctrl, _ctrl.click?, typeof _ctrl.click )
+              continue
+            _stop = true if _ctrl.click( x, y, _leftClick )
+          Event.stop(e) if _stop
+        ), 50
+      )
     Event.stop(e) if _stop
   #
   # Handles doubleClick events
   doubleClick: (e)->
+    if @dblClickWait
+      clearTimeout( @dblClickWait )
+      delete this['dblClickWait']
     @_modifiers(e)
     _leftClick = Event.isLeftClick(e)
     @status.setButton1( false )
@@ -879,12 +923,14 @@ EventManagerApp = HApplication.extend
     _doubleClicks = []
     _doubleClickable = @_listeners.byEvent.doubleClick
     _stop = false
+    # console.log('focused:',_focused)
     for _viewId in _focused
       if ~_doubleClickable.indexOf(_viewId)
         _doubleClicks.push( _viewId )
-    for _viewId in _doubleClickable
+    for _viewId in _doubleClicks
       _ctrl = @_views[_viewId]
       if _ctrl.doubleClick?
+        # console.log _ctrl.componentName
         _stop = true if _ctrl.doubleClick(x,y,true)
     Event.stop(e) if _stop
   #
@@ -988,7 +1034,7 @@ EventManagerApp = HApplication.extend
   _detectCmdKey: ( _keyCode )->
     # On Opera, return true on any of the keycodes
     if BROWSER_TYPE.opera
-      if ~@_cmdKeys.indexOf(_keyCode) then return true else return false
+      return !!~@_cmdKeys.indexOf(_keyCode)
     # Any mac browser (except opera, above) uses left or right windows key
     # equivalent as the Command key.
     else if BROWSER_TYPE.mac
@@ -1031,6 +1077,12 @@ EventManagerApp = HApplication.extend
     _keyUps = []
     _textEnterers = @_listeners.byEvent.textEnter
     _textEnters = []
+    for _viewId in _textEnterers
+      _textEnters.push( _viewId ) if ~_enabled.indexOf( _viewId )
+    for _viewId in _textEnters
+      _ctrl = @_views[_viewId]
+      if _ctrl.textEnter?
+        _stop = true if _ctrl.textEnter( _keyCode )
     if @status.hasKeyDown( _keyCode )
       for _viewId in _active
         _keyUps.push( _viewId ) if ~_keyUppers.indexOf( _viewId )
@@ -1039,12 +1091,6 @@ EventManagerApp = HApplication.extend
       _ctrl = @_views[_viewId]
       if _ctrl.keyUp?
         _stop = true if _ctrl.keyUp( _keyCode )
-    for _viewId in _textEnterers
-      _textEnters.push( _viewId ) if ~_enabled.indexOf( _viewId )
-    for _viewId in _textEnters
-      _ctrl = @_views[_viewId]
-      if _ctrl.textEnter?
-        _stop = true if _ctrl.textEnter( _keyCode )
     Event.stop(e) if _stop
   keyPress: (e)->
     @warn('EventManager#keyPress not implemented')
