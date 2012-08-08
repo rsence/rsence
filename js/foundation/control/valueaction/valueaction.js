@@ -9,6 +9,13 @@
 var
 HValueAction = HClass.extend({
   constructor: function( _rect, _parent, _options ){
+    if( _rect && _rect.hasAncestor && _rect.hasAncestor( HClass ) ){
+      _options = _parent;
+      _parent = _rect;
+    }
+    else {
+      console.warn && console.warn( "Warning: the rect constructor argument of HValueAction is deprecated:",_rect );
+    }
     this.parent = _parent;
     this.options = _options;
     if( _options.value ){
