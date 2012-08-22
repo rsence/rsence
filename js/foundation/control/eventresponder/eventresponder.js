@@ -774,18 +774,18 @@ HEventResponder = HClass.extend({
   **/
   selected: false,
   select: function(){
-    this.selected = true;
-    console.warn("HControl#select not supported yet.");
+    // console.warn("HControl#select not supported yet.");
   },
   deSelect: function(){
-    this.selected = false;
-    console.warn("HControl#deSelect not supported yet.");
+    // console.warn("HControl#deSelect not supported yet.");
   },
   setSelected: function(_state){
     if( _state ){
+      this.selected = true;
       this.select();
     }
     else {
+      this.selected = false;
       this.deSelect();
     }
   }  
