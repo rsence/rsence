@@ -11,6 +11,73 @@ HLocale = {
   components: {
     
   },
+  compUnits: {
+    strings: {
+      bit: ' b',
+      'byte': ' B',
+      kilobyte: ' kB',
+      kibibyte: ' KiB',
+      megabyte: ' MB',
+      mebibyte: ' MiB',
+      gigabyte: ' GB',
+      gibibyte: ' GiB',
+      terabyte: ' TB',
+      tebibyte: ' TiB',
+      petabyte: ' PB',
+      pebibyte: ' PiB'//,
+      // exabyte: ' EB',
+      // ebibyte: ' EiB',
+      // zettabyte: ' ZB',
+      // zebibyte: ' ZiB',
+      // yottabyte: ' YB',
+      // yobibyte: ' YiB'
+    },
+    units: {
+      SI: [
+        [ 1000, 'byte' ],
+        [ 1000000, 'kilobyte' ],
+        [ 1000000000, 'megabyte' ],
+        [ 1000000000000, 'gigabyte' ],
+        [ 1000000000000000, 'terabyte' ],
+        [ 1000000000000000000, 'petabyte' ]
+      ],
+      IEC: [
+        [ 1024, 'byte' ],
+        [ 1048576, 'kibibyte' ],
+        [ 1073741824, 'mebibyte' ],
+        [ 1099511627776, 'gibibyte' ],
+        [ 1125899906842624, 'tebibyte' ],
+        [ 1152921504606846976, 'pebibyte' ]
+      ]
+    },
+    defaultUnitSystem: 'SI',
+    formatBytes: function( _value, _decimals, _unitSystem ){
+      var _this = HLocale.compUnits;
+      if(!_decimals){ _decimals = 0; }
+      if(!_unitSystem){ _unitSystem = _this.defaultUnitSystem; }
+      var
+      _strings = _this.strings,
+      _decMul = Math.pow(10,_decimals),
+      _conv = _this.units[_unitSystem],
+      i = 0,
+      _lim, _div=1, _num, _suffix;
+      for( ; i < _conv.length; i++ ){
+        _lim = _conv[i][0];
+        _suffix = _strings[_conv[i][1]];
+        if( _value < _lim ){
+          break;
+        }
+        _div = _lim;
+      }
+      if( i && _decimals ){
+        _num = Math.round((_value*_decMul)/_div)/_decMul;
+      }
+      else {
+        _num = Math.round(_value/_div);
+      }
+      return _num+_suffix;
+    }
+  },
   dateTime: {
     strings: {
       monthsLong: [
