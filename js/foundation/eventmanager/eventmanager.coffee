@@ -666,13 +666,15 @@ EventManagerApp = HApplication.extend
             _searchArea = HPoint.nu( _area.x-_view.parent.pageX(), _area.y-_view.parent.pageY() )
         else
           _searchArea = _area
-        if _view.hasAncestor? and _view.hasAncestor( HView ) and _view.rect[_matchMethod](_searchArea)
-          if ~_droppable.indexOf( _viewId )
-            _dropId = _search( _view.viewsZOrder.slice().reverse() )
-            return _dropId if _dropId
-            return _viewId
-          else
-            return _search( _view.viewsZOrder.slice().reverse() )
+        if _view.hasAncestor? and _view.hasAncestor( HView )
+          if _view.rect[_matchMethod](_searchArea)
+            if ~_droppable.indexOf( _viewId )
+              _dropId = _search( _view.viewsZOrder.slice().reverse() )
+              return _dropId if _dropId
+              return _viewId
+            else
+              _result = _search( _view.viewsZOrder.slice().reverse() )
+              return _result if _result
       return false
     _dropId = _search( HSystem.viewsZOrder.slice().reverse() )
     return [ _dropId ] if _dropId
@@ -831,8 +833,8 @@ EventManagerApp = HApplication.extend
       _eventOptions = @_listeners.byId[_viewId]
       if ~_mouseUppable.indexOf( _viewId )
         _mouseUpIds.push( _viewId )
-      if ~_draggable.indexOf( _viewId ) and ~_dragged.indexOf( _viewId )
-        _endDragIds.push( _viewId )
+    for _viewId in _dragged
+      _endDragIds.push( _viewId )
     [ x, y ] = @status.crsr
     @_handleMouseMove(x,y)
     for _viewId in _mouseUpIds
