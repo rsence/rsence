@@ -88,6 +88,7 @@ HMiniMenu = HRadioButtonList.extend({
     if( this.menuItemView ){
       this.menuItemView.sendToBack();
       this.menuItemView.hide();
+      this.menuItemView.offsetTo(0-this.menuItemView.rect.width,0-this.menuItemView.rect.height);
     }
   },
   
