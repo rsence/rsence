@@ -331,6 +331,9 @@ HControl = HView.extend({
   // The CSS class name to set when the component is disabled
   CSS_DISABLED: "disabled",
   
+  // The CSS class name to set when the component is selected
+  CSS_SELECTED: "selected",
+  
   // The CSS class name to set when the component is enabled
   CSS_ENABLED:  "enabled",
   

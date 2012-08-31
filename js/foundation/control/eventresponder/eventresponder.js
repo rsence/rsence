@@ -780,6 +780,7 @@ HEventResponder = HClass.extend({
     // console.warn("HControl#deSelect not supported yet.");
   },
   setSelected: function(_state){
+    this.toggleCSSClass(this.elemId, HControl.CSS_SELECTED, _state);
     if( _state ){
       this.selected = true;
       this.select();
