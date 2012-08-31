@@ -217,7 +217,13 @@ HTable = HControl.extend
         for _col, _colNum in _row
           [ _colClass, _colOpts ] = @_getClassNameAndValueOfCol(_col, _colNum)
           _colOpts.value = _col
-          _rows[_rowNum][_colNum] = _colClass.nu( [0,_top,null,_rowHeight,0,null], @colViews[_colNum], _colOpts )
+          _colOpts.tableRow = _rowNum
+          _colOpts.tableCol = _colNum
+          _rows[_rowNum][_colNum] = _colClass.new(
+            [ 0, _top, null, _rowHeight, 0, null ],
+            @colViews[_colNum],
+            _colOpts
+          )
         _top += _rowHeight
       for _colView in _colViews
         _colView.rect.setHeight(_top)
