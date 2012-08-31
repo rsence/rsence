@@ -64,7 +64,8 @@ HRadioButtonList = HListItemControl.extend({
       [ 4, (i*23)+4, null, 23, 4, null ],
       this, {
         label: _label,
-        enabled: this.enabled
+        enabled: this.enabled,
+        value: false
       }
     );
   },
