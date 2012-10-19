@@ -21,11 +21,11 @@ HRadioButtonList = HListItemControl.extend({
   listItemViews: [],
   
 /** = Description
-  * Setter function for listItems and listItemViews. Destroys 
+  * Setter function for listItems and listItemViews. Destroys
   * the old HRadiabuttons before creating the new ones based on the
-  * listItems given as an parameter. 
+  * listItems given as an parameter.
   *
-  * = Parameters 
+  * = Parameters
   * +_listItems+:: listItems is an array-packed array, where each index in the
   *                surrounding array contains a [ value, label ] pair.
   *                The value is mapped to the value of the HRadiobuttonList
@@ -78,7 +78,7 @@ HRadioButtonList = HListItemControl.extend({
 /** = Description
   * Destructor. Sets listItems and listItemViews to null and initiates
   * destructor for radioButtonIndexValue.
-  * 
+  *
   **/
   die: function(){
     if(this._listItemResponder){
@@ -107,14 +107,16 @@ HRadioButtonList = HListItemControl.extend({
   },
   
 /** = Description
-  * 
-  * 
+  * RadioButtonIndexResponder sets the value based on which radiobutton is selected.
   **/
   RadioButtonIndexResponder: HValueResponder.extend({
     constructor: function( _parent, _valueObj ){
       this.parent = _parent;
     },
     refresh: function(){
+      if( this.value === -1 ){
+        return;
+      }
       var
       _listItems = this.parent.listItems,
       _value;
@@ -124,7 +126,6 @@ HRadioButtonList = HListItemControl.extend({
       if(_listItems[ this.value ] !== undefined){
         _value = _listItems[ this.value ];
         if( this.parent.value !== _value[0] ){
-          // console.log('radio button index responder:',_value[0],', parent value:',this.parent.value);
           this.parent.setValue( _value[0] );
         }
       }
@@ -136,7 +137,6 @@ HRadioButtonList = HListItemControl.extend({
   refreshValue: function(){
     var _value = this.value;
     if ( this.listItems && this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
-      // debugger;
       if ( this.radioButtonResponder === false ){
         this.radioButtonIndexValue = HValue.nu( false, 0 );
         this.radioButtonIndexValue.bind( this.valueMatrix );
@@ -145,10 +145,8 @@ HRadioButtonList = HListItemControl.extend({
       }
       for ( var i = 0; i < this.listItems.length; i++ ) {
         if ( this.listItems[i][0] === _value ) {
-          // if( this.radioButtonResponder.value !== i ){
             this.radioButtonResponder.setValue( -1 );
             this.radioButtonResponder.setValue( i );
-          // }
           break;
         }
       }
