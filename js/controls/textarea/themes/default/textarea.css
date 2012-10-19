@@ -21,5 +21,6 @@
 
 .default .textarea_input_parent {
   position: absolute;
+  z-index: 2;
   #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:1px;right:3px;bottom:1px;':BROWSER_TYPE.ie?'left:2px;top:1px;right:1px;bottom:1px;':'left:-2px;top:-2px;right:-2px;bottom:-2px;'}
 }

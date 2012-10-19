@@ -789,5 +789,5 @@ HEventResponder = HClass.extend({
       this.selected = false;
       this.deSelect();
     }
-  }  
+  }
 });
