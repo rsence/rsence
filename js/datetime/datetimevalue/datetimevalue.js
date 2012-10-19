@@ -136,6 +136,15 @@ HDateTime = HClass.extend({
   *
   **/
   tzMs: function(_date){
+    if( typeof _date === 'number' ){
+      var _dateDiv = new Date().getTime()/_date;
+      if( _dateDiv > 1000 ){
+        _date = new Date(_date);
+      }
+      else {
+        _date = new Date(_date*1000);
+      }
+    }
     return _date.getTimezoneOffset()*this.msMinute;
   },
 
