@@ -1,12 +1,34 @@
 
 # The RSence namespace
 RSence =
+
+  # Adds text selection prevention class
+  loadUnselectable: ->
+    HThemeManager.useCSS('''
+.textunselectable {
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: -moz-none;
+   -ms-user-select: none;
+   -o-user-select: none;
+   user-select: none;
+}
+.textselectable {
+   -webkit-user-select: text;
+   -khtml-user-select: text;
+   -moz-user-select: text;
+   -ms-user-select: text;
+   -o-user-select: text;
+   user-select: text;
+}
+''')
   
   # Call this method from the index page for
   # client-only features
   clientConf: (_clientPrefix)->
     HThemeManager.themePath = _clientPrefix+'/themes'
     HThemeManager._start()
+    @loadUnselectable()
 
   # Call this method from the index page to
   # setup the environment variables and to

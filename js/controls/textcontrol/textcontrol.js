@@ -20,6 +20,9 @@ var//RSence.Controls
 HTextControl = HControl.extend({
   
   componentName: "textcontrol",
+
+  // allows text selection
+  textSelectable: true,
   
   defaultEvents: {
     textEnter: true,

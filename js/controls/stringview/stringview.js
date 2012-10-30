@@ -23,6 +23,9 @@ var HStringView, HLabel;
   var _HStringViewInterface = {
 
     componentName: "stringview",
+    
+    // allows text selection
+    textSelectable: true,
 
   /** = Description
     * The setStyle method of HStringView applies only to the value

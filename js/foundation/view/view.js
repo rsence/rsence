@@ -582,6 +582,26 @@ HView = HClass.extend({
     }
     return 0;
   },
+
+/** = Description
+  * The selectable state defines whe
+  *
+  **/
+  textSelectable: false,
+  updateTextSelectable: function(){
+    if( this.textSelectable ){
+      ELEM.delClassName( this.elemId, 'textunselectable' );
+      ELEM.addClassName( this.elemId, 'textselectable' );
+    }
+    else {
+      ELEM.delClassName( this.elemId, 'textselectable' );
+      ELEM.addClassName( this.elemId, 'textunselectable' );
+    }
+  },
+  setTextSelectable: function(_flag){
+    this.textSelectable = !!_flag;
+    this.updateSelectable();
+  },
   
 /** --
   * = Description
@@ -602,6 +622,10 @@ HView = HClass.extend({
       else {
         ELEM.addClassName( this.elemId, HThemeManager.currentTheme );
       }
+      if( this.options.textSelectable !== undefined ){
+        this.textSelectable = this.options.textSelectable;
+      }
+      this.updateTextSelectable();
     }
   },
   

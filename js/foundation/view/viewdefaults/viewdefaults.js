@@ -21,6 +21,6 @@ HViewDefaults = HClass.extend({
 /** The default initial visibility of the component.
   **/
   visible:  true
-  
+
 });
 
