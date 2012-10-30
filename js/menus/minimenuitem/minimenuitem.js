@@ -44,7 +44,8 @@ HMiniMenuItem = HRadioButton.extend({
     if( _now - this._parentLastActivation > 200 ){
       this.base();
       this._parentLastActivation = _now;
-      this._activateParentParent();
+      EVENT.changeActiveControl(null);
+      // this._activateParentParent();
     }
     return true;
   },
