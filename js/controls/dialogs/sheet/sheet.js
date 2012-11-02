@@ -124,11 +124,12 @@ HSheet = HControl.extend({
     _parentWidth = _parentSize[0],
     _parentHeight = _parentSize[1],
     _rect = this.rect,
-    _centerLeft = Math.round(_parentWidth*0.5-_rect.width*0.5),
+    _centerLeft = Math.round((_parentWidth*0.5)-(_rect.width*0.5)),
     _centerTop = 0,//Math.round(_parentHeight/2-_rect.height/2);
     _dimmerLeft = 0-_centerLeft,
     _dimmerTop = 0-_centerTop;
     this.rect.offsetTo( _centerLeft, _centerTop );
+    this.drawRect();
     this.setStyleOfPart('dimmer','left',_dimmerLeft+'px');
     this.setStyleOfPart('dimmer','top',_dimmerTop+'px');
     this.setStyleOfPart('dimmer','width',_parentWidth+'px');
