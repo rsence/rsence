@@ -221,10 +221,30 @@ HControl = HView.extend({
     _this.setEvents(_events);
     _this.setEnabled(_options.enabled);
     
+    // The traditional HValue instance to pass in options to be bound:
     if(_options.valueObj){
       _options.valueObj.bind(_this);
     }
-    else if(!_this.valueObj) {
+
+    // The newer HValue instance to pass in options to be bound:
+    // - Same as in guitree syntax, also allows it to be just a valueId
+    if(_options.bind){
+      if(typeof _options.bind === 'string'){
+        var
+        _valueId = _options.bind,
+        _valueObj = HVM.values[_valueId];
+        if( _valueObj ){
+          _valueObj.bind( _this );
+        }
+      }
+      else if ( typeof _options.bind === 'object' ) {
+        _options.bind.bind( _this );
+      }
+    }
+
+    // If none of the above value bindings exist, use a lighter-weight
+    // dummy valueObj instead
+    if(!_this.valueObj) {
       _this.valueObj = HDummyValue.nu();
     }
     
