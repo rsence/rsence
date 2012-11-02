@@ -73,6 +73,14 @@ RSence.GUIApp = HApplication.extend({
     // _this.renderer = COMM.JSONRenderer.extend({
     //   
     // }).nu( _this.value, _this );
+    _this.drawSubviews();
+    if( _this.options.subviews ){
+      _this.options.subviews.call(_this);
+    }
+  },
+
+  drawSubviews: function(){
+
   },
   
   die: function(){
