@@ -732,12 +732,20 @@ HView = HClass.extend({
         ELEM.setCSS( this._ieNoThrough, 'position:absolute;left:0;top:0;bottom:0;right:0;background-color:#ffffff;font-size:0;line-height:0' );
         ELEM.setStyle( this._ieNoThrough, 'opacity', 0.01 );
       }
-      this.drawSubviews();
       if(this.options.style){
         this.setStyles( this.options.style );
       }
       if(this.options.html){
         this.setHTML(this.options.html);
+      }
+      this.drawSubviews();
+      // if options contain a subviews function, call it with the namespace of self
+      if(this.options.subviews && typeof this.options.subviews == 'function'){
+        this.options.subviews.call( this );
+      }
+      // for external testing purposes, a custom className can be defined:
+      if(this.options.testClassName){
+        ELEM.addClassName(this.elemId,this.options.testClassName);
       }
       if(!this.isHidden){
         this.show();
