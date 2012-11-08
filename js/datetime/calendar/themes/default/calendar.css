@@ -85,7 +85,7 @@
 .calendar_weeks_week_col_no {
   color: #666;
 }
-.calendar_weeks_week_col_no:hover {
+.enabled > .calendar_control > .calendar_weeks > .calendar_weeks_week_row > .calendar_weeks_week_col_no:hover {
   color: #000;
 }
 .calendar_weeks_week_col_yes,
@@ -98,7 +98,7 @@
 .calendar_weeks_week_col_sel {
   background-color: #fff;
 }
-.calendar_weeks_week_col_yes:hover {
+.enabled > .calendar_control > .calendar_weeks > .calendar_weeks_week_row > .calendar_weeks_week_col_yes:hover {
   border: 2px solid black; margin: -1px; z-index: 100; border-radius: 3px;
 }
 .calendar_bg {
@@ -110,8 +110,9 @@
   position: absolute;
   font-size: 0; line-height: 0; /* ie bug work-arounds */
 }
-.disabled > .calendar_bg {
-  opacity: 0.9;
+.disabled > .calendar_bg *,
+.disabled > .calendar_control * {
+  opacity: 0.8;
 }
 .calendar_bg .calendar_nw,
 .calendar_bg .calendar_n,
