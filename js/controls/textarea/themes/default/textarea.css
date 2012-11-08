@@ -12,7 +12,7 @@
 }
 
 .default .disabled .textarea_input {
-  #{(BROWSER_TYPE.safari||BROWSER_TYPE.chrome)?'color:#ccc;':'color:#999'}
+  color: #333;
 }
 .default .textarea_input:focus {
   outline-color: transparent;
