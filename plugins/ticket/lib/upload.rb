@@ -138,7 +138,7 @@ create table rsence_uploads (
           :file_data   => ''
         }
         if @db
-          upload_id = @db[:rsence_uploads].insert( insert_hash )
+          upload_id = RSence.session_manager.new_upload_data( insert_hash )
         else
           @upload_id += 1
           upload_id = @upload_id
@@ -151,29 +151,18 @@ create table rsence_uploads (
         @upload_slots[:uploaded][ticket_id].push( upload_id )
         
         update_hash = {
-          :file_data   => file_data[:tempfile].read.to_sequel_blob,
+          :file_data   => file_data[:tempfile].read,
           :upload_done => true
         }
         if @db
-          @db[:rsence_uploads].filter(:id => upload_id).update( update_hash )
+          RSence.session_manager.set_upload_data( upload_id, update_hash[:file_data] )
         else
           @upload_slots[:rsence_uploads][upload_id].merge!( update_hash )
         end
       end
     end
     
-    response_body = %{
-      <html>
-        <head>
-          <script type="text/javascript">
-            with(parent){
-              HVM.values[#{value_id.to_json}].set(#{done_value.to_json});
-            }
-          </script>
-        </head>
-        <body></body>
-      </html>
-    }
+    response_body = %{<html><head><script>parent.HVM.values[#{value_id.to_json}].set(#{done_value.to_json});</script></head></html>}
     
     response.status = 200
     response['Content-Type'] = 'text/html; charset=UTF-8'
@@ -187,40 +176,28 @@ create table rsence_uploads (
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         if with_data
           if @db
-            row_datas = @db[:rsence_uploads].select(
-              :upload_date, :upload_done, :file_name,
-              :file_size, :file_mime, :file_data
-            ).filter(
-              :id => row_id
-            )
+            row_data = RSence.session_manager.get_upload_data( row_id )
           else
-            row_datas = @upload_slots[:rsence_uploads][row_id]
+            row_data = @upload_slots[:rsence_uploads][row_id].first
           end
-          if row_datas.count == 1
-            row_data = row_datas.first
+          unless row_data.nil?
             row_hash = {
               :date => Time.at(row_data[:upload_date]),
               :done => row_data[:upload_done],
               :size => row_data[:file_size],
               :mime => row_data[:file_mime],
               :name => row_data[:file_name],
-              :data => row_data[:file_data]
+              :data => row_data[:file_data].to_s
             }
             uploads.push(row_hash)
           end
         else
           if @db
-            row_datas = @db[:rsence_uploads].select(
-              :upload_date, :upload_done, :file_name,
-              :file_size, :file_mime
-            ).filter(
-              :id => row_id
-            )
+            row_data = RSence.session_manager.get_upload_meta( row_id )
           else
-            row_datas = @upload_slots[:rsence_uploads][row_id]
+            row_data = @upload_slots[:rsence_uploads][row_id].first
           end
-          if row_datas.count == 1
-            row_data = row_datas.first
+          unless row_data.nil?
             row_hash = {
               :date => Time.at(row_data[:upload_date]),
               :done => row_data[:upload_done],
@@ -240,7 +217,7 @@ create table rsence_uploads (
   def del_upload( ticket_id, row_id )
     @upload_slots[:uploaded][ticket_id].delete(row_id)
     if @db
-      @db[:rsence_uploads].filter( :id => row_id ).delete
+      RSence.session_manager.del_upload( row_id )
     else
       @upload_slots[:rsence_uploads].delete(row_id)
     end
@@ -257,7 +234,7 @@ create table rsence_uploads (
       @upload_slots[:uploaded][ticket_id].each do |row_id|
         @upload_slots[:uploaded][ticket_id].delete( row_id )
         if @db
-          @db[:rsence_uploads].filter( :id => row_id ).delete
+          RSence.session_manager.del_upload( row_id )
         else
           @upload_slots[:rsence_uploads].delete(row_id)
         end
@@ -268,8 +245,7 @@ create table rsence_uploads (
       @upload_slots[:by_id].delete( ticket_id )
     end
     if @db
-      @db[:rsence_uploads].filter( :ticket_id => ticket_id ).delete
-      @db[:rsence_uploads].filter( :ses_id => ses_id ).delete
+      RSence.session_manager.del_uploads( ticket_id, ses_id )
     end
   end
   

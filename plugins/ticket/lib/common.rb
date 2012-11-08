@@ -78,30 +78,13 @@ module Common
       :by_id   => {},
       :ses_ids => {}
     }
+
+    @db = false
     
-    begin
-      db_uri = ::RSence.config[:database][:ses_db]
-      if db_uri.start_with?('sqlite://')
-        @db = Sequel.sqlite( db_uri.split('sqlite://')[1] )
-      else
-        @db = Sequel.connect( db_uri )
-      end
-    rescue => e
-      if RSence.args[:debug]
-        err_msg = [
-          "ERROR: TicketServices couldn't open database",
-          "#{e.class.to_s}, #{e.message}",
-          "Backtrace:",
-          "\t"+e.backtrace.join("\n\t")
-        ].join("\n")+"\n"
-        $stderr.write( err_msg )
-      elsif RSence.args[:verbose]
-        puts "Failed to open database '#{@db_uri}'."
-        puts "Run RSence in debug mode for full error output."
-      end
-      @upload_id = 0
-      @db = false
-    end
+  end
+
+  def set_db_state( state )
+    @db = state
   end
 
   attr_accessor :raw_uris # :nodoc:
@@ -113,9 +96,8 @@ module Common
     return time.gmtime.strftime('%a, %d %b %Y %H:%M:%S %Z')
   end
   
-  # Disconnects connection to the database.
+  # Cleans up structures (not used at the moment)
   def shutdown # :nodoc:
-    @db.disconnect if @db
   end
   
   # Serves files and images by returning an URI. Content is given as second 

@@ -130,6 +130,17 @@ class TicketPlugin < Plugin
     super
     @ticketserve = TicketServe.new
   end
+
+  def open
+    super
+    unless RSence.session_manager.nil?
+      set_db_state( RSence.session_manager.db_avail )
+    end
+  end
+
+  def set_db_state( state )
+    @ticketserve.set_db_state( state )
+  end
   
   # @private Shuts down TicketServe
   def shutdown

@@ -98,6 +98,7 @@ module RSence
     end
     
     def self.transporter
+      return nil unless class_variable_defined?(:'@@transporter')
       @@transporter
     end
     def self.transporter=(transporter)
@@ -110,6 +111,7 @@ module RSence
     end
     
     def self.plugin_manager
+      return nil unless class_variable_defined?(:'@@plugin_manager')
       @@plugin_manager
     end
     def self.plugin_manager=(plugin_manager)
@@ -122,6 +124,7 @@ module RSence
     end
     
     def self.value_manager
+      return nil unless class_variable_defined?(:'@@value_manager')
       @@value_manager
     end
     def self.value_manager=(value_manager)
@@ -134,6 +137,7 @@ module RSence
     end
     
     def self.session_manager
+      return nil unless class_variable_defined?(:'@@session_manager')
       @@session_manager
     end
     def self.session_manager=(session_manager)

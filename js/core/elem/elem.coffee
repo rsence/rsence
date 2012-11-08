@@ -4,6 +4,7 @@ BROWSER_TYPE contains browser types.
 Used for quick checks mostly in layout code
 ###
 BROWSER_TYPE =
+  version: 0.0
   mac: false
   win: false
   ie:  false

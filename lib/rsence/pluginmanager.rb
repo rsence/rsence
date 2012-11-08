@@ -423,7 +423,7 @@ module RSence
             break
           end
         else
-          warn "Invalid module_const.class: #{module_const.class.inspect}"
+          warn "Invalid module_const.class: #{module_const.class.inspect} in bundle path: #{path.inspect}"
         end
       end
     end
