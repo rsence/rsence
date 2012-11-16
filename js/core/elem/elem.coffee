@@ -530,6 +530,7 @@ ELEM = HClass.extend
         _classNames = _elem.className.trim().split(' ')
         _classNames.push(_className)
         _elem.className = _classNames.join(' ')
+      @_attrCache[_id]['className'] = _elem.className
     null
   
   ###
@@ -542,6 +543,7 @@ ELEM = HClass.extend
       _classNames = _elem.className.split(' ')
       _classNames.splice( _classNames.indexOf( _className ), 1 )
       _elem.className = _classNames.join(' ')
+      @_attrCache[_id]['className'] = _elem.className
     null
 
   removeClassName: (_id, _className)->

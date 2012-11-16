@@ -584,7 +584,7 @@ HView = HClass.extend({
   },
 
 /** = Description
-  * The selectable state defines whe
+  * The selectable state defines when the view should be selectable or not.
   *
   **/
   textSelectable: false,
@@ -600,7 +600,7 @@ HView = HClass.extend({
   },
   setTextSelectable: function(_flag){
     this.textSelectable = !!_flag;
-    this.updateSelectable();
+    this.updateTextSelectable();
   },
   
 /** --
@@ -1908,9 +1908,7 @@ HView = HClass.extend({
     var _stringElem = ELEM.make(_elemId,'span');
     ELEM.setCSS(_stringElem, "visibility:hidden;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
-    // ELEM.flushLoop();
     var _visibleSize=ELEM.getSize(_stringElem);
-    // console.log('visibleSize',_visibleSize);
     ELEM.del(_stringElem);
     return [_visibleSize[0]+_visibleSize[0]%2,_visibleSize[1]+_visibleSize[1]%2];
   },
