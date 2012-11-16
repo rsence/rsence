@@ -427,7 +427,11 @@ module RSence
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- Saving state..."
       # transporter_state = @transporter.online?
       # @transporter.online = false
-      @transporter.sessions.store_sessions
+      begin
+        @transporter.sessions.store_sessions
+      rescue => e
+        puts "Exception #{e.inspect} occurred while storing sessions"
+      end
       @transporter.plugins.delegate(:flush)
       # @transporter.online = transporter_state
       puts "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')} -- State saved."

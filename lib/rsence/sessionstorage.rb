@@ -86,8 +86,10 @@ module RSence
         return
       end
       puts "Storing sessions..." if RSence.args[:verbose]
-      ses_ids = @sessions.keys
+      ses_ids = @sessions.keys.clone
       ses_ids.each do |ses_id|
+        ses_data = @sessions[ses_id]
+        next if ses_data.nil?
         ses_data = @sessions[ses_id].clone
         if @plugins
           @plugins.delegate( :dump_ses, ses_data )
@@ -179,7 +181,8 @@ module RSence
     def expire_sessions
     
       # Loop through all sessions in memory:
-      @sessions.each_key do |ses_id|
+      ses_ids = @sessions.keys.clone
+      ses_ids.each do |ses_id|
       
         timed_out = @sessions[ ses_id ][:timeout] < Time.now.to_i
       
