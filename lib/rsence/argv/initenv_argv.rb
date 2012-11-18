@@ -159,7 +159,7 @@ module ArgvUtil
         config[:http_server][:port] = ask(str_http_port) do |q|
           q.default = config[:http_server][:port].to_s
         end
-      
+
         say @strs[:initenv][:enter_tcp_ip]
         str_tcp_ip = @strs[:initenv][:tcp_ip]
         config[:http_server][:bind_address] = ask(str_tcp_ip) do |q|
@@ -171,6 +171,13 @@ module ArgvUtil
         config[:base_url] = ask(str_root_dir) do |q|
           q.default = config[:base_url]
         end
+
+        # possible workaround for highline on some systems:
+        config[:index_html][:title] = config[:index_html][:title].to_s
+        config[:database][:ses_db] = config[:database][:ses_db].to_s
+        config[:http_server][:port] = config[:http_server][:port].to_s.to_i
+        config[:http_server][:bind_address] = config[:http_server][:bind_address].to_s
+        config[:base_url] = config[:base_url].to_s
       
         test_url = "http://#{config[:http_server][:bind_address]}:#{config[:http_server][:port]}#{config[:base_url]}"
         say ERB.new( @strs[:initenv][:config_summary] ).result( binding )
@@ -211,6 +218,10 @@ module ArgvUtil
     File.open( readme_file, 'w' ) {|f| f.write( ERB.new( @strs[:initenv][:readme] ).result( binding ) ) }
     version_file = File.join( env_dir, 'VERSION' )
     File.open( version_file, 'w' ) {|f| f.write( "RSence Environment Version #{version.to_f}" ) }
+    [ db_dir, log_dir, run_dir ].each do |ign_prefix|
+      gitignore_file = File.join( ign_prefix, '.gitignore' )
+      File.open( gitignore_file, 'w' ) {|f| f.write("*\n") }
+    end
     puts ERB.new( @strs[:initenv][:congratulations] ).result( binding )
     exit
   end
