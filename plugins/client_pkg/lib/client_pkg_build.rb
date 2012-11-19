@@ -241,7 +241,7 @@ class ClientPkgBuild
         @src_cache[:orig_size][src_path] = js_size
       end
     else
-      js_data = %{console.log( "ERROR: CoffeeScript not suuported and no JS source available for #{bundle_path}" );}
+      js_data = %{console.log( "ERROR: CoffeeScript not supported and no JS source available for #{bundle_path}" );}
       js_size = js_data.bytesize
       min_size = js_size
       src_timestamp = 0
