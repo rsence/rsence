@@ -217,7 +217,7 @@ module ArgvUtil
     readme_file = File.join( env_dir, 'README' )
     File.open( readme_file, 'w' ) {|f| f.write( ERB.new( @strs[:initenv][:readme] ).result( binding ) ) }
     version_file = File.join( env_dir, 'VERSION' )
-    File.open( version_file, 'w' ) {|f| f.write( "RSence Environment Version #{version.to_f}" ) }
+    File.open( version_file, 'w' ) {|f| f.write( "RSence Environment Version #{version.to_f}\n" ) }
     [ db_dir, log_dir, run_dir ].each do |ign_prefix|
       gitignore_file = File.join( ign_prefix, '.gitignore' )
       File.open( gitignore_file, 'w' ) {|f| f.write("*\n") }
