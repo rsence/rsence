@@ -85,21 +85,106 @@ module RSence
           warn "install_client_pkgs: called with @client_pkgs defined (#{@client_pkgs.inspect}); returning" if RSence.args[:debug]
           return
         end
-        @client_pkgs = yaml_read( 'client_pkgs.yaml' )
-        if @client_pkgs
-          if @client_pkgs.has_key?(:src_dirs)
-            @client_pkgs[:src_dirs].each do |src_dir|
-              src_dir = bundle_path( src_dir[2..-1] ) if src_dir.start_with?('./')
+        client_pkgs = yaml_read( 'client_pkgs.yaml' )
+        if client_pkgs
+
+          sleep 0.1 until client_pkg.ready?
+          
+          if client_pkgs.has_key?('src_dir')
+            src_dirs = [ client_pkgs['src_dir'] ]
+          elsif client_pkgs.has_key?('src_dirs')
+            src_dirs = client_pkgs['src_dirs']
+          elsif client_pkgs.has_key?(:src_dirs)
+            src_dirs = client_pkgs[:src_dirs]
+          else
+            src_dirs = false
+          end
+
+          @client_pkgs = {}
+          if src_dirs
+            src_dirs.each do |src_dir|
+              if src_dir.start_with?('./')
+                src_dir = bundle_path( src_dir[2..-1] )
+              end
               client_pkg.add_src_dir( src_dir )
             end
+            @client_pkgs[:src_dirs] = src_dirs
           end
-          sleep 0.1 until client_pkg.ready?
-          client_pkg.add_packages(       @client_pkgs[:packages      ] ) if @client_pkgs.has_key?(:packages      )
-          client_pkg.add_compounds(      @client_pkgs[:compound_packages] ) if @client_pkgs.has_key?(:compound_packages)
-          client_pkg.add_themes(         @client_pkgs[:theme_names   ] ) if @client_pkgs.has_key?(:theme_names   )
-          client_pkg.add_gfx_formats(    @client_pkgs[:gfx_formats   ] ) if @client_pkgs.has_key?(:gfx_formats   )
-          client_pkg.add_reserved_names( @client_pkgs[:reserved_names] ) if @client_pkgs.has_key?(:reserved_names)
+          
+          if client_pkgs.has_key?('packages')
+            packages = client_pkgs['packages']
+          elsif client_pkgs.has_key?(:packages)
+            packages = client_pkgs[:packages]
+          else
+            packages = false
+          end
+
+          if packages
+            client_pkg.add_packages( packages )
+            @client_pkgs[:packages] = packages
+          end
+
+          
+          if client_pkgs.has_key?('compounds')
+            compounds = client_pkgs['compounds']
+          elsif client_pkgs.has_key?('compound_packages')
+            compounds = client_pkgs['compound_packages']
+          elsif client_pkgs.has_key?(:compound_packages)
+            compounds = client_pkgs[:compound_packages]
+          else
+            compounds = false
+          end
+
+          if compounds
+            client_pkg.add_compounds( compounds )
+            @client_pkgs[:compound_packages] = compounds
+          end
+
+          
+          if client_pkgs.has_key?('themes')
+            theme_names = client_pkgs['themes']
+          elsif client_pkgs.has_key?('theme_names')
+            theme_names = client_pkgs['theme_names']
+          elsif client_pkgs.has_key?(:theme_names)
+            theme_names = client_pkgs[:theme_names]
+          else
+            theme_names = false
+          end
+
+          if theme_names
+            client_pkg.add_themes( theme_names )
+            @client_pkgs[:theme_names] = theme_names
+          end
+
+
+          if client_pkgs.has_key?('gfx_formats')
+            gfx_formats = client_pkgs['gfx_formats']
+          elsif client_pkgs.has_key?(:gfx_formats)
+            gfx_formats = client_pkgs[:gfx_formats]
+          else
+            gfx_formats = false
+          end
+
+          if gfx_formats
+            client_pkg.add_gfx_formats( gfx_formats )
+            @client_pkgs[:gfx_formats] = gfx_formats
+          end
+
+          if client_pkgs.has_key?('reserved_names')
+            reserved_names = client_pkgs['reserved_names']
+          elsif client_pkgs.has_key?(:reserved_names)
+            reserved_names = client_pkgs[:reserved_names]
+          else
+            reserved_names = false
+          end
+
+          if reserved_names
+            client_pkg.add_reserved_names( reserved_names )
+            @client_pkgs[:reserved_names] = reserved_names
+          end
+
           client_pkg.rebuild_client
+          
         end
       end
       
