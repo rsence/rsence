@@ -1,0 +1,53 @@
+---
+
+# RSence user interfaces can be defined as YAML files.
+# The structure is converted to JSON for the client and "special"
+# variables are processed by the server.
+# The server tries to find a match in its gui_params for all values
+# that begin with a colon (they are parsed as symbols on ruby).
+
+# Read more about YAML on http://yaml.org/
+
+
+# GUITree is used as the type identifier for
+# user interface definition structures.
+type: GUITree
+
+# The version defines what version of the structure is used.
+version: 1.0
+
+# List of javascript packages the user interface needs.
+# These are automatically loaded once per session.
+dependencies:
+  - welcome_pkg # See client_pkgs.yaml
+
+# The root level class for user interfaces must be an instance of
+# HApplication (RSence.GUIApp is extended from the HApplication class).
+class: RSence.GUIApp
+
+# Each class takes a number of options for its constructor.
+options:
+  label: Welcome App
+
+# The subviews use the class defined above as their parent component.
+subviews:
+  
+  # The sheet is used as the main visual container for the gui in this app.
+  # HSheet is an component that dims the background and shows a dialog sheet
+  # while its value is 0.
+  - WelcomeView:
+      
+      # For this rect, the rect defines the inner dialog
+      # size and position relave to the center position.
+      rect: [ 0, 0, 600, 500 ]
+
+      # Values are bound to their component responders using the bind -option.
+      bind: :values.close
+
+      options:
+        # Passes on the rest of the value id's as a reference to be used
+        # in the code. See js/welcome_view for details.
+        values: :values
+
+        # See the js/welcome_scrollcontainer for client-side usage of this:
+        welcomeText: :text.welcome 

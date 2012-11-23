@@ -1,0 +1,19 @@
+
+### This file defines how to build custom client-side code.
+
+# The source directory './' is a special prefix meaning the path of this plugin.
+src_dir: ./js
+# If you have several source directories, you can specify them in plural, like this:
+# src_dirs:
+# - ./js
+# - /opt/src/examples/coffeescript
+# - ~/proj/demo
+
+# The packages of found bundles in the source directory are
+# combined into packages.
+packages:
+  # The following is the name of the package:
+  welcome_pkg:
+    # These are the bundles to include in the package:
+    - welcome_scrollcontainer
+    - welcome_view
