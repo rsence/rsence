@@ -85,9 +85,18 @@ HClass.prototype = {
           var _previous = this.base;
           // copies previous this.base from the direction from HClass
           this.base = _ancestor;
-          // current class's method is called
-          // now inside the function when called this.base points to parent method
-          _returnValue = _method.apply(this, arguments);
+
+          // The current class's method is called with an exception handler to
+          // ignore the common mistake of calling super, while being in the class
+          // declaring the method; has no super.
+          try{
+            // now inside the function when called this.base points to parent method
+            _returnValue = _method.apply(this, arguments);
+          }
+          catch(e){
+            !this.isProduction && console.warn("An exception occurred while calling base: ",e);
+            _returnValue = null;
+          }
           // then because event this function can be called from child method
           // resets the base to as is was before calling this function
           this.base = _previous;
@@ -102,7 +111,8 @@ HClass.prototype = {
       }
       return this[_source] = _value;
     // this is called when called by HClass.extend
-    } else if (_source) {
+    }
+    else if (_source) {
       _prototype = {toSource: null};
       _protected = ["toString", "valueOf"];
       // we want default constructor function
