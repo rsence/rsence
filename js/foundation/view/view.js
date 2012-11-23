@@ -738,7 +738,16 @@ HView = HClass.extend({
       if(this.options.html){
         this.setHTML(this.options.html);
       }
-      this.drawSubviews();
+      // Extended draw for components to define/extend.
+      // This is preferred over drawSubviews, when defining
+      // parts of a complex component.
+      if(typeof this.extDraw === 'function'){
+        this.extDraw();
+      }
+      // Extended draw for the purpose of drawing subviews.
+      if(typeof this.drawSubviews === 'function'){
+        this.drawSubviews();
+      }
       // if options contain a subviews function, call it with the namespace of self
       if(this.options.subviews && typeof this.options.subviews == 'function'){
         this.options.subviews.call( this );
