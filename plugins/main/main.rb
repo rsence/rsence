@@ -38,7 +38,7 @@ class MainPlugin < Plugin
   #         :servlet => true,
   #         :cookie  => (req_num==0),
   #         :query   => {
-  #           'ses_key' => "#{req_num}:.o.:#{sha_key}"
+  #           'ses_key' => "#{req_num}:1:#{sha_key}"
   #         }
   #       }
   #     )

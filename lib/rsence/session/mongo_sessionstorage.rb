@@ -7,15 +7,13 @@ require 'mongo'
 class MongoSessionStorage
   
   # Poor-man's connection string parser:
-  def parse_db_uri( db_pool_size=48, db_pool_timeout=2 )
+  def parse_db_uri
     db_str = @db_uri.split('mongodb://')[1]
     ( db_auth_str, db_conn_str ) = db_str.split('@')
     ( db_username, db_password ) = db_auth_str.split(':')
     ( db_host, db_port_name_str ) = db_conn_str.split(':')
     ( db_port, db_name ) = db_port_name_str.split('/')
     return {
-      :pool_size => db_pool_size,
-      :pool_timeout => db_pool_timeout,
       :host => db_host,
       :port => db_port,
       :username => db_username,
@@ -29,8 +27,8 @@ class MongoSessionStorage
     # mongodb://rsence:2N74krTMURIpSr6Y91Hy@localhost:37035/rsence_sessions
     conn = parse_db_uri
     @conn = Mongo::Connection.new( conn[:host], conn[:port], {
-      :pool_size => conn[:pool_size],
-      :pool_timeout => conn[:timeout],
+      :pool_size => @config[:mongo][:pool_size],
+      :pool_timeout => @config[:mongo][:pool_timeout],
       :auths => [{
         'username' => conn[:username],
         'password' => conn[:password],
@@ -91,11 +89,14 @@ class MongoSessionStorage
     @ses_coll.find.each do |ses_row|
       ses_id   = ses_row['_id'].to_s
       ses_data_bin = ses_row['ses_data']
+      puts "ses_data_bin: #{ses_data_bin.inspect}"
       if ses_data_bin.nil?
+        puts "removing #{ses_id}"
         remove_session_data( ses_id )
       else
         begin
           ses_data = Marshal.load( ses_data_bin.to_s )
+          puts "ses_data: #{ses_data.inspect}"
         rescue => e
           warn "Unable to restore session #{ses_id}"
           remove_session_data( ses_id )

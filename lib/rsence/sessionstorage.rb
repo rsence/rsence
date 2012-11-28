@@ -97,6 +97,7 @@ module RSence
         end
         begin
           store_session_data( ses_data )
+          sleep @config[:db_sleep]
         rescue => e
           warn "Unable to dump session: #{ses_id}, because: #{e.message}"
         end
@@ -173,8 +174,8 @@ module RSence
     
       if @db_avail
         remove_session_data( ses_id )
+        sleep @config[:db_sleep]
       end
-    
     end
 
     ## Expires all sessions that meet the timeout criteria
@@ -183,12 +184,13 @@ module RSence
       # Loop through all sessions in memory:
       ses_ids = @sessions.keys.clone
       ses_ids.each do |ses_id|
-      
-        timed_out = @sessions[ ses_id ][:timeout] < Time.now.to_i
-      
+        if @sessions[ses_id] and @sessions[ses_id].has_key?(:timeout)
+          timed_out = @sessions[ ses_id ][:timeout] < Time.now.to_i
+        else
+          timed_out = true
+        end
         ## Deletes the session, if the session is too old
         expire_session( ses_id ) if timed_out
-      
       end
     end
 

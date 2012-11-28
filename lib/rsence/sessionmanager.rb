@@ -53,13 +53,15 @@ module RSence
     ### Creates a new session
     def init_ses( msg=nil, ses_seed=false )
 
+      ## Perform old-session cleanup before creating another
+      # expire_sessions
+
       if ses_seed == false
         ses_seed = @randgen.gen
       end
     
       ## Assigns new timeout for the session
-      time_now = Time.now.to_i # seconds since epoch
-      timeout  = time_now + @config[:timeout_secs]
+      timeout  = Time.now.to_i + @config[:timeout_first] #@config[:timeout_secs]
     
       ## Creates a new session key
       ses_key    = @randgen.gen
@@ -69,7 +71,7 @@ module RSence
     
       ## Makes a new database row for the session, returns its id
       ses_id     = new_ses_id( cookie_key, ses_key, timeout )
-    
+
       ses_sha = SHA1.hexdigest(ses_key+ses_seed)
     
       ### Default session data structure,
@@ -134,6 +136,9 @@ module RSence
     end
   
     def refresh_ses( msg, ses_data, ses_id, ses_key, ses_seed )
+      ## Perform old-session cleanup before extending another
+      # expire_sessions
+
       # new time-out
       ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
     
@@ -233,6 +238,9 @@ module RSence
     ### Otherwise stops the client and returns false.
     def check_ses( msg, ses_key, ses_seed=false )
     
+      ## Perform old-session cleanup while checking for another
+      # expire_sessions
+
       # first, check if the session key exists (sync)
       if @session_keys.has_key?( ses_key )
       
@@ -302,12 +310,15 @@ module RSence
       else
         cookie_key = nil
       end
-      unless @session_cookie_keys.has_key?( cookie_key )
+      if @session_cookie_keys.has_key?( cookie_key )
+        timeout = Time.now.to_i + @config[:timeout_secs]
+      else
         cookie_key = init_ses
+        timeout = Time.now.to_i + @config[:timeout_first]
       end
       ses_id = @session_cookie_keys[ cookie_key ]
       ses_data = @sessions[ ses_id ]
-      ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
+      ses_data[:timeout] = timeout
       renew_cookie_req_res( request, response, cookie_key, request.fullpath )
       return ses_data
     end
@@ -507,7 +518,7 @@ module RSence
         ses_id = @session_cookie_keys[ cookie_key ]
         
         # Expire the session
-        expire_session( ses_id )
+        # expire_session( ses_id )
         
         return true
         
@@ -526,9 +537,6 @@ module RSence
       else
         query = request.query
       end
-      
-      ## Perform old-session cleanup on all sync:s
-      expire_sessions
       
       ## The 'ses_id' request query key is required.
       ## The client defaults to '0', which means the
@@ -550,7 +558,7 @@ module RSence
         
         ## The client tells that its ses_key is '0',
         ## until the server tells it otherwise.
-        (req_num, ses_seed) = ses_key.split(':.o.:')
+        (req_num, ses_seed) = ses_key.split(':1:')
         
         if req_num == '0'
           

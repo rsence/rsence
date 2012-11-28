@@ -327,6 +327,7 @@ module RSence
         Daemon.start_logging( self )
       end
       
+      ses_expire_loop
       autosave_loop if RSence.config[:daemon][:autosave_interval] > 0
       start_broker( conf )
       
@@ -350,6 +351,21 @@ module RSence
     # Returns the configured port.
     def port
       RSence.config[:http_server][:port]
+    end
+
+    # Expires old sessions once a second
+    def ses_expire_loop
+      Thread.new do
+        Thread.pass
+        while true
+          sleep 1
+          begin
+            @transporter.sessions.expire_sessions if @transporter.online?
+          rescue => e
+            warn "Session expiration error: #{e.inspect}"
+          end
+        end
+      end
     end
 
     # Saves plugin and session state periodically
@@ -383,6 +399,7 @@ module RSence
       
       Process.setsid
       
+      ses_expire_loop
       autosave_loop if RSence.config[:daemon][:autosave_interval] > 0
       start_broker( conf )
       yield @broker
@@ -428,6 +445,7 @@ module RSence
       # transporter_state = @transporter.online?
       # @transporter.online = false
       begin
+        # Store remaining active sessions
         @transporter.sessions.store_sessions
       rescue => e
         puts "Exception #{e.inspect} occurred while storing sessions"

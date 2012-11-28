@@ -148,7 +148,7 @@ module RSence
         request_content = JSON.parse( request_body )
       rescue JSON::ParseError
         warn "Request body isn't valid JSON: #{request_body}"
-        request_content = ['-1:.o.:INVALID',{},[]]
+        request_content = ['-1:1:INVALID',{},[]]
       end
       options[:ses_key] = request_content[0]
       options[:values] = request_content[1]

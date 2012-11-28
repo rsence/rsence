@@ -28,7 +28,7 @@ COMM.Session = HClass.extend({
     var _this = this;
     _this.sha = SHA.nu(8);
     _this.sha_key = _this.sha.hexSHA1(((new Date().getTime())*Math.random()*1000).toString());
-    _this.ses_key = '0:.o.:'+_this.sha_key;
+    _this.ses_key = '0:1:'+_this.sha_key;
     _this.req_num = 0;
   },
   
@@ -46,7 +46,7 @@ COMM.Session = HClass.extend({
     var _this = this,
         _shaKey = _this.sha.hexSHA1(_sesKey+_this.sha_key);
     _this.req_num++;
-    _this.ses_key = _this.req_num+':.o.:'+_shaKey;
+    _this.ses_key = _this.req_num+':1:'+_shaKey;
     _this.sha_key = _shaKey;
   }
 }).nu();
