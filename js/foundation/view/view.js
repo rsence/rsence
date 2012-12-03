@@ -1526,6 +1526,16 @@ HView = HClass.extend({
       delete _this[i];
     }
   },
+
+/** = Description
+  * A convenience method to call #die after 10ms using a setTimeout.
+  * Use this method, if destroying self or destroying from a subview.
+  *
+  **/
+  dieSoon: function(){
+    var _this = this;
+    setTimeout(function(){_this.die();},10);
+  },
   
 /** Recursive idle poller. Should be extended if functionality is desired.
   **/
