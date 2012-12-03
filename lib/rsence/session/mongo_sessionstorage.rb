@@ -89,14 +89,12 @@ class MongoSessionStorage
     @ses_coll.find.each do |ses_row|
       ses_id   = ses_row['_id'].to_s
       ses_data_bin = ses_row['ses_data']
-      puts "ses_data_bin: #{ses_data_bin.inspect}"
       if ses_data_bin.nil?
         puts "removing #{ses_id}"
         remove_session_data( ses_id )
       else
         begin
           ses_data = Marshal.load( ses_data_bin.to_s )
-          puts "ses_data: #{ses_data.inspect}"
         rescue => e
           warn "Unable to restore session #{ses_id}"
           remove_session_data( ses_id )
