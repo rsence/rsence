@@ -38,6 +38,7 @@ HRadioButtonList = HListItemControl.extend({
         _value,
         _label,
         _radioButton,
+        _selected = false,
         i = 0;
     for ( ; i < this.listItemViews.length; i++ ) {
       try {
@@ -54,7 +55,32 @@ HRadioButtonList = HListItemControl.extend({
       _value = _listItem[0];
       _label = _listItem[1];
       _component = this.createComponent( i, _label );
+      if( _value === this.value ){
+        _selected = _value;
+      }
       this.listItemViews[i] = _component;
+    }
+    if( _selected !== false ){
+      this.setValue(-1);
+      this.setValue(_selected);
+    }
+    else if (this['valueMatrix'] !== undefined){
+      this.setValue(-1);
+      var
+      _prevIndex = this.radioButtonIndexValue.value,
+      _listLen = _listItems.length;
+      this.radioButtonIndexValue.set(-1);
+      if( _listLen > 0 ){
+        if( _listLen-1 < _prevIndex ){
+          this.setValue(this.listItems[_listLen-1][0]);
+        }
+        else if (this.listItems[_prevIndex]){
+          this.setValue(this.listItems[_prevIndex][0]);
+        }
+        else{
+          this.setValue(this.listItems[0][0]);
+        }
+      }
     }
     this.refreshValue();
   },
