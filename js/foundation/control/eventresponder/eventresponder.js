@@ -215,6 +215,21 @@ HEventResponder = HClass.extend({
     return this;
   },
   
+/** = Description
+  * Alias for #setEnabled(true)
+  *
+  **/
+  enable: function(){
+    return this.setEnabled(true);
+  },
+  
+/** = Description
+  * Alias for #setEnabled(false)
+  *
+  **/
+  disable: function(){
+    return this.setEnabled(false);
+  },
   
 /** = Description
   * Alternative flag setter for the mouseMove event type. If set to true, 
