@@ -55,6 +55,8 @@ module RSence
       elsif @parent_manager
         return @parent_manager.method_missing( sym, *args, &block )
       end
+      warn "method or plugin #{sym.inspect} not found!"
+      nil
     end
     
     # Registers alias name for a plugin bundle.
