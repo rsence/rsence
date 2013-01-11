@@ -608,31 +608,6 @@ HTimeSheet = HControl.extend({
     }
   },
 
-  // checks if i overlaps j
-  // todo: refactor, it's a bit messy
-  _doesOverlap: function( i, j, _overlaps, _rectSelf, _items ){
-    if( _rectSelf === undefined ) {
-      _rectSelf = this.timeSheetItems[i].rect;
-    }
-    if( _items === undefined ){
-      _items = this.timeSheetItems;
-    }
-    var
-    _isntSame = (i !== j),
-    _isntListedSelf = (!~_overlaps.indexOf(i)),
-    _isntListedOther = (!~_overlaps.indexOf(j)),
-    _rectOther = _items[j].rect;
-    if( !_isntSame ){ return false; }
-    if( !_isntListedSelf ){ return false; }
-    if( _isntListedOther ){
-      if( _rectOther.intersects( _rectSelf, 1, 1 ) || _rectSelf.intersects( _rectOther, 1, 1 ) ){
-        return true;
-      }
-    }
-    return false;
-  },
-
-
   // finds the index in the array which contains most sequential items
   _findLargestSequence: function( _arr ){
     var
@@ -660,30 +635,34 @@ HTimeSheet = HControl.extend({
   },
 
   // find the amount of overlapping time sheet items
-  _findOverlapCount: function(){
+  _findOverlapCount: function( _items ){
     var
-    _overlapCount,
-    _items = this._sortedTimeSheetItems(),
     _overlaps = [],
-    _maxOverlapCount = 0,
-    i = 0,
-    j;
-    for( ; i < _items.length; i++ ){
-      _overlapCount = 0;
-      for( j = 0; j < _items.length; j++ ){
-        if( this._doesOverlap( i, j, _overlaps, _items[i].rect, _items ) ){
-          _overlapCount++;
-          _overlaps.push( j );
-        }
-      }
-      if( _overlapCount !== 0 ){
-        _overlaps.push( i );
-        if( _overlapCount > _maxOverlapCount ){
-          _maxOverlapCount = _overlapCount;
+    _testRects = this._getTestRects( _items ),
+    i,j;
+    
+    for( i = 0; i < _items.length; i++){
+      _overlaps[i] = 0;
+    }
+    
+    for( i = 0; i < _items.length - 1; i++ ){
+      for( j = i + 1; j < _items.length; j++ ){
+        if( _items[i].rect.intersects( _testRects[j] ) ){
+          _overlaps[i] += 1;
+          _overlaps[j] += 1;
         }
       }
     }
-    return _maxOverlapCount;
+    return Math.max.apply( Math, _overlaps );
+  },
+  
+  _getTestRects: function( _items ){
+    var _rects = [];
+    for( var i = 0; i < _items.length; i++){
+      _rects[i] = HRect.nu( _items[i].rect );
+      _rects[i].insetBy( 1, 1 );
+    }
+    return _rects;
   },
 
   // returns a sorted copy of the timeSheetItems array
@@ -710,16 +689,16 @@ HTimeSheet = HControl.extend({
     var
     // loop indexes:
     i, j, k, l,
-    // amount of items ovelapping (max, actual number might be smaller after optimization)
     _options = this.options,
     _rect = this.rect,
-    _overlapCount = this._findOverlapCount(),
     _availWidth = ( _rect.width - _options.itemOffsetRight - _options.itemOffsetLeft ),
     _left = _options.itemOffsetLeft,
-    _width = Math.floor( _availWidth / (_overlapCount+1) ),
     // get a list of timesheet items sorted by height (larger to smaller order)
     _items = this._sortedTimeSheetItems(),
     _itemCount = _items.length,
+    // amount of items ovelapping (max, actual number might be smaller after optimization)
+    _overlapCount = this._findOverlapCount( _items ),
+    _width = Math.floor( _availWidth / (_overlapCount+1) ),
     _itemRect,
     _testRect,
     _leftPos,
@@ -732,10 +711,11 @@ HTimeSheet = HControl.extend({
     _optimalColAndLength,
     _col,
     _colWidth,
-    _overlaps;
+    _overlaps,
+    _testRects;
     
     // No overlapping; nothing to do
-    if(_overlapCount === 0 ){
+    if( _overlapCount === 0 ){
       return false;
     }
 
@@ -763,19 +743,17 @@ HTimeSheet = HControl.extend({
           _itemRect.setRight( _leftPos + _width );
           continue;
         }
-        _testRect = HRect.nu( _itemRect );
-        
         _overlapCols = [];
         _vacantCols = [];
-
+        _testRects = this._getTestRects( _items );
+        _testRect = HRect.nu( _itemRect );
         // test each column position (modes 0 and 2)
         for( k = 0; k < _overlapCount+1; k++ ){
           _leftPos = _left + (k*_width);
           _testRect.setLeft( _leftPos );
           _testRect.setRight( _leftPos + _width );
-          _overlaps = [];
           for( j = 0; j < _itemCount; j++){
-            if( this._doesOverlap( i, j, _overlaps, _testRect, _items ) ){
+            if( i !==j && _testRect.intersects( _testRects[j] ) ){
               if( !~_overlapCols.indexOf( k ) ){
                 _overlapCols.push( k );
               }
