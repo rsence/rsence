@@ -447,14 +447,8 @@ HRect = HClass.extend({
       }
       _rect.insetBy( _insetByX, _insetByY );
     }
-    return (
-      ( ( _rect.left >= this.left && _rect.left <= this.right ) ||
-        ( _rect.right >= this.left && _rect.right <= this.right )
-      ) &&
-      ( ( _rect.top >= this.top && _rect.top <= this.bottom) ||
-        ( _rect.bottom >= this.top && _rect.bottom <= this.bottom)
-      )
-    );
+    return ! ( this.left > _rect.right || this.right < _rect.left ||
+               this.top > _rect.bottom || this.bottom < _rect.top );
   },
 
   overlaps: function( _rect, _insetbyX, _insetByY ){
