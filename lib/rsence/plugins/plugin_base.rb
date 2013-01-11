@@ -76,6 +76,17 @@ module RSence
       # @return [nil]
       def close
       end
+
+      # File existence checker
+      #
+      # Just a wrapper for File.exist, except it handles the +path+ via #bundle_path
+      #
+      # @return [false] if the file does not exist.
+      # @return [true] if the file exists.
+      def file_exist?( path )
+        path = bundle_path( path )
+        File.exist?( path )
+      end
       
       # File reader utility
       #
@@ -118,7 +129,31 @@ module RSence
         end
       end
       
-      # Flie writer utility.
+      # JSON reader utility
+      #
+      # Reads the contents of the JSON file given in the +path+ and returns as a parsed structure of the contents of the file.
+      #
+      # @param [String] path The +path+ is relative to the bundle path by default, unless it starts with '/' or '..'; it's simply processed by {#bundle_path} before reading the file.
+      #
+      # @return [false] If the is no file, returns +false+
+      # @return [Object] Any valid structure defined by the YAML file, parsed to a Ruby object.
+      def json_read( path )
+        file_data = file_read( path )
+        if not file_data
+          return false
+        else
+          begin
+            return JSON.parse( file_data )
+          rescue => e
+            warn "An exception occurred while parsing JSON file: #{path}"
+            warn e.message
+            warn "  #{e.backtrace.join("\n  ")}"
+            return false
+          end
+        end
+      end
+      
+      # File writer utility.
       #
       # Writes the contents of the +data+ into the file given in the +path+.
       # @param [String] path The +path+ is relative to the bundle path by default, unless it starts with '/' or '..'; it's simply processed by {#bundle_path} before writing the file.

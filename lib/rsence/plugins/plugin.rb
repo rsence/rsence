@@ -212,6 +212,57 @@ module RSence
         return ses[key] if key
         return ses
       end
+
+      # Returns an array of type (:js/:coffee/:none), path (string)
+      def guess_js_path( js_name )
+        has_slash = js_name.include?('/')
+        is_coffee = false
+        is_js = false
+        if has_slash
+          js_fn = js_name.split('/')[-1]
+        else
+          js_fn = js_name
+        end
+        if js_fn.include?('.')
+          js_ext = js_fn.split('.')[-1]
+          if js_ext == 'coffee'
+            is_coffee = true
+          elsif js_ext == 'js'
+            is_js = true
+          end
+        end
+        if has_slash
+          sub_ptah = false
+        else
+          sub_path = 'js'
+        end
+        if is_coffee or is_js
+          path = bundle_path( js_name, sub_path, '.'+js_ext )
+          found = file_exist?( path )
+        else
+          path = bundle_path( js_name, sub_path, '.coffee' )
+          found = file_exist?( path )
+          if found
+            is_coffee = true
+          else
+            is_js = true
+            path = bundle_path( js_name, sub_path, '.js' )
+            found = file_exist?( path )
+          end
+        end
+        foundtype = found ? ( is_coffee ? :coffee : ( is_js ? :js : :none ) ) : :none
+        path = false if foundtype == :none
+        [ foundtype, path ]
+      end
+
+      # Returns coffee compiled to js
+      def brew_coffee( path )
+        client_pkg.coffee( file_read( path ) )
+      end
+
+      def squeezed_js( path )
+        client_pkg.squeeze( file_read( path ) )
+      end
   
       # Returns the source code of the javascript file +js_name+ in the 'js' subdirectory of the plugin bundle. Use it to send raw javascript command code to the client. Use {#read_js_once} for libraries.
       #
@@ -220,7 +271,15 @@ module RSence
       # @return [String] The source of the file.
       # @return [false] Returns false, when file was not found.
       def read_js( js_name )
-        file_read( bundle_path( js_name, 'js', '.js' ) )
+        ( type, path ) = guess_js_path( js_name )
+        if type == :none
+          warn "File not found: #{js_name}"
+          return ''
+        end
+        return brew_coffee( path ) if type == :coffee
+        # return squeezed_js( path ) if type == :js
+        return file_read( path ) if type == :js
+        warn "read_js: unknown type #{type.inspect}"
       end
       
       # Like {#read_js}, but reads the file only once per session. Use for inclusion of custom library code.
@@ -235,10 +294,11 @@ module RSence
         if not ses.has_key?(:deps)
           ses[:deps] = []
         end
-        path = bundle_path( js_name, 'js', '.js' )
+        ( found, path ) = guess_js_path( js_name )
+        return false unless found == :none
         unless ses[:deps].include?( path )
           ses[:deps].push( path )
-          return file_read( path )
+          return read_js( path )
         else
           return ''
         end
