@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2006 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /** = Description
   * The extended object model.
@@ -69,6 +62,15 @@ HClass.prototype = {
 
   // detection for production build (compressed source; '_compressed' would be something like '_x4', whereas '_'+'compressed' is still '_compressed')
   isProduction: '_'+'compressed' !== '_compressed',
+
+  _exceptionProperties: function(e){
+    var err = {}, prop;
+    for (prop in e) {
+      err[prop] = e[prop];
+    }
+    err['string'] = e.toString();
+    return err;
+  },
   
  /* The property copying method. */
   extend: function(_source, _value) {
@@ -94,7 +96,7 @@ HClass.prototype = {
             _returnValue = _method.apply(this, arguments);
           }
           catch(e){
-            !this.isProduction && console.warn("An exception occurred while calling base: ",e);
+            !this.isProduction && console.warn("An exception occurred while calling base: ",this._exceptionProperties(e)," object: ",_ancestor);
             _returnValue = null;
           }
           // then because event this function can be called from child method
@@ -346,4 +348,3 @@ if(window['console']===undefined){
 
 
 } catch(e) {}
-
