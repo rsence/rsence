@@ -4,6 +4,7 @@
   position: absolute;
   height: 7px; top: 7px;
   font-size: 0;
+  cursor: col-resize;
   background-image: #{this.getCssFilePath('hslider_tracks.png')};
 }
 
@@ -20,6 +21,7 @@
 .slider_track {
   left: 14px; right: 14px;
   background-position: 0 -14px;
+  cursor: col-resize;
 }
 
 .disabled .slider_track_left {
@@ -38,6 +40,7 @@
   position: absolute;
   top: 0; height: 21px; width: 21px;
   font-size: 0;
+  cursor: col-resize;
   background-position: 0 0;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }
@@ -53,6 +56,7 @@
 .slider_thumb_n,
 .slider_thumb_s {
   position: absolute;
+  cursor: col-resize;
   top: 0; height: 21px; width: 21px;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }

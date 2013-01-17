@@ -4,6 +4,7 @@
   position: absolute;
   width: 7px; left: 7px;
   font-size: 0;
+  cursor: row-resize;
   background-image: #{this.getCssFilePath('vslider_tracks.png')};
 }
 
@@ -39,6 +40,7 @@
   font-size: 0px;
   left: 0; width: 21px; height: 21px;
   background-position: 0 0;
+  cursor: row-resize;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }
 
@@ -54,11 +56,13 @@
 .vslider_thumb_w {
   position: absolute;
   top: 0; height: 21px; width: 21px;
+  cursor: row-resize;
   background-image: #{this.getCssFilePath('slider_thumbs.png')};
 }
 
 .vslider_thumb_e,
 .vslider_thumb_w {
+  cursor: row-resize;
   left: 0;
 }
 
