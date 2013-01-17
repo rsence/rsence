@@ -1,5 +1,4 @@
-# Copyright 2012 Juha-Jarmo Heinonen
-#
+
 # The EventManager is a proxy between the DOM-level
 # events and the higher-lever GUI API's.
 EventManagerApp = HApplication.extend
@@ -302,7 +301,7 @@ EventManagerApp = HApplication.extend
       @observe( window, 'resize', 'resize' )
     @observe( window, 'blur', '_domWindowBlur' )
     @observe( window, 'focus', '_domWindowFocus' )
-    @_legacyStart()
+    # @_legacyStart()
   #
   # Stops EventManager
   stop: ->
@@ -333,29 +332,29 @@ EventManagerApp = HApplication.extend
   # Initializes the members used by the drop-related events.
   # This method is called from within the EventMangaer and is never called,
   # if @enableDroppableChecks is false
-  startDroppable: ->
-    @warn "EventManager#startDroppable is deprecated"
-    @hovered = [] # Drop-eligible items under the mouse cursor
-    @hoverInterval = 200 # Milliseconds between checks
-    @hoverTimer = new Date().getTime() # Time since last check was triggered
+  # startDroppable: ->
+  #   @warn "EventManager#startDroppable is deprecated"
+  #   @hovered = [] # Drop-eligible items under the mouse cursor
+  #   @hoverInterval = 200 # Milliseconds between checks
+  #   @hoverTimer = new Date().getTime() # Time since last check was triggered
   #
   # Legacy startup, semi-compatible
-  _legacyStart: ->
-    @warn "EventManager#"+'_'+"legacyStart is deprecated"
-    @listeners = [] # NOT SUPPORTED
-    @focused = @_listeners.focused # DEPRECATED
-    @resizeListeners = @_listeners.byEvent.resize # DEPRECATED
-    @eventOptions = @_listeners.byId # DEPRECATED
-    @dragItems = @_listeners.dragged # DEPRECATED
-    @topmostDroppable = null # NOT SUPPORTED
-    @textEnterCtrls = @_listeners.byEvent.textEnter # DEPRECATED
-    @_coordCache = [] # NOT SUPPORTED
-    @_coordCacheFlag = true # NOT SUPPORTED
-    @_lastCoordFlushTimeout = null # NOT SUPPORTED
-    @activeControl = null # NOT SUPPORTED
-    @_lastKeyDown = null # NOT SUPPORTED
-    @_origDroppableChecks = @enableDroppablechecks # DEPRECATED
-    @startDroppable() if @enableDroppableChecks # DEPRECATED
+  # _legacyStart: ->
+  #   @warn "EventManager#"+'_'+"legacyStart is deprecated"
+  #   @listeners = [] # NOT SUPPORTED
+  #   @focused = @_listeners.focused # DEPRECATED
+  #   @resizeListeners = @_listeners.byEvent.resize # DEPRECATED
+  #   @eventOptions = @_listeners.byId # DEPRECATED
+  #   @dragItems = @_listeners.dragged # DEPRECATED
+  #   @topmostDroppable = null # NOT SUPPORTED
+  #   @textEnterCtrls = @_listeners.byEvent.textEnter # DEPRECATED
+  #   @_coordCache = [] # NOT SUPPORTED
+  #   @_coordCacheFlag = true # NOT SUPPORTED
+  #   @_lastCoordFlushTimeout = null # NOT SUPPORTED
+  #   @activeControl = null # NOT SUPPORTED
+  #   @_lastKeyDown = null # NOT SUPPORTED
+  #   @_origDroppableChecks = @enableDroppablechecks # DEPRECATED
+  #   @startDroppable() if @enableDroppableChecks # DEPRECATED
   #
   # Flushes the position cache by elemId. If no elemId is specified,
   # everything is flushed.
@@ -1130,6 +1129,7 @@ EventManagerApp = HApplication.extend
   die: ->
     @stop()
     @base()
+
 LOAD( ->
   window.EventManager = EventManagerApp.new( 500, 'EventManager' )
   # Alias:
