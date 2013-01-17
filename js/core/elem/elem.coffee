@@ -274,6 +274,34 @@ ELEM = HClass.extend
     parseInt( @getStyle(_id, _key), 10 )
   
   ###
+  Sets element position ( id, [ x, y ] )
+  ###
+  setPosition: (_id, x, y )->
+    unless y?
+      [ x, y ] = x
+    @setStyle( _id, 'left', x+'px' )
+    @setStyle( _id, 'top', x+'px' )
+
+  ###
+  Shortcut for filling parent dimensions with optional offset(s)
+  ###
+  stretchToParentBounds: (_id, l, t, r, b )->
+    if not l?
+      [ l, t, r, b ] = [ 0, 0, 0, 0 ]
+    else if l instanceof Array
+      [ l, t, r, b ] = l
+    else if not t?
+      [ l, t, r, b ] = [ l, l, l, l ]
+    @setStyle( _id, 'position', 'absolute' )
+    @setStyle( _id, 'display', 'block' )
+    @setStyle( _id, 'left', l+'px' )
+    @setStyle( _id, 'top', t+'px' )
+    @setStyle( _id, 'width', 'auto' )
+    @setStyle( _id, 'height', 'auto' )
+    @setStyle( _id, 'right', r+'px' )
+    @setStyle( _id, 'bottom', b+'px' )
+
+  ###
   Sets box coordinates [ x, y, width, height ]
   ###
   setBoxCoords: (_id, _coords)->
@@ -628,6 +656,18 @@ ELEM = HClass.extend
           @_elemTodo.push( _id )
           @_elemTodoH[_id] = true
           @_checkNeedFlush()
+    null
+  
+  ###
+  Sets multiple styles at once
+  ###
+  setStyles: (_id, _styles, _noCache )->
+    if _styles instanceof Array
+      for [ _key, _value ] in _styles
+        @setStyle( _id, _key, _value, _noCache )
+    else if typeof _styles == 'object'
+      for _key, _value of _styles
+        @setStyle( _id, _key, _value, _noCache )
     null
   
   ###
