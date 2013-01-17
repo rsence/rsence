@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.date      = Time.now
   s.homepage  = 'http://www.rsence.org/'
   s.rubyforge_project = 'rsence-'
-  s.license   = 'GPL-3'
+  s.license   = 'MIT'
   prerelease  = s.version.to_s.end_with?('.pre')
   s.name      = 'rsence-pre' if prerelease
   normalized_version = s.version.to_s.to_f
@@ -34,7 +34,8 @@ Gem::Specification.new do |s|
     'js/**/*',
     'README.rdoc',
     'INSTALL.rdoc',
-    'LICENSE.txt',
+    'AUTHORS.txt',
+    'MIT-LICENSE.txt',
     'docs/*.rdoc',
     'VERSION'
   ].to_a
