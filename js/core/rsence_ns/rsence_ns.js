@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2010 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 // RSence client-side namespace initialization.
 // Current contents are a store for guiTrees and the serverConf method for setting up variables before starting.
@@ -25,4 +18,3 @@ RSence = {
     
   }
 };
-

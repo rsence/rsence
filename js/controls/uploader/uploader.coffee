@@ -1,10 +1,3 @@
-##   RSence
- #   Copyright 2008-2011 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
 
 # The default locale settings, may be overridden on the server.
 HLocale.components.HUploader =

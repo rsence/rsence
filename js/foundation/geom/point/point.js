@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2006 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
   ** Point objects represent points on a two-dimensional coordinate grid. The
@@ -198,5 +191,3 @@ HPoint = HClass.extend({
   }
   
 });
-
-

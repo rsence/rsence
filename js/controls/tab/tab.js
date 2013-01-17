@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2008 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
   ** HTabView
@@ -377,4 +370,3 @@ GUITreeTabItem = {
     return _parent.addTab( _options.label, _options.select, GUITreeTabView, _options );
   }
 };
-

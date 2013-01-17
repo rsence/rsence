@@ -1,12 +1,4 @@
 #!/usr/bin/env ruby
-##   RSence
- #   Copyright 2010 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
-
 
 if ARGV.include?('--help') or ARGV.include?('-h')
   puts %{

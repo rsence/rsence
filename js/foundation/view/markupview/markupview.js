@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2006 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
  ** Serves as a mixin class for classes that need to draw markup but don't

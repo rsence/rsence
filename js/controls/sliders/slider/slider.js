@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2006 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
   ** HSlider is a control unit that enables the user to choose a value in a range of values. 
@@ -332,4 +325,3 @@ HSlider = HControl.extend({
     this.prevOrientation = _orientation;
   }
 });
-

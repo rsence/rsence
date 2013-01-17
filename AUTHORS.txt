@@ -1,0 +1,63 @@
+
+Authors/contributors ordered by project phase (newest first) and order of first contribution (oldest first).
+
+If you see your name here and want your email address listed, please contact o@rsence.org
+
+
+RSence 2.3-> [MIT] (2013->)
+---------------------------
+
+Juha-Jarmo Heinonen <o@rsence.org>
+  Architect and Developer
+
+Petteri Salmi <petteri.salmi@hhtec.fi>
+  Patches
+
+
+
+RSence 1.0 to 2.2 [GPL] (2009-2012)
+-----------------------------------
+
+Juha-Jarmo Heinonen <o@rsence.org>
+  Architect and Developer
+
+Toni Nurminen <toni.nurminen@riassence.com>
+  Documentation and examples
+
+Tomi Toivio
+  Documentation
+
+Sergey Kim
+  Patches
+
+
+
+Himle [GPL] (2008-2009)
+-----------------------
+
+Juha-Jarmo Heinonen <o@rsence.org>
+  Architect and Developer
+
+Sergey Kim
+  Patches
+
+Domen Puncer <domen@cba.si>
+  JSMinC and JSCompress extensions
+
+
+
+Helmi RIA Platform 2.0 [Closed/GPL] (2006-2007)
+-----------------------------------------------
+
+Juha-Jarmo Heinonen <o@rsence.org>
+  Architect and Developer
+
+Mika Laukka
+  Developer
+
+Jukka Kortela
+  Developer
+
+Sergey Kim
+  Developer
+

@@ -1,11 +1,3 @@
-##   RSence
- #   Copyright 2007 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
-
 
 # the library path of this plugin
 lib_path = File.join( bundle_path, 'lib' )

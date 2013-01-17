@@ -1,12 +1,3 @@
-/*   RSence
- *   Copyright 2007 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
-
-
 
 /*** = Description
   ** A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined

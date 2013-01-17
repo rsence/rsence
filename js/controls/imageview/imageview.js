@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2006 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
   ** HImageView is a control unit intended to display images on the screen

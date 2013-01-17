@@ -1,10 +1,3 @@
-##   RSence
- #   Copyright 2009-2011 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
 
 #### = Description
   ## Use HCalendar to display a month calendar that displays days as columns

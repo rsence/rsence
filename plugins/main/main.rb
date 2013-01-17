@@ -1,11 +1,3 @@
-##   RSence
- #   Copyright 2008 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
-
 
 # The MainPlugin is accessible as +@plugins.main+ and just +main+ from other plugins.
 #

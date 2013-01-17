@@ -1,10 +1,3 @@
-##   RSence
- #   Copyright 2010 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
 
 # The RSence module contains the server interfaces of RSence.
 # == The classes that matter from a Plugin developer's point of view are:

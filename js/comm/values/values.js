@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2009 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
   ** Manages data value synchronization.
@@ -537,4 +530,3 @@ COMM.Values._detectNativeJSONSupport();
 // Backwards compatibility assignment for code that still
 // uses HVM as a reference of the Value Manager:
 HVM = COMM.Values;
-

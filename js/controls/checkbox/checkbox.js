@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2008 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 /*** = Description
   ** Simple checkbox component, toggles the value of
@@ -12,6 +5,7 @@
   ***/
 var//RSence.Controls
 HCheckbox = HButton.extend({
+
   componentName: 'checkbox',
   
   defaultEvents: {

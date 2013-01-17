@@ -1,10 +1,3 @@
-/*   RSence
- *   Copyright 2010 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
 
 // Simple view for centering a view.
 // The rect's left position is used as the minimum left position, the rects

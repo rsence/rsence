@@ -1,11 +1,3 @@
-##   RSence
- #   Copyright 2008 Riassence Inc.
- #   http://riassence.com/
- #
- #   You should have received a copy of the GNU General Public License along
- #   with this software package. If not, contact licensing@riassence.com
- ##
-
 
 warn "Current RSence rackup Broker implementation does not work."
 warn "Please try again in a future revision."

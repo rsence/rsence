@@ -1,11 +1,3 @@
-/*   RSence
- *   Copyright 2007 Riassence Inc.
- *   http://riassence.com/
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this software package. If not, contact licensing@riassence.com
- */
-
 
 /*** = Description
   ** Abstracts the DOM Event differences between browsers.
@@ -151,4 +143,3 @@ Event = {
 if (BROWSER_TYPE.ie && !BROWSER_TYPE.ie9) {
   Event.observe(window, "unload", Event.unloadCache, false);
 }
-
