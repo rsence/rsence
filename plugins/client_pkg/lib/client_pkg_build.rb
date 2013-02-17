@@ -207,10 +207,10 @@ class ClientPkgBuild
             js_data = CoffeeScript.compile( coffee_src, :bare => true )
           rescue CoffeeScript::CompilationError, ExecJS::RuntimeError
             if has_js
-              js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead." );}
+              js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead.' );}
               js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
             else
-              js_data = %{console.log( "WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}" );}
+              js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}' );}
             end
           end
         else
