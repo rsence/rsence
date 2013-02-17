@@ -21,6 +21,9 @@ BROWSER_TYPE =
   firefox2: false
   firefox3: false
   firefox4: false # version 4 or newer
+  ios: false
+  iphone: false # also true for iPod touch
+  ipad: false
 
 ###
 The DOM Element abstraction engine
@@ -796,7 +799,80 @@ ELEM = HClass.extend
     else
       @_runCmd( @_domLoadQueue.shift() )
     null
-  
+
+  ###
+  Returns an array of key, value style string pair containing the gradient style supported by the current browser.
+
+  The format of the colorSteps Object with the following items:
+    Key      Description
+    start    Default background color in a valid hexadecimal color format, also the start color
+    end      Default gradient end color for dumber browsers
+    type     Currently only 'linearTopBottom' is supported
+    steps    An Array containing color, percent (number without suffix) pairs, like [ 10, '#fff']
+  ###
+  _standardGradientSteps: (_startColor,_stepsIn,_endColor)->
+    _steps = [ "#{_startColor} 0%" ]
+    if _stepsIn.length != 0
+      for _step in _stepsIn
+        _steps.push "#{_step[1]} #{_step[0]}%"
+    _steps.push "#{_endColor} 100%"
+    return _steps
+  _linearGradientStyle: (_gradient)->
+    # IE6-8
+    if BROWSER_TYPE.ie and not BROWSER_TYPE.ie9 and not BROWSER_TYPE.ie10
+      _key   = 'filter'
+      _value = "progid:DXImageTransform.Microsoft.gradient( startColorstr='#{_gradient.start}', endColorstr='#{_gradient.end}',GradientType=0 )"
+    # IE9
+    else if BROWSER_TYPE.ie9 or BROWSER_TYPE.ie10
+      # IE9 SVG, needs conditional override of 'filter' to 'none'
+      # Also static white-shaded svg, needs a svg source to base64 utility
+      _key = 'background'
+      _svg = '<?xml version="1.0" ?>'
+      _svg += '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">'
+      _svg += '<linearGradient id="gradientie9" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="0%" y2="100%">'
+      _svg += """<stop offset="0%" stop-color="##{_gradient.start}" />"""
+      for _step in _gradient.steps
+        _svg += """<stop offset="#{_step[0]}%" stop-color="##{_step[1]}" />"""
+      _svg += """<stop offset="100%" stop-color="##{_gradient.end}" />"""
+      _svg += _svgSteps.join('')
+      _svg += '</linearGradient>'
+      _svg += '<rect x="0" y="0" width="1" height="1" fill="url(#gradientie9)" />'
+      _svg += '</svg>'
+      _svg64 = @sha.str2Base64(_svg)
+      _value = "url(data:image/svg+xml;base64,#{_svg64})"
+    else if BROWSER_TYPE.ie10
+      _key   = 'background'
+      _steps = @_standardGradientSteps(_gradient.start,_gradient.steps,_gradient.end).join(',')
+      _value = "-ms-linear-gradient(top, #{_steps})"
+    # Firefox 3.6 and newer
+    else if BROWSER_TYPE.firefox4 or BROWSER_TYPE.firefox3
+      _key   = 'background'
+      _steps = @_standardGradientSteps(_gradient.start,_gradient.steps,_gradient.end).join(', ')
+      _value = "-moz-linear-gradient(top, #{_steps})"
+    # Chrome and Safari
+    else if BROWSER_TYPE.safari or BROWSER_TYPE.chrome
+      _key   = 'background'
+      # Chrome10+,Safari5.1+
+      _steps = @_standardGradientSteps(_gradient.start,_gradient.steps,_gradient.end).join(',')
+      _value = "-webkit-linear-gradient(top, #{_steps})"
+      # Chrome,Safari4+ (unsupported)
+      # -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(9%,#efefef), color-stop(91%,#e0e0e0), color-stop(100%,#efefef))
+    # Opera 11.10+
+    else if BROWSER_TYPE.opera
+      _key   = 'background'
+      _steps = @_standardGradientSteps(_gradient.start,_gradient.steps,_gradient.end).join(',')
+      _value = "-o-linear-gradient(top, )"
+    else
+      # Old browsers
+      _key   = 'background'
+      _value = _gradient.start
+      # W3C standard:
+      # _steps = @_standardGradientSteps(_gradient.start,_gradient.steps,_gradient.end).join(',')
+      # _value = "linear-gradient(to bottom, #{_steps})"
+    return [ _key, _value ]
+  _linearGradientCSS: (_gradient)->
+    @_linearGradientStyle(_gradient).join(': ')+';'
+
   ###
   Does browser version checks and starts the document loaded check poll
   ###
@@ -816,6 +892,7 @@ ELEM = HClass.extend
       _browserType.ie9 = !!~_ua.indexOf('MSIE 9')
       _browserType.ie10 = !!~_ua.indexOf('MSIE 10')
       unless _browserType.ie9
+        @sha = SHA.new(8) # SHA1 needed for IE9/10 SVG base64 encoding
         _browserType.ie9 = _browserType.ie10 # IE 10 is treated like IE 9
     _browserType.mac = !!~_ua.indexOf('Macintosh')
     _browserType.win = !!~_ua.indexOf('Windows')
@@ -823,6 +900,11 @@ ELEM = HClass.extend
     _browserType.firefox2 = !!~_ua.indexOf('Firefox/2.')
     _browserType.firefox3 = !!~_ua.indexOf('Firefox/3.')
     _browserType.firefox4 = _browserType.firefox and not _browserType.firefox2 and not _browserType.firefox3
+    _iPhone = !!~_ua.indexOf('iPhone') or !!~_ua.indexOf('iPod')
+    _iPad = !!~_ua.indexOf('iPad')
+    _browserType.ios = _iPhone or _iPad
+    _browserType.iphone = _iPhone
+    _browserType.ipad = _iPad
     @_domWaiter()
     null
   
