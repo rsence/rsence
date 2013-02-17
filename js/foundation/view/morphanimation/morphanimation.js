@@ -226,19 +226,25 @@ HMorphAnimation = HClass.extend({
   *
   **/
   onAnimationStart: function() {
-    
+    if(typeof this.startAnimation == 'function'){
+      this.startAnimation();
+    }
   },
   
 /** Extend the onAnimationEnd method, if you want to do something special 
   * when an animation on this view is finished.
   **/
   onAnimationEnd: function() {
-    
+    if(typeof this.endAnimation == 'function'){
+      this.endAnimation();
+    }
   },
   
 /** Extend this method if functionality is desired upon cancellation of animation.
   **/
   onAnimationCancel: function() {
-    
+    if(typeof this.cancelAnimation == 'function'){
+      this.cancelAnimation();
+    }
   }
 });
