@@ -1,3 +1,4 @@
+---
   #### Server configuration
   #
   # The :base_url specifies the prefix for all default http responders.
@@ -27,7 +28,7 @@
     # A list of javascript dependencies to include in the html
     :deps: [ ]
     #
-    # Boot library:
+    # Boot library (default dependency, the package to load into html):
     :boot_lib: rsence
     #
     # Default additional libraries to use:
@@ -41,6 +42,57 @@
     #
     # how many milliseconds to wait before doing an idle poll
     :server_poll_interval: 2000 # 2 seconds
+  #
+  # Mobile browser default settings, by device group and model:
+  :mobile:
+    #
+    # iOS devices, defaults to iPads:
+    ios:
+      scale: 1.0
+      scale_min: 1.0
+      scale_max: 1.0
+      #
+      # Horizontal mode:
+      landscape:
+        # Fullscreen (app) mode
+        fullscreen:
+          width:  1024
+          height: 672
+        browser:
+          width:  1024
+          height: 600
+      #
+      # Horizontal mode:
+      portrait:
+        # Fullscreen (app) mode
+        fullscreen:
+          width:  768
+          height: 1024
+        browser:
+          width:  768
+          height: 928
+      #
+      # Dummy iPad override (same as default)
+      ipad:
+        # nothing to override
+      iphone:
+        scale: 0.5
+        scale_min: 0.5
+        scale_max: 0.5
+        landscape:
+          fullscreen:
+            width: 960
+            height: 600
+          browser:
+            width: 960
+            height: 536
+        portrait:
+          fullscreen:
+            width: 640
+            height: 920
+          browser:
+            width: 640
+            height: 856
   #
   # The settings for the daemon
   :daemon:
@@ -206,204 +258,5 @@
   #
   # Entered by code, empty container
   :broker_urls: { }
-
-
-  #### Client package build configuration
-  #
-  #
-  :client_pkg:
-
-    # Source directories to scan
-    :src_dirs: []
-    
-    # List of theme names to include and pack
-    :theme_names:
-      - default  # Makes default_theme.js containing css and html templates
-      - bright   # Makes bright_theme.js containing css and html templates
-
-    # List of packages to build
-    :packages:
-
-      # The core package, loaded by default using a script tag in index_html
-      core:
-        
-        # RSence.*
-        - rsence_ns
-        
-        - locale_settings    # HLocaleSettings
-        
-        # RSence.Core
-        - class             # HClass
-        - elem              # ELEM
-        - event             # Event
-        
-        # RSence.Util
-        - sha               # SHA
-        
-        # RSence.Foundation
-        - system            # HSystem
-        - valueresponder    # HValueResponder
-        - application       # HApplication
-        
-        # COMM
-        - comm              # COMM
-        - queue             # COMM.Queue
-        - session           # COMM.Session
-        - transporter       # COMM.Transporter
-        - sessionwatcher    # COMM.SessionWatcher
-        - urlresponder      # COMM.URLResponder
-        - autosync          # ( automatic sync setup )
-        - values            # COMM.Values
-        - value             # HValue
-        - jsloader          # COMM.JSLoader
-        - json_renderer     # COMM.JSONRenderer
-        - valuematrix       # HValueMatrixInterface & HValueMatrix
-        - point             # HPoint
-        - rect              # HRect
-        - thememanager      # HThemeManager
-        - markupview        # HMarkupView
-        - morphanimation    # HMorphAnimation
-        - viewdefaults      # HViewDefaults
-        - view              # HView
-        - eventresponder    # HEventResponder
-        - dummyvalue        # HDummyValue
-        - eventmanager      # EVENT
-        - controldefaults   # HControlDefaults
-        - control           # HControl
-        - valueaction       # HValueAction
-        - dyncontrol        # HDynControl
-        - centerview        # HCenterView
-        - scrollview        # HScrollView
-        - inlineview        # HInlineView
-
-      # The default collection of simple control widgets (components)
-      controls:
-        - button            # HButton & HClickValueButton
-        - checkbox          # HCheckbox
-        - radiobutton       # HRadioButton
-        - stringview        # HStringView
-        - textcontrol       # HTextControl
-        - passwordcontrol   # HPasswordControl
-        - textarea          # HTextArea
-        - searchfield       # HSearchField
-        - uploader          # HUploader
-        - slider            # HSlider
-        - vslider           # HVSlider
-        - progressbar       # HProgressBar
-        - progressindicator # HProgressIndicator
-        - imageview         # HImageView
-        - stepper           # HStepper
-        - validatorview     # HValidatorView
-        - window            # HWindow
-        - tab               # HTab & HTabView & HTabItem
-        - sheet             # HSheet
-        - alert_sheet       # HAlertSheet
-        - confirm_sheet     # HConfirmSheet
-
-      # Server error message application ( the Reload / Reset Session dialog )
-      servermessage:
-        - reloadapp # ReloadApp
-
-      # Special package for Internet Explorer 6.0
-      iefix:
-        - iefix
-
-      # Date and time -related control widgets (components)
-      # These are not complete; they are still under development
-      # and will be included in the controls package when finalized.
-      datetime:
-        - datetimevalue       # HDateTime
-        - calendar            # HCalendar
-        - datetimepicker      # HDateTimePicker
-        - timesheet           # HTimeSheet
-        - timesheet_item      # HTimeSheetItem
-        - timesheet_item_edit # HTimeSheetItemEditor
-
-      # List related control widgets (components)
-      # These are not complete; they are still under development
-      # and will be included in the controls package when finalized.
-      lists:
-        - listitems           # HListItems
-        - checkboxlist        # HCheckboxList
-        - radiobuttonlist     # HRadiobuttonList
-        - propertylist        # HPropertyList
-        - propertylisteditor  # HPropertyEditor
-        - minimenu            # HMiniMenu
-        - minimenuitem        # HMiniMenuItem
-        - popupmenu           # HPopupMenu
-        - menuitem            # HMenuItem
-      
-      tables:
-        - table               # HTable
-
-      # Graphics related control widgets (components)
-      # These are not complete and there will probably never be any
-      # serious efforts to support legacy browsers, like old IE versions,
-      # unless someone is interested in sponsoring such efforts.
-      graphics:
-        - svgcontrol
-    
-    # Special packages that include other packages
-    :compound_packages:
-      rsence:
-        - core
-        - default_theme
-        - controls
-        - lists
-        - datetime
-        - tables
-        - graphics
-        - servermessage
-      std_widgets:
-        - default_theme
-        - controls
-        - lists
-        - datetime
-        - tables
-        - graphics
-        - servermessage
-
-    # List of variables and other names beginning
-    # with a underscore that should not be obfuscated
-    :reserved_names:
-      - _ID
-      - _id
-      - _WIDTH
-      - _width
-      - _HEIGHT
-      - _height
-      - _
-
-    # List of file extensions considered graphics image types.
-    # Used for theme graphics inclusion.
-    :gfx_formats:
-      - .jpg
-      - .gif
-      - .png
-      - .swf
-      - .svg
-      - .pdf
-
-    # If disabled, makes packages out of single source bundles automatically
-    :dont_pack_undefined: true
-
-    # Replacement prefix for obfuscated names
-    :repl_prefix: _
-
-    # If enabled, doesn't obfuscate code (useful for debugging)
-    :no_obfuscation: false
-
-    # If enabled, doesn't remove whitespace (useful for debugging)
-    :no_whitespace_removal: false
-
-    # If enabled, doesn't make gzipped packages
-    :no_gzip: false
-
-    # The strategy for gzip, a number between 0 and 9
-    #  - 0 means largest size, but fast compression
-    #  - 9 means smallest size, but slow compression
-    #  - any number in between is a compromise
-    :gz_strategy: 9
-
 
 
