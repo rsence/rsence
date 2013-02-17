@@ -23,7 +23,7 @@
   **
 ***/
 var//RSence.Foundation
-HView = HClass.extend({
+HView = UtilMethods.extend({
 
   isView: true,  // attribute to check if the object is a view
   isCtrl: false, // attribute to check for if the object is a control
@@ -1164,7 +1164,7 @@ HView = HClass.extend({
   },
   
   setStyles: function(_styles){
-    var _stylesObjType = COMM.Values.type(_styles);
+    var _stylesObjType = this.typeChr(_styles);
     if(_stylesObjType==='a'){
       this.setStylesArray(_styles);
     }
@@ -1256,7 +1256,10 @@ HView = HClass.extend({
   *
   **/
   styleOfPart: function(_partName, _name, _force) {
-    if (this.markupElemIds[_partName]===undefined) {
+    if (!this['markupElemIds']){
+      !this.isProduction && console.log('Warning, styleOfPart: no markupElemIds');
+    }
+    else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }
@@ -1276,7 +1279,10 @@ HView = HClass.extend({
   *
   **/
   setMarkupOfPart: function( _partName, _value ) {
-    if (this.markupElemIds[_partName]===undefined) {
+    if (!this['markupElemIds']){
+      !this.isProduction && console.log('Warning, setMarkupOfPart: no markupElemIds');
+    }
+    else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
     }
     else {
@@ -1297,7 +1303,10 @@ HView = HClass.extend({
   *
   **/
   markupOfPart: function(_partName) {
-    if (this.markupElemIds[_partName]===undefined) {
+    if (!this['markupElemIds']){
+      !this.isProduction && console.log('Warning, markupOfPart: no markupElemIds');
+    }
+    else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
       return '';
     }

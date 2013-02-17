@@ -24,7 +24,7 @@
   **
 ***/
 var//RSence.Foundation
-HApplication = HClass.extend({
+HApplication = UtilMethods.extend({
   
   elemId: 0,
   

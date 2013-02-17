@@ -5,7 +5,7 @@
   ** Keeps track of all +HValue+ instances present.
 ***/
 //var//RSence.COMM
-COMM.Values = HClass.extend({
+COMM.Values = UtilMethods.extend({
   
 /** No constructor, singleton class.
   **/
@@ -116,13 +116,6 @@ COMM.Values = HClass.extend({
     }
   },
   
-  // List of primitive object types.
-  _builtins: [
-    'b', // boolean
-    'n', // number
-    's'  // string
-  ],
-  
 /** = Description
   * Use this method to detect the type of the object given.
   *
@@ -142,29 +135,7 @@ COMM.Values = HClass.extend({
   *
   **/
   type: function(_obj){
-    if(_obj === null){
-      return '~';
-    }
-    else if (_obj === undefined){
-      return '-';
-    }
-    var _type = (typeof _obj).slice(0,1);
-    if(~this._builtins.indexOf(_type)){
-      return _type;
-    }
-    else if(_type==='o'){
-      if(_obj.constructor === Array){
-        return 'a'; // array
-      }
-      else if(_obj.constructor === Object){
-        return 'h'; // hash
-      }
-      else if(_obj.constructor === Date){
-        return 'd'; // date
-      }
-      return false;
-    }
-    return false;
+    return this.typeChr( _obj );
   },
   
   // Returns an encoded version of the array _arr as a string
@@ -485,8 +456,6 @@ COMM.Values = HClass.extend({
         _syncValues.push( [ _id, _value ] );
       }
     }
-    // console.log('response:',_response);
-    // console.log('encoded:',_this.encode(_response));
     return _this.encode(_response);
   },
 
@@ -524,7 +493,6 @@ COMM.Values = HClass.extend({
     }
   }
 });
-
 COMM.Values._detectNativeJSONSupport();
 
 // Backwards compatibility assignment for code that still

@@ -19,7 +19,7 @@ COMM.SessionWatcher = HApplication.extend({
     
     // gets the HValue represented by
     // sesTimeoutValueId (:client_time in server)
-    this.sesTimeoutValue = COMM.Values.values[_sesTimeoutValueId];
+    this.sesTimeoutValue = this.getValueById(_sesTimeoutValueId);
     this.timeoutSecs = _timeoutSecs;
     
     // onIdle is called when HSystem's ticker count % 100 == 0
