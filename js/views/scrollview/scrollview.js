@@ -9,6 +9,16 @@ HScrollView = HControl.extend({
     scrollX: true,
     scrollY: true
   }),
+  scrollToTop: function(){
+    ELEM.get(this.elemId).scrollTop = 0;
+  },
+  scrollToBottom: function(){
+    var
+    elem = ELEM.get( this.elemId ),
+    contentHeight = ELEM.getScrollSize(this.elemId)[1],
+    viewHeight = this.rect.height;
+    elem.scrollTop = contentHeight-viewHeight;
+  },
   drawSubviews: function(){
     if(this.options.scrollX === 'auto' || this.options.scrollY === 'auto'){
       this.setStyle('overflow','auto');
