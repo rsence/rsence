@@ -96,7 +96,7 @@ HClass.prototype = {
             _returnValue = _method.apply(this, arguments);
           }
           catch(e){
-            !this.isProduction && console.warn("An exception occurred while calling base: ",this._exceptionProperties(e)," object: ",_ancestor);
+            !this.isProduction && console.warn("An exception occurred while calling base: ",HClass.prototype._exceptionProperties(e)," object: ",_ancestor);
             _returnValue = null;
           }
           // then because event this function can be called from child method
