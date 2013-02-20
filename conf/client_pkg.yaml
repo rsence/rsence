@@ -73,6 +73,7 @@
     - radiobutton       # HRadioButton
     - stringview        # HStringView
     - textcontrol       # HTextControl
+    - numerictextcontrol # HNumericTextControl
     - passwordcontrol   # HPasswordControl
     - textarea          # HTextArea
     - searchfield       # HSearchField
@@ -102,12 +103,16 @@
   # These are not complete; they are still under development
   # and will be included in the controls package when finalized.
   datetime:
-    - datetimevalue       # HDateTime
+    - momentjs            # moment.js by Tim Wood momentjs.com
+    - datetimevalue       # HDateTime; going to be deprecated or re-factored
     - calendar            # HCalendar
-    - datetimepicker      # HDateTimePicker
+    - calendar_pulldown   # HCalenderPulldown
     - timesheet           # HTimeSheet
     - timesheet_item      # HTimeSheetItem
     - timesheet_item_edit # HTimeSheetItemEditor
+    - datepicker          # HDatePicker
+    - timepicker          # HTimePicker
+    - datetimepicker      # HDateTimePicker
 
   # List related control widgets (components)
   # These are not complete; they are still under development
@@ -193,7 +198,7 @@
 # If enabled, doesn't remove whitespace (useful for debugging)
 :no_whitespace_removal: false
 
-# If enabled, doesn't make gzipped packages
+# If enabled, doesn't make GNUzipped packages
 :no_gzip: false
 
 # The strategy for gzip, a number between 0 and 9
