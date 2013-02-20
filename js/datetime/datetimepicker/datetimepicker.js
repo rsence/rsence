@@ -17,7 +17,7 @@ HDateTimePicker = HControl.extend({
     if(!this.m){
       return;
     }
-    this.setLocked( HVM.values[ this.options.lockedId ].value );
+    // this.setLocked( HVM.values[ this.options.lockedId ].value );
     var
     date = new Date( this.value*1000 ),
     yyyy = date.getUTCFullYear(),
@@ -202,7 +202,7 @@ HDateTimePicker = HControl.extend({
     HStringView.nu(
       HRect.nu( _numStepperRect ),
       this, {
-        valueObj: HVM.values[this.options.tzValueId]
+        // valueObj: HVM.values[this.options.tzValueId]
       }
     );
     this.refreshValue();
