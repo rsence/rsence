@@ -14,12 +14,11 @@
   ** = Usage
   **  var myAppInstance = HApplication.nu();
   **  var rect1 = [10, 10, 100, 100];
-  **  var myViewInstance = HView.nu( rect1, myAppInstance );
-  **  var myViewInstance.setStyle('background-color','#ffcc00');
+  **  var myViewInstance = HView.nu( rect1, myAppInstance, { style: { backgroundColor: '#fc0' } } );
   **  var rect2 = [10, 10, 70, 70];
-  **  var mySubView1 = HView.nu( rect2, myViewIntance );
-  **  var rect3 [20, 20, 50, 50];
-  **  var mySubView2 = HView.nu( rect3, mySubView1 );
+  **  var mySubView1 = HView.nu( rect2, myViewInstance, { style: { backgroundColor: '#cfc' } } );
+  **  var rect3 = [20, 20, 50, 50];
+  **  var mySubView2 = HView.nu( rect3, mySubView1, { style: { backgroundColor: '#000' } } );
   **
 ***/
 var//RSence.Foundation
@@ -129,7 +128,7 @@ HView = UtilMethods.extend({
   optimizeWidthOnRefresh: true,
   
 /** The parent is the +_parent+ supplied to the constructor.
-  * This is a complete object reference to the parent's namespace.
+  * This is a complete object reference to the parent's name-space.
   **/
   parent: null,
   
@@ -156,17 +155,17 @@ HView = UtilMethods.extend({
 /** The app is the reference of the app process acting as
   * the root controller of the view tree of which this view is a
   * member.
-  * This is a complete object reference to the app's namespace.
+  * This is a complete object reference to the app's name-space.
   **/
   app: null,
   
-/** The views array contains a list of subviews of this view
+/** The views array contains a list of sub-views of this view
   * by id. To access the object reference, use the +HSystem.views+
   * array with the id.
   **/
   views: null,
   
-/** The viewsZOrder array contains a list of subviews ordered by
+/** The viewsZOrder array contains a list of sub-views ordered by
   * zIndex. To change the order, use the bringToFront,
   * sendToBack, bringForwards, sendBackwards, bringToFrontOf and
   * sentToBackOf methods.
@@ -331,13 +330,13 @@ HView = UtilMethods.extend({
     this.appId = this.parent.appId;
     this.app = HSystem.apps[this.appId];
     
-    // subview-ids, index of HView-derived objects that are found in HSystem.views[viewId]
+    // sub-view ids, index of HView-derived objects that are found in HSystem.views[viewId]
     this.views = [];
     
-    // Subviews in Z order.
+    // Sub-views in Z order.
     this.viewsZOrder = [];
     
-    // Keep the view (and its subviews) hidden until its drawn.
+    // Keep the view (and its sub-views) hidden until its drawn.
     this._createElement();
     
     // Set the geometry
@@ -731,17 +730,17 @@ HView = UtilMethods.extend({
       if(this.options.html){
         this.setHTML(this.options.html);
       }
-      // Extended draw for components to define/extend.
+      // Extended draw for components to define / extend.
       // This is preferred over drawSubviews, when defining
       // parts of a complex component.
       if(typeof this.extDraw === 'function'){
         this.extDraw();
       }
-      // Extended draw for the purpose of drawing subviews.
+      // Extended draw for the purpose of drawing sub-views.
       if(typeof this.drawSubviews === 'function'){
         this.drawSubviews();
       }
-      // if options contain a subviews function, call it with the namespace of self
+      // if options contain a sub-views function, call it with the name-space of self
       if(this.options.subviews && typeof this.options.subviews == 'function'){
         this.options.subviews.call( this );
       }
@@ -768,7 +767,7 @@ HView = UtilMethods.extend({
 /** = Description
   * Called once, when the layout of the view is initially drawn.
   * Doesn't do anything by itself, but provides an extension point for making
-  * subviews.
+  * sub-views.
   *
   **/
   drawSubviews: function(){
@@ -1144,8 +1143,8 @@ HView = UtilMethods.extend({
   },
   
 /** = Description
-  * Sets any arbitary style of the main DOM element of the component.
-  * Utilizes Element Manager's drawing queue/cache to perform the action.
+  * Sets any arbitrary style of the main DOM element of the component.
+  * Utilizes Element Manager's drawing queue / cache to perform the action.
   *
   * = Parameters
   * +_name+::          The style name (css syntax, eg. 'background-color')
@@ -1499,7 +1498,7 @@ HView = UtilMethods.extend({
     // Delete the children first.
     var _childViewId, i;
     if(!this.views && !this.isProduction){
-      console.log('HView#die: no subviews for component name: ',this.componentName,', self:',this);
+      console.log('HView#die: no sub-views for component name: ',this.componentName,', self:',this);
     }
     while (this.views && this.views.length !== 0) {
       _childViewId = this.views[0];
@@ -1531,7 +1530,7 @@ HView = UtilMethods.extend({
 
 /** = Description
   * A convenience method to call #die after 10ms using a setTimeout.
-  * Use this method, if destroying self or destroying from a subview.
+  * Use this method, if destroying self or destroying from a sub-view.
   *
   **/
   dieSoon: function(){
@@ -1560,7 +1559,7 @@ HView = UtilMethods.extend({
   },
   
 /** = Description
-  * Adds a sub-view/component to the view. Called from inside the 
+  * Adds a sub-view / component to the view. Called from inside the 
   * HView#constructor and should be automatic for all components that accept 
   * the 'parent' parameter, usually the second argument, after the HRect. May 
   * also be used to attach a freely floating component (removed with remove) 
@@ -1647,7 +1646,7 @@ HView = UtilMethods.extend({
   * merely alter its frame and bounds rectangle.
   *
   * = Parameters
-  * +_horizonal+:: Horizonal units to add to the width (negative units subtract)
+  * +_horizonal+:: Horizontal units to add to the width (negative units subtract)
   * +_vertical+::  Vertical units to add to the height (negative units subtract)
   *
   * = Returns
@@ -1692,7 +1691,7 @@ HView = UtilMethods.extend({
     return this;
   },
 
-/** = Descripion
+/** = Description
   * This method moves the view to a new coordinate. It adjusts the 
   * left and top components of the frame rectangle accordingly.
   * Since a View's frame rectangle must be aligned on screen pixels, only
@@ -1744,7 +1743,7 @@ HView = UtilMethods.extend({
   * merely alter its frame and bounds rectangle.
   *
   * = Parameters
-  * +_horizonal+::  Horizonal units to change the x coordinate (negative units subtract)
+  * +_horizonal+::  Horizontal units to change the x coordinate (negative units subtract)
   * +_vertical+::   Vertical units to add to change the y coordinate (negative units subtract)
   *
   * = Returns
@@ -1872,7 +1871,7 @@ HView = UtilMethods.extend({
     if (this.parent) {
       var _index = this.zIndex();
       this.parent.viewsZOrder.splice(_index, 1); // removes this index from the arr
-      this.parent.viewsZOrder.splice(0, 0, this.viewId); // unshifts viewId
+      this.parent.viewsZOrder.splice(0, 0, this.viewId); // un-shifts viewId
       this._updateZIndexAllSiblings();
     }
     return this;
@@ -1905,7 +1904,7 @@ HView = UtilMethods.extend({
   * +_length+::   Optional, How many characters to count.
   * +_elemId+::   Optional, The element ID where the temporary string is created
   *               in.
-  * +_wrap+::     Optional boolean value, wrap whitespaces?
+  * +_wrap+::     Optional boolean value, wrap white-space?
   * +_extraCss+:: Optional, extra css to add.
   *
   * = Returns
@@ -1926,11 +1925,13 @@ HView = UtilMethods.extend({
       _extraCss += 'white-space:nowrap;';
     }
     
-    var _stringElem = ELEM.make(_elemId,'span');
+    var
+    _stringParent = ELEM.make(_elemId,'div'),
+    _stringElem = ELEM.make(_stringParent,'span');
     ELEM.setCSS(_stringElem, "visibility:hidden;"+_extraCss);
     ELEM.setHTML(_stringElem, _string);
     var _visibleSize=ELEM.getSize(_stringElem);
-    ELEM.del(_stringElem);
+    ELEM.del(_stringElem); ELEM.del(_stringParent);
     return [_visibleSize[0]+_visibleSize[0]%2,_visibleSize[1]+_visibleSize[1]%2];
   },
   
