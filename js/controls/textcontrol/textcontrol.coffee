@@ -20,6 +20,10 @@ HTextControl = HControl.extend
     contextMenu: true
   
   controlDefaults: HControlDefaults.extend
+    labelStyle:
+      textIndent: 0
+      fontSize: '10px'
+      color: '#666'
     refreshAfter:   1
     refreshOnBlur:  true
     refreshOnInput: true
@@ -39,6 +43,7 @@ HTextControl = HControl.extend
   ## field, essentially creating a tooltip using the label.
   ###
   refreshLabel: ->
+    return unless @label
     if @markupElemIds? and @markupElemIds.label?
       @setAttrOfPart( 'label', 'title', @label )
     else
@@ -48,9 +53,7 @@ HTextControl = HControl.extend
     else
       @_labelView = HLabel.new( [ 2, 2, 2000, 28 ], @,
         label: @label
-        style:
-          fontSize: '10px'
-          color: '#999'
+        style: @options.labelStyle
       )
     _labelWidth = @_labelView.stringWidth( @label, null, @_labelView.markupElemIds.value )+4
     @_labelView.rect.setWidth( _labelWidth )
