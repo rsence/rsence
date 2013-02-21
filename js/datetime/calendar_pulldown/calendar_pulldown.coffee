@@ -3,6 +3,7 @@ HCalendarPulldown = HMiniMenu.extend
   defaultEvents:
     click: true
     resize: true
+    preserveTime: true
   controlDefaults: HMiniMenu.prototype.controlDefaults.extend
     calendarAlign: 'right'
     label: ''
@@ -26,7 +27,9 @@ HCalendarPulldown = HMiniMenu.extend
     if @calendar?
       @calendar.valueObj.release( @calendar )
       @valueObj.bind(@calendar)
-  refreshValue: -> 
+  refreshValue: ->
+    _date = moment(@value).utc()
+    @_timePreserve = [ _date.hours(), _date.minutes(), _date.seconds() ] if @options.preserveTime
     @calendar.setValue(@value)
   drawSubviews: ->
     @menuItemView = HView.new( @calendarRect(), @app,
@@ -49,6 +52,7 @@ HCalendarPulldown = HMiniMenu.extend
     ).new( [ 0, 20, 200, 180 ], @menuItemView,
       value: @value
       valueObj: @valueObj
+      preserveTime: @options.preserveTime
       style:
         boxShadow: '0 0 5px #333'
         borderRadius: '5px'

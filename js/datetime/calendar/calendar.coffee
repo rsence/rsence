@@ -14,6 +14,9 @@ HCalendar = HControl.extend
   defaultEvents:
     mouseWheel: true
     keyDown: true
+
+  controlDefaults: HControlDefaults.extend
+    preserveTime: true
   
   ## Calls HCalendar#nextMonth or HCalendar#prevMonth based on delta change
   ## of the mouseWheel event
