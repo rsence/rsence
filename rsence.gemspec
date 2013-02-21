@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.files = FileList[
     'lib/**/*',
     'setup/welcome/**/*',
+    'conf/client_pkg.yaml',
     'conf/default_conf.yaml',
     'conf/default_strings.yaml',
     'conf/rsence_command_strings.yaml',
