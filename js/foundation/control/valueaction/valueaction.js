@@ -14,7 +14,14 @@ HValueAction = HClass.extend({
     if( _options.value ){
       this.value = _options.value;
     }
-    if( _options.valueObj ){
+    if( _options.bind ){
+      var _valueObj = _options.bind;
+      if( typeof _valueObj == 'string' ){
+        _valueObj = HVM.values[ _valueObj ];
+      }
+      _valueObj.bind( this );
+    }
+    else if( _options.valueObj ){
       _options.valueObj.bind( this );
     }
     if( this.parent.addView instanceof Function ){
