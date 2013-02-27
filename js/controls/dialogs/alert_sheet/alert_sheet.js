@@ -22,6 +22,7 @@ HAlertSheet = HSheet.extend({
   * and an alert button.
   **/
   drawSubviews: function(){
+    this.base();
     this.icon = HImageView.nu(
       [ 16, 16, 48, 48 ],
       this, {
