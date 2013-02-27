@@ -23,3 +23,9 @@
   position: absolute; top: 24px; left: 0; right: 0; bottom: 0;
   overflow: auto; overflow-x: hidden;
 }
+.default > .table_body > .table_grid {
+  position: absolute; top: 0; left: 0; overflow: visible;
+}
+.default > .table_body > .table_grid > div {
+  position: absolute; height: 24px;
+}
