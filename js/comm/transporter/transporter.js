@@ -33,11 +33,11 @@ COMM.Transporter = HApplication.extend({
   },
 
   _detectNativeJSONSupport: function(){
-    if(window['JSON']){
+    if(window.JSON){
       var
       _JSON = window.JSON,
       _fun = 'function';
-      if((typeof _JSON['parse'] === _fun) && (typeof _JSON['stringify'] === _fun)){
+      if((typeof _JSON.parse === _fun) && (typeof _JSON.stringify === _fun)){
         this.parseResponseArray = this._nativeParseResponseArray;
       }
     }
@@ -70,7 +70,7 @@ COMM.Transporter = HApplication.extend({
   // },
   
   parseResponseArray: function( _responseText ){
-    return HVM.decode( _responseText );
+    return this.decodeObject( _responseText );
   },
   
   _nativeParseResponseArray: function( _responseText ){
@@ -95,16 +95,16 @@ COMM.Transporter = HApplication.extend({
         _valueManager.create( _valueId, _valueData );
       }
     }
-    if(_values['set'] instanceof Array){
-      for(i=0;i<_values['set'].length;i++){
-        _valueId = _values['set'][i][0];
-        _valueData = _values['set'][i][1];
+    if(_values.set instanceof Array){
+      for(i=0;i<_values.set.length;i++){
+        _valueId = _values.set[i][0];
+        _valueData = _values.set[i][1];
         _valueManager.s( _valueId, _valueData );
       }
     }
-    if(_values['del'] instanceof Array){
-      for(i=0;i<_values['del'].length;i++){
-        _valueId = _values['del'][i];
+    if(_values.del instanceof Array){
+      for(i=0;i<_values.del.length;i++){
+        _valueId = _values.del[i];
         _valueManager.del( _valueId );
       }
     }
@@ -145,20 +145,29 @@ COMM.Transporter = HApplication.extend({
       _session.newKey(_sesKey);
     }
     _this.setValues( _values );
+    _outputScript = '(function(_queue){';
     for(;i<_responseArrayLen;i++){
-      try {
-        _queue.pushEval( _responseArray[i] );
-      }
-      catch(e) {
-        _this._clientEvalError = _queue.clientException( e, _responseArray[i] );
-      }
+      _outputScript += '_queue.push( (function(){';
+      _outputScript += _responseArray[i];
+      _outputScript += '}) );';
+      // try {
+      //   console.log(_responseArray[i]);
+      //   _queue.pushEval( _responseArray[i] );
+      // }
+      // catch(e) {
+      //   console.log('clientEvalError:',_queue.clientException( e, _responseArray[i] ));
+      //   _this._clientEvalError = _queue.clientException( e, _responseArray[i] );
+      // }
     }
+    _outputScript += '_queue.push( (function(){COMM.Transporter.flushBusy();}) );';
+    _outputScript += '_queue.push( (function(){_queue.delScript("'+_sesKey+'");}) );';
+    _outputScript += '_queue.flush();';
+    _outputScript += '})(COMM.Queue);';
+    _queue.addScript(_sesKey,_outputScript);
     if(_this._serverInterruptView && _sesKey !== '' ){
       _this._serverInterruptView.die();
       _this._serverInterruptView = false;
     }
-    _queue.push( function(){COMM.Transporter.flushBusy();} );
-    _queue.flush();
   },
   
 /** Sets the +busy+ flag to false and resynchronizes immediately,
@@ -314,7 +323,7 @@ COMM.Transporter = HApplication.extend({
     // console.log('sync.');
     this.busy = true;
     var _now = new Date().getTime();
-    if(window['sesWatcher'] && window.sesWatcher['sesTimeoutValue']){
+    if(window.sesWatcher && window.sesWatcher.sesTimeoutValue){
       // Sets the value of the session watcher to the current time. It could cause an unnecessary re-sync poll immediately after this sync otherwise.
       sesWatcher.sesTimeoutValue.set( _now );
     }
@@ -324,7 +333,7 @@ COMM.Transporter = HApplication.extend({
     // _boundary = _now.toString(36)+(Math.random()*10000).toString(36)+(Math.random()*10000).toString(36),
     // _separator = '--'+_boundary,
     // _errorMessage = _this.getClientEvalError(),
-    _body = HVM.sync();
+    _body = COMM.Values.sync();
     // _body = _separator+
     //   '\r\nContent-Disposition: form-data; name="ses_key"\r\nContent-Type: text/plain\r\n'+
     //   '\r\n'+COMM.Session.ses_key+'\r\n'+_separator;

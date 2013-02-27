@@ -170,6 +170,7 @@ COMM.Queue = HApplication.extend({
   **/
   unshiftEval: function(_evalStr,_arguments){
     var _function;
+    console.log('WARNING: COMM.unshiftEval is deprecated; Update your code!');
     eval('_function = function(){'+_evalStr+'}');
     this.unshift(_function);
   },
@@ -179,7 +180,25 @@ COMM.Queue = HApplication.extend({
   **/
   pushEval: function(_evalStr){
     var _function;
+    console.log('WARNING: COMM.pushEval is deprecated; Update your code!');
     eval('_function = function(){'+_evalStr+'}');
     this.push(_function);
+  },
+
+  _scripts: {},
+
+  addScript: function(_scriptId,_scriptSrc){
+    var
+    _script = document.createElement('script');
+    this._scripts[_scriptId] = _script;
+    _script.textContent = _scriptSrc;
+    document.head.appendChild(_script);
+  },
+
+  delScript: function(_scriptId){
+    var
+    _script = this._scripts[_scriptId];
+    document.head.removeChild(_script);
+    delete this._scripts[_scriptId];
   }
 }).nu();
