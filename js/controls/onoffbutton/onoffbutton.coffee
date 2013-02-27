@@ -25,7 +25,7 @@ HOnOffButton = HCheckbox.extend
     @offLabel = _label
     @refreshLabelOff()
   refreshLabelOff: ->
-    @setMarkupOfPart( 'offlabel', @labelOff )
+    @setMarkupOfPart( 'offlabel', @labelOff ) if @drawn
   refreshValue: ->
     if @value != false
       @setStyleOfPart( 'offvalue', 'display', 'none' )
