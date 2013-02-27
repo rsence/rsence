@@ -39,7 +39,7 @@ HMiniMenu = HRadioButtonList.extend({
     if(y < 0){
       y = this.subComponentHeight%y;
     }
-    if(this.options['menuItemGeom']){
+    if(this.options.menuItemGeom){
       if(this.options.menuItemGeom.width){
         w += this.options.menuItemGeom.width;
       }
@@ -59,7 +59,7 @@ HMiniMenu = HRadioButtonList.extend({
   
   refreshValue: function(){
     this.base();
-    if(this.listItems && this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
+    if(this.listItems && this.listItems.length !== 0 && this.valueMatrix !== undefined ) {
       for(var i=0;i<this.listItems.length;i++){
         if(this.listItems[i][0]===this.value){
           this.setLabel( this.listItems[i][1] );

@@ -1230,8 +1230,8 @@ HView = UtilMethods.extend({
   *
   **/
   setStyleOfPart: function(_partName, _name, _value, _force) {
-    if (!this['markupElemIds']){
-      !this.isProduction && console.log('Warning, setStyleOfPart: no markupElemIds');
+    if (!this.markupElemIds){
+      !this.isProduction && console.log('Warning, setStyleOfPart('+_partName+','+_name+','+_value+') in a '+this.componentName+': no markupElemIds');
     }
     else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, setStyleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
@@ -1255,8 +1255,8 @@ HView = UtilMethods.extend({
   *
   **/
   styleOfPart: function(_partName, _name, _force) {
-    if (!this['markupElemIds']){
-      !this.isProduction && console.log('Warning, styleOfPart: no markupElemIds');
+    if (!this.markupElemIds){
+      !this.isProduction && console.log('Warning, styleOfPart('+_partName+','+_name+') in a '+this.componentName+': no markupElemIds');
     }
     else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, styleOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
@@ -1278,8 +1278,8 @@ HView = UtilMethods.extend({
   *
   **/
   setMarkupOfPart: function( _partName, _value ) {
-    if (!this['markupElemIds']){
-      !this.isProduction && console.log('Warning, setMarkupOfPart: no markupElemIds');
+    if (!this.markupElemIds){
+      !this.isProduction && console.log('Warning, setMarkupOfPart('+_partName+') in a '+this.componentName+': no markupElemIds');
     }
     else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, setMarkupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');
@@ -1302,8 +1302,8 @@ HView = UtilMethods.extend({
   *
   **/
   markupOfPart: function(_partName) {
-    if (!this['markupElemIds']){
-      !this.isProduction && console.log('Warning, markupOfPart: no markupElemIds');
+    if (!this.markupElemIds){
+      !this.isProduction && console.log('Warning, markupOfPart('+_partName+') in a '+this.componentName+': no markupElemIds');
     }
     else if (this.markupElemIds[_partName]===undefined) {
       !this.isProduction && console.log('Warning, markupOfPart: partName "'+_partName+'" does not exist for viewId '+this.viewId+'.');

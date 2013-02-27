@@ -155,7 +155,7 @@ HRadioButtonList = HListItemControl.extend({
   
   refreshValue: function(){
     var _value = this.value;
-    if ( this.listItems && this.listItems.length !== 0 && this['valueMatrix'] !== undefined ) {
+    if ( this.listItems && this.listItems.length !== 0 && this.valueMatrix !== undefined ) {
       if ( this.radioButtonResponder === false ){
         this.radioButtonIndexValue = HValue.nu( false, 0 );
         this.radioButtonIndexValue.bind( this.valueMatrix );
