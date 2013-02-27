@@ -685,10 +685,12 @@ ELEM = HClass.extend
     _elem = document.createElement( _tagName )
     _id = @_add( _elem )
     @_initCache( _id )
-    unless _options == undefined
+    if _options?
       if _options.attrs
         for _attr in _options.attrs
           @setAttr( _id, _attr[0], _attr[1], true )
+      if _options.styles
+        @setStyles( _id, _options.styles )
     @_elements[_targetId].appendChild(_elem)
     _id
 
