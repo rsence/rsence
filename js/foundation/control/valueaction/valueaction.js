@@ -1,6 +1,6 @@
 
 var
-HValueAction = HClass.extend({
+HValueAction = UtilMethods.extend({
   constructor: function( _rect, _parent, _options ){
     if( _rect && _rect.hasAncestor && _rect.hasAncestor( HClass ) ){
       _options = _parent;
@@ -17,7 +17,7 @@ HValueAction = HClass.extend({
     if( _options.bind ){
       var _valueObj = _options.bind;
       if( typeof _valueObj == 'string' ){
-        _valueObj = HVM.values[ _valueObj ];
+        _valueObj = this.getValueById( _valueObj );
       }
       _valueObj.bind( this );
     }

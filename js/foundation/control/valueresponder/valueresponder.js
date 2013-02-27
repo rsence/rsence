@@ -4,7 +4,7 @@
   ** It's implemented by default by +HControl+.
 ***/
 var//RSence.Foundation
-HValueResponder = HClass.extend({
+HValueResponder = UtilMethods.extend({
   
 /** = Description
   * Binds an HValue compatible instance to the component's valueObj. Also 
@@ -35,7 +35,7 @@ HValueResponder = HClass.extend({
   *
   **/
   valueDiffers: function(_value){
-    return (COMM.Values.encode(_value) !== COMM.Values.encode(this.value));
+    return (this.encodeObject(_value) !== this.encodeObject(this.value));
   },
   
 /** = Description
@@ -53,7 +53,7 @@ HValueResponder = HClass.extend({
   *
   **/
   setValue: function(_value) {
-    if(_value !== undefined && this['valueObj'] && this.valueDiffers(_value)) {
+    if(_value !== undefined && this.valueObj && this.valueDiffers(_value)) {
       var _valueManager = COMM.Values;
       this.value = _value;
       if( !~_valueManager._builtinTypeChr.indexOf( _valueManager.type(_value) ) ){
@@ -62,7 +62,7 @@ HValueResponder = HClass.extend({
       else {
         this.valueObj.set( _value );
       }
-      (this['refresh'] !== undefined) && (typeof this.refresh === 'function') && this.refresh();
+      (this.refresh !== undefined) && (typeof this.refresh === 'function') && this.refresh();
     }
     return this;
   }

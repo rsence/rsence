@@ -225,7 +225,7 @@ HControl = HView.extend({
       if(typeof _options.bind === 'string'){
         var
         _valueId = _options.bind,
-        _valueObj = HVM.values[_valueId];
+        _valueObj = this.getValueById(_valueId);
         if( _valueObj ){
           _valueObj.bind( _this );
         }

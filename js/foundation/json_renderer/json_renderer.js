@@ -14,7 +14,7 @@
   ** features and documentation as it matures.
 ***/
 //var//RSence.Foundation
-COMM.JSONRenderer = HClass.extend({
+COMM.JSONRenderer = UtilMethods.extend({
   
   version: 1.0,
 
@@ -26,7 +26,7 @@ COMM.JSONRenderer = HClass.extend({
   * +_parent+: The parent view (or app) (Optional)
   **/
   constructor: function(_data, _parent){
-    if((_data['type'] === 'GUITree') && (this.version >= _data['version'])){
+    if((_data.type === 'GUITree') && (this.version >= _data.version)){
       this.data   = _data;
       this.parent = _parent;
       this.byId = {};
@@ -226,22 +226,22 @@ COMM.JSONRenderer = HClass.extend({
 
     _class = this.findInScope( _className );
     
-    if (_class['hasAncestor'] !== undefined){
+    if (_class.hasAncestor !== undefined){
       _isAppClass = _class.hasAncestor( HApplication );
       _isViewClass = _class.hasAncestor( HView );
     }
 
-    _hasId = ( _dataNode['id'] !== undefined ) && ( typeof _dataNode['id'] === 'string' );
-    _hasName = ( _dataNode['name'] !== undefined ) && ( typeof _dataNode['name'] === 'string' );
+    _hasId = ( _dataNode.id !== undefined ) && ( typeof _dataNode.id === 'string' );
+    _hasName = ( _dataNode.name !== undefined ) && ( typeof _dataNode.name === 'string' );
 
     if( _straightParams ){
       _instance = this.initStraight( _class, _dataNode );
     }
-    else if( _dataNode['args'] !== undefined ){
-      _instance = this.initStraight( _class, _dataNode['args'] );
+    else if( _dataNode.args !== undefined ){
+      _instance = this.initStraight( _class, _dataNode.args );
     }
-    else if( _origNode && _origNode['args'] !== undefined ){
-      _instance = this.initStraight( _class, _origNode['args'] );
+    else if( _origNode && _origNode.args !== undefined ){
+      _instance = this.initStraight( _class, _origNode.args );
     }
     if( _instance ){
       if( _hasId ){
@@ -255,11 +255,11 @@ COMM.JSONRenderer = HClass.extend({
     
     // Currently only HView -derived classes are supported, so
     // the rect is mandatory.
-    _rect = _dataNode['rect'];
+    _rect = _dataNode.rect;
     _hasRect = (_rect !== undefined) && (_rect instanceof Array || typeof _rect === 'string');
     if( !_hasRect && _origNode){
-      _hasRect = _origNode['rect'] !== undefined;
-      _rect    = _hasRect?_origNode['rect']:null;
+      _hasRect = _origNode.rect !== undefined;
+      _rect    = _hasRect?_origNode.rect:null;
     }
     if( !_isViewClass ){
       if( _hasRect ){
@@ -268,19 +268,19 @@ COMM.JSONRenderer = HClass.extend({
     }
 
     // Checks, if any sub-views are defined.
-    _hasSubviews = _dataNode['subviews'] !== undefined;
-    _subViews    = _hasSubviews?_dataNode['subviews']:null;
+    _hasSubviews = _dataNode.subviews !== undefined;
+    _subViews    = _hasSubviews?_dataNode.subviews:null;
     if( !_hasSubviews && _origNode){
-      _hasSubviews = _origNode['subviews'] !== undefined;
-      _subViews    = _hasSubviews?_origNode['subviews']:null;
+      _hasSubviews = _origNode.subviews !== undefined;
+      _subViews    = _hasSubviews?_origNode.subviews:null;
     }
     
     // Checks, if any options are defined.
-    _hasOptions  = _dataNode['options'] !== undefined;
-    _options     = _hasOptions?_dataNode['options']:null;
+    _hasOptions  = _dataNode.options !== undefined;
+    _options     = _hasOptions?_dataNode.options:null;
     if( !_hasOptions && _origNode){
-      _hasOptions = _origNode['options'] !== undefined;
-      _options    = _hasOptions?_origNode['options']:null;
+      _hasOptions = _origNode.options !== undefined;
+      _options    = _hasOptions?_origNode.options:null;
     }
     for( i=0; i < _autoOptionItems.length; i++ ){
       _autoOptionItem = _autoOptionItems[i];
@@ -294,34 +294,34 @@ COMM.JSONRenderer = HClass.extend({
     }
     
     // JS Extension block
-    _hasExtension = _dataNode['extend'] !== undefined;
-    _extension    = _hasExtension?_dataNode['extend']:null;
+    _hasExtension = _dataNode.extend !== undefined;
+    _extension    = _hasExtension?_dataNode.extend:null;
     if( !_hasExtension && _origNode){
-      _hasExtension = _origNode['extend'] !== undefined;
-      _extension    = _hasExtension?_origNode['extend']:null;
+      _hasExtension = _origNode.extend !== undefined;
+      _extension    = _hasExtension?_origNode.extend:null;
     }
     
     // JS Extension block
-    _hasBind = _dataNode['bind'] !== undefined;
-    _bind    = _hasBind?_dataNode['bind']:null;
+    _hasBind = _dataNode.bind !== undefined;
+    _bind    = _hasBind?_dataNode.bind:null;
     if( !_hasBind && _origNode){
-      _hasBind = _origNode['bind'] !== undefined;
-      _bind    = _hasBind?_origNode['bind']:null;
+      _hasBind = _origNode.bind !== undefined;
+      _bind    = _hasBind?_origNode.bind:null;
     }
 
-    _hasCall = _dataNode['call'] !== undefined;
+    _hasCall = _dataNode.call !== undefined;
     if( _hasCall ){
-      _call = _dataNode['call'];
+      _call = _dataNode.call;
     }
     
     // JS Definition block
-    _hasDefinition = _dataNode['define'] !== undefined;
-    _definitions   = _hasDefinition?_dataNode['define']:null;
+    _hasDefinition = _dataNode.define !== undefined;
+    _definitions   = _hasDefinition?_dataNode.define:null;
     if( !_hasDefinition && _origNode){
-      _hasDefinition  = _origNode['define'] !== undefined;
-      _definitions    = _hasDefinition?_origNode['define']:null;
+      _hasDefinition  = _origNode.define !== undefined;
+      _definitions    = _hasDefinition?_origNode.define:null;
     }
-    if( _rect === null && _class['hasAncestor'] && _class.hasAncestor( HView ) ) {
+    if( _rect === null && _class.hasAncestor && _class.hasAncestor( HView ) ) {
       console.log( 'Ancestors include HView, but no rect defined!' );
     }
 
@@ -365,16 +365,16 @@ COMM.JSONRenderer = HClass.extend({
             if( _bind instanceof HValue ){
               _options.valueObj = _bind;
             }
-            else if( COMM.Values.values[_bind] !== undefined ){
-              _options.valueObj = COMM.Values.values[_bind];
+            else if( this.getValueById(_bind) !== undefined ){
+              _options.valueObj = this.getValueById(_bind);
             }
             else {
               console.log('renderNode warning; No such valueId:'+_bind);
             }
           }
           else{
-            if(_options['valueObjId'] !== undefined){
-              _options.valueObj = COMM.Values.values[_options['valueObjId']];
+            if(_options.valueObjId !== undefined){
+              _options.valueObj = this.getValueById(_options.valueObjId);
             }
           }
         }
@@ -413,11 +413,11 @@ COMM.JSONRenderer = HClass.extend({
             if( _bind instanceof HValue ){
               _bind.bind( _instance );
             }
-            else if( COMM.Values.values[_bind] !== undefined ){
-              COMM.Values.values[_bind].bind(_instance);
+            else if( this.getValueById(_bind) !== undefined ){
+              this.getValueById(_bind).bind(_instance);
             }
             else {
-              console.log('renderNode warning; No such valueId:'+_bind);
+              console.log('renderNode warning; No such valueId:',_bind);
             }
           }
         }

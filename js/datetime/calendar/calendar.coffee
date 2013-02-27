@@ -99,7 +99,7 @@ HCalendar = HControl.extend
   ## See HLocale for more details
   localizedDays: ->
     _str = HLocale.dateTime.strings
-    _arr = HVM.clone( _str.weekDaysShort )
+    _arr = @cloneObject( _str.weekDaysShort )
     _arr.push( _arr.shift() )
     _arr.unshift( _str.weekShort )
     _arr

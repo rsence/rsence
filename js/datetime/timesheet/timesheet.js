@@ -291,7 +291,7 @@ HTimeSheet = HControl.extend({
     this.dragPreview.bringToFront();
     this.dragPreview.show();
     if( this.activateEditor( this.dragPreview ) ){
-      this.editor.createItem( HVM.clone( this.dragPreview.value ) );
+      this.editor.createItem( this.cloneObject( this.dragPreview.value ) );
     }
     else {
       this.dragPreview.hide();
@@ -375,7 +375,7 @@ HTimeSheet = HControl.extend({
         if( this.activateEditor( this.dragPreview ) ){
           // console.log('drag create');
           this.dragCreated = true;
-          this.editor.createItem( HVM.clone( this.dragPreview.value ) );
+          this.editor.createItem( this.cloneObject( this.dragPreview.value ) );
           return true;
         }
       }
@@ -837,7 +837,7 @@ but not used and not guaranteed to be preserved:
 
     // optimization that ensures the rect and previous value are different before redrawing
     var
-    _valueStr = COMM.Values.encode( this.value ),
+    _valueStr = this.encodeObject( this.value ),
     _rectStr = this.rect.toString(),
     _timeRangeStr = this.options.timeStart+':'+this.options.timeEnd,
     _shaSum = this._sha.strSHA1( _valueStr+_rectStr+_timeRangeStr );

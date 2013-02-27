@@ -21,9 +21,9 @@ HChatPanel = HScrollView.extend
     @userIcons = []
     _users = @value.users
     _themeUser = {}
-    _defaultBubble = HVM.clone( HSpeechBubble.prototype.controlDefaults.prototype.colors )
+    _defaultBubble = @cloneObject( HSpeechBubble.prototype.controlDefaults.prototype.colors )
     for _userId, _user of _users
-      _colors = HVM.clone( _defaultBubble )
+      _colors = @cloneObject( _defaultBubble )
       if _user.color_bg?
         _gradientStart = _user.color_bg
         _gradientStep1 = @hexColorSubtract( _gradientStart, '#111' )

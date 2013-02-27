@@ -33,7 +33,7 @@ HPropertyList = HControl.extend({
       clickY = y-this.contentView.pageY(),
       itemNum = Math.floor(clickY/this.options.rowHeight);
       if((clickY < 0) || (itemNum > this.valueTokens.length-1)){
-        this.editor.hide();
+        this.editor && this.editor.hide();
         return;
       }
       this.editItem( itemNum );
@@ -355,7 +355,7 @@ HPropertyList = HControl.extend({
   
   // Returns type of item
   itemType: function( item ){
-    return COMM.Values.type( item );
+    return this.typeChr( item );
   },
   
   // Translation from type code to type name
@@ -502,7 +502,7 @@ HPropertyList = HControl.extend({
     }
     
     this.selectedItem = itemNum;
-    this.editorValue.set( COMM.Values.clone(this.valueTokens[itemNum]) );
+    this.editorValue.set( this.cloneObject(this.valueTokens[itemNum]) );
     this.editor.show();
     EVENT.changeActiveControl(this.editor);
     this.editor.offsetTo( 0, targetY );
@@ -511,7 +511,7 @@ HPropertyList = HControl.extend({
   
   // Starts tokenizing, when the value is changed.
   refreshValue: function(){
-    if(this['propertyItems']===undefined){
+    if(this.propertyItems === undefined){
       return;
     }
     this.valueTokens = [];
@@ -531,7 +531,7 @@ HPropertyList = HControl.extend({
     }
     
     var i, token;
-    if(this['propertyItems'] === undefined){
+    if(this.propertyItems === undefined){
       this.propertyItems = [];
     }
     var colHeight = 0, colId = 0;
