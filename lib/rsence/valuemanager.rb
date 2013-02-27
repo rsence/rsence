@@ -141,7 +141,12 @@ module RSence
       # loop through un-validated values and validate them
       check_ids = session_values[:check]
       check_ids.clone.each do |check_id|
-        session_values[:by_id][check_id].tell( msg )
+        value = session_values[:by_id][check_id]
+        if value.nil?
+          warn "ses_id: #{msg.ses_id} nil value of value_id: #{check_id.inspect}"
+        else
+          value.tell( msg )
+        end
       end
     
     end
