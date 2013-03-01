@@ -309,7 +309,7 @@ HClass.implement = function(_interface) {
 //var Base = HClass;
 
 // Array fix
-if ([]['indexOf']===undefined) {
+if (![].indexOf) {
   // Object.extend = function(_destination, _source) {
   //   for (var _property in _source) {
   //     _destination[_property] = _source[_property];
@@ -337,14 +337,34 @@ if(typeof String.prototype.trim !== 'function') {
 
 // ff version 3.0.3 fails on this, when firebug installed: try/catch block
 try {
+  // console.log surrogate for browsers without a console
+  if(!window.console){
+    window.console = {
+      log: function(){},
+      warn: function(){}
+    };
+  }
+} catch(e) {}
 
-// console.log surrogate for browsers without a console
-if(window['console']===undefined){
-  window.console = {
-    log: function(){},
-    warn: function(){}
+// Mozilla reference bind workaround (bind was introduced in JS 1.8.5)
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function (oThis) {
+    if (typeof this !== "function") {
+      // closest thing possible to the ECMAScript 5 internal IsCallable function
+      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+    }
+    var aArgs = Array.prototype.slice.call(arguments, 1), 
+        fToBind = this, 
+        fNOP = function () {},
+        fBound = function () {
+          return fToBind.apply(
+            this instanceof fNOP && oThis ? this : oThis,
+            aArgs.concat(Array.prototype.slice.call(arguments))
+          );
+        };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+    return fBound;
   };
 }
-
-
-} catch(e) {}
