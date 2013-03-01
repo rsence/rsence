@@ -26,8 +26,7 @@ RSence =
   # Call this method from the index page for
   # client-only features
   clientConf: (_clientPrefix)->
-    HThemeManager.themePath = _clientPrefix+'/themes'
-    HThemeManager._start()
+    HThemeManager.setThemePath( _clientPrefix+'/themes' )
     @loadUnselectable()
 
   # Call this method from the index page to

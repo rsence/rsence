@@ -14,7 +14,7 @@ HImageView = HControl.extend({
   getImgSrc: function(){
     var _value = (this.value!==null)?this.value:(this.options.valueObj?this.options.valueObj.value:this.options.value);
     if (!_value){
-      _value = this.getThemeGfxPath() + "/blank.gif";
+      _value = this.getThemeGfxFile("blank.gif");
     }
     return _value;
   },

@@ -19,59 +19,47 @@ HMarkupView = HClass.extend({
   * Places the resulting markup in the instance variable.
   * 
   **/
-  bindMarkupVariables: function() {
+  // bindMarkupVariables: function() {
+  //   var
+  //   _this   = this,
+  //   _ID     = _this.elemId.toString(),
+  //   _rect   = _this.rect,
+  //   _WIDTH  = _rect.width,
+  //   _HEIGHT = _rect.height,
+  //   _markup = _this.markup,
+  //   _fns    = _this.markupFns,
+  //   _callValue = function(_id,_isAssign){
+  //     console.log('callValue',_id);
+  //     var _preId = _id;
+  //     _id = parseInt(_id,36)-10;
+  //     console.log('id:',_id,'->',_preId);
+  //     try{
+  //       var
+  //       _out = _fns[_id].call(_this);
+  //       if(_isAssign){
+  //         return '';
+  //       }
+  //       else {
+  //         return _out;
+  //       }
+  //     }
+  //     catch(e){
+  //       console.log('Markup Error: ',e);
+  //       return '';
+  //     }
+  //   };
     
-    var _markup = this.markup;
+  //   while ( HMarkupView._assignment_match.test(_markup) ) {
+  //     _markup = _markup.replace( HMarkupView._assignment_match, _callValue(RegExp.$1, false) );
+  //   }
+  //   while ( HMarkupView._variable_match.test(_markup) ) {
+  //     _markup = _markup.replace( HMarkupView._variable_match, _callValue(RegExp.$1) );
+  //   }
     
-    while ( HMarkupView._assignment_match.test(_markup) ) {
-      _markup = _markup.replace( HMarkupView._assignment_match, this.evalMarkupVariable(RegExp.$1,true) );
-    }
-    while ( HMarkupView._variable_match.test(_markup) ) {
-      _markup = _markup.replace( HMarkupView._variable_match, this.evalMarkupVariable(RegExp.$1) );
-    }
+  //   this.markup = _markup;
     
-    this.markup = _markup;
-    
-    return this;
-  },
-/** = Description
-  * Evaluates a string and throws an error into console.log
-  * if the string doesn't pass evaluation.
-  * If _isAssignment flag is set to true returns empty string.
-  * if _isAssignment is set to false will return string if it passes
-  * evaluation.
-  *
-  * = Parameters
-  * +_strToEval+::      A String to evaluate.
-  * 
-  * +_isAssignment+::   Flag to indicate return the String upon passed
-  *                     evaluation(false) or return of an empty String(true).
-  *
-  * = Returns
-  * +String+
-  * 
-  **/
-  evalMarkupVariable: function(_strToEval,_isAssignment){
-    try {
-      var _ID     = this.elemId.toString(),
-          _WIDTH  = this.rect.width,
-          _HEIGHT = this.rect.height,
-          _result = eval(_strToEval);
-      if(_isAssignment){
-        return '';
-      }
-      if(_result===undefined){
-        return '';
-      }
-      else {
-        return _result;
-      }
-    }
-    catch(e) {
-      console.log("Warning, the markup string '"+_strToEval+"' failed evaluation. Reason:"+e+' '+e.description);
-      return '';
-    }
-  },
+  //   return this;
+  // },
   
 /** = Description
   * Sets or unsets the _cssClass into a DOM element that goes by the ID
@@ -100,8 +88,8 @@ HMarkupView = HClass.extend({
     return this;
   }
   
-},{
-  _variable_match: new RegExp(/#\{([^\}]*)\}/),
-  _assignment_match: new RegExp(/\$\{([^\}]*)\}/)
+// },{
+//   _variable_match: new RegExp(/#\{([^\}]*)\}/),
+//   _assignment_match: new RegExp(/\$\{([^\}]*)\}/)
 });
 

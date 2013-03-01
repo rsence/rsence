@@ -504,7 +504,8 @@ HView = UtilMethods.extend({
     } else {
       _themeName = HThemeManager.currentTheme;
     }
-    return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath );
+    // return HThemeManager._componentGfxPath( _themeName,  this.componentName, this.themePath );
+    return HThemeManager.themePaths[_themeName];
   },
   
 /** = Description
@@ -520,7 +521,8 @@ HView = UtilMethods.extend({
     } else {
       _themeName = HThemeManager.currentTheme;
     }
-    return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, _fileName );
+    // return HThemeManager._componentGfxFile( _themeName,  this.componentName, this.themePath, _fileName );
+    return HThemeManager._buildThemePath( _fileName, _themeName );
   },
   
 /** --
@@ -716,7 +718,7 @@ HView = UtilMethods.extend({
     this.drawRect();
     if(!_isDrawn){
       this.firstDraw();
-      if(this['componentName']!==undefined){
+      if(this.componentName!==undefined){
         this.drawMarkup();
       }
       else if(BROWSER_TYPE.ie && this._ieNoThrough === null){
@@ -779,21 +781,24 @@ HView = UtilMethods.extend({
   * active theme is used.
   * ++
   **/
-  _loadMarkup: function() {
-    var _themeName, _markup;
-    if (this.preserveTheme) {
-      _themeName = this.theme;
-    }
-    else {
-      _themeName = HThemeManager.currentTheme;
-    }
-    _markup = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath );
-    if(_markup === false && !this.isProduction){
-      console.log('Warning: Markup template for "'+this.componentName+'" using theme "'+_themeName+'" not loaded.');
-    }
-    this.markup = _markup;
-    return (_markup !== false);
-  },
+  // _loadMarkup: function() {
+  //   var _themeName, _themeData, _markup, _markupFns;
+  //   if (this.preserveTheme) {
+  //     _themeName = this.theme;
+  //   }
+  //   else {
+  //     _themeName = HThemeManager.currentTheme;
+  //   }
+  //   _themeData = HThemeManager.getMarkup( _themeName, this.componentName, this.themePath );
+  //   if(_themeData === false && !this.isProduction){
+  //     console.log('Warning: Markup template for "'+this.componentName+'" using theme "'+_themeName+'" not loaded.');
+  //   }
+  //   _markup = _themeData[0];
+  //   _markupFns = _themeData[1];
+  //   this.markup = _markup;
+  //   this.markupFns = _markupFns;
+  //   return (_markup !== false);
+  // },
   
 /** = Description
   * Replaces the contents of the view's DOM element with html from the theme specific html file.
@@ -806,18 +811,27 @@ HView = UtilMethods.extend({
     // ELEM.setStyle(this.elemId, 'display', 'none', true);
     
     // continue processing from here on:
-    var _markupStatus = this._loadMarkup();
+    // var _markupStatus = this._loadMarkup();
     
-    this.bindMarkupVariables();
-    ELEM.setHTML(this.elemId, this.markup);
-    
+    // this.bindMarkupVariables();
+    var _themeName, _markup;
+    if (this.preserveTheme) {
+      _themeName = this.theme;
+    }
+    else {
+      _themeName = HThemeManager.currentTheme;
+    }
+    _markup = HThemeManager.resourcesFor( this, _themeName );
     this.markupElemIds = {};
-    for(var i=0; i < this.markupElemNames.length; i++ ) {
-      var _partName = this.markupElemNames[ i ],
-          _elemName = _partName + this.elemId,
-          _htmlIdMatch = ' id="' + _elemName + '"';
-      if( ~this.markup.indexOf( _htmlIdMatch ) ) {
-        this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
+    if( _markup !== '' ){
+      ELEM.setHTML(this.elemId, _markup);
+      for(var i=0; i < this.markupElemNames.length; i++ ) {
+        var _partName = this.markupElemNames[ i ],
+            _elemName = _partName + this.elemId,
+            _htmlIdMatch = ' id="' + _elemName + '"';
+        if( ~_markup.indexOf( _htmlIdMatch ) ) {
+          this.markupElemIds[ _partName ] = this.bindDomElement( _elemName );
+        }
       }
     }
     

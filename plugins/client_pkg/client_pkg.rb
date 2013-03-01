@@ -1,15 +1,15 @@
 
 # the library path of this plugin
-lib_path = File.join( bundle_path, 'lib' )
+lib_path = File.expand_path( 'lib', bundle_path )
 
 # The ClientPkgCache class:
-require File.join( lib_path, 'client_pkg_cache' )
+require File.expand_path( 'client_pkg_cache', lib_path )
 
 # The ClientPkgServe module:
-require File.join( lib_path, 'client_pkg_serve' )
+require File.expand_path( 'client_pkg_serve', lib_path )
 
 # The ClientPkgBuild class:
-require File.join( lib_path, 'client_pkg_build' )
+require File.expand_path( 'client_pkg_build', lib_path )
 
 
 # @private The ClientPkgPlugin builds and serves the client packages. It's not intended to be a part of the public API at this time.

@@ -28,7 +28,7 @@ class ClientPkgBuild
     return gz_string
   end
   
-  def read_css( src_path )
+  def read_css( src_path, theme_name, component_name )
     css_data = read_file( src_path )
     unless @debug
       unless @no_whitespace_removal
@@ -38,27 +38,56 @@ class ClientPkgBuild
         end
       end
     end
-    if @no_gzip
-      gz_css = false
-    else
-      gz_css = gzip_string( css_data )
-    end
-    return [css_data, gz_css]
+    tmpl_to_js( css_data, theme_name, component_name )
   end
   
-  def read_html( src_path )
+  ID_RE = /(#\{_ID\})/
+  WIDTH_RE = /(#\{_WIDTH\})/
+  HEIGHT_RE = /(#\{_HEIGHT\})/
+  TMPL_RE = /([#\$])\{([^\}]*?)\}/m
+  def tmpl_to_js( tmpl, theme_name, component_name )
+    js_cmds = []
+    seq_num = 10
+    cached_idx = {}
+    tmpl.gsub!( ID_RE, ']I[')
+    tmpl.gsub!( WIDTH_RE, ']W[')
+    tmpl.gsub!( HEIGHT_RE, ']H[')
+    tmpl.gsub!( TMPL_RE ) do
+      ( js_type, js_code ) = [ $1, $2 ]
+      if cached_idx.has_key?( js_code )
+        seq_id = cached_idx[ js_code ]
+      else
+        seq_id = seq_num.to_s(36)
+        cached_idx[ js_code ] = seq_id
+        seq_num += 1
+        if js_code.include?('_HEIGHT')
+          fn_args = '_ID,_WIDTH,_HEIGHT'
+        elsif js_code.include?('_WIDTH')
+          fn_args = '_ID,_WIDTH'
+        elsif js_code.include?('_ID')
+          fn_args = '_ID'
+        else
+          fn_args = ''
+        end
+        if js_type == '$'
+          js_cmds << "function(#{fn_args}){#{js_code}}"
+        else
+          js_cmds << "function(#{fn_args}){return #{js_code}}"
+        end
+      end
+      "#{js_type}{#{seq_id}}"
+    end
+    %{[[#{js_cmds.join(',')}],#{tmpl.to_json}]}
+  end
+
+  def read_html( src_path, theme_name, component_name )
     html_data = read_file( src_path )
     unless @debug
       unless @no_whitespace_removal
         html_data = @html_min.minimize( html_data )
       end
     end
-    if @no_gzip
-      gz_html = false
-    else
-      gz_html = gzip_string( html_data )
-    end
-    return [html_data, gz_html]
+    tmpl_to_js( html_data, theme_name, component_name )
   end
   
   def read_gfx( src_path_theme, theme_newest )
@@ -92,36 +121,34 @@ class ClientPkgBuild
         theme_newest = 0
       end
       if theme_newest == 0 or find_newer( src_path_theme, theme_newest )
-        theme_css = { :data => '' }
-        theme_html = { :data => '' }
         theme_size = {
           :css => [0,0],
           :html => [0,0],
           :gfx => 0
         }
+        theme_css = ''
         [ File.join( src_path_theme, bundle_name+'.css' ),
           File.join( src_path_theme, 'css', bundle_name+'.css' )
         ].each do |src_file_css|
           if File.exist?( src_file_css )
             fstat = File.stat( src_file_css )
             theme_newest = fstat.mtime.to_f if fstat.mtime.to_f > theme_newest
-            ( css_data, gz_css ) = read_css( src_file_css )
-            theme_css = { :data => css_data, :gzip => gz_css }
+            theme_css = read_css( src_file_css, theme_name, bundle_name )
             theme_size[:css][0] += fstat.size
-            theme_size[:css][1] += css_data.bytesize
+            theme_size[:css][1] += theme_css.bytesize
             break
           end
         end
+        theme_html = ''
         [ File.join( src_path_theme, bundle_name+'.html' ),
           File.join( src_path_theme, 'html', bundle_name+'.html' )
         ].each do |src_file_html|
           if File.exist?( src_file_html )
             fstat = File.stat( src_file_html )
             theme_newest = fstat.mtime.to_f if fstat.mtime.to_f > theme_newest
-            ( html_data, gz_html ) = read_html( src_file_html )
-            theme_html = { :data => html_data, :gzip => gz_html }
+            theme_html = read_html( src_file_html, theme_name, bundle_name )
             theme_size[:html][0] += fstat.size
-            theme_size[:html][1] += html_data.bytesize
+            theme_size[:html][1] += theme_html.bytesize
             break
           end
         end
@@ -142,8 +169,8 @@ class ClientPkgBuild
         theme_html = tc[:html]
         theme_gfx = tc[:gfx]
       end
-      @html_by_theme[theme_name][bundle_name] = theme_html[:data]
-      @css_by_theme[theme_name][bundle_name] = theme_css[:data]
+      @html_by_theme[theme_name][bundle_name] = theme_html
+      @css_by_theme[theme_name][bundle_name] = theme_css
       th = @themes[theme_name]
       th[:css][bundle_name] = theme_css
       th[:html][bundle_name] = theme_html
@@ -161,9 +188,7 @@ class ClientPkgBuild
       ts[:html][0] += theme_size[:html][0]
       ts[:html][1] += theme_size[:html][1]
       ts[:gfx] += theme_size[:gfx]
-
     end
-
     @theme_time += (Time.now.to_f - time_start)
   end
   
@@ -379,43 +404,37 @@ class ClientPkgBuild
     @theme_names.each do |theme_name|
       html_templates = @html_by_theme[ theme_name ]
       css_templates  = @css_by_theme[  theme_name ]
-      theme_css_template_data = css_templates.values.join("\n")
-      theme_html_js_arr = []
-      theme_html_js_arr.push "(function(){"
-      theme_html_js_arr.push "HThemeManager._tmplCache[#{theme_name.to_json}]=#{html_templates.to_json}; "
-      theme_html_js_arr.push "HNoComponentCSS.push(#{theme_name.to_json});"
-      theme_html_js_arr.push "HNoCommonCSS.push(#{theme_name.to_json});"
-      theme_html_js_arr.push %{
-        HThemeManager._pushStart( function(){
-          var _this = HThemeManager;
-          _this._cssUrl( #{theme_name.to_json}, #{(theme_name+'_theme').to_json}, _this.themePath, null );
-          _this.useCSS(#{theme_css_template_data.to_json});
-        } );
-      }
-      theme_html_js_arr.push "})();"
-      theme_html_js = theme_html_js_arr.join("\n")
-      @package_origsizes[theme_name+'_theme'] = theme_html_js.bytesize
-      theme_html_js = process_js( theme_html_js )
-      @js[theme_name+'_theme'] = theme_html_js
-      unless @no_gzip
-        theme_html_gz = gzip_string( @js[theme_name+'_theme'] )
-        @gz[theme_name+'_theme'] = theme_html_gz
+      css_template = ''
+      css_templates.each do |bundle_name,theme_data|
+        css_template += "#{bundle_name.to_json}:#{theme_data}," unless theme_data.empty?
       end
+      css_template.chop! if css_template.end_with?(',')
+      # theme_css_template_data = css_templates.values.join(",")
+      html_template = ''
+      html_templates.each do |bundle_name,theme_data|
+        html_template += "#{bundle_name.to_json}:#{theme_data}," unless theme_data.empty?
+      end
+      html_template.chop! if html_template.end_with?(',')
+      theme_html_js = "(function(){HThemeManager.installThemeData(#{theme_name.to_json},{#{css_template}},{#{html_template}})})();"
+      pkg_name = theme_name+'_theme'
+      orig_size = theme_html_js.bytesize
+      theme_html_js = @jsmin.minimize( theme_html_js ) unless @no_whitespace_removal
+      @destination_files[pkg_name] = theme_html_js
+      @destination_origsize[pkg_name] = orig_size
+      # @package_origsizes[theme_name+'_theme'] = theme_html_js.bytesize
+      # theme_html_js = process_js( theme_html_js )
+      # @js[theme_name+'_theme'] = theme_html_js
+      # unless @no_gzip
+      #   theme_html_gz = gzip_string( @js[theme_name+'_theme'] )
+      #   @gz[theme_name+'_theme'] = theme_html_gz
+      # end
+      # unless @quiet
+      #   print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.bytesize )
+      # end
       unless @quiet
-        print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.bytesize )
-      end
-      @themes[theme_name][:css][theme_name+'_theme'] = {
-        :data => theme_css_template_data,
-        :gzip => false
-      }
-      unless @no_gzip
-        theme_css_template_data_gz = gzip_string( theme_css_template_data )
-        @themes[theme_name][:css][theme_name+'_theme'][:gzip] = theme_css_template_data_gz
-      end
-      unless @quiet
-        print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.bytesize )
+        # print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.bytesize )
         print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], @theme_sizes[theme_name][:gfx], @theme_sizes[theme_name][:gfx] )
-        @logger.log( '' )
+        # @logger.log( '' )
       end
     end
     @theme_time += (Time.now.to_f - time_start)
@@ -520,10 +539,11 @@ class ClientPkgBuild
 
     compose_destinations
 
-    build_indexes
-
-    minimize_data
     build_themes
+
+    build_indexes
+    minimize_data
+
     build_compound_packages
     
     ms_taken = ((Time.now.to_f*10000)-time_start).round/10.0

@@ -143,16 +143,14 @@ module ClientPkgServe
     has_theme = @client_cache.theme_cache.has_key?( theme_name )
     
     # checks for theme part (css/html/gfx)
-    has_theme_part = ( has_theme and @client_cache.theme_cache[theme_name].has_key?( theme_part ) )
+    if theme_part == :css or theme_part == :html
+      has_theme_part = false
+    else
+      has_theme_part = ( has_theme and @client_cache.theme_cache[theme_name].has_key?(theme_part) )
+    end
     
     # checks for theme file
     has_theme_file = ( has_theme_part and @client_cache.theme_cache[theme_name][theme_part].has_key?( req_file ) )
-    
-    if not has_theme_file and req_file == 'common.css'
-      response.status = 200
-      response['Content-Type'] = 'text/css'
-      response.body = ''
-    end
     
     if not has_theme
       response.status = 404
@@ -166,50 +164,28 @@ module ClientPkgServe
       response.body   = '404 - Theme Resource Not Found'
       puts "File not found, avail: #{@client_cache.theme_cache[theme_name][theme_part].keys.join(', ')}" if RSence.args[:verbose]
     else
-      
       response.status = 200
-      
       file_ext = req_file.split('.')[-1]
       response['Content-Type'] = {
-        'html' => 'text/html; charset=utf-8',
-        'css'  => 'text/css; charset=utf-8',
         'png'  => 'image/png',
         'jpg'  => 'image/jpeg',
         'gif'  => 'image/gif',
         'swf'  => 'application/x-shockwave-flash'
       }[file_ext]
-      
-      if theme_part == :gfx
-        support_gzip = false
-      else
-        support_gzip = support_gzip?( ua )
+      # Special IE6 condition to serve gifs instead of png's, because it works much better
+      # than using the ActiveX alpha filter hack
+      if ua[:msie6] and req_file[-4..-1] == '.png'
+        ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
+        req_file = ie6_req_png2gif if @client_cache.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
       end
-      
-      if support_gzip
-        response['Last-Modified'] = @client_cache.last_modified
-        body = @client_cache.theme_cache[theme_name][theme_part][ req_file+'.gz' ]
-        response['Content-Length'] = body.bytesize.to_s
-        response['Content-Encoding'] = 'gzip'
-        response.body   = body
-      else
-        
-        # Special IE6 condition to serve gifs instead of png's, because it works much better
-        # than using the ActiveX alpha filter hack
-        if ua[:msie6] and req_file[-4..-1] == '.png'
-          ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
-          req_file = ie6_req_png2gif if @client_cache.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
-        end
-      
-        response['Last-Modified'] = @client_cache.last_modified
-        body = @client_cache.theme_cache[theme_name][theme_part][ req_file ]
-        if body.nil?
-          warn "ClientPkgServe#get: empty body for #{request.path}"
-          body = ''
-        end
-        response['Content-Length'] = body.bytesize.to_s
-        response.body = body
-        
+      response['Last-Modified'] = @client_cache.last_modified
+      body = @client_cache.theme_cache[theme_name][theme_part][req_file]
+      if body.nil?
+        warn "ClientPkgServe#get: empty body for #{request.path}"
+        body = ''
       end
+      response['Content-Length'] = body.bytesize.to_s
+      response.body = body
     end
   end
   
