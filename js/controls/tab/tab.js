@@ -62,9 +62,9 @@ HTab = HControl.extend({
   // overridden in the template
   fontStyle: 'font-family:Arial,sans-serif;font-size:13px;',
   
-  tabLabelHTMLPrefix1: '<div class="edge-left"></div><div class="tablabel" style="width:',
+  tabLabelHTMLPrefix1: '<div class="edge_left"></div><div class="tablabel" style="width:',
   tabLabelHTMLPrefix2: 'px">',
-  tabLabelHTMLSuffix: '</div><div class="edge-right"></div>',
+  tabLabelHTMLSuffix: '</div><div class="edge_right"></div>',
   tabLabelParentElem: 'label',
   tabLabelElementTagName: 'div',
   tabLabelAlign: 'left',
@@ -113,15 +113,15 @@ HTab = HControl.extend({
     if(~this.selectIdx){
       var _tabSelectElemId = this.tabLabels[this.selectIdx],
           _tabSelectViewId = this.tabs[this.selectIdx];
-      ELEM.delClassName(_tabSelectElemId,'item-fg');
-      ELEM.addClassName(_tabSelectElemId,'item-bg');
+      ELEM.delClassName(_tabSelectElemId,'item_fg');
+      ELEM.addClassName(_tabSelectElemId,'item_bg');
       HSystem.views[_tabSelectViewId].hide();
     }
     if(~_tabIdx){
       var _tabLabelElemId = this.tabLabels[_tabIdx],
           _tabViewId = this.tabs[_tabIdx];
-      ELEM.delClassName(_tabLabelElemId,'item-bg');
-      ELEM.addClassName(_tabLabelElemId,'item-fg');
+      ELEM.delClassName(_tabLabelElemId,'item_bg');
+      ELEM.addClassName(_tabLabelElemId,'item_fg');
       HSystem.views[_tabViewId].show();
     }
     this.selectIdx = _tabIdx;
@@ -158,7 +158,7 @@ HTab = HControl.extend({
       _tabLabelHTML = this.tabLabelHTMLPrefix1+_labelTextWidth+this.tabLabelHTMLPrefix2+_tabLabel+this.tabLabelHTMLSuffix;
     }
     _tab.hide();
-    ELEM.addClassName(_tabLabelElemId,'item-bg');
+    ELEM.addClassName(_tabLabelElemId,'item_bg');
     ELEM.setStyle(_tabLabelElemId,'width',_labelWidth+'px');
     ELEM.setStyle(_tabLabelElemId,this.tabLabelAlign,this.rightmostPx+'px');
     ELEM.setHTML(_tabLabelElemId,_tabLabelHTML);
