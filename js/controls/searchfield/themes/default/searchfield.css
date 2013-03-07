@@ -13,7 +13,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'padding-left:2px;width:85% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:3px;height:16px;':'padding:2px;padding-top:4px;right:3px;height:22px;width:auto;'}
+  #{(
+  (BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?
+    'padding-left:2px;width:85% !important;height:90% !important;':
+    'padding:2px;padding-top:4px;right:3px;height:22px;width:auto;'
+  )}
 }
 
 .default .searchfield_input:focus {
@@ -27,7 +31,11 @@
 
 .default .searchfield_input_parent {
   position: absolute;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:0;right:4px;bottom:0;':BROWSER_TYPE.ie6?'left:2px;top:1px;right:1px;height:20px;':'left:-2px;top:-2px;right:-2px;height:24px;'}
+  #{(
+  (BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?
+    'left:0;padding-left:1px;top:0;right:4px;bottom:0;':
+    'left:-2px;top:-2px;right:-2px;height:24px;'
+  )}
 }
 
 .default .searchfield_fade,
@@ -38,7 +46,6 @@
   height: 24px;
   background-repeat: no-repeat;
   background-image: #{this.getCssFilePath('searchfield_parts1.png')};
-  #{BROWSER_TYPE.ie6?'font-size:0;line-height:0;':''}
 }
 
 .default .searchfield_fade {

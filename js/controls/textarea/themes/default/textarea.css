@@ -8,7 +8,11 @@
   vertical-align: middle;
   border: 0;
   left:0px;top:0px;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'padding:0;padding-left:2px;width:100% !important;height:100% !important;':BROWSER_TYPE.ie6?'right:2px;bottom:2px;':'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'}
+  #{(
+  (BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?
+    'padding:0;padding-left:2px;width:100% !important;height:100% !important;':
+    'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'
+  )}
 }
 
 .default .disabled .textarea_input {
@@ -22,5 +26,11 @@
 .default .textarea_input_parent {
   position: absolute;
   z-index: 2;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:1px;right:3px;bottom:1px;':BROWSER_TYPE.ie?'left:2px;top:1px;right:1px;bottom:1px;':'left:-2px;top:-2px;right:-2px;bottom:-2px;'}
+  #{(
+  (BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?
+    'left:0;padding-left:1px;top:1px;right:3px;bottom:1px;':
+    BROWSER_TYPE.ie?
+      'left:2px;top:1px;right:1px;bottom:1px;':
+      'left:-2px;top:-2px;right:-2px;bottom:-2px;'
+  )}
 }

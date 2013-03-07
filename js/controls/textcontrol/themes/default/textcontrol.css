@@ -9,7 +9,11 @@
   vertical-align: middle;
   border: 0;
   left: 0; top: 0;
-  #{(BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'padding-left:2px;width:100% !important;height:90% !important;':BROWSER_TYPE.ie6?'right:4px;bottom:2px;':'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'}
+  #{(
+  (BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?
+    'padding-left:2px;width:100% !important;height:90% !important;':
+    'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'
+  )}
 }
 
 .default .textcontrol_input:focus {
@@ -34,7 +38,11 @@
 .default .textcontrol_input_parent {
   position: absolute;
   z-index: 2;
-  #{((BROWSER_TYPE.chrome && BROWSER_TYPE.mac)||BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?'left:0;padding-left:1px;top:0;right:4px;bottom:0;':BROWSER_TYPE.ie6?'left:2px;top:1px;right:1px;bottom:1px;':'left:-2px;top:-2px;right:-2px;bottom:-2px;'}
+  #{(
+  ((BROWSER_TYPE.chrome && BROWSER_TYPE.mac)||BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.opera)?
+    'left:0;padding-left:1px;top:0;right:4px;bottom:0;':
+    'left:-2px;top:-2px;right:-2px;bottom:-2px;'
+  )}
   #{(BROWSER_TYPE.chrome && BROWSER_TYPE.mac)?'top:1px;':''}
 }
 
@@ -42,7 +50,6 @@
   position: absolute;
   left: 2px; top: 2px; right: 2px; bottom: 2px;
   background-color: #fff;
-  #{BROWSER_TYPE.ie6?'font-size:0;line-height:0;':''}
 }
 
 .default .active>.textcontrol_bg {
@@ -65,7 +72,6 @@
   width: 7px; height: 7px;
   background-repeat: no-repeat;
   background-image: #{this.getCssFilePath('textcontrol_parts1.png')};
-  #{BROWSER_TYPE.ie6?'font-size:0;line-height:0;':''}
 }
 
 .default .textcontrol_nw {
@@ -96,7 +102,6 @@
   width: 7px; top: 7px; bottom: 7px;
   background-repeat: repeat-y;
   background-image: #{this.getCssFilePath('textcontrol_parts3.png')};
-  #{BROWSER_TYPE.ie6?'font-size:0;line-height:0;':''}
 }
 
 .default .textcontrol_w {
@@ -117,7 +122,6 @@
   height: 7px; left: 7px; right: 7px;
   background-repeat: repeat-x;
   background-image: #{this.getCssFilePath('textcontrol_parts2.png')};
-  #{BROWSER_TYPE.ie6?'font-size:0;line-height:0;':''}
 }
 
 .default .textcontrol_n {

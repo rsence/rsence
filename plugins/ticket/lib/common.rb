@@ -113,9 +113,6 @@ module Common
         return File.join(::RSence.config[:broker_urls][:i],'invalid.gif')
       end
       
-      # changes the format to GIF for IE6
-      format = 'GIF' if msg.ie6 and format == 'PNG'
-      
       # stores the image data and meta-data ready to be served
       storage_hash = @imgs
       storage_arr = [format,0,content,msg.ses_id]

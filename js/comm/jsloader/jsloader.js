@@ -65,25 +65,6 @@ COMM.JSLoader = HClass.extend({
     // console.log('jsLoader load:',_url);
     COMM.Queue.pause();
     _this._loadedJS.push(_url);
-    if(BROWSER_TYPE.symbian && _isFullUrl){
-      alert('Sorry, this browser does not support loading external scripts!');
-      return;
-    }
-    else if(BROWSER_TYPE.symbian){
-      _this._req = COMM.request(
-        _url, {
-          onSuccess: function(_resp){
-            _this._req = null;
-            COMM.Queue.unshiftEval(_resp.X.responseText);
-            COMM.Queue.resume();
-          },
-          onFailure: _this._fail,
-          method: 'GET',
-          async: true
-        }
-      );
-      return;
-    }
     var _script = document.createElement('script');
     if(BROWSER_TYPE.ie){
       _script.onreadystatechange = function(){

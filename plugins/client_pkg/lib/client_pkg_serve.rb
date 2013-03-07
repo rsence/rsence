@@ -37,10 +37,8 @@ module ClientPkgServe
     support_gzip = false if ::RSence.config[:no_gzip]
     if request.header.has_key?('User-Agent')
       ua = request.header['User-Agent']
-      is_symbian = ua.include?("SymbianOS")
-      is_safari  = ((not is_symbian) and ua.include?("WebKit"))
-      is_msie = ((not ua.include?("Opera")) and ua.include?("MSIE"))
-      is_msie6 = ((not ua.include?("Opera")) and ua.include?("MSIE 6.0"))
+      is_safari  = ua.include?("WebKit")
+      is_msie = (not ua.include?("Opera")) and ua.include?("MSIE")
     end
     if is_safari
       version = ua.split( 'WebKit/' )[1].split('.')[0].to_i
@@ -48,52 +46,15 @@ module ClientPkgServe
       version = 0 # not used for others
     end
     return {
-      :symbian => is_symbian,
       :safari  => is_safari,
       :msie    => is_msie,
-      :msie6   => is_msie6,
       :version => version
     }
   end
   
   def support_gzip?( ua )
-    doesnt_support = ( ua[:msie6] or ua[:symbian] or (ua[:safari] and ua[:version] < 533) )
+    doesnt_support = (ua[:safari] and ua[:version] < 533)
     return ( not doesnt_support )
-  end
-  
-  def serve_htc( request, response, request_path )
-    req_file = request_path[3]
-    
-    # this file is a part of iefix, it injects calls to
-    # the ie rendering engine to override stupid behavior
-    # when changing element properties
-    if request_path.include?('ie_css_element.htc')
-      response.status = 200
-      response['Content-Type'] = 'text/x-component'
-      ## Usually, we don't need it, because the client framework does calls when needed
-      response.body = %{<PUBLIC:COMPONENT lightWeight="true"></PUBLIC:COMPONENT>}
-      
-      ## Enable it to call iefix automatically whenever element properties are changed
-      #response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onpropertychange",iefix.htcElementEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
-    
-    # this file is a part of iefix, it injects calls to
-    # the ie rendering engine to override stupid behavior
-    # when changing style properties
-    elsif request_path.include?('ie_css_style.htc')
-      response.status = 200
-      response['Content-Type'] = 'text/x-component'
-      
-      ## Usually, we don't need it, because the client framework does calls when needed
-      response.body = %{<PUBLIC:COMPONENT lightWeight="true"></PUBLIC:COMPONENT>}
-      
-      ## Enable it to call iefix automatically whenever element properties are changed
-      #response.body = %{<PUBLIC:COMPONENT lightWeight="true">\r\n<script type="text/javascript">\r\ntry{element.attachEvent("onreadystatechange",iefix.htcStyleEntry);}catch(e){}\r\n</script>\r\n</PUBLIC:COMPONENT>}
-    
-    # Other htc requests are invalid
-    else
-      response.status = 503
-      response.body   = '503 - Invalid Request'
-    end
   end
   
   def serve_js( request, response, request_path, ua )
@@ -172,12 +133,6 @@ module ClientPkgServe
         'gif'  => 'image/gif',
         'swf'  => 'application/x-shockwave-flash'
       }[file_ext]
-      # Special IE6 condition to serve gifs instead of png's, because it works much better
-      # than using the ActiveX alpha filter hack
-      if ua[:msie6] and req_file[-4..-1] == '.png'
-        ie6_req_png2gif = req_file.gsub('.png','-ie6.gif')
-        req_file = ie6_req_png2gif if @client_cache.theme_cache[theme_name][theme_part].include?(ie6_req_png2gif)
-      end
       response['Last-Modified'] = @client_cache.last_modified
       body = @client_cache.theme_cache[theme_name][theme_part][req_file]
       if body.nil?
@@ -212,11 +167,8 @@ module ClientPkgServe
       request_path.delete_at(2)
     end
     
-    ## Special rules for the special browser
-    if request.path.end_with?('.htc')
-      serve_htc( request, response, request_path )
     ## Serve compiled client javascript component files:
-    elsif req_type == 'js'
+    if req_type == 'js'
       serve_js( request, response, request_path, ua )
     ## Serve client theme files
     elsif req_type == 'themes'

@@ -15,7 +15,6 @@ BROWSER_TYPE =
   ie10: false
   opera: false
   safari: false
-  symbian: false
   chrome: false
   firefox: false
   firefox2: false
@@ -264,7 +263,7 @@ ELEM = HClass.extend
   Sets the opcity of the element as a number equaling or between 0 and 1
   ###
   setOpacity: (_id, _opacity)->
-    if BROWSER_TYPE.ie6 or BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
+    if BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
       @_setOpacityIE( _id, _opacity)
     else
       @_elements[_id].style.setProperty('opacity', _opacity.toString(), '')
@@ -388,19 +387,6 @@ ELEM = HClass.extend
   setIdleDelay: (_idleDelay)->
     @_idleDelay = _idleDelay
     null
-  
-  ###
-  A flag that signals iefix (for IE6) if it needs to re-run or not
-  ###
-  _ieFixesNeeded: false
-
-  ###
-  Applies fixes for IE6
-  ###
-  _ieFixes: ->
-    iefix._traverseTree()
-    @_ieFixesNeeded = false
-    null
 
   ###
   Re-sets the flushLoop
@@ -425,7 +411,6 @@ ELEM = HClass.extend
   ###
   flushLoop: (_delay)->
     _delay = @_defaultDelay() unless _delay?
-    @_ieFixes() if BROWSER_TYPE.ie6 and @_ieFixesNeeded
     clearTimeout(@_timer)
     if @_flushing
       _delay *= 2
@@ -433,7 +418,6 @@ ELEM = HClass.extend
     else
       unless @_needFlush
         # go into 'sleep mode'
-        @_ieFixes() if BROWSER_TYPE.ie6 and @_ieFixesNeeded
         @_resetFlushLoop( _delay, @_idleDelay )
         return
       _delay = @_defaultDelay()
@@ -623,9 +607,6 @@ ELEM = HClass.extend
       _elem.style[@_camelize(_key)] = _value
     catch e
       console.log('ie setstyle error:'+_key+', '+_value+', '+e)
-    if BROWSER_TYPE.ie6
-      if ~iefix._traverseStyleProperties.indexOf(_key)
-        @_ieFixesNeeded = true
     null
 
   ###
@@ -635,7 +616,6 @@ ELEM = HClass.extend
     return null unless @_elements[_id]? # item is deleted
     if _id == undefined
       console.log('ERROR; undefined id in ELEM#setStyle(',_id, _key, _value, _noCache,')')
-    # _noCache = true if BROWSER_TYPE.ie9
     try
       _cached = @_styleCache[_id]
     catch e
@@ -768,14 +748,6 @@ ELEM = HClass.extend
       @_getComputedStyle = @_getComputedStyleIE
       @_setElementStyle = @_setElementStyleIE
     @bind( document.body ) unless @_timer
-    if BROWSER_TYPE.symbian
-      TestClass = HClass.extend({test:true, constructor:null})
-      # The Symbian JS implementation gets corrupted if the page is reloaded (loaded from cache), this tests that:
-      unless TestClass.test
-        if confirm('Your Web Browser fails. Please restart the S60 Web Browser or install a better browser.\nDo you want to download and install Opera Mobile now?')
-          location.href = 'http://www.opera.com/download/get.pl?sub=++++&id=32792&location=270&nothanks=yes'
-        # Can't do anything with such badly broken js engine
-        return
     @_flushDomLoadQueue() until @_initDone
     @_resetFlushLoop( @_minDelay )
     null
@@ -821,7 +793,7 @@ ELEM = HClass.extend
     return _steps
   _linearGradientStyle: (_gradient)->
     # IE6-8
-    if BROWSER_TYPE.ie and not BROWSER_TYPE.ie9 and not BROWSER_TYPE.ie10
+    if BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
       _key   = 'filter'
       _value = "progid:DXImageTransform.Microsoft.gradient( startColorstr='#{_gradient.start}', endColorstr='#{_gradient.end}',GradientType=0 )"
     # IE9
@@ -883,12 +855,12 @@ ELEM = HClass.extend
     _browserType = BROWSER_TYPE
     _browserType.opera    = !!~_ua.indexOf('Opera')
     _browserType.safari   = !!~_ua.indexOf('KHTML')
-    _browserType.symbian  = !!~_ua.indexOf('SymbianOS')
     _browserType.chrome   = !!~_ua.indexOf('Chrome')
     _isIE = document.all and not _browserType.opera
     if _isIE
       _browserType.ie  = _isIE
       _browserType.ie6 = !!~_ua.indexOf('MSIE 6')
+      location.href = 'http://www.ie6nomore.com' if _browserType.ie6
       _browserType.ie7 = !!~_ua.indexOf('MSIE 7')
       _browserType.ie8 = !!~_ua.indexOf('MSIE 8')
       _browserType.ie9 = !!~_ua.indexOf('MSIE 9')
@@ -924,7 +896,7 @@ ELEM = HClass.extend
   Checks if the document is fully loaded
   ###
   _domWaiter: ->
-    if BROWSER_TYPE.ie6 or BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
+    if BROWSER_TYPE.ie7 or BROWSER_TYPE.ie8
       if location.protocol == 'https:'
         _ie_proto = 'src=//0'
       else
@@ -947,7 +919,6 @@ ELEM = HClass.extend
     
     if ELEM._domLoadStatus
       clearTimeout( @_domLoadTimer )
-      BROWSER_TYPE.symbian = document.body.innerHTML == 'fastinnerhtml!' if BROWSER_TYPE.symbian
       @_init()
     else
       ELEM._domLoadTimer = setTimeout( =>

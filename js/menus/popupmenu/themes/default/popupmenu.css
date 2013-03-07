@@ -43,7 +43,7 @@
 
 .popupmenu_label {
   left: 13px; right: 11px; top: 0px;
-  height: 22px; line-height: #{(BROWSER_TYPE.ie7||BROWSER_TYPE.ie6)?'20':'22'}px;
+  height: 22px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -52,6 +52,7 @@
   font-family: Arial, sans-serif;
   font-size: 12px;
   color: #333;
+  line-height: #{BROWSER_TYPE.ie7?'20':'22'}px;
 }
 .popupmenu_control:hover > .popupmenu_label {
   color: #000;

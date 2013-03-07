@@ -141,12 +141,6 @@ module RSence
       @response_sent = false
     end
   
-    # @private Returns true for Internet Explorer 6.0
-    # @return [Boolean]
-    def ie6;
-      (request.header.has_key?('user-agent') and request.header['user-agent'].include?('MSIE 6.0'))
-    end
-  
     # Invalidates the active session.
     # @return [nil]
     def expire_session

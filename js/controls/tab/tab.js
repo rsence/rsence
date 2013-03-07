@@ -166,7 +166,7 @@ HTab = HControl.extend({
     if(this.tabTriggerLink&&this.tabLabelElementTagName==='a'){
       ELEM.setAttr(_tabLabelElemId,'href','javascript:HSystem.views['+this.viewId+'].selectTab('+_tabIdx+');');
     }
-    else if (this.tabTriggerLink && !(BROWSER_TYPE.ie7 || BROWSER_TYPE.ie6)){
+    else if (this.tabTriggerLink && !BROWSER_TYPE.ie7){
       var _this = this;
       Event.observe( ELEM.get(_tabLabelElemId), 'click', function(){ _this.selectTab(_tabIdx); } );
     }
