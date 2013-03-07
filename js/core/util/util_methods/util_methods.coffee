@@ -116,7 +116,7 @@ UtilMethods = (->
     ]
     # Returns a quoted string (escapes quotation marks and places quotes within)
     _quoteString: (_str)->
-      for _substitution in @_stringSubstritutions
+      for _substitution in @_stringSubstitutions
         [ _substFrom, _substTo ] = _substitution
         _str = _str.replace( _substFrom, _substTo )
       '"'+_str+'"'
@@ -227,7 +227,7 @@ UtilMethods = (->
       encodeObject: (_obj)->
         return 'null' unless _obj?
         _type = @typeChr(_obj)
-        unless _obj
+        unless _type
           console.log 'WARNING: encode of '+(typeof _obj)+' not possible'
           return 'null'
         return String(_obj) if _type == 'b' or _type == 'n'
@@ -272,7 +272,7 @@ UtilMethods = (->
               _cloned[_key] = _value
           else
             for _key, _value of _obj
-              _cloned[_key] = @cloneObject( _item )
+              _cloned[_key] = @cloneObject( _value )
           return _cloned
         _obj
   for _methodName, _methodValue of _encodeDecodeMethods
