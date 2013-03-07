@@ -40,6 +40,7 @@ HTimeSheet = HControl.extend({
     itemOffsetBottom: 0,  // Theme settings; don't enter in options
     itemDisplayTime: true,
     allowClickCreate: false,
+    iconImage: 'timesheet_item_icons.png',
     allowDoubleClickCreate: true,
     minDragSize: 5,       // minimum amount of pixels dragged required for accepting a drag
     hourOffsetTop: -4,    // Theme settings; don't enter in options
@@ -234,6 +235,7 @@ HTimeSheet = HControl.extend({
       this, {
         value: _dummyValue,
         visible: false,
+        iconImage: this.options.iconImage,
         displayTime: this.options.itemDisplayTime
       }
     );

@@ -63,7 +63,6 @@
   position: absolute;
   top: 0px; width: 16px; height: 16px;
   background-position: 0px 0px;
-  background-image: url(#{this.getThemeGfxFile('/timesheet_item_icons.png')});
 }
 
 .locked .timesheet_item_move,

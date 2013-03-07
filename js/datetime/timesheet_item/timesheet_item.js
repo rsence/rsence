@@ -9,15 +9,20 @@ HTimeSheetItem = HControl.extend({
   markupElemNames: ['bg', 'label', 'state', 'icons', 'value', 'subview'],
   
   controlDefaults: HControlDefaults.extend({
-    displayTime: true
+    displayTime: true,
+    iconImage: 'timesheet_item_icons.png'
   }),
   
   drawIcon: function( _iconOrder, _iconId ){
     var
-    _iconElemId = ELEM.make( this.markupElemIds.icons, 'div' );
+    _iconElemId = ELEM.make( this.markupElemIds.icons, 'div' ),
+    _iconUrl = this.getThemeGfxFile(this.options.iconImage);
     ELEM.addClassName( _iconElemId, 'timesheet_item_icon' );
-    ELEM.setStyle( _iconElemId, 'right', ((_iconOrder*16)+_iconOrder)+'px' );
-    ELEM.setStyle( _iconElemId, 'background-position', '0px '+(_iconId*-16)+'px' );
+    ELEM.setStyles( _iconElemId, {
+      right: ((_iconOrder*16)+_iconOrder)+'px',
+      backgroundPosition: '0px '+(_iconId*-16)+'px',
+      backgroundImage: 'url('+_iconUrl+')'
+    } );
     return _iconElemId;
   },
   
@@ -194,7 +199,7 @@ HTimeSheetItem = HControl.extend({
       _startChanged = ( this.dragTimeStart !== this.originTimeStart ) && ( this.dragTimeStart !== this.value.start ),
       _durationChanged = ( this.dragDuration !== this.originDuration ) && ( this.dragDuration !== this.value.duration );
       if( _startChanged || _durationChanged ){
-        if( this.parent['editor'] ){
+        if( this.parent.editor ){
           var _modValue = { id: this.value.id, start: this.dragTimeStart, duration: this.dragDuration, label: this.value.label };
           this.parent.editor.modifyItem( _modValue );
         }
