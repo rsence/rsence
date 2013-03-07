@@ -22,12 +22,10 @@
     
     # RSence.Core
     - class             # HClass
+    - sha               # SHA
     - elem              # ELEM
     - event             # Event
     - util_methods      # UtilMethods
-    
-    # RSence.Util
-    - sha               # SHA
     
     # RSence.Foundation
     - system            # HSystem

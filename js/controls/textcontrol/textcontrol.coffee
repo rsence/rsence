@@ -204,6 +204,9 @@ HTextControl = HControl.extend
     _inputElement = @getInputElement()
     if _inputElement == null or @hasTextFocus == false
       _rangeArr = [ 0, 0 ]
+    ## Other browsers
+    else if _inputElement.selectionStart
+      _rangeArr = [ _inputElement.selectionStart, _inputElement.selectionEnd ]
     ## Internet Explorer:
     else if document.selection
       # create a range object
@@ -216,7 +219,7 @@ HTextControl = HControl.extend
       # create random marker to replace the text with
       _marker = @_randomMarker()
       # re-generate marker if it's found in the text.
-      _marker = @_randomMarker() until ~_origValue.indexOf( _marker )
+      _marker = @_randomMarker() while ~_origValue.indexOf( _marker )
       _markerLength = _marker.length
       # temporarily set the text of the selection to the unique marker
       _range.text = _marker
@@ -224,9 +227,6 @@ HTextControl = HControl.extend
       _range.text = _rangeText
       _markerIndex = _markerValue.indexOf( _marker )
       _rangeArr = [ _markerIndex, _markerIndex + _rangeLength ]
-    ## Other browsers
-    else if _inputElement.selectionStart
-      _rangeArr = [ _inputElement.selectionStart, _inputElement.selectionEnd ]
     ## No support:
     else
       _rangeArr = [ 0, 0 ]

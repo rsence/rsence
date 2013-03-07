@@ -22,6 +22,13 @@ COMM.Queue = HApplication.extend({
     
     // Run with priority 10; not too demanding but not too sluggish either
     this.base(10);
+
+    if( document.head ){
+      this._headElem = document.head;
+    }
+    else {
+      this._headElem = document.getElementsByTagName('head')[0];
+    }
   },
   
 /** Checks periodically, if the queue needs flushing.
@@ -189,16 +196,26 @@ COMM.Queue = HApplication.extend({
 
   addScript: function(_scriptId,_scriptSrc){
     var
-    _script = document.createElement('script');
+    _script = document.createElement('script'),
+    _scriptSrcNode;
     this._scripts[_scriptId] = _script;
-    _script.textContent = _scriptSrc;
-    document.head.appendChild(_script);
+    if( typeof _script.textContent !== 'undefined' && _script.textContent !== null ){
+      _script.textContent = _scriptSrc;
+    }
+    else if ( typeof _script.text !== 'undefined' && _script.text !== null ){
+      _script.text = _scriptSrc;
+    }
+    else {
+      _scriptSrcNode = document.createTextNode(_scriptSrc);
+      _script.appendChild( _scriptSrcNode );
+    }
+    this._headElem.appendChild(_script);
   },
 
   delScript: function(_scriptId){
     var
     _script = this._scripts[_scriptId];
-    document.head.removeChild(_script);
+    this._headElem.removeChild(_script);
     delete this._scripts[_scriptId];
   }
 }).nu();
