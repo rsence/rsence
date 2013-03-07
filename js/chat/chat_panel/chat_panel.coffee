@@ -47,11 +47,11 @@ HChatPanel = HScrollView.extend
         _nextSame = ( _userId == _nextLine[0] )
       else
         _nextSame = false
-      _prevLine = @value.lines[i-1]
+      _prevLine = @value.lines[i-1] if i > 0
       if _prevLine?
         _prevSame = ( _userId == _prevLine[0] )
       else
-        _nextSame = false
+        _prevSame = false
       if _date?
         # _date = new Date(_date*1000)
         _prevDate = _date
