@@ -91,6 +91,9 @@ module RSence
         
         # user info, map to your own user management code
         :user_info  => {},
+
+        # sequence number of session, incremented by each restore
+        :ses_seq => 0,
       
         # valuemanager data
         :values     => {
@@ -132,7 +135,13 @@ module RSence
 
       # new time-out
       ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
-    
+      
+      if ses_data.has_key?(:ses_seq)
+        ses_data[:ses_seq] += 1
+      else
+        ses_data[:ses_seq] = 0
+      end
+      
       # re-generates the ses_key for each sync
       if @config[:disposable_keys]
       
@@ -204,6 +213,7 @@ module RSence
       ses_data[:plugin_incr] = @plugins.incr
       ses_id = new_ses_id( cookie_key, ses_key, timeout )
       ses_data[:ses_id] = ses_id
+      ses_data[:ses_seq] = 0
       @sessions[ ses_id ] = ses_data
       @session_keys[ ses_sha ] = ses_id
       @session_cookie_keys.delete( old_data[:cookie_key] )
@@ -240,7 +250,7 @@ module RSence
       
         # get the session's data based on its id
         ses_data = @sessions[ ses_id ]
-      
+
         if not ses_data.has_key?(:_msg_unused) and @config[:clone_cookie_sessions] and ses_seed
           clone_ses( msg, ses_data, ses_id, ses_key, ses_seed )
           return [true, true]
