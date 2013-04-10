@@ -73,6 +73,7 @@ class MainPlugin < Plugin
     index_html.gsub!( '__CLIENT_REV__',    client_rev        )
     index_html.gsub!( '__CLIENT_HELLO__',  @bconf[:hello]    )
     index_html.gsub!( '__NOSCRIPT__',      @conf[:noscript]  )
+    index_html.gsub!( '__BODY__',          @conf[:body]      )
     
     return index_html
   end
@@ -191,6 +192,7 @@ class MainPlugin < Plugin
       # server-side session and reloads the page
       if virtual_uri == '/sign_out'
         resp_addr = @conf[:respond_address]
+        @plugins.delegate('sign_out',msg)
         msg.expire_session()
         msg.reply( [
           'COMM.Transporter.stop=true;',

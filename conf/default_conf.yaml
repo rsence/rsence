@@ -33,6 +33,9 @@
     #
     # Default additional libraries to use:
     :default_libs: []
+    #
+    # Default HTML <body> contents
+    :body: ''
   #
   # The settings for the main plugin
   :main_plugin:
