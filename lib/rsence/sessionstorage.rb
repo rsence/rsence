@@ -51,6 +51,19 @@ module RSence
         @id_counter = 0
       end
       @accept_requests = true
+      # workaround for the mutexes, would fail in ruby 2.0.0
+      @shutdown_save = false
+      @shutdown_saved = false
+      Thread.new do
+        Thread.pass
+        until @shutdown_saved
+          if @shutdown_save
+            store_sessions
+            @shutdown_saved = true
+          end
+          sleep 1
+        end
+      end
     end
     attr_reader :db_avail
     attr_reader :accept_requests
@@ -189,7 +202,8 @@ module RSence
     def shutdown
       @accept_requests = false
       puts "Session shutdown in progress..." if RSence.args[:verbose]
-      store_sessions
+      @shutdown_save = true
+      sleep 1 until @shutdown_saved
       puts "Session shutdown complete." if RSence.args[:verbose]
     end
   end
