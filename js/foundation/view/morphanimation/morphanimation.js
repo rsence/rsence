@@ -184,22 +184,31 @@ HMorphAnimation = HClass.extend({
           if(_unit){
             _propNow += _unit;
           }
-          ELEM.setStyle( this.elemId, _key, _propNow );
+          this._animateStepStyle( _key, _propNow );
         }
       }
     }
     else {
       // Animation is done, clear the interval and finalize the animation.
       for (i = 0; i < _obj.props.length; i++) {
-        ELEM.setStyle(
-          this.elemId,
-          _obj.props[i].prop,
-          _obj.props[i].to + _obj.props[i].unit);
+        this._animateFinalStepStyle(_obj.props[i]);
       }
       this._animationDone = true;
       this.stopAnimation();
     }
     return this;
+  },
+
+  _animateStepStyle: function( _key, _propNow ){
+    ELEM.setStyle( this.elemId, _key, _propNow );
+  },
+
+  _animateFinalStepStyle: function(_props){
+    ELEM.setStyle(
+      this.elemId,
+      _props.prop,
+      _props.to + _props.unit
+    );
   },
   
 /** = Description
