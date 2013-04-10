@@ -84,6 +84,7 @@ HPoint = HClass.extend({
     else {
       throw "Invalid number of arguments.";
     }
+    return this;
   },
   
 /** = Description
@@ -109,7 +110,7 @@ HPoint = HClass.extend({
     if (this.y > _rect.bottom) {
       this.y = _rect.bottom;
     }
-    
+    return this;
   },
   
 /** = Description
@@ -188,6 +189,10 @@ HPoint = HClass.extend({
   **/
   equals: function(_point) {
     return ( this.x === _point.x && this.y === _point.y );
+  },
+
+  clone: function(){
+    return (new HPoint(this));
   }
   
 });

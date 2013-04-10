@@ -100,6 +100,10 @@ HRect = HClass.extend({
     this.right = _rect.right;
   },
 
+  clone: function(){
+    return (new HRect(this));
+  },
+
   toArray: function(){
     var
     _arr = new Array(6,null),
@@ -223,6 +227,7 @@ HRect = HClass.extend({
       this.width = (this.right - this.left);
       this.height = (this.bottom - this.top);
     }
+    return this;
   },
   
 /** = Description
@@ -259,6 +264,7 @@ HRect = HClass.extend({
       throw "Invalid number of arguments.";
     }
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -271,6 +277,7 @@ HRect = HClass.extend({
   setLeft: function(_left){
     this.left = _left;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -283,6 +290,7 @@ HRect = HClass.extend({
   setRight: function(_right){
     this.right = _right;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -295,6 +303,7 @@ HRect = HClass.extend({
   setTop: function(_top){
     this.top = _top;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -307,6 +316,7 @@ HRect = HClass.extend({
   setBottom: function(_bottom){
     this.bottom = _bottom;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -321,6 +331,7 @@ HRect = HClass.extend({
     this.left=_point.x;
     this.top=_point.y;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -335,6 +346,7 @@ HRect = HClass.extend({
     this.left=_point.x;
     this.bottom=_point.y;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -349,6 +361,7 @@ HRect = HClass.extend({
     this.right=_point.x;
     this.top=_point.y;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -363,6 +376,7 @@ HRect = HClass.extend({
     this.right=_point.x;
     this.bottom=_point.y;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -375,6 +389,7 @@ HRect = HClass.extend({
   setWidth: function(_width){
     this.right = this.left + _width;
     this.updateSecondaryValues();
+    return this;
   },
 
 /** = Description
@@ -387,6 +402,7 @@ HRect = HClass.extend({
   setHeight: function(_height){
     this.bottom = this.top + _height;
     this.updateSecondaryValues();
+    return this;
   },
 
 /** = Description
@@ -417,6 +433,7 @@ HRect = HClass.extend({
     this.right = this.left + _width;
     this.bottom = this.top + _height;
     this.updateSecondaryValues();
+    return this;
   },
   
 /** = Description
@@ -509,6 +526,7 @@ HRect = HClass.extend({
       throw "Invalid number of arguments.";
     }
     this.updateSecondaryValues();
+    return this;
   },
   _insetByPoint: function(_point) {
     this._insetByXY(_point.x, _point.y);
@@ -543,6 +561,7 @@ HRect = HClass.extend({
       throw "Invalid number of arguments.";
     }
     this.updateSecondaryValues();
+    return this;
   },
   _offsetByPoint: function(_point) {
     this._offsetByXY(_point.x, _point.y);
@@ -576,6 +595,7 @@ HRect = HClass.extend({
       throw "Invalid number of arguments.";
     }
     this.updateSecondaryValues();
+    return this;
   },
   _offsetToPoint: function(_point) {
     this._offsetToXY(_point.x, _point.y);
@@ -654,6 +674,7 @@ HRect = HClass.extend({
       this.viewIds.push( _view.viewId );
     }
     this._updateFlexibleDimensions();
+    return this;
   },
   
 /** = Description
@@ -664,6 +685,7 @@ HRect = HClass.extend({
     if(~_viewIdx){
       this.viewIds.splice( _viewIdx, 1 );
     }
+    return this;
   },
   
 /** = Description
@@ -675,6 +697,7 @@ HRect = HClass.extend({
   **/
   setValueObj: function(_valueObj){
     this.valueObj = _valueObj;
+    return this;
   },
   
 /** = Description
@@ -695,6 +718,7 @@ HRect = HClass.extend({
       _viewId = this.viewIds[i];
       HSystem.views[_viewId].drawRect();
     }
+    return this;
   },
 
   toString: function(){
