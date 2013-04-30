@@ -415,10 +415,6 @@ EventManagerApp = HApplication.extend
       @_listeners.enabled.unshift( _viewId ) unless ~@_listeners.enabled.indexOf(_viewId)
       _elem = ELEM.get( _ctrl.elemId )
       @observe( _elem, 'mouseover', '_mouseOver' )
-      [ x, y ] = @status.crsr
-      _matchIds = @_findTopmostEnabled( HPoint.new( x, y ), 'contains', null )
-      if ~_matchIds.indexOf( _viewId )
-        @focus( _ctrl )
   #
   # Releases bindings done by #_setEventOptions
   _unsetEventOptions: (_ctrl,_warnMethodName)->
@@ -654,53 +650,34 @@ EventManagerApp = HApplication.extend
       @_views[_viewId].hover(_ctrl)
     @_listeners.hovered = _hoverItems
   #
-  # Finds the topmost item from array of viewId's
-  _findTopmostOf: (_arrOfIds, _area, _matchMethod, _selfId )->
+  # Finds the topmost drop/hover target within the area specified by rectHover
+  _findTopmostDroppable: (_area,_matchMethod,_selfId)->
     _views = @_views
+    _droppable = @_listeners.byEvent.droppable
     _search = (_parentIds)->
       for _viewId in _parentIds
         continue if _viewId == _selfId
         _view = _views[_viewId]
         if _view.parent.hasAncestor( HView )
-          _parent = _view.parent
-          if _parent.markupElemIds? and _parent.markupElemIds.subview?
-            _subviewId = _parent.markupElemIds.subview
-            [ _subX, _subY ] = ELEM.getPosition( _subviewId )
+          if _area.offsetTo?
+            _searchArea = HRect.nu(_area).offsetTo( _area.left-_view.parent.pageX(), _area.top-_view.parent.pageY() )
           else
-            [ _subX, _subY ] = [ 0, 0 ]
-          if _area.offsetTo? # is a rectangle
-            _searchArea = HRect.new(_area).offsetTo(
-              _area.left-_parent.pageX()-_subX,
-              _area.top-_parent.pageY()-_subY
-            )
-          else # is a point
-            _searchArea = HPoint.new(
-              _area.x-_parent.pageX()-_subX,
-              _area.y-_parent.pageY()-_subY
-            )
+            _searchArea = HPoint.nu( _area.x-_view.parent.pageX(), _area.y-_view.parent.pageY() )
         else
           _searchArea = _area
         if _view.hasAncestor? and _view.hasAncestor( HView )
           if _view.rect[_matchMethod](_searchArea)
-            if ~_arrOfIds.indexOf( _viewId )
-              _foundId = _search( _view.viewsZOrder.slice().reverse() )
-              return _foundId if _foundId
+            if ~_droppable.indexOf( _viewId )
+              _dropId = _search( _view.viewsZOrder.slice().reverse() )
+              return _dropId if _dropId
               return _viewId
             else
               _result = _search( _view.viewsZOrder.slice().reverse() )
               return _result if _result
       return false
-    _foundId = _search( HSystem.viewsZOrder.slice().reverse() )
-    return [ _foundId ] if _foundId
+    _dropId = _search( HSystem.viewsZOrder.slice().reverse() )
+    return [ _dropId ] if _dropId
     return []
-  #
-  # Finds the topmost drop/hover target within the area specified by rectHover
-  _findTopmostDroppable: (_area,_matchMethod,_selfId)->
-    return @_findTopmostOf( @_listeners.byEvent.droppable, _area, _matchMethod, _selfId )
-  #
-  # Finds the topmost enabled target within the area specified by area
-  _findTopmostEnabled: (_area,_matchMethod,_selfId)->
-    return @_findTopmostOf( @_listeners.enabled, _area, _matchMethod, _selfId )
   #
   # Finds all drop/hover targets within the area specified by rectHover
   _findAllDroppable: (_area,_matchMethod,_selfId)->
@@ -893,9 +870,6 @@ EventManagerApp = HApplication.extend
       # there is a separate event for context menu, and only
       # Firefox fires click separately
       return true
-    #
-    # Focus check here
-    #
     _focused = @_listeners.focused
     _active  = @_listeners.active
     _clickable = @_listeners.byEvent.click

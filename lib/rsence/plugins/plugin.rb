@@ -287,7 +287,7 @@ module RSence
           ses[:deps] = []
         end
         ( found, path ) = guess_js_path( js_name )
-        return false if found == :none
+        return false unless found == :none
         unless ses[:deps].include?( path )
           ses[:deps].push( path )
           return read_js( path )
