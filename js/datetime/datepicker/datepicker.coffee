@@ -5,6 +5,8 @@ HDatePicker = HTextControl.extend
     preserveTime: true
     preserveDate: false
     calendarPicker: false
+    calendarHorizontalAlign: 'right'
+    calendarVerticalAlign: 'top'
   valueToField: (_value)->
     _date = moment.unix(_value).utc()
     @_datePreserve = [ _date.year(), _date.month(), _date.date() ] if @options.preserveDate
@@ -52,6 +54,9 @@ HDatePicker = HTextControl.extend
       ).new( [null,0,24,24,1,null], @,
         value: @value
         valueObj: @valueObj
+        todayStart: @options.todayStart
+        calendarHorizontalAlign: @options.calendarHorizontalAlign
+        calendarVerticalAlign: @options.calendarVerticalAlign
         preserveTime: @options.preserveTime
         style:
           borderLeft: '1px dotted #666'

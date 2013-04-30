@@ -5,14 +5,16 @@ HCalendarPulldown = HMiniMenu.extend
     resize: true
     preserveTime: true
   controlDefaults: HMiniMenu.prototype.controlDefaults.extend
-    calendarAlign: 'right'
+    calendarHorizontalAlign: 'right'
+    calendarVerticalAlign: 'top'
     label: ''
   calendarRect: ->
     [ x, y ] = [ @pageX(), @pageY() ]
-    if @options.calendarAlign == 'right'
-      return [ x-200+@rect.width, y, 200, 200 ]
-    else
-      return [ x, y, 200, 200 ]
+    if @options.calendarHorizontalAlign == 'right'
+      x = x - 200 + @rect.width
+    if @options.calendarVerticalAlign == 'bottom'
+      y = y - 200 + @rect.width
+    return [ x, y, 200, 200 ]
   repositionMenuItems: ->
     @menuItemView.setRect( @calendarRect() )
     @menuItemView.drawRect()
@@ -53,6 +55,7 @@ HCalendarPulldown = HMiniMenu.extend
       value: @value
       valueObj: @valueObj
       preserveTime: @options.preserveTime
+      todayStart: @options.todayStart
       style:
         boxShadow: '0 0 5px #333'
         borderRadius: '5px'

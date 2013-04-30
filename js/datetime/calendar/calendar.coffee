@@ -334,6 +334,8 @@ HCalendar = HControl.extend
             ELEM.addClassName( _colElem, 'calendar_weeks_week_col_no' )
           else
             ELEM.addClassName( _colElem, 'calendar_weeks_week_col_yes' )
+          if @options.todayStart? and @options.todayStart >= _colSecs and @options.todayStart < _colSecs + 86400
+            ELEM.addClassName( _colElem, 'calendar_weeks_week_col_today' )
           ELEM.setAttr( _colElem, '_colSecs', _colSecs )
           if @enabled
             Event.observe( ELEM.get( _colElem ), 'click', ->

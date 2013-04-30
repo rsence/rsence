@@ -37,7 +37,7 @@
   top: 0px; left: 20px; right: 20px; height: 20px;
   color: #000;
   font-family: Arial, sans-serif;
-  font-weight: bold;
+  font-weight: normal;
   font-size: 13px;
   line-height: 20px;
   vertical-align: middle;
@@ -68,7 +68,8 @@
 .calendar_weeks_week_col_no,
 .calendar_weeks_week_col_sel,
 .calendar_weeks_week_col_wk,
-.calendar_weeks_week_col_yes {
+.calendar_weeks_week_col_yes,
+.calendar_weeks_week_col_today {
   position: absolute;
   text-decoration: none;
   top: 0px;
@@ -92,11 +93,15 @@
 .calendar_weeks_week_col_sel {
   color: #000;
   background-color: #ddd;
-  font-weight: bold;
+  font-weight: normal;
   border: 1px solid #666;
 }
 .calendar_weeks_week_col_sel {
   background-color: #fff;
+}
+.calendar_weeks_week_col_today {
+  font-weight: bold;
+  color: #F00;
 }
 .enabled > .calendar_control > .calendar_weeks > .calendar_weeks_week_row > .calendar_weeks_week_col_yes:hover {
   border: 2px solid black; margin: -1px; z-index: 100; border-radius: 3px;
