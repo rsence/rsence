@@ -415,6 +415,10 @@ EventManagerApp = HApplication.extend
       @_listeners.enabled.unshift( _viewId ) unless ~@_listeners.enabled.indexOf(_viewId)
       _elem = ELEM.get( _ctrl.elemId )
       @observe( _elem, 'mouseover', '_mouseOver' )
+      [ x, y ] = @status.crsr
+      _matchIds = @_findTopmostEnabled( HPoint.new( x, y ), 'contains', null )
+      if ~_matchIds.indexOf( _viewId )
+        @changeActiveControl( _ctrl )
   #
   # Releases bindings done by #_setEventOptions
   _unsetEventOptions: (_ctrl,_warnMethodName)->
@@ -452,7 +456,9 @@ EventManagerApp = HApplication.extend
           unless _wasFocused
             @stopObserving( _elem, 'mouseover', '_mouseOver' )
           _ctrl.setEnabled( false ) if _ctrl.enabled
-        @_listeners[_statusItem].splice(_viewIdx,1)
+        _viewIdx = @_listeners[_statusItem].indexOf(_viewId)
+        if ~_viewIdx
+          @_listeners[_statusItem].splice(_viewIdx,1)
   #
   # Registers the HControl -derived object _ctrl by event listener flags
   # in _eventOptions.
@@ -710,7 +716,6 @@ EventManagerApp = HApplication.extend
       _ctrl.active = false
       _idx = _active.indexOf( _viewId )
       _dragIdx = _dragged.indexOf(_viewId)
-      # console.log('dragIdx:',~_dragIdx)
       if ~_dragIdx
         _dragged.splice( _dragIdx, 1 )
         for _dropViewId in _hovered
@@ -720,14 +725,8 @@ EventManagerApp = HApplication.extend
         [ x, y ] = @status.crsr
         _ctrl.endDrag( x, y )
       _active.splice( _idx, 1 )
-      # console.log('lost:',_viewId)
       @blur(_ctrl) if ~_focused.indexOf(_viewId)
       _ctrl.lostActiveStatus(_newActive)
-      # _ctrl.setStyle('border','1px dotted red')
-      # if @prevActiveCtrl
-      #   @prevActiveCtrl.setStyle('border','1px dotted gray')
-      #   @prevActiveCtrl = null
-      # @prevActiveCtrl = _ctrl
     _prevActive
   #
   # Adds the active control
@@ -737,11 +736,9 @@ EventManagerApp = HApplication.extend
     _idx = _active.indexOf( _ctrl.viewId )
     unless ~_idx
       _active.unshift(_ctrl.viewId)
-      # console.log('gained:',_ctrl.viewId)
       @focus(_ctrl) unless ~_focused.indexOf(_ctrl.viewId)
       _ctrl.active = true
       _ctrl.gainedActiveStatus(_prevActive)
-      # _ctrl.setStyle('border','1px dotted blue')
   #
   # Sets the active control
   changeActiveControl: (_ctrl)->
@@ -924,14 +921,12 @@ EventManagerApp = HApplication.extend
     _doubleClicks = []
     _doubleClickable = @_listeners.byEvent.doubleClick
     _stop = false
-    # console.log('focused:',_focused)
     for _viewId in _focused
       if ~_doubleClickable.indexOf(_viewId)
         _doubleClicks.push( _viewId )
     for _viewId in _doubleClicks
       _ctrl = @_views[_viewId]
       if _ctrl.doubleClick?
-        # console.log _ctrl.componentName
         _stop = true if _ctrl.doubleClick(x,y,true)
     Event.stop(e) if _stop
   #
