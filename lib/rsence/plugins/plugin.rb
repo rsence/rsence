@@ -498,7 +498,7 @@ module RSence
           end
           return values_clean unless values_clean.empty?
         else
-          warn "Unsupported format of values.yaml, got: #{values_dirty.inspect}, expected Hash or Array."
+          warn "Unsupported format of #{bundle_path('values.yaml')}, got: #{values_dirty.inspect}, expected Hash or Array."
         end
         return false
       end

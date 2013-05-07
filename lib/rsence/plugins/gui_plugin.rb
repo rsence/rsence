@@ -1,3 +1,5 @@
+# Interface for handling localized strings
+require 'rsence/plugins/plugin_localization'
 
 module RSence
   module Plugins
@@ -16,6 +18,8 @@ module RSence
     # * {#gui_params +#gui_params+} -- Extend to define your own params for the gui data.
     #
     class GUIPlugin__ < Plugin__
+
+      include Localization
       
       # @private Class type identifier for the PluginManager.
       # @return [:GUIPlugin]
@@ -28,7 +32,7 @@ module RSence
         super
         yaml_src = false
         [ "#{@name}.yaml", 'gui.yaml',
-          "gui/#{@name}.yaml", "gui/main.yaml"
+          "gui/#{@name}.yaml", 'gui/main.yaml'
         ].each do |yaml_name|
           yaml_src = file_read( yaml_name )
           break if yaml_src
@@ -68,7 +72,9 @@ module RSence
       #
       def gui_params( msg )
         return unless @gui
-        { :values => @gui.values( get_ses( msg ) ) }
+        params = super
+        params[:values] = @gui.values( get_ses( msg ) )
+        params
       end
       
       # @private Method that implements +client_pkgs.yaml+ loading
