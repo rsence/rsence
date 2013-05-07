@@ -53,7 +53,11 @@ HMiniMenu = HRadioButtonList.extend({
   
   click: function(){
     if(!this.active){return false;}
-    this.menuShow();
+    if( ELEM.getStyle(this.menuItemView.elemId,'visibility',true) === 'hidden' ) {
+      this.menuShow();
+    }else{
+      this.menuHide();
+    }
     return false;
   },
   
