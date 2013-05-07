@@ -6,4 +6,8 @@ HSearchField = HTextControl.extend
   
   textFocus: ->
     @base()
-    @setStyleOfPart( 'help', 'visibility', 'hidden' )
+    @setStyleOfPart( 'help', 'display', 'none' )
+    
+  drawSubviews: ->
+    if @typeChr( @value ) == 's' and @value.length > 0
+      @setStyleOfPart( 'help', 'display', 'none' )
