@@ -101,3 +101,12 @@
   background-position: 0px -48px;
 }
 
+.default .searchfield_help {
+  position: absolute;
+  display: block;
+  left: 24px; top: 5px; right: 8px; height: 18px;
+  color: #888;
+  font-size: 12px;
+  font-style: italic;
+}
+
