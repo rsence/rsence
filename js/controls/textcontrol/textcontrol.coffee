@@ -24,7 +24,7 @@ HTextControl = HControl.extend
       textIndent: 0
       fontSize: '10px'
       color: '#666'
-    refreshAfter:   1
+    refreshAfter:   0.2 # 200ms
     refreshOnBlur:  true
     refreshOnInput: true
     refreshOnIdle:  true
