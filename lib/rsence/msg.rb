@@ -171,6 +171,14 @@ module RSence
       @session[:user_info]
     end    
     
+    # Getter for the user language
+    # @return [Hash] The current user language. Returns RSence.config[:lang] by default
+    def lang
+      uinfo = user_info
+      uinfo[:lang] = RSence.config[:lang] unless uinfo.has_key? :lang
+      uinfo[:lang]
+    end    
+    
     # @private used for automatic reload of page, when the plugins have been changed.
     def refresh_page?( plugin_incr )
       if plugin_incr != @session[:plugin_incr]
@@ -193,6 +201,13 @@ module RSence
     # @return [nil]
     def user_info=(user_info)
       @session[:user_info] = user_info
+    end
+    
+    # Setter for the user language
+    # @param [String] lang The language to set. Use in login situations to store the user language.
+    # @return [nil]
+    def lang=(lang)
+      @session[:user_info][:lang] = lang
     end
     
     # Returns the session id

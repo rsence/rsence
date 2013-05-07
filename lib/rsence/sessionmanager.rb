@@ -90,7 +90,9 @@ module RSence
         :_msg_unused => true,
         
         # user info, map to your own user management code
-        :user_info  => {},
+        :user_info  => {
+          :lang => RSence.config[:lang]
+        },
 
         # sequence number of session, incremented by each restore
         :ses_seq => 0,
@@ -130,9 +132,6 @@ module RSence
     end
   
     def refresh_ses( msg, ses_data, ses_id, ses_key, ses_seed )
-      ## Perform old-session cleanup before extending another
-      # expire_sessions
-
       # new time-out
       ses_data[:timeout] = Time.now.to_i + @config[:timeout_secs]
       
@@ -238,9 +237,6 @@ module RSence
     ### Returns the current session data, if the session is valid.
     ### Otherwise stops the client and returns false.
     def check_ses( msg, ses_key, ses_seed=false )
-    
-      ## Perform old-session cleanup while checking for another
-      # expire_sessions
 
       # first, check if the session key exists (sync)
       if @session_keys.has_key?( ses_key )
