@@ -49,6 +49,8 @@ HMiniMenu = HRadioButtonList.extend({
     }
     this.menuItemView.rect.set( x, y, x+w, y+h );
     this.menuItemView.refresh();
+    this.menuItemView.hide();
+    ELEM.setStyle( this.menuItemView.elemId, 'display', 'none' );
   },
   
   click: function(){
@@ -77,6 +79,7 @@ HMiniMenu = HRadioButtonList.extend({
     this.repositionMenuItems();
     this.menuItemView.bringToFront();
     this.menuItemView.show();
+    ELEM.setStyle( this.menuItemView.elemId, 'display', 'block' );
     return true;
   },
   
@@ -84,6 +87,7 @@ HMiniMenu = HRadioButtonList.extend({
     if( this.menuItemView ){
       this.menuItemView.sendToBack();
       this.menuItemView.hide();
+      ELEM.setStyle( this.menuItemView.elemId, 'display', 'none' );
       this.menuItemView.offsetTo(0-this.menuItemView.rect.width,0-this.menuItemView.rect.height);
     }
   },
@@ -137,7 +141,8 @@ HMiniMenu = HRadioButtonList.extend({
       'background-color': '#f6f6f6',
       'border': '1px solid #999',
       'overflow': 'auto',
-      'overflow-x': 'hidden'
+      'overflow-x': 'hidden',
+      'display': 'none'
     };
     if(!BROWSER_TYPE.ie){
       itemStyle.opacity = 0.9;
