@@ -119,12 +119,12 @@ module RSence
       end
     
       # Load client packaging configuration:
-      client_pkg_conf = File.join(SERVER_PATH,'conf','client_pkg.yaml')
+      client_pkg_conf = File.join(SERVER_PATH,'client','conf','client_pkg.yaml')
       config[:client_pkg] = YAML.load( File.read( client_pkg_conf ) )
     
       # Makes the distribution 'js' directory containing the client core the
       # first client package source directory.
-      config[:client_pkg][:src_dirs].unshift( File.join( SERVER_PATH, 'js' ) )
+      config[:client_pkg][:src_dirs].unshift( File.join( SERVER_PATH, 'client', 'js' ) )
       
       # At this point, configuration files are read and ready.
     
