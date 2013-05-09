@@ -8,6 +8,7 @@ HSearchField = HTextControl.extend
     @base()
     @setStyleOfPart( 'help', 'display', 'none' )
     
-  drawSubviews: ->
+  refreshValue: ->
+    @base()
     if @typeChr( @value ) == 's' and @value.length > 0
       @setStyleOfPart( 'help', 'display', 'none' )
