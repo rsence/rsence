@@ -234,7 +234,7 @@ HTab = HControl.extend({
   removeTab: function(_tabIdx){
     var _selIdx = this.selectIdx,
         _tabViewId = this.tabs[_tabIdx],
-        _tabLabelElemId = this.tabViews[_tabIdx];
+        _tabLabelElemId = this.tabLabels[_tabIdx];
     this.tabs.splice(_tabIdx,1);
     this.tabLabels.splice(_tabIdx,1);
     this.tabLabelBounds.splice(_tabIdx,1);
@@ -256,6 +256,21 @@ HTab = HControl.extend({
     }
     ELEM.del(_tabLabelElemId);
     HSystem.views[_tabViewId].die();
+    
+    //Reset labels positions
+    this.rightmostPx = 0;
+    for(var i = 0; i < this.tabs.length; i++){
+      _tabLabelElemId = this.tabLabels[i];
+      _tabLabelWidth = parseInt( ELEM.getStyle(_tabLabelElemId,'width',true) );
+      ELEM.setStyle(_tabLabelElemId,this.tabLabelAlign,this.rightmostPx+'px');
+      this.rightmostPx += _tabLabelWidth;
+    }
+    if(this.tabLabelAlign === 'right'){
+      ELEM.setStyle(this.markupElemIds[this.tabLabelParentElem],'width',this.rightmostPx+'px');
+    }
+    else if (this.tabLabelFillBg) {
+      ELEM.setStyle(this.markupElemIds.state,'left',this.rightmostPx+'px');
+    }
   }
 });
 
