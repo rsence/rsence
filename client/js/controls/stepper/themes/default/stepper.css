@@ -1,0 +1,14 @@
+.stepper_state {
+ position: absolute;
+ left: 0px;
+ top: 0px;
+ width: 15px;
+ height: 23px;
+ background-position: 0px 0px;
+ background-repeat: no-repeat;
+ background-image: #{this.getCssFilePath('stepper.png')};
+}
+
+.disabled .stepper_state {
+  background-position: 0px -69px;
+}

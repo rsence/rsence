@@ -1,0 +1,20 @@
+<div class="textcontrol_bg" id="bg]I["></div>
+
+<div class="textcontrol_n"></div>
+<div class="textcontrol_s"></div>
+<div class="textcontrol_w"></div>
+<div class="textcontrol_e"></div>
+
+<div class="textcontrol_nw"></div>
+<div class="textcontrol_ne"></div>
+<div class="textcontrol_se"></div>
+<div class="textcontrol_sw"></div>
+
+<div id="subview]I[" class="textcontrol_subview"></div>
+
+<div id="label]I[" title="#{this.label}" class="textcontrol_input_parent">
+  <input type="text" class="textcontrol_input" #{this.enabled?'':'disabled'}
+    onfocus="HSystem.views[#{this.viewId}].textFocus();" 
+    onblur="HSystem.views[#{this.viewId}].textBlur();" 
+    id="value]I[" value="#{this.value}" />
+</div>

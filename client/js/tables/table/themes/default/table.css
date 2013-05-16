@@ -1,0 +1,31 @@
+.default > .table_header {
+  position:absolute;
+  left: 0; top: 0; right: 0; height: 22px;
+  border: 1px solid #333;
+  background: #eee;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px; line-height: 20px;
+  vertical-align: middle;
+  color: #000;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+}
+.default > .table_header > .table_header_column {
+  top: 1px; height: 20px; position: absolute;
+  cursor: pointer; border-right: 1px solid #ccc;
+  font-weight: bold;
+}
+.default > .table_header > .table_header_column > .sort {
+  position: absolute; top: 1px; right: 2px;
+}
+.default > .table_body {
+  position: absolute; top: 24px; left: 0; right: 0; bottom: 0;
+  overflow: auto; overflow-x: hidden;
+}
+.default > .table_body > .table_grid {
+  position: absolute; top: 0; left: 0; overflow: visible;
+}
+.default > .table_body > .table_grid > div {
+  position: absolute; height: 24px;
+}

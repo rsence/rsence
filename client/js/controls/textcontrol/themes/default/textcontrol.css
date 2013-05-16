@@ -1,0 +1,138 @@
+
+.default .textcontrol_input {
+  position: absolute;
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #000;
+  background-color: transparent;
+  vertical-align: middle;
+  border: 0;
+  left: 0; top: 0;
+  #{(
+  (BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.ie10||BROWSER_TYPE.opera)?
+    'padding-left:2px;width:100% !important;height:90% !important;':
+    'padding:2px;right:0px;bottom:0px;width:auto;height:auto;'
+  )}
+}
+
+.default .textcontrol_input:focus {
+  outline-color: transparent;
+  outline-style: none;
+}
+
+.default .disabled .textcontrol_input {
+  color: #333;
+}
+
+.default .textcontrol_subview {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  z-index: 1;
+}
+
+.default .active>.textcontrol_subview {
+  display: none;
+}
+
+.default .textcontrol_input_parent {
+  position: absolute;
+  z-index: 2;
+  #{(
+  ((BROWSER_TYPE.chrome && BROWSER_TYPE.mac)||BROWSER_TYPE.firefox||BROWSER_TYPE.ie7||BROWSER_TYPE.ie8||BROWSER_TYPE.ie9||BROWSER_TYPE.ie10||BROWSER_TYPE.opera)?
+    'left:0;padding-left:1px;top:0;right:4px;bottom:0;':
+    'left:-2px;top:-2px;right:-2px;bottom:-2px;'
+  )}
+  #{(BROWSER_TYPE.chrome && BROWSER_TYPE.mac)?'top:1px;':''}
+}
+
+.default .textcontrol_bg {
+  position: absolute;
+  left: 2px; top: 2px; right: 2px; bottom: 2px;
+  background-color: #fff;
+}
+
+.default .active>.textcontrol_bg {
+  left: 0; top: 0; right: 0; bottom: 0;
+  -moz-box-shadow: 0 0 3px #333;
+  -webkit-box-shadow: 0 0 3px #333;
+  box-shadow: 0 0 3px #333;
+}
+
+.default .disabled .textcontrol_bg {
+  background-color: #eee;
+}
+
+
+.default .textcontrol_ne,
+.default .textcontrol_nw,
+.default .textcontrol_se,
+.default .textcontrol_sw {
+  position: absolute;
+  width: 7px; height: 7px;
+  background-repeat: no-repeat;
+  background-image: #{this.getCssFilePath('textcontrol_parts1.png')};
+}
+
+.default .textcontrol_nw {
+  left: 0; top: 0;
+  background-position: 0 0;
+}
+
+.default .textcontrol_ne {
+  right: 0; top: 0;
+  background-position: -7px 0;
+}
+
+.default .textcontrol_sw {
+  left: 0; bottom: 0;
+  background-position: 0 -7px;
+}
+
+.default .textcontrol_se {
+  right: 0; bottom: 0;
+  background-position: -7px -7px;
+}
+
+
+
+.default .textcontrol_w,
+.default .textcontrol_e {
+  position: absolute;
+  width: 7px; top: 7px; bottom: 7px;
+  background-repeat: repeat-y;
+  background-image: #{this.getCssFilePath('textcontrol_parts3.png')};
+}
+
+.default .textcontrol_w {
+  left: 0;
+  background-position: 0 0;
+}
+
+.default .textcontrol_e {
+  right: 0;
+  background-position: -7px 0;
+}
+
+
+
+.default .textcontrol_n,
+.default .textcontrol_s {
+  position: absolute;
+  height: 7px; left: 7px; right: 7px;
+  background-repeat: repeat-x;
+  background-image: #{this.getCssFilePath('textcontrol_parts2.png')};
+}
+
+.default .textcontrol_n {
+  top: 0;
+  background-position: 0 0;
+}
+
+.default .textcontrol_s {
+  bottom: 0;
+  background-position: 0 -7px;
+}
+
+
+

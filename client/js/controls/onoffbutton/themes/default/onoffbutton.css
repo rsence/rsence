@@ -1,0 +1,50 @@
+.onoffbutton_label,
+.onoffbutton_label_off {
+  position: absolute;
+  top: 2px; height: 20px; line-height: 20px;
+  text-align: center; vertical-align: middle;
+  font-family: Arial, sans-serif;
+  font-size: 12px; font-weight: bold;
+  color: #333;
+}
+.onoffbutton_label {
+  left: 6px; right: 50%; 
+}
+.onoffbutton_label_off {
+  right: 6px; left: 50%; 
+}
+.disabled > .button_control > .onoffbutton_label,
+.disabled > .button_control > .onoffbutton_label_off {
+  color: #999;
+}
+.enabled > .button_control:hover > .onoffbutton_label,
+.enabled > .button_control:active > .onoffbutton_label_off {
+  color: #000;
+}
+.enabled > .button_control:active > .onoffbutton_label,
+.enabled > .button_control:active > .onoffbutton_label_off {
+  color: #000;
+}
+.onoffbutton_on,
+.onoffbutton_off {
+  position: absolute;
+  display: none;
+  top: 1px; height: 20px;
+  opacity: 0.6;
+}
+.onoffbutton_off {
+  left: 50%; right: 1px;
+  background-color: #660000;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.onoffbutton_on {
+  right: 50%; left: 1px;
+  background-color: #006600;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+}
+.disabled > .button_control > .onoffbutton_off,
+.disabled > .button_control > .onoffbutton_on {
+  opacity: 0.3;
+}
