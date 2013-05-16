@@ -1,5 +1,15 @@
 
-= RSence-2.2.0[http://rsence.org/]
+= RSence-3.0[http://rsence.org/]
+
+= Notice
+These docs are somewhat outdated at the moment, and RSence needs rsnc.js cloned into /client of this repository.
+
+== Sources for rsnc.js:
+
+* github.com/jammi/rsnc
+* github.com/rsence/rsnc
+* git@rsence.org:rsnc.git
+
 
 == Introduction
 

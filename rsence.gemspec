@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.files = FileList[
     'lib/**/*',
     'setup/welcome/**/*',
-    'conf/client_pkg.yaml',
     'conf/default_conf.yaml',
     'conf/default_strings.yaml',
     'conf/rsence_command_strings.yaml',
@@ -32,7 +31,7 @@ Gem::Specification.new do |s|
     'plugins/index_html/**/*',
     'plugins/main/**/*',
     'plugins/ticket/**/*',
-    'js/**/*',
+    'client/**/*',
     'README.rdoc',
     'INSTALL.rdoc',
     'AUTHORS.txt',
