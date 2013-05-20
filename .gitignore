@@ -4,3 +4,5 @@ disabled
 .DS_Store
 *.rbc
 *.gem
+.rbx/*
+.yardoc*
