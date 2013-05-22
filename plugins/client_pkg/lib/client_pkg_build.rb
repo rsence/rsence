@@ -12,14 +12,14 @@ end
 
 
 class ClientPkgBuild
-  
+
   def read_file( path )
     filehandle = open( path, 'rb' )
     filedata   = filehandle.read
     filehandle.close
     return filedata
   end
-  
+
   def gzip_string( string )
     gz_string = GZString.new('')
     gz_writer = Zlib::GzipWriter.new( gz_string, @gz_strategy )
@@ -27,7 +27,7 @@ class ClientPkgBuild
     gz_writer.close
     return gz_string
   end
-  
+
   def read_css( src_path, theme_name, component_name )
     css_data = read_file( src_path )
     unless @debug
@@ -40,7 +40,7 @@ class ClientPkgBuild
     end
     tmpl_to_js( css_data, theme_name, component_name )
   end
-  
+
   ID_RE = /(#\{_ID\})/
   WIDTH_RE = /(#\{_WIDTH\})/
   HEIGHT_RE = /(#\{_HEIGHT\})/
@@ -54,6 +54,7 @@ class ClientPkgBuild
     tmpl.gsub!( HEIGHT_RE, ']H[')
     tmpl.gsub!( TMPL_RE ) do
       ( js_type, js_code ) = [ $1, $2 ]
+      js_code = CoffeeScript.compile( js_code, :bare => true ) if js_code.start_with?('#!coffee')
       if cached_idx.has_key?( js_code )
         seq_id = cached_idx[ js_code ]
       else
@@ -89,7 +90,7 @@ class ClientPkgBuild
     end
     tmpl_to_js( html_data, theme_name, component_name )
   end
-  
+
   def read_gfx( src_path_theme, theme_newest )
     gfx_size = 0
     gfx_data = {}
@@ -109,7 +110,7 @@ class ClientPkgBuild
     end
     return [ gfx_size, gfx_data, theme_newest ]
   end
-  
+
   # processes theme-related files
   def read_theme( bundle_dir, bundle_name )
     time_start = Time.now.to_f
@@ -191,7 +192,7 @@ class ClientPkgBuild
     end
     @theme_time += (Time.now.to_f - time_start)
   end
-  
+
   def add_bundle( bundle_name, bundle_path, entries, has_js=false, has_coffee=false )
     has_themes = entries.include?( 'themes' ) and File.directory?( File.join( bundle_path, 'themes' ) )
     if @bundles_found.has_key?( bundle_name )
@@ -271,12 +272,12 @@ class ClientPkgBuild
       :has_themes => has_themes,
       :src_timestamp => src_timestamp
     }
-    
+
     read_theme( bundle_path, bundle_name ) if has_themes
 
     return true
   end
-  
+
   def find_bundles( src_dir )
     # makes sure the src_dir exists and is a directory
     if File.exist?( src_dir ) and File.directory?( src_dir )
@@ -302,7 +303,7 @@ class ClientPkgBuild
       end
     end
   end
-  
+
   def build_indexes
     indexes = []
     @destination_files.each_key do | package_name |
@@ -310,11 +311,11 @@ class ClientPkgBuild
     end
     @jscompress.build_indexes( indexes.join("\n") ) unless @no_obfuscation
   end
-  
+
   def pre_convert(jsc_data)
     return @jscompress.compress( jsc_data )
   end
-  
+
   def minimize_data
     unless @quiet
       @logger.log(  '' )
@@ -344,7 +345,7 @@ class ClientPkgBuild
       end
     end
   end
-  
+
   def squeeze( js, is_coffee=false )
     unless @no_whitespace_removal
       begin
@@ -392,7 +393,7 @@ class ClientPkgBuild
       return src_out
     end
   end
-  
+
   def build_themes
     time_start = Time.now.to_f
     unless @quiet
@@ -439,7 +440,7 @@ class ClientPkgBuild
     end
     @theme_time += (Time.now.to_f - time_start)
   end
-  
+
   def build_compound_packages
     time_start = Time.now.to_f
     unless @quiet
@@ -534,7 +535,7 @@ class ClientPkgBuild
     @last_change = last_change
 
     reset_structures
-    
+
     traverse_bundles
 
     compose_destinations
@@ -545,23 +546,23 @@ class ClientPkgBuild
     minimize_data
 
     build_compound_packages
-    
+
     ms_taken = ((Time.now.to_f*10000)-time_start).round/10.0
     js_taken = (@js_time*10000).round/10.0
     coffee_taken = (@coffee_time*10000).round/10.0
     themes_taken = (@theme_time*10000).round/10.0
     other_taken = ((ms_taken - coffee_taken - js_taken - themes_taken)*10).round/10.0
     @logger.log( "\nTime taken:\n     js:  #{js_taken}ms\n coffee:  #{coffee_taken}ms\n themes:  #{themes_taken}ms\n  other:  #{other_taken}ms\n  total:  #{ms_taken}ms\n\n" )
-    
+
   end
-  
+
   def setup_dirs
     # make sure the src_dirs contain only absolute paths.
     # if not, use current working dir as a logical prefix
     @src_dirs.map! do |src_dir|
       File.expand_path( src_dir )
     end
-    
+
     @src_dirs.each do |src_dir|
       # exit with error if the src dir does not exist
       unless File.exist?( src_dir )
@@ -569,14 +570,14 @@ class ClientPkgBuild
         @logger.log( "abort." )
         return false
       end
-      
+
     end
-    
+
     @package_names.each do |package_name|
       @js[package_name] = ''
       @gz[package_name] = ''
     end
-    
+
     # ensures the destination directories of various theme parts exist
     @theme_names.each do |theme_name|
       @themes[theme_name] = {
@@ -585,11 +586,11 @@ class ClientPkgBuild
         :gfx  => {}
       }
     end
-    
+
     return true
-    
+
   end
-  
+
   def add_src_dir( src_dir )
     @src_dirs.push( src_dir ) unless @src_dirs.include? src_dir
   end
@@ -602,7 +603,7 @@ class ClientPkgBuild
   def del_src_dirs( src_dirs )
     src_dirs.each { |src_dir| del_src_dir( src_dir ) }
   end
-  
+
   def add_theme( theme_name )
     @theme_names.push( theme_name ) unless @theme_names.include? theme_name
   end
@@ -615,7 +616,7 @@ class ClientPkgBuild
   def del_themes( theme_names )
     theme_names.each { |theme_name| del_theme( theme_name ) }
   end
-  
+
   def add_package( pkg_name, pkg_items )
     if @packages.has_key?( pkg_name )
       warn "Package #{pkg_name} already exists, ignoring."
@@ -638,7 +639,7 @@ class ClientPkgBuild
   def del_packages( packages )
     packages.each { |pkg_name| del_package( pkg_name ) }
   end
-  
+
   def add_compound( compound_name, pkg_names )
     if @compounds.has_key?( compound_name )
       warn "Compound #{compound_name} already exists, ignoring."
@@ -672,7 +673,7 @@ class ClientPkgBuild
   def del_reserved_names( reserved_names )
     reserved_names.each { |n| del_reserved_name( n ) }
   end
-  
+
   def add_gfx_format( gfx_format )
     @gfx_formats.push( gfx_format ) unless @gfx_formats.include? gfx_format
   end
@@ -685,13 +686,13 @@ class ClientPkgBuild
   def del_gfx_formats( gfx_formats )
     gfx_formats.each { |gfx_format| del_gfx_format( gfx_format ) }
   end
-  
-  #delete: @js_dst_dir, @themes_dst_dir, 
-  
+
+  #delete: @js_dst_dir, @themes_dst_dir,
+
   attr_reader :js, :gz, :themes, :jsmin, :jscompress
-  
+
   def initialize( config, logger )
-    
+
     @coffee_supported = config[:coffee_supported]
     @src_cache = {
       :path_timestamp => {},
@@ -702,41 +703,41 @@ class ClientPkgBuild
     }
 
     @logger = logger
-    
+
     # src_dirs is supposed to be an array of js source directories
     @src_dirs = config[:src_dirs]
-    
+
     @js = {}
     @gz = {}
     @themes = {}
-    
+
     # theme_names is supposed to be an array of theme names to include in the build
     @theme_names = config[:theme_names]
-    
+
     # pkg_info is supposed to be a hash of js package name definitions by pkg_name
     @packages = config[:packages]
-    
+
     # packages is supposed to be a list of js package name definitions to include
     @package_names = @packages.keys
-    
+
     # reserved_names is supposed to be a list of reserved words (words that shouldn't be compressed)
     @reserved_names = config[:reserved_names]
-    
-    # JSCompress compresses js by "obfuscating" 
+
+    # JSCompress compresses js by "obfuscating"
     # all variables beginning with an underscore "_",
     # eg. "_this" -> "_0", except
     # those specified in the @reserved_names array
     @jscompress = JSCompress.new( config[:reserved_names] )
-    
+
     # HTMLMin compresses css and html by removing whitespace
     @html_min = HTMLMin.new
-    
+
     # JSMin removes js white-space (makes the source shorter)
     @jsmin = JSMin.new
-    
+
     # makes sure the specified dirs are ok
     return if not setup_dirs
-    
+
     begin
       require 'rubygems'
       require 'cssmin'
@@ -745,10 +746,10 @@ class ClientPkgBuild
       warn "cssmin not installed. install cssmin (gem install cssmin) to improve the css minifiying."
       @css_min = false
     end
-    
+
     # contains a list of theme gfx extensions allowed
     @gfx_formats = config[:gfx_formats]
-    
+
     # compression strategy ( fastest vs smallest )
     @gz_strategy = config[:gz_strategy]
     @no_gzip = config[:no_gzip]
@@ -758,7 +759,7 @@ class ClientPkgBuild
     @quiet = (not RSence.args[:verbose] and RSence.args[:suppress_build_messages])
     @compounds = config[:compound_packages]
   end
-  
+
   def find_newer( src_dir, newer_than, quiet=false )
    if File.exist?( src_dir ) and File.directory?( src_dir )
      Dir.entries( src_dir ).each do | dir_entry |
@@ -776,7 +777,7 @@ class ClientPkgBuild
    end
    return false
   end
-  
+
   def bundle_changes( newer_than )
    @bundles_found.each do | bundle_name, bundle_info |
      bundle_path = bundle_info[:path]
@@ -785,7 +786,7 @@ class ClientPkgBuild
    end
    return false
   end
-  
+
   def print_stat( package_name, dst_size, jsc_size, gz_size )
     # percent = 'n/a'
     if dst_size > 0
@@ -805,7 +806,7 @@ class ClientPkgBuild
     end
     @logger.log(  "#{package_name.ljust(30).gsub(' ','.')}: #{dst_size.to_s.rjust(9)} | #{jsc_size.to_s.rjust(6)} #{percent1.rjust(4)} | #{gz_size.to_s.rjust(6)} #{percent2.rjust(4)}" )
   end
-  
+
   def flush
     @jscompress.free_indexes
   end
