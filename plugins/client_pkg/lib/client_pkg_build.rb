@@ -3,8 +3,43 @@ require 'jsmin_c'
 require 'jscompress'
 require 'html_min'
 begin
+  require 'sass'
+  RSence.config[:client_pkg][:sass_supported] = true
+  module Sass::Script::Functions
+    def js_call(string)
+      tmpl_js = '${'+string.value+'}'
+      Sass::Script::String.new(tmpl_js)
+    end
+    def js_tmpl(string)
+      # assert_type string, :String
+      tmpl_js = '#{'+string.value+'}'
+      # puts "js_tmpl(#{string.inspect}) -> #{tmpl_js.inspect}"
+      Sass::Script::String.new(tmpl_js)
+    end
+    declare :js_call, :args => [:string]
+    declare :js_tmpl, :args => [:string]
+  end
+rescue LoadError
+  warn "SASS not installed. Install the 'sass' gem to enable."
+  RSence.config[:client_pkg][:sass_supported] = false
+end
+begin
   require 'coffee-script'
   RSence.config[:client_pkg][:coffee_supported] = true
+  module Sass::Script::Functions
+    def coffee_call(string)
+      js_src = CoffeeScript.compile( string.value, :bare => true )
+      tmpl_js = '${'+js_src+'}'
+      Sass::Script::String.new(tmpl_js)
+    end
+    def coffee_tmpl(string)
+      js_src = CoffeeScript.compile( string.value, :bare => true )
+      tmpl_js = '#{'+js_src+'}'
+      Sass::Script::String.new(tmpl_js)
+    end
+    declare :coffee_call, :args => [:string]
+    declare :coffee_tmpl, :args => [:string]
+  end
 rescue LoadError
   warn "CoffeeScript not installed. Install the 'coffee-script' gem to enable."
   RSence.config[:client_pkg][:coffee_supported] = false
@@ -30,6 +65,24 @@ class ClientPkgBuild
 
   def read_css( src_path, theme_name, component_name )
     css_data = read_file( src_path )
+    if @sass_supported
+      begin
+        if src_path.end_with?('.sass')
+          css_data = Sass::Engine.new(css_data,:syntax => :sass, :style => :compressed).render
+        elsif src_path.end_with?('.scss')
+          css_data = Sass::Engine.new(css_data,:syntax => :scss).render #, :style => :compressed).render
+          # puts css_data
+        end
+      rescue => e
+        RSence.plugin_manager.plugin_error(
+          e,
+          'SASS Error',
+          "An error occurred while parsing the SASS file: #{src_path}.",
+          src_path
+        )
+        return ''
+      end
+    end
     unless @debug
       unless @no_whitespace_removal
         css_data = @html_min.minimize( css_data )
@@ -71,9 +124,9 @@ class ClientPkgBuild
           fn_args = ''
         end
         if js_type == '$'
-          js_cmds << "function(#{fn_args}){#{js_code}}"
+          js_cmds << "function(#{fn_args}){#{js_code};}"
         else
-          js_cmds << "function(#{fn_args}){return #{js_code}}"
+          js_cmds << "function(#{fn_args}){return #{js_code};}"
         end
       end
       "#{js_type}{#{seq_id}}"
@@ -128,7 +181,9 @@ class ClientPkgBuild
           :gfx => 0
         }
         theme_css = ''
-        [ File.join( src_path_theme, bundle_name+'.css' ),
+        [ File.join( src_path_theme, bundle_name+'.sass' ),
+          File.join( src_path_theme, bundle_name+'.scss' ),
+          File.join( src_path_theme, bundle_name+'.css' ),
           File.join( src_path_theme, 'css', bundle_name+'.css' )
         ].each do |src_file_css|
           if File.exist?( src_file_css )
@@ -416,7 +471,7 @@ class ClientPkgBuild
         html_template += "#{bundle_name.to_json}:#{theme_data}," unless theme_data.empty?
       end
       html_template.chop! if html_template.end_with?(',')
-      theme_html_js = "(function(){HThemeManager.installThemeData(#{theme_name.to_json},{#{css_template}},{#{html_template}})})();"
+      theme_html_js = "(function(){HThemeManager.installThemeData(#{theme_name.to_json},{#{css_template}},{#{html_template}});})();"
       pkg_name = theme_name+'_theme'
       orig_size = theme_html_js.bytesize
       theme_html_js = @jsmin.minimize( theme_html_js ) unless @no_whitespace_removal
@@ -694,6 +749,7 @@ class ClientPkgBuild
   def initialize( config, logger )
 
     @coffee_supported = config[:coffee_supported]
+    @sass_supported = config[:sass_supported]
     @src_cache = {
       :path_timestamp => {},
       :path_compiled => {},

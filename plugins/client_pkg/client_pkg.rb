@@ -3,20 +3,31 @@
 lib_path = File.expand_path( 'lib', bundle_path )
 
 # The ClientPkgCache class:
-require File.expand_path( 'client_pkg_cache', lib_path )
+if RSence.args[:debug]
+  load File.expand_path( 'client_pkg_cache.rb', lib_path )
+else
+  require File.expand_path( 'client_pkg_cache', lib_path )
+end
 
 # The ClientPkgServe module:
-require File.expand_path( 'client_pkg_serve', lib_path )
+if RSence.args[:debug]
+  load File.expand_path( 'client_pkg_serve.rb', lib_path )
+else
+  require File.expand_path( 'client_pkg_serve', lib_path )
+end
 
 # The ClientPkgBuild class:
-require File.expand_path( 'client_pkg_build', lib_path )
-
+if RSence.args[:debug]
+  load File.expand_path( 'client_pkg_build.rb', lib_path )
+else
+  require File.expand_path( 'client_pkg_build', lib_path )
+end
 
 # @private The ClientPkgPlugin builds and serves the client packages. It's not intended to be a part of the public API at this time.
 class ClientPkgPlugin < Servlet
-  
+
   include ClientPkgServe
-  
+
   class BuildLogger
     def initialize( log_path )
       @last_time = Time.now
@@ -45,7 +56,7 @@ class ClientPkgPlugin < Servlet
       @log_file = nil
     end
   end
-  
+
   def rebuild_client
     @build_busy = true
     next_change=Time.now.to_f
@@ -58,7 +69,7 @@ class ClientPkgPlugin < Servlet
     @last_change = next_change
     @build_busy = false
   end
-  
+
   def ready?
     return (not @build_busy)
   end
@@ -86,43 +97,43 @@ class ClientPkgPlugin < Servlet
         end
       end
     end
-    
+
   end
-  
+
   def add_src_dir( src_dir ); @client_build.add_src_dir( src_dir ); end
   def add_src_dirs( src_dirs ); @client_build.add_src_dirs( src_dirs ); end
   def del_src_dir( src_dir ); @client_build.del_src_dir( src_dir ); end
   def del_src_dirs( src_dirs ); @client_build.del_src_dirs( src_dirs ); end
-  
+
   def add_theme( theme_name ); @client_build.add_theme( theme_name ); end
   def add_themes( theme_names ); @client_build.add_themes( theme_names ); end
   def del_theme( theme_name ); @client_build.del_theme( theme_name ); end
   def del_themes( theme_names ); @client_build.del_themes( theme_names ); end
-  
+
   def add_package( pkg_name, pkg_items ); @client_build.add_package( pkg_name, pkg_items ); end
   def add_packages( packages ); @client_build.add_packages( packages ); end
   def del_package( pkg_name ); @client_build.del_package( pkg_name ); end
   def del_packages( packages ); @client_build.del_packages( packages ); end
-  
+
   def add_compound( compound_name, pkg_names ); @client_build.add_compound( compound_name, pkg_names ); end
   def add_compounds( compounds ); @client_build.add_compounds( compounds ); end
   def del_compound( compound_name ); @client_build.del_compound( compound_name ); end
   def del_compounds( compounds ); @client_build.del_compounds( compounds ); end
-  
+
   def add_reserved_name( reserved_name ); @client_build.add_reserved_name( reserved_name ); end
   def add_reserved_names( reserved_names ); @client_build.add_reserved_names( reserved_names ); end
   def del_reserved_name( reserved_name ); @client_build.del_reserved_name( reserved_name ); end
   def del_reserved_names( reserved_names ); @client_build.del_reserved_names( reserved_names ); end
-  
+
   def add_gfx_format( gfx_format_name ); @client_build.add_gfx_format( gfx_format_name ); end
   def add_gfx_formats( gfx_format_names ); @client_build.add_gfx_formats( gfx_format_names ); end
   def del_gfx_format( gfx_format_name ); @client_build.del_gfx_format( gfx_format_name ); end
   def del_gfx_formats( gfx_format_names ); @client_build.del_gfx_formats( gfx_format_names ); end
-  
+
   def client_build; @client_build; end
-  
+
   def client_cache; @client_cache; end
-  
+
   def close
     if @thr
       @thr.kill
@@ -133,7 +144,7 @@ class ClientPkgPlugin < Servlet
     @client_cache = nil
     @build_logger.close
   end
-  
+
   def squeeze( js )
     return @client_build.squeeze( js )
   end
@@ -141,22 +152,22 @@ class ClientPkgPlugin < Servlet
   def coffee( src )
     return @client_build.coffee( src )
   end
-  
+
   def init
-    
+
     @thr = false
-    
+
     @build_logger = BuildLogger.new( File.join(RSence.args[:env_path],'log','build_log') )
     @build_logger.open
-    
+
     @client_build = ClientPkgBuild.new( RSence.config[:client_pkg], @build_logger )
     @client_cache = ClientPkgCache.new
-    
+
     @build_busy = false
     rebuild_client
-    
+
   end
-  
+
 end
 
 
