@@ -107,7 +107,11 @@ class ClientPkgBuild
     tmpl.gsub!( HEIGHT_RE, ']H[')
     tmpl.gsub!( TMPL_RE ) do
       ( js_type, js_code ) = [ $1, $2 ]
-      js_code = CoffeeScript.compile( js_code, :bare => true ) if js_code.start_with?('#!coffee')
+      begin
+        js_code = CoffeeScript.compile( js_code, :bare => true ) if js_code.start_with?('#!coffee')
+      rescue ExecJS::RuntimeError
+        js_code = "console.log('Invalid coffee in template #{theme_name}/#{component_name}:',#{js_code.to_json})"
+      end
       if cached_idx.has_key?( js_code )
         seq_id = cached_idx[ js_code ]
       else
