@@ -51,6 +51,7 @@ class ClientPkgBuild
   def read_file( path )
     filehandle = open( path, 'rb' )
     filedata   = filehandle.read
+    filedata.force_encoding( 'UTF-8' ) if filedata.encoding != 'UTF-8'
     filehandle.close
     return filedata
   end
@@ -108,9 +109,13 @@ class ClientPkgBuild
     tmpl.gsub!( TMPL_RE ) do
       ( js_type, js_code ) = [ $1, $2 ]
       begin
-        js_code = CoffeeScript.compile( js_code, :bare => true ) if js_code.start_with?('#!coffee')
+        if js_code.start_with?('#!coffee')
+          js_code = CoffeeScript.compile( js_code, :bare => true )
+        end
       rescue ExecJS::RuntimeError
-        js_code = "console.log('Invalid coffee in template #{theme_name}/#{component_name}:',#{js_code.to_json})"
+        js_code = "console.log('Invalid CoffeeScript in template #{theme_name}/#{component_name}:',#{js_code.to_json});"
+      rescue Encoding::CompatibilityError
+        js_code = "console.log('Invalid charset in CoffeeScript template #{theme_name}/#{component_name}:',#{js_code.to_json});"
       end
       if cached_idx.has_key?( js_code )
         seq_id = cached_idx[ js_code ]
@@ -127,6 +132,7 @@ class ClientPkgBuild
         else
           fn_args = ''
         end
+        js_code.force_encoding 'UTF-8' if js_code.encoding != 'UTF-8'
         if js_type == '$'
           js_cmds << "function(#{fn_args}){#{js_code};}"
         else
@@ -135,6 +141,7 @@ class ClientPkgBuild
       end
       "#{js_type}{#{seq_id}}"
     end
+    tmpl.force_encoding 'UTF-8' if tmpl.encoding != 'UTF-8'
     %{[[#{js_cmds.join(',')}],#{tmpl.to_json}]}
   end
 
@@ -290,13 +297,18 @@ class ClientPkgBuild
           begin
             coffee_src = read_file( src_path )
             js_data = CoffeeScript.compile( coffee_src, :bare => true )
-          rescue CoffeeScript::CompilationError, ExecJS::RuntimeError
+          rescue CoffeeScript::CompilationError, ExecJS::RuntimeError => e
             if has_js
+              warn "CoffeeScript Compilation failure #1: #{e.inspect}"
               js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead.' );}
               js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
             else
+              warn "CoffeeScript Compilation failure #2: #{e.inspect}"
               js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}' );}
             end
+          rescue => e
+            warn "CoffeeScript Compilation failure #3: #{e.inspect}"
+            js_data = %{console.log( 'WARNING CoffeeScript complilation failed for source file #{src_path.to_json}' );}
           end
         else
           js_data = read_file( src_path )
@@ -565,6 +577,19 @@ class ClientPkgBuild
     end
   end
 
+  def package_array_cleanup_encodings( package_array )
+    outp = ''
+    package_array.each do |item|
+      if item.encoding != 'UTF-8'
+        puts "item has invalid encoding(#{item.encoding.to_s}): #{item[0..70]}"
+        outp += item.force_encoding( 'UTF-8' )
+      else
+        outp += item
+      end
+    end
+    outp
+  end
+
   def compose_destinations
     @destination_files = {} # rename to package_products
     @destination_origsize = {}
@@ -580,7 +605,11 @@ class ClientPkgBuild
       end
     end
     @destination_files.each do | package_name, package_array |
-      package_data = package_array.join("\n")
+      begin
+        package_data = package_array.join("\n")
+      rescue Encoding::CompatibilityError
+        package_data = package_array_cleanup_encodings( package_array )
+      end
       @destination_files[ package_name ] = package_data
     end
   end
