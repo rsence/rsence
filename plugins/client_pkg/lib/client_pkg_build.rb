@@ -317,7 +317,11 @@ class ClientPkgBuild
         if @debug
           min_size = js_size
         else
-          js_data = @jsmin.minimize( js_data ) unless @no_whitespace_removal
+          begin
+            js_data = @jsmin.minimize( js_data ) unless @no_whitespace_removal
+          rescue => e
+            warn "JSMin failed for #{src_path} (#{e.inspect}); using uncompressed version."
+          end
           min_size = js_data.bytesize
         end
         if is_coffee
