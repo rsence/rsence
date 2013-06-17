@@ -1,24 +1,24 @@
 
 module RSence
   module Plugins
-    
+
     # The Plugin__ is actually available as +Plugin+ from plugin bundles using the {RSence::Plugins::Plugin} class mimic method.
-    # 
+    #
     # The Plugin class is the base class for extending server logic. A single Plugin instance serves the requests of all sessions, which makes them very cpu and memory efficient compared to systems, where the server classes are constructed and destructed for each request.
-    # 
+    #
     # Plugins are designed to be contained in a plugin directory bundle and to be loaded by the main {PluginManager}, which is also responsible for delegating the events and other calls throughout the system.
     #
-    # 
+    #
     # == Anatomy of a plugin bundle
     #
     # First read about the {file:PluginBundles Plugin Bundles}.
     #
     # The plugin bundle contains all data needed to run the plugin. Design your plugin without any hard-coded paths, remember that it's intended to be installed by moving or copying the whole plugin into one of the "plugins" directories. Use {#bundle_path} to construct paths.
-    # 
+    #
     # The {PluginManager} looks for these bundles and evaluates them into an anonymous +Module+ namespace. The contents of the ruby source file is then responsible for including its libraries, constructing an instance of itself and registering itself as a part of the system.
-    # 
+    #
     # Use the {GUIPlugin__ GUIPlugin} class for plugins that handle user interfaces. Use the {Plugin__ Plugin} class for plugin bundles that provide supplemental functionality, value responders and other utilities that supplement the user interface.
-    # 
+    #
     # = Extension hooks for server events
     # These methods are provided as the basic server event hooks:
     # * {#init +#init+} -- Use instead of +initialize+
@@ -30,12 +30,12 @@ module RSence
     # * {#idle +#idle+} -- Extend to implement logic for each client data synchronization and "idle poll" request.
     # * {#init_ses +#init_ses+} -- Extend to implement logic when a new session is created. A new session is created, when a user enters accesses the server the first time, or the first time after the previous session expired.
     # * {#restore_ses +#restore_ses+} -- Extend to implement logic when an old session is restored. A session is restored, when the user returns to the page or reloads the page before the session is expired.
-    # 
+    #
     # == Extension hooks for session events, If the server is configured to restore and clone previous sessions (default):
     # When sessions are cloned, the previous session is not invalidated and exists until timing out as a result of the web browser window being closed or client computer losing network connectivity for a certain (configurable) time frame.
     # * {#cloned_target +#cloned_target+} -- Extend to implement logic in the request when session is a clone of the original session.
     # * {#cloned_source +#cloned_source+} -- Extend to implement logic in the next request of the original session after it has been cloned.
-    # 
+    #
     # == If the server is configured to not clone sessions:
     # When the user accesses the same page using the same browser (in different tabs or windows), only the most recently restored one is valid, while the previous ones are immediately invalidated. This is a more secure mode of operation, but has several drawback to usability, so it's not enabled by default.
     #
@@ -63,26 +63,26 @@ module RSence
     # * {Servlet__ Servlet} -- The Servlet base class
     # * {GUIPlugin__ GUIPlugin} -- The GUIPlugin base class
     class Plugin__
-      
-      
+
+
       include PluginBase
-      
+
       # @private Class type identifier for the PluginManager.
       # @return [:Plugin]
       def self.bundle_type; :Plugin; end
-  
+
       # @return [Symbol] The name of the plugin bundle
       attr_reader :name
-      
+
       # @return [String] The absolute path of the plugin bundle.
       attr_reader :path
-      
+
       # @return [Hash] The {file:PluginBundleInfo meta-information} of the plugin bundle.
       attr_reader :info
-      
+
       # @private State of the plugin.
       attr_reader :inited
-  
+
       # @private The constructor should not be accessed from anywhere else than the PluginManager, which does it automatically.
       def initialize( bundle_name, bundle_info, bundle_path, plugin_manager )
         @inited  = false
@@ -92,7 +92,7 @@ module RSence
         @plugins = plugin_manager
         register unless @info[:inits_self]
       end
-  
+
       # Extend this method to do any initial tasks before other methods are called.
       #
       # By default {#init_values} is called to load the {file:Values +values.yaml+} configuration file.
@@ -103,7 +103,7 @@ module RSence
       def init
         @values = init_values
       end
-  
+
       # Extend this method to do any tasks every time the client makes a request.
       #
       # @param [Message] msg The message is supplied by the system.
@@ -111,7 +111,7 @@ module RSence
       # @return [nil]
       def idle( msg )
       end
-  
+
       # Extend this method to invoke actions, when a new session is created.
       #
       # By default {#init_ses_values} is called to initialize values defined in the {file:Values +values.yaml+} configuration file.
@@ -122,7 +122,7 @@ module RSence
       def init_ses( msg )
         init_ses_values( msg )
       end
-  
+
       # Extend this method to invoke actions, when a previous session is restored.
       #
       # By default +#restore_ses_values+ is called to perform actions on values as defined in the {file:Values +values.yaml+} configuration file.
@@ -133,7 +133,7 @@ module RSence
       def restore_ses( msg )
         restore_ses_values( msg )
       end
-  
+
       # Extend this method to invoke actions, when the session is a clone of another session. It's called once, just before {#restore_ses} is called.
       #
       # A session is cloned, when a user opens a another browser window or tab, while the previous session is still active.
@@ -144,7 +144,7 @@ module RSence
       # @return [nil]
       def cloned_target( msg, source_session )
       end
-  
+
       # Extend this method to invoke actions, when the session has been cloned to another session. It's called once, just before {#restore_ses} is called on the first request after the cloning happened.
       #
       # A session is cloned, when a user opens a another browser window or tab, while the previous session is still active.
@@ -155,7 +155,7 @@ module RSence
       # @return [nil]
       def cloned_source( msg, target_sessions )
       end
-  
+
       # @private This method must be called to register the plugin instance into the system. Otherwise, it's subject to destruction and garbage collection. Use the +name+ parameter to  give the (unique) name of your plugin.
       def register( name=false )
         if @inited
@@ -170,7 +170,7 @@ module RSence
           @inited = true
         end
       end
-      
+
       def name_with_manager_s
         if @info[:manager]
           return "#{@info[:manager].to_s}:#{@name.to_s}"
@@ -178,7 +178,7 @@ module RSence
           return @name.to_s
         end
       end
-      
+
       # This method returns (or creates and returns) the entry in the session based on the name your plugin is registered as. It's advised to use this call instead of manually managing {Message#session msg#session} in most cases.
       #
       # Uses the first name registered for the plugin and converts it to a symbol.
@@ -255,7 +255,7 @@ module RSence
       def squeezed_js( path )
         client_pkg.squeeze( file_read( path ) )
       end
-  
+
       # Returns the source code of the javascript file +js_name+ in the 'js' subdirectory of the plugin bundle. Use it to send raw javascript command code to the client. Use {#read_js_once} for libraries.
       #
       # @param [String] js_name Javascript source file name without the '.js' suffix.
@@ -273,7 +273,7 @@ module RSence
         return file_read( path ) if type == :js
         warn "read_js: unknown type #{type.inspect}"
       end
-      
+
       # Like {#read_js}, but reads the file only once per session. Use for inclusion of custom library code.
       #
       # @param [Message] msg The message is supplied by the system.
@@ -295,14 +295,14 @@ module RSence
           return ''
         end
       end
-      
+
       # Extracts +HValue+ references as javascript from the session Hash.
       #
       # @param [Message] msg The message is supplied by the system.
       # @param [Hash] ses Used for supplying a Hash with the {HValue} instances. It's optional and defaults to the current plugin node in the active session.
-      # 
+      #
       # @return [String] A string representing a javascript object similar to the ruby Hash +ses+.
-      # 
+      #
       # @example
       #   values_js( msg, get_ses(msg) )
       def values_js( msg, ses=false )
@@ -318,8 +318,8 @@ module RSence
         end
         return "{#{js_references.join(',')}}"
       end
-      
-      
+
+
       # Tells the js client framework to load a list of pre-packaged client libraries.
       #
       # It keeps track of what's loaded, so nothing library loaded twice.
@@ -354,7 +354,7 @@ module RSence
           end
         end
       end
-      
+
       # @private  Returns a hash with valid symbol keys for +#value_call+.
       def sanitize_value_call_hash( hash_dirty )
         if hash_dirty.class == Symbol
@@ -394,7 +394,7 @@ module RSence
         end
         return hash_clean
       end
-      
+
       # @private  Returns a sanitized copy of a single responder specification.
       def sanitize_value_responders( responders_dirty )
         if responders_dirty.class != Array
@@ -437,7 +437,7 @@ module RSence
         end
         return responders_clean
       end
-      
+
       # @private  Returns a sanitized copy of a single value item.
       def sanitize_value_item( value_item_dirty )
         unless value_item_dirty.class == Hash
@@ -446,7 +446,9 @@ module RSence
             :restore_default => false
           }
         end
-        value_item_clean = {}
+        value_item_clean = {
+          :type => 0
+        }
         value_item_dirty.each do | key, value |
           if key.to_sym == :value or key.to_sym == :data
             if [Array, Hash, String, TrueClass, FalseClass, Fixnum, Bignum, Float, NilClass].include? value.class
@@ -470,13 +472,27 @@ module RSence
           elsif key.to_sym == :responders or key.to_sym == :responder
             sanitized_responders = sanitize_value_responders( value )
             value_item_clean[:responders] = sanitized_responders unless sanitized_responders.empty?
+          elsif key.to_sym == :type
+            if [0,1,2].include? value
+              value_type = value
+            elsif ['normal',:normal,'push',:push,'pull',:pull].include? value
+              # server concept of push and pull are reversed relative to the client
+              value_type = {
+                'normal' => 0,  :normal => 0,
+                'pull'   => 1,  :pull   => 1,
+                'push'   => 2,  :push   => 2
+              }[value]
+            else
+              warn "Unsupported value type: #{value}"
+            end
+            value_item_clean[:type] = value_type
           else
             warn "Unsupported value specification key: #{key.inspect}."
           end
         end
         return value_item_clean
       end
-      
+
       # @private  Returns sanitized hash of the structure specified in values.yaml
       def sanitize_values_yaml( values_path )
         values_dirty = yaml_read( values_path )
@@ -502,7 +518,7 @@ module RSence
         end
         return false
       end
-      
+
       # @private  This method looks looks for a file called "values.yaml" in the plugin's bundle directory.
       #           If this file is found, it loads it for initial value definitions.
       #           These definitions are accessible as the +@values+ attribute.
@@ -510,7 +526,7 @@ module RSence
         values_path = bundle_path( 'values.yaml' )
         return sanitize_values_yaml( values_path )
       end
-      
+
       # @private  Creates a new instance of HValue, assigns it as +value_name+ into the
       #           session and uses the +value_properties+ Hash to define the default
       #           value and value responders.
@@ -525,7 +541,7 @@ module RSence
       #   {
       #     # Default value; defaults to 0
       #     :value => 'foo',
-      #     
+      #
       #     # A plugin method to call to define the default value instead of the one defined in :value
       #     :value_call => {
       #       :plugin => 'plugin_name', # defaults to the plugin where defined
@@ -533,10 +549,10 @@ module RSence
       #       :args => [ 1, 'foo', 3 ], # optional, list of parameter values for the :method
       #       :uses_msg => true         # defaults to true; when false, doesn't pass the msg as the first parameter
       #     },
-      #     
+      #
       #     # Restore the default, when the session is restored; defaults to true
       #     :restore_default => false,
-      #     
+      #
       #     # List of value responder methods to bind.
       #     :responders => [
       #        {
@@ -558,12 +574,12 @@ module RSence
           default_value = 0
         end
         name = name_with_manager_s
-        ses[value_name] = HValue.new( msg, default_value, { :name => "#{name}.#{value_name}" } )
+        ses[value_name] = HValue.new( msg, default_value, { :name => "#{name}.#{value_name}", :type => value_properties[:type] } )
         if value_properties.has_key?(:responders)
           init_responders( msg, ses[value_name], value_properties[:responders] )
         end
       end
-      
+
       # @private  Initialize a responder for a value.
       def init_responder( msg, value, responder )
         name = name_with_manager_s
@@ -579,7 +595,7 @@ module RSence
           end
         end
       end
-      
+
       # @private  Initialize several responders for a value
       def init_responders( msg, value, responders )
         members = value.members
@@ -614,7 +630,7 @@ module RSence
           init_responder( msg, value, responder )
         end
       end
-      
+
       # @private  Releases all responders of a value
       def release_responders( msg, value )
         members = value.members
@@ -624,8 +640,8 @@ module RSence
           end
         end
       end
-      
-      # @private  Initializes session values, if the contents of the +values.yaml+ 
+
+      # @private  Initializes session values, if the contents of the +values.yaml+
       #           file is defined in the bundle directory and loaded in +#init_values+.
       def init_ses_values( msg )
         return unless @values
@@ -641,7 +657,7 @@ module RSence
           end
         end
       end
-      
+
       # @private  Returns a value based on the :method and :plugin members of the
       #           +value_call+ hash.
       #
@@ -693,7 +709,7 @@ module RSence
           end
         end
       end
-      
+
       def restore_ses_value( msg, value_name, value_properties )
         ses = get_ses( msg )
         if ses.has_key?( value_name ) and ses[ value_name ].class == HValue
@@ -716,7 +732,7 @@ module RSence
           init_ses_value( msg, value_name, value_properties )
         end
       end
-      
+
       # @private  Restores session values to default, unless specified otherwise.
       #
       # Called from +#restore_ses+

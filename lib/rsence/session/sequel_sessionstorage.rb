@@ -117,14 +117,14 @@ class SequelSessionStorage
 
   ## Checks database connectivity and loads stored sessions from the database
   def db_init
-  
+
     create_session_table
     create_version_table
     create_uploads_table
-  
+
     ## Used for future upgrades:
     # version = table_version
-  
+
     return true
   end
 
@@ -163,7 +163,7 @@ class SequelSessionStorage
       :cookie_key  => ses_data[:cookie_key],
       :ses_key     => ses_data[:ses_key],
       :user_id     => ses_data[:user_id],
-      :ses_data    => ses_data_dump.to_sequel_blob,
+      :ses_data    => Sequel.blob( ses_data_dump ),
       :ses_timeout => ses_data[:timeout],
       :ses_stored  => Time.now.to_i
     )
@@ -195,7 +195,7 @@ class SequelSessionStorage
   def set_upload_data( upload_id, file_data )
     db_open
     @db[:rsence_uploads].filter(:id => upload_id).update( {
-      :file_data => file_data.to_sequel_blob,
+      :file_data => Sequel.blob( file_data ),
       :upload_done => true
     } )
     db_close
