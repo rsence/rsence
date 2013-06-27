@@ -1,0 +1,6 @@
+title: FileServe
+category: :system
+depends_on: :main
+description: |
+  FileServe serves files; by default the 'files' directory
+  of your project becomes mounted at '/files'.
