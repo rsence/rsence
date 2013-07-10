@@ -163,7 +163,7 @@ class ClientPkgBuild
       if File.exist?( src_files_gfx )
         Dir.entries( src_files_gfx ).each do |src_gfx_filename|
           src_file_gfx = File.join( src_files_gfx, src_gfx_filename )
-          if @gfx_formats.include?( src_file_gfx[-4..-1] )
+          if @gfx_formats.include?( src_file_gfx[-4..-1] ) or @gfx_formats.include?( src_file_gfx[-5..-1] )
             fstat = File.stat( src_file_gfx )
             theme_newest = fstat.mtime.to_f if fstat.mtime.to_f > theme_newest
             gfx_size += fstat.size
