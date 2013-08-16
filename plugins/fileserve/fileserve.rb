@@ -128,8 +128,8 @@ class FileServe < Servlet
     res['Last-Modified'] = file_mtime
     if range
       ( range_min, range_max ) = range
-      range_max = file_len if range_max.nil?
-      range_len = range_max - range_min
+      range_max = file_len - 1  if range_max.nil?
+      range_len = range_max - range_min + 1
       chunk_max = uri_opt( uri, :chunk_max )
       if range_len > chunk_max
         range_len = chunk_max
