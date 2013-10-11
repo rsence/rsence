@@ -66,7 +66,7 @@ RSence.GUIApp = HApplication.extend({
       _this.valueIds = _options.values;
       _this.values = {};
       for( i in _options.values ){
-        _this.values = _this.getValueById(i);
+        _this.values[i] = _this.getValueById(_options.values[i]);
       }
     }
 
