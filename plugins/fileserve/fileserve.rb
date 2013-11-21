@@ -119,7 +119,9 @@ class FileServe < Servlet
     file_path = uri2path( uri )
     fstat = File.stat( file_path )
     fh = File.open(file_path,'rb:binary')
-    if @@has_magic
+    if file_path.end_with?( '.ogg' ) or file_path.end_with?( '.oga' )
+      res['Content-Type'] = 'audio/ogg; codecs="vorbis"'
+    elsif @@has_magic
       res['Content-Type'] = MimeMagic.by_magic( fh )
     else
       res['Content-Type'] = uri_opt( uri, :content_type )
