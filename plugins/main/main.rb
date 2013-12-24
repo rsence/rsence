@@ -191,7 +191,11 @@ class MainPlugin < Plugin
       # built-in support for signing out, deletes the
       # server-side session and reloads the page
       if virtual_uri == '/sign_out'
-        resp_addr = @conf[:respond_address]
+        if msg.layout
+          resp_addr = msg.layout[:uri]
+        else
+          resp_addr = @conf[:respond_address]
+        end
         @plugins.delegate('sign_out',msg)
         msg.expire_session()
         msg.reply( [

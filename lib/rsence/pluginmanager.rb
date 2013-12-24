@@ -408,9 +408,9 @@ module RSence
         module_const = module_ns.const_get( module_const_name )
         if module_const.class == Class
           type = module_const.bundle_type
-          if [:Servlet, :Plugin, :GUIPlugin].include? type
+          if [:Servlet, :Plugin, :GUIPlugin, :MultiGUIPlugin].include? type
             bundle_inst = module_const.new( name, info, path, self )
-            bundle_inst.register( name ) if [ :Plugin, :GUIPlugin ].include?( type )
+            bundle_inst.register( name ) if [ :Plugin, :GUIPlugin, :MultiGUIPlugin ].include?( type )
             break
           else
             warn "Can't init class: #{module_const.to_s}"
