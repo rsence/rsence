@@ -42,9 +42,8 @@ module RSence
       end
 
       def select_gui( msg )
-        layout = msg.layout
-        if layout and @other_guis.key?( layout[:name] )
-          return @other_guis[ layout[:name] ]
+        if @other_guis.key?( msg.layout )
+          return @other_guis[ msg.layout ]
         else
           return @gui
         end
