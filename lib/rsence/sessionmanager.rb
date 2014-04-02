@@ -461,6 +461,8 @@ module RSence
       ## of the cookie, allows the browser to delete
       ## it, when it expires.
       ses_cookie_max_age = @config[:timeout_secs]
+      # IE not support Max-Age. So, have to send Expires, too.
+      ses_cookie_expires = CGI.rfc1123_date( Time.now + ses_cookie_max_age )
     
       ## Only match the handshaking address of rsence,
       ## prevents unnecessary cookie-juggling in sync's
@@ -477,6 +479,7 @@ module RSence
         "Path=#{ses_cookie_path}",
         "Port=#{server_port}",
         "Max-Age=#{ses_cookie_max_age}",
+        "Expires=#{ses_cookie_expires}",
         "Comment=#{ses_cookie_comment}",
         "Domain=#{ses_cookie_domain}"
       ]
