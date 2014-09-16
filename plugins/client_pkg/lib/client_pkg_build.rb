@@ -507,7 +507,7 @@ class ClientPkgBuild
       # unless @quiet
       #   print_stat( "#{theme_name}/html", @theme_sizes[theme_name][:html][0], @theme_sizes[theme_name][:html][1], theme_html_gz.bytesize )
       # end
-      unless @quiet
+      unless @quiet or @theme_sizes[theme_name].nil?
         # print_stat( "#{theme_name}/css", @theme_sizes[theme_name][:css][0], @theme_sizes[theme_name][:css][1], theme_css_template_data_gz.bytesize )
         print_stat( "#{theme_name}/gfx", @theme_sizes[theme_name][:gfx], @theme_sizes[theme_name][:gfx], @theme_sizes[theme_name][:gfx] )
         # @logger.log( '' )

@@ -205,7 +205,7 @@ module Common
   
   # Serves data based on get request. Is used automatically by +Broker+.
   def get_ticket( req, res, type=:img ) # :nodoc:
-    
+
     is_invalid = true
     
     if type == :img
@@ -233,7 +233,7 @@ module Common
         
       elsif @imgs[:by_id].include?(img_id)
         
-        (format,content_size_zero,img_data,ses_id) = @imgs[:by_id][img_id]
+        (format,content_size,img_data,ses_id) = @imgs[:by_id][img_id]
         
         # renders the Magick::Image object
         content = img_data.to_blob {
