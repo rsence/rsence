@@ -12,8 +12,8 @@ module Favicon
     
     res['Content-Type'] = favicon_data[0]
     res['Content-Length'] = favicon_data[1]
-    
     res['Date'] = httime( Time.now )
+    res['Expires'] = httime( Time.now + 604800 )
     res.body = favicon_data[2]
     
   end
