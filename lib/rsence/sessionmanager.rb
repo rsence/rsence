@@ -272,7 +272,7 @@ module RSence
 
         msg.error_msg( [
           "COMM.Transporter.stop = true;",
-          "setTimeout(function(){window.location.reload(true);},3000);"
+          "setTimeout(function(){window.location.reload(true);},1000);"
           # "COMM.Transporter.setInterruptAnim('Session failure, reloading in 3 seconds..','#039');",
           # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Reloading...');},2500);",
           # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 1 seconds..');},2000);",
