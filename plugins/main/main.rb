@@ -73,6 +73,7 @@ class MainPlugin < Plugin
     index_html.gsub!( '__CLIENT_REV__',    client_rev        )
     index_html.gsub!( '__CLIENT_HELLO__',  @bconf[:hello]    )
     index_html.gsub!( '__NOSCRIPT__',      @conf[:noscript]  )
+    index_html.gsub!( '__META__',          @conf[:meta]      )
     index_html.gsub!( '__BODY__',          @conf[:body]      )
     
     return index_html
