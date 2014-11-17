@@ -29,16 +29,10 @@ class MongoSessionStorage
     @conn = Mongo::Connection.new( conn[:host], conn[:port], {
       :pool_size => @config[:mongo][:pool_size],
       :pool_timeout => @config[:mongo][:pool_timeout],
-      :auths => [{
-        :username => conn[:username],
-        :password => conn[:password],
-        :db_name  => conn[:db]
-      }]
     } )
-    @conn.apply_saved_authentication
     @db = @conn.db( conn[:db] )
-    @db_auth = true # on current versions of Mongo, complains about the pool auths
-    # @db_auth = @db.authenticate( conn[:username], conn[:password], true )
+    @db_auth = @db.authenticate( conf[:username], conf[:password] )
+    @db_auth = true
   end
 
   # Checks, whether the string can be converted to BSON::ObjectId
