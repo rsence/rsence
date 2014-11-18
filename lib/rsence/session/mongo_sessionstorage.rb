@@ -31,7 +31,7 @@ class MongoSessionStorage
       :pool_timeout => @config[:mongo][:pool_timeout],
     } )
     @db = @conn.db( conn[:db] )
-    @db_auth = @db.authenticate( conf[:username], conf[:password] )
+    @db_auth = @db.authenticate( conn[:username], conn[:password] )
     @db_auth = true
   end
 
