@@ -1,6 +1,7 @@
 conf/local_conf.yaml
 var/*
 disabled
+client
 .DS_Store
 *.rbc
 *.gem

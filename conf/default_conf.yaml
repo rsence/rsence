@@ -43,6 +43,12 @@
   # The default language to use
   # * Used in user_info[:lang] as the default
   :lang: en
+
+  #
+  # The default theme for client
+  #
+  :default_theme: 'default'
+
   #
   # The settings for the main plugin
   :main_plugin:

@@ -61,9 +61,9 @@ class MainPlugin < Plugin
     @conf[:deps].each do |dep|
       deps_src += %{<script src="#{dep}" type="text/javascript"></script>}
     end
-    deps_src += %{<script src="__CLIENT_BASE__/js/#{@conf[:boot_lib]}.js"></script>}
+    deps_src += %{<script src="__CLIENT_BASE__/js/#{@conf[:boot_lib]}.js" type="text/javascript"></script>}
     @conf[:default_libs].each do |dep|
-      deps_src += %{<script src="__CLIENT_BASE__/js/#{dep}.js"></script>}
+      deps_src += %{<script src="__CLIENT_BASE__/js/#{dep}.js" type="text/javascript"></script>}
     end
     client_base = File.join(@bconf[:h],client_rev)
     
@@ -316,6 +316,7 @@ class MainPlugin < Plugin
     
     msg.reply read_js( 'main' )
 
+    msg.reply( "HThemeManager.currentTheme = '#{RSence.config[:default_theme]}'" )
     msg.reply("ELEM.setStyle(0,'background-color','#{::RSence.config[:main_plugin][:bg_color]}');")
     
     ## url_responder is bound in the client-space
