@@ -189,16 +189,9 @@ class MainPlugin < Plugin
       
       virtual_uri = ses[:url][1]
       
-      # built-in support for signing out, deletes the
-      # server-side session and reloads the page
+      # built-in support for signing out
       if virtual_uri == '/sign_out'
-        resp_addr = @conf[:respond_address]
-        @plugins.delegate('sign_out',msg)
-        msg.expire_session()
-        msg.reply( [
-          'COMM.Transporter.stop=true;',
-          "location.href=#{resp_addr.to_json};"
-        ].join('') )
+        call_sign_out( msg )
       end
       
     else
@@ -210,6 +203,18 @@ class MainPlugin < Plugin
     
   end
   
+  # deletes the server-side session and reloads the page
+  # If resp_addr is nil, client is redirect to base responder address
+  def call_sign_out( msg, resp_addr=nil )
+    resp_addr = @conf[:respond_address] unless resp_addr
+    @plugins.delegate( 'sign_out', msg )
+    msg.expire_session()
+    msg.reply( [
+      'COMM.Transporter.stop=true;',
+      "location.href=#{resp_addr.to_json};"
+    ].join('') )
+    true
+  end
   
   # Returns base url of browser (before the '#' sign)
   def url( msg )
