@@ -248,20 +248,26 @@
         :title: 'Invalid Session'
         :descr: 'Your session is invalid. Please reload the page to continue.'
         :uri:    '/'
-    #
-    # MongoDB-specific settings
-    :mongo:
-      #
-      # MongoDB Connection Pool Timeout:
-      :pool_timeout: 10 # seconds
-      #
-      # MongoDB Connection Pool Size:
-      :pool_size: 500 # amount of connections
   #
   # Database configuration
   :database:
-    # Session database storage string. Leave empty here to enable the wizard for storage.
+    # SQLite
     :ses_db: 'sqlite://db/ses.db'
+    # MongoDB
+    # :mongo:
+    #   :host: localhost
+    #   :port: 27017
+    #   :db_name: rsence_ses
+    #   :username: rsence
+    #   :password: 283N1ORI758dykD
+    #   :pool_timeout: 10 # seconds
+    #   :pool_size: 500 # amount of connections
+    #   :repl_enabled: false
+    #   :repl_name: rs1
+    #   :repl_members:
+    #     - 'mongodb1:27017'
+    #     - 'mongodb2:27017'
+    #     - 'mongodb3:27017'
 
   #
   # ValueManager settings

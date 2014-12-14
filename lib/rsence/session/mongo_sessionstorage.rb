@@ -2,36 +2,25 @@
 require 'mongo'
 
 # MongoSessionStorage is the SessionStorage backend for MongoDB
-# Authentication string format is strictly like this for now:
-#   mongodb://username:password@host:port/database
 class MongoSessionStorage
-  
-  # Poor-man's connection string parser:
-  def parse_db_uri
-    db_str = @db_uri.split('mongodb://')[1]
-    ( db_auth_str, db_conn_str ) = db_str.split('@')
-    ( db_username, db_password ) = db_auth_str.split(':')
-    ( db_host, db_port_name_str ) = db_conn_str.split(':')
-    ( db_port, db_name ) = db_port_name_str.split('/')
-    return {
-      :host => db_host,
-      :port => db_port,
-      :username => db_username,
-      :password => db_password,
-      :db => db_name
-    }
-  end
 
   # Opens database connection
   def db_open
-    # mongodb://rsence:2N74krTMURIpSr6Y91Hy@localhost:37035/rsence_sessions
-    conn = parse_db_uri
-    @conn = Mongo::Connection.new( conn[:host], conn[:port], {
-      :pool_size => @config[:mongo][:pool_size],
-      :pool_timeout => @config[:mongo][:pool_timeout],
-    } )
-    @db = @conn.db( conn[:db] )
-    @db_auth = @db.authenticate( conn[:username], conn[:password] )
+    conf = @db_params[:mongo]
+    if conf[:repl_enabled]
+      @conn = Mongo::MongoReplicaSetClient.new( conf[:repl_members], {
+        :name => conf[:repl_name],
+        :pool_size => conf[:pool_size],
+        :pool_timeout => conf[:pool_timeout]
+      } )
+    else
+      @conn = Mongo::Connection.new( conf[:host], conf[:port], {
+        :pool_size => conf[:pool_size],
+        :pool_timeout => conf[:pool_timeout],
+      } )
+    end
+    @db = @conn.db( conf[:db_name] )
+    @db_auth = @db.authenticate( conf[:username], conf[:password] )
     @db_auth = true
   end
 
