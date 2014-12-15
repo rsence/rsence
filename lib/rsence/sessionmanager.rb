@@ -443,8 +443,8 @@ module RSence
         return
       end
 
-      if req.header.has_key?( 'x-forwarded-port' )
-        server_port = req.header['x-forwarded-port']
+      if request.header.has_key?( 'x-forwarded-port' )
+        server_port = request.header['x-forwarded-port']
       else
         server_port = request.port
       end
