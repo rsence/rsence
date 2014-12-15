@@ -442,8 +442,12 @@ module RSence
         warn "Warning: Cookies won't be set for 'localhost'. Use '127.0.0.1' instead." if RSence.args[:debug]
         return
       end
-    
-      server_port = request.port
+
+      if req.header.has_key?( 'x-forwarded-port' )
+        server_port = req.header['x-forwarded-port']
+      else
+        server_port = request.port
+      end
     
       ## if the host address is a real domain
       ## (not just hostname or 'localhost'),
