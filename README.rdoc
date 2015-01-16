@@ -114,7 +114,7 @@ RSence comes in two varieties:
 To use "rsence-pre", install the "rsence-pre" gem and use the "rsence-pre" instead of "rsence" command-line tool.
 
 === Licensing and commercial support options
-* {file:LICENSE.txt *GPL*} version 3 by default.
+* {file:MIT-LICENSE.txt *MIT*}.
 * Riassence[http://riassence.com/] Inc. provides commercial support, custom licensing arrangements and various other services.
 
 === Community support
