@@ -10,6 +10,9 @@ These docs are somewhat outdated at the moment, and RSence needs rsnc.js cloned 
 * github.com/rsence/rsnc
 * git@rsence.org:rsnc.git
 
+== License
+* RSence is licensed under the MIT license
+
 
 == Introduction
 
@@ -113,9 +116,8 @@ RSence comes in two varieties:
 
 To use "rsence-pre", install the "rsence-pre" gem and use the "rsence-pre" instead of "rsence" command-line tool.
 
-=== Licensing and commercial support options
-* {file:MIT-LICENSE.txt *MIT*}.
-* Riassence[http://riassence.com/] Inc. provides commercial support, custom licensing arrangements and various other services.
+=== Commercial support options
+* Riassence[http://riassence.com/] Inc. provides commercial RSence support and various other services.
 
 === Community support
 * http://rsence.org/
