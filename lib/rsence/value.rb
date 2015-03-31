@@ -162,11 +162,12 @@ module RSence
         @members[plugin_name].each do |method_name|
           if @meta[:type] == 1
             data = @data
-            for item in data
-              @data = item
-              msg.plugins.run_plugin( plugin_name, method_name, msg, self )
+            if data
+              for item in data
+                @data = item
+                msg.plugins.run_plugin( plugin_name, method_name, msg, self )
+              end
             end
-            @data = data
           else
             invalid_count += 1 unless msg.plugins.run_plugin( plugin_name, method_name, msg, self )
           end
