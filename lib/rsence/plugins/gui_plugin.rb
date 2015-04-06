@@ -215,9 +215,12 @@ module RSence
       end
       
       # @private calls uninstall_client_pkgs, if a 'client_pkgs.yaml' file was loaded
+      # and transporter is online
       def close
         super
-        uninstall_client_pkgs if @client_pkgs
+        if RSence.transporter.online? and @client_pkgs
+          uninstall_client_pkgs
+        end
       end
       
       # @private Returns structured, processed gui tree to the caller.

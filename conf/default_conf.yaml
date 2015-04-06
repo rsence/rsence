@@ -36,6 +36,9 @@
     #
     # Default HTML <body> contents
     :body: ''
+    #
+    # Default HTML meta tags
+    :meta: ''
   #
   # The default language to use
   # * Used in user_info[:lang] as the default

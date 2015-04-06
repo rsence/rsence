@@ -119,7 +119,9 @@ class FileServe < Servlet
     file_path = uri2path( uri )
     fstat = File.stat( file_path )
     fh = File.open(file_path,'rb:binary')
-    if @@has_magic
+    if file_path.end_with?( '.ogg' ) or file_path.end_with?( '.oga' )
+      res['Content-Type'] = 'audio/ogg; codecs="vorbis"'
+    elsif @@has_magic
       res['Content-Type'] = MimeMagic.by_magic( fh )
     else
       res['Content-Type'] = uri_opt( uri, :content_type )
@@ -128,8 +130,8 @@ class FileServe < Servlet
     res['Last-Modified'] = file_mtime
     if range
       ( range_min, range_max ) = range
-      range_max = file_len if range_max.nil?
-      range_len = range_max - range_min
+      range_max = file_len - 1  if range_max.nil?
+      range_len = range_max - range_min + 1
       chunk_max = uri_opt( uri, :chunk_max )
       if range_len > chunk_max
         range_len = chunk_max

@@ -272,11 +272,11 @@ module RSence
 
         msg.error_msg( [
           "COMM.Transporter.stop = true;",
-          "setTimeout(function(){window.location.reload(true);},3000);",
-          "COMM.Transporter.setInterruptAnim('Session failure, reloading in 3 seconds..','#039');",
-          "setTimeout(function(){COMM.Transporter.setInterruptAnim('Reloading...');},2500);",
-          "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 1 seconds..');},2000);",
-          "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 2 seconds..');},1000);",
+          "setTimeout(function(){window.location.reload(true);},1000);"
+          # "COMM.Transporter.setInterruptAnim('Session failure, reloading in 3 seconds..','#039');",
+          # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Reloading...');},2500);",
+          # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 1 seconds..');},2000);",
+          # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 2 seconds..');},1000);",
         ] )
         return [ false, false ]
       end
@@ -293,9 +293,9 @@ module RSence
                                   descr = 'No issue description given.',
                                   uri = RSence.config[:index_html][:respond_address] )
       msg.error_msg( [
-        "jsLoader.load('default_theme');",
-        "jsLoader.load('controls');",
-        "jsLoader.load('servermessage');",
+        # "jsLoader.load('default_theme');",
+        # "jsLoader.load('controls');",
+        # "jsLoader.load('servermessage');",
         "ReloadApp.nu( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
       ] )
     end
@@ -461,6 +461,8 @@ module RSence
       ## of the cookie, allows the browser to delete
       ## it, when it expires.
       ses_cookie_max_age = @config[:timeout_secs]
+      # IE not support Max-Age. So, have to send Expires, too.
+      ses_cookie_expires = CGI.rfc1123_date( Time.now + ses_cookie_max_age )
     
       ## Only match the handshaking address of rsence,
       ## prevents unnecessary cookie-juggling in sync's
@@ -477,6 +479,7 @@ module RSence
         "Path=#{ses_cookie_path}",
         "Port=#{server_port}",
         "Max-Age=#{ses_cookie_max_age}",
+        "Expires=#{ses_cookie_expires}",
         "Comment=#{ses_cookie_comment}",
         "Domain=#{ses_cookie_domain}"
       ]

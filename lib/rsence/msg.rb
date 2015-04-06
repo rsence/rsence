@@ -179,6 +179,11 @@ module RSence
       uinfo[:lang]
     end
 
+    def layout
+      @session[:layout] = false unless @session.has_key?(:layout)
+      @session[:layout]
+    end
+
     # @private used for automatic reload of page, when the plugins have been changed.
     def refresh_page?( plugin_incr )
       if plugin_incr != @session[:plugin_incr]
@@ -208,6 +213,10 @@ module RSence
     # @return [nil]
     def lang=(lang)
       @session[:user_info][:lang] = lang
+    end
+
+    def layout=(layout)
+      @session[:layout] = layout
     end
 
     # Returns the session id

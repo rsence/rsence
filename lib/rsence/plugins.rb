@@ -24,6 +24,7 @@ require 'rsence/plugins/plugin_plugins'
 # Templates for the main plugin classes.
 require 'rsence/plugins/plugin'
 require 'rsence/plugins/gui_plugin'
+require 'rsence/plugins/multi_gui_plugin'
 require 'rsence/plugins/servlet'
 
 
@@ -63,7 +64,22 @@ module RSence
         klass
       end
     end
-    
+
+    # Creates the runtime MultiGUIPlugin class from MultiGUIPlugin__
+    # @return [MultiGUIPlugin__]
+    def self.MultiGUIPlugin
+      lambda do |ns|
+        klass = Class.new( MultiGUIPlugin__ ) do
+          def self.ns=(ns)
+            define_method( :bundle_info ) do
+              ns.bundle_info
+            end
+          end
+        end
+        klass.ns = ns if ns
+        klass
+      end
+    end    
     
     # Creates the runtime Servlet class from Servlet__
     # @return [Servlet__]
@@ -123,6 +139,8 @@ module RSence
               return Plugins.Plugin.call( self )
             elsif name == :GUIPlugin
               return Plugins.GUIPlugin.call( self )
+            elsif name == :MultiGUIPlugin
+              return Plugins.MultiGUIPlugin.call( self )
             else
               warn "Known const missing: #{name.inspect}"
               super
