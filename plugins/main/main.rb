@@ -211,6 +211,7 @@ class MainPlugin < Plugin
     msg.expire_session()
     msg.reply( [
       'COMM.Transporter.stop=true;',
+      "location.replace('/#');",
       "location.href=#{resp_addr.to_json};"
     ].join('') )
     true
