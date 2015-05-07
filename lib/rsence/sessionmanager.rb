@@ -269,14 +269,9 @@ module RSence
         return [false, false]
 
       else
-
         msg.error_msg( [
           "COMM.Transporter.stop = true;",
           "setTimeout(function(){window.location.reload(true);},1000);"
-          # "COMM.Transporter.setInterruptAnim('Session failure, reloading in 3 seconds..','#039');",
-          # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Reloading...');},2500);",
-          # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 1 seconds..');},2000);",
-          # "setTimeout(function(){COMM.Transporter.setInterruptAnim('Session failure, reloading in 2 seconds..');},1000);",
         ] )
         return [ false, false ]
       end
@@ -293,10 +288,8 @@ module RSence
                                   descr = 'No issue description given.',
                                   uri = RSence.config[:index_html][:respond_address] )
       msg.error_msg( [
-        # "jsLoader.load('default_theme');",
-        # "jsLoader.load('controls');",
-        # "jsLoader.load('servermessage');",
-        "ReloadApp.nu( #{js_str(title)}, #{js_str(descr)}, #{js_str(uri)}  );"
+        "COMM.Transporter.stop = true;",
+        "setTimeout(function(){window.location.reload(true);},1000);"
       ] )
     end
 
