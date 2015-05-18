@@ -166,7 +166,19 @@ class MainPlugin < Plugin
     @plugins.sessions.expire_ses_by_req( req, res )
   end
 
+  def set_pound( msg, pound )
+    ses = get_ses( msg )
+    msg.reply( %{window.location.href='/##{pound}';} )
+    ses[:url] = [ ses[:url][0], pound ]
+    true
+  end
 
+  def replace_pound( msg, pound )
+    ses = get_ses( msg )
+    msg.reply( %{window.location.replace('/##{pound}');} )
+    ses[:url] = [ ses[:url][0], pound ]
+    true
+  end
 
   ### Features accessible from other plugins:
 
@@ -176,6 +188,7 @@ class MainPlugin < Plugin
   # Client-side support is included in js/url_responder.js
   #
   # Also allows virtual-host -like behavior if utilized.
+
   def url_responder(msg,location_href)
 
     ses = get_ses( msg )
@@ -197,7 +210,6 @@ class MainPlugin < Plugin
     else
       ses[:url] = [location_href.data,nil]
     end
-
     # url_responder always accepts locations
     return true
 

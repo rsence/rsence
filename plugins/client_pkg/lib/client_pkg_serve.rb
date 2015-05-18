@@ -131,6 +131,7 @@ module ClientPkgServe
         'png'  => 'image/png',
         'jpg'  => 'image/jpeg',
         'gif'  => 'image/gif',
+        'svg'  => 'image/svg+xml',
         'swf'  => 'application/x-shockwave-flash'
       }[file_ext]
       response['Last-Modified'] = @client_cache.last_modified
