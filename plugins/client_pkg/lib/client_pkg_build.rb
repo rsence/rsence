@@ -757,11 +757,13 @@ class ClientPkgBuild
   end
 
   def add_package( pkg_name, pkg_items )
-    if @packages.has_key?( pkg_name )
-      warn "Package #{pkg_name} already exists, ignoring."
-    else
-      @packages[ pkg_name ] = pkg_items
-      @package_names = @packages.keys
+    if pkg_items.class == Array
+      if @packages.has_key?( pkg_name )
+        warn "Package #{pkg_name} already exists, ignoring."
+      else
+        @packages[ pkg_name ] = pkg_items
+        @package_names = @packages.keys
+      end
     end
   end
   def add_packages( packages )
@@ -855,10 +857,13 @@ class ClientPkgBuild
     @theme_names = config[:theme_names]
 
     # pkg_info is supposed to be a hash of js package name definitions by pkg_name
-    @packages = config[:packages]
+    @packages = {}
 
     # packages is supposed to be a list of js package name definitions to include
-    @package_names = @packages.keys
+    @package_names = []
+
+    # add packages
+    add_packages( config[:packages] )
 
     # reserved_names is supposed to be a list of reserved words (words that shouldn't be compressed)
     @reserved_names = config[:reserved_names]

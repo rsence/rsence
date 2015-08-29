@@ -32,13 +32,13 @@ module RSence
       # Extended {#open}, delegates calls to the sub-plugins.
       def open
         super
-        @plugin_plugins.delegate(:open)
+        # @plugin_plugins.delegate(:open)
       end
       
       # Extended {#close}, delegates calls to the sub-plugins.
       def close
         super
-        @plugin_plugins.delegate(:close)
+        # @plugin_plugins.delegate(:close)
         @plugin_plugins.shutdown
       end
       

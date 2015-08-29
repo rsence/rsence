@@ -50,6 +50,26 @@ module RSence
       end
     end
 
+    # Combines local config files to conf
+    def config_merge( args, conf, config_file_paths )
+      # Loads the configuration files
+      config_file_paths.each do |config_file_path|
+        if File.exists? config_file_path and File.file? config_file_path
+          if config_file_path.end_with? '.yaml'
+            puts "loading config file: #{config_file_path}" if args[:verbose]
+            local_conf = YAML.load( File.read( config_file_path ) )
+            unless local_conf.class == Hash
+              warn "invalid configuration file: #{config_file_path.inspect}"
+              next
+            end
+            hash_merge( conf, local_conf )
+          else
+            warn "Only Yaml configuration files are supported."
+          end
+        end
+      end
+    end
+
     # @param args A parsed structure of the command-line arguments.
     # @param dont_expand_path Is reserved for special cases, when Configuration is used without running RSence.
     def initialize( args, dont_expand_path=false )
@@ -219,4 +239,3 @@ module RSence
 
   end
 end
-
