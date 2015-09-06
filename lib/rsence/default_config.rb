@@ -197,6 +197,8 @@ module RSence
           # broker_key      # default_uri
           # The default address of built javascript and theme packages
         [ :h,               File.join(config[:base_url],'H/') ],
+          # The default static content address of build javascript and theme packages
+        [ :s,               File.join(config[:static_url],config[:base_url],'H/') ],
           # The default address of the ticketserve :img -category
         [ :i,               File.join(config[:base_url],'i/') ],
           # The default address of the ticketserve :rsrc -category

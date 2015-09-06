@@ -3,6 +3,11 @@
   #
   # The :base_url specifies the prefix for all default http responders.
   :base_url: '/'
+
+  # The :static url specifies the different host for static content like
+  # Java Script and Theme Files.
+  # Example: '//static.example.com'
+  :static_url: ''
   #
   # This setting defines if requests should be gzip-compressed or not.
   # This is a trade-off between cpu cycles used and network bandwidth used.

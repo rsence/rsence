@@ -168,14 +168,14 @@ class MainPlugin < Plugin
 
   def set_pound( msg, pound )
     ses = get_ses( msg )
-    msg.reply( %{window.location.href='/##{pound}';} )
+    msg.reply( %{window.location.href='#{RSence.config[:base_url]}##{pound}';} )
     ses[:url] = [ ses[:url][0], pound ]
     true
   end
 
   def replace_pound( msg, pound )
     ses = get_ses( msg )
-    msg.reply( %{window.location.replace('/##{pound}');} )
+    msg.reply( %{window.location.replace('#{RSence.config[:base_url]}##{pound}');} )
     ses[:url] = [ ses[:url][0], pound ]
     true
   end
@@ -223,7 +223,7 @@ class MainPlugin < Plugin
     msg.expire_session()
     msg.reply( [
       'COMM.Transporter.stop=true;',
-      "location.replace('/#');",
+      "location.replace('#{RSence.config[:base_url]}#');",
       "location.href=#{resp_addr.to_json};"
     ].join('') )
     true
