@@ -8,6 +8,11 @@
   # Java Script and Theme Files.
   # Example: '//static.example.com'
   :static_url: ''
+
+  # The :access_control_allow_origin specifies domain where static content
+  # is allowed access from. This should use with :static_url.
+  # The false mean not enabled.
+  :access_control_allow_origin: false
   #
   # This setting defines if requests should be gzip-compressed or not.
   # This is a trade-off between cpu cycles used and network bandwidth used.

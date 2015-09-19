@@ -30,6 +30,10 @@ module ClientPkgServe
     else
       response['Cache-Control'] = 'no-cache'
     end
+    if RSence.config[:access_control_allow_origin]
+      response['Access-Control-Allow-Origin'] = RSence.config[:access_control_allow_origin]
+      response['Vary'] = 'Accept-Encoding'
+    end
   end
 
   def check_ua( request )
@@ -113,6 +117,9 @@ module ClientPkgServe
     # checks for theme file
     has_theme_file = ( has_theme_part and @client_cache.theme_cache[theme_name][theme_part].has_key?( req_file ) )
 
+    if RSence.config[:access_control_allow_origin]
+      response['Access-Control-Allow-Origin'] = RSence.config[:access_control_allow_origin]
+    end
     if not has_theme
       response.status = 404
       response.body   = '404 - Theme Not Found'
