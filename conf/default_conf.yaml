@@ -44,11 +44,18 @@
     # Default additional libraries to use:
     :default_libs: []
     #
+    # Attributes added in the html-element
+    :html_attrs: []
+    #
+    # Default HTML meta tags
+    :meta: []
+    #
     # Default HTML <body> contents
     :body: ''
     #
-    # Default HTML meta tags
-    :meta: ''
+    # Default HTML <body> styles
+    :body_styles: 'body{margin:0;padding:0;}'
+
   #
   # The default language to use
   # * Used in user_info[:lang] as the default

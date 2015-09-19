@@ -67,12 +67,19 @@ class MainPlugin < Plugin
     end
     client_base = File.join(@bconf[:h],client_rev)
 
+    html_attrs = ''
+    if @conf[:html_attrs].class == Hash
+      @conf[:html_attrs].each do|key,value|
+        html_attrs += %{ #{key}="#{value}"}
+      end
+    end
     index_html.gsub!( '__SCRIPT_DEPS__',   deps_src          )
     index_html.gsub!( '__CLIENT_BASE__',   client_base       )
     index_html.gsub!( '__DEFAULT_TITLE__', @conf[:title]     )
     index_html.gsub!( '__CLIENT_REV__',    client_rev        )
     index_html.gsub!( '__CLIENT_HELLO__',  @bconf[:hello]    )
     index_html.gsub!( '__NOSCRIPT__',      @conf[:noscript]  )
+    index_html.gsub!( '__HTML_ATTRS__',    html_attrs        )
     index_html.gsub!( '__META__',          @conf[:meta]      )
     index_html.gsub!( '__BODY__',          @conf[:body]      )
 
