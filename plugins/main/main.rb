@@ -148,10 +148,9 @@ class MainPlugin < Plugin
     index_html = render_index_html
 
     response.status = 200
-
     response['Content-Type'] = 'text/html; charset=UTF-8'
     response['Date'] = httime( Time.now )
-    response['Server'] = 'RSence'
+    response['Server'] = RSence.config[:http_server][:name]
     response['Cache-Control'] = 'no-cache'
 
     if support_gzip( req.header )

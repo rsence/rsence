@@ -48,7 +48,8 @@
     :html_attrs: []
     #
     # Default HTML meta tags
-    :meta: []
+    :meta:
+      - <meta charset="UTF-8">
     #
     # Default HTML <body> contents
     :body: ''
@@ -157,6 +158,9 @@
   #
   # Web server-related settings:
   :http_server:
+    #
+    # Name of the server. Added to response header.
+    :name: RSence
     #
     # Simulate network latency. Good for testing how your
     # app behaves with laggy connections.

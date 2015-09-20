@@ -34,7 +34,7 @@ module RSence
       @status = 200
       @header = {
         'Content-Type' => 'text/plain',
-        'Server' => 'RSence'
+        'Server' => RSence.config[:http_server][:name]
       }
     end
     def body=(body_data)
