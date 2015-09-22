@@ -100,7 +100,7 @@ class FileServe < Servlet
   end
 
   # @private Checks if a uri and method combination matches.
-  def match( uri, method )
+  def match( req, uri, method )
     return has_file? uri if method == :get
     false
   end

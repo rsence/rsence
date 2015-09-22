@@ -64,7 +64,7 @@ module RSence
       # Extend to return true for the certain uri and request_type conditions your servlet code handles.
       #
       # @example Handles :get requests that begin with /foo
-      #   def match( uri, request_type )
+      #   def match( req, uri, request_type )
       #     request_type == :get and uri.start_with?( '/foo' )
       #   end
       #
@@ -73,7 +73,7 @@ module RSence
       #
       # @return [true] to match
       # @return [false] to not match. Returns false to everything, if not extended.
-      def match( uri, request_type=:get ); false; end
+      def match( req, uri, request_type=:get ); false; end
       alias match? match
       
       # If matched, returns score where lower is better. Score is needed for priority sorting, when several Servlet's {#match} are returning true for the same request.

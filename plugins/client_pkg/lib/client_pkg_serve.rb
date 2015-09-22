@@ -4,7 +4,7 @@ module ClientPkgServe
     ::RSence.config[:broker_urls]
   end
 
-  def match( uri, request_type )
+  def match( req, uri, request_type )
     uri.match( /^#{broker_urls[:h]}/ )
   end
 

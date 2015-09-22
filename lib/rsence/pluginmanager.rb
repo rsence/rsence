@@ -175,10 +175,10 @@ module RSence
     end
     
     # Search servlets that match the +uri+ and +req_type+
-    def match_servlet_uri( uri, req_type=:get )
+    def match_servlet_uri( req, uri, req_type=:get )
       match_score = {}
       @servlets.each do | servlet_name |
-        if call( servlet_name, :match, uri, req_type )
+        if call( servlet_name, :match, req, uri, req_type )
           score = call( servlet_name, :score )
           match_score[ score ] = [] unless match_score.has_key? score
           match_score[ score ].push( servlet_name )
@@ -209,7 +209,7 @@ module RSence
     # the highest score.
     def match_servlet( req_type, req, resp, session )
       req_uri = req.fullpath
-      matches_order = match_servlet_uri( req_uri, req_type )
+      matches_order = match_servlet_uri( req, req_uri, req_type )
       return false unless matches_order
       matches_order.each do |servlet_name|
         begin

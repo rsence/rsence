@@ -55,7 +55,7 @@ class TicketPlugin < Plugin
   end
   
   # @private Implements this part of the {RSence::Plugins::Servlet__ Servlet} API on a plugin to match the {#broker_urls}
-  def match( uri, request_type )
+  def match( req, uri, request_type )
     if request_type == :post
       upload_match = uri.start_with?( broker_urls[:u] + '/')   
       return true if upload_match
