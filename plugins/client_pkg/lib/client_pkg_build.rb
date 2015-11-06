@@ -345,15 +345,15 @@ class ClientPkgBuild
               save_coffee_cache( src_path, src_timestamp, js_data )
             rescue CoffeeScript::CompilationError, ExecJS::RuntimeError => e
               if has_js
-                warn "CoffeeScript Compilation failure #1: #{e.inspect}"
+                warn "CoffeeScript Compilation failure #1: #{e.inspect}, src: #{src_path}"
                 js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead.' );}
                 js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
               else
-                warn "CoffeeScript Compilation failure #2: #{e.inspect}"
+                warn "CoffeeScript Compilation failure #2: #{e.inspect}, src: #{src_path}"
                 js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}' );}
               end
             rescue => e
-              warn "CoffeeScript Compilation failure #3: #{e.inspect}"
+              warn "CoffeeScript Compilation failure #3: #{e.inspect}, src: #{src_path}"
               js_data = %{console.log( 'WARNING CoffeeScript complilation failed for source file #{src_path.to_json}' );}
             end
           end
