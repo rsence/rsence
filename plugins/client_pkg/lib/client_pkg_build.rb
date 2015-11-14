@@ -274,7 +274,7 @@ class ClientPkgBuild
     coffee_path = Pathname.new( src_path )
     env_path = Pathname.new( RSence.env_path )
     rel_path = coffee_path.relative_path_from( env_path )
-    cache_path = env_path.join( 'js_cache' )
+    cache_path = env_path.join( '.js_cache' )
     js_path = cache_path.join( rel_path )
     js_path.to_s
   end
