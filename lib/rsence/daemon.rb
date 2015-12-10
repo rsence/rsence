@@ -119,7 +119,7 @@ module RSence
         daemon.info
         write_signal_response( daemon, RSence.info_signal_name )
       end
-      ['INT', 'TERM', 'KILL'].each do | signal |
+      ['INT', 'TERM'].each do | signal |
         Signal.trap( signal ) do
           puts "RSence killed with signal #{signal.inspect}" if RSence.args[:verbose]
           daemon.usr1

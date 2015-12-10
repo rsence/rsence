@@ -290,7 +290,7 @@
       :addresses_or_uri: [ 'localhost:27017' ]
       :options:
         :database: rsence_ses
-        :username: rsence
+        :user: rsence
         :password: 283N1ORI758dykD
         :connect_timeout: 10 # seconds
         :max_pool_size: 500 # amount of connections
