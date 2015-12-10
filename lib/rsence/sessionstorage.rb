@@ -4,7 +4,7 @@ module RSence
   ## HValue class for session restoration
   require 'rsence/value'
 
-  if RSence.config[:database].key?( :mongo )
+  if RSence.config[:database][:type] == 'mongo'
     require 'rsence/session/mongo_sessionstorage'
     SessionBackend = MongoSessionStorage
   else
@@ -40,7 +40,7 @@ module RSence
       ## Disposable keys (new ses_key each request)
       @config = RSence.config[:session_conf]
       @db_params = RSence.config[:database]
-      @db_uri = @db_params[:ses_db]
+      @db_uri = @db_params[:sqlite]
 
       if db_test
         @db_avail = true

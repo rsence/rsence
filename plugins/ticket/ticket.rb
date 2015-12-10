@@ -120,6 +120,7 @@ class TicketPlugin < Plugin
   def init # :nodoc:
     super
     @ticketserve = TicketServe.new
+    @upload_id = 0
   end
 
   def open

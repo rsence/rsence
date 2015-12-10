@@ -176,10 +176,10 @@ module RSence
       end
 
       # Check database path for sqlite databases.
-      if config[:database].key?( :ses_db ) and not dont_expand_path
-        if config[:database][:ses_db].start_with?('sqlite://')
-          db_url = File.expand_path( config[:database][:ses_db].split('sqlite://')[1], args[:env_path] )
-          config[:database][:ses_db] = "sqlite://#{db_url}"
+      if config[:database].key?( :sqlite ) and not dont_expand_path
+        if config[:database][:type] == 'sqlite'
+          db_url = File.expand_path( config[:database][:sqlite].split('sqlite://')[1], args[:env_path] )
+          config[:database][:sqlite] = "sqlite://#{db_url}"
         end
       end
 

@@ -7,20 +7,8 @@ class MongoSessionStorage
   # Opens database connection
   def db_open
     conf = @db_params[:mongo]
-    if conf[:repl_enabled]
-      @conn = Mongo::MongoReplicaSetClient.new( conf[:repl_members], {
-        :name => conf[:repl_name],
-        :pool_size => conf[:pool_size],
-        :pool_timeout => conf[:pool_timeout]
-      } )
-    else
-      @conn = Mongo::Connection.new( conf[:host], conf[:port], {
-        :pool_size => conf[:pool_size],
-        :pool_timeout => conf[:pool_timeout],
-      } )
-    end
-    @db = @conn.db( conf[:db_name] )
-    @db_auth = @db.authenticate( conf[:username], conf[:password] )
+    conn = Mongo::Client.new( conf[:addresses_or_uri], conf[:options] )
+    @db = conn.database
     @db_auth = true
   end
 
@@ -78,7 +66,7 @@ class MongoSessionStorage
         remove_session_data( ses_id )
       else
         begin
-          ses_data = Marshal.load( ses_data_bin.to_s )
+          ses_data = Marshal.load( ses_data_bin.data.to_s )
         rescue => e
           warn "Unable to restore session #{ses_id}"
           remove_session_data( ses_id )
@@ -95,12 +83,12 @@ class MongoSessionStorage
     else
       user_id = ses_data[:user_id]
     end
-    ses_id = @ses_coll.insert({
+    ses_id = @ses_coll.insert_one({
       'cookie_key'  => ses_data[:cookie_key],
       'ses_key'     => ses_data[:ses_key],
       'ses_timeout' => ses_data[:ses_timeout],
       'user_id'     => user_id
-    })
+    }).inserted_id
     return ses_id.to_s
   end
 
@@ -113,7 +101,7 @@ class MongoSessionStorage
       user_id = ses_data[:user_id]
     end
     ses_data_bin = BSON::Binary.new( Marshal.dump( ses_data ) )
-    @ses_coll.update({'_id' => ses_id}, {'$set' => {
+    @ses_coll.update_one({'_id' => ses_id}, {'$set' => {
       'cookie_key'  => ses_data[:cookie_key],
       'ses_key'     => ses_data[:ses_key],
       'user_id'     => user_id,
@@ -126,14 +114,14 @@ class MongoSessionStorage
   # Removes session data of a session
   def remove_session_data( ses_id )
     ses_id = bson_id( ses_id )
-    @ses_coll.remove({'_id' => ses_id})
-    @up_coll.remove({'ses_id' => ses_id})
+    @ses_coll.delete_one({'_id' => ses_id})
+    @up_coll.delete_many({'ses_id' => ses_id})
   end
 
   # Removes all session data
   def remove_all_session_data
-    @ses_coll.remove
-    @up_coll.remove
+    @ses_coll.delete_many
+    @up_coll.delete_many
   end
 
   # Creates upload, returns its id as string
@@ -144,7 +132,7 @@ class MongoSessionStorage
     else
       ticket_id = data[:ticket_id]
     end
-    return @up_coll.insert({
+    return @up_coll.insert_one({
       'ses_id'      => ses_id,
       'ticket_id'   => ticket_id,
       'upload_date' => data[:upload_date],
@@ -153,13 +141,13 @@ class MongoSessionStorage
       'file_size'   => data[:file_size],
       'file_mime'   => data[:file_mime],
       'file_data'   => BSON::Binary.new( data[:file_data] )
-    }).to_s
+    }).inserted_id.to_s
   end
 
   # Sets upload data
   def set_upload_data( upload_id, file_data )
     upload_id = bson_id( upload_id )
-    @up_coll.update({'_id' => upload_id}, { '$set' => {
+    @up_coll.update_one({'_id' => upload_id}, { '$set' => {
       'file_data'   => BSON::Binary.new( file_data ),
       'upload_done' => true
     }})
@@ -168,27 +156,38 @@ class MongoSessionStorage
   # Gets upload data
   def get_upload_data( upload_id )
     upload_id = bson_id( upload_id )
-    up_data = @up_coll.find_one({ '_id' => upload_id }, {
-      :fields => [ 'upload_date', 'upload_done', 'file_name',
-                   'file_size', 'file_mime', 'file_data' ]
-    })
+    up_data = @up_coll.find( { '_id' => upload_id }, {
+      :projection => {
+        'upload_date' => 1,
+        'upload_done' => 1,
+        'file_name' => 1,
+        'file_size' => 1,
+        'file_mime' => 1,
+        'file_data' => 1
+      }
+    }).first
     return {
       :upload_date => up_data['upload_date'],
       :upload_done => up_data['upload_done'],
       :file_name => up_data['file_name'],
       :file_size => up_data['file_size'],
       :file_mime => up_data['file_mime'],
-      :file_data => up_data['file_data'].to_s
+      :file_data => up_data['file_data'].data.to_s
     }
   end
 
   # Gets upload metadata only
   def get_upload_meta( upload_id )
     upload_id = bson_id( upload_id )
-    up_data = @up_coll.find_one({ '_id' => upload_id }, {
-      :fields => [ 'upload_date', 'upload_done', 'file_name',
-                   'file_size', 'file_mime' ]
-    })
+    up_data = @up_coll.find( { '_id' => upload_id }, {
+      :projection => {
+        'upload_date' => 1,
+        'upload_done' => 1,
+        'file_name' => 1,
+        'file_size' => 1,
+        'file_mime' => 1
+      }
+    }).first
     return {
       :upload_date => up_data['upload_date'],
       :upload_done => up_data['upload_done'],
@@ -202,7 +201,7 @@ class MongoSessionStorage
   # Deletes upload by id
   def del_upload( upload_id )
     upload_id = bson_id( upload_id )
-    @up_coll.remove( { '_id' => upload_id } )
+    @up_coll.delete_one( { '_id' => upload_id } )
   end
 
   # Deletes upload by ticket_id and ses_id
@@ -217,7 +216,7 @@ class MongoSessionStorage
     else
       ticket_id = ticket_id
     end
-    @up_coll.remove( { 'ses_id' => ses_id } ) if ses_id
-    @up_coll.remove( { 'ticket_id' => ticket_id } ) if ticket_id
+    @up_coll.delete_one( { 'ses_id' => ses_id } ) if ses_id
+    @up_coll.delete_one( { 'ticket_id' => ticket_id } ) if ticket_id
   end
 end

@@ -168,7 +168,7 @@
     
     Title:       <%%= config[:index_html][:title] %>
     
-    Database:    <%%= config[:database][:ses_db] %>
+    Database:    <%%= config[:database][:sqlite] %>
     
     HTTP Server:
       Address:    <%%= config[:http_server][:bind_address] %>
