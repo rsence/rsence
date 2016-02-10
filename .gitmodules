@@ -1,4 +1,0 @@
-[submodule "client"]
-	path = client
-	url = git@gitlab.coach4pro.com:web-application-group/rsence-client.git
-	branch = master
