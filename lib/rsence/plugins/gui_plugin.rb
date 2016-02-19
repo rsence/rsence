@@ -116,7 +116,6 @@ module RSence
           else
             packages = false
           end
-
           if packages
             client_pkg.add_packages( packages )
             @client_pkgs[:packages] = packages

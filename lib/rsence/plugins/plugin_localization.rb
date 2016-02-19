@@ -135,11 +135,11 @@ module RSence
         if @localized_strings.has_key?( lang )
           search_obj = @localized_strings[lang]
         elsif lang.length == 5 and lang[2] == '-' and @localized_strings.has_key?( lang[0..1] )
-          warn "Warning in #{bundle_path} #localized_strings: No '#{lang}' language, using variant '#{lang[0..1]}' instead" if RSence.args[:verbose]
+          # warn "Warning in #{bundle_path} #localized_strings: No '#{lang}' language, using variant '#{lang[0..1]}' instead" if RSence.args[:verbose]
           lang = lang[0..1]
           search_obj = @localized_strings[lang]
         elsif @localized_strings.has_key?( default_lang )
-          warn "Warning in #{bundle_path} #localized_strings: No '#{lang}' language, using default '#{default_lang}' instead" if RSence.args[:verbose]
+          # warn "Warning in #{bundle_path} #localized_strings: No '#{lang}' language, using default '#{default_lang}' instead" if RSence.args[:verbose]
           search_obj = @localized_strings[lang]
         else
           warn "Error in #{bundle_path} #localized_strings: No '#{lang}' language, no default '#{default_lang}' either"

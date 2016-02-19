@@ -162,11 +162,12 @@ module RSence
         @members[plugin_name].each do |method_name|
           if @meta[:type] == 1
             data = @data
-            for item in data
-              @data = item
-              msg.plugins.run_plugin( plugin_name, method_name, msg, self )
+            if data
+              for item in data
+                @data = item
+                msg.plugins.run_plugin( plugin_name, method_name, msg, self )
+              end
             end
-            @data = data
           else
             invalid_count += 1 unless msg.plugins.run_plugin( plugin_name, method_name, msg, self )
           end
@@ -181,7 +182,7 @@ module RSence
     # @private Handle updates from the client.
     def from_client( msg, data )
       # only process changes, if different from the one already stored.
-      if @data != data
+      if @data != data or @meta[:type] == 1
 
         # puts "data sync from client: #{@data.inspect} -> #{data.inspect} (#{@meta[:name]})"
 
@@ -214,8 +215,11 @@ module RSence
     # @param [#to_json] data Any data that can be mapped to JSON and handled by the client.
     # @param [Boolean] dont_tell_client Doesn't notify the client about the change, if true.
     def set( msg, data, dont_tell_client=false )
-
-      @data   = data
+      if @meta[:type] == 1
+        @data = nil
+      else
+        @data = data
+      end
 
       # won't tell the client about the change, usually not needed
       unless dont_tell_client
@@ -249,7 +253,9 @@ module RSence
 
     # @private Tell the client that the value changed.
     def to_client( msg )
-      if @meta[:type] == 2
+      if @meta[:type] == 1
+        data = nil
+      elsif @meta[:type] == 2
         data = @buffer.clone
         @buffer = []
       else

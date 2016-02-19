@@ -1,4 +1,4 @@
-
+require 'pathname'
 require 'jsmin_c'
 require 'jscompress'
 require 'html_min'
@@ -54,6 +54,17 @@ class ClientPkgBuild
     filedata.force_encoding( 'UTF-8' ) if filedata.encoding != 'UTF-8'
     filehandle.close
     return filedata
+  end
+
+  def write_file( path, filedata )
+    dirname = File.dirname( path )
+    unless File.directory?( dirname )
+      FileUtils.mkdir_p( dirname )
+    end
+    filehandle = open( path, 'wb' )
+    filehandle.write( filedata )
+    filehandle.close
+    true
   end
 
   def gzip_string( string )
@@ -259,6 +270,37 @@ class ClientPkgBuild
     @theme_time += (Time.now.to_f - time_start)
   end
 
+  def coffee_cache_path( src_path )
+    coffee_path = Pathname.new( src_path )
+    env_path = Pathname.new( RSence.env_path )
+    rel_path = coffee_path.relative_path_from( env_path )
+    cache_path = env_path.join( '.js_cache' )
+    js_path = cache_path.join( rel_path )
+    js_path.to_s
+  end
+
+  def coffee_cached?( src_path, src_timestamp )
+    path = coffee_cache_path( src_path )
+    if File.exists?( path )
+      cache_timestamp = File.stat( path ).mtime.to_i
+      ( cache_timestamp == src_timestamp )
+    else
+      false
+    end
+  end
+
+  def load_coffee_cache( src_path )
+    path = coffee_cache_path( src_path )
+    read_file( path )
+  end
+
+  def save_coffee_cache( src_path, src_timestamp, js_data )
+    path = coffee_cache_path( src_path )
+    write_file( path, js_data )
+    File.utime( 0, src_timestamp, path )
+    true
+  end
+
   def add_bundle( bundle_name, bundle_path, entries, has_js=false, has_coffee=false )
     has_themes = entries.include?( 'themes' ) and File.directory?( File.join( bundle_path, 'themes' ) )
     if @bundles_found.has_key?( bundle_name )
@@ -294,21 +336,26 @@ class ClientPkgBuild
       else
         process_start = Time.new.to_f
         if is_coffee
-          begin
-            coffee_src = read_file( src_path )
-            js_data = CoffeeScript.compile( coffee_src, :bare => true )
-          rescue CoffeeScript::CompilationError, ExecJS::RuntimeError => e
-            if has_js
-              warn "CoffeeScript Compilation failure #1: #{e.inspect}"
-              js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead.' );}
-              js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
-            else
-              warn "CoffeeScript Compilation failure #2: #{e.inspect}"
-              js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}' );}
+          if coffee_cached?( src_path, src_timestamp )
+            js_data = load_coffee_cache( src_path )
+          else
+            begin
+              coffee_src = read_file( src_path )
+              js_data = CoffeeScript.compile( coffee_src, :bare => true )
+              save_coffee_cache( src_path, src_timestamp, js_data )
+            rescue CoffeeScript::CompilationError, ExecJS::RuntimeError => e
+              if has_js
+                warn "CoffeeScript Compilation failure #1: #{e.inspect}, src: #{src_path}"
+                js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}, using the js variant instead.' );}
+                js_data += read_file( File.join( bundle_path, bundle_name+'.js' ) )
+              else
+                warn "CoffeeScript Compilation failure #2: #{e.inspect}, src: #{src_path}"
+                js_data = %{console.log( 'WARNING: CoffeeScript complilation failed for source file #{src_path.to_json}' );}
+              end
+            rescue => e
+              warn "CoffeeScript Compilation failure #3: #{e.inspect}, src: #{src_path}"
+              js_data = %{console.log( 'WARNING CoffeeScript complilation failed for source file #{src_path.to_json}' );}
             end
-          rescue => e
-            warn "CoffeeScript Compilation failure #3: #{e.inspect}"
-            js_data = %{console.log( 'WARNING CoffeeScript complilation failed for source file #{src_path.to_json}' );}
           end
         else
           js_data = read_file( src_path )
@@ -710,11 +757,13 @@ class ClientPkgBuild
   end
 
   def add_package( pkg_name, pkg_items )
-    if @packages.has_key?( pkg_name )
-      warn "Package #{pkg_name} already exists, ignoring."
-    else
-      @packages[ pkg_name ] = pkg_items
-      @package_names = @packages.keys
+    if pkg_items.class == Array
+      if @packages.has_key?( pkg_name )
+        warn "Package #{pkg_name} already exists, ignoring."
+      else
+        @packages[ pkg_name ] = pkg_items
+        @package_names = @packages.keys
+      end
     end
   end
   def add_packages( packages )
@@ -808,10 +857,13 @@ class ClientPkgBuild
     @theme_names = config[:theme_names]
 
     # pkg_info is supposed to be a hash of js package name definitions by pkg_name
-    @packages = config[:packages]
+    @packages = {}
 
     # packages is supposed to be a list of js package name definitions to include
-    @package_names = @packages.keys
+    @package_names = []
+
+    # add packages
+    add_packages( config[:packages] )
 
     # reserved_names is supposed to be a list of reserved words (words that shouldn't be compressed)
     @reserved_names = config[:reserved_names]

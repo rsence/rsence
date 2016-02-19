@@ -127,7 +127,7 @@ module ArgvUtil
         :title  => (@args[:title] or default_config[:index_html][:title])
       },
       :database => {
-        :ses_db => (@args[:db] or default_config[:database][:ses_db])
+        :sqlite => (@args[:db] or default_config[:database][:sqlite])
       }
     }
     Signal.trap 'INT' do
@@ -150,8 +150,8 @@ module ArgvUtil
       
         say @strs[:initenv][:enter_db_url]
         str_db_url = @strs[:initenv][:db_url]
-        config[:database][:ses_db] = ask(str_db_url) do |q|
-          q.default = config[:database][:ses_db]
+        config[:database][:sqlite] = ask(str_db_url) do |q|
+          q.default = config[:database][:sqlite]
         end
       
         say @strs[:initenv][:enter_http_port]
@@ -174,7 +174,7 @@ module ArgvUtil
 
         # possible workaround for highline on some systems:
         config[:index_html][:title] = config[:index_html][:title].to_s
-        config[:database][:ses_db] = config[:database][:ses_db].to_s
+        config[:database][:sqlite] = config[:database][:sqlite].to_s
         config[:http_server][:port] = config[:http_server][:port].to_s.to_i
         config[:http_server][:bind_address] = config[:http_server][:bind_address].to_s
         config[:base_url] = config[:base_url].to_s

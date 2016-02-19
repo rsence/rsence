@@ -83,6 +83,7 @@ module RSence
     end
   
     def servlet( request_type, request, response )
+      static_url = RSence.config[:static_url]
       broker_urls = RSence.config[:broker_urls]
       uri = request.fullpath
     
@@ -97,7 +98,12 @@ module RSence
           return true
         end
       end
-      return @plugins.match_servlet( request_type, request, response, @sessions.servlet_cookie_ses( request, response ) )
+      if static_url.include?( request.host )
+        session = nil
+      else
+        session = @sessions.servlet_cookie_ses( request, response )
+      end
+      return @plugins.match_servlet( request_type, request, response, session )
     end
   
     # wrapper for the session manager stop client functionality

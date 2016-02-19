@@ -3,6 +3,16 @@
   #
   # The :base_url specifies the prefix for all default http responders.
   :base_url: '/'
+
+  # The :static url specifies the different host for static content like
+  # Java Script and Theme Files.
+  # Example: '//static.example.com'
+  :static_url: ''
+
+  # The :access_control_allow_origin specifies domain where static content
+  # is allowed access from. This should use with :static_url.
+  # The false mean not enabled.
+  :access_control_allow_origin: false
   #
   # This setting defines if requests should be gzip-compressed or not.
   # This is a trade-off between cpu cycles used and network bandwidth used.
@@ -20,7 +30,7 @@
     #
     # The index.html page <title>
     :title: 'RSence'
-    #  
+    #
     :noscript: '<h1>Sorry!</h1><p>This site requires a Javascript -capable web browser.</p><p>Please enable Javascript or upgrade your browser.</p>'
     #
     :instance: null
@@ -34,11 +44,19 @@
     # Default additional libraries to use:
     :default_libs: []
     #
+    # Attributes added in the html-element
+    :html_attrs: []
+    #
+    # Default HTML meta tags
+    :meta:
+      - <meta charset="UTF-8">
+    #
     # Default HTML <body> contents
     :body: ''
     #
-    # Default HTML meta tags
-    :meta: ''
+    # Default HTML <body> styles
+    :body_styles: 'body{margin:0;padding:0;}'
+
   #
   # The default language to use
   # * Used in user_info[:lang] as the default
@@ -134,12 +152,15 @@
   # Switches on debug-mode:
   #  - Generates more output
   #  - Each time /hello is post-requested:
-  #    - Plugins are reloaded from source 
+  #    - Plugins are reloaded from source
   #    - GZFiles are reloaded (if more recent than in memory)
   :debug_mode: false
   #
   # Web server-related settings:
   :http_server:
+    #
+    # Name of the server. Added to response header.
+    :name: RSence
     #
     # Simulate network latency. Good for testing how your
     # app behaves with laggy connections.
@@ -248,26 +269,31 @@
         :title: 'Invalid Session'
         :descr: 'Your session is invalid. Please reload the page to continue.'
         :uri:    '/'
+    #
+    # MongoDB-specific settings
+    :mongo:
+      #
+      # MongoDB Connection Pool Timeout:
+      :pool_timeout: 10 # seconds
+      #
+      # MongoDB Connection Pool Size:
+      :pool_size: 500 # amount of connections
   #
   # Database configuration
   :database:
+    # sqlite, mongo
+    :type: sqlite
     # SQLite
-    :ses_db: 'sqlite://db/ses.db'
+    :sqlite: 'sqlite://db/ses.db'
     # MongoDB
-    # :mongo:
-    #   :host: localhost
-    #   :port: 27017
-    #   :db_name: rsence_ses
-    #   :username: rsence
-    #   :password: 283N1ORI758dykD
-    #   :pool_timeout: 10 # seconds
-    #   :pool_size: 500 # amount of connections
-    #   :repl_enabled: false
-    #   :repl_name: rs1
-    #   :repl_members:
-    #     - 'mongodb1:27017'
-    #     - 'mongodb2:27017'
-    #     - 'mongodb3:27017'
+    :mongo:
+      :addresses_or_uri: [ 'localhost:27017' ]
+      :options:
+        :database: rsence_ses
+        :user: rsence
+        :password: 283N1ORI758dykD
+        :connect_timeout: 10 # seconds
+        :max_pool_size: 500 # amount of connections
 
   #
   # ValueManager settings

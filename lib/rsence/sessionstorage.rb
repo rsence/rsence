@@ -4,7 +4,7 @@ module RSence
   ## HValue class for session restoration
   require 'rsence/value'
 
-  if RSence.config[:database].key?( :mongo )
+  if RSence.config[:database][:type] == 'mongo'
     require 'rsence/session/mongo_sessionstorage'
     SessionBackend = MongoSessionStorage
   else
@@ -20,13 +20,13 @@ module RSence
     def initialize
       ## Session data storage (by ses_id)
       @sessions     = {}
-    
+
       ## Session id by key
       @session_keys = {}
-    
+
       ## Session id by cookie key
       @session_cookie_keys = {}
-    
+
       @clone_origins = {
         # id => [ id, id, id ... ]
       }
@@ -36,12 +36,12 @@ module RSence
       @clone_targets = {
         # id => [ id, id, id ... ]
       }
-    
+
       ## Disposable keys (new ses_key each request)
       @config = RSence.config[:session_conf]
       @db_params = RSence.config[:database]
-      @db_uri = @db_params[:ses_db]
-    
+      @db_uri = @db_params[:sqlite]
+
       if db_test
         @db_avail = true
         db_init
@@ -141,33 +141,33 @@ module RSence
 
     ## Expires a session by its identifier
     def expire_session( ses_id )
-    
+
       return unless @sessions.has_key? ses_id
-    
+
       ses_data = @sessions[ ses_id ]
-    
+
       # Makes the session invalid for xhr's by deleting its key
       @session_keys.delete( ses_data[:ses_key] )
-    
+
       # Makes the session invalid for all requests by deleting its cookie key
       @session_cookie_keys.delete( ses_data[:cookie_key] )
-    
+
       # Deletes the session data itself
       @sessions.delete( ses_id )
-    
+
       # Removes all ticket-based storage bound to the session
       if @plugins
         @plugins.delegate( :expire_ses, ses_data )
         @plugins.delegate( :expire_ses_id, ses_id )
       end
-    
+
       # target -> source cleanup
       if @clone_sources.has_key?( ses_id )
         source_id = @clone_sources[ ses_id ]
         @clone_sources.delete( ses_id ) if @clone_sources.has_key?( ses_id )
         @clone_targets[ source_id ].delete( ses_id ) if @clone_targets.has_key?( source_id )
       end
-    
+
       # source -> targets cleanup
       if @clone_targets.has_key?( ses_id )
         @clone_targets[ ses_id ].each do |target_id|
@@ -175,7 +175,7 @@ module RSence
         end
         @clone_targets.delete( ses_id ) if @clone_targets.has_key?( ses_id )
       end
-    
+
       if @db_avail
         remove_session_data( ses_id )
         sleep @config[:db_sleep]
@@ -184,7 +184,7 @@ module RSence
 
     ## Expires all sessions that meet the timeout criteria
     def expire_sessions
-    
+
       # Loop through all sessions in memory:
       ses_ids = @sessions.keys.clone
       ses_ids.each do |ses_id|

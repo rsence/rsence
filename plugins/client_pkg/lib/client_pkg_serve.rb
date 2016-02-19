@@ -4,7 +4,7 @@ module ClientPkgServe
     ::RSence.config[:broker_urls]
   end
 
-  def match( uri, request_type )
+  def match( req, uri, request_type )
     uri.match( /^#{broker_urls[:h]}/ )
   end
 
@@ -29,6 +29,10 @@ module ClientPkgServe
       response['Expires'] = httime(Time.now+::RSence.config[:cache_expire])
     else
       response['Cache-Control'] = 'no-cache'
+    end
+    if RSence.config[:access_control_allow_origin]
+      response['Access-Control-Allow-Origin'] = RSence.config[:access_control_allow_origin]
+      response['Vary'] = 'Accept-Encoding'
     end
   end
 
@@ -113,6 +117,9 @@ module ClientPkgServe
     # checks for theme file
     has_theme_file = ( has_theme_part and @client_cache.theme_cache[theme_name][theme_part].has_key?( req_file ) )
 
+    if RSence.config[:access_control_allow_origin]
+      response['Access-Control-Allow-Origin'] = RSence.config[:access_control_allow_origin]
+    end
     if not has_theme
       response.status = 404
       response.body   = '404 - Theme Not Found'
@@ -131,6 +138,7 @@ module ClientPkgServe
         'png'  => 'image/png',
         'jpg'  => 'image/jpeg',
         'gif'  => 'image/gif',
+        'svg'  => 'image/svg+xml',
         'swf'  => 'application/x-shockwave-flash'
       }[file_ext]
       response['Last-Modified'] = @client_cache.last_modified

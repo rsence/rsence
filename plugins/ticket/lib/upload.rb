@@ -105,50 +105,57 @@ create table rsence_uploads (
         @upload_slots[:by_id].delete( ticket_id )
       end
       ## The upload form field
-      file_data = request.query['file_data']
-      file_mimetype = file_data[:type]
-      file_filename = file_data[:filename]
-      ## Get the size from the temporary file
-      file_size = file_data[:tempfile].stat.size
-      ## Check for errors
-      if not mime_allow.match(file_mimetype)
-        done_value = "-3:::#{ticket_id}"
-      elsif not file_size < max_size
-        done_value = "-4:::#{ticket_id}"
+      file_data_param = request.query['file_data']
+      if file_data_param.class == Array
+        file_list = file_data_param
       else
-        done_value = "2:::#{ticket_id}"
-        ## Insert basic data about the upload and get its key
-        insert_hash = {
-          :ses_id      => ses_id,
-          :ticket_id   => ticket_id,
-          :upload_date => Time.now.to_i,
-          :upload_done => false,
-          :file_name   => file_filename,
-          :file_size   => file_size,
-          :file_mime   => file_mimetype,
-          :file_data   => ''
-        }
-        if @db
-          upload_id = RSence.session_manager.new_upload_data( insert_hash )
+        file_list = [ file_data_param ]
+      end
+      file_list.each do|file_data|
+        file_mimetype = file_data[:type]
+        file_filename = file_data[:filename]
+        ## Get the size from the temporary file
+        file_size = file_data[:tempfile].stat.size
+        ## Check for errors
+        if not mime_allow.match(file_mimetype)
+          done_value = "-3:::#{ticket_id}"
+        elsif not file_size < max_size
+          done_value = "-4:::#{ticket_id}"
         else
-          @upload_id += 1
-          upload_id = @upload_id
-          @upload_slots[:rsence_uploads] = {} unless @upload_slots.has_key?(:rsence_uploads)
-          @upload_slots[:rsence_uploads][upload_id] = insert_hash
-        end
-        if not @upload_slots[:uploaded].has_key?(ticket_id)
-          @upload_slots[:uploaded][ticket_id] = []
-        end
-        @upload_slots[:uploaded][ticket_id].push( upload_id )
-        
-        update_hash = {
-          :file_data   => file_data[:tempfile].read,
-          :upload_done => true
-        }
-        if @db
-          RSence.session_manager.set_upload_data( upload_id, update_hash[:file_data] )
-        else
-          @upload_slots[:rsence_uploads][upload_id].merge!( update_hash )
+          done_value = "2:::#{ticket_id}"
+          ## Insert basic data about the upload and get its key
+          insert_hash = {
+            :ses_id      => ses_id,
+            :ticket_id   => ticket_id,
+            :upload_date => Time.now.to_i,
+            :upload_done => false,
+            :file_name   => file_filename,
+            :file_size   => file_size,
+            :file_mime   => file_mimetype,
+            :file_data   => ''
+          }
+          if @db
+            upload_id = RSence.session_manager.new_upload_data( insert_hash )
+          else
+            @upload_id += 1
+            upload_id = @upload_id
+            @upload_slots[:rsence_uploads] = {} unless @upload_slots.has_key?(:rsence_uploads)
+            @upload_slots[:rsence_uploads][upload_id] = insert_hash
+          end
+          if not @upload_slots[:uploaded].has_key?(ticket_id)
+            @upload_slots[:uploaded][ticket_id] = []
+          end
+          @upload_slots[:uploaded][ticket_id].push( upload_id )
+          
+          update_hash = {
+            :file_data   => file_data[:tempfile].read,
+            :upload_done => true
+          }
+          if @db
+            RSence.session_manager.set_upload_data( upload_id, update_hash[:file_data] )
+          else
+            @upload_slots[:rsence_uploads][upload_id].merge!( update_hash )
+          end
         end
       end
     end
