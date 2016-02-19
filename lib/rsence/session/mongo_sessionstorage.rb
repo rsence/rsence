@@ -39,7 +39,7 @@ class MongoSessionStorage
       return nil
     end
   end
-  
+
   # Closes database connection
   def db_close
     @conn.close
